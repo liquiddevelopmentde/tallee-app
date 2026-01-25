@@ -147,7 +147,7 @@ void main() {
     });
 
     // Verifies that updateGroupName correctly updates only the name field.
-    test('Updating a group name works correcly', () async {
+    test('Updating a group name works correctly', () async {
       await database.groupDao.addGroup(group: testGroup1);
 
       const newGroupName = 'new group name';
