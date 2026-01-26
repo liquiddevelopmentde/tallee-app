@@ -85,7 +85,6 @@ jobs:
           strategy: 'patch'
           path: './pubspec.yaml'
 
-
       - name: Commit version update
         env:
           GITEA_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -107,6 +106,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.BOT_TOKEN }}
+          ref: ${{ gitea.ref_name }}
 
       # Required for Flutter action
       - name: Install jq
