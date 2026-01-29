@@ -56,7 +56,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
           ruleset: game.ruleset.name,
           description: game.description,
           color: game.color,
-          icon: Value(game.icon),
+          icon: game.icon,
           createdAt: game.createdAt,
         ),
         mode: InsertMode.insertOrReplace,
@@ -82,7 +82,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
                 ruleset: game.ruleset.name,
                 description: game.description,
                 color: game.color,
-                icon: Value(game.icon),
+                icon: game.icon,
                 createdAt: game.createdAt,
               ),
             )
@@ -153,7 +153,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   /// Updates the icon of the game with the given [gameId].
   Future<void> updateGameIcon({
     required String gameId,
-    required String? newIcon,
+    required String newIcon,
   }) async {
     await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
       GameTableCompanion(icon: Value(newIcon)),

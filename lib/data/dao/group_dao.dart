@@ -58,7 +58,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
           GroupTableCompanion.insert(
             id: group.id,
             name: group.name,
-            description: Value(group.description),
+            description: group.description,
             createdAt: group.createdAt,
           ),
           mode: InsertMode.insertOrReplace,
@@ -108,7 +108,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
                 (group) => GroupTableCompanion.insert(
                   id: group.id,
                   name: group.name,
-                  description: Value(group.description),
+                  description: group.description,
                   createdAt: group.createdAt,
                 ),
               )
@@ -136,7 +136,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
                   (p) => PlayerTableCompanion.insert(
                     id: p.id,
                     name: p.name,
-                    description: Value(p.description),
+                    description: p.description,
                     createdAt: p.createdAt,
                   ),
                 )
@@ -196,7 +196,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> updateGroupDescription({
     required String groupId,
-    required String? newDescription,
+    required String newDescription,
   }) async {
     final rowsAffected =
         await (update(groupTable)..where((g) => g.id.equals(groupId))).write(

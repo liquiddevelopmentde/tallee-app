@@ -37,26 +37,29 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Alice');
-      testPlayer2 = Player(name: 'Bob');
-      testPlayer3 = Player(name: 'Charlie');
-      testPlayer4 = Player(name: 'Diana');
-      testPlayer5 = Player(name: 'Eve');
-      testPlayer6 = Player(name: 'Frank');
+      testPlayer1 = Player(name: 'Alice', description: '');
+      testPlayer2 = Player(name: 'Bob', description: '');
+      testPlayer3 = Player(name: 'Charlie', description: '');
+      testPlayer4 = Player(name: 'Diana', description: '');
+      testPlayer5 = Player(name: 'Eve', description: '');
+      testPlayer6 = Player(name: 'Frank', description: '');
       testGroup = Group(
         name: 'Test Group',
+        description: '',
         members: [testPlayer1, testPlayer2, testPlayer3],
       );
-      testGame = Game(name: 'Test Game', ruleset: Ruleset.singleWinner, description: 'A test game', color: '0xFF000000');
+      testGame = Game(name: 'Test Game', ruleset: Ruleset.singleWinner, description: 'A test game', color: '0xFF000000', icon: '');
       testMatchOnlyGroup = Match(
         name: 'Test Match with Group',
         game: testGame,
         group: testGroup,
+        notes: '',
       );
       testMatchOnlyPlayers = Match(
         name: 'Test Match with Players',
         game: testGame,
         players: [testPlayer4, testPlayer5, testPlayer6],
+        notes: '',
       );
       testTeam1 = Team(
         name: 'Team Alpha',
@@ -226,8 +229,8 @@ void main() {
       'Adding the same player to separate matches works correctly',
       () async {
         final playersList = [testPlayer1, testPlayer2, testPlayer3];
-        final match1 = Match(name: 'Match 1', game: testGame, players: playersList);
-        final match2 = Match(name: 'Match 2', game: testGame, players: playersList);
+        final match1 = Match(name: 'Match 1', game: testGame, players: playersList, notes: '');
+        final match2 = Match(name: 'Match 2', game: testGame, players: playersList, notes: '');
 
         await Future.wait([
           database.matchDao.addMatch(match: match1),
@@ -760,8 +763,8 @@ void main() {
     // Verifies that removePlayerFromMatch does not affect other matches.
     test('removePlayerFromMatch does not affect other matches', () async {
       final playersList = [testPlayer1, testPlayer2];
-      final match1 = Match(name: 'Match 1', game: testGame, players: playersList);
-      final match2 = Match(name: 'Match 2', game: testGame, players: playersList);
+      final match1 = Match(name: 'Match 1', game: testGame, players: playersList, notes: '');
+      final match2 = Match(name: 'Match 2', game: testGame, players: playersList, notes: '');
 
       await Future.wait([
         database.matchDao.addMatch(match: match1),
@@ -793,8 +796,8 @@ void main() {
     // Verifies that updating scores for players in different matches are independent.
     test('Player scores are independent across matches', () async {
       final playersList = [testPlayer1];
-      final match1 = Match(name: 'Match 1', game: testGame, players: playersList);
-      final match2 = Match(name: 'Match 2', game: testGame, players: playersList);
+      final match1 = Match(name: 'Match 1', game: testGame, players: playersList, notes: '');
+      final match2 = Match(name: 'Match 2', game: testGame, players: playersList, notes: '');
 
       await Future.wait([
         database.matchDao.addMatch(match: match1),

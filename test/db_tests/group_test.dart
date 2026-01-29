@@ -29,27 +29,31 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Alice');
-      testPlayer2 = Player(name: 'Bob');
-      testPlayer3 = Player(name: 'Charlie');
-      testPlayer4 = Player(name: 'Diana');
+      testPlayer1 = Player(name: 'Alice', description: '');
+      testPlayer2 = Player(name: 'Bob', description: '');
+      testPlayer3 = Player(name: 'Charlie', description: '');
+      testPlayer4 = Player(name: 'Diana', description: '');
       testGroup1 = Group(
         name: 'Test Group',
+        description: '',
         members: [testPlayer1, testPlayer2, testPlayer3],
       );
       testGroup2 = Group(
         id: 'gr2',
         name: 'Second Group',
+        description: '',
         members: [testPlayer2, testPlayer3, testPlayer4],
       );
       testGroup3 = Group(
         id: 'gr2',
         name: 'Second Group',
+        description: '',
         members: [testPlayer2, testPlayer4],
       );
       testGroup4 = Group(
         id: 'gr2',
         name: 'Second Group',
+        description: '',
         members: [testPlayer1, testPlayer2, testPlayer3, testPlayer4],
       );
     });
@@ -262,14 +266,14 @@ void main() {
 
       final updated = await database.groupDao.updateGroupDescription(
         groupId: groupWithDescription.id,
-        newDescription: null,
+        newDescription: 'Updated description',
       );
       expect(updated, true);
 
       final result = await database.groupDao.getGroupById(
         groupId: groupWithDescription.id,
       );
-      expect(result.description, isNull);
+      expect(result.description, 'Updated description');
     });
 
     // Verifies that updateGroupDescription returns false for a non-existent group.
@@ -324,6 +328,7 @@ void main() {
     test('Group with empty members list is stored correctly', () async {
       final emptyGroup = Group(
         name: 'Empty Group',
+        description: '',
         members: [],
       );
       await database.groupDao.addGroup(group: emptyGroup);

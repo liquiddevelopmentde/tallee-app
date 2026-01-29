@@ -61,7 +61,7 @@ class DataTransferService {
                 'id': m.id,
                 'name': m.name,
                 'createdAt': m.createdAt.toIso8601String(),
-                'gameId': m.game?.id,
+                'gameId': m.game.id,
                 'groupId': m.group?.id,
                 'playerIds': (m.players ?? []).map((p) => p.id).toList(),
                 'notes': m.notes,
@@ -160,7 +160,7 @@ class DataTransferService {
         return Group(
           id: map['id'] as String,
           name: map['name'] as String,
-          description: map['description'] as String?,
+          description: map['description'] as String,
           members: members,
           createdAt: DateTime.parse(map['createdAt'] as String),
         );
@@ -192,11 +192,11 @@ class DataTransferService {
       final List<Match> importedMatches = matchesJson.map((m) {
         final map = m as Map<String, dynamic>;
 
-        final String? gameId = map['gameId'] as String?;
+        final String gameId = map['gameId'] as String;
         final String? groupId = map['groupId'] as String?;
         final List<String> playerIds = (map['playerIds'] as List<dynamic>? ?? []).cast<String>();
 
-        final game = (gameId == null) ? null : gameById[gameId];
+        final game = gameById[gameId];
         final group = (groupId == null) ? null : groupById[groupId];
         final players = playerIds
             .map((id) => playerById[id])
@@ -206,11 +206,11 @@ class DataTransferService {
         return Match(
           id: map['id'] as String,
           name: map['name'] as String,
-          game: game,
+          game: game ?? Game(name: 'Unknown', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''),
           group: group,
           players: players.isNotEmpty ? players : null,
           createdAt: DateTime.parse(map['createdAt'] as String),
-          notes: map['notes'] as String?,
+          notes: map['notes'] as String? ?? '',
         );
       }).toList();
 

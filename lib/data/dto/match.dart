@@ -1,4 +1,5 @@
 import 'package:clock/clock.dart';
+import 'package:game_tracker/core/enums.dart';
 import 'package:game_tracker/data/dto/game.dart';
 import 'package:game_tracker/data/dto/group.dart';
 import 'package:game_tracker/data/dto/player.dart';
@@ -8,20 +9,20 @@ class Match {
   final String id;
   final DateTime createdAt;
   final String name;
-  final Game? game;
+  final Game game;
   final Group? group;
   final List<Player>? players;
-  final String? notes;
+  final String notes;
   Player? winner;
 
   Match({
     String? id,
     DateTime? createdAt,
     required this.name,
-    this.game,
+    required this.game,
     this.group,
     this.players,
-    this.notes,
+    required this.notes,
     this.winner,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now();
@@ -37,17 +38,17 @@ class Match {
     : id = json['id'],
       createdAt = DateTime.parse(json['createdAt']),
       name = json['name'],
-      game = null, // Populated during import via DataTransferService
+      game = Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''), // Populated during import via DataTransferService
       group = null, // Populated during import via DataTransferService
       players = [], // Populated during import via DataTransferService
-      notes = json['notes'];
+      notes = json['notes'] ?? '';
 
   /// Converts the Match instance to a JSON object using normalized format (ID references only).
   Map<String, dynamic> toJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),
     'name': name,
-    'gameId': game?.id,
+    'gameId': game.id,
     'groupId': group?.id,
     'playerIds': (players ?? []).map((player) => player.id).toList(),
     'notes': notes,

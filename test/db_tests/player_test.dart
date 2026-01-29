@@ -24,10 +24,10 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Test Player');
-      testPlayer2 = Player(name: 'Second Player');
-      testPlayer3 = Player(name: 'Charlie');
-      testPlayer4 = Player(name: 'Diana');
+      testPlayer1 = Player(name: 'Test Player', description: '');
+      testPlayer2 = Player(name: 'Second Player', description: '');
+      testPlayer3 = Player(name: 'Charlie', description: '');
+      testPlayer4 = Player(name: 'Diana', description: '');
     });
   });
   tearDown(() async {
@@ -265,7 +265,7 @@ void main() {
 
     // Verifies that a player with special characters in name is stored correctly.
     test('Player with special characters in name is stored correctly', () async {
-      final specialPlayer = Player(name: 'Test!@#\$%^&*()_+-=[]{}|;\':",.<>?/`~');
+      final specialPlayer = Player(name: 'Test!@#\$%^&*()_+-=[]{}|;\':",.<>?/`~', description: '');
 
       await database.playerDao.addPlayer(player: specialPlayer);
 
@@ -293,14 +293,14 @@ void main() {
 
     // Verifies that a player with null description is stored correctly.
     test('Player with null description is stored correctly', () async {
-      final playerWithoutDescription = Player(name: 'No Description Player');
+      final playerWithoutDescription = Player(name: 'No Description Player', description: '');
 
       await database.playerDao.addPlayer(player: playerWithoutDescription);
 
       final fetchedPlayer = await database.playerDao.getPlayerById(
         playerId: playerWithoutDescription.id,
       );
-      expect(fetchedPlayer.description, isNull);
+      expect(fetchedPlayer.description, '');
     });
 
     // Verifies that multiple updates to the same player work correctly.
@@ -340,7 +340,7 @@ void main() {
 
     // Verifies that a player with empty string name is stored correctly.
     test('Player with empty string name is stored correctly', () async {
-      final emptyNamePlayer = Player(name: '');
+      final emptyNamePlayer = Player(name: '', description: '');
 
       await database.playerDao.addPlayer(player: emptyNamePlayer);
 
@@ -353,7 +353,7 @@ void main() {
     // Verifies that a player with very long name is stored correctly.
     test('Player with very long name is stored correctly', () async {
       final longName = 'A' * 1000;
-      final longNamePlayer = Player(name: longName);
+      final longNamePlayer = Player(name: longName, description: '');
 
       await database.playerDao.addPlayer(player: longNamePlayer);
 

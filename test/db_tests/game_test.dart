@@ -44,6 +44,7 @@ void main() {
         ruleset: Ruleset.highestScore,
         description: 'A board game about real estate',
         color: '0xFF000000',
+        icon: '',
       );
     });
   });
@@ -133,7 +134,7 @@ void main() {
 
     // Verifies that a game with null optional fields can be added and retrieved.
     test('addGame handles game with null optional fields', () async {
-      final gameWithNulls = Game(name: 'Simple Game', ruleset: Ruleset.lowestScore, description: 'A simple game', color: '0xFF000000');
+      final gameWithNulls = Game(name: 'Simple Game', ruleset: Ruleset.lowestScore, description: 'A simple game', color: '0xFF000000', icon: '');
       final result = await database.gameDao.addGame(game: gameWithNulls);
       expect(result, true);
 
@@ -374,19 +375,19 @@ void main() {
       expect(updatedGame.icon, 'new_chess_icon');
     });
 
-    // Verifies that updateGameIcon can set the icon to null.
-    test('updateGameIcon can set icon to null', () async {
+    // Verifies that updateGameIcon can update the icon.
+    test('updateGameIcon updates icon correctly', () async {
       await database.gameDao.addGame(game: testGame1);
 
       await database.gameDao.updateGameIcon(
         gameId: testGame1.id,
-        newIcon: null,
+        newIcon: 'new_icon',
       );
 
       final updatedGame = await database.gameDao.getGameById(
         gameId: testGame1.id,
       );
-      expect(updatedGame.icon, isNull);
+      expect(updatedGame.icon, 'new_icon');
     });
 
     // Verifies that updateGameIcon does nothing when game doesn't exist.
@@ -460,6 +461,7 @@ void main() {
         ruleset: Ruleset.multipleWinners,
         description: 'Description with émojis 🎮🎲',
         color: '0xFF000000',
+        icon: '',
       );
       await database.gameDao.addGame(game: specialGame);
 
@@ -498,6 +500,7 @@ void main() {
         description: longString,
         ruleset: Ruleset.multipleWinners,
         color: '0xFF000000',
+        icon: '',
       );
       await database.gameDao.addGame(game: longGame);
 

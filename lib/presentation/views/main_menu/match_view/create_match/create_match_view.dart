@@ -203,6 +203,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                             description: selectedGame.$2,
                             ruleset: selectedGame.$3,
                             color: '0xFF000000',
+                            icon: '',
                           );
                         } else {
                           // Use the selected game from the list
@@ -212,6 +213,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                             description: selectedGame.$2,
                             ruleset: selectedGame.$3,
                             color: '0xFF000000',
+                            icon: '',
                           );
                         }
                         // Add the game to the database if it doesn't exist
@@ -225,6 +227,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                           game: gameToUse,
                           group: selectedGroup,
                           players: selectedPlayers,
+                          notes: '',
                         );
                         await db.matchDao.addMatch(match: match);
                         if (context.mounted) {

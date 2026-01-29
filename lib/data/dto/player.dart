@@ -5,13 +5,13 @@ class Player {
   final String id;
   final DateTime createdAt;
   final String name;
-  final String? description;
+  final String description;
 
   Player({
     String? id,
     DateTime? createdAt,
     required this.name,
-    this.description,
+    required this.description,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now();
 

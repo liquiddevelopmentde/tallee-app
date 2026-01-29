@@ -5,7 +5,9 @@ import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:game_tracker/core/adaptive_page_route.dart';
 import 'package:game_tracker/core/constants.dart';
 import 'package:game_tracker/core/custom_theme.dart';
+import 'package:game_tracker/core/enums.dart';
 import 'package:game_tracker/data/db/database.dart';
+import 'package:game_tracker/data/dto/game.dart';
 import 'package:game_tracker/data/dto/group.dart';
 import 'package:game_tracker/data/dto/match.dart';
 import 'package:game_tracker/data/dto/player.dart';
@@ -36,12 +38,15 @@ class _MatchViewState extends State<MatchView> {
     4,
     Match(
       name: 'Skeleton match name',
+      game: Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''),
       group: Group(
         name: 'Group name',
-        members: List.filled(5, Player(name: 'Player')),
+        description: '',
+        members: List.filled(5, Player(name: 'Player', description: '')),
       ),
-      winner: Player(name: 'Player'),
-      players: [Player(name: 'Player')],
+      winner: Player(name: 'Player', description: ''),
+      players: [Player(name: 'Player', description: '')],
+      notes: '',
     ),
   );
 

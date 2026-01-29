@@ -36,7 +36,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           game: game,
           group: group,
           players: players,
-          notes: row.notes,
+          notes: row.notes ?? '',
           createdAt: row.createdAt,
         );
       }),
@@ -66,7 +66,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       game: game,
       group: group,
       players: players,
-      notes: result.notes,
+      notes: result.notes ?? '',
       createdAt: result.createdAt,
     );
   }
@@ -75,15 +75,11 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// This method assumes that the game and group (if any) are already present
   /// in the database.
   Future<void> addMatch({required Match match}) async {
-    if (match.game == null) {
-      throw ArgumentError('Match must have a game associated with it');
-    }
-
     await db.transaction(() async {
       await into(matchTable).insert(
         MatchTableCompanion.insert(
           id: match.id,
-          gameId: match.game!.id,
+          gameId: match.game.id,
           groupId: Value(match.group?.id),
           name: Value(match.name),
           notes: Value(match.notes),
@@ -113,9 +109,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       // Add all games first (deduplicated)
       final uniqueGames = <String, Game>{};
       for (final match in matches) {
-        if (match.game != null) {
-          uniqueGames[match.game!.id] = match.game!;
-        }
+        uniqueGames[match.game.id] = match.game;
       }
 
       if (uniqueGames.isNotEmpty) {
@@ -130,7 +124,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                     ruleset: game.ruleset.name,
                     description: game.description,
                     color: game.color,
-                    icon: Value(game.icon),
+                    icon: game.icon,
                     createdAt: game.createdAt,
                   ),
                 )
@@ -150,7 +144,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                 (match) => GroupTableCompanion.insert(
                   id: match.group!.id,
                   name: match.group!.name,
-                  description: Value(match.group!.description),
+                  description: match.group!.description,
                   createdAt: match.group!.createdAt,
                 ),
               )
@@ -164,11 +158,10 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         (b) => b.insertAll(
           matchTable,
           matches
-              .where((match) => match.game != null)
               .map(
                 (match) => MatchTableCompanion.insert(
                   id: match.id,
-                  gameId: match.game!.id,
+                  gameId: match.game.id,
                   groupId: Value(match.group?.id),
                   name: Value(match.name),
                   notes: Value(match.notes),
@@ -205,7 +198,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                   (p) => PlayerTableCompanion.insert(
                     id: p.id,
                     name: p.name,
-                    description: Value(p.description),
+                    description: p.description,
                     createdAt: p.createdAt,
                   ),
                 )

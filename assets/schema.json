@@ -17,13 +17,14 @@
             "type": "string"
           },
           "description": {
-            "type": ["string", "null"]
+            "type": "string"
           }
         },
         "required": [
           "id",
           "createdAt",
-          "name"
+          "name",
+          "description"
         ]
       }
     },
@@ -42,22 +43,26 @@
             "type": "string"
           },
           "ruleset": {
-            "type": ["string", "null"]
+            "type": "string"
           },
           "description": {
-            "type": ["string", "null"]
+            "type": "string"
           },
           "color": {
-            "type": ["integer", "null"]
+            "type": "string"
           },
           "icon": {
-            "type": ["string", "null"]
+            "type": "string"
           }
         },
         "required": [
           "id",
           "createdAt",
-          "name"
+          "name",
+          "ruleset",
+          "description",
+          "color",
+          "icon"
         ]
       }
     },
@@ -76,7 +81,7 @@
             "type": "string"
           },
           "description": {
-            "type": ["string", "null"]
+            "type": "string"
           },
           "memberIds": {
             "type": "array",
@@ -89,6 +94,7 @@
           "id",
           "name",
           "createdAt",
+          "description",
           "memberIds"
         ]
       }
@@ -137,10 +143,7 @@
             "type": "string"
           },
           "gameId": {
-            "anyOf": [
-              {"type": "string"},
-              {"type": "null"}
-            ]
+            "type": "string"
           },
           "groupId": {
             "anyOf": [
@@ -155,17 +158,16 @@
             }
           },
           "notes": {
-            "anyOf": [
-              {"type": "string"},
-              {"type": "null"}
-            ]
+            "type": "string"
           }
         },
         "required": [
           "id",
           "name",
           "createdAt",
-          "playerIds"
+          "gameId",
+          "playerIds",
+          "notes"
         ]
       }
     }

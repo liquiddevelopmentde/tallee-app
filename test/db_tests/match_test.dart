@@ -36,26 +36,29 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Alice');
-      testPlayer2 = Player(name: 'Bob');
-      testPlayer3 = Player(name: 'Charlie');
-      testPlayer4 = Player(name: 'Diana');
-      testPlayer5 = Player(name: 'Eve');
+      testPlayer1 = Player(name: 'Alice', description: '');
+      testPlayer2 = Player(name: 'Bob', description: '');
+      testPlayer3 = Player(name: 'Charlie', description: '');
+      testPlayer4 = Player(name: 'Diana', description: '');
+      testPlayer5 = Player(name: 'Eve', description: '');
       testGroup1 = Group(
         name: 'Test Group 2',
+        description: '',
         members: [testPlayer1, testPlayer2, testPlayer3],
       );
       testGroup2 = Group(
         name: 'Test Group 2',
+        description: '',
         members: [testPlayer4, testPlayer5],
       );
-      testGame = Game(name: 'Test Game', ruleset: Ruleset.singleWinner, description: 'A test game', color: '0xFF000000');
+      testGame = Game(name: 'Test Game', ruleset: Ruleset.singleWinner, description: 'A test game', color: '0xFF000000', icon: '');
       testMatch1 = Match(
         name: 'First Test Match',
         game: testGame,
         group: testGroup1,
         players: [testPlayer4, testPlayer5],
         winner: testPlayer4,
+        notes: '',
       );
       testMatch2 = Match(
         name: 'Second Test Match',
@@ -63,17 +66,20 @@ void main() {
         group: testGroup2,
         players: [testPlayer1, testPlayer2, testPlayer3],
         winner: testPlayer2,
+        notes: '',
       );
       testMatchOnlyPlayers = Match(
         name: 'Test Match with Players',
         game: testGame,
         players: [testPlayer1, testPlayer2, testPlayer3],
         winner: testPlayer3,
+        notes: '',
       );
       testMatchOnlyGroup = Match(
         name: 'Test Match with Group',
         game: testGame,
         group: testGroup2,
+        notes: '',
       );
     });
     await database.playerDao.addPlayersAsList(

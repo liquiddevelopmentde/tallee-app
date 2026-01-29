@@ -5,7 +5,7 @@ import 'package:uuid/uuid.dart';
 class Group {
   final String id;
   final String name;
-  final String? description;
+  final String description;
   final DateTime createdAt;
   final List<Player> members;
 
@@ -13,7 +13,7 @@ class Group {
     String? id,
     DateTime? createdAt,
     required this.name,
-    this.description,
+    required this.description,
     required this.members,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now();

@@ -33,10 +33,10 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Alice');
-      testPlayer2 = Player(name: 'Bob');
-      testPlayer3 = Player(name: 'Charlie');
-      testPlayer4 = Player(name: 'Diana');
+      testPlayer1 = Player(name: 'Alice', description: '');
+      testPlayer2 = Player(name: 'Bob', description: '');
+      testPlayer3 = Player(name: 'Charlie', description: '');
+      testPlayer4 = Player(name: 'Diana', description: '');
       testTeam1 = Team(
         name: 'Team Alpha',
         members: [testPlayer1, testPlayer2],
@@ -49,8 +49,8 @@ void main() {
         name: 'Team Gamma',
         members: [testPlayer1, testPlayer3],
       );
-      testGame1 = Game(name: 'Game 1', ruleset: Ruleset.singleWinner, description: 'Test game 1', color: '0xFF000000');
-      testGame2 = Game(name: 'Game 2', ruleset: Ruleset.highestScore, description: 'Test game 2', color: '0xFF000000');
+      testGame1 = Game(name: 'Game 1', ruleset: Ruleset.singleWinner, description: 'Test game 1', color: '0xFF000000', icon: '');
+      testGame2 = Game(name: 'Game 2', ruleset: Ruleset.highestScore, description: 'Test game 2', color: '0xFF000000', icon: '');
     });
 
     await database.playerDao.addPlayersAsList(
@@ -344,8 +344,8 @@ void main() {
     // Verifies that teams with overlapping members are independent.
     test('Teams with overlapping members are independent', () async {
       // Create two matches since player_match has primary key {playerId, matchId}
-      final match1 = Match(name: 'Match 1', game: testGame1);
-      final match2 = Match(name: 'Match 2', game: testGame2);
+      final match1 = Match(name: 'Match 1', game: testGame1, notes: '');
+      final match2 = Match(name: 'Match 2', game: testGame2, notes: '');
       await database.matchDao.addMatch(match: match1);
       await database.matchDao.addMatch(match: match2);
 

@@ -46,7 +46,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
         PlayerTableCompanion.insert(
           id: player.id,
           name: player.name,
-          description: Value(player.description),
+          description: player.description,
           createdAt: player.createdAt,
         ),
         mode: InsertMode.insertOrReplace,
@@ -70,7 +70,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
               (player) => PlayerTableCompanion.insert(
                 id: player.id,
                 name: player.name,
-                description: Value(player.description),
+                description: player.description,
                 createdAt: player.createdAt,
               ),
             )

@@ -9,7 +9,7 @@ class Game {
   final Ruleset ruleset;
   final String description;
   final String color;
-  final String? icon;
+  final String icon;
 
   Game({
     String? id,
@@ -18,7 +18,7 @@ class Game {
     required this.ruleset,
     required this.description,
     required this.color,
-    this.icon,
+    required this.icon,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now();
 

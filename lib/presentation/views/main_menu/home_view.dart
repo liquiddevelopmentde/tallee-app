@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:game_tracker/core/adaptive_page_route.dart';
 import 'package:game_tracker/core/constants.dart';
+import 'package:game_tracker/core/enums.dart';
 import 'package:game_tracker/data/db/database.dart';
+import 'package:game_tracker/data/dto/game.dart';
 import 'package:game_tracker/data/dto/group.dart';
 import 'package:game_tracker/data/dto/match.dart';
 import 'package:game_tracker/data/dto/player.dart';
@@ -40,13 +42,16 @@ class _HomeViewState extends State<HomeView> {
     2,
     Match(
       name: 'Skeleton Match',
+      game: Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''),
       group: Group(
         name: 'Skeleton Group',
+        description: '',
         members: [
-          Player(name: 'Skeleton Player 1'),
-          Player(name: 'Skeleton Player 2'),
+          Player(name: 'Skeleton Player 1', description: ''),
+          Player(name: 'Skeleton Player 2', description: ''),
         ],
       ),
+      notes: '',
     ),
   );
 
@@ -114,7 +119,7 @@ class _HomeViewState extends State<HomeView> {
                                           MatchResultView(match: match),
                                     ),
                                   );
-                                  await updatedWinnerinRecentMatches(match.id);
+                                  await updatedWinnerInRecentMatches(match.id);
                                 },
                               ),
                             )
@@ -214,7 +219,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// Updates the winner information for a specific match in the recent matches list.
-  Future<void> updatedWinnerinRecentMatches(String matchId) async {
+  Future<void> updatedWinnerInRecentMatches(String matchId) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final winner = await db.matchDao.getWinner(matchId: matchId);
     final matchIndex = recentMatches.indexWhere((match) => match.id == matchId);

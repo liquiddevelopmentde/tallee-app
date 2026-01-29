@@ -26,12 +26,13 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Alice');
-      testPlayer2 = Player(name: 'Bob');
-      testPlayer3 = Player(name: 'Charlie');
-      testPlayer4 = Player(name: 'Diana');
+      testPlayer1 = Player(name: 'Alice', description: '');
+      testPlayer2 = Player(name: 'Bob', description: '');
+      testPlayer3 = Player(name: 'Charlie', description: '');
+      testPlayer4 = Player(name: 'Diana', description: '');
       testGroup = Group(
         name: 'Test Group',
+        description: '',
         members: [testPlayer1, testPlayer2, testPlayer3],
       );
     });
@@ -186,7 +187,7 @@ void main() {
 
     // Verifies that getPlayersOfGroup returns empty list for group with no members.
     test('getPlayersOfGroup returns empty list for empty group', () async {
-      final emptyGroup = Group(name: 'Empty Group', members: []);
+      final emptyGroup = Group(name: 'Empty Group', description: '', members: []);
       await database.groupDao.addGroup(group: emptyGroup);
 
       final players = await database.playerGroupDao.getPlayersOfGroup(
@@ -230,7 +231,7 @@ void main() {
 
     // Verifies that a player can be in multiple groups.
     test('Player can be in multiple groups', () async {
-      final secondGroup = Group(name: 'Second Group', members: []);
+      final secondGroup = Group(name: 'Second Group', description: '', members: []);
       await database.groupDao.addGroup(group: testGroup);
       await database.groupDao.addGroup(group: secondGroup);
 
@@ -255,7 +256,7 @@ void main() {
 
     // Verifies that removing player from one group doesn't affect other groups.
     test('Removing player from one group does not affect other groups', () async {
-      final secondGroup = Group(name: 'Second Group', members: [testPlayer1]);
+      final secondGroup = Group(name: 'Second Group', description: '', members: [testPlayer1]);
       await database.groupDao.addGroup(group: testGroup);
       await database.groupDao.addGroup(group: secondGroup);
 
