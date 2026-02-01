@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/db/tables/team_table.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/data/dto/team.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/db/tables/team_table.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/dto/team.dart';
 
 part 'team_dao.g.dart';
 

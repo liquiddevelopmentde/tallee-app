@@ -1,6 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:uuid/uuid.dart';
-import 'package:game_tracker/core/enums.dart';
+import 'package:tallee/core/enums.dart';
 
 class Game {
   final String id;

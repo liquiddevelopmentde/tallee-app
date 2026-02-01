@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/db/tables/game_table.dart';
-import 'package:game_tracker/data/dto/game.dart';
-import 'package:game_tracker/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/db/tables/game_table.dart';
+import 'package:tallee/data/dto/game.dart';
+import 'package:tallee/core/enums.dart';
 
 part 'game_dao.g.dart';
 
@@ -111,20 +111,14 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   }
 
   /// Updates the name of the game with the given [gameId] to [newName].
-  Future<void> updateGameName({
-    required String gameId,
-    required String newName,
-  }) async {
-    await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-      GameTableCompanion(name: Value(newName)),
-    );
+  Future<void> updateGameName({required String gameId, required String newName}) async {
+    await (update(
+      gameTable,
+    )..where((g) => g.id.equals(gameId))).write(GameTableCompanion(name: Value(newName)));
   }
 
   /// Updates the ruleset of the game with the given [gameId].
-  Future<void> updateGameRuleset({
-    required String gameId,
-    required Ruleset newRuleset,
-  }) async {
+  Future<void> updateGameRuleset({required String gameId, required Ruleset newRuleset}) async {
     await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
       GameTableCompanion(ruleset: Value(newRuleset.name)),
     );
@@ -141,31 +135,24 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   }
 
   /// Updates the color of the game with the given [gameId].
-  Future<void> updateGameColor({
-    required String gameId,
-    required String newColor,
-  }) async {
-    await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-      GameTableCompanion(color: Value(newColor)),
-    );
+  Future<void> updateGameColor({required String gameId, required String newColor}) async {
+    await (update(
+      gameTable,
+    )..where((g) => g.id.equals(gameId))).write(GameTableCompanion(color: Value(newColor)));
   }
 
   /// Updates the icon of the game with the given [gameId].
-  Future<void> updateGameIcon({
-    required String gameId,
-    required String newIcon,
-  }) async {
-    await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-      GameTableCompanion(icon: Value(newIcon)),
-    );
+  Future<void> updateGameIcon({required String gameId, required String newIcon}) async {
+    await (update(
+      gameTable,
+    )..where((g) => g.id.equals(gameId))).write(GameTableCompanion(icon: Value(newIcon)));
   }
 
   /// Retrieves the total count of games in the database.
   Future<int> getGameCount() async {
-    final count =
-        await (selectOnly(gameTable)..addColumns([gameTable.id.count()]))
-            .map((row) => row.read(gameTable.id.count()))
-            .getSingle();
+    final count = await (selectOnly(
+      gameTable,
+    )..addColumns([gameTable.id.count()])).map((row) => row.read(gameTable.id.count())).getSingle();
     return count ?? 0;
   }
 
@@ -177,4 +164,3 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     return rowsAffected > 0;
   }
 }
-

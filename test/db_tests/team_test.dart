@@ -2,12 +2,12 @@ import 'package:clock/clock.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/game.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/data/dto/team.dart';
-import 'package:game_tracker/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/game.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/dto/team.dart';
+import 'package:tallee/core/enums.dart';
 
 void main() {
   late AppDatabase database;

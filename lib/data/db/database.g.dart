@@ -1085,265 +1085,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
   }
 }
 
-class $TeamTableTable extends TeamTable
-    with TableInfo<$TeamTableTable, TeamTableData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $TeamTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, name, createdAt];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'team_table';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<TeamTableData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  TeamTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TeamTableData(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-    );
-  }
-
-  @override
-  $TeamTableTable createAlias(String alias) {
-    return $TeamTableTable(attachedDatabase, alias);
-  }
-}
-
-class TeamTableData extends DataClass implements Insertable<TeamTableData> {
-  final String id;
-  final String name;
-  final DateTime createdAt;
-  const TeamTableData({
-    required this.id,
-    required this.name,
-    required this.createdAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['name'] = Variable<String>(name);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    return map;
-  }
-
-  TeamTableCompanion toCompanion(bool nullToAbsent) {
-    return TeamTableCompanion(
-      id: Value(id),
-      name: Value(name),
-      createdAt: Value(createdAt),
-    );
-  }
-
-  factory TeamTableData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TeamTableData(
-      id: serializer.fromJson<String>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'name': serializer.toJson<String>(name),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-    };
-  }
-
-  TeamTableData copyWith({String? id, String? name, DateTime? createdAt}) =>
-      TeamTableData(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        createdAt: createdAt ?? this.createdAt,
-      );
-  TeamTableData copyWithCompanion(TeamTableCompanion data) {
-    return TeamTableData(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TeamTableData(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('createdAt: $createdAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, name, createdAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is TeamTableData &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.createdAt == this.createdAt);
-}
-
-class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
-  final Value<String> id;
-  final Value<String> name;
-  final Value<DateTime> createdAt;
-  final Value<int> rowid;
-  const TeamTableCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  TeamTableCompanion.insert({
-    required String id,
-    required String name,
-    required DateTime createdAt,
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       name = Value(name),
-       createdAt = Value(createdAt);
-  static Insertable<TeamTableData> custom({
-    Expression<String>? id,
-    Expression<String>? name,
-    Expression<DateTime>? createdAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (createdAt != null) 'created_at': createdAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  TeamTableCompanion copyWith({
-    Value<String>? id,
-    Value<String>? name,
-    Value<DateTime>? createdAt,
-    Value<int>? rowid,
-  }) {
-    return TeamTableCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      createdAt: createdAt ?? this.createdAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TeamTableCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $MatchTableTable extends MatchTable
     with TableInfo<$MatchTableTable, MatchTableData> {
   @override
@@ -1973,6 +1714,265 @@ class PlayerGroupTableCompanion extends UpdateCompanion<PlayerGroupTableData> {
     return (StringBuffer('PlayerGroupTableCompanion(')
           ..write('playerId: $playerId, ')
           ..write('groupId: $groupId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TeamTableTable extends TeamTable
+    with TableInfo<$TeamTableTable, TeamTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TeamTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'team_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TeamTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TeamTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TeamTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TeamTableTable createAlias(String alias) {
+    return $TeamTableTable(attachedDatabase, alias);
+  }
+}
+
+class TeamTableData extends DataClass implements Insertable<TeamTableData> {
+  final String id;
+  final String name;
+  final DateTime createdAt;
+  const TeamTableData({
+    required this.id,
+    required this.name,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  TeamTableCompanion toCompanion(bool nullToAbsent) {
+    return TeamTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory TeamTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TeamTableData(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  TeamTableData copyWith({String? id, String? name, DateTime? createdAt}) =>
+      TeamTableData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  TeamTableData copyWithCompanion(TeamTableCompanion data) {
+    return TeamTableData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TeamTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TeamTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.createdAt == this.createdAt);
+}
+
+class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const TeamTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TeamTableCompanion.insert({
+    required String id,
+    required String name,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       createdAt = Value(createdAt);
+  static Insertable<TeamTableData> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TeamTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return TeamTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TeamTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2682,19 +2682,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PlayerTableTable playerTable = $PlayerTableTable(this);
   late final $GroupTableTable groupTable = $GroupTableTable(this);
   late final $GameTableTable gameTable = $GameTableTable(this);
-  late final $TeamTableTable teamTable = $TeamTableTable(this);
   late final $MatchTableTable matchTable = $MatchTableTable(this);
   late final $PlayerGroupTableTable playerGroupTable = $PlayerGroupTableTable(
     this,
   );
+  late final $TeamTableTable teamTable = $TeamTableTable(this);
   late final $PlayerMatchTableTable playerMatchTable = $PlayerMatchTableTable(
     this,
   );
   late final $ScoreTableTable scoreTable = $ScoreTableTable(this);
   late final PlayerDao playerDao = PlayerDao(this as AppDatabase);
   late final GroupDao groupDao = GroupDao(this as AppDatabase);
-  late final GameDao gameDao = GameDao(this as AppDatabase);
-  late final TeamDao teamDao = TeamDao(this as AppDatabase);
   late final MatchDao matchDao = MatchDao(this as AppDatabase);
   late final PlayerGroupDao playerGroupDao = PlayerGroupDao(
     this as AppDatabase,
@@ -2702,7 +2700,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final PlayerMatchDao playerMatchDao = PlayerMatchDao(
     this as AppDatabase,
   );
+  late final GameDao gameDao = GameDao(this as AppDatabase);
   late final ScoreDao scoreDao = ScoreDao(this as AppDatabase);
+  late final TeamDao teamDao = TeamDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2711,9 +2711,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     playerTable,
     groupTable,
     gameTable,
-    teamTable,
     matchTable,
     playerGroupTable,
+    teamTable,
     playerMatchTable,
     scoreTable,
   ];
@@ -3997,276 +3997,6 @@ typedef $$GameTableTableProcessedTableManager =
       GameTableData,
       PrefetchHooks Function({bool matchTableRefs})
     >;
-typedef $$TeamTableTableCreateCompanionBuilder =
-    TeamTableCompanion Function({
-      required String id,
-      required String name,
-      required DateTime createdAt,
-      Value<int> rowid,
-    });
-typedef $$TeamTableTableUpdateCompanionBuilder =
-    TeamTableCompanion Function({
-      Value<String> id,
-      Value<String> name,
-      Value<DateTime> createdAt,
-      Value<int> rowid,
-    });
-
-final class $$TeamTableTableReferences
-    extends BaseReferences<_$AppDatabase, $TeamTableTable, TeamTableData> {
-  $$TeamTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$PlayerMatchTableTable, List<PlayerMatchTableData>>
-  _playerMatchTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.playerMatchTable,
-    aliasName: $_aliasNameGenerator(
-      db.teamTable.id,
-      db.playerMatchTable.teamId,
-    ),
-  );
-
-  $$PlayerMatchTableTableProcessedTableManager get playerMatchTableRefs {
-    final manager = $$PlayerMatchTableTableTableManager(
-      $_db,
-      $_db.playerMatchTable,
-    ).filter((f) => f.teamId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(
-      _playerMatchTableRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$TeamTableTableFilterComposer
-    extends Composer<_$AppDatabase, $TeamTableTable> {
-  $$TeamTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  Expression<bool> playerMatchTableRefs(
-    Expression<bool> Function($$PlayerMatchTableTableFilterComposer f) f,
-  ) {
-    final $$PlayerMatchTableTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.playerMatchTable,
-      getReferencedColumn: (t) => t.teamId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlayerMatchTableTableFilterComposer(
-            $db: $db,
-            $table: $db.playerMatchTable,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$TeamTableTableOrderingComposer
-    extends Composer<_$AppDatabase, $TeamTableTable> {
-  $$TeamTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$TeamTableTableAnnotationComposer
-    extends Composer<_$AppDatabase, $TeamTableTable> {
-  $$TeamTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  Expression<T> playerMatchTableRefs<T extends Object>(
-    Expression<T> Function($$PlayerMatchTableTableAnnotationComposer a) f,
-  ) {
-    final $$PlayerMatchTableTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.playerMatchTable,
-      getReferencedColumn: (t) => t.teamId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlayerMatchTableTableAnnotationComposer(
-            $db: $db,
-            $table: $db.playerMatchTable,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$TeamTableTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $TeamTableTable,
-          TeamTableData,
-          $$TeamTableTableFilterComposer,
-          $$TeamTableTableOrderingComposer,
-          $$TeamTableTableAnnotationComposer,
-          $$TeamTableTableCreateCompanionBuilder,
-          $$TeamTableTableUpdateCompanionBuilder,
-          (TeamTableData, $$TeamTableTableReferences),
-          TeamTableData,
-          PrefetchHooks Function({bool playerMatchTableRefs})
-        > {
-  $$TeamTableTableTableManager(_$AppDatabase db, $TeamTableTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$TeamTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$TeamTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$TeamTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                Value<String> name = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => TeamTableCompanion(
-                id: id,
-                name: name,
-                createdAt: createdAt,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String id,
-                required String name,
-                required DateTime createdAt,
-                Value<int> rowid = const Value.absent(),
-              }) => TeamTableCompanion.insert(
-                id: id,
-                name: name,
-                createdAt: createdAt,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$TeamTableTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback: ({playerMatchTableRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (playerMatchTableRefs) db.playerMatchTable,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (playerMatchTableRefs)
-                    await $_getPrefetchedData<
-                      TeamTableData,
-                      $TeamTableTable,
-                      PlayerMatchTableData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$TeamTableTableReferences
-                          ._playerMatchTableRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$TeamTableTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).playerMatchTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.teamId == item.id),
-                      typedResults: items,
-                    ),
-                ];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$TeamTableTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $TeamTableTable,
-      TeamTableData,
-      $$TeamTableTableFilterComposer,
-      $$TeamTableTableOrderingComposer,
-      $$TeamTableTableAnnotationComposer,
-      $$TeamTableTableCreateCompanionBuilder,
-      $$TeamTableTableUpdateCompanionBuilder,
-      (TeamTableData, $$TeamTableTableReferences),
-      TeamTableData,
-      PrefetchHooks Function({bool playerMatchTableRefs})
-    >;
 typedef $$MatchTableTableCreateCompanionBuilder =
     MatchTableCompanion Function({
       required String id,
@@ -5261,6 +4991,276 @@ typedef $$PlayerGroupTableTableProcessedTableManager =
       PlayerGroupTableData,
       PrefetchHooks Function({bool playerId, bool groupId})
     >;
+typedef $$TeamTableTableCreateCompanionBuilder =
+    TeamTableCompanion Function({
+      required String id,
+      required String name,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$TeamTableTableUpdateCompanionBuilder =
+    TeamTableCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+final class $$TeamTableTableReferences
+    extends BaseReferences<_$AppDatabase, $TeamTableTable, TeamTableData> {
+  $$TeamTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$PlayerMatchTableTable, List<PlayerMatchTableData>>
+  _playerMatchTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.playerMatchTable,
+    aliasName: $_aliasNameGenerator(
+      db.teamTable.id,
+      db.playerMatchTable.teamId,
+    ),
+  );
+
+  $$PlayerMatchTableTableProcessedTableManager get playerMatchTableRefs {
+    final manager = $$PlayerMatchTableTableTableManager(
+      $_db,
+      $_db.playerMatchTable,
+    ).filter((f) => f.teamId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _playerMatchTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$TeamTableTableFilterComposer
+    extends Composer<_$AppDatabase, $TeamTableTable> {
+  $$TeamTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> playerMatchTableRefs(
+    Expression<bool> Function($$PlayerMatchTableTableFilterComposer f) f,
+  ) {
+    final $$PlayerMatchTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.playerMatchTable,
+      getReferencedColumn: (t) => t.teamId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayerMatchTableTableFilterComposer(
+            $db: $db,
+            $table: $db.playerMatchTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$TeamTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $TeamTableTable> {
+  $$TeamTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TeamTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TeamTableTable> {
+  $$TeamTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  Expression<T> playerMatchTableRefs<T extends Object>(
+    Expression<T> Function($$PlayerMatchTableTableAnnotationComposer a) f,
+  ) {
+    final $$PlayerMatchTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.playerMatchTable,
+      getReferencedColumn: (t) => t.teamId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayerMatchTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.playerMatchTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$TeamTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TeamTableTable,
+          TeamTableData,
+          $$TeamTableTableFilterComposer,
+          $$TeamTableTableOrderingComposer,
+          $$TeamTableTableAnnotationComposer,
+          $$TeamTableTableCreateCompanionBuilder,
+          $$TeamTableTableUpdateCompanionBuilder,
+          (TeamTableData, $$TeamTableTableReferences),
+          TeamTableData,
+          PrefetchHooks Function({bool playerMatchTableRefs})
+        > {
+  $$TeamTableTableTableManager(_$AppDatabase db, $TeamTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TeamTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TeamTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TeamTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TeamTableCompanion(
+                id: id,
+                name: name,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => TeamTableCompanion.insert(
+                id: id,
+                name: name,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$TeamTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({playerMatchTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (playerMatchTableRefs) db.playerMatchTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (playerMatchTableRefs)
+                    await $_getPrefetchedData<
+                      TeamTableData,
+                      $TeamTableTable,
+                      PlayerMatchTableData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$TeamTableTableReferences
+                          ._playerMatchTableRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$TeamTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).playerMatchTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.teamId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TeamTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TeamTableTable,
+      TeamTableData,
+      $$TeamTableTableFilterComposer,
+      $$TeamTableTableOrderingComposer,
+      $$TeamTableTableAnnotationComposer,
+      $$TeamTableTableCreateCompanionBuilder,
+      $$TeamTableTableUpdateCompanionBuilder,
+      (TeamTableData, $$TeamTableTableReferences),
+      TeamTableData,
+      PrefetchHooks Function({bool playerMatchTableRefs})
+    >;
 typedef $$PlayerMatchTableTableCreateCompanionBuilder =
     PlayerMatchTableCompanion Function({
       required String playerId,
@@ -6174,12 +6174,12 @@ class $AppDatabaseManager {
       $$GroupTableTableTableManager(_db, _db.groupTable);
   $$GameTableTableTableManager get gameTable =>
       $$GameTableTableTableManager(_db, _db.gameTable);
-  $$TeamTableTableTableManager get teamTable =>
-      $$TeamTableTableTableManager(_db, _db.teamTable);
   $$MatchTableTableTableManager get matchTable =>
       $$MatchTableTableTableManager(_db, _db.matchTable);
   $$PlayerGroupTableTableTableManager get playerGroupTable =>
       $$PlayerGroupTableTableTableManager(_db, _db.playerGroupTable);
+  $$TeamTableTableTableManager get teamTable =>
+      $$TeamTableTableTableManager(_db, _db.teamTable);
   $$PlayerMatchTableTableTableManager get playerMatchTable =>
       $$PlayerMatchTableTableTableManager(_db, _db.playerMatchTable);
   $$ScoreTableTableTableManager get scoreTable =>

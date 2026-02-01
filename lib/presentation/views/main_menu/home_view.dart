@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/game.dart';
 import 'package:tallee/data/dto/group.dart';
 import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
@@ -102,9 +104,7 @@ class _HomeViewState extends State<HomeView> {
                         if (recentMatches.isNotEmpty)
                           for (Match match in recentMatches)
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 6.0,
-                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 6.0),
                               child: MatchTile(
                                 compact: true,
                                 width: constraints.maxWidth * 0.9,
@@ -113,8 +113,7 @@ class _HomeViewState extends State<HomeView> {
                                   await Navigator.of(context).push(
                                     adaptivePageRoute(
                                       fullscreenDialog: true,
-                                      builder: (context) =>
-                                          MatchResultView(match: match),
+                                      builder: (context) => MatchResultView(match: match),
                                     ),
                                   );
                                   await updatedWinnerInRecentMatches(match.id);
@@ -122,10 +121,7 @@ class _HomeViewState extends State<HomeView> {
                               ),
                             )
                         else
-                          Center(
-                            heightFactor: 5,
-                            child: Text(loc.no_recent_matches_available),
-                          ),
+                          Center(heightFactor: 5, child: Text(loc.no_recent_matches_available)),
                       ],
                     ),
                   ),
@@ -141,40 +137,22 @@ class _HomeViewState extends State<HomeView> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            QuickCreateButton(
-                              text: 'Category 1',
-                              onPressed: () {},
-                            ),
-                            QuickCreateButton(
-                              text: 'Category 2',
-                              onPressed: () {},
-                            ),
+                            QuickCreateButton(text: 'Category 1', onPressed: () {}),
+                            QuickCreateButton(text: 'Category 2', onPressed: () {}),
                           ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            QuickCreateButton(
-                              text: 'Category 3',
-                              onPressed: () {},
-                            ),
-                            QuickCreateButton(
-                              text: 'Category 4',
-                              onPressed: () {},
-                            ),
+                            QuickCreateButton(text: 'Category 3', onPressed: () {}),
+                            QuickCreateButton(text: 'Category 4', onPressed: () {}),
                           ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            QuickCreateButton(
-                              text: 'Category 5',
-                              onPressed: () {},
-                            ),
-                            QuickCreateButton(
-                              text: 'Category 6',
-                              onPressed: () {},
-                            ),
+                            QuickCreateButton(text: 'Category 5', onPressed: () {}),
+                            QuickCreateButton(text: 'Category 6', onPressed: () {}),
                           ],
                         ),
                       ],
@@ -203,11 +181,9 @@ class _HomeViewState extends State<HomeView> {
       matchCount = results[0] as int;
       groupCount = results[1] as int;
       loadedRecentMatches = results[2] as List<Match>;
-      recentMatches =
-          (loadedRecentMatches
-            ..sort((a, b) => b.createdAt.compareTo(a.createdAt)))
-              .take(2)
-              .toList();
+      recentMatches = (loadedRecentMatches..sort((a, b) => b.createdAt.compareTo(a.createdAt)))
+          .take(2)
+          .toList();
       if (mounted) {
         setState(() {
           isLoading = false;
