@@ -64,7 +64,7 @@ class DataTransferService {
         'endedAt': m.endedAt?.toIso8601String(),
         'gameId': m.game.id,
         'groupId': m.group?.id,
-        'playerIds': (m.players ?? []).map((p) => p.id).toList(),
+        'playerIds': m.players.map((p) => p.id).toList(),
         'notes': m.notes,
       })
           .toList(),
@@ -210,7 +210,7 @@ class DataTransferService {
           name: map['name'] as String,
           game: game ?? Game(name: 'Unknown', ruleset: Ruleset.singleWinner, description: '', color: GameColor.blue, icon: ''),
           group: group,
-          players: players.isNotEmpty ? players : null,
+          players: players,
           createdAt: DateTime.parse(map['createdAt'] as String),
           endedAt: endedAt,
           notes: map['notes'] as String? ?? '',

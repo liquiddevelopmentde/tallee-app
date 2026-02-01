@@ -12,7 +12,7 @@ class Match {
   final String name;
   final Game game;
   final Group? group;
-  final List<Player>? players;
+  final List<Player> players;
   final String notes;
   Player? winner;
 
@@ -23,7 +23,7 @@ class Match {
     required this.name,
     required this.game,
     this.group,
-    this.players,
+    this.players = const [],
     required this.notes,
     this.winner,
   }) : id = id ?? const Uuid().v4(),
@@ -54,7 +54,7 @@ class Match {
     'name': name,
     'gameId': game.id,
     'groupId': group?.id,
-    'playerIds': (players ?? []).map((player) => player.id).toList(),
+    'playerIds': players.map((player) => player.id).toList(),
     'notes': notes,
   };
 }

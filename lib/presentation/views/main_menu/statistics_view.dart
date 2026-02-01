@@ -202,19 +202,17 @@ class _StatisticsViewState extends State<StatisticsView> {
           }
         }
       }
-      if (match.players != null) {
-        final members = match.players!.map((p) => p.id).toList();
-        for (var playerId in members) {
-          final index = matchCounts.indexWhere((entry) => entry.$1 == playerId);
-          // -1 means player not found in matchCounts
-          if (index != -1) {
-            final current = matchCounts[index].$2;
+      final members = match.players.map((p) => p.id).toList();
+      for (var playerId in members) {
+        final index = matchCounts.indexWhere((entry) => entry.$1 == playerId);
+        // -1 means player not found in matchCounts
+        if (index != -1) {
+          final current = matchCounts[index].$2;
             matchCounts[index] = (playerId, current + 1);
           } else {
             matchCounts.add((playerId, 1));
           }
         }
-      }
     }
 
     // Adding all players with zero matches

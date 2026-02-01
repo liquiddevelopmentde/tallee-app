@@ -29,7 +29,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         }
         final players = await db.playerMatchDao.getPlayersOfMatch(
           matchId: row.id,
-        );
+        ) ?? [];
         return Match(
           id: row.id,
           name: row.name ?? '',
@@ -56,10 +56,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       group = await db.groupDao.getGroupById(groupId: result.groupId!);
     }
 
-    List<Player>? players;
-    if (await db.playerMatchDao.matchHasPlayers(matchId: matchId)) {
-      players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId);
-    }
+    final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
 
     return Match(
       id: result.id,
@@ -91,13 +88,11 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         mode: InsertMode.insertOrReplace,
       );
 
-      if (match.players != null) {
-        for (final p in match.players!) {
-          await db.playerMatchDao.addPlayerToMatch(
-            matchId: match.id,
-            playerId: p.id,
-          );
-        }
+      for (final p in match.players) {
+        await db.playerMatchDao.addPlayerToMatch(
+          matchId: match.id,
+          playerId: p.id,
+        );
       }
     });
   }
@@ -180,10 +175,8 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       // Add all players of the matches in batch (unique)
       final uniquePlayers = <String, Player>{};
       for (final match in matches) {
-        if (match.players != null) {
-          for (final p in match.players!) {
-            uniquePlayers[p.id] = p;
-          }
+        for (final p in match.players) {
+          uniquePlayers[p.id] = p;
         }
         // Also include members of groups
         if (match.group != null) {
@@ -215,18 +208,16 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       // Add all player-match associations in batch
       await db.batch((b) {
         for (final match in matches) {
-          if (match.players != null) {
-            for (final p in match.players!) {
-              b.insert(
-                db.playerMatchTable,
-                PlayerMatchTableCompanion.insert(
-                  matchId: match.id,
-                  playerId: p.id,
-                  score: 0,
-                ),
-                mode: InsertMode.insertOrIgnore,
-              );
-            }
+          for (final p in match.players) {
+            b.insert(
+              db.playerMatchTable,
+              PlayerMatchTableCompanion.insert(
+                matchId: match.id,
+                playerId: p.id,
+                score: 0,
+              ),
+              mode: InsertMode.insertOrIgnore,
+            );
           }
         }
       });
@@ -372,15 +363,15 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// TEMPORARY: Checks if a match has a winner.
   /// Currently returns true if the match has any players.
   Future<bool> hasWinner({required String matchId}) async {
-    final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId);
-    return players?.isNotEmpty ?? false;
+    final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
+    return players.isNotEmpty;
   }
 
   /// TEMPORARY: Gets the winner of a match.
   /// Currently returns the first player in the match's player list.
   Future<Player?> getWinner({required String matchId}) async {
-    final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId);
-    return (players?.isNotEmpty ?? false) ? players!.first : null;
+    final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
+    return players.isNotEmpty ? players.first : null;
   }
 
   /// TEMPORARY: Sets the winner of a match.

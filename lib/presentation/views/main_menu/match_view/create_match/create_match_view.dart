@@ -63,7 +63,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   int selectedGameIndex = -1;
 
   /// The currently selected players
-  List<Player>? selectedPlayers;
+  List<Player> selectedPlayers = [];
 
   @override
   void initState() {
@@ -178,7 +178,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               Expanded(
                 child: PlayerSelection(
                   key: ValueKey(selectedGroup?.id ?? 'no_group'),
-                  initialSelectedPlayers: selectedPlayers ?? [],
+                  initialSelectedPlayers: selectedPlayers,
                   availablePlayers: filteredPlayerList,
                   onChanged: (value) {
                     setState(() {
@@ -259,6 +259,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// - Either a group is selected OR at least 2 players are selected
   bool _enableCreateGameButton() {
     return (selectedGroup != null ||
-        (selectedPlayers != null && selectedPlayers!.length > 1));
+        (selectedPlayers.length > 1));
   }
 }
