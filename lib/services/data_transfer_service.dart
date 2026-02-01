@@ -61,6 +61,7 @@ class DataTransferService {
         'id': m.id,
         'name': m.name,
         'createdAt': m.createdAt.toIso8601String(),
+        'endedAt': m.endedAt?.toIso8601String(),
         'gameId': m.game.id,
         'groupId': m.group?.id,
         'playerIds': (m.players ?? []).map((p) => p.id).toList(),
@@ -195,6 +196,7 @@ class DataTransferService {
         final String gameId = map['gameId'] as String;
         final String? groupId = map['groupId'] as String?;
         final List<String> playerIds = (map['playerIds'] as List<dynamic>? ?? []).cast<String>();
+        final DateTime? endedAt = map['endedAt'] != null ? DateTime.parse(map['endedAt'] as String) : null;
 
         final game = gameById[gameId];
         final group = (groupId == null) ? null : groupById[groupId];
@@ -210,6 +212,7 @@ class DataTransferService {
           group: group,
           players: players.isNotEmpty ? players : null,
           createdAt: DateTime.parse(map['createdAt'] as String),
+          endedAt: endedAt,
           notes: map['notes'] as String? ?? '',
         );
       }).toList();

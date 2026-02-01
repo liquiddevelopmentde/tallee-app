@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 class Match {
   final String id;
   final DateTime createdAt;
+  final DateTime? endedAt;
   final String name;
   final Game game;
   final Group? group;
@@ -18,6 +19,7 @@ class Match {
   Match({
     String? id,
     DateTime? createdAt,
+    this.endedAt,
     required this.name,
     required this.game,
     this.group,
@@ -29,7 +31,7 @@ class Match {
 
   @override
   String toString() {
-    return 'Match{id: $id, name: $name, game: $game, group: $group, players: $players, notes: $notes}';
+    return 'Match{id: $id, name: $name, game: $game, group: $group, players: $players, notes: $notes, endedAt: $endedAt}';
   }
 
   /// Creates a Match instance from a JSON object (ID references format).
@@ -37,6 +39,7 @@ class Match {
   Match.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         createdAt = DateTime.parse(json['createdAt']),
+        endedAt = json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
         name = json['name'],
         game = Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''), // Populated during import via DataTransferService
         group = null, // Populated during import via DataTransferService
@@ -47,6 +50,7 @@ class Match {
   Map<String, dynamic> toJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),
+    'endedAt': endedAt?.toIso8601String(),
     'name': name,
     'gameId': game.id,
     'groupId': group?.id,

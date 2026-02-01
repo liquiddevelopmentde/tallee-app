@@ -38,6 +38,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           players: players,
           notes: row.notes ?? '',
           createdAt: row.createdAt,
+          endedAt: row.endedAt,
         );
       }),
     );
@@ -68,6 +69,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       players: players,
       notes: result.notes ?? '',
       createdAt: result.createdAt,
+      endedAt: result.endedAt,
     );
   }
 
@@ -84,6 +86,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           name: Value(match.name),
           notes: Value(match.notes),
           createdAt: match.createdAt,
+          endedAt: Value(match.endedAt),
         ),
         mode: InsertMode.insertOrReplace,
       );
@@ -166,6 +169,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
               name: Value(match.name),
               notes: Value(match.notes),
               createdAt: match.createdAt,
+              endedAt: Value(match.endedAt),
             ),
           )
               .toList(),
@@ -342,6 +346,20 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final query = update(matchTable)..where((g) => g.id.equals(matchId));
     final rowsAffected = await query.write(
       MatchTableCompanion(createdAt: Value(createdAt)),
+    );
+    return rowsAffected > 0;
+  }
+
+  /// Updates the endedAt timestamp of the match with the given [matchId].
+  /// Pass null to remove the ended time (mark match as ongoing).
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> updateMatchEndedAt({
+    required String matchId,
+    required DateTime? endedAt,
+  }) async {
+    final query = update(matchTable)..where((g) => g.id.equals(matchId));
+    final rowsAffected = await query.write(
+      MatchTableCompanion(endedAt: Value(endedAt)),
     );
     return rowsAffected > 0;
   }

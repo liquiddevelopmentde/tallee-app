@@ -1155,6 +1155,17 @@ class $MatchTableTable extends MatchTable
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _endedAtMeta = const VerificationMeta(
+    'endedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endedAt = GeneratedColumn<DateTime>(
+    'ended_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1163,6 +1174,7 @@ class $MatchTableTable extends MatchTable
     name,
     notes,
     createdAt,
+    endedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1215,6 +1227,12 @@ class $MatchTableTable extends MatchTable
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('ended_at')) {
+      context.handle(
+        _endedAtMeta,
+        endedAt.isAcceptableOrUnknown(data['ended_at']!, _endedAtMeta),
+      );
+    }
     return context;
   }
 
@@ -1248,6 +1266,10 @@ class $MatchTableTable extends MatchTable
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      endedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}ended_at'],
+      ),
     );
   }
 
@@ -1264,6 +1286,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
   final String? name;
   final String? notes;
   final DateTime createdAt;
+  final DateTime? endedAt;
   const MatchTableData({
     required this.id,
     required this.gameId,
@@ -1271,6 +1294,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     this.name,
     this.notes,
     required this.createdAt,
+    this.endedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1287,6 +1311,9 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       map['notes'] = Variable<String>(notes);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || endedAt != null) {
+      map['ended_at'] = Variable<DateTime>(endedAt);
+    }
     return map;
   }
 
@@ -1302,6 +1329,9 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
           ? const Value.absent()
           : Value(notes),
       createdAt: Value(createdAt),
+      endedAt: endedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endedAt),
     );
   }
 
@@ -1317,6 +1347,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       name: serializer.fromJson<String?>(json['name']),
       notes: serializer.fromJson<String?>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      endedAt: serializer.fromJson<DateTime?>(json['endedAt']),
     );
   }
   @override
@@ -1329,6 +1360,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       'name': serializer.toJson<String?>(name),
       'notes': serializer.toJson<String?>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'endedAt': serializer.toJson<DateTime?>(endedAt),
     };
   }
 
@@ -1339,6 +1371,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     Value<String?> name = const Value.absent(),
     Value<String?> notes = const Value.absent(),
     DateTime? createdAt,
+    Value<DateTime?> endedAt = const Value.absent(),
   }) => MatchTableData(
     id: id ?? this.id,
     gameId: gameId ?? this.gameId,
@@ -1346,6 +1379,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     name: name.present ? name.value : this.name,
     notes: notes.present ? notes.value : this.notes,
     createdAt: createdAt ?? this.createdAt,
+    endedAt: endedAt.present ? endedAt.value : this.endedAt,
   );
   MatchTableData copyWithCompanion(MatchTableCompanion data) {
     return MatchTableData(
@@ -1355,6 +1389,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       name: data.name.present ? data.name.value : this.name,
       notes: data.notes.present ? data.notes.value : this.notes,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      endedAt: data.endedAt.present ? data.endedAt.value : this.endedAt,
     );
   }
 
@@ -1366,13 +1401,15 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
           ..write('groupId: $groupId, ')
           ..write('name: $name, ')
           ..write('notes: $notes, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('endedAt: $endedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, gameId, groupId, name, notes, createdAt);
+  int get hashCode =>
+      Object.hash(id, gameId, groupId, name, notes, createdAt, endedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1382,7 +1419,8 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
           other.groupId == this.groupId &&
           other.name == this.name &&
           other.notes == this.notes &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.endedAt == this.endedAt);
 }
 
 class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
@@ -1392,6 +1430,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
   final Value<String?> name;
   final Value<String?> notes;
   final Value<DateTime> createdAt;
+  final Value<DateTime?> endedAt;
   final Value<int> rowid;
   const MatchTableCompanion({
     this.id = const Value.absent(),
@@ -1400,6 +1439,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     this.name = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.endedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MatchTableCompanion.insert({
@@ -1409,6 +1449,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     this.name = const Value.absent(),
     this.notes = const Value.absent(),
     required DateTime createdAt,
+    this.endedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        gameId = Value(gameId),
@@ -1420,6 +1461,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     Expression<String>? name,
     Expression<String>? notes,
     Expression<DateTime>? createdAt,
+    Expression<DateTime>? endedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1429,6 +1471,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
       if (name != null) 'name': name,
       if (notes != null) 'notes': notes,
       if (createdAt != null) 'created_at': createdAt,
+      if (endedAt != null) 'ended_at': endedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1440,6 +1483,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     Value<String?>? name,
     Value<String?>? notes,
     Value<DateTime>? createdAt,
+    Value<DateTime?>? endedAt,
     Value<int>? rowid,
   }) {
     return MatchTableCompanion(
@@ -1449,6 +1493,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
       name: name ?? this.name,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
+      endedAt: endedAt ?? this.endedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1474,6 +1519,9 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (endedAt.present) {
+      map['ended_at'] = Variable<DateTime>(endedAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1489,6 +1537,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
           ..write('name: $name, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
+          ..write('endedAt: $endedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4005,6 +4054,7 @@ typedef $$MatchTableTableCreateCompanionBuilder =
       Value<String?> name,
       Value<String?> notes,
       required DateTime createdAt,
+      Value<DateTime?> endedAt,
       Value<int> rowid,
     });
 typedef $$MatchTableTableUpdateCompanionBuilder =
@@ -4015,6 +4065,7 @@ typedef $$MatchTableTableUpdateCompanionBuilder =
       Value<String?> name,
       Value<String?> notes,
       Value<DateTime> createdAt,
+      Value<DateTime?> endedAt,
       Value<int> rowid,
     });
 
@@ -4126,6 +4177,11 @@ class $$MatchTableTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endedAt => $composableBuilder(
+    column: $table.endedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4255,6 +4311,11 @@ class $$MatchTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get endedAt => $composableBuilder(
+    column: $table.endedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$GameTableTableOrderingComposer get gameId {
     final $$GameTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -4322,6 +4383,9 @@ class $$MatchTableTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endedAt =>
+      $composableBuilder(column: $table.endedAt, builder: (column) => column);
 
   $$GameTableTableAnnotationComposer get gameId {
     final $$GameTableTableAnnotationComposer composer = $composerBuilder(
@@ -4459,6 +4523,7 @@ class $$MatchTableTableTableManager
                 Value<String?> name = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> endedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MatchTableCompanion(
                 id: id,
@@ -4467,6 +4532,7 @@ class $$MatchTableTableTableManager
                 name: name,
                 notes: notes,
                 createdAt: createdAt,
+                endedAt: endedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -4477,6 +4543,7 @@ class $$MatchTableTableTableManager
                 Value<String?> name = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 required DateTime createdAt,
+                Value<DateTime?> endedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MatchTableCompanion.insert(
                 id: id,
@@ -4485,6 +4552,7 @@ class $$MatchTableTableTableManager
                 name: name,
                 notes: notes,
                 createdAt: createdAt,
+                endedAt: endedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

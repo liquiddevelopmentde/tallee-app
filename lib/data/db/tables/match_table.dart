@@ -11,6 +11,7 @@ class MatchTable extends Table {
   TextColumn get name => text().nullable()();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get endedAt => dateTime().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
