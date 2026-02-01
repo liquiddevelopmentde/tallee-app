@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class TextInputField extends StatelessWidget {
   /// A custom text input field widget that encapsulates a [TextField] with specific styling.
@@ -42,12 +42,12 @@ class TextInputField extends StatelessWidget {
         hintStyle: const TextStyle(fontSize: 18),
         // Hides the character counter
         counterText: '',
-        enabledBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(color: CustomTheme.boxBorder),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(color: CustomTheme.boxBorder),
         ),
         floatingLabelBehavior: FloatingLabelBehavior.never,

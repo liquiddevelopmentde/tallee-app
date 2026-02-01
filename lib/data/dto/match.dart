@@ -1,8 +1,6 @@
 import 'package:clock/clock.dart';
-import 'package:game_tracker/core/enums.dart';
-import 'package:game_tracker/data/dto/game.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/player.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/player.dart';
 import 'package:uuid/uuid.dart';
 
 class Match {
@@ -25,7 +23,7 @@ class Match {
     required this.notes,
     this.winner,
   }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? clock.now();
+        createdAt = createdAt ?? clock.now();
 
   @override
   String toString() {
@@ -35,13 +33,13 @@ class Match {
   /// Creates a Match instance from a JSON object (ID references format).
   /// Related objects are reconstructed from IDs by the DataTransferService.
   Match.fromJson(Map<String, dynamic> json)
-    : id = json['id'],
-      createdAt = DateTime.parse(json['createdAt']),
-      name = json['name'],
-      game = Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''), // Populated during import via DataTransferService
-      group = null, // Populated during import via DataTransferService
-      players = [], // Populated during import via DataTransferService
-      notes = json['notes'] ?? '';
+      : id = json['id'],
+        createdAt = DateTime.parse(json['createdAt']),
+        name = json['name'],
+        game = Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''), // Populated during import via DataTransferService
+        group = null, // Populated during import via DataTransferService
+        players = [], // Populated during import via DataTransferService
+        notes = json['notes'] ?? '';
 
   /// Converts the Match instance to a JSON object using normalized format (ID references only).
   Map<String, dynamic> toJson() => {

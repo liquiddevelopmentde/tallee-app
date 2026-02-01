@@ -3,16 +3,16 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/core/enums.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/views/main_menu/settings_view/licenses_view.dart';
-import 'package:game_tracker/presentation/widgets/buttons/animated_dialog_button.dart';
-import 'package:game_tracker/presentation/widgets/custom_alert_dialog.dart';
-import 'package:game_tracker/presentation/widgets/tiles/settings_list_tile.dart';
-import 'package:game_tracker/services/data_transfer_service.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/licenses_view.dart';
+import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
+import 'package:tallee/presentation/widgets/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
+import 'package:tallee/services/data_transfer_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -88,7 +88,7 @@ class _SettingsViewState extends State<SettingsView> {
                           );
                       final result = await DataTransferService.exportData(
                         json,
-                        'game_tracker-data',
+                        'tallee-data',
                       );
                       if (!scaffoldMessengerContext.mounted) return;
                       showExportSnackBar(
@@ -136,7 +136,7 @@ class _SettingsViewState extends State<SettingsView> {
                               onPressed: () => Navigator.of(context).pop(true),
                               child: Text(
                                 loc.delete,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: CustomTheme.secondaryColor,
                                 ),
                               ),

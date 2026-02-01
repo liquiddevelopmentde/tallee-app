@@ -18,7 +18,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get amount_of_matches => 'Amount of Matches';
 
   @override
-  String get app_name => 'Game Tracker';
+  String get app_name => 'Tallee';
 
   @override
   String get best_player => 'Best Player';

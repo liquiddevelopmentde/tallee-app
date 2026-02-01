@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class CustomRadioListTile<T> extends StatelessWidget {
   /// A custom radio list tile widget that encapsulates a [Radio] button with additional styling and functionality.

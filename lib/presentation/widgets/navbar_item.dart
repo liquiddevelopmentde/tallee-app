@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class NavbarItem extends StatefulWidget {
   /// A navigation bar item widget that represents a single tab in a navigation bar.

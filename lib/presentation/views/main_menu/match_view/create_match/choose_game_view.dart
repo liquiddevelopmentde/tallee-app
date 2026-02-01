@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/core/enums.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/widgets/text_input/custom_search_bar.dart';
-import 'package:game_tracker/presentation/widgets/tiles/title_description_list_tile.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
+import 'package:tallee/presentation/widgets/tiles/title_description_list_tile.dart';
 
 class ChooseGameView extends StatefulWidget {
   /// A view that allows the user to choose a game from a list of available games

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/constants.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/core/enums.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/widgets/buttons/custom_width_button.dart';
-import 'package:game_tracker/presentation/widgets/player_selection.dart';
-import 'package:game_tracker/presentation/widgets/text_input/text_input_field.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/player_selection.dart';
+import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
 class CreateGroupView extends StatefulWidget {
   /// A view that allows the user to create a new group

@@ -1,10 +1,11 @@
 import 'package:clock/clock.dart';
-import 'package:drift/drift.dart' hide isNull;
+import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/game.dart';
-import 'package:game_tracker/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
 
 void main() {
   late AppDatabase database;
@@ -106,7 +107,7 @@ void main() {
     // Verifies that getGameById throws a StateError when the game doesn't exist.
     test('getGameById throws exception for non-existent game', () async {
       expect(
-        () => database.gameDao.getGameById(gameId: 'non-existent-id'),
+            () => database.gameDao.getGameById(gameId: 'non-existent-id'),
         throwsA(isA<StateError>()),
       );
     });
@@ -540,4 +541,3 @@ void main() {
     });
   });
 }
-

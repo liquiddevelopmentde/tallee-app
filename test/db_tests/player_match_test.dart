@@ -1,14 +1,11 @@
 import 'package:clock/clock.dart';
-import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/drift.dart' hide isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/game.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/data/dto/team.dart';
-import 'package:game_tracker/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
 
 void main() {
   late AppDatabase database;
@@ -154,7 +151,7 @@ void main() {
       expect(result.players!.length, testMatchOnlyPlayers.players!.length - 1);
 
       final playerExists = result.players!.any(
-        (p) => p.id == playerToRemove.id,
+            (p) => p.id == playerToRemove.id,
       );
       expect(playerExists, false);
     });
@@ -227,7 +224,7 @@ void main() {
     // Verifies that the same player can be added to multiple different matches.
     test(
       'Adding the same player to separate matches works correctly',
-      () async {
+          () async {
         final playersList = [testPlayer1, testPlayer2, testPlayer3];
         final match1 = Match(name: 'Match 1', game: testGame, players: playersList, notes: '');
         final match2 = Match(name: 'Match 2', game: testGame, players: playersList, notes: '');

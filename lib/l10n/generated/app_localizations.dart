@@ -119,7 +119,7 @@ abstract class AppLocalizations {
   /// The name of the App
   ///
   /// In en, this message translates to:
-  /// **'Game Tracker'**
+  /// **'Tallee'**
   String get app_name;
 
   /// Label for best player statistic

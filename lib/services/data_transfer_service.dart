@@ -4,15 +4,13 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:game_tracker/core/enums.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/game.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/data/dto/team.dart';
 import 'package:json_schema/json_schema.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
 
 class DataTransferService {
   /// Deletes all data from the database.
@@ -41,31 +39,31 @@ class DataTransferService {
       'games': games.map((g) => g.toJson()).toList(),
       'groups': groups
           .map((g) => {
-                'id': g.id,
-                'name': g.name,
-                'description': g.description,
-                'createdAt': g.createdAt.toIso8601String(),
-                'memberIds': (g.members).map((m) => m.id).toList(),
-              })
+        'id': g.id,
+        'name': g.name,
+        'description': g.description,
+        'createdAt': g.createdAt.toIso8601String(),
+        'memberIds': (g.members).map((m) => m.id).toList(),
+      })
           .toList(),
       'teams': teams
           .map((t) => {
-                'id': t.id,
-                'name': t.name,
-                'createdAt': t.createdAt.toIso8601String(),
-                'memberIds': (t.members).map((m) => m.id).toList(),
-              })
+        'id': t.id,
+        'name': t.name,
+        'createdAt': t.createdAt.toIso8601String(),
+        'memberIds': (t.members).map((m) => m.id).toList(),
+      })
           .toList(),
       'matches': matches
           .map((m) => {
-                'id': m.id,
-                'name': m.name,
-                'createdAt': m.createdAt.toIso8601String(),
-                'gameId': m.game.id,
-                'groupId': m.group?.id,
-                'playerIds': (m.players ?? []).map((p) => p.id).toList(),
-                'notes': m.notes,
-              })
+        'id': m.id,
+        'name': m.name,
+        'createdAt': m.createdAt.toIso8601String(),
+        'gameId': m.game.id,
+        'groupId': m.group?.id,
+        'playerIds': (m.players ?? []).map((p) => p.id).toList(),
+        'notes': m.notes,
+      })
           .toList(),
     };
 
@@ -78,9 +76,9 @@ class DataTransferService {
   /// [jsonString] The JSON string to be exported.
   /// [fileName] The desired name for the exported file (without extension).
   static Future<ExportResult> exportData(
-    String jsonString,
-    String fileName
-  ) async {
+      String jsonString,
+      String fileName
+      ) async {
     try {
       final bytes = Uint8List.fromList(utf8.encode(jsonString));
       final path = await FilePicker.platform.saveFile(

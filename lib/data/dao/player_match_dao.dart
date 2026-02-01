@@ -1,8 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/db/tables/player_match_table.dart';
-import 'package:game_tracker/data/db/tables/team_table.dart';
-import 'package:game_tracker/data/dto/player.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/db/tables/player_match_table.dart';
+import 'package:tallee/data/dto/player.dart';
 
 part 'player_match_dao.g.dart';
 
@@ -40,7 +39,7 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     if (result.isEmpty) return null;
 
     final futures = result.map(
-      (row) => db.playerDao.getPlayerById(playerId: row.playerId),
+          (row) => db.playerDao.getPlayerById(playerId: row.playerId),
     );
     final players = await Future.wait(futures);
     return players;
@@ -53,9 +52,9 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     required String playerId,
   }) async {
     final result = await (select(playerMatchTable)
-          ..where(
+      ..where(
             (p) => p.matchId.equals(matchId) & p.playerId.equals(playerId),
-          ))
+      ))
         .getSingleOrNull();
     return result?.score;
   }
@@ -68,9 +67,9 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     required int newScore,
   }) async {
     final rowsAffected = await (update(playerMatchTable)
-          ..where(
+      ..where(
             (p) => p.matchId.equals(matchId) & p.playerId.equals(playerId),
-          ))
+      ))
         .write(PlayerMatchTableCompanion(score: Value(newScore)));
     return rowsAffected > 0;
   }
@@ -83,9 +82,9 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     required String? teamId,
   }) async {
     final rowsAffected = await (update(playerMatchTable)
-          ..where(
+      ..where(
             (p) => p.matchId.equals(matchId) & p.playerId.equals(playerId),
-          ))
+      ))
         .write(PlayerMatchTableCompanion(teamId: Value(teamId)));
     return rowsAffected > 0;
   }
@@ -94,11 +93,11 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
   /// Returns `true` if there are players, otherwise `false`.
   Future<bool> matchHasPlayers({required String matchId}) async {
     final count =
-        await (selectOnly(playerMatchTable)
-              ..where(playerMatchTable.matchId.equals(matchId))
-              ..addColumns([playerMatchTable.playerId.count()]))
-            .map((row) => row.read(playerMatchTable.playerId.count()))
-            .getSingle();
+    await (selectOnly(playerMatchTable)
+      ..where(playerMatchTable.matchId.equals(matchId))
+      ..addColumns([playerMatchTable.playerId.count()]))
+        .map((row) => row.read(playerMatchTable.playerId.count()))
+        .getSingle();
     return (count ?? 0) > 0;
   }
 
@@ -109,12 +108,12 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     required String playerId,
   }) async {
     final count =
-        await (selectOnly(playerMatchTable)
-              ..where(playerMatchTable.matchId.equals(matchId))
-              ..where(playerMatchTable.playerId.equals(playerId))
-              ..addColumns([playerMatchTable.playerId.count()]))
-            .map((row) => row.read(playerMatchTable.playerId.count()))
-            .getSingle();
+    await (selectOnly(playerMatchTable)
+      ..where(playerMatchTable.matchId.equals(matchId))
+      ..where(playerMatchTable.playerId.equals(playerId))
+      ..addColumns([playerMatchTable.playerId.count()]))
+        .map((row) => row.read(playerMatchTable.playerId.count()))
+        .getSingle();
     return (count ?? 0) > 0;
   }
 
@@ -153,9 +152,9 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
       if (playersToRemove.isNotEmpty) {
         await (delete(playerMatchTable)..where(
               (pg) =>
-                  pg.matchId.equals(matchId) &
-                  pg.playerId.isIn(playersToRemove.toList()),
-            ))
+          pg.matchId.equals(matchId) &
+          pg.playerId.isIn(playersToRemove.toList()),
+        ))
             .go();
       }
 
@@ -164,15 +163,15 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
         final inserts = playersToAdd
             .map(
               (id) => PlayerMatchTableCompanion.insert(
-                playerId: id,
-                matchId: matchId,
-                score: 0,
-              ),
-            )
+            playerId: id,
+            matchId: matchId,
+            score: 0,
+          ),
+        )
             .toList();
         await Future.wait(
           inserts.map(
-            (c) => into(
+                (c) => into(
               playerMatchTable,
             ).insert(c, mode: InsertMode.insertOrIgnore),
           ),
@@ -187,15 +186,15 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     required String teamId,
   }) async {
     final result = await (select(playerMatchTable)
-          ..where(
+      ..where(
             (p) => p.matchId.equals(matchId) & p.teamId.equals(teamId),
-          ))
+      ))
         .get();
 
     if (result.isEmpty) return [];
 
     final futures = result.map(
-      (row) => db.playerDao.getPlayerById(playerId: row.playerId),
+          (row) => db.playerDao.getPlayerById(playerId: row.playerId),
     );
     return Future.wait(futures);
   }

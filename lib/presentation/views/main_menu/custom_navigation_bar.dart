@@ -1,15 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/adaptive_page_route.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/views/main_menu/group_view/groups_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/home_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/match_view/match_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/settings_view/settings_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/statistics_view.dart';
-import 'package:game_tracker/presentation/widgets/navbar_item.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/group_view/groups_view.dart';
+import 'package:tallee/presentation/views/main_menu/home_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
+import 'package:tallee/presentation/views/main_menu/statistics_view.dart';
+import 'package:tallee/presentation/widgets/navbar_item.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   /// A custom navigation bar widget that provides tabbed navigation

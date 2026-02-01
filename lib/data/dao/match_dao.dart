@@ -1,13 +1,9 @@
 import 'package:drift/drift.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/db/tables/game_table.dart';
-import 'package:game_tracker/data/db/tables/group_table.dart';
-import 'package:game_tracker/data/db/tables/match_table.dart';
-import 'package:game_tracker/data/db/tables/player_match_table.dart';
-import 'package:game_tracker/data/dto/game.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/db/tables/match_table.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
 
 part 'match_dao.g.dart';
 
@@ -114,20 +110,20 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       if (uniqueGames.isNotEmpty) {
         await db.batch(
-          (b) => b.insertAll(
+              (b) => b.insertAll(
             db.gameTable,
             uniqueGames.values
                 .map(
                   (game) => GameTableCompanion.insert(
-                    id: game.id,
-                    name: game.name,
-                    ruleset: game.ruleset.name,
-                    description: game.description,
-                    color: game.color,
-                    icon: game.icon,
-                    createdAt: game.createdAt,
-                  ),
-                )
+                id: game.id,
+                name: game.name,
+                ruleset: game.ruleset.name,
+                description: game.description,
+                color: game.color,
+                icon: game.icon,
+                createdAt: game.createdAt,
+              ),
+            )
                 .toList(),
             mode: InsertMode.insertOrIgnore,
           ),
@@ -136,18 +132,18 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       // Add all groups of the matches in batch
       await db.batch(
-        (b) => b.insertAll(
+            (b) => b.insertAll(
           db.groupTable,
           matches
               .where((match) => match.group != null)
               .map(
                 (match) => GroupTableCompanion.insert(
-                  id: match.group!.id,
-                  name: match.group!.name,
-                  description: match.group!.description,
-                  createdAt: match.group!.createdAt,
-                ),
-              )
+              id: match.group!.id,
+              name: match.group!.name,
+              description: match.group!.description,
+              createdAt: match.group!.createdAt,
+            ),
+          )
               .toList(),
           mode: InsertMode.insertOrIgnore,
         ),
@@ -155,19 +151,19 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       // Add all matches in batch
       await db.batch(
-        (b) => b.insertAll(
+            (b) => b.insertAll(
           matchTable,
           matches
               .map(
                 (match) => MatchTableCompanion.insert(
-                  id: match.id,
-                  gameId: match.game.id,
-                  groupId: Value(match.group?.id),
-                  name: Value(match.name),
-                  notes: Value(match.notes),
-                  createdAt: match.createdAt,
-                ),
-              )
+              id: match.id,
+              gameId: match.game.id,
+              groupId: Value(match.group?.id),
+              name: Value(match.name),
+              notes: Value(match.notes),
+              createdAt: match.createdAt,
+            ),
+          )
               .toList(),
           mode: InsertMode.insertOrReplace,
         ),
@@ -191,17 +187,17 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       if (uniquePlayers.isNotEmpty) {
         await db.batch(
-          (b) => b.insertAll(
+              (b) => b.insertAll(
             db.playerTable,
             uniquePlayers.values
                 .map(
                   (p) => PlayerTableCompanion.insert(
-                    id: p.id,
-                    name: p.name,
-                    description: p.description,
-                    createdAt: p.createdAt,
-                  ),
-                )
+                id: p.id,
+                name: p.name,
+                description: p.description,
+                createdAt: p.createdAt,
+              ),
+            )
                 .toList(),
             mode: InsertMode.insertOrIgnore,
           ),
@@ -258,9 +254,9 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Retrieves the number of matches in the database.
   Future<int> getMatchCount() async {
     final count =
-        await (selectOnly(matchTable)..addColumns([matchTable.id.count()]))
-            .map((row) => row.read(matchTable.id.count()))
-            .getSingle();
+    await (selectOnly(matchTable)..addColumns([matchTable.id.count()]))
+        .map((row) => row.read(matchTable.id.count()))
+        .getSingle();
     return count ?? 0;
   }
 

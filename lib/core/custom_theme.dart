@@ -7,25 +7,25 @@ class CustomTheme {
   // ==================== Colors ====================
 
   /// Primary color of the app theme
-  static Color primaryColor = const Color(0xFF7505E4);
+  static const Color primaryColor = Color(0xFFef681f);
 
   /// Secondary color of the app theme
-  static Color secondaryColor = const Color(0xFFAFA2FF);
+  static const Color secondaryColor = Color(0xFFf2a981);
 
   /// Background color of the app theme
-  static Color backgroundColor = const Color(0xFF0B0B0B);
+  static const backgroundColor = Color(0xFF0B0B0B);
 
   /// Default color for boxes and containers
-  static Color boxColor = const Color(0xFF101010);
+  static const Color boxColor = Color(0xFF101010);
 
   /// Default border color for boxes and containers
-  static Color boxBorder = const Color(0xFF272727);
+  static const Color boxBorder = Color(0xFF272727);
 
   /// Color for boxes and containers displayed on boxes
-  static Color onBoxColor = const Color(0xFF181818);
+  static const Color onBoxColor = Color(0xFF181818);
 
   /// Text color used throughout the app
-  static const Color textColor = Colors.white;
+  static const Color textColor = Color(0xFFFFFFFF);
 
   /// Selected color for the [NavbarItem]
   static Color navBarItemSelectedColor = primaryColor.withGreen(100);
@@ -63,18 +63,18 @@ class CustomTheme {
   );
 
   // ==================== App Bar Theme ====================
-  static AppBarTheme appBarTheme = AppBarTheme(
+  static const AppBarTheme appBarTheme = AppBarTheme(
     backgroundColor: backgroundColor,
     foregroundColor: textColor,
     elevation: 0,
     scrolledUnderElevation: 0,
     centerTitle: true,
-    titleTextStyle: const TextStyle(
+    titleTextStyle: TextStyle(
       color: textColor,
       fontSize: 20,
       fontWeight: FontWeight.bold,
       overflow: TextOverflow.ellipsis,
     ),
-    iconTheme: const IconThemeData(color: textColor),
+    iconTheme: IconThemeData(color: textColor),
   );
 }
