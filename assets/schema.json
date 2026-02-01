@@ -146,10 +146,7 @@
             "type": "string"
           },
           "groupId": {
-            "anyOf": [
-              {"type": "string"},
-              {"type": "null"}
-            ]
+            "type": ["string", "null"]
           },
           "playerIds": {
             "type": "array",
