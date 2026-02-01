@@ -208,7 +208,7 @@ class DataTransferService {
         return Match(
           id: map['id'] as String,
           name: map['name'] as String,
-          game: game ?? Game(name: 'Unknown', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''),
+          game: game ?? Game(name: 'Unknown', ruleset: Ruleset.singleWinner, description: '', color: GameColor.blue, icon: ''),
           group: group,
           players: players.isNotEmpty ? players : null,
           createdAt: DateTime.parse(map['createdAt'] as String),

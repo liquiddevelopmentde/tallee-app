@@ -41,7 +41,7 @@ class Match {
         createdAt = DateTime.parse(json['createdAt']),
         endedAt = json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
         name = json['name'],
-        game = Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''), // Populated during import via DataTransferService
+        game = Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: GameColor.blue, icon: ''), // Populated during import via DataTransferService
         group = null, // Populated during import via DataTransferService
         players = [], // Populated during import via DataTransferService
         notes = json['notes'] ?? '';

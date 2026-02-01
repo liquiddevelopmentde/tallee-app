@@ -42,7 +42,7 @@ class _HomeViewState extends State<HomeView> {
     2,
     Match(
       name: 'Skeleton Match',
-      game: Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''),
+      game: Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: GameColor.blue, icon: ''),
       group: Group(
         name: 'Skeleton Group',
         description: '',

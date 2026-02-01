@@ -49,8 +49,8 @@ void main() {
         name: 'Team Gamma',
         members: [testPlayer1, testPlayer3],
       );
-      testGame1 = Game(name: 'Game 1', ruleset: Ruleset.singleWinner, description: 'Test game 1', color: '0xFF000000', icon: '');
-      testGame2 = Game(name: 'Game 2', ruleset: Ruleset.highestScore, description: 'Test game 2', color: '0xFF000000', icon: '');
+      testGame1 = Game(name: 'Game 1', ruleset: Ruleset.singleWinner, description: 'Test game 1', color: GameColor.blue, icon: '');
+      testGame2 = Game(name: 'Game 2', ruleset: Ruleset.highestScore, description: 'Test game 2', color: GameColor.red, icon: '');
     });
 
     await database.playerDao.addPlayersAsList(

@@ -27,7 +27,7 @@ void main() {
         name: 'Chess',
         ruleset: Ruleset.singleWinner,
         description: 'A classic strategy game',
-        color: '0xFF0000FF',
+        color: GameColor.blue,
         icon: 'chess_icon',
       );
       testGame2 = Game(
@@ -35,7 +35,7 @@ void main() {
         name: 'Poker',
         ruleset: Ruleset.multipleWinners,
         description: 'Card game with multiple winners',
-        color: '0xFFFF0000',
+        color: GameColor.red,
         icon: 'poker_icon',
       );
       testGame3 = Game(
@@ -43,7 +43,7 @@ void main() {
         name: 'Monopoly',
         ruleset: Ruleset.highestScore,
         description: 'A board game about real estate',
-        color: '0xFF000000',
+        color: GameColor.orange,
         icon: '',
       );
     });
@@ -134,7 +134,7 @@ void main() {
 
     // Verifies that a game with null optional fields can be added and retrieved.
     test('addGame handles game with null optional fields', () async {
-      final gameWithNulls = Game(name: 'Simple Game', ruleset: Ruleset.lowestScore, description: 'A simple game', color: '0xFF000000', icon: '');
+      final gameWithNulls = Game(name: 'Simple Game', ruleset: Ruleset.lowestScore, description: 'A simple game', color: GameColor.green, icon: '');
       final result = await database.gameDao.addGame(game: gameWithNulls);
       expect(result, true);
 
@@ -143,7 +143,7 @@ void main() {
       );
       expect(fetchedGame.name, 'Simple Game');
       expect(fetchedGame.description, 'A simple game');
-      expect(fetchedGame.color, '0xFF000000');
+      expect(fetchedGame.color, GameColor.green);
       expect(fetchedGame.icon, isNull);
     });
 
@@ -340,20 +340,20 @@ void main() {
 
       await database.gameDao.updateGameColor(
         gameId: testGame1.id,
-        newColor: '0xFF00FF00',
+        newColor: GameColor.green,
       );
 
       final updatedGame = await database.gameDao.getGameById(
         gameId: testGame1.id,
       );
-      expect(updatedGame.color, '0xFF00FF00');
+      expect(updatedGame.color, GameColor.green);
     });
 
     // Verifies that updateGameColor does nothing when game doesn't exist.
     test('updateGameColor does nothing for non-existent game', () async {
       await database.gameDao.updateGameColor(
         gameId: 'non-existent-id',
-        newColor: '0xFF00FF00',
+        newColor: GameColor.green,
       );
 
       final allGames = await database.gameDao.getAllGames();
@@ -460,7 +460,7 @@ void main() {
         name: 'Game\'s & "Special" <Name>',
         ruleset: Ruleset.multipleWinners,
         description: 'Description with émojis 🎮🎲',
-        color: '0xFF000000',
+        color: GameColor.purple,
         icon: '',
       );
       await database.gameDao.addGame(game: specialGame);
@@ -479,7 +479,7 @@ void main() {
         ruleset: Ruleset.singleWinner,
         description: '',
         icon: '',
-        color: '0xFF000000',
+        color: GameColor.red,
       );
       await database.gameDao.addGame(game: emptyGame);
 
@@ -499,7 +499,7 @@ void main() {
         name: longString,
         description: longString,
         ruleset: Ruleset.multipleWinners,
-        color: '0xFF000000',
+        color: GameColor.yellow,
         icon: '',
       );
       await database.gameDao.addGame(game: longGame);
@@ -522,7 +522,7 @@ void main() {
       );
       await database.gameDao.updateGameColor(
         gameId: testGame1.id,
-        newColor: '0xFF123456',
+        newColor: GameColor.teal,
       );
       await database.gameDao.updateGameDescription(
         gameId: testGame1.id,
@@ -533,7 +533,7 @@ void main() {
         gameId: testGame1.id,
       );
       expect(updatedGame.name, 'Updated Name');
-      expect(updatedGame.color, '0xFF123456');
+      expect(updatedGame.color, GameColor.teal);
       expect(updatedGame.description, 'Updated Description');
       expect(updatedGame.ruleset, testGame1.ruleset);
       expect(updatedGame.icon, testGame1.icon);

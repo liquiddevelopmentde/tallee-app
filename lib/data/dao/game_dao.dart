@@ -21,7 +21,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
             name: row.name,
             ruleset: Ruleset.values.firstWhere((e) => e.name == row.ruleset),
             description: row.description,
-            color: row.color,
+            color: GameColor.values.firstWhere((e) => e.name == row.color),
             icon: row.icon,
             createdAt: row.createdAt,
           ),
@@ -38,7 +38,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
       name: result.name,
       ruleset: Ruleset.values.firstWhere((e) => e.name == result.ruleset),
       description: result.description,
-      color: result.color,
+      color: GameColor.values.firstWhere((e) => e.name == result.color),
       icon: result.icon,
       createdAt: result.createdAt,
     );
@@ -55,7 +55,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
           name: game.name,
           ruleset: game.ruleset.name,
           description: game.description,
-          color: game.color,
+          color: game.color.name,
           icon: game.icon,
           createdAt: game.createdAt,
         ),
@@ -81,7 +81,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
                 name: game.name,
                 ruleset: game.ruleset.name,
                 description: game.description,
-                color: game.color,
+                color: game.color.name,
                 icon: game.icon,
                 createdAt: game.createdAt,
               ),
@@ -135,10 +135,10 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   }
 
   /// Updates the color of the game with the given [gameId].
-  Future<void> updateGameColor({required String gameId, required String newColor}) async {
+  Future<void> updateGameColor({required String gameId, required GameColor newColor}) async {
     await (update(
       gameTable,
-    )..where((g) => g.id.equals(gameId))).write(GameTableCompanion(color: Value(newColor)));
+    )..where((g) => g.id.equals(gameId))).write(GameTableCompanion(color: Value(newColor.name)));
   }
 
   /// Updates the icon of the game with the given [gameId].

@@ -202,7 +202,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                       name: selectedGame.$1,
                       description: selectedGame.$2,
                       ruleset: selectedGame.$3,
-                      color: '0xFF000000',
+                      color: GameColor.blue,
                       icon: '',
                     );
                   } else {
@@ -212,7 +212,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                       name: selectedGame.$1,
                       description: selectedGame.$2,
                       ruleset: selectedGame.$3,
-                      color: '0xFF000000',
+                      color: GameColor.blue,
                       icon: '',
                     );
                   }

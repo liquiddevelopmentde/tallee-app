@@ -32,7 +32,7 @@ void main() {
       testPlayer1 = Player(name: 'Alice', description: '');
       testPlayer2 = Player(name: 'Bob', description: '');
       testPlayer3 = Player(name: 'Charlie', description: '');
-      testGame = Game(name: 'Test Game', ruleset: Ruleset.singleWinner, description: 'A test game', color: '0xFF000000', icon: '');
+      testGame = Game(name: 'Test Game', ruleset: Ruleset.singleWinner, description: 'A test game', color: GameColor.blue, icon: '');
       testMatch1 = Match(
         name: 'Test Match 1',
         game: testGame,

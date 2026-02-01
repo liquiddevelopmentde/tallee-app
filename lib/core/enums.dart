@@ -37,6 +37,17 @@ enum ExportResult { success, canceled, unknownException }
 /// - [Ruleset.multipleWinners]: Multiple players can be winners.
 enum Ruleset { highestScore, lowestScore, singleWinner, singleLoser, multipleWinners }
 
+/// Different colors available for games
+/// - [GameColor.red]: Red color
+/// - [GameColor.blue]: Blue color
+/// - [GameColor.green]: Green color
+/// - [GameColor.yellow]: Yellow color
+/// - [GameColor.purple]: Purple color
+/// - [GameColor.orange]: Orange color
+/// - [GameColor.pink]: Pink color
+/// - [GameColor.teal]: Teal color
+enum GameColor { red, blue, green, yellow, purple, orange, pink, teal }
+
 /// Translates a [Ruleset] enum value to its corresponding localized string.
 String translateRulesetToString(Ruleset ruleset, BuildContext context) {
   final loc = AppLocalizations.of(context);

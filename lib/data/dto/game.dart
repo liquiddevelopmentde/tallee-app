@@ -8,7 +8,7 @@ class Game {
   final String name;
   final Ruleset ruleset;
   final String description;
-  final String color;
+  final GameColor color;
   final String icon;
 
   Game({
@@ -34,7 +34,7 @@ class Game {
       name = json['name'],
       ruleset = Ruleset.values.firstWhere((e) => e.name == json['ruleset']),
       description = json['description'],
-      color = json['color'],
+      color = GameColor.values.firstWhere((e) => e.name == json['color']),
       icon = json['icon'];
 
   /// Converts the Game instance to a JSON object.
@@ -44,7 +44,7 @@ class Game {
     'name': name,
     'ruleset': ruleset.name,
     'description': description,
-    'color': color,
+    'color': color.name,
     'icon': icon,
   };
 }

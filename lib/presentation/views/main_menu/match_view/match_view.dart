@@ -38,7 +38,7 @@ class _MatchViewState extends State<MatchView> {
     4,
     Match(
       name: 'Skeleton match name',
-      game: Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: '', icon: ''),
+      game: Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: GameColor.blue, icon: ''),
       group: Group(
         name: 'Group name',
         description: '',
