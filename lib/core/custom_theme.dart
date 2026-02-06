@@ -27,6 +27,9 @@ class CustomTheme {
   /// Text color used throughout the app
   static const Color textColor = Color(0xFFFFFFFF);
 
+  /// Background color for the navigation bar
+  static const Color navBarBackgroundColor = Color(0xFF131313);
+
   /// Selected color for the [NavbarItem]
   static Color navBarItemSelectedColor = primaryColor.withGreen(100);
 
