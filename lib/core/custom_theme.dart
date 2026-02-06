@@ -19,7 +19,7 @@ class CustomTheme {
   static const Color boxColor = Color(0xFF101010);
 
   /// Default border color for boxes and containers
-  static const Color boxBorder = Color(0xFF272727);
+  static const Color boxBorderColor = Color(0xFF272727);
 
   /// Color for boxes and containers displayed on boxes
   static const Color onBoxColor = Color(0xFF181818);
@@ -54,7 +54,7 @@ class CustomTheme {
   // ==================== Decorations ====================
   static BoxDecoration standardBoxDecoration = BoxDecoration(
     color: boxColor,
-    border: Border.all(color: boxBorder),
+    border: Border.all(color: boxBorderColor),
     borderRadius: standardBorderRadiusAll,
   );
 

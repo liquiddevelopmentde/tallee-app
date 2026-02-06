@@ -74,7 +74,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                 ),
                 decoration: BoxDecoration(
                   color: CustomTheme.boxColor,
-                  border: Border.all(color: CustomTheme.boxBorder),
+                  border: Border.all(color: CustomTheme.boxBorderColor),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(

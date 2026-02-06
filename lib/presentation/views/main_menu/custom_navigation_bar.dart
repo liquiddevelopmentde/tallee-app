@@ -79,7 +79,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           color: CustomTheme.navBarBackgroundColor,
           border: Border.all(
             strokeAlign: BorderSide.strokeAlignOutside,
-            color: CustomTheme.boxBorder,
+            color: CustomTheme.boxBorderColor,
             width: 2,
           ),
           borderRadius: const BorderRadius.only(
