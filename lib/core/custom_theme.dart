@@ -13,7 +13,7 @@ class CustomTheme {
   static const Color secondaryColor = Color(0xFFf2a981);
 
   /// Background color of the app theme
-  static const backgroundColor = Color(0xFF0B0B0B);
+  static const Color backgroundColor = Color(0xFF0B0B0B);
 
   /// Default color for boxes and containers
   static const Color boxColor = Color(0xFF101010);
