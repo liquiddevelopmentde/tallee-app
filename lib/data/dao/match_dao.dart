@@ -388,38 +388,86 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   }
 
   // ============================================================
-  // TEMPORARY: Winner methods - these are stubs and do not persist data
-  // TODO: Implement proper winner handling
+  // Winner methods - handle winner logic via player scores
   // ============================================================
 
-  /// TEMPORARY: Checks if a match has a winner.
-  /// Currently returns true if the match has any players.
+  /// Checks if a match has a winner.
+  /// Returns true if any player in the match has their score set to 1.
   Future<bool> hasWinner({required String matchId}) async {
     final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
-    return players.isNotEmpty;
+
+    for (final player in players) {
+      final score = await db.playerMatchDao.getPlayerScore(
+        matchId: matchId,
+        playerId: player.id,
+      );
+      if (score == 1) {
+        return true;
+      }
+    }
+    return false;
   }
 
-  /// TEMPORARY: Gets the winner of a match.
-  /// Currently returns the first player in the match's player list.
+  /// Gets the winner of a match.
+  /// Returns the player with score 1, or null if no winner is set.
   Future<Player?> getWinner({required String matchId}) async {
     final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
-    return players.isNotEmpty ? players.first : null;
+
+    for (final player in players) {
+      final score = await db.playerMatchDao.getPlayerScore(
+        matchId: matchId,
+        playerId: player.id,
+      );
+      if (score == 1) {
+        return player;
+      }
+    }
+    return null;
   }
 
-  /// TEMPORARY: Sets the winner of a match.
-  /// Currently does nothing - winner is not persisted.
+  /// Sets the winner of a match.
+  /// Sets all players' scores to 0, then sets the specified player's score to 1.
+  /// Returns `true` if the operation was successful, otherwise `false`.
   Future<bool> setWinner({
     required String matchId,
     required String winnerId,
   }) async {
-    // TODO: Implement winner persistence
+    await db.transaction(() async {
+      final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
+
+      // Set all players' scores to 0
+      for (final player in players) {
+        await db.playerMatchDao.updatePlayerScore(
+          matchId: matchId,
+          playerId: player.id,
+          newScore: 0,
+        );
+      }
+
+      // Set the winner's score to 1
+      await db.playerMatchDao.updatePlayerScore(
+        matchId: matchId,
+        playerId: winnerId,
+        newScore: 1,
+      );
+    });
     return true;
   }
 
-  /// TEMPORARY: Removes the winner of a match.
-  /// Currently does nothing - winner is not persisted.
+  /// Removes the winner of a match.
+  /// Sets the current winner's score to 0 (no winner).
+  /// Returns `true` if a winner was removed, otherwise `false`.
   Future<bool> removeWinner({required String matchId}) async {
-    // TODO: Implement winner persistence
-    return true;
+    final winner = await getWinner(matchId: matchId);
+    if (winner == null) {
+      return false;
+    }
+
+    final success = await db.playerMatchDao.updatePlayerScore(
+      matchId: matchId,
+      playerId: winner.id,
+      newScore: 0,
+    );
+    return success;
   }
 }
