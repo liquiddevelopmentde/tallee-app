@@ -308,5 +308,35 @@ void main() {
       );
       expect(secondRemoval, false);
     });
+
+    // Verifies that replaceGroupPlayers removes all existing players and replaces with new list.
+    test('replaceGroupPlayers replaces all group members correctly', () async {
+      // Create initial group with 3 players
+      await database.groupDao.addGroup(group: testGroup);
+
+      // Verify initial members
+      var groupMembers = await database.groupDao.getGroupById(
+        groupId: testGroup.id,
+      );
+      expect(groupMembers.members.length, 3);
+
+      // Replace with new list containing 2 different players
+      final newPlayersList = [testPlayer3, testPlayer4];
+      await database.groupDao.replaceGroupPlayers(
+        groupId: testGroup.id,
+        newPlayers: newPlayersList,
+      );
+
+      // Get updated group and verify members
+      groupMembers = await database.groupDao.getGroupById(
+        groupId: testGroup.id,
+      );
+
+      expect(groupMembers.members.length, 2);
+      expect(groupMembers.members.any((p) => p.id == testPlayer3.id), true);
+      expect(groupMembers.members.any((p) => p.id == testPlayer4.id), true);
+      expect(groupMembers.members.any((p) => p.id == testPlayer1.id), false);
+      expect(groupMembers.members.any((p) => p.id == testPlayer2.id), false);
+    });
   });
 }
