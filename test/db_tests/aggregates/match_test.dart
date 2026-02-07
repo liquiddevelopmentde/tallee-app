@@ -122,19 +122,15 @@ void main() {
       } else {
         fail('Group is null');
       }
-      if (result.players != null) {
-        expect(result.players!.length, testMatch1.players!.length);
+      expect(result.players.length, testMatch1.players.length);
 
-        for (int i = 0; i < testMatch1.players!.length; i++) {
-          expect(result.players![i].id, testMatch1.players![i].id);
-          expect(result.players![i].name, testMatch1.players![i].name);
-          expect(
-            result.players![i].createdAt,
-            testMatch1.players![i].createdAt,
-          );
-        }
-      } else {
-        fail('Players is null');
+      for (int i = 0; i < testMatch1.players.length; i++) {
+        expect(result.players[i].id, testMatch1.players[i].id);
+        expect(result.players[i].name, testMatch1.players[i].name);
+        expect(
+          result.players[i].createdAt,
+          testMatch1.players[i].createdAt,
+        );
       }
     });
 
@@ -191,18 +187,14 @@ void main() {
         }
 
         // Players-Checks
-        if (testMatch.players != null) {
-          expect(match.players!.length, testMatch.players!.length);
-          for (int i = 0; i < testMatch.players!.length; i++) {
-            expect(match.players![i].id, testMatch.players![i].id);
-            expect(match.players![i].name, testMatch.players![i].name);
-            expect(
-              match.players![i].createdAt,
-              testMatch.players![i].createdAt,
-            );
-          }
-        } else {
-          expect(match.players, null);
+        expect(match.players.length, testMatch.players.length);
+        for (int i = 0; i < testMatch.players.length; i++) {
+          expect(match.players[i].id, testMatch.players[i].id);
+          expect(match.players[i].name, testMatch.players[i].name);
+          expect(
+            match.players[i].createdAt,
+            testMatch.players[i].createdAt,
+          );
         }
       }
     });

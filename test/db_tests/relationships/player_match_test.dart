@@ -140,7 +140,7 @@ void main() {
     test('Removing player from match works correctly', () async {
       await database.matchDao.addMatch(match: testMatchOnlyPlayers);
 
-      final playerToRemove = testMatchOnlyPlayers.players![0];
+      final playerToRemove = testMatchOnlyPlayers.players[0];
 
       final removed = await database.playerMatchDao.removePlayerFromMatch(
         playerId: playerToRemove.id,
@@ -151,9 +151,9 @@ void main() {
       final result = await database.matchDao.getMatchById(
         matchId: testMatchOnlyPlayers.id,
       );
-      expect(result.players!.length, testMatchOnlyPlayers.players!.length - 1);
+      expect(result.players.length, testMatchOnlyPlayers.players.length - 1);
 
-      final playerExists = result.players!.any(
+      final playerExists = result.players.any(
             (p) => p.id == playerToRemove.id,
       );
       expect(playerExists, false);
@@ -164,18 +164,14 @@ void main() {
       await database.matchDao.addMatch(match: testMatchOnlyPlayers);
       final players = await database.playerMatchDao.getPlayersOfMatch(
         matchId: testMatchOnlyPlayers.id,
-      );
-
-      if (players == null) {
-        fail('Players should not be null');
-      }
+      ) ?? [];
 
       for (int i = 0; i < players.length; i++) {
-        expect(players[i].id, testMatchOnlyPlayers.players![i].id);
-        expect(players[i].name, testMatchOnlyPlayers.players![i].name);
+        expect(players[i].id, testMatchOnlyPlayers.players[i].id);
+        expect(players[i].name, testMatchOnlyPlayers.players[i].name);
         expect(
           players[i].createdAt,
-          testMatchOnlyPlayers.players![i].createdAt,
+          testMatchOnlyPlayers.players[i].createdAt,
         );
       }
     });
