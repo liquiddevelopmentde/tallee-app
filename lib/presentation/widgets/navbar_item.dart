@@ -110,7 +110,6 @@ class _NavbarItemState extends State<NavbarItem>
                   ),
                 ),
               ),
-              const SizedBox(height: 4),
               Text(
                 widget.label,
                 style: TextStyle(
