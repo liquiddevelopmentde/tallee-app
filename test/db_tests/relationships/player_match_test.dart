@@ -884,5 +884,36 @@ void main() {
       expect(playersInTeam.length, 1);
       expect(playersInTeam[0].id, testPlayer2.id);
     });
+
+    // Verifies that replaceMatchPlayers removes all existing players and replaces with new list.
+    test('replaceMatchPlayers replaces all match players correctly', () async {
+      // Create initial match with 3 players
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      // Verify initial players
+      var matchPlayers = await database.matchDao.getMatchById(
+        matchId: testMatchOnlyPlayers.id,
+      );
+      expect(matchPlayers.players.length, 3);
+
+      // Replace with new list containing 2 different players
+      final newPlayersList = [testPlayer1, testPlayer2];
+      await database.matchDao.replaceMatchPlayers(
+        matchId: testMatchOnlyPlayers.id,
+        newPlayers: newPlayersList,
+      );
+
+      // Get updated match and verify players
+      matchPlayers = await database.matchDao.getMatchById(
+        matchId: testMatchOnlyPlayers.id,
+      );
+
+      expect(matchPlayers.players.length, 2);
+      expect(matchPlayers.players.any((p) => p.id == testPlayer1.id), true);
+      expect(matchPlayers.players.any((p) => p.id == testPlayer2.id), true);
+      expect(matchPlayers.players.any((p) => p.id == testPlayer4.id), false);
+      expect(matchPlayers.players.any((p) => p.id == testPlayer5.id), false);
+      expect(matchPlayers.players.any((p) => p.id == testPlayer6.id), false);
+    });
   });
 }
