@@ -231,4 +231,44 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
+
+  /// Replaces all players in a group with the provided list of players.
+  /// Removes all existing players from the group and adds the new players.
+  /// Also adds any new players to the player table if they don't exist.
+  Future<void> replaceGroupPlayers({
+    required String groupId,
+    required List<Player> newPlayers,
+  }) async {
+    await db.transaction(() async {
+      // Remove all existing players from the group
+      final deleteQuery = delete(db.playerGroupTable)
+        ..where((p) => p.groupId.equals(groupId));
+      await deleteQuery.go();
+
+      // Add new players to the player table if they don't exist
+      await Future.wait(
+        newPlayers.map((player) async {
+          if (!await db.playerDao.playerExists(playerId: player.id)) {
+            await db.playerDao.addPlayer(player: player);
+          }
+        }),
+      );
+
+      // Add the new players to the group
+      await db.batch(
+        (b) => b.insertAll(
+          db.playerGroupTable,
+          newPlayers
+              .map(
+                (player) => PlayerGroupTableCompanion.insert(
+                  playerId: player.id,
+                  groupId: groupId,
+                ),
+              )
+              .toList(),
+          mode: InsertMode.insertOrReplace,
+        ),
+      );
+    });
+  }
 }
