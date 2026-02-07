@@ -44,11 +44,11 @@ class TextInputField extends StatelessWidget {
         counterText: '',
         enabledBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorder),
+          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
         ),
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorder),
+          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
         ),
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),
