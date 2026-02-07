@@ -132,7 +132,7 @@ void main() {
       expect(allGames.length, 1);
     });
 
-    // Verifies that a game with null optional fields can be added and retrieved.
+    // Verifies that a game with empty optional fields can be added and retrieved.
     test('addGame handles game with null optional fields', () async {
       final gameWithNulls = Game(name: 'Simple Game', ruleset: Ruleset.lowestScore, description: 'A simple game', color: GameColor.green, icon: '');
       final result = await database.gameDao.addGame(game: gameWithNulls);
@@ -144,7 +144,7 @@ void main() {
       expect(fetchedGame.name, 'Simple Game');
       expect(fetchedGame.description, 'A simple game');
       expect(fetchedGame.color, GameColor.green);
-      expect(fetchedGame.icon, isNull);
+      expect(fetchedGame.icon, '');
     });
 
     // Verifies that multiple games can be added at once using addGamesAsList.
