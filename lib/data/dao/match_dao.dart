@@ -355,6 +355,38 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     return rowsAffected > 0;
   }
 
+  /// Replaces all players in a match with the provided list of players.
+  /// Removes all existing players from the match and adds the new players.
+  /// Also adds any new players to the player table if they don't exist.
+  Future<void> replaceMatchPlayers({
+    required String matchId,
+    required List<Player> newPlayers,
+  }) async {
+    await db.transaction(() async {
+      // Remove all existing players from the match
+      final deleteQuery = delete(db.playerMatchTable)
+        ..where((p) => p.matchId.equals(matchId));
+      await deleteQuery.go();
+
+      // Add new players to the player table if they don't exist
+      await Future.wait(
+        newPlayers.map((player) async {
+          if (!await db.playerDao.playerExists(playerId: player.id)) {
+            await db.playerDao.addPlayer(player: player);
+          }
+        }),
+      );
+
+      // Add the new players to the match
+      await Future.wait(
+        newPlayers.map((player) => db.playerMatchDao.addPlayerToMatch(
+          matchId: matchId,
+          playerId: player.id,
+        )),
+      );
+    });
+  }
+
   // ============================================================
   // TEMPORARY: Winner methods - these are stubs and do not persist data
   // TODO: Implement proper winner handling
