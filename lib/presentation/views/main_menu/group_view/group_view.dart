@@ -14,15 +14,15 @@ import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/group_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
-class GroupsView extends StatefulWidget {
+class GroupView extends StatefulWidget {
   /// A view that displays a list of groups
-  const GroupsView({super.key});
+  const GroupView({super.key});
 
   @override
-  State<GroupsView> createState() => _GroupsViewState();
+  State<GroupView> createState() => _GroupViewState();
 }
 
-class _GroupsViewState extends State<GroupsView> {
+class _GroupViewState extends State<GroupView> {
   late final AppDatabase db;
 
   /// Loaded groups from the database

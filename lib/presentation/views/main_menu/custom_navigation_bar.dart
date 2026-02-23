@@ -38,7 +38,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       ),
       KeyedSubtree(
         key: ValueKey('groups_$tabKeyCount'),
-        child: const GroupsView(),
+        child: const GroupView(),
       ),
       KeyedSubtree(
         key: ValueKey('stats_$tabKeyCount'),
