@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/presentation/widgets/colored_icon_container.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
 class SettingsListTile extends StatelessWidget {
   /// A customizable settings list tile widget that displays an icon, title, and an optional suffix widget.

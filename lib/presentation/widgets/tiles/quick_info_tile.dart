@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class QuickInfoTile extends StatefulWidget {
   /// A tile widget that displays a title with an icon and a numeric value below it.

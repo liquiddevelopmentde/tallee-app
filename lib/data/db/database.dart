@@ -1,18 +1,18 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
-import 'package:game_tracker/data/dao/group_dao.dart';
-import 'package:game_tracker/data/dao/group_match_dao.dart';
-import 'package:game_tracker/data/dao/match_dao.dart';
-import 'package:game_tracker/data/dao/player_dao.dart';
-import 'package:game_tracker/data/dao/player_group_dao.dart';
-import 'package:game_tracker/data/dao/player_match_dao.dart';
-import 'package:game_tracker/data/db/tables/group_match_table.dart';
-import 'package:game_tracker/data/db/tables/group_table.dart';
-import 'package:game_tracker/data/db/tables/match_table.dart';
-import 'package:game_tracker/data/db/tables/player_group_table.dart';
-import 'package:game_tracker/data/db/tables/player_match_table.dart';
-import 'package:game_tracker/data/db/tables/player_table.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:tallee/data/dao/group_dao.dart';
+import 'package:tallee/data/dao/group_match_dao.dart';
+import 'package:tallee/data/dao/match_dao.dart';
+import 'package:tallee/data/dao/player_dao.dart';
+import 'package:tallee/data/dao/player_group_dao.dart';
+import 'package:tallee/data/dao/player_match_dao.dart';
+import 'package:tallee/data/db/tables/group_match_table.dart';
+import 'package:tallee/data/db/tables/group_table.dart';
+import 'package:tallee/data/db/tables/match_table.dart';
+import 'package:tallee/data/db/tables/player_group_table.dart';
+import 'package:tallee/data/db/tables/player_match_table.dart';
+import 'package:tallee/data/db/tables/player_table.dart';
 
 part 'database.g.dart';
 

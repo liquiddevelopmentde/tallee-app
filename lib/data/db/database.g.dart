@@ -527,6 +527,17 @@ class $MatchTableTable extends MatchTable
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $MatchTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _winnerIdMeta = const VerificationMeta(
+    'winnerId',
+  );
+  @override
+  late final GeneratedColumn<String> winnerId = GeneratedColumn<String>(
+    'winner_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
@@ -545,17 +556,6 @@ class $MatchTableTable extends MatchTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _winnerIdMeta = const VerificationMeta(
-    'winnerId',
-  );
-  @override
-  late final GeneratedColumn<String> winnerId = GeneratedColumn<String>(
-    'winner_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -568,7 +568,7 @@ class $MatchTableTable extends MatchTable
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, name, winnerId, createdAt];
+  List<GeneratedColumn> get $columns => [winnerId, id, name, createdAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -581,6 +581,12 @@ class $MatchTableTable extends MatchTable
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('winner_id')) {
+      context.handle(
+        _winnerIdMeta,
+        winnerId.isAcceptableOrUnknown(data['winner_id']!, _winnerIdMeta),
+      );
+    }
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
@@ -593,12 +599,6 @@ class $MatchTableTable extends MatchTable
       );
     } else if (isInserting) {
       context.missing(_nameMeta);
-    }
-    if (data.containsKey('winner_id')) {
-      context.handle(
-        _winnerIdMeta,
-        winnerId.isAcceptableOrUnknown(data['winner_id']!, _winnerIdMeta),
-      );
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -617,6 +617,10 @@ class $MatchTableTable extends MatchTable
   MatchTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return MatchTableData(
+      winnerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}winner_id'],
+      ),
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}id'],
@@ -625,10 +629,6 @@ class $MatchTableTable extends MatchTable
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
-      winnerId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}winner_id'],
-      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -643,35 +643,35 @@ class $MatchTableTable extends MatchTable
 }
 
 class MatchTableData extends DataClass implements Insertable<MatchTableData> {
+  final String? winnerId;
   final String id;
   final String name;
-  final String? winnerId;
   final DateTime createdAt;
   const MatchTableData({
+    this.winnerId,
     required this.id,
     required this.name,
-    this.winnerId,
     required this.createdAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['name'] = Variable<String>(name);
     if (!nullToAbsent || winnerId != null) {
       map['winner_id'] = Variable<String>(winnerId);
     }
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
   MatchTableCompanion toCompanion(bool nullToAbsent) {
     return MatchTableCompanion(
-      id: Value(id),
-      name: Value(name),
       winnerId: winnerId == null && nullToAbsent
           ? const Value.absent()
           : Value(winnerId),
+      id: Value(id),
+      name: Value(name),
       createdAt: Value(createdAt),
     );
   }
@@ -682,9 +682,9 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return MatchTableData(
+      winnerId: serializer.fromJson<String?>(json['winnerId']),
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      winnerId: serializer.fromJson<String?>(json['winnerId']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -692,29 +692,29 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'winnerId': serializer.toJson<String?>(winnerId),
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
-      'winnerId': serializer.toJson<String?>(winnerId),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
   MatchTableData copyWith({
+    Value<String?> winnerId = const Value.absent(),
     String? id,
     String? name,
-    Value<String?> winnerId = const Value.absent(),
     DateTime? createdAt,
   }) => MatchTableData(
+    winnerId: winnerId.present ? winnerId.value : this.winnerId,
     id: id ?? this.id,
     name: name ?? this.name,
-    winnerId: winnerId.present ? winnerId.value : this.winnerId,
     createdAt: createdAt ?? this.createdAt,
   );
   MatchTableData copyWithCompanion(MatchTableCompanion data) {
     return MatchTableData(
+      winnerId: data.winnerId.present ? data.winnerId.value : this.winnerId,
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      winnerId: data.winnerId.present ? data.winnerId.value : this.winnerId,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -722,75 +722,75 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
   @override
   String toString() {
     return (StringBuffer('MatchTableData(')
+          ..write('winnerId: $winnerId, ')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('winnerId: $winnerId, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, winnerId, createdAt);
+  int get hashCode => Object.hash(winnerId, id, name, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is MatchTableData &&
+          other.winnerId == this.winnerId &&
           other.id == this.id &&
           other.name == this.name &&
-          other.winnerId == this.winnerId &&
           other.createdAt == this.createdAt);
 }
 
 class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
+  final Value<String?> winnerId;
   final Value<String> id;
   final Value<String> name;
-  final Value<String?> winnerId;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const MatchTableCompanion({
+    this.winnerId = const Value.absent(),
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.winnerId = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MatchTableCompanion.insert({
+    this.winnerId = const Value.absent(),
     required String id,
     required String name,
-    this.winnerId = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
        createdAt = Value(createdAt);
   static Insertable<MatchTableData> custom({
+    Expression<String>? winnerId,
     Expression<String>? id,
     Expression<String>? name,
-    Expression<String>? winnerId,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
+      if (winnerId != null) 'winner_id': winnerId,
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (winnerId != null) 'winner_id': winnerId,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   MatchTableCompanion copyWith({
+    Value<String?>? winnerId,
     Value<String>? id,
     Value<String>? name,
-    Value<String?>? winnerId,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
     return MatchTableCompanion(
+      winnerId: winnerId ?? this.winnerId,
       id: id ?? this.id,
       name: name ?? this.name,
-      winnerId: winnerId ?? this.winnerId,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -799,14 +799,14 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (winnerId.present) {
+      map['winner_id'] = Variable<String>(winnerId.value);
+    }
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
-    }
-    if (winnerId.present) {
-      map['winner_id'] = Variable<String>(winnerId.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -820,9 +820,9 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
   @override
   String toString() {
     return (StringBuffer('MatchTableCompanion(')
+          ..write('winnerId: $winnerId, ')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('winnerId: $winnerId, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2339,17 +2339,17 @@ typedef $$GroupTableTableProcessedTableManager =
     >;
 typedef $$MatchTableTableCreateCompanionBuilder =
     MatchTableCompanion Function({
+      Value<String?> winnerId,
       required String id,
       required String name,
-      Value<String?> winnerId,
       required DateTime createdAt,
       Value<int> rowid,
     });
 typedef $$MatchTableTableUpdateCompanionBuilder =
     MatchTableCompanion Function({
+      Value<String?> winnerId,
       Value<String> id,
       Value<String> name,
-      Value<String?> winnerId,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -2414,6 +2414,11 @@ class $$MatchTableTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnFilters<String> get winnerId => $composableBuilder(
+    column: $table.winnerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -2421,11 +2426,6 @@ class $$MatchTableTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get winnerId => $composableBuilder(
-    column: $table.winnerId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2494,6 +2494,11 @@ class $$MatchTableTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnOrderings<String> get winnerId => $composableBuilder(
+    column: $table.winnerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -2501,11 +2506,6 @@ class $$MatchTableTableOrderingComposer
 
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get winnerId => $composableBuilder(
-    column: $table.winnerId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2524,14 +2524,14 @@ class $$MatchTableTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  GeneratedColumn<String> get winnerId =>
+      $composableBuilder(column: $table.winnerId, builder: (column) => column);
+
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get winnerId =>
-      $composableBuilder(column: $table.winnerId, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -2618,29 +2618,29 @@ class $$MatchTableTableTableManager
               $$MatchTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
+                Value<String?> winnerId = const Value.absent(),
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<String?> winnerId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MatchTableCompanion(
+                winnerId: winnerId,
                 id: id,
                 name: name,
-                winnerId: winnerId,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
+                Value<String?> winnerId = const Value.absent(),
                 required String id,
                 required String name,
-                Value<String?> winnerId = const Value.absent(),
                 required DateTime createdAt,
                 Value<int> rowid = const Value.absent(),
               }) => MatchTableCompanion.insert(
+                winnerId: winnerId,
                 id: id,
                 name: name,
-                winnerId: winnerId,
                 createdAt: createdAt,
                 rowid: rowid,
               ),

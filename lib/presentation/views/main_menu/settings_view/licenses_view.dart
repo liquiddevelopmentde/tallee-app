@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
-import 'package:game_tracker/presentation/widgets/tiles/license_tile.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
+import 'package:tallee/presentation/widgets/tiles/license_tile.dart';
 
 class LicensesView extends StatelessWidget {
   /// A view that displays a list of open source licenses used in the app

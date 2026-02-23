@@ -4,13 +4,13 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:game_tracker/core/enums.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
 import 'package:json_schema/json_schema.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
 
 class DataTransferService {
   /// Deletes all data from the database.
@@ -34,22 +34,28 @@ class DataTransferService {
       'players': players.map((p) => p.toJson()).toList(),
 
       'groups': groups
-          .map((g) => {
-        'id': g.id,
-        'name': g.name,
-        'createdAt': g.createdAt.toIso8601String(),
-        'memberIds': (g.members).map((m) => m.id).toList(),
-      }).toList(),
+          .map(
+            (g) => {
+              'id': g.id,
+              'name': g.name,
+              'createdAt': g.createdAt.toIso8601String(),
+              'memberIds': (g.members).map((m) => m.id).toList(),
+            },
+          )
+          .toList(),
 
       'matches': matches
-          .map((m) => {
-        'id': m.id,
-        'name': m.name,
-        'createdAt': m.createdAt.toIso8601String(),
-        'groupId': m.group?.id,
-        'playerIds': (m.players ?? []).map((p) => p.id).toList(),
-        'winnerId': m.winner?.id,
-      }).toList(),
+          .map(
+            (m) => {
+              'id': m.id,
+              'name': m.name,
+              'createdAt': m.createdAt.toIso8601String(),
+              'groupId': m.group?.id,
+              'playerIds': (m.players ?? []).map((p) => p.id).toList(),
+              'winnerId': m.winner?.id,
+            },
+          )
+          .toList(),
     };
 
     return json.encode(jsonMap);
@@ -62,7 +68,7 @@ class DataTransferService {
   /// [fileName] The desired name for the exported file (without extension).
   static Future<ExportResult> exportData(
     String jsonString,
-    String fileName
+    String fileName,
   ) async {
     try {
       final bytes = Uint8List.fromList(utf8.encode(jsonString));
@@ -76,7 +82,6 @@ class DataTransferService {
       } else {
         return ExportResult.success;
       }
-
     } catch (e, stack) {
       print('[exportData] $e');
       print(stack);
@@ -104,11 +109,15 @@ class DataTransferService {
       final isValid = await _validateJsonSchema(jsonString);
       if (!isValid) return ImportResult.invalidSchema;
 
-      final Map<String, dynamic> decoded = json.decode(jsonString) as Map<String, dynamic>;
+      final Map<String, dynamic> decoded =
+          json.decode(jsonString) as Map<String, dynamic>;
 
-      final List<dynamic> playersJson = (decoded['players'] as List<dynamic>?) ?? [];
-      final List<dynamic> groupsJson = (decoded['groups'] as List<dynamic>?) ?? [];
-      final List<dynamic> matchesJson = (decoded['matches'] as List<dynamic>?) ?? [];
+      final List<dynamic> playersJson =
+          (decoded['players'] as List<dynamic>?) ?? [];
+      final List<dynamic> groupsJson =
+          (decoded['groups'] as List<dynamic>?) ?? [];
+      final List<dynamic> matchesJson =
+          (decoded['matches'] as List<dynamic>?) ?? [];
 
       // Players
       final List<Player> importedPlayers = playersJson
@@ -122,7 +131,8 @@ class DataTransferService {
       // Groups
       final List<Group> importedGroups = groupsJson.map((g) {
         final map = g as Map<String, dynamic>;
-        final memberIds = (map['memberIds'] as List<dynamic>? ?? []).cast<String>();
+        final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
+            .cast<String>();
 
         final members = memberIds
             .map((id) => playerById[id])
@@ -146,7 +156,8 @@ class DataTransferService {
         final map = m as Map<String, dynamic>;
 
         final String? groupId = map['groupId'] as String?;
-        final List<String> playerIds = (map['playerIds'] as List<dynamic>? ?? []).cast<String>();
+        final List<String> playerIds =
+            (map['playerIds'] as List<dynamic>? ?? []).cast<String>();
         final String? winnerId = map['winnerId'] as String?;
 
         final group = (groupId == null) ? null : groupById[groupId];

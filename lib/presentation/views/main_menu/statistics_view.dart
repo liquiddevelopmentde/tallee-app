@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/constants.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/widgets/app_skeleton.dart';
-import 'package:game_tracker/presentation/widgets/tiles/statistics_tile.dart';
-import 'package:game_tracker/presentation/widgets/top_centered_message.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
+import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class StatisticsView extends StatefulWidget {
   /// A view that displays player statistics

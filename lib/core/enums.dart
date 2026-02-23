@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 
 /// Button types used for styling the [CustomWidthButton]
 /// - [ButtonType.primary]: Primary button style.

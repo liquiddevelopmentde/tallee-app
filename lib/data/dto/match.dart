@@ -1,6 +1,6 @@
 import 'package:clock/clock.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/player.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/player.dart';
 import 'package:uuid/uuid.dart';
 
 class Match {

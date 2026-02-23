@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class QuickCreateButton extends StatefulWidget {
   /// A button widget designed for quick creating matches in the [HomeView]
@@ -28,14 +28,18 @@ class _QuickCreateButtonState extends State<QuickCreateButton> {
       onPressed: widget.onPressed,
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(140, 45),
-        backgroundColor: CustomTheme.primaryColor,
+        backgroundColor: CustomTheme.primaryColor.withAlpha(200).withBlue(40),
         shape: RoundedRectangleBorder(
           borderRadius: CustomTheme.standardBorderRadiusAll,
         ),
       ),
       child: Text(
         widget.text,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        style: const TextStyle(
+          color: CustomTheme.textColor,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
       ),
     );
   }

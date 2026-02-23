@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:game_tracker/data/db/tables/group_table.dart';
-import 'package:game_tracker/data/db/tables/match_table.dart';
+import 'package:tallee/data/db/tables/group_table.dart';
+import 'package:tallee/data/db/tables/match_table.dart';
 
 class GroupMatchTable extends Table {
   TextColumn get groupId =>

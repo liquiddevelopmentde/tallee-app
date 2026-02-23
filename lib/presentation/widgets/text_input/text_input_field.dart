@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:flutter/services.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class TextInputField extends StatelessWidget {
   /// A custom text input field widget that encapsulates a [TextField] with specific styling.
@@ -33,18 +34,21 @@ class TextInputField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       maxLength: maxLength,
+      maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
       decoration: InputDecoration(
         filled: true,
         fillColor: CustomTheme.boxColor,
         hintText: hintText,
         hintStyle: const TextStyle(fontSize: 18),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorder),
+        // Hides the character counter
+        counterText: '',
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorder),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
         ),
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),

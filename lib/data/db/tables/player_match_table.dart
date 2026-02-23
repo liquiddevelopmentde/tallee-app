@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:game_tracker/data/db/tables/match_table.dart';
-import 'package:game_tracker/data/db/tables/player_table.dart';
+import 'package:tallee/data/db/tables/match_table.dart';
+import 'package:tallee/data/db/tables/player_table.dart';
 
 class PlayerMatchTable extends Table {
   TextColumn get playerId =>

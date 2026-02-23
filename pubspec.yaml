@@ -1,7 +1,7 @@
-name: game_tracker
-description: "Game Tracking App for Card Games"
+name: tallee
+description: "Tracking App for Card Games"
 publish_to: 'none'
-version: 0.0.9+243
+version: 0.0.16+250
 
 environment:
   sdk: ^3.8.1

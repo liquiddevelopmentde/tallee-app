@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/db/tables/group_match_table.dart';
-import 'package:game_tracker/data/dto/group.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/db/tables/group_match_table.dart';
+import 'package:tallee/data/dto/group.dart';
 
 part 'group_match_dao.g.dart';
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/widgets/text_input/custom_search_bar.dart';
-import 'package:game_tracker/presentation/widgets/tiles/group_tile.dart';
-import 'package:game_tracker/presentation/widgets/top_centered_message.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
+import 'package:tallee/presentation/widgets/tiles/group_tile.dart';
+import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class ChooseGroupView extends StatefulWidget {
   /// A view that allows the user to choose a group from a list of groups.

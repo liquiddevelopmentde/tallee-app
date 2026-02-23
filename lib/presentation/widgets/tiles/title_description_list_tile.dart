@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class TitleDescriptionListTile extends StatelessWidget {
   /// A list tile widget that displays a title and description, with optional highlighting and badge.
