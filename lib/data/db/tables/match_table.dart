@@ -6,7 +6,7 @@ class MatchTable extends Table {
   TextColumn get id => text()();
   TextColumn get gameId =>
       text().references(GameTable, #id, onDelete: KeyAction.cascade)();
-  // Nullable if not part of a group
+  // Nullable if there is no group associated with the match
   TextColumn get groupId =>
       text().references(GroupTable, #id, onDelete: KeyAction.cascade).nullable()();
   TextColumn get name => text().nullable()();
