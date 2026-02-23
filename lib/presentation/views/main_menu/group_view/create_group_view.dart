@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -40,7 +39,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    if(widget.groupToEdit != null) {
+    if (widget.groupToEdit != null) {
       _groupNameController.text = widget.groupToEdit!.name;
       setState(() {
         initialSelectedPlayers = widget.groupToEdit!.members;
@@ -66,38 +65,54 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: CustomTheme.backgroundColor,
-        appBar: AppBar(title: Text(widget.groupToEdit == null ? loc.create_new_group : loc.edit_group), actions: widget.groupToEdit == null ? [] : [IconButton(icon: const Icon(Icons.delete), onPressed: () async {
-          if(widget.groupToEdit != null) {
-            showDialog<bool>(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: Text(loc.delete_group),
-                content: Text(loc.this_cannot_be_undone),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text(loc.cancel),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: Text(loc.delete),
+        appBar: AppBar(
+          title: Text(
+            widget.groupToEdit == null ? loc.create_new_group : loc.edit_group,
+          ),
+          actions: widget.groupToEdit == null
+              ? []
+              : [
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () async {
+                      if (widget.groupToEdit != null) {
+                        showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(loc.delete_group),
+                            content: Text(loc.this_cannot_be_undone),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: Text(loc.cancel),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: Text(loc.delete),
+                              ),
+                            ],
+                          ),
+                        ).then((confirmed) async {
+                          if (confirmed == true && context.mounted) {
+                            bool success = await db.groupDao.deleteGroup(
+                              groupId: widget.groupToEdit!.id,
+                            );
+                            if (!context.mounted) return;
+                            if (success) {
+                              Navigator.pop(context);
+                            } else {
+                              if (!mounted) return;
+                              showSnackbar(message: loc.error_deleting_group);
+                            }
+                          }
+                        });
+                      }
+                    },
                   ),
                 ],
-              ),
-            ).then((confirmed) async {
-              if (confirmed == true && context.mounted) {
-                bool success = await db.groupDao.deleteGroup(groupId: widget.groupToEdit!.id);
-                if (!context.mounted) return;
-                if (success) {
-                  Navigator.pop(context);
-                } else {
-                  if (!mounted) return;
-                  showSnackbar(message: loc.error_deleting_group);
-                }
-              }
-            });
-          }
-        },)],),
+        ),
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -120,7 +135,9 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 ),
               ),
               CustomWidthButton(
-                text: widget.groupToEdit == null ? loc.create_group : loc.edit_group,
+                text: widget.groupToEdit == null
+                    ? loc.create_group
+                    : loc.edit_group,
                 sizeRelativeToWidth: 0.95,
                 buttonType: ButtonType.primary,
                 onPressed:
@@ -155,7 +172,11 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                         if (success) {
                           Navigator.pop(context, updatedGroup);
                         } else {
-                          showSnackbar(message: widget.groupToEdit == null ? loc.error_creating_group : loc.error_editing_group);
+                          showSnackbar(
+                            message: widget.groupToEdit == null
+                                ? loc.error_creating_group
+                                : loc.error_editing_group,
+                          );
                         }
                       },
               ),
@@ -166,12 +187,11 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       ),
     );
   }
+
   /// Displays a snackbar with the given message and optional action.
   ///
   /// [message] The message to display in the snackbar.
-  void showSnackbar({
-    required String message,
-  }) {
+  void showSnackbar({required String message}) {
     final messenger = _scaffoldMessengerKey.currentState;
     if (messenger != null) {
       messenger.hideCurrentSnackBar();

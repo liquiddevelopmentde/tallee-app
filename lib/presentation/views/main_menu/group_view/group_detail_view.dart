@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/dto/group.dart';
 import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
@@ -189,9 +191,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     context,
                     adaptivePageRoute(
                       builder: (context) {
-                        return CreateGroupView(
-                          groupToEdit: _group,
-                        );
+                        return CreateGroupView(groupToEdit: _group);
                       },
                     ),
                   );
@@ -243,8 +243,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
   /// Loads statistics for this group
   Future<void> _loadStatistics() async {
     final matches = await db.matchDao.getAllMatches();
-    final groupMatches =
-    matches.where((match) => match.group?.id == _group.id).toList();
+    final groupMatches = matches
+        .where((match) => match.group?.id == _group.id)
+        .toList();
 
     setState(() {
       totalMatches = groupMatches.length;
@@ -262,7 +263,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
       if (match.winner != null) {
         bestPlayerCounts.update(
           match.winner!,
-              (value) => value + 1,
+          (value) => value + 1,
           ifAbsent: () => 1,
         );
       }
