@@ -40,14 +40,19 @@ class GameTracker extends StatelessWidget {
         primaryColor: CustomTheme.primaryColor,
         scaffoldBackgroundColor: CustomTheme.backgroundColor,
         appBarTheme: CustomTheme.appBarTheme,
-        colorScheme: const ColorScheme(
+        radioTheme: RadioThemeData(
+          fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return CustomTheme.primaryColor;
+            }
+            return CustomTheme.textColor;
+          }),
+        ),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: CustomTheme.primaryColor,
           brightness: Brightness.dark,
           primary: CustomTheme.primaryColor,
           onPrimary: CustomTheme.textColor,
-          secondary: CustomTheme.textColor,
-          onSecondary: Color(0xFF000000),
-          error: Color(0xFFFF0000),
-          onError: CustomTheme.textColor,
           surface: CustomTheme.backgroundColor,
           onSurface: CustomTheme.textColor,
         ),
