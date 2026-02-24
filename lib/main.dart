@@ -40,10 +40,17 @@ class GameTracker extends StatelessWidget {
         primaryColor: CustomTheme.primaryColor,
         scaffoldBackgroundColor: CustomTheme.backgroundColor,
         appBarTheme: CustomTheme.appBarTheme,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: CustomTheme.primaryColor,
+        colorScheme: const ColorScheme(
           brightness: Brightness.dark,
-        ).copyWith(surface: CustomTheme.backgroundColor),
+          primary: CustomTheme.primaryColor,
+          onPrimary: CustomTheme.textColor,
+          secondary: CustomTheme.textColor,
+          onSecondary: Color(0xFF000000),
+          error: Color(0xFFFF0000),
+          onError: CustomTheme.textColor,
+          surface: CustomTheme.backgroundColor,
+          onSurface: CustomTheme.textColor,
+        ),
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: {
             TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
