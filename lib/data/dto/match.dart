@@ -24,10 +24,11 @@ class Match {
     required this.game,
     this.group,
     this.players = const [],
-    required this.notes,
+    String? notes,
     this.winner,
   }) : id = id ?? const Uuid().v4(),
-        createdAt = createdAt ?? clock.now();
+        createdAt = createdAt ?? clock.now(),
+        notes = notes ?? '';
 
   @override
   String toString() {
