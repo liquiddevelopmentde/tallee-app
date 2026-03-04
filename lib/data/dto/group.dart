@@ -13,10 +13,11 @@ class Group {
     String? id,
     DateTime? createdAt,
     required this.name,
-    required this.description,
+    String? description,
     required this.members,
   }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? clock.now();
+       createdAt = createdAt ?? clock.now(),
+       description = description ?? '';
 
   @override
   String toString() {
