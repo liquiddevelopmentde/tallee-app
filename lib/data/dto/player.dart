@@ -11,9 +11,10 @@ class Player {
     String? id,
     DateTime? createdAt,
     required this.name,
-    required this.description,
+    String? description,
   }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? clock.now();
+       createdAt = createdAt ?? clock.now(),
+       description = description ?? '';
 
   @override
   String toString() {
