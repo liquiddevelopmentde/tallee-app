@@ -13,19 +13,22 @@ class CustomTheme {
   static const Color secondaryColor = Color(0xFFf2a981);
 
   /// Background color of the app theme
-  static const backgroundColor = Color(0xFF0B0B0B);
+  static const Color backgroundColor = Color(0xFF0B0B0B);
 
   /// Default color for boxes and containers
   static const Color boxColor = Color(0xFF101010);
 
   /// Default border color for boxes and containers
-  static const Color boxBorder = Color(0xFF272727);
+  static const Color boxBorderColor = Color(0xFF272727);
 
   /// Color for boxes and containers displayed on boxes
   static const Color onBoxColor = Color(0xFF181818);
 
   /// Text color used throughout the app
   static const Color textColor = Color(0xFFFFFFFF);
+
+  /// Background color for the navigation bar
+  static const Color navBarBackgroundColor = Color(0xFF131313);
 
   /// Selected color for the [NavbarItem]
   static Color navBarItemSelectedColor = primaryColor.withGreen(100);
@@ -51,7 +54,7 @@ class CustomTheme {
   // ==================== Decorations ====================
   static BoxDecoration standardBoxDecoration = BoxDecoration(
     color: boxColor,
-    border: Border.all(color: boxBorder),
+    border: Border.all(color: boxBorderColor),
     borderRadius: standardBorderRadiusAll,
   );
 

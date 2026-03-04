@@ -87,19 +87,29 @@ class _NavbarItemState extends State<NavbarItem>
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ScaleTransition(
-                scale: widget.isSelected
-                    ? _scaleAnimation
-                    : const AlwaysStoppedAnimation(1.0),
-                child: Icon(
-                  widget.icon,
+              AnimatedContainer(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
                   color: widget.isSelected
-                      ? CustomTheme.navBarItemSelectedColor
-                      : CustomTheme.navBarItemUnselectedColor,
-                  size: 32,
+                      ? CustomTheme.primaryColor.withAlpha(50)
+                      : Colors.transparent,
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                ),
+                duration: const Duration(milliseconds: 200),
+                child: ScaleTransition(
+                  scale: widget.isSelected
+                      ? _scaleAnimation
+                      : const AlwaysStoppedAnimation(1.0),
+                  child: Icon(
+                    widget.icon,
+                    color: widget.isSelected
+                        ? CustomTheme.navBarItemSelectedColor
+                        : CustomTheme.navBarItemUnselectedColor,
+                    size: 32,
+                  ),
                 ),
               ),
-              const SizedBox(height: 4),
               Text(
                 widget.label,
                 style: TextStyle(
