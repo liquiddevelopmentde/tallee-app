@@ -267,6 +267,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get single_winner => 'Ein:e Gewinner:in';
 
   @override
+  String get highest_score => 'Höchste Punkte';
+
+  @override
+  String get lowest_score => 'Niedrigste Punkte';
+
+  @override
+  String get multiple_winners => 'Mehrere Gewinner:innen';
+
+  @override
   String get statistics => 'Statistiken';
 
   @override

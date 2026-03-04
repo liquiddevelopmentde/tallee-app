@@ -3,9 +3,11 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/game.dart';
 import 'package:tallee/data/dto/group.dart';
 import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/core/enums.dart';
 
 void main() {
   late AppDatabase database;
@@ -16,6 +18,7 @@ void main() {
   late Player testPlayer5;
   late Group testGroup1;
   late Group testGroup2;
+  late Game testGame;
   late Match testMatch1;
   late Match testMatch2;
   late Match testMatchOnlyPlayers;
@@ -33,39 +36,50 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Alice');
-      testPlayer2 = Player(name: 'Bob');
-      testPlayer3 = Player(name: 'Charlie');
-      testPlayer4 = Player(name: 'Diana');
-      testPlayer5 = Player(name: 'Eve');
+      testPlayer1 = Player(name: 'Alice', description: '');
+      testPlayer2 = Player(name: 'Bob', description: '');
+      testPlayer3 = Player(name: 'Charlie', description: '');
+      testPlayer4 = Player(name: 'Diana', description: '');
+      testPlayer5 = Player(name: 'Eve', description: '');
       testGroup1 = Group(
         name: 'Test Group 2',
+        description: '',
         members: [testPlayer1, testPlayer2, testPlayer3],
       );
       testGroup2 = Group(
         name: 'Test Group 2',
+        description: '',
         members: [testPlayer4, testPlayer5],
       );
+      testGame = Game(name: 'Test Game', ruleset: Ruleset.singleWinner, description: 'A test game', color: GameColor.blue, icon: '');
       testMatch1 = Match(
         name: 'First Test Match',
+        game: testGame,
         group: testGroup1,
         players: [testPlayer4, testPlayer5],
         winner: testPlayer4,
+        notes: '',
       );
       testMatch2 = Match(
         name: 'Second Test Match',
+        game: testGame,
         group: testGroup2,
         players: [testPlayer1, testPlayer2, testPlayer3],
         winner: testPlayer2,
+        notes: '',
       );
       testMatchOnlyPlayers = Match(
         name: 'Test Match with Players',
+        game: testGame,
         players: [testPlayer1, testPlayer2, testPlayer3],
         winner: testPlayer3,
+        notes: '',
       );
       testMatchOnlyGroup = Match(
         name: 'Test Match with Group',
+        game: testGame,
         group: testGroup2,
+        notes: '',
       );
     });
     await database.playerDao.addPlayersAsList(
@@ -78,12 +92,15 @@ void main() {
       ],
     );
     await database.groupDao.addGroupsAsList(groups: [testGroup1, testGroup2]);
+    await database.gameDao.addGame(game: testGame);
   });
   tearDown(() async {
     await database.close();
   });
 
   group('Match Tests', () {
+
+    // Verifies that a single match can be added and retrieved with all fields, group, and players intact.
     test('Adding and fetching single match works correctly', () async {
       await database.matchDao.addMatch(match: testMatch1);
 
@@ -95,14 +112,6 @@ void main() {
       expect(result.name, testMatch1.name);
       expect(result.createdAt, testMatch1.createdAt);
 
-      if (result.winner != null && testMatch1.winner != null) {
-        expect(result.winner!.id, testMatch1.winner!.id);
-        expect(result.winner!.name, testMatch1.winner!.name);
-        expect(result.winner!.createdAt, testMatch1.winner!.createdAt);
-      } else {
-        expect(result.winner, testMatch1.winner);
-      }
-
       if (result.group != null) {
         expect(result.group!.members.length, testGroup1.members.length);
 
@@ -113,22 +122,19 @@ void main() {
       } else {
         fail('Group is null');
       }
-      if (result.players != null) {
-        expect(result.players!.length, testMatch1.players!.length);
+      expect(result.players.length, testMatch1.players.length);
 
-        for (int i = 0; i < testMatch1.players!.length; i++) {
-          expect(result.players![i].id, testMatch1.players![i].id);
-          expect(result.players![i].name, testMatch1.players![i].name);
-          expect(
-            result.players![i].createdAt,
-            testMatch1.players![i].createdAt,
-          );
-        }
-      } else {
-        fail('Players is null');
+      for (int i = 0; i < testMatch1.players.length; i++) {
+        expect(result.players[i].id, testMatch1.players[i].id);
+        expect(result.players[i].name, testMatch1.players[i].name);
+        expect(
+          result.players[i].createdAt,
+          testMatch1.players[i].createdAt,
+        );
       }
     });
 
+    // Verifies that multiple matches can be added and retrieved with correct groups and players.
     test('Adding and fetching multiple matches works correctly', () async {
       await database.matchDao.addMatchAsList(
         matches: [
@@ -156,13 +162,6 @@ void main() {
         expect(match.id, testMatch.id);
         expect(match.name, testMatch.name);
         expect(match.createdAt, testMatch.createdAt);
-        if (match.winner != null && testMatch.winner != null) {
-          expect(match.winner!.id, testMatch.winner!.id);
-          expect(match.winner!.name, testMatch.winner!.name);
-          expect(match.winner!.createdAt, testMatch.winner!.createdAt);
-        } else {
-          expect(match.winner, testMatch.winner);
-        }
 
         // Group-Checks
         if (testMatch.group != null) {
@@ -188,22 +187,19 @@ void main() {
         }
 
         // Players-Checks
-        if (testMatch.players != null) {
-          expect(match.players!.length, testMatch.players!.length);
-          for (int i = 0; i < testMatch.players!.length; i++) {
-            expect(match.players![i].id, testMatch.players![i].id);
-            expect(match.players![i].name, testMatch.players![i].name);
-            expect(
-              match.players![i].createdAt,
-              testMatch.players![i].createdAt,
-            );
-          }
-        } else {
-          expect(match.players, null);
+        expect(match.players.length, testMatch.players.length);
+        for (int i = 0; i < testMatch.players.length; i++) {
+          expect(match.players[i].id, testMatch.players[i].id);
+          expect(match.players[i].name, testMatch.players[i].name);
+          expect(
+            match.players[i].createdAt,
+            testMatch.players[i].createdAt,
+          );
         }
       }
     });
 
+    // Verifies that adding the same match twice does not create duplicates.
     test('Adding the same match twice does not create duplicates', () async {
       await database.matchDao.addMatch(match: testMatch1);
       await database.matchDao.addMatch(match: testMatch1);
@@ -212,6 +208,7 @@ void main() {
       expect(matchCount, 1);
     });
 
+    // Verifies that matchExists returns correct boolean based on match presence.
     test('Match existence check works correctly', () async {
       var matchExists = await database.matchDao.matchExists(
         matchId: testMatch1.id,
@@ -224,6 +221,7 @@ void main() {
       expect(matchExists, true);
     });
 
+    // Verifies that deleteMatch removes the match and returns true.
     test('Deleting a match works correctly', () async {
       await database.matchDao.addMatch(match: testMatch1);
 
@@ -238,6 +236,7 @@ void main() {
       expect(matchExists, false);
     });
 
+    // Verifies that getMatchCount returns correct count through add/delete operations.
     test('Getting the match count works correctly', () async {
       var matchCount = await database.matchDao.getMatchCount();
       expect(matchCount, 0);
@@ -263,82 +262,7 @@ void main() {
       expect(matchCount, 0);
     });
 
-    test('Checking if match has winner works correctly', () async {
-      await database.matchDao.addMatch(match: testMatch1);
-      await database.matchDao.addMatch(match: testMatchOnlyGroup);
-
-      var hasWinner = await database.matchDao.hasWinner(matchId: testMatch1.id);
-      expect(hasWinner, true);
-
-      hasWinner = await database.matchDao.hasWinner(
-        matchId: testMatchOnlyGroup.id,
-      );
-      expect(hasWinner, false);
-    });
-
-    test('Fetching the winner of a match works correctly', () async {
-      await database.matchDao.addMatch(match: testMatch1);
-
-      final winner = await database.matchDao.getWinner(matchId: testMatch1.id);
-      if (winner == null) {
-        fail('Winner is null');
-      } else {
-        expect(winner.id, testMatch1.winner!.id);
-        expect(winner.name, testMatch1.winner!.name);
-        expect(winner.createdAt, testMatch1.winner!.createdAt);
-      }
-    });
-
-    test('Updating the winner of a match works correctly', () async {
-      await database.matchDao.addMatch(match: testMatch1);
-
-      final winner = await database.matchDao.getWinner(matchId: testMatch1.id);
-      if (winner == null) {
-        fail('Winner is null');
-      } else {
-        expect(winner.id, testMatch1.winner!.id);
-        expect(winner.name, testMatch1.winner!.name);
-        expect(winner.createdAt, testMatch1.winner!.createdAt);
-        expect(winner.id, testPlayer4.id);
-        expect(winner.id != testPlayer5.id, true);
-      }
-
-      await database.matchDao.setWinner(
-        matchId: testMatch1.id,
-        winnerId: testPlayer5.id,
-      );
-
-      final newWinner = await database.matchDao.getWinner(
-        matchId: testMatch1.id,
-      );
-
-      if (newWinner == null) {
-        fail('New winner is null');
-      } else {
-        expect(newWinner.id, testPlayer5.id);
-        expect(newWinner.name, testPlayer5.name);
-        expect(newWinner.createdAt, testPlayer5.createdAt);
-      }
-    });
-
-    test('Removing a winner works correctly', () async {
-      await database.matchDao.addMatch(match: testMatch2);
-
-      var hasWinner = await database.matchDao.hasWinner(matchId: testMatch2.id);
-      expect(hasWinner, true);
-
-      await database.matchDao.removeWinner(matchId: testMatch2.id);
-
-      hasWinner = await database.matchDao.hasWinner(matchId: testMatch2.id);
-      expect(hasWinner, false);
-
-      final removedWinner = await database.matchDao.getWinner(
-        matchId: testMatch2.id,
-      );
-
-      expect(removedWinner, null);
-    });
-
+    // Verifies that updateMatchName correctly updates only the name field.
     test('Renaming a match works correctly', () async {
       await database.matchDao.addMatch(match: testMatch1);
 

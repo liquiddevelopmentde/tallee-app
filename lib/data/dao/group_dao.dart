@@ -23,6 +23,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
         return Group(
           id: groupData.id,
           name: groupData.name,
+          description: groupData.description,
           members: members,
           createdAt: groupData.createdAt,
         );
@@ -42,6 +43,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     return Group(
       id: result.id,
       name: result.name,
+      description: result.description,
       members: members,
       createdAt: result.createdAt,
     );
@@ -56,6 +58,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
           GroupTableCompanion.insert(
             id: group.id,
             name: group.name,
+            description: group.description,
             createdAt: group.createdAt,
           ),
           mode: InsertMode.insertOrReplace,
@@ -105,6 +108,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
                 (group) => GroupTableCompanion.insert(
                   id: group.id,
                   name: group.name,
+                  description: group.description,
                   createdAt: group.createdAt,
                 ),
               )
@@ -132,6 +136,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
                   (p) => PlayerTableCompanion.insert(
                     id: p.id,
                     name: p.name,
+                    description: p.description,
                     createdAt: p.createdAt,
                   ),
                 )
@@ -176,7 +181,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
 
   /// Updates the name of the group with the given [id] to [newName].
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
-  Future<bool> updateGroupname({
+  Future<bool> updateGroupName({
     required String groupId,
     required String newName,
   }) async {
@@ -186,6 +191,21 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
         );
     return rowsAffected > 0;
   }
+
+  /// Updates the description of the group with the given [groupId] to [newDescription].
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> updateGroupDescription({
+    required String groupId,
+    required String newDescription,
+  }) async {
+    final rowsAffected =
+        await (update(groupTable)..where((g) => g.id.equals(groupId))).write(
+          GroupTableCompanion(description: Value(newDescription)),
+        );
+    return rowsAffected > 0;
+  }
+
+
 
   /// Retrieves the number of groups in the database.
   Future<int> getGroupCount() async {
@@ -210,5 +230,45 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     final query = delete(groupTable);
     final rowsAffected = await query.go();
     return rowsAffected > 0;
+  }
+
+  /// Replaces all players in a group with the provided list of players.
+  /// Removes all existing players from the group and adds the new players.
+  /// Also adds any new players to the player table if they don't exist.
+  Future<void> replaceGroupPlayers({
+    required String groupId,
+    required List<Player> newPlayers,
+  }) async {
+    await db.transaction(() async {
+      // Remove all existing players from the group
+      final deleteQuery = delete(db.playerGroupTable)
+        ..where((p) => p.groupId.equals(groupId));
+      await deleteQuery.go();
+
+      // Add new players to the player table if they don't exist
+      await Future.wait(
+        newPlayers.map((player) async {
+          if (!await db.playerDao.playerExists(playerId: player.id)) {
+            await db.playerDao.addPlayer(player: player);
+          }
+        }),
+      );
+
+      // Add the new players to the group
+      await db.batch(
+        (b) => b.insertAll(
+          db.playerGroupTable,
+          newPlayers
+              .map(
+                (player) => PlayerGroupTableCompanion.insert(
+                  playerId: player.id,
+                  groupId: groupId,
+                ),
+              )
+              .toList(),
+          mode: InsertMode.insertOrReplace,
+        ),
+      );
+    });
   }
 }

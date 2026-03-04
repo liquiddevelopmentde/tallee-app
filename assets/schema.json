@@ -15,16 +15,91 @@
           },
           "name": {
             "type": "string"
+          },
+          "description": {
+            "type": "string"
           }
         },
         "required": [
           "id",
           "createdAt",
-          "name"
+          "name",
+          "description"
+        ]
+      }
+    },
+    "games": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ruleset": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "name",
+          "ruleset",
+          "description",
+          "color",
+          "icon"
         ]
       }
     },
     "groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "memberIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "createdAt",
+          "description",
+          "memberIds"
+        ]
+      }
+    },
+    "teams": {
       "type": "array",
       "items": {
         "type": "object",
@@ -67,11 +142,14 @@
           "createdAt": {
             "type": "string"
           },
+          "endedAt": {
+            "type": ["string", "null"]
+          },
+          "gameId": {
+            "type": "string"
+          },
           "groupId": {
-            "anyOf": [
-              {"type": "string"},
-              {"type": "null"}
-            ]
+            "type": ["string", "null"]
           },
           "playerIds": {
             "type": "array",
@@ -79,26 +157,26 @@
               "type": "string"
             }
           },
-          "winnerId": {
-            "anyOf": [
-              {"type": "string"},
-              {"type": "null"}
-            ]
+          "notes": {
+            "type": "string"
           }
         },
         "required": [
           "id",
           "name",
           "createdAt",
-          "groupId",
-          "playerIds"
+          "gameId",
+          "playerIds",
+          "notes"
         ]
       }
     }
   },
   "required": [
     "players",
+    "games",
     "groups",
+    "teams",
     "matches"
   ]
 }

@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/game.dart';
 import 'package:tallee/data/dto/group.dart';
 import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
@@ -36,12 +38,15 @@ class _MatchViewState extends State<MatchView> {
     4,
     Match(
       name: 'Skeleton match name',
+      game: Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: GameColor.blue, icon: ''),
       group: Group(
         name: 'Group name',
-        members: List.filled(5, Player(name: 'Player')),
+        description: '',
+        members: List.filled(5, Player(name: 'Player', description: '')),
       ),
-      winner: Player(name: 'Player'),
-      players: [Player(name: 'Player')],
+      winner: Player(name: 'Player', description: ''),
+      players: [Player(name: 'Player', description: '')],
+      notes: '',
     ),
   );
 

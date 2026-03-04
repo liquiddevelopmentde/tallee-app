@@ -29,9 +29,7 @@ class GameTracker extends StatelessWidget {
             return supportedLocale;
           }
         }
-        return supportedLocales.firstWhere(
-          (locale) => locale.languageCode == 'en',
-        );
+        return supportedLocales.firstWhere((locale) => locale.languageCode == 'en');
       },
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,

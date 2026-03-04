@@ -167,7 +167,7 @@ class _StatisticsViewState extends State<StatisticsView> {
       final playerId = winCounts[i].$1;
       final player = players.firstWhere(
         (p) => p.id == playerId,
-        orElse: () => Player(id: playerId, name: loc.not_available),
+        orElse: () => Player(id: playerId, name: loc.not_available, description: ''),
       );
       winCounts[i] = (player.name, winCounts[i].$2);
     }
@@ -202,19 +202,17 @@ class _StatisticsViewState extends State<StatisticsView> {
           }
         }
       }
-      if (match.players != null) {
-        final members = match.players!.map((p) => p.id).toList();
-        for (var playerId in members) {
-          final index = matchCounts.indexWhere((entry) => entry.$1 == playerId);
-          // -1 means player not found in matchCounts
-          if (index != -1) {
-            final current = matchCounts[index].$2;
+      final members = match.players.map((p) => p.id).toList();
+      for (var playerId in members) {
+        final index = matchCounts.indexWhere((entry) => entry.$1 == playerId);
+        // -1 means player not found in matchCounts
+        if (index != -1) {
+          final current = matchCounts[index].$2;
             matchCounts[index] = (playerId, current + 1);
           } else {
             matchCounts.add((playerId, 1));
           }
         }
-      }
     }
 
     // Adding all players with zero matches
@@ -231,7 +229,7 @@ class _StatisticsViewState extends State<StatisticsView> {
       final playerId = matchCounts[i].$1;
       final player = players.firstWhere(
         (p) => p.id == playerId,
-        orElse: () => Player(id: playerId, name: loc.not_available),
+        orElse: () => Player(id: playerId, name: loc.not_available, description: ''),
       );
       matchCounts[i] = (player.name, matchCounts[i].$2);
     }
