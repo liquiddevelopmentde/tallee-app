@@ -16,11 +16,12 @@ class Game {
     DateTime? createdAt,
     required this.name,
     required this.ruleset,
-    required this.description,
+    String? description,
     required this.color,
     required this.icon,
   }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? clock.now();
+       createdAt = createdAt ?? clock.now(),
+       description = description ?? '';
 
   @override
   String toString() {
