@@ -2,43 +2,39 @@ import 'package:clock/clock.dart';
 import 'package:tallee/data/dto/player.dart';
 import 'package:uuid/uuid.dart';
 
-class Group {
+class Team {
   final String id;
   final String name;
-  final String description;
   final DateTime createdAt;
   final List<Player> members;
 
-  Group({
+  Team({
     String? id,
-    DateTime? createdAt,
     required this.name,
-    String? description,
+    DateTime? createdAt,
     required this.members,
   }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? clock.now(),
-       description = description ?? '';
+       createdAt = createdAt ?? clock.now();
 
   @override
   String toString() {
-    return 'Group{id: $id, name: $name, description: $description, members: $members}';
+    return 'Team{id: $id, name: $name, members: $members}';
   }
 
-  /// Creates a Group instance from a JSON object (memberIds format).
+  /// Creates a Team instance from a JSON object (memberIds format).
   /// Player objects are reconstructed from memberIds by the DataTransferService.
-  Group.fromJson(Map<String, dynamic> json)
+  Team.fromJson(Map<String, dynamic> json)
     : id = json['id'],
-      createdAt = DateTime.parse(json['createdAt']),
       name = json['name'],
-      description = json['description'],
+      createdAt = DateTime.parse(json['createdAt']),
       members = []; // Populated during import via DataTransferService
 
-  /// Converts the Group instance to a JSON object using normalized format (memberIds only).
+  /// Converts the Team instance to a JSON object using normalized format (memberIds only).
   Map<String, dynamic> toJson() => {
     'id': id,
-    'createdAt': createdAt.toIso8601String(),
     'name': name,
-    'description': description,
+    'createdAt': createdAt.toIso8601String(),
     'memberIds': members.map((member) => member.id).toList(),
   };
 }
+

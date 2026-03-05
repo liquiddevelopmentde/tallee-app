@@ -62,7 +62,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   /// Skeleton data used while loading players.
   late final List<Player> skeletonData = List.filled(
     7,
-    Player(name: 'Player 0'),
+    Player(name: 'Player 0', description: ''),
   );
 
   @override
@@ -276,7 +276,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     final loc = AppLocalizations.of(context);
     final playerName = _searchBarController.text.trim();
 
-    final createdPlayer = Player(name: playerName);
+    final createdPlayer = Player(name: playerName, description: '');
     final success = await db.playerDao.addPlayer(player: createdPlayer);
 
     if (!context.mounted) return;

@@ -91,7 +91,7 @@ class _MatchTileState extends State<MatchTile> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${group.name}${widget.match.players != null ? ' + ${widget.match.players?.length}' : ''}',
+                      '${group.name} + ${widget.match.players.length}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -106,7 +106,7 @@ class _MatchTileState extends State<MatchTile> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${widget.match.players!.length} ${loc.players}',
+                      '${widget.match.players.length} ${loc.players}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -241,12 +241,10 @@ class _MatchTileState extends State<MatchTile> {
     final playerIds = <String>{};
 
     // Add players from game.players
-    if (widget.match.players != null) {
-      for (var player in widget.match.players!) {
-        if (!playerIds.contains(player.id)) {
-          allPlayers.add(player);
-          playerIds.add(player.id);
-        }
+    for (var player in widget.match.players) {
+      if (!playerIds.contains(player.id)) {
+        allPlayers.add(player);
+        playerIds.add(player.id);
       }
     }
 

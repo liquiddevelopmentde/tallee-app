@@ -15,7 +15,12 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     final result = await query.get();
     return result
         .map(
-          (row) => Player(id: row.id, name: row.name, createdAt: row.createdAt),
+          (row) => Player(
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            createdAt: row.createdAt,
+          ),
         )
         .toList();
   }
@@ -27,6 +32,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return Player(
       id: result.id,
       name: result.name,
+      description: result.description,
       createdAt: result.createdAt,
     );
   }
@@ -40,6 +46,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
         PlayerTableCompanion.insert(
           id: player.id,
           name: player.name,
+          description: player.description,
           createdAt: player.createdAt,
         ),
         mode: InsertMode.insertOrReplace,
@@ -63,6 +70,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
               (player) => PlayerTableCompanion.insert(
                 id: player.id,
                 name: player.name,
+                description: player.description,
                 createdAt: player.createdAt,
               ),
             )
@@ -91,7 +99,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   }
 
   /// Updates the name of the player with the given [playerId] to [newName].
-  Future<void> updatePlayername({
+  Future<void> updatePlayerName({
     required String playerId,
     required String newName,
   }) async {

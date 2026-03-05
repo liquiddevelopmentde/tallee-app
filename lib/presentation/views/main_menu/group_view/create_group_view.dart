@@ -158,6 +158,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                           updatedGroup = Group(
                             id: widget.groupToEdit!.id,
                             name: _groupNameController.text.trim(),
+                            description: '',
                             members: selectedPlayers,
                           );
                           //TODO: Implement group editing in database
