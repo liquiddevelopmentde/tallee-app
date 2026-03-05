@@ -1,3 +1,5 @@
+import 'dart:core' hide Match;
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -245,16 +247,6 @@ class _MatchTileState extends State<MatchTile> {
       if (!playerIds.contains(player.id)) {
         allPlayers.add(player);
         playerIds.add(player.id);
-      }
-    }
-
-    // Add players from game.group.players
-    if (widget.match.group?.members != null) {
-      for (var player in widget.match.group!.members) {
-        if (!playerIds.contains(player.id)) {
-          allPlayers.add(player);
-          playerIds.add(player.id);
-        }
       }
     }
 
