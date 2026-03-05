@@ -27,9 +27,9 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         if (row.groupId != null) {
           group = await db.groupDao.getGroupById(groupId: row.groupId!);
         }
-        final players = await db.playerMatchDao.getPlayersOfMatch(
-          matchId: row.id,
-        ) ?? [];
+        final players =
+            await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
+        final winner = await getWinner(matchId: row.id);
         return Match(
           id: row.id,
           name: row.name ?? '',
@@ -39,6 +39,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           notes: row.notes ?? '',
           createdAt: row.createdAt,
           endedAt: row.endedAt,
+          winner: winner,
         );
       }),
     );
@@ -56,7 +57,10 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       group = await db.groupDao.getGroupById(groupId: result.groupId!);
     }
 
-    final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
+    final players =
+        await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
+
+    final winner = await getWinner(matchId: matchId);
 
     return Match(
       id: result.id,
@@ -67,6 +71,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       notes: result.notes ?? '',
       createdAt: result.createdAt,
       endedAt: result.endedAt,
+      winner: winner,
     );
   }
 
@@ -94,6 +99,10 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           playerId: p.id,
         );
       }
+
+      if (match.winner != null) {
+        await setWinner(matchId: match.id, winnerId: match.winner!.id);
+      }
     });
   }
 
@@ -112,20 +121,20 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       if (uniqueGames.isNotEmpty) {
         await db.batch(
-              (b) => b.insertAll(
+          (b) => b.insertAll(
             db.gameTable,
             uniqueGames.values
                 .map(
                   (game) => GameTableCompanion.insert(
-                id: game.id,
-                name: game.name,
-                ruleset: game.ruleset.name,
-                description: game.description,
-                color: game.color.name,
-                icon: game.icon,
-                createdAt: game.createdAt,
-              ),
-            )
+                    id: game.id,
+                    name: game.name,
+                    ruleset: game.ruleset.name,
+                    description: game.description,
+                    color: game.color.name,
+                    icon: game.icon,
+                    createdAt: game.createdAt,
+                  ),
+                )
                 .toList(),
             mode: InsertMode.insertOrIgnore,
           ),
@@ -134,18 +143,18 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       // Add all groups of the matches in batch
       await db.batch(
-            (b) => b.insertAll(
+        (b) => b.insertAll(
           db.groupTable,
           matches
               .where((match) => match.group != null)
               .map(
                 (match) => GroupTableCompanion.insert(
-              id: match.group!.id,
-              name: match.group!.name,
-              description: match.group!.description,
-              createdAt: match.group!.createdAt,
-            ),
-          )
+                  id: match.group!.id,
+                  name: match.group!.name,
+                  description: match.group!.description,
+                  createdAt: match.group!.createdAt,
+                ),
+              )
               .toList(),
           mode: InsertMode.insertOrIgnore,
         ),
@@ -153,20 +162,20 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       // Add all matches in batch
       await db.batch(
-            (b) => b.insertAll(
+        (b) => b.insertAll(
           matchTable,
           matches
               .map(
                 (match) => MatchTableCompanion.insert(
-              id: match.id,
-              gameId: match.game.id,
-              groupId: Value(match.group?.id),
-              name: Value(match.name),
-              notes: Value(match.notes),
-              createdAt: match.createdAt,
-              endedAt: Value(match.endedAt),
-            ),
-          )
+                  id: match.id,
+                  gameId: match.game.id,
+                  groupId: Value(match.group?.id),
+                  name: Value(match.name),
+                  notes: Value(match.notes),
+                  createdAt: match.createdAt,
+                  endedAt: Value(match.endedAt),
+                ),
+              )
               .toList(),
           mode: InsertMode.insertOrReplace,
         ),
@@ -188,17 +197,17 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       if (uniquePlayers.isNotEmpty) {
         await db.batch(
-              (b) => b.insertAll(
+          (b) => b.insertAll(
             db.playerTable,
             uniquePlayers.values
                 .map(
                   (p) => PlayerTableCompanion.insert(
-                id: p.id,
-                name: p.name,
-                description: p.description,
-                createdAt: p.createdAt,
-              ),
-            )
+                    id: p.id,
+                    name: p.name,
+                    description: p.description,
+                    createdAt: p.createdAt,
+                  ),
+                )
                 .toList(),
             mode: InsertMode.insertOrIgnore,
           ),
@@ -253,9 +262,9 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Retrieves the number of matches in the database.
   Future<int> getMatchCount() async {
     final count =
-    await (selectOnly(matchTable)..addColumns([matchTable.id.count()]))
-        .map((row) => row.read(matchTable.id.count()))
-        .getSingle();
+        await (selectOnly(matchTable)..addColumns([matchTable.id.count()]))
+            .map((row) => row.read(matchTable.id.count()))
+            .getSingle();
     return count ?? 0;
   }
 
@@ -315,15 +324,16 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   }
 
   /// Updates the group of the match with the given [matchId].
+  /// Replaces the existing group association with the new group specified by [newGroupId].
   /// Pass null to remove the group association.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> updateMatchGroup({
     required String matchId,
-    required String? groupId,
+    required String? newGroupId,
   }) async {
     final query = update(matchTable)..where((g) => g.id.equals(matchId));
     final rowsAffected = await query.write(
-      MatchTableCompanion(groupId: Value(groupId)),
+      MatchTableCompanion(groupId: Value(newGroupId)),
     );
     return rowsAffected > 0;
   }
@@ -379,10 +389,12 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       // Add the new players to the match
       await Future.wait(
-        newPlayers.map((player) => db.playerMatchDao.addPlayerToMatch(
-          matchId: matchId,
-          playerId: player.id,
-        )),
+        newPlayers.map(
+          (player) => db.playerMatchDao.addPlayerToMatch(
+            matchId: matchId,
+            playerId: player.id,
+          ),
+        ),
       );
     });
   }
@@ -394,7 +406,8 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Checks if a match has a winner.
   /// Returns true if any player in the match has their score set to 1.
   Future<bool> hasWinner({required String matchId}) async {
-    final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
+    final players =
+        await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
 
     for (final player in players) {
       final score = await db.playerMatchDao.getPlayerScore(
@@ -411,7 +424,8 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Gets the winner of a match.
   /// Returns the player with score 1, or null if no winner is set.
   Future<Player?> getWinner({required String matchId}) async {
-    final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
+    final players =
+        await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
 
     for (final player in players) {
       final score = await db.playerMatchDao.getPlayerScore(
@@ -433,7 +447,8 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     required String winnerId,
   }) async {
     await db.transaction(() async {
-      final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
+      final players =
+          await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
 
       // Set all players' scores to 0
       for (final player in players) {
