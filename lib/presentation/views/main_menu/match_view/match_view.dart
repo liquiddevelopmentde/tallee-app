@@ -1,5 +1,3 @@
-import 'dart:core' hide Match;
-
 import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +36,13 @@ class _MatchViewState extends State<MatchView> {
     4,
     Match(
       name: 'Skeleton match name',
-      game: Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: GameColor.blue, icon: ''),
+      game: Game(
+        name: '',
+        ruleset: Ruleset.singleWinner,
+        description: '',
+        color: GameColor.blue,
+        icon: '',
+      ),
       group: Group(
         name: 'Group name',
         description: '',
@@ -96,7 +100,7 @@ class _MatchViewState extends State<MatchView> {
                             adaptivePageRoute(
                               builder: (context) => MatchDetailView(
                                 match: matches[index],
-                                callback: loadGames,
+                                onMatchUpdate: loadGames,
                               ),
                             ),
                           );
