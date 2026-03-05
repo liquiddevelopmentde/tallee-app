@@ -35,7 +35,10 @@ class _MatchResultViewState extends State<MatchResultView> {
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
-    allPlayers = getAllPlayers(widget.match);
+
+    allPlayers = widget.match.players;
+    allPlayers.sort((a, b) => a.name.compareTo(b.name));
+
     if (widget.match.winner != null) {
       _selectedPlayer = allPlayers.firstWhere(
         (p) => p.id == widget.match.winner!.id,
