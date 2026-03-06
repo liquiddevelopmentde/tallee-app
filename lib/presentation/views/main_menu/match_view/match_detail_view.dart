@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/dto/match.dart';
@@ -146,7 +147,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       const SizedBox(width: 8),
                       Text(
                         // TODO: Update after DB changes
-                        '${match.group!.name}${getExtraPlayerCount()}',
+                        '${match.group!.name}${getExtraPlayerCount(match)}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -260,26 +261,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ),
       ),
     );
-  }
-
-  /// Counts how many players in the match are not part of the group
-  /// Returns the count as a string, or an empty string if there is no group
-  String getExtraPlayerCount() {
-    int count = 0;
-
-    final groupMembers = match.group!.members;
-    final players = match.players;
-
-    for (var player in players) {
-      if (!groupMembers.any((member) => member.id == player.id)) {
-        count++;
-      }
-    }
-
-    if (count == 0) {
-      return '';
-    }
-    return ' + ${count.toString()}';
   }
 
   /// Callback for when the match is updated in the edit view,

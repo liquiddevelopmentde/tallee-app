@@ -2,6 +2,7 @@ import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
@@ -51,6 +52,7 @@ class _MatchTileState extends State<MatchTile> {
 
   @override
   Widget build(BuildContext context) {
+    final match = widget.match;
     final group = widget.match.group;
     final winner = widget.match.winner;
     final loc = AppLocalizations.of(context);
@@ -70,7 +72,7 @@ class _MatchTileState extends State<MatchTile> {
               children: [
                 Expanded(
                   child: Text(
-                    widget.match.name,
+                    match.name,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -79,7 +81,7 @@ class _MatchTileState extends State<MatchTile> {
                   ),
                 ),
                 Text(
-                  _formatDate(widget.match.createdAt, context),
+                  _formatDate(match.createdAt, context),
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
@@ -94,7 +96,7 @@ class _MatchTileState extends State<MatchTile> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${group.name}${getExtraPlayerCount()}',
+                      '${match.group!.name}${getExtraPlayerCount(match)}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -109,7 +111,7 @@ class _MatchTileState extends State<MatchTile> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${widget.match.players.length} ${loc.players}',
+                      '${match.players.length} ${loc.players}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -235,25 +237,5 @@ class _MatchTileState extends State<MatchTile> {
     } else {
       return '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(dateTime)}';
     }
-  }
-
-  /// Counts how many players in the match are not part of the group
-  /// Returns the count as a string, or an empty string if there is no group
-  String getExtraPlayerCount() {
-    int count = 0;
-
-    final groupMembers = widget.match.group!.members;
-    final players = widget.match.players;
-
-    for (var player in players) {
-      if (!groupMembers.any((member) => member.id == player.id)) {
-        count++;
-      }
-    }
-
-    if (count == 0) {
-      return '';
-    }
-    return ' + ${count.toString()}';
   }
 }
