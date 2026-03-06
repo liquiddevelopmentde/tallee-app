@@ -252,6 +252,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                           ),
                         ),
                       );
+                      match.winner = currentWinner;
                     },
                   ),
                 ],
