@@ -248,7 +248,7 @@ abstract class AppLocalizations {
   /// **'Edit Group'**
   String get edit_group;
 
-  /// No description provided for @edit_match.
+  /// Button & Appbar label for editing a match
   ///
   /// In en, this message translates to:
   /// **'Edit Match'**

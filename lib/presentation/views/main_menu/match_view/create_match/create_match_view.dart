@@ -321,6 +321,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     widget.onMatchUpdated?.call(updatedMatch);
   }
 
+  // Creates a new match and adds it to the database.
+  // Returns the created match.
   Future<Match> createMatch() async {
     final tempGame = await getTemporaryGame();
 
