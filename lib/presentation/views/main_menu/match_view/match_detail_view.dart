@@ -19,18 +19,18 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 class MatchDetailView extends StatefulWidget {
   /// A view that displays the profile of a match
   /// - [match]: The match to display
-  /// - [callback]: Callback to refresh the match list
+  /// - [onMatchUpdate]: Callback to refresh the match list
   const MatchDetailView({
     super.key,
     required this.match,
-    required this.callback,
+    required this.onMatchUpdate,
   });
 
   /// The match to display
   final Match match;
 
   /// Callback to refresh the match list
-  final VoidCallback callback;
+  final VoidCallback onMatchUpdate;
 
   @override
   State<MatchDetailView> createState() => _MatchDetailViewState();
@@ -41,15 +41,14 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   late Player? currentWinner;
 
-  /// All players who participated in the match
-  late final List<Player> allPlayers;
+  late Match match;
 
   @override
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    allPlayers = _getAllPlayers();
     currentWinner = widget.match.winner;
+    match = widget.match;
   }
 
   @override
@@ -90,10 +89,10 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 ),
               ).then((confirmed) async {
                 if (confirmed! && context.mounted) {
-                  await db.matchDao.deleteMatch(matchId: widget.match.id);
+                  await db.matchDao.deleteMatch(matchId: match.id);
                   if (!context.mounted) return;
                   Navigator.pop(context);
-                  widget.callback.call();
+                  widget.onMatchUpdate.call();
                 }
               });
             },
@@ -121,7 +120,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  widget.match.name,
+                  match.name,
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -131,7 +130,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(widget.match.createdAt)}',
+                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(match.createdAt)}',
                   style: const TextStyle(
                     fontSize: 12,
                     color: CustomTheme.textColor,
@@ -139,7 +138,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
-                if (widget.match.group != null) ...[
+                if (match.group != null) ...[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -147,7 +146,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       const SizedBox(width: 8),
                       Text(
                         // TODO: Update after DB changes
-                        '${widget.match.group!.name} ${widget.match.players != null ? '+ ${widget.match.players!.length}' : ''}',
+                        '${match.group!.name}${getExtraPlayerCount()}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -163,7 +162,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                     crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
-                    children: allPlayers.map((player) {
+                    children: match.players.map((player) {
                       return TextIconTile(
                         text: player.name,
                         iconEnabled: false,
@@ -197,7 +196,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: widget.match.winner != null
+                              color: match.winner != null
                                   ? CustomTheme.primaryColor
                                   : CustomTheme.textColor,
                             ),
@@ -227,8 +226,10 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       context,
                       adaptivePageRoute(
                         fullscreenDialog: true,
-                        builder: (context) =>
-                            CreateMatchView(match: widget.match),
+                        builder: (context) => CreateMatchView(
+                          match: match,
+                          onMatchUpdated: onMatchUpdated,
+                        ),
                       ),
                     ),
                   ),
@@ -242,9 +243,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                         adaptivePageRoute(
                           fullscreenDialog: true,
                           builder: (context) => MatchResultView(
-                            match: widget.match,
+                            match: match,
                             onWinnerChanged: () {
-                              widget.callback.call();
+                              widget.onMatchUpdate.call();
                               setState(() {});
                             },
                           ),
@@ -261,25 +262,32 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     );
   }
 
-  /// Gets all players who participated in the match (from group and individual players)
-  List<Player> _getAllPlayers() {
-    final List<Player> players = [];
+  /// Counts how many players in the match are not part of the group
+  /// Returns the count as a string, or an empty string if there is no group
+  String getExtraPlayerCount() {
+    int count = 0;
 
-    // Add group members if group exists
-    if (widget.match.group != null) {
-      players.addAll(widget.match.group!.members);
-    }
+    final groupMembers = match.group!.members;
+    final players = match.players;
 
-    // Add individual players
-    if (widget.match.players != null) {
-      for (var player in widget.match.players!) {
-        // Avoid duplicates
-        if (!players.any((p) => p.id == player.id)) {
-          players.add(player);
-        }
+    for (var player in players) {
+      if (!groupMembers.any((member) => member.id == player.id)) {
+        count++;
       }
     }
 
-    return players;
+    if (count == 0) {
+      return '';
+    }
+    return ' + ${count.toString()}';
+  }
+
+  /// Callback for when the match is updated in the edit view,
+  /// updates the match in this view
+  onMatchUpdated(editedMatch) {
+    setState(() {
+      match = editedMatch;
+    });
+    widget.onMatchUpdate.call();
   }
 }
