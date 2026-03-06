@@ -40,12 +40,13 @@ class MatchTile extends StatefulWidget {
 }
 
 class _MatchTileState extends State<MatchTile> {
-  late final List<Player> _allPlayers;
+  late List<Player> _allPlayers;
 
   @override
   void initState() {
     super.initState();
-    _allPlayers = _getCombinedPlayers();
+    _allPlayers = [...widget.match.players];
+    _allPlayers.sort((a, b) => a.name.compareTo(b.name));
   }
 
   @override
@@ -93,7 +94,7 @@ class _MatchTileState extends State<MatchTile> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${group.name} + ${widget.match.players.length}',
+                      '${group.name}${getExtraPlayerCount()}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -236,21 +237,23 @@ class _MatchTileState extends State<MatchTile> {
     }
   }
 
-  /// Retrieves all unique players associated with the match,
-  /// combining players from both the match and its group.
-  List<Player> _getCombinedPlayers() {
-    final allPlayers = <Player>[];
-    final playerIds = <String>{};
+  /// Counts how many players in the match are not part of the group
+  /// Returns the count as a string, or an empty string if there is no group
+  String getExtraPlayerCount() {
+    int count = 0;
 
-    // Add players from game.players
-    for (var player in widget.match.players) {
-      if (!playerIds.contains(player.id)) {
-        allPlayers.add(player);
-        playerIds.add(player.id);
+    final groupMembers = widget.match.group!.members;
+    final players = widget.match.players;
+
+    for (var player in players) {
+      if (!groupMembers.any((member) => member.id == player.id)) {
+        count++;
       }
     }
 
-    allPlayers.sort((a, b) => a.name.compareTo(b.name));
-    return allPlayers;
+    if (count == 0) {
+      return '';
+    }
+    return ' + ${count.toString()}';
   }
 }
