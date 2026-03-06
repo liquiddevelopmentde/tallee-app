@@ -29,25 +29,25 @@ class GameTracker extends StatelessWidget {
             return supportedLocale;
           }
         }
-        return supportedLocales.firstWhere((locale) => locale.languageCode == 'en');
+        return supportedLocales.firstWhere(
+          (locale) => locale.languageCode == 'en',
+        );
       },
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
-      themeMode: ThemeMode.dark, // forces dark mode
+      themeMode: ThemeMode.dark,
       theme: ThemeData(
+        // main colors
         primaryColor: CustomTheme.primaryColor,
         scaffoldBackgroundColor: CustomTheme.backgroundColor,
+        // themes
         appBarTheme: CustomTheme.appBarTheme,
-        radioTheme: RadioThemeData(
-          fillColor: WidgetStateProperty.resolveWith<Color>((states) {
-            if (states.contains(WidgetState.selected)) {
-              return CustomTheme.primaryColor;
-            }
-            return CustomTheme.textColor;
-          }),
-        ),
+        inputDecorationTheme: CustomTheme.inputDecorationTheme,
+        searchBarTheme: CustomTheme.searchBarTheme,
+        radioTheme: CustomTheme.radioTheme,
+        // color scheme
         colorScheme: ColorScheme.fromSeed(
-          seedColor: CustomTheme.primaryColor,
+          seedColor: CustomTheme.textColor,
           brightness: Brightness.dark,
           primary: CustomTheme.primaryColor,
           onPrimary: CustomTheme.textColor,
