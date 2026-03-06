@@ -248,6 +248,12 @@ abstract class AppLocalizations {
   /// **'Edit Group'**
   String get edit_group;
 
+  /// No description provided for @edit_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Match'**
+  String get edit_match;
+
   /// Button text to enter match results
   ///
   /// In en, this message translates to:

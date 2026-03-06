@@ -88,6 +88,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_group => 'Edit Group';
 
   @override
+  String get edit_match => 'Edit Match';
+
+  @override
   String get enter_results => 'Enter Results';
 
   @override

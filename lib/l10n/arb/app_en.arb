@@ -80,6 +80,9 @@
   "@edit_group": {
       "description": "Button & Appbar label for editing a group"
   },
+  "@edit_match": {
+      "description": "Button & Appbar label for editing a match"
+  },
   "@enter_results": {
     "description": "Button text to enter match results"
   },
@@ -347,6 +350,7 @@
   "delete_group": "Delete Group",
   "delete_match": "Delete Match",
   "edit_group": "Edit Group",
+  "edit_match": "Edit Match",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
   "error_deleting_group": "Error while deleting group, please try again",

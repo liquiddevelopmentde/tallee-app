@@ -79,13 +79,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_all_data => 'Alle Daten löschen';
 
   @override
-  String get delete_group => 'Gruppe löschen';
+  String get delete_group => 'Diese Gruppe löschen';
 
   @override
   String get delete_match => 'Spiel löschen';
 
   @override
   String get edit_group => 'Gruppe bearbeiten';
+
+  @override
+  String get edit_match => 'Gruppe bearbeiten';
 
   @override
   String get enter_results => 'Ergebnisse eintragen';
