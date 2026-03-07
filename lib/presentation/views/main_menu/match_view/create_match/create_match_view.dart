@@ -345,29 +345,15 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   Future<Game> getTemporaryGame() async {
     Game? game;
 
-    // No game is selected
-    if (selectedGameIndex == -1) {
-      // Use the first game as default if none selected
-      final selectedGame = games[0];
-      game = Game(
-        name: selectedGame.$1,
-        description: selectedGame.$2,
-        ruleset: selectedGame.$3,
-        color: GameColor.blue,
-        icon: '',
-      );
-    } else {
-      // Use the selected game from the list
-      final selectedGame = games[selectedGameIndex];
-      game = Game(
-        name: selectedGame.$1,
-        description: selectedGame.$2,
-        ruleset: selectedGame.$3,
-        color: GameColor.blue,
-        icon: '',
-      );
-    }
-    // Add the game to the database if it doesn't exist
+    final selectedGame = games[selectedGameIndex];
+    game = Game(
+      name: selectedGame.$1,
+      description: selectedGame.$2,
+      ruleset: selectedGame.$3,
+      color: GameColor.blue,
+      icon: '',
+    );
+
     await db.gameDao.addGame(game: game);
     return game;
   }
