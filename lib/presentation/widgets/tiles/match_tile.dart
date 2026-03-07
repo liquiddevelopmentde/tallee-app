@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/widgets/tiles/text_icon_tile.dart';
 import 'package:intl/intl.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
 class MatchTile extends StatefulWidget {
   /// A tile widget that displays information about a match, including its name,
@@ -91,7 +91,7 @@ class _MatchTileState extends State<MatchTile> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${group.name}${widget.match.players != null ? ' + ${widget.match.players?.length}' : ''}',
+                      '${group.name} + ${widget.match.players.length}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -106,7 +106,7 @@ class _MatchTileState extends State<MatchTile> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${widget.match.players!.length} ${loc.players}',
+                      '${widget.match.players.length} ${loc.players}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -241,12 +241,10 @@ class _MatchTileState extends State<MatchTile> {
     final playerIds = <String>{};
 
     // Add players from game.players
-    if (widget.match.players != null) {
-      for (var player in widget.match.players!) {
-        if (!playerIds.contains(player.id)) {
-          allPlayers.add(player);
-          playerIds.add(player.id);
-        }
+    for (var player in widget.match.players) {
+      if (!playerIds.contains(player.id)) {
+        allPlayers.add(player);
+        playerIds.add(player.id);
       }
     }
 

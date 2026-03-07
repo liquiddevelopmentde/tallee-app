@@ -18,7 +18,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get amount_of_matches => 'Amount of Matches';
 
   @override
-  String get app_name => 'Game Tracker';
+  String get app_name => 'Tallee';
 
   @override
   String get best_player => 'Best Player';
@@ -273,6 +273,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get single_winner => 'Single Winner';
+
+  @override
+  String get highest_score => 'Highest Score';
+
+  @override
+  String get lowest_score => 'Lowest Score';
+
+  @override
+  String get multiple_winners => 'Multiple Winners';
 
   @override
   String get statistics => 'Statistics';

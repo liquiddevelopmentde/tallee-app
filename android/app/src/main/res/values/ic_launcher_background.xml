@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Referenz unbedingt als @color/launch_background (nicht @colors/...) -->
-    <color name="ic_launcher_background">@color/app_icon_background</color>
+    <color name="ic_launcher_background">#EF681F</color>
 </resources>

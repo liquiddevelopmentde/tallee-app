@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/core/enums.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 
 class CustomWidthButton extends StatelessWidget {
   /// A custom button widget that is designed to have a width relative to the screen size.

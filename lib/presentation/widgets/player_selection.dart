@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/constants.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/widgets/app_skeleton.dart';
-import 'package:game_tracker/presentation/widgets/text_input/custom_search_bar.dart';
-import 'package:game_tracker/presentation/widgets/tiles/text_icon_list_tile.dart';
-import 'package:game_tracker/presentation/widgets/tiles/text_icon_tile.dart';
-import 'package:game_tracker/presentation/widgets/top_centered_message.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class PlayerSelection extends StatefulWidget {
   /// A widget that allows users to select players from a list,
@@ -62,7 +62,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   /// Skeleton data used while loading players.
   late final List<Player> skeletonData = List.filled(
     7,
-    Player(name: 'Player 0'),
+    Player(name: 'Player 0', description: ''),
   );
 
   @override
@@ -85,6 +85,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomSearchBar(
+            maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
             controller: _searchBarController,
             constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
             hintText: loc.search_for_players,
@@ -275,7 +276,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     final loc = AppLocalizations.of(context);
     final playerName = _searchBarController.text.trim();
 
-    final createdPlayer = Player(name: playerName);
+    final createdPlayer = Player(name: playerName, description: '');
     final success = await db.playerDao.addPlayer(player: createdPlayer);
 
     if (!context.mounted) return;

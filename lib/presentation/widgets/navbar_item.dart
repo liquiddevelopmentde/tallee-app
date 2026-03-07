@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class NavbarItem extends StatefulWidget {
   /// A navigation bar item widget that represents a single tab in a navigation bar.
@@ -87,19 +87,29 @@ class _NavbarItemState extends State<NavbarItem>
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ScaleTransition(
-                scale: widget.isSelected
-                    ? _scaleAnimation
-                    : const AlwaysStoppedAnimation(1.0),
-                child: Icon(
-                  widget.icon,
+              AnimatedContainer(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
                   color: widget.isSelected
-                      ? CustomTheme.navBarItemSelectedColor
-                      : CustomTheme.navBarItemUnselectedColor,
-                  size: 32,
+                      ? CustomTheme.primaryColor.withAlpha(50)
+                      : Colors.transparent,
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                ),
+                duration: const Duration(milliseconds: 200),
+                child: ScaleTransition(
+                  scale: widget.isSelected
+                      ? _scaleAnimation
+                      : const AlwaysStoppedAnimation(1.0),
+                  child: Icon(
+                    widget.icon,
+                    color: widget.isSelected
+                        ? CustomTheme.navBarItemSelectedColor
+                        : CustomTheme.navBarItemUnselectedColor,
+                    size: 32,
+                  ),
                 ),
               ),
-              const SizedBox(height: 4),
               Text(
                 widget.label,
                 style: TextStyle(

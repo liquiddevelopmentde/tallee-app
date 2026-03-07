@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class AnimatedDialogButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/adaptive_page_route.dart';
-import 'package:game_tracker/core/constants.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/views/main_menu/match_view/match_result_view.dart';
-import 'package:game_tracker/presentation/widgets/app_skeleton.dart';
-import 'package:game_tracker/presentation/widgets/buttons/quick_create_button.dart';
-import 'package:game_tracker/presentation/widgets/tiles/info_tile.dart';
-import 'package:game_tracker/presentation/widgets/tiles/match_tile.dart';
-import 'package:game_tracker/presentation/widgets/tiles/quick_info_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/game.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/buttons/quick_create_button.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/match_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/quick_info_tile.dart';
 
 class HomeView extends StatefulWidget {
   /// The main home view of the application, displaying quick info,
@@ -40,13 +42,16 @@ class _HomeViewState extends State<HomeView> {
     2,
     Match(
       name: 'Skeleton Match',
+      game: Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: GameColor.blue, icon: ''),
       group: Group(
         name: 'Skeleton Group',
+        description: '',
         members: [
-          Player(name: 'Skeleton Player 1'),
-          Player(name: 'Skeleton Player 2'),
+          Player(name: 'Skeleton Player 1', description: ''),
+          Player(name: 'Skeleton Player 2', description: ''),
         ],
       ),
+      notes: '',
     ),
   );
 
@@ -99,9 +104,7 @@ class _HomeViewState extends State<HomeView> {
                         if (recentMatches.isNotEmpty)
                           for (Match match in recentMatches)
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 6.0,
-                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 6.0),
                               child: MatchTile(
                                 compact: true,
                                 width: constraints.maxWidth * 0.9,
@@ -110,19 +113,15 @@ class _HomeViewState extends State<HomeView> {
                                   await Navigator.of(context).push(
                                     adaptivePageRoute(
                                       fullscreenDialog: true,
-                                      builder: (context) =>
-                                          MatchResultView(match: match),
+                                      builder: (context) => MatchResultView(match: match),
                                     ),
                                   );
-                                  await updatedWinnerinRecentMatches(match.id);
+                                  await updatedWinnerInRecentMatches(match.id);
                                 },
                               ),
                             )
                         else
-                          Center(
-                            heightFactor: 5,
-                            child: Text(loc.no_recent_matches_available),
-                          ),
+                          Center(heightFactor: 5, child: Text(loc.no_recent_matches_available)),
                       ],
                     ),
                   ),
@@ -138,40 +137,22 @@ class _HomeViewState extends State<HomeView> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            QuickCreateButton(
-                              text: 'Category 1',
-                              onPressed: () {},
-                            ),
-                            QuickCreateButton(
-                              text: 'Category 2',
-                              onPressed: () {},
-                            ),
+                            QuickCreateButton(text: 'Category 1', onPressed: () {}),
+                            QuickCreateButton(text: 'Category 2', onPressed: () {}),
                           ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            QuickCreateButton(
-                              text: 'Category 3',
-                              onPressed: () {},
-                            ),
-                            QuickCreateButton(
-                              text: 'Category 4',
-                              onPressed: () {},
-                            ),
+                            QuickCreateButton(text: 'Category 3', onPressed: () {}),
+                            QuickCreateButton(text: 'Category 4', onPressed: () {}),
                           ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            QuickCreateButton(
-                              text: 'Category 5',
-                              onPressed: () {},
-                            ),
-                            QuickCreateButton(
-                              text: 'Category 6',
-                              onPressed: () {},
-                            ),
+                            QuickCreateButton(text: 'Category 5', onPressed: () {}),
+                            QuickCreateButton(text: 'Category 6', onPressed: () {}),
                           ],
                         ),
                       ],
@@ -200,11 +181,9 @@ class _HomeViewState extends State<HomeView> {
       matchCount = results[0] as int;
       groupCount = results[1] as int;
       loadedRecentMatches = results[2] as List<Match>;
-      recentMatches =
-          (loadedRecentMatches
-                ..sort((a, b) => b.createdAt.compareTo(a.createdAt)))
-              .take(2)
-              .toList();
+      recentMatches = (loadedRecentMatches..sort((a, b) => b.createdAt.compareTo(a.createdAt)))
+          .take(2)
+          .toList();
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -214,7 +193,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// Updates the winner information for a specific match in the recent matches list.
-  Future<void> updatedWinnerinRecentMatches(String matchId) async {
+  Future<void> updatedWinnerInRecentMatches(String matchId) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final winner = await db.matchDao.getWinner(matchId: matchId);
     final matchIndex = recentMatches.indexWhere((match) => match.id == matchId);

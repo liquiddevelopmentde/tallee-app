@@ -119,7 +119,7 @@ abstract class AppLocalizations {
   /// The name of the App
   ///
   /// In en, this message translates to:
-  /// **'Game Tracker'**
+  /// **'Tallee'**
   String get app_name;
 
   /// Label for best player statistic
@@ -601,6 +601,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Single Winner'**
   String get single_winner;
+
+  /// No description provided for @highest_score.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest Score'**
+  String get highest_score;
+
+  /// No description provided for @lowest_score.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest Score'**
+  String get lowest_score;
+
+  /// No description provided for @multiple_winners.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple Winners'**
+  String get multiple_winners;
 
   /// Statistics tab label
   ///

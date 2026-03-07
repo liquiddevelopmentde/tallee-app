@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
 class GroupTile extends StatefulWidget {
   /// A tile widget that displays information about a group, including its name and members.

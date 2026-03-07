@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/presentation/views/main_menu/settings_view/licenses/license_detail_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
-import 'package:game_tracker/presentation/widgets/colored_icon_container.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/licenses/license_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
+import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
 class LicenseTile extends StatelessWidget {
   /// A tile widget that displays information about a software package license.

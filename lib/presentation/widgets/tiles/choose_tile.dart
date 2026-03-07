@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class ChooseTile extends StatefulWidget {
   /// A tile widget that allows users to choose an option by tapping on it.

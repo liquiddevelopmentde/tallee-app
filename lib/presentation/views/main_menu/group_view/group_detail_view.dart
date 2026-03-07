@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/adaptive_page_route.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/views/main_menu/group_view/create_group_view.dart';
-import 'package:game_tracker/presentation/widgets/app_skeleton.dart';
-import 'package:game_tracker/presentation/widgets/buttons/animated_dialog_button.dart';
-import 'package:game_tracker/presentation/widgets/buttons/main_menu_button.dart';
-import 'package:game_tracker/presentation/widgets/colored_icon_container.dart';
-import 'package:game_tracker/presentation/widgets/custom_alert_dialog.dart';
-import 'package:game_tracker/presentation/widgets/tiles/info_tile.dart';
-import 'package:game_tracker/presentation/widgets/tiles/text_icon_tile.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
+import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
+import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/colored_icon_container.dart';
+import 'package:tallee/presentation/widgets/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
 class GroupDetailView extends StatefulWidget {
   /// A view that displays the profile of a group
@@ -82,7 +82,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                       onPressed: () => Navigator.of(context).pop(true),
                       child: Text(
                         loc.delete,
-                        style: TextStyle(color: CustomTheme.secondaryColor),
+                        style: const TextStyle(
+                          color: CustomTheme.secondaryColor,
+                        ),
                       ),
                     ),
                   ],
@@ -188,9 +190,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     context,
                     adaptivePageRoute(
                       builder: (context) {
-                        return CreateGroupView(
-                          groupToEdit: _group,
-                        );
+                        return CreateGroupView(groupToEdit: _group);
                       },
                     ),
                   );
@@ -242,8 +242,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
   /// Loads statistics for this group
   Future<void> _loadStatistics() async {
     final matches = await db.matchDao.getAllMatches();
-    final groupMatches =
-    matches.where((match) => match.group?.id == _group.id).toList();
+    final groupMatches = matches
+        .where((match) => match.group?.id == _group.id)
+        .toList();
 
     setState(() {
       totalMatches = groupMatches.length;
@@ -261,7 +262,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
       if (match.winner != null) {
         bestPlayerCounts.update(
           match.winner!,
-              (value) => value + 1,
+          (value) => value + 1,
           ifAbsent: () => 1,
         );
       }

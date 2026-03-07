@@ -1,0 +1,915 @@
+import 'package:clock/clock.dart';
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/game.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/dto/team.dart';
+
+void main() {
+  late AppDatabase database;
+  late Player testPlayer1;
+  late Player testPlayer2;
+  late Player testPlayer3;
+  late Player testPlayer4;
+  late Player testPlayer5;
+  late Player testPlayer6;
+  late Group testGroup;
+  late Game testGame;
+  late Match testMatchOnlyGroup;
+  late Match testMatchOnlyPlayers;
+  late Team testTeam1;
+  late Team testTeam2;
+  final fixedDate = DateTime(2025, 11, 19, 00, 11, 23);
+  final fakeClock = Clock(() => fixedDate);
+
+  setUp(() async {
+    database = AppDatabase(
+      DatabaseConnection(
+        NativeDatabase.memory(),
+        // Recommended for widget tests to avoid test errors.
+        closeStreamsSynchronously: true,
+      ),
+    );
+
+    withClock(fakeClock, () {
+      testPlayer1 = Player(name: 'Alice', description: '');
+      testPlayer2 = Player(name: 'Bob', description: '');
+      testPlayer3 = Player(name: 'Charlie', description: '');
+      testPlayer4 = Player(name: 'Diana', description: '');
+      testPlayer5 = Player(name: 'Eve', description: '');
+      testPlayer6 = Player(name: 'Frank', description: '');
+      testGroup = Group(
+        name: 'Test Group',
+        description: '',
+        members: [testPlayer1, testPlayer2, testPlayer3],
+      );
+      testGame = Game(name: 'Test Game', ruleset: Ruleset.singleWinner, description: 'A test game', color: GameColor.blue, icon: '');
+      testMatchOnlyGroup = Match(
+        name: 'Test Match with Group',
+        game: testGame,
+        group: testGroup,
+        notes: '',
+      );
+      testMatchOnlyPlayers = Match(
+        name: 'Test Match with Players',
+        game: testGame,
+        players: [testPlayer4, testPlayer5, testPlayer6],
+        notes: '',
+      );
+      testTeam1 = Team(
+        name: 'Team Alpha',
+        members: [testPlayer1, testPlayer2],
+      );
+      testTeam2 = Team(
+        name: 'Team Beta',
+        members: [testPlayer3, testPlayer4],
+      );
+    });
+    await database.playerDao.addPlayersAsList(
+      players: [
+        testPlayer1,
+        testPlayer2,
+        testPlayer3,
+        testPlayer4,
+        testPlayer5,
+        testPlayer6,
+      ],
+    );
+    await database.groupDao.addGroup(group: testGroup);
+    await database.gameDao.addGame(game: testGame);
+  });
+  tearDown(() async {
+    await database.close();
+  });
+
+  group('Player-Match Tests', () {
+
+    // Verifies that matchHasPlayers returns false initially and true after adding a player.
+    test('Match has player works correctly', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+      await database.playerDao.addPlayer(player: testPlayer1);
+
+      var matchHasPlayers = await database.playerMatchDao.matchHasPlayers(
+        matchId: testMatchOnlyGroup.id,
+      );
+
+      expect(matchHasPlayers, false);
+
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+      );
+
+      matchHasPlayers = await database.playerMatchDao.matchHasPlayers(
+        matchId: testMatchOnlyGroup.id,
+      );
+
+      expect(matchHasPlayers, true);
+    });
+
+    // Verifies that a player can be added to a match and isPlayerInMatch returns true.
+    test('Adding a player to a match works correctly', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+      await database.playerDao.addPlayer(player: testPlayer5);
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer5.id,
+      );
+
+      var playerAdded = await database.playerMatchDao.isPlayerInMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer5.id,
+      );
+
+      expect(playerAdded, true);
+
+      playerAdded = await database.playerMatchDao.isPlayerInMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: '',
+      );
+
+      expect(playerAdded, false);
+    });
+
+    // Verifies that a player can be removed from a match and the player count decreases.
+    test('Removing player from match works correctly', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      final playerToRemove = testMatchOnlyPlayers.players[0];
+
+      final removed = await database.playerMatchDao.removePlayerFromMatch(
+        playerId: playerToRemove.id,
+        matchId: testMatchOnlyPlayers.id,
+      );
+      expect(removed, true);
+
+      final result = await database.matchDao.getMatchById(
+        matchId: testMatchOnlyPlayers.id,
+      );
+      expect(result.players.length, testMatchOnlyPlayers.players.length - 1);
+
+      final playerExists = result.players.any(
+            (p) => p.id == playerToRemove.id,
+      );
+      expect(playerExists, false);
+    });
+
+    // Verifies that getPlayersOfMatch returns all players of a match with correct data.
+    test('Retrieving players of a match works correctly', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+      final players = await database.playerMatchDao.getPlayersOfMatch(
+        matchId: testMatchOnlyPlayers.id,
+      ) ?? [];
+
+      for (int i = 0; i < players.length; i++) {
+        expect(players[i].id, testMatchOnlyPlayers.players[i].id);
+        expect(players[i].name, testMatchOnlyPlayers.players[i].name);
+        expect(
+          players[i].createdAt,
+          testMatchOnlyPlayers.players[i].createdAt,
+        );
+      }
+    });
+
+    // Verifies that updatePlayersFromMatch replaces all existing players with new ones.
+    test('Updating the match players works correctly', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      final newPlayers = [testPlayer1, testPlayer2, testPlayer4];
+      await database.playerDao.addPlayersAsList(players: newPlayers);
+
+      // First, remove all existing players
+      final existingPlayers = await database.playerMatchDao.getPlayersOfMatch(
+        matchId: testMatchOnlyPlayers.id,
+      );
+
+      if (existingPlayers == null || existingPlayers.isEmpty) {
+        fail('Existing players should not be null or empty');
+      }
+
+      await database.playerMatchDao.updatePlayersFromMatch(
+        matchId: testMatchOnlyPlayers.id,
+        newPlayer: newPlayers,
+      );
+
+      final updatedPlayers = await database.playerMatchDao.getPlayersOfMatch(
+        matchId: testMatchOnlyPlayers.id,
+      );
+
+      if (updatedPlayers == null) {
+        fail('Updated players should not be null');
+      }
+
+      expect(updatedPlayers.length, newPlayers.length);
+
+      /// Create a map of new players for easy lookup
+      final testPlayers = {for (var p in newPlayers) p.id: p};
+
+      /// Verify each updated player matches the new players
+      for (final player in updatedPlayers) {
+        final testPlayer = testPlayers[player.id]!;
+
+        expect(player.id, testPlayer.id);
+        expect(player.name, testPlayer.name);
+        expect(player.createdAt, testPlayer.createdAt);
+      }
+    });
+
+    // Verifies that the same player can be added to multiple different matches.
+    test(
+      'Adding the same player to separate matches works correctly',
+          () async {
+        final playersList = [testPlayer1, testPlayer2, testPlayer3];
+        final match1 = Match(name: 'Match 1', game: testGame, players: playersList, notes: '');
+        final match2 = Match(name: 'Match 2', game: testGame, players: playersList, notes: '');
+
+        await Future.wait([
+          database.matchDao.addMatch(match: match1),
+          database.matchDao.addMatch(match: match2),
+        ]);
+
+        final players1 = await database.playerMatchDao.getPlayersOfMatch(
+          matchId: match1.id,
+        );
+        final players2 = await database.playerMatchDao.getPlayersOfMatch(
+          matchId: match2.id,
+        );
+
+        expect(players1, isNotNull);
+        expect(players2, isNotNull);
+
+        expect(
+          players1!.map((p) => p.id).toList(),
+          equals(players2!.map((p) => p.id).toList()),
+        );
+        expect(
+          players1.map((p) => p.name).toList(),
+          equals(players2.map((p) => p.name).toList()),
+        );
+        expect(
+          players1.map((p) => p.createdAt).toList(),
+          equals(players2.map((p) => p.createdAt).toList()),
+        );
+      },
+    );
+
+    // Verifies that getPlayersOfMatch returns null for a non-existent match.
+    test('getPlayersOfMatch returns null for non-existent match', () async {
+      final players = await database.playerMatchDao.getPlayersOfMatch(
+        matchId: 'non-existent-match-id',
+      );
+
+      expect(players, isNull);
+    });
+
+    // Verifies that adding a player with initial score works correctly.
+    test('Adding player with initial score works correctly', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        score: 100,
+      );
+
+      final score = await database.playerMatchDao.getPlayerScore(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+      );
+
+      expect(score, 100);
+    });
+
+    // Verifies that getPlayerScore returns the correct score.
+    test('getPlayerScore returns correct score', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      // Default score should be 0 when added through match
+      final score = await database.playerMatchDao.getPlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer4.id,
+      );
+
+      expect(score, 0);
+    });
+
+    // Verifies that getPlayerScore returns null for non-existent player-match combination.
+    test('getPlayerScore returns null for non-existent player in match', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+
+      final score = await database.playerMatchDao.getPlayerScore(
+        matchId: testMatchOnlyGroup.id,
+        playerId: 'non-existent-player-id',
+      );
+
+      expect(score, isNull);
+    });
+
+    // Verifies that updatePlayerScore updates the score correctly.
+    test('updatePlayerScore updates score correctly', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      final updated = await database.playerMatchDao.updatePlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer4.id,
+        newScore: 50,
+      );
+
+      expect(updated, true);
+
+      final score = await database.playerMatchDao.getPlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer4.id,
+      );
+
+      expect(score, 50);
+    });
+
+    // Verifies that updatePlayerScore returns false for non-existent player-match.
+    test('updatePlayerScore returns false for non-existent player-match', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+
+      final updated = await database.playerMatchDao.updatePlayerScore(
+        matchId: testMatchOnlyGroup.id,
+        playerId: 'non-existent-player-id',
+        newScore: 50,
+      );
+
+      expect(updated, false);
+    });
+
+    // Verifies that adding a player with teamId works correctly.
+    test('Adding player with teamId works correctly', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+      await database.teamDao.addTeam(team: testTeam1);
+
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        teamId: testTeam1.id,
+      );
+
+      final playersInTeam = await database.playerMatchDao.getPlayersInTeam(
+        matchId: testMatchOnlyGroup.id,
+        teamId: testTeam1.id,
+      );
+
+      expect(playersInTeam.length, 1);
+      expect(playersInTeam[0].id, testPlayer1.id);
+    });
+
+    // Verifies that updatePlayerTeam updates the team correctly.
+    test('updatePlayerTeam updates team correctly', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+      await database.teamDao.addTeam(team: testTeam1);
+      await database.teamDao.addTeam(team: testTeam2);
+
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        teamId: testTeam1.id,
+      );
+
+      // Update player's team
+      final updated = await database.playerMatchDao.updatePlayerTeam(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        teamId: testTeam2.id,
+      );
+
+      expect(updated, true);
+
+      // Verify player is now in testTeam2
+      final playersInTeam2 = await database.playerMatchDao.getPlayersInTeam(
+        matchId: testMatchOnlyGroup.id,
+        teamId: testTeam2.id,
+      );
+
+      expect(playersInTeam2.length, 1);
+      expect(playersInTeam2[0].id, testPlayer1.id);
+
+      // Verify player is no longer in testTeam1
+      final playersInTeam1 = await database.playerMatchDao.getPlayersInTeam(
+        matchId: testMatchOnlyGroup.id,
+        teamId: testTeam1.id,
+      );
+
+      expect(playersInTeam1.isEmpty, true);
+    });
+
+    // Verifies that updatePlayerTeam can set team to null.
+    test('updatePlayerTeam can remove player from team', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+      await database.teamDao.addTeam(team: testTeam1);
+
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        teamId: testTeam1.id,
+      );
+
+      // Remove player from team by setting teamId to null
+      final updated = await database.playerMatchDao.updatePlayerTeam(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        teamId: null,
+      );
+
+      expect(updated, true);
+
+      final playersInTeam = await database.playerMatchDao.getPlayersInTeam(
+        matchId: testMatchOnlyGroup.id,
+        teamId: testTeam1.id,
+      );
+
+      expect(playersInTeam.isEmpty, true);
+    });
+
+    // Verifies that updatePlayerTeam returns false for non-existent player-match.
+    test('updatePlayerTeam returns false for non-existent player-match', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+
+      final updated = await database.playerMatchDao.updatePlayerTeam(
+        matchId: testMatchOnlyGroup.id,
+        playerId: 'non-existent-player-id',
+        teamId: testTeam1.id,
+      );
+
+      expect(updated, false);
+    });
+
+    // Verifies that getPlayersInTeam returns empty list for non-existent team.
+    test('getPlayersInTeam returns empty list for non-existent team', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      final players = await database.playerMatchDao.getPlayersInTeam(
+        matchId: testMatchOnlyPlayers.id,
+        teamId: 'non-existent-team-id',
+      );
+
+      expect(players.isEmpty, true);
+    });
+
+    // Verifies that getPlayersInTeam returns all players of a team.
+    test('getPlayersInTeam returns all players of a team', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+      await database.teamDao.addTeam(team: testTeam1);
+
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        teamId: testTeam1.id,
+      );
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer2.id,
+        teamId: testTeam1.id,
+      );
+
+      final playersInTeam = await database.playerMatchDao.getPlayersInTeam(
+        matchId: testMatchOnlyGroup.id,
+        teamId: testTeam1.id,
+      );
+
+      expect(playersInTeam.length, 2);
+      final playerIds = playersInTeam.map((p) => p.id).toSet();
+      expect(playerIds.contains(testPlayer1.id), true);
+      expect(playerIds.contains(testPlayer2.id), true);
+    });
+
+    // Verifies that removePlayerFromMatch returns false for non-existent player.
+    test('removePlayerFromMatch returns false for non-existent player', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      final removed = await database.playerMatchDao.removePlayerFromMatch(
+        playerId: 'non-existent-player-id',
+        matchId: testMatchOnlyPlayers.id,
+      );
+
+      expect(removed, false);
+    });
+
+    // Verifies that adding the same player twice to the same match is ignored.
+    test('Adding same player twice to same match is ignored', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        score: 10,
+      );
+
+      // Try to add the same player again with different score
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        score: 100,
+      );
+
+      // Score should still be 10 because insert was ignored
+      final score = await database.playerMatchDao.getPlayerScore(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+      );
+
+      expect(score, 10);
+
+      // Verify player count is still 1
+      final players = await database.playerMatchDao.getPlayersOfMatch(
+        matchId: testMatchOnlyGroup.id,
+      );
+
+      expect(players?.length, 1);
+    });
+
+    // Verifies that updatePlayersFromMatch with empty list removes all players.
+    test('updatePlayersFromMatch with empty list removes all players', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      // Verify players exist initially
+      var players = await database.playerMatchDao.getPlayersOfMatch(
+        matchId: testMatchOnlyPlayers.id,
+      );
+      expect(players?.length, 3);
+
+      // Update with empty list
+      await database.playerMatchDao.updatePlayersFromMatch(
+        matchId: testMatchOnlyPlayers.id,
+        newPlayer: [],
+      );
+
+      // Verify all players are removed
+      players = await database.playerMatchDao.getPlayersOfMatch(
+        matchId: testMatchOnlyPlayers.id,
+      );
+      expect(players, isNull);
+    });
+
+    // Verifies that updatePlayersFromMatch with same players makes no changes.
+    test('updatePlayersFromMatch with same players makes no changes', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      final originalPlayers = [testPlayer4, testPlayer5, testPlayer6];
+
+      await database.playerMatchDao.updatePlayersFromMatch(
+        matchId: testMatchOnlyPlayers.id,
+        newPlayer: originalPlayers,
+      );
+
+      final players = await database.playerMatchDao.getPlayersOfMatch(
+        matchId: testMatchOnlyPlayers.id,
+      );
+
+      expect(players?.length, originalPlayers.length);
+      final playerIds = players!.map((p) => p.id).toSet();
+      for (final originalPlayer in originalPlayers) {
+        expect(playerIds.contains(originalPlayer.id), true);
+      }
+    });
+
+    // Verifies that matchHasPlayers returns false for non-existent match.
+    test('matchHasPlayers returns false for non-existent match', () async {
+      final hasPlayers = await database.playerMatchDao.matchHasPlayers(
+        matchId: 'non-existent-match-id',
+      );
+
+      expect(hasPlayers, false);
+    });
+
+    // Verifies that isPlayerInMatch returns false for non-existent match.
+    test('isPlayerInMatch returns false for non-existent match', () async {
+      final isInMatch = await database.playerMatchDao.isPlayerInMatch(
+        matchId: 'non-existent-match-id',
+        playerId: testPlayer1.id,
+      );
+
+      expect(isInMatch, false);
+    });
+
+    // Verifies that updatePlayersFromMatch preserves scores for existing players.
+    test('updatePlayersFromMatch only modifies player associations', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      // Update score for existing player
+      await database.playerMatchDao.updatePlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer4.id,
+        newScore: 75,
+      );
+
+      // Update players, keeping testPlayer4 and adding testPlayer1
+      await database.playerMatchDao.updatePlayersFromMatch(
+        matchId: testMatchOnlyPlayers.id,
+        newPlayer: [testPlayer4, testPlayer1],
+      );
+
+      // Verify testPlayer4's score is preserved
+      final score = await database.playerMatchDao.getPlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer4.id,
+      );
+
+      expect(score, 75);
+
+      // Verify testPlayer1 was added with default score
+      final newPlayerScore = await database.playerMatchDao.getPlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer1.id,
+      );
+
+      expect(newPlayerScore, 0);
+    });
+
+    // Verifies that adding a player with both score and teamId works correctly.
+    test('Adding player with score and teamId works correctly', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+      await database.teamDao.addTeam(team: testTeam1);
+
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        teamId: testTeam1.id,
+        score: 150,
+      );
+
+      // Verify score
+      final score = await database.playerMatchDao.getPlayerScore(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+      );
+      expect(score, 150);
+
+      // Verify team assignment
+      final playersInTeam = await database.playerMatchDao.getPlayersInTeam(
+        matchId: testMatchOnlyGroup.id,
+        teamId: testTeam1.id,
+      );
+      expect(playersInTeam.length, 1);
+      expect(playersInTeam[0].id, testPlayer1.id);
+    });
+
+    // Verifies that updating score with negative value works.
+    test('updatePlayerScore with negative score works', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      final updated = await database.playerMatchDao.updatePlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer4.id,
+        newScore: -10,
+      );
+
+      expect(updated, true);
+
+      final score = await database.playerMatchDao.getPlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer4.id,
+      );
+
+      expect(score, -10);
+    });
+
+    // Verifies that updating score with zero value works.
+    test('updatePlayerScore with zero score works', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      // First set a non-zero score
+      await database.playerMatchDao.updatePlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer4.id,
+        newScore: 100,
+      );
+
+      // Then update to zero
+      final updated = await database.playerMatchDao.updatePlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer4.id,
+        newScore: 0,
+      );
+
+      expect(updated, true);
+
+      final score = await database.playerMatchDao.getPlayerScore(
+        matchId: testMatchOnlyPlayers.id,
+        playerId: testPlayer4.id,
+      );
+
+      expect(score, 0);
+    });
+
+    // Verifies that getPlayersInTeam returns empty list for non-existent match.
+    test('getPlayersInTeam returns empty list for non-existent match', () async {
+      await database.teamDao.addTeam(team: testTeam1);
+
+      final players = await database.playerMatchDao.getPlayersInTeam(
+        matchId: 'non-existent-match-id',
+        teamId: testTeam1.id,
+      );
+
+      expect(players.isEmpty, true);
+    });
+
+    // Verifies that players in different teams within the same match are returned correctly.
+    test('Players in different teams within same match are separate', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+      await database.teamDao.addTeam(team: testTeam1);
+      await database.teamDao.addTeam(team: testTeam2);
+
+      // Add players to different teams
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+        teamId: testTeam1.id,
+      );
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer2.id,
+        teamId: testTeam1.id,
+      );
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer3.id,
+        teamId: testTeam2.id,
+      );
+
+      // Verify team 1 players
+      final playersInTeam1 = await database.playerMatchDao.getPlayersInTeam(
+        matchId: testMatchOnlyGroup.id,
+        teamId: testTeam1.id,
+      );
+      expect(playersInTeam1.length, 2);
+      final team1Ids = playersInTeam1.map((p) => p.id).toSet();
+      expect(team1Ids.contains(testPlayer1.id), true);
+      expect(team1Ids.contains(testPlayer2.id), true);
+      expect(team1Ids.contains(testPlayer3.id), false);
+
+      // Verify team 2 players
+      final playersInTeam2 = await database.playerMatchDao.getPlayersInTeam(
+        matchId: testMatchOnlyGroup.id,
+        teamId: testTeam2.id,
+      );
+      expect(playersInTeam2.length, 1);
+      expect(playersInTeam2[0].id, testPlayer3.id);
+    });
+
+    // Verifies that removePlayerFromMatch does not affect other matches.
+    test('removePlayerFromMatch does not affect other matches', () async {
+      final playersList = [testPlayer1, testPlayer2];
+      final match1 = Match(name: 'Match 1', game: testGame, players: playersList, notes: '');
+      final match2 = Match(name: 'Match 2', game: testGame, players: playersList, notes: '');
+
+      await Future.wait([
+        database.matchDao.addMatch(match: match1),
+        database.matchDao.addMatch(match: match2),
+      ]);
+
+      // Remove player from match1
+      final removed = await database.playerMatchDao.removePlayerFromMatch(
+        playerId: testPlayer1.id,
+        matchId: match1.id,
+      );
+      expect(removed, true);
+
+      // Verify player is removed from match1
+      final isInMatch1 = await database.playerMatchDao.isPlayerInMatch(
+        matchId: match1.id,
+        playerId: testPlayer1.id,
+      );
+      expect(isInMatch1, false);
+
+      // Verify player still exists in match2
+      final isInMatch2 = await database.playerMatchDao.isPlayerInMatch(
+        matchId: match2.id,
+        playerId: testPlayer1.id,
+      );
+      expect(isInMatch2, true);
+    });
+
+    // Verifies that updating scores for players in different matches are independent.
+    test('Player scores are independent across matches', () async {
+      final playersList = [testPlayer1];
+      final match1 = Match(name: 'Match 1', game: testGame, players: playersList, notes: '');
+      final match2 = Match(name: 'Match 2', game: testGame, players: playersList, notes: '');
+
+      await Future.wait([
+        database.matchDao.addMatch(match: match1),
+        database.matchDao.addMatch(match: match2),
+      ]);
+
+      // Update score in match1
+      await database.playerMatchDao.updatePlayerScore(
+        matchId: match1.id,
+        playerId: testPlayer1.id,
+        newScore: 100,
+      );
+
+      // Update score in match2
+      await database.playerMatchDao.updatePlayerScore(
+        matchId: match2.id,
+        playerId: testPlayer1.id,
+        newScore: 50,
+      );
+
+      // Verify scores are independent
+      final scoreInMatch1 = await database.playerMatchDao.getPlayerScore(
+        matchId: match1.id,
+        playerId: testPlayer1.id,
+      );
+      final scoreInMatch2 = await database.playerMatchDao.getPlayerScore(
+        matchId: match2.id,
+        playerId: testPlayer1.id,
+      );
+
+      expect(scoreInMatch1, 100);
+      expect(scoreInMatch2, 50);
+    });
+
+    // Verifies that updatePlayersFromMatch on non-existent match fails with constraint error.
+    test('updatePlayersFromMatch on non-existent match fails with foreign key constraint', () async {
+      // Should throw due to foreign key constraint - match doesn't exist
+      await expectLater(
+        database.playerMatchDao.updatePlayersFromMatch(
+          matchId: 'non-existent-match-id',
+          newPlayer: [testPlayer1, testPlayer2],
+        ),
+        throwsA(anything),
+      );
+    });
+
+    // Verifies that a player can be in a match without being assigned to a team.
+    test('Player can exist in match without team assignment', () async {
+      await database.matchDao.addMatch(match: testMatchOnlyGroup);
+      await database.teamDao.addTeam(team: testTeam1);
+
+      // Add player to match without team
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+      );
+
+      // Add another player to match with team
+      await database.playerMatchDao.addPlayerToMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer2.id,
+        teamId: testTeam1.id,
+      );
+
+      // Verify both players are in the match
+      final isPlayer1InMatch = await database.playerMatchDao.isPlayerInMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer1.id,
+      );
+      final isPlayer2InMatch = await database.playerMatchDao.isPlayerInMatch(
+        matchId: testMatchOnlyGroup.id,
+        playerId: testPlayer2.id,
+      );
+
+      expect(isPlayer1InMatch, true);
+      expect(isPlayer2InMatch, true);
+
+      // Verify only player2 is in the team
+      final playersInTeam = await database.playerMatchDao.getPlayersInTeam(
+        matchId: testMatchOnlyGroup.id,
+        teamId: testTeam1.id,
+      );
+
+      expect(playersInTeam.length, 1);
+      expect(playersInTeam[0].id, testPlayer2.id);
+    });
+
+    // Verifies that replaceMatchPlayers removes all existing players and replaces with new list.
+    test('replaceMatchPlayers replaces all match players correctly', () async {
+      // Create initial match with 3 players
+      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+      // Verify initial players
+      var matchPlayers = await database.matchDao.getMatchById(
+        matchId: testMatchOnlyPlayers.id,
+      );
+      expect(matchPlayers.players.length, 3);
+
+      // Replace with new list containing 2 different players
+      final newPlayersList = [testPlayer1, testPlayer2];
+      await database.matchDao.replaceMatchPlayers(
+        matchId: testMatchOnlyPlayers.id,
+        newPlayers: newPlayersList,
+      );
+
+      // Get updated match and verify players
+      matchPlayers = await database.matchDao.getMatchById(
+        matchId: testMatchOnlyPlayers.id,
+      );
+
+      expect(matchPlayers.players.length, 2);
+      expect(matchPlayers.players.any((p) => p.id == testPlayer1.id), true);
+      expect(matchPlayers.players.any((p) => p.id == testPlayer2.id), true);
+      expect(matchPlayers.players.any((p) => p.id == testPlayer4.id), false);
+      expect(matchPlayers.players.any((p) => p.id == testPlayer5.id), false);
+      expect(matchPlayers.players.any((p) => p.id == testPlayer6.id), false);
+    });
+  });
+}

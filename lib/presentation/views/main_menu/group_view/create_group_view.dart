@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/core/enums.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/widgets/buttons/custom_width_button.dart';
-import 'package:game_tracker/presentation/widgets/player_selection.dart';
-import 'package:game_tracker/presentation/widgets/text_input/text_input_field.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/player_selection.dart';
+import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
 class CreateGroupView extends StatefulWidget {
   const CreateGroupView({super.key, this.groupToEdit});
@@ -39,7 +40,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    if(widget.groupToEdit != null) {
+    if (widget.groupToEdit != null) {
       _groupNameController.text = widget.groupToEdit!.name;
       setState(() {
         initialSelectedPlayers = widget.groupToEdit!.members;
@@ -65,38 +66,54 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: CustomTheme.backgroundColor,
-        appBar: AppBar(title: Text(widget.groupToEdit == null ? loc.create_new_group : loc.edit_group), actions: widget.groupToEdit == null ? [] : [IconButton(icon: const Icon(Icons.delete), onPressed: () async {
-          if(widget.groupToEdit != null) {
-            showDialog<bool>(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: Text(loc.delete_group),
-                content: Text(loc.this_cannot_be_undone),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text(loc.cancel),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: Text(loc.delete),
+        appBar: AppBar(
+          title: Text(
+            widget.groupToEdit == null ? loc.create_new_group : loc.edit_group,
+          ),
+          actions: widget.groupToEdit == null
+              ? []
+              : [
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () async {
+                      if (widget.groupToEdit != null) {
+                        showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(loc.delete_group),
+                            content: Text(loc.this_cannot_be_undone),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: Text(loc.cancel),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: Text(loc.delete),
+                              ),
+                            ],
+                          ),
+                        ).then((confirmed) async {
+                          if (confirmed == true && context.mounted) {
+                            bool success = await db.groupDao.deleteGroup(
+                              groupId: widget.groupToEdit!.id,
+                            );
+                            if (!context.mounted) return;
+                            if (success) {
+                              Navigator.pop(context);
+                            } else {
+                              if (!mounted) return;
+                              showSnackbar(message: loc.error_deleting_group);
+                            }
+                          }
+                        });
+                      }
+                    },
                   ),
                 ],
-              ),
-            ).then((confirmed) async {
-              if (confirmed == true && context.mounted) {
-                bool success = await db.groupDao.deleteGroup(groupId: widget.groupToEdit!.id);
-                if (!context.mounted) return;
-                if (success) {
-                  Navigator.pop(context);
-                } else {
-                  if (!mounted) return;
-                  showSnackbar(message: loc.error_deleting_group);
-                }
-              }
-            });
-          }
-        },)],),
+        ),
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -106,6 +123,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 child: TextInputField(
                   controller: _groupNameController,
                   hintText: loc.group_name,
+                  maxLength: Constants.MAX_GROUP_NAME_LENGTH,
                 ),
               ),
               Expanded(
@@ -119,7 +137,9 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 ),
               ),
               CustomWidthButton(
-                text: widget.groupToEdit == null ? loc.create_group : loc.edit_group,
+                text: widget.groupToEdit == null
+                    ? loc.create_group
+                    : loc.edit_group,
                 sizeRelativeToWidth: 0.95,
                 buttonType: ButtonType.primary,
                 onPressed:
@@ -127,12 +147,15 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                         (selectedPlayers.length < 2))
                     ? null
                     : () async {
-                        late Group? updatedGroup;
+                        Group? updatedGroup = null;
+                        bool successfullNameChange = true;
+                        bool successfullMemberChange = true;
                         late bool success;
                         if (widget.groupToEdit == null) {
                           success = await db.groupDao.addGroup(
                             group: Group(
                               name: _groupNameController.text.trim(),
+                              description: '',
                               members: selectedPlayers,
                             ),
                           );
@@ -140,21 +163,37 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                           updatedGroup = Group(
                             id: widget.groupToEdit!.id,
                             name: _groupNameController.text.trim(),
+                            description: '',
                             members: selectedPlayers,
                           );
-                          //TODO: Implement group editing in database
-                          /*
-                          success = await db.groupDao.updateGroup(
-                            group: updatedGroup,
-                          );
-                          */
-                          success = true;
+                          if (widget.groupToEdit!.name !=
+                              _groupNameController.text.trim()) {
+                            successfullNameChange = await db.groupDao
+                                .updateGroupName(
+                                  groupId: widget.groupToEdit!.id,
+                                  newName: _groupNameController.text.trim(),
+                                );
+                          }
+
+                          if (widget.groupToEdit!.members != selectedPlayers) {
+                            successfullMemberChange = await db.groupDao
+                                .replaceGroupPlayers(
+                                  groupId: widget.groupToEdit!.id,
+                                  newPlayers: selectedPlayers,
+                                );
+                          }
+                          success =
+                              successfullNameChange && successfullMemberChange;
                         }
                         if (!context.mounted) return;
                         if (success) {
                           Navigator.pop(context, updatedGroup);
                         } else {
-                          showSnackbar(message: widget.groupToEdit == null ? loc.error_creating_group : loc.error_editing_group);
+                          showSnackbar(
+                            message: widget.groupToEdit == null
+                                ? loc.error_creating_group
+                                : loc.error_editing_group,
+                          );
                         }
                       },
               ),
@@ -165,12 +204,11 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       ),
     );
   }
+
   /// Displays a snackbar with the given message and optional action.
   ///
   /// [message] The message to display in the snackbar.
-  void showSnackbar({
-    required String message,
-  }) {
+  void showSnackbar({required String message}) {
     final messenger = _scaffoldMessengerKey.currentState;
     if (messenger != null) {
       messenger.hideCurrentSnackBar();

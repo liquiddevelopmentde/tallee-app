@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/adaptive_page_route.dart';
-import 'package:game_tracker/core/constants.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/core/enums.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/group.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/match_view/match_result_view.dart';
-import 'package:game_tracker/presentation/widgets/buttons/custom_width_button.dart';
-import 'package:game_tracker/presentation/widgets/player_selection.dart';
-import 'package:game_tracker/presentation/widgets/text_input/text_input_field.dart';
-import 'package:game_tracker/presentation/widgets/tiles/choose_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/game.dart';
+import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/player_selection.dart';
+import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
+import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 
 class CreateMatchView extends StatefulWidget {
   /// A view that allows creating a new match
@@ -62,7 +63,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   int selectedGameIndex = -1;
 
   /// The currently selected players
-  List<Player>? selectedPlayers;
+  List<Player> selectedPlayers = [];
 
   /// GlobalKey for ScaffoldMessenger to show snackbars
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -102,7 +103,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   }
 
   List<(String, String, Ruleset)> games = [
-    ('Example Game 1', 'This is a description', Ruleset.leastPoints),
+    ('Example Game 1', 'This is a description', Ruleset.lowestScore),
     ('Example Game 2', '', Ruleset.singleWinner),
   ];
 
@@ -169,8 +170,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     filteredPlayerList = playerList
                         .where(
                           (p) =>
-                              !selectedGroup!.members.any((m) => m.id == p.id),
-                        )
+                      !selectedGroup!.members.any((m) => m.id == p.id),
+                    )
                         .toList();
                   } else {
                     filteredPlayerList = List.from(playerList);
@@ -181,7 +182,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               Expanded(
                 child: PlayerSelection(
                   key: ValueKey(selectedGroup?.id ?? 'no_group'),
-                  initialSelectedPlayers: selectedPlayers ?? [],
+                  initialSelectedPlayers: selectedPlayers,
                   availablePlayers: filteredPlayerList,
                   onChanged: (value) {
                     setState(() {
@@ -196,28 +197,56 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 buttonType: ButtonType.primary,
                 onPressed: _enableCreateGameButton()
                     ? () async {
-                        Match match = Match(
-                          name: _matchNameController.text.isEmpty
-                              ? (hintText ?? '')
-                              : _matchNameController.text.trim(),
-                          createdAt: DateTime.now(),
-                          group: selectedGroup,
-                          players: selectedPlayers,
-                        );
-                        await db.matchDao.addMatch(match: match);
-                        if (context.mounted) {
-                          Navigator.pushReplacement(
-                            context,
-                            adaptivePageRoute(
-                              fullscreenDialog: true,
-                              builder: (context) => MatchResultView(
-                                match: match,
-                                onWinnerChanged: widget.onWinnerChanged,
-                              ),
-                            ),
-                          );
-                        }
-                      }
+                  // Use a game from the games list
+                  Game? gameToUse;
+                  if (selectedGameIndex == -1) {
+                    // Use the first game as default if none selected
+                    final selectedGame = games[0];
+                    gameToUse = Game(
+                      name: selectedGame.$1,
+                      description: selectedGame.$2,
+                      ruleset: selectedGame.$3,
+                      color: GameColor.blue,
+                      icon: '',
+                    );
+                  } else {
+                    // Use the selected game from the list
+                    final selectedGame = games[selectedGameIndex];
+                    gameToUse = Game(
+                      name: selectedGame.$1,
+                      description: selectedGame.$2,
+                      ruleset: selectedGame.$3,
+                      color: GameColor.blue,
+                      icon: '',
+                    );
+                  }
+                  // Add the game to the database if it doesn't exist
+                  await db.gameDao.addGame(game: gameToUse);
+
+                  Match match = Match(
+                    name: _matchNameController.text.isEmpty
+                        ? (hintText ?? '')
+                        : _matchNameController.text.trim(),
+                    createdAt: DateTime.now(),
+                    game: gameToUse,
+                    group: selectedGroup,
+                    players: selectedPlayers,
+                    notes: '',
+                  );
+                  await db.matchDao.addMatch(match: match);
+                  if (context.mounted) {
+                    Navigator.pushReplacement(
+                      context,
+                      adaptivePageRoute(
+                        fullscreenDialog: true,
+                        builder: (context) => MatchResultView(
+                          match: match,
+                          onWinnerChanged: widget.onWinnerChanged,
+                        ),
+                      ),
+                    );
+                  }
+                }
                     : null,
               ),
             ],
@@ -234,6 +263,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// - Either a group is selected OR at least 2 players are selected
   bool _enableCreateGameButton() {
     return (selectedGroup != null ||
-            (selectedPlayers != null && selectedPlayers!.length > 1));
+        (selectedPlayers.length > 1));
   }
 }

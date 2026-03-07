@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/dto/match.dart';
-import 'package:game_tracker/data/dto/player.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/widgets/tiles/custom_radio_list_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/tiles/custom_radio_list_tile.dart';
 
 class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
@@ -74,7 +74,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                 ),
                 decoration: BoxDecoration(
                   color: CustomTheme.boxColor,
-                  border: Border.all(color: CustomTheme.boxBorder),
+                  border: Border.all(color: CustomTheme.boxBorderColor),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -153,12 +153,10 @@ class _MatchResultViewState extends State<MatchResultView> {
   List<Player> getAllPlayers(Match match) {
     List<Player> players = [];
 
-    if (match.group == null && match.players != null) {
-      players = [...match.players!];
-    } else if (match.group != null && match.players != null) {
-      players = [...match.players!, ...match.group!.members];
+    if (match.group == null) {
+      players = [...match.players];
     } else {
-      players = [...match.group!.members];
+      players = [...match.players, ...match.group!.members];
     }
 
     players.sort((a, b) => a.name.compareTo(b.name));
