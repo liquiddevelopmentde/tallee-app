@@ -58,7 +58,7 @@ class _MatchViewState extends State<MatchView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    loadGames();
+    loadMatches();
   }
 
   @override
@@ -100,7 +100,7 @@ class _MatchViewState extends State<MatchView> {
                             adaptivePageRoute(
                               builder: (context) => MatchDetailView(
                                 match: matches[index],
-                                onMatchUpdate: loadGames,
+                                onMatchUpdate: loadMatches,
                               ),
                             ),
                           );
@@ -123,7 +123,7 @@ class _MatchViewState extends State<MatchView> {
                   context,
                   adaptivePageRoute(
                     builder: (context) =>
-                        CreateMatchView(onWinnerChanged: loadGames),
+                        CreateMatchView(onWinnerChanged: loadMatches),
                   ),
                 );
               },
@@ -134,8 +134,8 @@ class _MatchViewState extends State<MatchView> {
     );
   }
 
-  /// Loads the games from the database and sorts them by creation date.
-  void loadGames() {
+  /// Loads the matches from the database and sorts them by creation date.
+  void loadMatches() {
     isLoading = true;
     Future.wait([
       db.matchDao.getAllMatches(),

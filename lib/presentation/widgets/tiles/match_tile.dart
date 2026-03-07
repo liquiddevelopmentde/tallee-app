@@ -43,9 +43,9 @@ class _MatchTileState extends State<MatchTile> {
   @override
   Widget build(BuildContext context) {
     final match = widget.match;
-    final group = widget.match.group;
-    final winner = widget.match.winner;
-    final players = [...widget.match.players]
+    final group = match.group;
+    final winner = match.winner;
+    final players = [...match.players]
       ..sort((a, b) => a.name.compareTo(b.name));
     final loc = AppLocalizations.of(context);
 
