@@ -282,6 +282,10 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       group: selectedGroup,
       players: selectedPlayers,
       game: tempGame,
+      winner: widget.match!.winner,
+      createdAt: widget.match!.createdAt,
+      endedAt: widget.match!.endedAt,
+      notes: widget.match!.notes,
     );
 
     if (widget.match!.name != updatedMatch.name) {
