@@ -196,7 +196,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   setState(() {
                     if (selectedGroup != null) {
                       setState(() {
-                        selectedPlayers = [...selectedGroup!.members];
+                        selectedPlayers += [...selectedGroup!.members];
                       });
                     }
                   });
