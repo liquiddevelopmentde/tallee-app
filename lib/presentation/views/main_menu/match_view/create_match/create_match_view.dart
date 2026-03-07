@@ -56,12 +56,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// List of all players from the database
   List<Player> playerList = [];
 
-  /// List of players filtered based on the selected group
-  /// If a group is selected, this list contains all players from [playerList]
-  /// who are not members of the selected group. If no group is selected,
-  /// this list is identical to [playerList].
-  /*List<Player> filteredPlayerList = [];*/
-
   /// The currently selected group
   Group? selectedGroup;
 
