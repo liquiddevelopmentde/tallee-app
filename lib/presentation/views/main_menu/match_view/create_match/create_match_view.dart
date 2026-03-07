@@ -24,7 +24,7 @@ class CreateMatchView extends StatefulWidget {
   const CreateMatchView({
     super.key,
     this.onWinnerChanged,
-    this.match,
+    this.matchToEdit,
     this.onMatchUpdated,
   });
 
@@ -35,7 +35,7 @@ class CreateMatchView extends StatefulWidget {
   final void Function(Match)? onMatchUpdated;
 
   /// An optional match to prefill the fields
-  final Match? match;
+  final Match? matchToEdit;
 
   @override
   State<CreateMatchView> createState() => _CreateMatchViewState();
@@ -92,7 +92,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       playerList = result[1] as List<Player>;
 
       // If a match is provided, prefill the fields
-      if (widget.match != null) {
+      if (widget.matchToEdit != null) {
         prefillMatchDetails();
       }
     });
@@ -119,10 +119,10 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final buttonText = widget.match != null
+    final buttonText = widget.matchToEdit != null
         ? loc.save_changes
         : loc.create_match;
-    final viewTitle = widget.match != null
+    final viewTitle = widget.matchToEdit != null
         ? loc.edit_match
         : loc.create_new_match;
 
@@ -245,7 +245,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   // If no match was provided, it creates a new match in the database and
   // navigates to the MatchResultView for the newly created match.
   void buttonNavigation(BuildContext context) async {
-    if (widget.match != null) {
+    if (widget.matchToEdit != null) {
       await updateMatch();
       if (context.mounted) {
         Navigator.pop(context);
@@ -275,51 +275,51 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     final tempGame = await getTemporaryGame();
 
     final updatedMatch = Match(
-      id: widget.match!.id,
+      id: widget.matchToEdit!.id,
       name: _matchNameController.text.isEmpty
           ? (hintText ?? '')
           : _matchNameController.text.trim(),
       group: selectedGroup,
       players: selectedPlayers,
       game: tempGame,
-      winner: widget.match!.winner,
-      createdAt: widget.match!.createdAt,
-      endedAt: widget.match!.endedAt,
-      notes: widget.match!.notes,
+      winner: widget.matchToEdit!.winner,
+      createdAt: widget.matchToEdit!.createdAt,
+      endedAt: widget.matchToEdit!.endedAt,
+      notes: widget.matchToEdit!.notes,
     );
 
-    if (widget.match!.name != updatedMatch.name) {
+    if (widget.matchToEdit!.name != updatedMatch.name) {
       await db.matchDao.updateMatchName(
-        matchId: widget.match!.id,
+        matchId: widget.matchToEdit!.id,
         newName: updatedMatch.name,
       );
     }
 
-    if (widget.match!.group?.id != updatedMatch.group?.id) {
+    if (widget.matchToEdit!.group?.id != updatedMatch.group?.id) {
       await db.matchDao.updateMatchGroup(
-        matchId: widget.match!.id,
+        matchId: widget.matchToEdit!.id,
         newGroupId: updatedMatch.group?.id,
       );
     }
 
     // Add players who are in updatedMatch but not in the original match
     for (var player in updatedMatch.players) {
-      if (!widget.match!.players.any((p) => p.id == player.id)) {
+      if (!widget.matchToEdit!.players.any((p) => p.id == player.id)) {
         await db.playerMatchDao.addPlayerToMatch(
-          matchId: widget.match!.id,
+          matchId: widget.matchToEdit!.id,
           playerId: player.id,
         );
       }
     }
 
     // Remove players who are in the original match but not in updatedMatch
-    for (var player in widget.match!.players) {
+    for (var player in widget.matchToEdit!.players) {
       if (!updatedMatch.players.any((p) => p.id == player.id)) {
         await db.playerMatchDao.removePlayerFromMatch(
-          matchId: widget.match!.id,
+          matchId: widget.matchToEdit!.id,
           playerId: player.id,
         );
-        if (widget.match!.winner?.id == player.id) {
+        if (widget.matchToEdit!.winner?.id == player.id) {
           updatedMatch.winner = null;
         }
       }
@@ -379,7 +379,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
   // If a match was provided to the view, this method prefills the input fields
   void prefillMatchDetails() {
-    final match = widget.match!;
+    final match = widget.matchToEdit!;
     _matchNameController.text = match.name;
     selectedPlayers = match.players;
 
