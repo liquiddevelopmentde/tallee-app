@@ -266,7 +266,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   /// Callback for when the match is updated in the edit view,
   /// updates the match in this view
-  onMatchUpdated(editedMatch) {
+  void onMatchUpdated(Match editedMatch) {
     setState(() {
       match = editedMatch;
     });

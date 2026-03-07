@@ -141,7 +141,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   }
 
   /// Returns the title of the current tab based on [currentIndex].
-  String _currentTabTitle(context) {
+  String _currentTabTitle(BuildContext context) {
     final loc = AppLocalizations.of(context);
     switch (currentIndex) {
       case 0:

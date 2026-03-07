@@ -47,10 +47,7 @@ class _AppSkeletonState extends State<AppSkeleton> {
             : (Widget? currentChild, List<Widget> previousChildren) {
                 return Stack(
                   alignment: Alignment.topCenter,
-                  children: [
-                    ...previousChildren,
-                    if (currentChild != null) currentChild,
-                  ],
+                  children: [...previousChildren, ?currentChild],
                 );
               },
       ),
