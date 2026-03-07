@@ -40,15 +40,12 @@ class MatchDetailView extends StatefulWidget {
 class _MatchDetailViewState extends State<MatchDetailView> {
   late final AppDatabase db;
 
-  late Player? currentWinner;
-
   late Match match;
 
   @override
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    currentWinner = widget.match.winner;
     match = widget.match;
   }
 
@@ -184,7 +181,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         /// TODO: Implement different ruleset results display
-                        if (currentWinner != null) ...[
+                        if (match.winner != null) ...[
                           Text(
                             loc.winner,
                             style: const TextStyle(
@@ -193,13 +190,11 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             ),
                           ),
                           Text(
-                            currentWinner!.name,
-                            style: TextStyle(
+                            match.winner!.name,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: match.winner != null
-                                  ? CustomTheme.primaryColor
-                                  : CustomTheme.textColor,
+                              color: CustomTheme.primaryColor,
                             ),
                           ),
                         ] else ...[
@@ -239,7 +234,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                     text: loc.enter_results,
                     icon: Icons.emoji_events,
                     onPressed: () async {
-                      currentWinner = await Navigator.push(
+                      match.winner = await Navigator.push(
                         context,
                         adaptivePageRoute(
                           fullscreenDialog: true,
@@ -252,7 +247,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                           ),
                         ),
                       );
-                      match.winner = currentWinner;
                     },
                   ),
                 ],

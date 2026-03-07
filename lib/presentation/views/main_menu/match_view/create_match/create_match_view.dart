@@ -315,6 +315,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           matchId: widget.match!.id,
           playerId: player.id,
         );
+        if (widget.match!.winner?.id == player.id) {
+          updatedMatch.winner = null;
+        }
       }
     }
 
