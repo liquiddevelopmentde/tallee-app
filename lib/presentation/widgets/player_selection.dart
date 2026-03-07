@@ -110,7 +110,9 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                     final bool nameMatches = player.name.toLowerCase().contains(
                       value.toLowerCase(),
                     );
-                    final bool isNotSelected = !selectedPlayers.any((p) => p.id == player.id);
+                    final bool isNotSelected = !selectedPlayers.any(
+                      (p) => p.id == player.id,
+                    );
                     return nameMatches && isNotSelected;
                   }).toList();
                 }
@@ -224,49 +226,53 @@ class _PlayerSelectionState extends State<PlayerSelection> {
       db.playerDao.getAllPlayers(),
       Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
     ]).then((results) => results[0] as List<Player>);
-    if (mounted) {
-      _allPlayersFuture.then((loadedPlayers) {
-        setState(() {
-          // If a list of available players is provided (even if empty), use that list.
-          if (widget.availablePlayers != null) {
-            widget.availablePlayers!.sort((a, b) => a.name.compareTo(b.name));
-            allPlayers = [...widget.availablePlayers!];
-            suggestedPlayers = [...allPlayers];
 
-            if (widget.initialSelectedPlayers != null) {
-              // Ensures that only players available for selection are pre-selected.
-              selectedPlayers = widget.initialSelectedPlayers!
-                  .where(
-                    (p) => widget.availablePlayers!.any(
-                      (available) => available.id == p.id,
-                    ),
-                  )
-                  .toList();
-            }
-          } else {
-            // Otherwise, use the loaded players from the database.
-            loadedPlayers.sort((a, b) => a.name.compareTo(b.name));
-            allPlayers = [...loadedPlayers];
-            if (widget.initialSelectedPlayers != null) {
-              // Excludes already selected players from the suggested players list.
-              suggestedPlayers = loadedPlayers.where((p) => !widget.initialSelectedPlayers!.any((ip) => ip.id == p.id)).toList();
-              // Ensures that only players available for selection are pre-selected.
-              selectedPlayers = widget.initialSelectedPlayers!
-                  .where(
-                    (p) => allPlayers.any(
-                      (available) => available.id == p.id,
-                ),
-              )
-                  .toList();
-            } else {
-              // If no initial selection, all loaded players are suggested.
-              suggestedPlayers = [...loadedPlayers];
-            }
+    _allPlayersFuture.then((loadedPlayers) {
+      if (!mounted) return;
+      setState(() {
+        // If a list of available players is provided (even if empty), use that list.
+        if (widget.availablePlayers != null) {
+          widget.availablePlayers!.sort((a, b) => a.name.compareTo(b.name));
+          allPlayers = [...widget.availablePlayers!];
+          suggestedPlayers = [...allPlayers];
+
+          if (widget.initialSelectedPlayers != null) {
+            // Ensures that only players available for selection are pre-selected.
+            selectedPlayers = widget.initialSelectedPlayers!
+                .where(
+                  (p) => widget.availablePlayers!.any(
+                    (available) => available.id == p.id,
+                  ),
+                )
+                .toList();
           }
-          isLoading = false;
-        });
+        } else {
+          // Otherwise, use the loaded players from the database.
+          loadedPlayers.sort((a, b) => a.name.compareTo(b.name));
+          allPlayers = [...loadedPlayers];
+          if (widget.initialSelectedPlayers != null) {
+            // Excludes already selected players from the suggested players list.
+            suggestedPlayers = loadedPlayers
+                .where(
+                  (p) => !widget.initialSelectedPlayers!.any(
+                    (ip) => ip.id == p.id,
+                  ),
+                )
+                .toList();
+            // Ensures that only players available for selection are pre-selected.
+            selectedPlayers = widget.initialSelectedPlayers!
+                .where(
+                  (p) => allPlayers.any((available) => available.id == p.id),
+                )
+                .toList();
+          } else {
+            // If no initial selection, all loaded players are suggested.
+            suggestedPlayers = [...loadedPlayers];
+          }
+        }
+        isLoading = false;
       });
-    }
+    });
   }
 
   /// Adds a new player to the database from the search bar input.
