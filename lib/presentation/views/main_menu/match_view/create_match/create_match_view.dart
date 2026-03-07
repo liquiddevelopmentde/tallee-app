@@ -235,7 +235,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         (selectedPlayers.length > 1) && selectedGameIndex != -1);
   }
 
-  // If a match was provied to the view, it updates the match in the database
+  // If a match was provided to the view, it updates the match in the database
   // and navigates back to the previous screen.
   // If no match was provided, it creates a new match in the database and
   // navigates to the MatchResultView for the newly created match.
