@@ -147,7 +147,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                         (selectedPlayers.length < 2))
                     ? null
                     : () async {
-                        Group? updatedGroup = null;
+                        Group? updatedGroup;
                         bool successfullNameChange = true;
                         bool successfullMemberChange = true;
                         late bool success;
