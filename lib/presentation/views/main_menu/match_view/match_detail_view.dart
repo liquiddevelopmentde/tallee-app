@@ -142,7 +142,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       const Icon(Icons.group),
                       const SizedBox(width: 8),
                       Text(
-                        // TODO: Update after DB changes
                         '${match.group!.name}${getExtraPlayerCount(match)}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
