@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -41,20 +40,13 @@ class MatchTile extends StatefulWidget {
 }
 
 class _MatchTileState extends State<MatchTile> {
-  late List<Player> _allPlayers;
-
-  @override
-  void initState() {
-    super.initState();
-    _allPlayers = [...widget.match.players];
-    _allPlayers.sort((a, b) => a.name.compareTo(b.name));
-  }
-
   @override
   Widget build(BuildContext context) {
     final match = widget.match;
     final group = widget.match.group;
     final winner = widget.match.winner;
+    final players = [...widget.match.players]
+      ..sort((a, b) => a.name.compareTo(b.name));
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(
@@ -197,7 +189,7 @@ class _MatchTileState extends State<MatchTile> {
               const SizedBox(height: 12),
             ],
 
-            if (_allPlayers.isNotEmpty && widget.compact == false) ...[
+            if (players.isNotEmpty && widget.compact == false) ...[
               Text(
                 loc.players,
                 style: const TextStyle(
@@ -210,7 +202,7 @@ class _MatchTileState extends State<MatchTile> {
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: _allPlayers.map((player) {
+                children: players.map((player) {
                   return TextIconTile(text: player.name, iconEnabled: false);
                 }).toList(),
               ),
