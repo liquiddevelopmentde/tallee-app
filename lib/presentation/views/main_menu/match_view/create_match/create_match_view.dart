@@ -231,7 +231,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// - A ruleset is selected AND
   /// - Either a group is selected OR at least 2 players are selected
   bool _enableCreateGameButton() {
-    return (selectedGroup != null || (selectedPlayers.length > 1));
+    return (selectedGroup != null ||
+        (selectedPlayers.length > 1) && selectedGameIndex != -1);
   }
 
   // If a match was provied to the view, it updates the match in the database
