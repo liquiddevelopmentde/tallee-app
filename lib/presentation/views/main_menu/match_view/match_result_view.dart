@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
@@ -11,10 +12,17 @@ class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
   /// [match]: The match for which the winner is to be selected
   /// [onWinnerChanged]: Optional callback invoked when the winner is changed
-  const MatchResultView({super.key, required this.match, this.onWinnerChanged});
+  const MatchResultView({
+    super.key,
+    required this.match,
+    this.ruleset = Ruleset.singleWinner,
+    this.onWinnerChanged,
+  });
 
   /// The match for which the winner is to be selected
   final Match match;
+
+  final Ruleset ruleset;
 
   /// Optional callback invoked when the winner is changed
   final VoidCallback? onWinnerChanged;
@@ -47,6 +55,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(
@@ -82,7 +91,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      loc.select_winner,
+                      '${getTitleForRuleset(loc)}:',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -96,7 +105,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                           setState(() {
                             _selectedPlayer = value;
                           });
-                          await _handleWinnerSaving();
+                          await _handleSaving();
                         },
                         child: ListView.builder(
                           itemCount: allPlayers.length,
@@ -115,7 +124,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                                     (_selectedPlayer = value);
                                   }
                                 });
-                                await _handleWinnerSaving();
+                                await _handleSaving();
                               },
                             );
                           },
@@ -134,16 +143,42 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Handles saving or removing the winner in the database
   /// based on the current selection.
-  Future<void> _handleWinnerSaving() async {
+  Future<void> _handleSaving() async {
+    if (widget.ruleset == Ruleset.singleWinner) {
+      await _handleWinner();
+    } else if (widget.ruleset == Ruleset.singleLoser) {
+      await _handleLoser();
+    } else if (widget.ruleset == Ruleset.lowestScore ||
+        widget.ruleset == Ruleset.highestScore) {
+      await _handleScores();
+    }
+
+    widget.onWinnerChanged?.call();
+  }
+
+  Future<bool> _handleWinner() async {
     if (_selectedPlayer == null) {
-      await db.matchDao.removeWinner(matchId: widget.match.id);
+      return await db.matchDao.removeWinner(matchId: widget.match.id);
     } else {
-      await db.matchDao.setWinner(
+      return await db.matchDao.setWinner(
         matchId: widget.match.id,
         winnerId: _selectedPlayer!.id,
       );
     }
-    widget.onWinnerChanged?.call();
+  }
+
+  Future<bool> _handleLoser() async {
+    if (_selectedPlayer == null) {
+      //TODO: removeLoser() method
+      return false;
+    } else {
+      //TODO: setLoser() method
+      return false;
+    }
+  }
+
+  Future<bool> _handleScores() async {
+    return false;
   }
 
   /// Retrieves all players associated with the given [match].
@@ -161,5 +196,16 @@ class _MatchResultViewState extends State<MatchResultView> {
 
     players.sort((a, b) => a.name.compareTo(b.name));
     return players;
+  }
+
+  String getTitleForRuleset(AppLocalizations loc) {
+    switch (widget.ruleset) {
+      case Ruleset.singleWinner:
+        return loc.select_winner;
+      case Ruleset.singleLoser:
+        return loc.select_loser;
+      default:
+        return loc.enter_points;
+    }
   }
 }
