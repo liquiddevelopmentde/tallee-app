@@ -242,6 +242,12 @@ abstract class AppLocalizations {
   /// **'Edit Group'**
   String get edit_group;
 
+  /// Label to enter players points
+  ///
+  /// In en, this message translates to:
+  /// **'Enter points'**
+  String get enter_points;
+
   /// Error message when group creation fails
   ///
   /// In en, this message translates to:
@@ -563,8 +569,14 @@ abstract class AppLocalizations {
   /// Label to select the winner
   ///
   /// In en, this message translates to:
-  /// **'Select Winner:'**
+  /// **'Select Winner'**
   String get select_winner;
+
+  /// Label to select the loser
+  ///
+  /// In en, this message translates to:
+  /// **'Select Loser'**
+  String get select_loser;
 
   /// Shows the number of selected players
   ///

@@ -77,6 +77,9 @@
   "@edit_group": {
     "description": "Button text to edit a group"
   },
+  "@enter_points": {
+    "description": "Label to enter players points"
+  },
   "@error_creating_group": {
     "description": "Error message when group creation fails"
   },
@@ -244,6 +247,9 @@
   "@select_winner": {
     "description": "Label to select the winner"
   },
+  "@select_loser": {
+    "description": "Label to select the loser"
+  },
   "@selected_players": {
     "description": "Shows the number of selected players"
   },
@@ -322,6 +328,7 @@
   "delete_all_data": "Delete all data",
   "delete_group": "Delete Group",
   "edit_group": "Edit Group",
+  "enter_points": "Enter points",
   "error_creating_group": "Error while creating group, please try again",
   "error_reading_file": "Error reading file",
   "export_canceled": "Export canceled",
@@ -375,7 +382,8 @@
   "ruleset_single_winner": "Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.",
   "search_for_groups": "Search for groups",
   "search_for_players": "Search for players",
-  "select_winner": "Select Winner:",
+  "select_winner": "Select Winner",
+  "select_loser": "Select Loser",
   "selected_players": "Selected players",
   "settings": "Settings",
   "single_loser": "Single Loser",

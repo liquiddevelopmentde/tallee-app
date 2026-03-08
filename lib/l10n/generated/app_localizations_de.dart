@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -83,6 +84,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get edit_group => 'Gruppe bearbeiten';
+
+  @override
+  String get enter_points => 'Punkte eingeben';
 
   @override
   String get error_creating_group =>
@@ -252,7 +256,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get search_for_players => 'Nach Spieler:innen suchen';
 
   @override
-  String get select_winner => 'Gewinner:in wählen:';
+  String get select_winner => 'Gewinner:in wählen';
+
+  @override
+  String get select_loser => 'Verlierer:in wählen';
 
   @override
   String get selected_players => 'Ausgewählte Spieler:innen';
