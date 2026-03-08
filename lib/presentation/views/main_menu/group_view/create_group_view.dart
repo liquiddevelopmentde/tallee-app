@@ -146,56 +146,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                     (_groupNameController.text.isEmpty ||
                         (selectedPlayers.length < 2))
                     ? null
-                    : () async {
-                        Group? updatedGroup;
-                        bool successfullNameChange = true;
-                        bool successfullMemberChange = true;
-                        late bool success;
-                        if (widget.groupToEdit == null) {
-                          success = await db.groupDao.addGroup(
-                            group: Group(
-                              name: _groupNameController.text.trim(),
-                              description: '',
-                              members: selectedPlayers,
-                            ),
-                          );
-                        } else {
-                          updatedGroup = Group(
-                            id: widget.groupToEdit!.id,
-                            name: _groupNameController.text.trim(),
-                            description: '',
-                            members: selectedPlayers,
-                          );
-                          if (widget.groupToEdit!.name !=
-                              _groupNameController.text.trim()) {
-                            successfullNameChange = await db.groupDao
-                                .updateGroupName(
-                                  groupId: widget.groupToEdit!.id,
-                                  newName: _groupNameController.text.trim(),
-                                );
-                          }
-
-                          if (widget.groupToEdit!.members != selectedPlayers) {
-                            successfullMemberChange = await db.groupDao
-                                .replaceGroupPlayers(
-                                  groupId: widget.groupToEdit!.id,
-                                  newPlayers: selectedPlayers,
-                                );
-                          }
-                          success =
-                              successfullNameChange && successfullMemberChange;
-                        }
-                        if (!context.mounted) return;
-                        if (success) {
-                          Navigator.pop(context, updatedGroup);
-                        } else {
-                          showSnackbar(
-                            message: widget.groupToEdit == null
-                                ? loc.error_creating_group
-                                : loc.error_editing_group,
-                          );
-                        }
-                      },
+                    : _saveGroup,
               ),
               const SizedBox(height: 20),
             ],
@@ -203,6 +154,61 @@ class _CreateGroupViewState extends State<CreateGroupView> {
         ),
       ),
     );
+  }
+
+  /// Saves the group by creating a new one or updating the existing one,
+  /// depending on whether the widget  is in edit mode.
+  Future<void> _saveGroup() async {
+    final loc = AppLocalizations.of(context);
+    Group? updatedGroup;
+    bool successfullNameChange = true;
+    bool successfullMemberChange = true;
+    late bool success;
+
+    final groupName = _groupNameController.text.trim();
+
+    if (widget.groupToEdit == null) {
+      success = await db.groupDao.addGroup(
+        group: Group(
+          name: groupName,
+          description: '',
+          members: selectedPlayers,
+        ),
+      );
+    } else {
+      updatedGroup = Group(
+        id: widget.groupToEdit!.id,
+        name: groupName,
+        description: '',
+        members: selectedPlayers,
+      );
+      if (widget.groupToEdit!.name != groupName) {
+        successfullNameChange = await db.groupDao.updateGroupName(
+          groupId: widget.groupToEdit!.id,
+          newName: groupName,
+        );
+      }
+
+      if (widget.groupToEdit!.members != selectedPlayers) {
+        successfullMemberChange = await db.groupDao.replaceGroupPlayers(
+          groupId: widget.groupToEdit!.id,
+          newPlayers: selectedPlayers,
+        );
+      }
+      success = successfullNameChange && successfullMemberChange;
+    }
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.pop(context, updatedGroup);
+    } else {
+      showSnackbar(
+        message: widget.groupToEdit == null
+            ? loc.error_creating_group
+            : loc.error_editing_group,
+      );
+    }
   }
 
   /// Displays a snackbar with the given message and optional action.
