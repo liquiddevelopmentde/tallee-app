@@ -160,42 +160,15 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   /// depending on whether the widget  is in edit mode.
   Future<void> _saveGroup() async {
     final loc = AppLocalizations.of(context);
-    Group? updatedGroup;
-    bool successfullNameChange = true;
-    bool successfullMemberChange = true;
     late bool success;
-
-    final groupName = _groupNameController.text.trim();
+    Group? updatedGroup;
 
     if (widget.groupToEdit == null) {
-      success = await db.groupDao.addGroup(
-        group: Group(
-          name: groupName,
-          description: '',
-          members: selectedPlayers,
-        ),
-      );
+      success = await _createGroup();
     } else {
-      updatedGroup = Group(
-        id: widget.groupToEdit!.id,
-        name: groupName,
-        description: '',
-        members: selectedPlayers,
-      );
-      if (widget.groupToEdit!.name != groupName) {
-        successfullNameChange = await db.groupDao.updateGroupName(
-          groupId: widget.groupToEdit!.id,
-          newName: groupName,
-        );
-      }
-
-      if (widget.groupToEdit!.members != selectedPlayers) {
-        successfullMemberChange = await db.groupDao.replaceGroupPlayers(
-          groupId: widget.groupToEdit!.id,
-          newPlayers: selectedPlayers,
-        );
-      }
-      success = successfullNameChange && successfullMemberChange;
+      final result = await _editGroup();
+      success = result.$1;
+      updatedGroup = result.$2;
     }
 
     if (!mounted) return;
@@ -209,6 +182,51 @@ class _CreateGroupViewState extends State<CreateGroupView> {
             : loc.error_editing_group,
       );
     }
+  }
+
+  /// Handles creating a new group and returns whether the operation was successful.
+  Future<bool> _createGroup() async {
+    final groupName = _groupNameController.text.trim();
+
+    final success = await db.groupDao.addGroup(
+      group: Group(name: groupName, description: '', members: selectedPlayers),
+    );
+
+    return success;
+  }
+
+  /// Handles editing an existing group and returns a tuple of
+  /// (success, updatedGroup).
+  Future<(bool, Group?)> _editGroup() async {
+    final groupName = _groupNameController.text.trim();
+
+    Group? updatedGroup = Group(
+      id: widget.groupToEdit!.id,
+      name: groupName,
+      description: '',
+      members: selectedPlayers,
+    );
+
+    bool successfullNameChange = true;
+    bool successfullMemberChange = true;
+
+    if (widget.groupToEdit!.name != groupName) {
+      successfullNameChange = await db.groupDao.updateGroupName(
+        groupId: widget.groupToEdit!.id,
+        newName: groupName,
+      );
+    }
+
+    if (widget.groupToEdit!.members != selectedPlayers) {
+      successfullMemberChange = await db.groupDao.replaceGroupPlayers(
+        groupId: widget.groupToEdit!.id,
+        newPlayers: selectedPlayers,
+      );
+    }
+
+    final success = successfullNameChange && successfullMemberChange;
+
+    return (success, updatedGroup);
   }
 
   /// Displays a snackbar with the given message and optional action.
