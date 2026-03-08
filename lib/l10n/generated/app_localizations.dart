@@ -548,6 +548,12 @@ abstract class AppLocalizations {
   /// **'{count} Players'**
   String players_count(int count);
 
+  /// Points label
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get points;
+
   /// Privacy policy menu item
   ///
   /// In en, this message translates to:
@@ -661,6 +667,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Highest Score'**
   String get highest_score;
+
+  /// No description provided for @loser.
+  ///
+  /// In en, this message translates to:
+  /// **'Loser'**
+  String get loser;
 
   /// No description provided for @lowest_score.
   ///

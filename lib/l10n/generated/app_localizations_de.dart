@@ -244,6 +244,9 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get points => 'Punkte';
+
+  @override
   String get privacy_policy => 'Datenschutzerklärung';
 
   @override
@@ -303,6 +306,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get highest_score => 'Höchste Punkte';
+
+  @override
+  String get loser => 'Verlierer:in';
 
   @override
   String get lowest_score => 'Niedrigste Punkte';

@@ -235,6 +235,9 @@
       }
     }
   },
+  "@points": {
+    "description": "Points label"
+  },
   "@privacy_policy": {
     "description": "Privacy policy menu item"
   },
@@ -406,6 +409,7 @@
   "player_name": "Player name",
   "players": "Players",
   "players_count": "{count} Players",
+  "points": "Points",
   "privacy_policy": "Privacy Policy",
   "quick_create": "Quick Create",
   "recent_matches": "Recent Matches",
@@ -425,6 +429,7 @@
   "single_loser": "Single Loser",
   "single_winner": "Single Winner",
   "highest_score": "Highest Score",
+  "loser": "Loser",
   "lowest_score": "Lowest Score",
   "multiple_winners": "Multiple Winners",
   "statistics": "Statistics",

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -175,37 +176,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       vertical: 4,
                       horizontal: 8,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        /// TODO: Implement different ruleset results display
-                        if (match.winner != null) ...[
-                          Text(
-                            loc.winner,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: CustomTheme.textColor,
-                            ),
-                          ),
-                          Text(
-                            match.winner!.name,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: CustomTheme.primaryColor,
-                            ),
-                          ),
-                        ] else ...[
-                          Text(
-                            loc.no_results_entered_yet,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: CustomTheme.textColor,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
+                    child: getResultWidget(loc),
                   ),
                 ),
               ],
@@ -263,5 +234,92 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       match = editedMatch;
     });
     widget.onMatchUpdate.call();
+  }
+
+  /// Returns the widget to be displayed in the result [InfoTile]
+  /// TODO: Update when score logic is overhauled
+  Widget getResultWidget(AppLocalizations loc) {
+    if (isSingleRowResult()) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: getResultRow(loc),
+      );
+    } else {
+      return Column(
+        children: [
+          for (var player in match.players)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  player.name,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: CustomTheme.textColor,
+                  ),
+                ),
+                Text(
+                  '0 ${loc.points}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: CustomTheme.primaryColor,
+                  ),
+                ),
+              ],
+            ),
+        ],
+      );
+    }
+  }
+
+  /// Returns the result row for single winner/loser rulesets or a placeholder
+  /// if no result is entered yet
+  /// TODO: Update when score logic is overhauled
+  List<Widget> getResultRow(AppLocalizations loc) {
+    if (match.winner != null && match.game.ruleset == Ruleset.singleWinner) {
+      return [
+        Text(
+          loc.winner,
+          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
+        ),
+        Text(
+          match.winner!.name,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: CustomTheme.primaryColor,
+          ),
+        ),
+      ];
+    } else if (match.game.ruleset == Ruleset.singleLoser) {
+      return [
+        Text(
+          loc.loser,
+          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
+        ),
+        Text(
+          match.winner!.name,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: CustomTheme.primaryColor,
+          ),
+        ),
+      ];
+    } else {
+      return [
+        Text(
+          loc.no_results_entered_yet,
+          style: const TextStyle(fontSize: 14, color: CustomTheme.textColor),
+        ),
+      ];
+    }
+  }
+
+  // Returns if the result can be displayed in a single row
+  bool isSingleRowResult() {
+    return match.game.ruleset == Ruleset.singleWinner ||
+        match.game.ruleset == Ruleset.singleLoser;
   }
 }
