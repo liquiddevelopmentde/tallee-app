@@ -36,11 +36,7 @@ class CustomRadioListTile<T> extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Radio<T>(
-              value: value,
-              activeColor: CustomTheme.primaryColor,
-              toggleable: true,
-            ),
+            Radio<T>(value: value, toggleable: true),
             Expanded(
               child: Text(
                 text,

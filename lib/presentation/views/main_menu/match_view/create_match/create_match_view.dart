@@ -21,10 +21,21 @@ import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 class CreateMatchView extends StatefulWidget {
   /// A view that allows creating a new match
   /// [onWinnerChanged]: Optional callback invoked when the winner is changed
-  const CreateMatchView({super.key, this.onWinnerChanged});
+  const CreateMatchView({
+    super.key,
+    this.onWinnerChanged,
+    this.matchToEdit,
+    this.onMatchUpdated,
+  });
 
   /// Optional callback invoked when the winner is changed
   final VoidCallback? onWinnerChanged;
+
+  /// Optional callback invoked when the match is updated
+  final void Function(Match)? onMatchUpdated;
+
+  /// An optional match to prefill the fields
+  final Match? matchToEdit;
 
   @override
   State<CreateMatchView> createState() => _CreateMatchViewState();
@@ -45,18 +56,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// List of all players from the database
   List<Player> playerList = [];
 
-  /// List of players filtered based on the selected group
-  /// If a group is selected, this list contains all players from [playerList]
-  /// who are not members of the selected group. If no group is selected,
-  /// this list is identical to [playerList].
-  List<Player> filteredPlayerList = [];
-
   /// The currently selected group
   Group? selectedGroup;
-
-  /// The index of the currently selected group in [groupsList] to mark it in
-  /// the [ChooseGroupView]
-  String selectedGroupId = '';
 
   /// The index of the currently selected game in [games] to mark it in
   /// the [ChooseGameView]
@@ -64,6 +65,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
   /// The currently selected players
   List<Player> selectedPlayers = [];
+
+  /// GlobalKey for ScaffoldMessenger to show snackbars
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
@@ -80,9 +84,11 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     ]).then((result) async {
       groupsList = result[0] as List<Group>;
       playerList = result[1] as List<Player>;
-      setState(() {
-        filteredPlayerList = List.from(playerList);
-      });
+
+      // If a match is provided, prefill the fields
+      if (widget.matchToEdit != null) {
+        prefillMatchDetails();
+      }
     });
   }
 
@@ -107,11 +113,19 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final buttonText = widget.matchToEdit != null
+        ? loc.save_changes
+        : loc.create_match;
+    final viewTitle = widget.matchToEdit != null
+        ? loc.edit_match
+        : loc.create_new_match;
+
     return ScaffoldMessenger(
+      key: _scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: CustomTheme.backgroundColor,
-        appBar: AppBar(title: Text(loc.create_new_match)),
+        appBar: AppBar(title: Text(viewTitle)),
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -153,96 +167,55 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     ? loc.none_group
                     : selectedGroup!.name,
                 onPressed: () async {
+                  // Remove all players from the previously selected group from
+                  // the selected players list, in case the user deselects the
+                  // group or selects a different group.
+                  selectedPlayers.removeWhere(
+                    (player) =>
+                        selectedGroup?.members.any(
+                          (member) => member.id == player.id,
+                        ) ??
+                        false,
+                  );
+
                   selectedGroup = await Navigator.of(context).push(
                     adaptivePageRoute(
                       builder: (context) => ChooseGroupView(
                         groups: groupsList,
-                        initialGroupId: selectedGroupId,
+                        initialGroupId: selectedGroup?.id ?? '',
                       ),
                     ),
                   );
-                  selectedGroupId = selectedGroup?.id ?? '';
-                  if (selectedGroup != null) {
-                    filteredPlayerList = playerList
-                        .where(
-                          (p) =>
-                      !selectedGroup!.members.any((m) => m.id == p.id),
-                    )
-                        .toList();
-                  } else {
-                    filteredPlayerList = List.from(playerList);
-                  }
-                  setState(() {});
+
+                  setState(() {
+                    if (selectedGroup != null) {
+                      setState(() {
+                        selectedPlayers += [...selectedGroup!.members];
+                      });
+                    }
+                  });
                 },
               ),
               Expanded(
                 child: PlayerSelection(
                   key: ValueKey(selectedGroup?.id ?? 'no_group'),
                   initialSelectedPlayers: selectedPlayers,
-                  availablePlayers: filteredPlayerList,
                   onChanged: (value) {
                     setState(() {
                       selectedPlayers = value;
+                      removeGroupWhenNoMemberLeft();
                     });
                   },
                 ),
               ),
               CustomWidthButton(
-                text: loc.create_match,
+                text: buttonText,
                 sizeRelativeToWidth: 0.95,
                 buttonType: ButtonType.primary,
                 onPressed: _enableCreateGameButton()
-                    ? () async {
-                  // Use a game from the games list
-                  Game? gameToUse;
-                  if (selectedGameIndex == -1) {
-                    // Use the first game as default if none selected
-                    final selectedGame = games[0];
-                    gameToUse = Game(
-                      name: selectedGame.$1,
-                      description: selectedGame.$2,
-                      ruleset: selectedGame.$3,
-                      color: GameColor.blue,
-                      icon: '',
-                    );
-                  } else {
-                    // Use the selected game from the list
-                    final selectedGame = games[selectedGameIndex];
-                    gameToUse = Game(
-                      name: selectedGame.$1,
-                      description: selectedGame.$2,
-                      ruleset: selectedGame.$3,
-                      color: GameColor.blue,
-                      icon: '',
-                    );
-                  }
-                  // Add the game to the database if it doesn't exist
-                  await db.gameDao.addGame(game: gameToUse);
-
-                  Match match = Match(
-                    name: _matchNameController.text.isEmpty
-                        ? (hintText ?? '')
-                        : _matchNameController.text.trim(),
-                    createdAt: DateTime.now(),
-                    game: gameToUse,
-                    group: selectedGroup,
-                    players: selectedPlayers,
-                    notes: '',
-                  );
-                  await db.matchDao.addMatch(match: match);
-                  if (context.mounted) {
-                    Navigator.pushReplacement(
-                      context,
-                      adaptivePageRoute(
-                        fullscreenDialog: true,
-                        builder: (context) => MatchResultView(
-                          match: match,
-                          onWinnerChanged: widget.onWinnerChanged,
-                        ),
-                      ),
-                    );
-                  }
-                }
+                    ? () {
+                        buttonNavigation(context);
+                      }
                     : null,
               ),
             ],
@@ -259,6 +232,155 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// - Either a group is selected OR at least 2 players are selected
   bool _enableCreateGameButton() {
     return (selectedGroup != null ||
-        (selectedPlayers.length > 1));
+        (selectedPlayers.length > 1) && selectedGameIndex != -1);
+  }
+
+  // If a match was provided to the view, it updates the match in the database
+  // and navigates back to the previous screen.
+  // If no match was provided, it creates a new match in the database and
+  // navigates to the MatchResultView for the newly created match.
+  void buttonNavigation(BuildContext context) async {
+    if (widget.matchToEdit != null) {
+      await updateMatch();
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+    } else {
+      final match = await createMatch();
+
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          adaptivePageRoute(
+            fullscreenDialog: true,
+            builder: (context) => MatchResultView(
+              match: match,
+              onWinnerChanged: widget.onWinnerChanged,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  /// Updates attributes of the existing match in the database based on the
+  /// changes made in the edit view.
+  Future<void> updateMatch() async {
+    //TODO: Remove when Games implemented
+    final tempGame = await getTemporaryGame();
+
+    final updatedMatch = Match(
+      id: widget.matchToEdit!.id,
+      name: _matchNameController.text.isEmpty
+          ? (hintText ?? '')
+          : _matchNameController.text.trim(),
+      group: selectedGroup,
+      players: selectedPlayers,
+      game: tempGame,
+      winner: widget.matchToEdit!.winner,
+      createdAt: widget.matchToEdit!.createdAt,
+      endedAt: widget.matchToEdit!.endedAt,
+      notes: widget.matchToEdit!.notes,
+    );
+
+    if (widget.matchToEdit!.name != updatedMatch.name) {
+      await db.matchDao.updateMatchName(
+        matchId: widget.matchToEdit!.id,
+        newName: updatedMatch.name,
+      );
+    }
+
+    if (widget.matchToEdit!.group?.id != updatedMatch.group?.id) {
+      await db.matchDao.updateMatchGroup(
+        matchId: widget.matchToEdit!.id,
+        newGroupId: updatedMatch.group?.id,
+      );
+    }
+
+    // Add players who are in updatedMatch but not in the original match
+    for (var player in updatedMatch.players) {
+      if (!widget.matchToEdit!.players.any((p) => p.id == player.id)) {
+        await db.playerMatchDao.addPlayerToMatch(
+          matchId: widget.matchToEdit!.id,
+          playerId: player.id,
+        );
+      }
+    }
+
+    // Remove players who are in the original match but not in updatedMatch
+    for (var player in widget.matchToEdit!.players) {
+      if (!updatedMatch.players.any((p) => p.id == player.id)) {
+        await db.playerMatchDao.removePlayerFromMatch(
+          matchId: widget.matchToEdit!.id,
+          playerId: player.id,
+        );
+        if (widget.matchToEdit!.winner?.id == player.id) {
+          updatedMatch.winner = null;
+        }
+      }
+    }
+
+    widget.onMatchUpdated?.call(updatedMatch);
+  }
+
+  // Creates a new match and adds it to the database.
+  // Returns the created match.
+  Future<Match> createMatch() async {
+    final tempGame = await getTemporaryGame();
+
+    Match match = Match(
+      name: _matchNameController.text.isEmpty
+          ? (hintText ?? '')
+          : _matchNameController.text.trim(),
+      createdAt: DateTime.now(),
+      group: selectedGroup,
+      players: selectedPlayers,
+      game: tempGame,
+    );
+    await db.matchDao.addMatch(match: match);
+    return match;
+  }
+
+  // TODO: Remove when games fully implemented
+  Future<Game> getTemporaryGame() async {
+    Game? game;
+
+    final selectedGame = games[selectedGameIndex];
+    game = Game(
+      name: selectedGame.$1,
+      description: selectedGame.$2,
+      ruleset: selectedGame.$3,
+      color: GameColor.blue,
+      icon: '',
+    );
+
+    await db.gameDao.addGame(game: game);
+    return game;
+  }
+
+  // If a match was provided to the view, this method prefills the input fields
+  void prefillMatchDetails() {
+    final match = widget.matchToEdit!;
+    _matchNameController.text = match.name;
+    selectedPlayers = match.players;
+
+    if (match.group != null) {
+      selectedGroup = match.group;
+    }
+  }
+
+  // If none of the selected players are from the currently selected group,
+  // the group is also deselected.
+  Future<void> removeGroupWhenNoMemberLeft() async {
+    if (selectedGroup == null) return;
+
+    if (!selectedPlayers.any(
+      (player) =>
+          selectedGroup!.members.any((member) => member.id == player.id),
+    )) {
+      setState(() {
+        selectedGroup = null;
+      });
+    }
   }
 }

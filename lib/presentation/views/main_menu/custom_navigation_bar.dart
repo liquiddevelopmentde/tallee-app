@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/views/main_menu/group_view/groups_view.dart';
+import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/home_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
@@ -38,7 +38,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       ),
       KeyedSubtree(
         key: ValueKey('groups_$tabKeyCount'),
-        child: const GroupsView(),
+        child: const GroupView(),
       ),
       KeyedSubtree(
         key: ValueKey('stats_$tabKeyCount'),
@@ -141,7 +141,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   }
 
   /// Returns the title of the current tab based on [currentIndex].
-  String _currentTabTitle(context) {
+  String _currentTabTitle(BuildContext context) {
     final loc = AppLocalizations.of(context);
     switch (currentIndex) {
       case 0:

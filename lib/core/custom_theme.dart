@@ -27,6 +27,9 @@ class CustomTheme {
   /// Text color used throughout the app
   static const Color textColor = Color(0xFFFFFFFF);
 
+  /// Text color used throughout the app
+  static const Color hintColor = Color(0xFF888888);
+
   /// Background color for the navigation bar
   static const Color navBarBackgroundColor = Color(0xFF131313);
 
@@ -65,7 +68,7 @@ class CustomTheme {
     boxShadow: [BoxShadow(color: primaryColor.withAlpha(120), blurRadius: 12)],
   );
 
-  // ==================== App Bar Theme ====================
+  // ==================== Component Themes ====================
   static const AppBarTheme appBarTheme = AppBarTheme(
     backgroundColor: backgroundColor,
     foregroundColor: textColor,
@@ -79,5 +82,24 @@ class CustomTheme {
       overflow: TextOverflow.ellipsis,
     ),
     iconTheme: IconThemeData(color: textColor),
+  );
+
+  static const SearchBarThemeData searchBarTheme = SearchBarThemeData(
+    textStyle: WidgetStatePropertyAll(TextStyle(color: CustomTheme.textColor)),
+    hintStyle: WidgetStatePropertyAll(TextStyle(color: CustomTheme.hintColor)),
+  );
+
+  static final RadioThemeData radioTheme = RadioThemeData(
+    fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+      if (states.contains(WidgetState.selected)) {
+        return CustomTheme.primaryColor;
+      }
+      return CustomTheme.textColor;
+    }),
+  );
+
+  static const InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
+    labelStyle: TextStyle(color: CustomTheme.textColor),
+    hintStyle: TextStyle(color: CustomTheme.hintColor),
   );
 }

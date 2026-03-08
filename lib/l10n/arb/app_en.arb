@@ -37,10 +37,10 @@
     "description": "Button text to create a match"
   },
   "@create_new_group": {
-    "description": "Button text to create a new group"
+    "description": "Appbar text to create a new group"
   },
   "@create_new_match": {
-    "description": "Button text to create a new match"
+    "description": "Appbar text to create a new match"
   },
   "@created_on": {
     "description": "Label for creation date"
@@ -72,16 +72,31 @@
     "description": "Confirmation dialog for deleting all data"
   },
   "@delete_group": {
-    "description": "Button text to delete a group"
+    "description": "Confirmation dialog for deleting a group"
+  },
+  "@delete_match": {
+    "description": "Button text to delete a match"
   },
   "@edit_group": {
-    "description": "Button text to edit a group"
+      "description": "Button & Appbar label for editing a group"
+  },
+  "@edit_match": {
+      "description": "Button & Appbar label for editing a match"
   },
   "@enter_points": {
     "description": "Label to enter players points"
   },
+  "@enter_results": {
+    "description": "Button text to enter match results"
+  },
   "@error_creating_group": {
     "description": "Error message when group creation fails"
+  },
+  "@error_deleting_group": {
+      "description": "Error message when group deletion fails"
+  },
+  "@error_editing_group": {
+      "description": "Error message when group editing fails"
   },
   "@error_reading_file": {
     "description": "Error message when file cannot be read"
@@ -146,6 +161,9 @@
   "@match_name": {
     "description": "Placeholder for match name input"
   },
+  "@match_profile": {
+    "description": "Title for match profile view"
+  },
   "@matches": {
     "description": "Label for matches"
   },
@@ -181,6 +199,9 @@
   },
   "@no_recent_matches_available": {
     "description": "Message when no recent matches exist"
+  },
+  "@no_results_entered_yet": {
+    "description": "Message when no results have been entered yet"
   },
   "@no_second_match_available": {
     "description": "Message when no second match exists"
@@ -223,6 +244,9 @@
   "@recent_matches": {
     "description": "Title for recent matches section"
   },
+  "@results": {
+    "description": "Label for match results"
+  },
   "@ruleset": {
     "description": "Ruleset label"
   },
@@ -237,6 +261,9 @@
   },
   "@ruleset_single_winner": {
     "description": "Description for single winner ruleset"
+  },
+  "@save_changes": {
+    "description": "Save changes button text"
   },
   "@search_for_groups": {
     "description": "Hint text for group search input field"
@@ -327,9 +354,14 @@
   "delete": "Delete",
   "delete_all_data": "Delete all data",
   "delete_group": "Delete Group",
+  "delete_match": "Delete Match",
   "edit_group": "Edit Group",
+  "edit_match": "Edit Match",
   "enter_points": "Enter points",
+  "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
+  "error_deleting_group": "Error while deleting group, please try again",
+  "error_editing_group": "Error while editing group, please try again",
   "error_reading_file": "Error reading file",
   "export_canceled": "Export canceled",
   "export_data": "Export data",
@@ -351,6 +383,7 @@
   "licenses": "Licenses",
   "match_in_progress": "Match in progress...",
   "match_name": "Match name",
+  "match_profile": "Match Profile",
   "matches": "Matches",
   "members": "Members",
   "most_points": "Most Points",
@@ -363,6 +396,7 @@
   "no_players_found_with_that_name": "No players found with that name",
   "no_players_selected": "No players selected",
   "no_recent_matches_available": "No recent matches available",
+  "no_results_entered_yet": "No results entered yet",
   "no_second_match_available": "No second match available",
   "no_statistics_available": "No statistics available",
   "none": "None",
@@ -375,11 +409,13 @@
   "privacy_policy": "Privacy Policy",
   "quick_create": "Quick Create",
   "recent_matches": "Recent Matches",
+  "results": "Results",
   "ruleset": "Ruleset",
   "ruleset_least_points": "Inverse scoring: the player with the fewest points wins.",
   "ruleset_most_points": "Traditional ruleset: the player with the most points wins.",
   "ruleset_single_loser": "Exactly one loser is determined; last place receives the penalty or consequence.",
   "ruleset_single_winner": "Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.",
+  "save_changes": "Save Changes",
   "search_for_groups": "Search for groups",
   "search_for_players": "Search for players",
   "select_winner": "Select Winner",

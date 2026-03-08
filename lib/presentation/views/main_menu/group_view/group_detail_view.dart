@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/dto/group.dart';
 import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
@@ -15,10 +17,10 @@ import 'package:tallee/presentation/widgets/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
-class GroupProfileView extends StatefulWidget {
+class GroupDetailView extends StatefulWidget {
   /// A view that displays the profile of a group
   /// - [group]: The group to display
-  const GroupProfileView({
+  const GroupDetailView({
     super.key,
     required this.group,
     required this.callback,
@@ -30,21 +32,24 @@ class GroupProfileView extends StatefulWidget {
   final VoidCallback callback;
 
   @override
-  State<GroupProfileView> createState() => _GroupProfileViewState();
+  State<GroupDetailView> createState() => _GroupDetailViewState();
 }
 
-class _GroupProfileViewState extends State<GroupProfileView> {
+class _GroupDetailViewState extends State<GroupDetailView> {
   late final AppDatabase db;
   bool isLoading = true;
+  late Group _group;
 
   /// Total matches played in this group
   int totalMatches = 0;
 
+  /// The best player in this group
   String bestPlayer = '';
 
   @override
   void initState() {
     super.initState();
+    _group = widget.group;
     db = Provider.of<AppDatabase>(context, listen: false);
     _loadStatistics();
   }
@@ -87,7 +92,7 @@ class _GroupProfileViewState extends State<GroupProfileView> {
                 ),
               ).then((confirmed) async {
                 if (confirmed! && context.mounted) {
-                  await db.groupDao.deleteGroup(groupId: widget.group.id);
+                  await db.groupDao.deleteGroup(groupId: _group.id);
                   if (!context.mounted) return;
                   Navigator.pop(context);
                   widget.callback.call();
@@ -118,7 +123,7 @@ class _GroupProfileViewState extends State<GroupProfileView> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  widget.group.name,
+                  _group.name,
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -128,7 +133,7 @@ class _GroupProfileViewState extends State<GroupProfileView> {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(widget.group.createdAt)}',
+                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(_group.createdAt)}',
                   style: const TextStyle(
                     fontSize: 12,
                     color: CustomTheme.textColor,
@@ -145,7 +150,7 @@ class _GroupProfileViewState extends State<GroupProfileView> {
                     crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
-                    children: widget.group.members.map((member) {
+                    children: _group.members.map((member) {
                       return TextIconTile(
                         text: member.name,
                         iconEnabled: false,
@@ -163,7 +168,7 @@ class _GroupProfileViewState extends State<GroupProfileView> {
                       children: [
                         _buildStatRow(
                           loc.members,
-                          widget.group.members.length.toString(),
+                          _group.members.length.toString(),
                         ),
                         _buildStatRow(
                           loc.played_matches,
@@ -181,19 +186,22 @@ class _GroupProfileViewState extends State<GroupProfileView> {
               child: MainMenuButton(
                 text: loc.edit_group,
                 icon: Icons.edit,
-                onPressed: () {
-                  // TODO: Uncomment when GroupDetailView is implemented
-                  /*
-                  await Navigator.push(
+                onPressed: () async {
+                  final updatedGroup = await Navigator.push<Group?>(
                     context,
                     adaptivePageRoute(
                       builder: (context) {
-
-                        return const GroupDetailView();
+                        return CreateGroupView(groupToEdit: _group);
                       },
                     ),
-                  );*/
-                  print('Edit Group pressed');
+                  );
+                  if (updatedGroup != null && mounted) {
+                    setState(() {
+                      _group = updatedGroup;
+                    });
+                    _loadStatistics();
+                    widget.callback();
+                  }
                 },
               ),
             ),
@@ -236,7 +244,7 @@ class _GroupProfileViewState extends State<GroupProfileView> {
   Future<void> _loadStatistics() async {
     final matches = await db.matchDao.getAllMatches();
     final groupMatches = matches
-        .where((match) => match.group?.id == widget.group.id)
+        .where((match) => match.group?.id == _group.id)
         .toList();
 
     setState(() {

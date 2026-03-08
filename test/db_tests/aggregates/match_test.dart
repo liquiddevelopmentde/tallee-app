@@ -1,13 +1,13 @@
 import 'package:clock/clock.dart';
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/dto/game.dart';
 import 'package:tallee/data/dto/group.dart';
 import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
-import 'package:tallee/core/enums.dart';
 
 void main() {
   late AppDatabase database;
@@ -51,7 +51,13 @@ void main() {
         description: '',
         members: [testPlayer4, testPlayer5],
       );
-      testGame = Game(name: 'Test Game', ruleset: Ruleset.singleWinner, description: 'A test game', color: GameColor.blue, icon: '');
+      testGame = Game(
+        name: 'Test Game',
+        ruleset: Ruleset.singleWinner,
+        description: 'A test game',
+        color: GameColor.blue,
+        icon: '',
+      );
       testMatch1 = Match(
         name: 'First Test Match',
         game: testGame,
@@ -99,7 +105,6 @@ void main() {
   });
 
   group('Match Tests', () {
-
     // Verifies that a single match can be added and retrieved with all fields, group, and players intact.
     test('Adding and fetching single match works correctly', () async {
       await database.matchDao.addMatch(match: testMatch1);
@@ -127,10 +132,7 @@ void main() {
       for (int i = 0; i < testMatch1.players.length; i++) {
         expect(result.players[i].id, testMatch1.players[i].id);
         expect(result.players[i].name, testMatch1.players[i].name);
-        expect(
-          result.players[i].createdAt,
-          testMatch1.players[i].createdAt,
-        );
+        expect(result.players[i].createdAt, testMatch1.players[i].createdAt);
       }
     });
 
@@ -191,10 +193,7 @@ void main() {
         for (int i = 0; i < testMatch.players.length; i++) {
           expect(match.players[i].id, testMatch.players[i].id);
           expect(match.players[i].name, testMatch.players[i].name);
-          expect(
-            match.players[i].createdAt,
-            testMatch.players[i].createdAt,
-          );
+          expect(match.players[i].createdAt, testMatch.players[i].createdAt);
         }
       }
     });
@@ -281,6 +280,32 @@ void main() {
         matchId: testMatch1.id,
       );
       expect(fetchedMatch.name, newName);
+    });
+
+    test('Fetching a winner works correctly', () async {
+      await database.matchDao.addMatch(match: testMatch1);
+
+      var fetchedMatch = await database.matchDao.getMatchById(
+        matchId: testMatch1.id,
+      );
+
+      expect(fetchedMatch.winner, isNotNull);
+      expect(fetchedMatch.winner!.id, testPlayer4.id);
+    });
+
+    test('Setting a winner works correctly', () async {
+      await database.matchDao.addMatch(match: testMatch1);
+
+      await database.matchDao.setWinner(
+        matchId: testMatch1.id,
+        winnerId: testPlayer5.id,
+      );
+
+      final fetchedMatch = await database.matchDao.getMatchById(
+        matchId: testMatch1.id,
+      );
+      expect(fetchedMatch.winner, isNotNull);
+      expect(fetchedMatch.winner!.id, testPlayer5.id);
     });
   });
 }
