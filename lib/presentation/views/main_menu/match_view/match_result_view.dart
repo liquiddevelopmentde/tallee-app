@@ -35,7 +35,10 @@ class _MatchResultViewState extends State<MatchResultView> {
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
-    allPlayers = getAllPlayers(widget.match);
+
+    allPlayers = widget.match.players;
+    allPlayers.sort((a, b) => a.name.compareTo(b.name));
+
     if (widget.match.winner != null) {
       _selectedPlayer = allPlayers.firstWhere(
         (p) => p.id == widget.match.winner!.id,
@@ -54,7 +57,7 @@ class _MatchResultViewState extends State<MatchResultView> {
           icon: const Icon(Icons.close),
           onPressed: () {
             widget.onWinnerChanged?.call();
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(_selectedPlayer);
           },
         ),
         title: Text(widget.match.name),
@@ -144,22 +147,5 @@ class _MatchResultViewState extends State<MatchResultView> {
       );
     }
     widget.onWinnerChanged?.call();
-  }
-
-  /// Retrieves all players associated with the given [match].
-  /// This includes players directly assigned to the match
-  /// as well as members of the group (if any).
-  /// The returned list is sorted alphabetically by player name.
-  List<Player> getAllPlayers(Match match) {
-    List<Player> players = [];
-
-    if (match.group == null) {
-      players = [...match.players];
-    } else {
-      players = [...match.players, ...match.group!.members];
-    }
-
-    players.sort((a, b) => a.name.compareTo(b.name));
-    return players;
   }
 }

@@ -31,6 +31,7 @@ class _SettingsViewState extends State<SettingsView> {
     version: 'n.A.',
     buildNumber: 'n.A.',
   );
+
   @override
   void initState() {
     super.initState();

@@ -79,14 +79,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_all_data => 'Alle Daten löschen';
 
   @override
-  String get delete_group => 'Gruppe löschen';
+  String get delete_group => 'Diese Gruppe löschen';
+
+  @override
+  String get delete_match => 'Spiel löschen';
 
   @override
   String get edit_group => 'Gruppe bearbeiten';
 
   @override
+  String get edit_match => 'Gruppe bearbeiten';
+
+  @override
+  String get enter_results => 'Ergebnisse eintragen';
+
+  @override
   String get error_creating_group =>
       'Fehler beim Erstellen der Gruppe, bitte erneut versuchen';
+
+  @override
+  String get error_deleting_group =>
+      'Fehler beim Löschen der Gruppe, bitte erneut versuchen';
+
+  @override
+  String get error_editing_group =>
+      'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
 
   @override
   String get error_reading_file => 'Fehler beim Lesen der Datei';
@@ -152,6 +169,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get match_name => 'Spieltitel';
 
   @override
+  String get match_profile => 'Spielprofil';
+
+  @override
   String get matches => 'Spiele';
 
   @override
@@ -187,6 +207,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_recent_matches_available => 'Keine letzten Spiele verfügbar';
+
+  @override
+  String get no_results_entered_yet => 'Noch keine Ergebnisse eingetragen';
 
   @override
   String get no_second_match_available => 'Kein zweites Spiel verfügbar';
@@ -227,6 +250,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get recent_matches => 'Letzte Spiele';
 
   @override
+  String get results => 'Ergebnisse';
+
+  @override
   String get ruleset => 'Regelwerk';
 
   @override
@@ -244,6 +270,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get ruleset_single_winner =>
       'Genau ein:e Gewinner:in wird gewählt; Unentschieden werden durch einen vordefinierten Tie-Breaker aufgelöst.';
+
+  @override
+  String get save_changes => 'Änderungen speichern';
 
   @override
   String get search_for_groups => 'Nach Gruppen suchen';

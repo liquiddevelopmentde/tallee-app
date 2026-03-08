@@ -170,7 +170,7 @@ abstract class AppLocalizations {
   /// **'Create match'**
   String get create_match;
 
-  /// Button text to create a new group
+  /// Appbar text to create a new group
   ///
   /// In en, this message translates to:
   /// **'Create new group'**
@@ -182,7 +182,7 @@ abstract class AppLocalizations {
   /// **'Created on'**
   String get created_on;
 
-  /// Button text to create a new match
+  /// Appbar text to create a new match
   ///
   /// In en, this message translates to:
   /// **'Create new match'**
@@ -230,23 +230,53 @@ abstract class AppLocalizations {
   /// **'Delete all data'**
   String get delete_all_data;
 
-  /// Button text to delete a group
+  /// Confirmation dialog for deleting a group
   ///
   /// In en, this message translates to:
   /// **'Delete Group'**
   String get delete_group;
 
-  /// Button text to edit a group
+  /// Button text to delete a match
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Match'**
+  String get delete_match;
+
+  /// Button & Appbar label for editing a group
   ///
   /// In en, this message translates to:
   /// **'Edit Group'**
   String get edit_group;
+
+  /// Button & Appbar label for editing a match
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Match'**
+  String get edit_match;
+
+  /// Button text to enter match results
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Results'**
+  String get enter_results;
 
   /// Error message when group creation fails
   ///
   /// In en, this message translates to:
   /// **'Error while creating group, please try again'**
   String get error_creating_group;
+
+  /// Error message when group deletion fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting group, please try again'**
+  String get error_deleting_group;
+
+  /// Error message when group editing fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error while editing group, please try again'**
+  String get error_editing_group;
 
   /// Error message when file cannot be read
   ///
@@ -374,6 +404,12 @@ abstract class AppLocalizations {
   /// **'Match name'**
   String get match_name;
 
+  /// Title for match profile view
+  ///
+  /// In en, this message translates to:
+  /// **'Match Profile'**
+  String get match_profile;
+
   /// Label for matches
   ///
   /// In en, this message translates to:
@@ -445,6 +481,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No recent matches available'**
   String get no_recent_matches_available;
+
+  /// Message when no results have been entered yet
+  ///
+  /// In en, this message translates to:
+  /// **'No results entered yet'**
+  String get no_results_entered_yet;
 
   /// Message when no second match exists
   ///
@@ -518,6 +560,12 @@ abstract class AppLocalizations {
   /// **'Recent Matches'**
   String get recent_matches;
 
+  /// Label for match results
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get results;
+
   /// Ruleset label
   ///
   /// In en, this message translates to:
@@ -547,6 +595,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.'**
   String get ruleset_single_winner;
+
+  /// Save changes button text
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get save_changes;
 
   /// Hint text for group search input field
   ///
