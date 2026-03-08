@@ -1,8 +1,10 @@
+import 'dart:core' hide Match;
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -38,18 +40,13 @@ class MatchTile extends StatefulWidget {
 }
 
 class _MatchTileState extends State<MatchTile> {
-  late final List<Player> _allPlayers;
-
-  @override
-  void initState() {
-    super.initState();
-    _allPlayers = _getCombinedPlayers();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final group = widget.match.group;
-    final winner = widget.match.winner;
+    final match = widget.match;
+    final group = match.group;
+    final winner = match.winner;
+    final players = [...match.players]
+      ..sort((a, b) => a.name.compareTo(b.name));
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(
@@ -67,7 +64,7 @@ class _MatchTileState extends State<MatchTile> {
               children: [
                 Expanded(
                   child: Text(
-                    widget.match.name,
+                    match.name,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -76,7 +73,7 @@ class _MatchTileState extends State<MatchTile> {
                   ),
                 ),
                 Text(
-                  _formatDate(widget.match.createdAt, context),
+                  _formatDate(match.createdAt, context),
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
@@ -91,7 +88,7 @@ class _MatchTileState extends State<MatchTile> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${group.name} + ${widget.match.players.length}',
+                      '${match.group!.name}${getExtraPlayerCount(match)}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -106,7 +103,7 @@ class _MatchTileState extends State<MatchTile> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${widget.match.players.length} ${loc.players}',
+                      '${match.players.length} ${loc.players}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -192,7 +189,7 @@ class _MatchTileState extends State<MatchTile> {
               const SizedBox(height: 12),
             ],
 
-            if (_allPlayers.isNotEmpty && widget.compact == false) ...[
+            if (players.isNotEmpty && widget.compact == false) ...[
               Text(
                 loc.players,
                 style: const TextStyle(
@@ -205,7 +202,7 @@ class _MatchTileState extends State<MatchTile> {
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: _allPlayers.map((player) {
+                children: players.map((player) {
                   return TextIconTile(text: player.name, iconEnabled: false);
                 }).toList(),
               ),
@@ -232,33 +229,5 @@ class _MatchTileState extends State<MatchTile> {
     } else {
       return '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(dateTime)}';
     }
-  }
-
-  /// Retrieves all unique players associated with the match,
-  /// combining players from both the match and its group.
-  List<Player> _getCombinedPlayers() {
-    final allPlayers = <Player>[];
-    final playerIds = <String>{};
-
-    // Add players from game.players
-    for (var player in widget.match.players) {
-      if (!playerIds.contains(player.id)) {
-        allPlayers.add(player);
-        playerIds.add(player.id);
-      }
-    }
-
-    // Add players from game.group.players
-    if (widget.match.group?.members != null) {
-      for (var player in widget.match.group!.members) {
-        if (!playerIds.contains(player.id)) {
-          allPlayers.add(player);
-          playerIds.add(player.id);
-        }
-      }
-    }
-
-    allPlayers.sort((a, b) => a.name.compareTo(b.name));
-    return allPlayers;
   }
 }

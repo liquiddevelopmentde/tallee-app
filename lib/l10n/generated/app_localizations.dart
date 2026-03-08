@@ -236,11 +236,29 @@ abstract class AppLocalizations {
   /// **'Delete Group'**
   String get delete_group;
 
+  /// Button text to delete a match
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Match'**
+  String get delete_match;
+
   /// Button & Appbar label for editing a group
   ///
   /// In en, this message translates to:
   /// **'Edit Group'**
   String get edit_group;
+
+  /// Button & Appbar label for editing a match
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Match'**
+  String get edit_match;
+
+  /// Button text to enter match results
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Results'**
+  String get enter_results;
 
   /// Error message when group creation fails
   ///
@@ -386,6 +404,12 @@ abstract class AppLocalizations {
   /// **'Match name'**
   String get match_name;
 
+  /// Title for match profile view
+  ///
+  /// In en, this message translates to:
+  /// **'Match Profile'**
+  String get match_profile;
+
   /// Label for matches
   ///
   /// In en, this message translates to:
@@ -457,6 +481,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No recent matches available'**
   String get no_recent_matches_available;
+
+  /// Message when no results have been entered yet
+  ///
+  /// In en, this message translates to:
+  /// **'No results entered yet'**
+  String get no_results_entered_yet;
 
   /// Message when no second match exists
   ///
@@ -530,6 +560,12 @@ abstract class AppLocalizations {
   /// **'Recent Matches'**
   String get recent_matches;
 
+  /// Label for match results
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get results;
+
   /// Ruleset label
   ///
   /// In en, this message translates to:
@@ -559,6 +595,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.'**
   String get ruleset_single_winner;
+
+  /// Save changes button text
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get save_changes;
 
   /// Hint text for group search input field
   ///

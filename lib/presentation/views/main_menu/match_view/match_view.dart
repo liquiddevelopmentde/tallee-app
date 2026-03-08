@@ -1,5 +1,3 @@
-import 'dart:core' hide Match;
-
 import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +12,7 @@ import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/match_tile.dart';
@@ -38,7 +36,13 @@ class _MatchViewState extends State<MatchView> {
     4,
     Match(
       name: 'Skeleton match name',
-      game: Game(name: '', ruleset: Ruleset.singleWinner, description: '', color: GameColor.blue, icon: ''),
+      game: Game(
+        name: '',
+        ruleset: Ruleset.singleWinner,
+        description: '',
+        color: GameColor.blue,
+        icon: '',
+      ),
       group: Group(
         name: 'Group name',
         description: '',
@@ -54,7 +58,7 @@ class _MatchViewState extends State<MatchView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    loadGames();
+    loadMatches();
   }
 
   @override
@@ -94,10 +98,9 @@ class _MatchViewState extends State<MatchView> {
                           Navigator.push(
                             context,
                             adaptivePageRoute(
-                              fullscreenDialog: true,
-                              builder: (context) => MatchResultView(
+                              builder: (context) => MatchDetailView(
                                 match: matches[index],
-                                onWinnerChanged: loadGames,
+                                onMatchUpdate: loadMatches,
                               ),
                             ),
                           );
@@ -120,7 +123,7 @@ class _MatchViewState extends State<MatchView> {
                   context,
                   adaptivePageRoute(
                     builder: (context) =>
-                        CreateMatchView(onWinnerChanged: loadGames),
+                        CreateMatchView(onWinnerChanged: loadMatches),
                   ),
                 );
               },
@@ -131,8 +134,9 @@ class _MatchViewState extends State<MatchView> {
     );
   }
 
-  /// Loads the games from the database and sorts them by creation date.
-  void loadGames() {
+  /// Loads the matches from the database and sorts them by creation date.
+  void loadMatches() {
+    isLoading = true;
     Future.wait([
       db.matchDao.getAllMatches(),
       Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
@@ -140,7 +144,7 @@ class _MatchViewState extends State<MatchView> {
       if (mounted) {
         setState(() {
           final loadedMatches = results[0] as List<Match>;
-          matches = loadedMatches
+          matches = [...loadedMatches]
             ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
           isLoading = false;
         });

@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 
 class MainMenuButton extends StatefulWidget {
   /// A button for the main menu with an optional icon and a press animation.
-  /// - [text]: The text of the button.
-  /// - [icon]: The icon of the button.
   /// - [onPressed]: The callback to be invoked when the button is pressed.
+  /// - [icon]: The icon of the button.
+  /// - [text]: The text of the button.
   const MainMenuButton({
     super.key,
-    required this.text,
-    this.icon,
     required this.onPressed,
+    required this.icon,
+    this.text,
   });
-
-  /// The text of the button.
-  final String text;
-
-  /// The icon of the button.
-  final IconData? icon;
 
   /// The callback to be invoked when the button is pressed.
   final void Function() onPressed;
+
+  /// The icon of the button.
+  final IconData icon;
+
+  /// The text of the button.
+  final String? text;
 
   @override
   State<MainMenuButton> createState() => _MainMenuButtonState();
@@ -71,18 +71,18 @@ class _MainMenuButtonState extends State<MainMenuButton>
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (widget.icon != null) ...[
-                Icon(widget.icon, size: 26, color: Colors.black),
+              Icon(widget.icon, size: 26, color: Colors.black),
+              if (widget.text != null) ...[
                 const SizedBox(width: 7),
-              ],
-              Text(
-                widget.text,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                Text(
+                  widget.text!,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),

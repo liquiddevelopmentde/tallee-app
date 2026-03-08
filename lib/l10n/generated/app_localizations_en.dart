@@ -82,7 +82,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_group => 'Delete Group';
 
   @override
+  String get delete_match => 'Delete Match';
+
+  @override
   String get edit_group => 'Edit Group';
+
+  @override
+  String get edit_match => 'Edit Match';
+
+  @override
+  String get enter_results => 'Enter Results';
 
   @override
   String get error_creating_group =>
@@ -160,6 +169,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get match_name => 'Match name';
 
   @override
+  String get match_profile => 'Match Profile';
+
+  @override
   String get matches => 'Matches';
 
   @override
@@ -195,6 +207,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_recent_matches_available => 'No recent matches available';
+
+  @override
+  String get no_results_entered_yet => 'No results entered yet';
 
   @override
   String get no_second_match_available => 'No second match available';
@@ -235,6 +250,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recent_matches => 'Recent Matches';
 
   @override
+  String get results => 'Results';
+
+  @override
   String get ruleset => 'Ruleset';
 
   @override
@@ -252,6 +270,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ruleset_single_winner =>
       'Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.';
+
+  @override
+  String get save_changes => 'Save Changes';
 
   @override
   String get search_for_groups => 'Search for groups';
