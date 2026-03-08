@@ -6,7 +6,9 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
 import 'package:tallee/presentation/widgets/tiles/custom_radio_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/score_list_tile.dart';
 
 class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
@@ -22,6 +24,8 @@ class MatchResultView extends StatefulWidget {
   /// The match for which the winner is to be selected
   final Match match;
 
+  /// The ruleset of the match, determines how the winner is selected or how
+  /// scores are entered
   final Ruleset ruleset;
 
   /// Optional callback invoked when the winner is changed
@@ -37,6 +41,9 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// List of all players who participated in the match
   late final List<Player> allPlayers;
 
+  /// List of text controllers for score entry, one for each player
+  late final List<TextEditingController> controller;
+
   /// Currently selected winner player
   Player? _selectedPlayer;
 
@@ -47,10 +54,19 @@ class _MatchResultViewState extends State<MatchResultView> {
     allPlayers = widget.match.players;
     allPlayers.sort((a, b) => a.name.compareTo(b.name));
 
+    controller = List.generate(
+      allPlayers.length,
+      (index) => TextEditingController(),
+    );
+
     if (widget.match.winner != null) {
-      _selectedPlayer = allPlayers.firstWhere(
-        (p) => p.id == widget.match.winner!.id,
-      );
+      if (rulesetSupportsWinnerSelection()) {
+        _selectedPlayer = allPlayers.firstWhere(
+          (p) => p.id == widget.match.winner!.id,
+        );
+      } else if (rulesetSupportsScoreEntry()) {
+        /// TODO: Update when score logic is overhauled
+      }
     }
     super.initState();
   }
@@ -101,42 +117,69 @@ class _MatchResultViewState extends State<MatchResultView> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Expanded(
-                      child: RadioGroup<Player>(
-                        groupValue: _selectedPlayer,
-                        onChanged: (Player? value) async {
-                          setState(() {
-                            _selectedPlayer = value;
-                          });
-                          await _handleSaving();
-                        },
-                        child: ListView.builder(
+                    if (rulesetSupportsWinnerSelection())
+                      Expanded(
+                        child: RadioGroup<Player>(
+                          groupValue: _selectedPlayer,
+                          onChanged: (Player? value) async {
+                            setState(() {
+                              _selectedPlayer = value;
+                            });
+                          },
+                          child: ListView.builder(
+                            itemCount: allPlayers.length,
+                            itemBuilder: (context, index) {
+                              return CustomRadioListTile(
+                                text: allPlayers[index].name,
+                                value: allPlayers[index],
+                                onContainerTap: (value) async {
+                                  setState(() {
+                                    // Check if the already selected player is the same as the newly tapped player.
+                                    if (_selectedPlayer == value) {
+                                      // If yes deselected the player by setting it to null.
+                                      _selectedPlayer = null;
+                                    } else {
+                                      // If no assign the newly tapped player to the selected player.
+                                      (_selectedPlayer = value);
+                                    }
+                                  });
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    if (rulesetSupportsScoreEntry())
+                      Expanded(
+                        child: ListView.separated(
                           itemCount: allPlayers.length,
                           itemBuilder: (context, index) {
-                            return CustomRadioListTile(
+                            print(allPlayers[index].name);
+                            return ScoreListTile(
                               text: allPlayers[index].name,
-                              value: allPlayers[index],
-                              onContainerTap: (value) async {
-                                setState(() {
-                                  // Check if the already selected player is the same as the newly tapped player.
-                                  if (_selectedPlayer == value) {
-                                    // If yes deselected the player by setting it to null.
-                                    _selectedPlayer = null;
-                                  } else {
-                                    // If no assign the newly tapped player to the selected player.
-                                    (_selectedPlayer = value);
-                                  }
-                                });
-                                await _handleSaving();
-                              },
+                              controller: controller[index],
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Divider(indent: 20),
                             );
                           },
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
+            ),
+            CustomWidthButton(
+              text: loc.save_changes,
+              sizeRelativeToWidth: 0.95,
+              onPressed: () async {
+                await _handleSaving();
+                if (!context.mounted) return;
+                Navigator.of(context).pop(_selectedPlayer);
+              },
             ),
           ],
         ),
@@ -172,15 +215,28 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   Future<bool> _handleLoser() async {
     if (_selectedPlayer == null) {
-      //TODO: removeLoser() method
+      /// TODO: Update when score logic is overhauled
       return false;
     } else {
-      //TODO: setLoser() method
+      /// TODO: Update when score logic is overhauled
       return false;
     }
   }
 
+  /// Handles saving the scores for each player in the database.
   Future<bool> _handleScores() async {
+    for (int i = 0; i < allPlayers.length; i++) {
+      var text = controller[i].text;
+      if (text.isEmpty) {
+        text = '0';
+      }
+      final score = int.parse(text);
+      await db.playerMatchDao.updatePlayerScore(
+        matchId: widget.match.id,
+        playerId: allPlayers[i].id,
+        newScore: score,
+      );
+    }
     return false;
   }
 
@@ -193,5 +249,15 @@ class _MatchResultViewState extends State<MatchResultView> {
       default:
         return loc.enter_points;
     }
+  }
+
+  bool rulesetSupportsWinnerSelection() {
+    return widget.ruleset == Ruleset.singleWinner ||
+        widget.ruleset == Ruleset.singleLoser;
+  }
+
+  bool rulesetSupportsScoreEntry() {
+    return widget.ruleset == Ruleset.lowestScore ||
+        widget.ruleset == Ruleset.highestScore;
   }
 }
