@@ -12,3 +12,7 @@ linter:
     unnecessary_const: true
     lines_longer_than_80_chars: false
     constant_identifier_names: false
+
+analyzer:
+  exclude:
+    - lib/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart
