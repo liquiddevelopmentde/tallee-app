@@ -12,10 +12,12 @@ import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
 class CreateGroupView extends StatefulWidget {
-  const CreateGroupView({super.key, this.groupToEdit});
+  const CreateGroupView({super.key, this.groupToEdit, this.onMembersChanged});
 
   /// The group to edit, if any
   final Group? groupToEdit;
+
+  final VoidCallback? onMembersChanged;
 
   @override
   State<CreateGroupView> createState() => _CreateGroupViewState();
@@ -70,49 +72,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
           title: Text(
             widget.groupToEdit == null ? loc.create_new_group : loc.edit_group,
           ),
-          actions: widget.groupToEdit == null
-              ? []
-              : [
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async {
-                      if (widget.groupToEdit != null) {
-                        showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text(loc.delete_group),
-                            content: Text(loc.this_cannot_be_undone),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                child: Text(loc.cancel),
-                              ),
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(true),
-                                child: Text(loc.delete),
-                              ),
-                            ],
-                          ),
-                        ).then((confirmed) async {
-                          if (confirmed == true && context.mounted) {
-                            bool success = await db.groupDao.deleteGroup(
-                              groupId: widget.groupToEdit!.id,
-                            );
-                            if (!context.mounted) return;
-                            if (success) {
-                              Navigator.pop(context);
-                            } else {
-                              if (!mounted) return;
-                              showSnackbar(message: loc.error_deleting_group);
-                            }
-                          }
-                        });
-                      }
-                    },
-                  ),
-                ],
         ),
         body: SafeArea(
           child: Column(
@@ -222,11 +181,31 @@ class _CreateGroupViewState extends State<CreateGroupView> {
         groupId: widget.groupToEdit!.id,
         newPlayers: selectedPlayers,
       );
+      await deleteObsoleteMatchGroupRelations();
+      widget.onMembersChanged?.call();
     }
 
     final success = successfullNameChange && successfullMemberChange;
 
     return (success, updatedGroup);
+  }
+
+  Future<void> deleteObsoleteMatchGroupRelations() async {
+    final matches = await db.matchDao.getAllMatches();
+    final groupMatches = matches
+        .where((match) => match.group?.id == widget.groupToEdit!.id)
+        .toList();
+
+    final selectedPlayerIds = selectedPlayers.map((p) => p.id).toSet();
+    final relationshipsToDelete = groupMatches.where((match) {
+      return !match.players.any(
+        (player) => selectedPlayerIds.contains(player.id),
+      );
+    }).toList();
+
+    for (var match in relationshipsToDelete) {
+      await db.matchDao.deleteMatchGroup(matchId: match.id);
+    }
   }
 
   /// Displays a snackbar with the given message and optional action.
