@@ -42,7 +42,7 @@ void main() {
       testPlayer4 = Player(name: 'Diana', description: '');
       testPlayer5 = Player(name: 'Eve', description: '');
       testGroup1 = Group(
-        name: 'Test Group 2',
+        name: 'Test Group 1',
         description: '',
         members: [testPlayer1, testPlayer2, testPlayer3],
       );
@@ -306,6 +306,70 @@ void main() {
       );
       expect(fetchedMatch.winner, isNotNull);
       expect(fetchedMatch.winner!.id, testPlayer5.id);
+    });
+
+    test(
+      'removeMatchGroup removes group from match with existing group',
+      () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        final removed = await database.matchDao.removeMatchGroup(
+          matchId: testMatch1.id,
+        );
+        expect(removed, isTrue);
+
+        final updatedMatch = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(updatedMatch.group, null);
+        expect(updatedMatch.game.id, testMatch1.game.id);
+        expect(updatedMatch.name, testMatch1.name);
+        expect(updatedMatch.notes, testMatch1.notes);
+      },
+    );
+
+    test(
+      'removeMatchGroup on match that already has no group still succeeds',
+      () async {
+        await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+        final removed = await database.matchDao.removeMatchGroup(
+          matchId: testMatchOnlyPlayers.id,
+        );
+        expect(removed, isTrue);
+
+        final updatedMatch = await database.matchDao.getMatchById(
+          matchId: testMatchOnlyPlayers.id,
+        );
+        expect(updatedMatch.group, null);
+      },
+    );
+
+    test('removeMatchGroup on non-existing match returns false', () async {
+      final removed = await database.matchDao.removeMatchGroup(
+        matchId: 'non-existing-id',
+      );
+      expect(removed, isFalse);
+    });
+
+    test('Fetching all matches related to a group', () async {
+      var matches = await database.matchDao.getGroupMatches(
+        groupId: 'non-existing-id',
+      );
+
+      expect(matches, isEmpty);
+
+      await database.matchDao.addMatch(match: testMatch1);
+      print(await database.matchDao.getAllMatches());
+
+      matches = await database.matchDao.getGroupMatches(groupId: testGroup1.id);
+
+      expect(matches, isNotEmpty);
+
+      final match = matches.first;
+      expect(match.id, testMatch1.id);
+      expect(match.group, isNotNull);
+      expect(match.group!.id, testGroup1.id);
     });
   });
 }

@@ -363,6 +363,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     final match = widget.matchToEdit!;
     _matchNameController.text = match.name;
     selectedPlayers = match.players;
+    selectedGameIndex = 0;
 
     if (match.group != null) {
       selectedGroup = match.group;

@@ -1123,7 +1123,7 @@ class $MatchTableTable extends MatchTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES group_table (id) ON DELETE CASCADE',
+      'REFERENCES group_table (id) ON DELETE SET NULL',
     ),
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
@@ -2780,7 +2780,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         'group_table',
         limitUpdateKind: UpdateKind.delete,
       ),
-      result: [TableUpdate('match_table', kind: UpdateKind.delete)],
+      result: [TableUpdate('match_table', kind: UpdateKind.update)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(

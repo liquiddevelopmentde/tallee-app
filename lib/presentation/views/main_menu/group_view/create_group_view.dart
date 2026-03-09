@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -11,10 +12,12 @@ import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
 class CreateGroupView extends StatefulWidget {
-  const CreateGroupView({super.key, this.groupToEdit});
+  const CreateGroupView({super.key, this.groupToEdit, this.onMembersChanged});
 
   /// The group to edit, if any
   final Group? groupToEdit;
+
+  final VoidCallback? onMembersChanged;
 
   @override
   State<CreateGroupView> createState() => _CreateGroupViewState();
@@ -69,49 +72,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
           title: Text(
             widget.groupToEdit == null ? loc.create_new_group : loc.edit_group,
           ),
-          actions: widget.groupToEdit == null
-              ? []
-              : [
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async {
-                      if (widget.groupToEdit != null) {
-                        showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text(loc.delete_group),
-                            content: Text(loc.this_cannot_be_undone),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                child: Text(loc.cancel),
-                              ),
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(true),
-                                child: Text(loc.delete),
-                              ),
-                            ],
-                          ),
-                        ).then((confirmed) async {
-                          if (confirmed == true && context.mounted) {
-                            bool success = await db.groupDao.deleteGroup(
-                              groupId: widget.groupToEdit!.id,
-                            );
-                            if (!context.mounted) return;
-                            if (success) {
-                              Navigator.pop(context);
-                            } else {
-                              if (!mounted) return;
-                              showSnackbar(message: loc.error_deleting_group);
-                            }
-                          }
-                        });
-                      }
-                    },
-                  ),
-                ],
         ),
         body: SafeArea(
           child: Column(
@@ -122,6 +82,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 child: TextInputField(
                   controller: _groupNameController,
                   hintText: loc.group_name,
+                  maxLength: Constants.MAX_GROUP_NAME_LENGTH,
                 ),
               ),
               Expanded(
@@ -144,42 +105,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                     (_groupNameController.text.isEmpty ||
                         (selectedPlayers.length < 2))
                     ? null
-                    : () async {
-                        late Group? updatedGroup;
-                        late bool success;
-                        if (widget.groupToEdit == null) {
-                          success = await db.groupDao.addGroup(
-                            group: Group(
-                              name: _groupNameController.text.trim(),
-                              members: selectedPlayers,
-                            ),
-                          );
-                        } else {
-                          updatedGroup = Group(
-                            id: widget.groupToEdit!.id,
-                            name: _groupNameController.text.trim(),
-                            description: '',
-                            members: selectedPlayers,
-                          );
-                          //TODO: Implement group editing in database
-                          /*
-                          success = await db.groupDao.updateGroup(
-                            group: updatedGroup,
-                          );
-                          */
-                          success = true;
-                        }
-                        if (!context.mounted) return;
-                        if (success) {
-                          Navigator.pop(context, updatedGroup);
-                        } else {
-                          showSnackbar(
-                            message: widget.groupToEdit == null
-                                ? loc.error_creating_group
-                                : loc.error_editing_group,
-                          );
-                        }
-                      },
+                    : _saveGroup,
               ),
               const SizedBox(height: 20),
             ],
@@ -187,6 +113,104 @@ class _CreateGroupViewState extends State<CreateGroupView> {
         ),
       ),
     );
+  }
+
+  /// Saves the group by creating a new one or updating the existing one,
+  /// depending on whether the widget  is in edit mode.
+  Future<void> _saveGroup() async {
+    final loc = AppLocalizations.of(context);
+    late bool success;
+    Group? updatedGroup;
+
+    if (widget.groupToEdit == null) {
+      success = await _createGroup();
+    } else {
+      final result = await _editGroup();
+      success = result.$1;
+      updatedGroup = result.$2;
+    }
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.pop(context, updatedGroup);
+    } else {
+      showSnackbar(
+        message: widget.groupToEdit == null
+            ? loc.error_creating_group
+            : loc.error_editing_group,
+      );
+    }
+  }
+
+  /// Handles creating a new group and returns whether the operation was successful.
+  Future<bool> _createGroup() async {
+    final groupName = _groupNameController.text.trim();
+
+    final success = await db.groupDao.addGroup(
+      group: Group(name: groupName, description: '', members: selectedPlayers),
+    );
+
+    return success;
+  }
+
+  /// Handles editing an existing group and returns a tuple of
+  /// (success, updatedGroup).
+  Future<(bool, Group?)> _editGroup() async {
+    final groupName = _groupNameController.text.trim();
+
+    Group? updatedGroup = Group(
+      id: widget.groupToEdit!.id,
+      name: groupName,
+      description: '',
+      members: selectedPlayers,
+    );
+
+    bool successfullNameChange = true;
+    bool successfullMemberChange = true;
+
+    if (widget.groupToEdit!.name != groupName) {
+      successfullNameChange = await db.groupDao.updateGroupName(
+        groupId: widget.groupToEdit!.id,
+        newName: groupName,
+      );
+    }
+
+    if (widget.groupToEdit!.members != selectedPlayers) {
+      successfullMemberChange = await db.groupDao.replaceGroupPlayers(
+        groupId: widget.groupToEdit!.id,
+        newPlayers: selectedPlayers,
+      );
+      await deleteObsoleteMatchGroupRelations();
+      widget.onMembersChanged?.call();
+    }
+
+    final success = successfullNameChange && successfullMemberChange;
+
+    return (success, updatedGroup);
+  }
+
+  /// Removes the group association from matches that no longer belong to the edited group.
+  ///
+  /// After updating the group's members, matches that were previously linked to
+  /// this group but don't have any of the newly selected players are considered
+  /// obsolete. For each such match, the group association is removed by setting
+  /// its [groupId] to null.
+  Future<void> deleteObsoleteMatchGroupRelations() async {
+    final groupMatches = await db.matchDao.getGroupMatches(
+      groupId: widget.groupToEdit!.id,
+    );
+
+    final selectedPlayerIds = selectedPlayers.map((p) => p.id).toSet();
+    final relationshipsToDelete = groupMatches.where((match) {
+      return !match.players.any(
+        (player) => selectedPlayerIds.contains(player.id),
+      );
+    }).toList();
+
+    for (var match in relationshipsToDelete) {
+      await db.matchDao.removeMatchGroup(matchId: match.id);
+    }
   }
 
   /// Displays a snackbar with the given message and optional action.

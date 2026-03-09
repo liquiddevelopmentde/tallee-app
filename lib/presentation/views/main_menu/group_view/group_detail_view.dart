@@ -191,7 +191,12 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     context,
                     adaptivePageRoute(
                       builder: (context) {
-                        return CreateGroupView(groupToEdit: _group);
+                        return CreateGroupView(
+                          groupToEdit: _group,
+                          onMembersChanged: () {
+                            _loadStatistics();
+                          },
+                        );
                       },
                     ),
                   );
@@ -242,10 +247,8 @@ class _GroupDetailViewState extends State<GroupDetailView> {
 
   /// Loads statistics for this group
   Future<void> _loadStatistics() async {
-    final matches = await db.matchDao.getAllMatches();
-    final groupMatches = matches
-        .where((match) => match.group?.id == _group.id)
-        .toList();
+    isLoading = true;
+    final groupMatches = await db.matchDao.getGroupMatches(groupId: _group.id);
 
     setState(() {
       totalMatches = groupMatches.length;
@@ -260,7 +263,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
 
     // Count wins for each player
     for (var match in matches) {
-      if (match.winner != null) {
+      if (match.winner != null &&
+          _group.members.any((m) => m.id == match.winner?.id)) {
+        print(match.winner);
         bestPlayerCounts.update(
           match.winner!,
           (value) => value + 1,

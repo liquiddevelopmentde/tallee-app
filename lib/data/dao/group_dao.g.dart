@@ -8,4 +8,6 @@ mixin _$GroupDaoMixin on DatabaseAccessor<AppDatabase> {
   $PlayerTableTable get playerTable => attachedDatabase.playerTable;
   $PlayerGroupTableTable get playerGroupTable =>
       attachedDatabase.playerGroupTable;
+  $GameTableTable get gameTable => attachedDatabase.gameTable;
+  $MatchTableTable get matchTable => attachedDatabase.matchTable;
 }

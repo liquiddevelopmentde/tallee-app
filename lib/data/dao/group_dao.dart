@@ -1,13 +1,14 @@
 import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/group_table.dart';
+import 'package:tallee/data/db/tables/match_table.dart';
 import 'package:tallee/data/db/tables/player_group_table.dart';
 import 'package:tallee/data/dto/group.dart';
 import 'package:tallee/data/dto/player.dart';
 
 part 'group_dao.g.dart';
 
-@DriftAccessor(tables: [GroupTable, PlayerGroupTable])
+@DriftAccessor(tables: [GroupTable, PlayerGroupTable, MatchTable])
 class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
   GroupDao(super.db);
 
@@ -205,8 +206,6 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     return rowsAffected > 0;
   }
 
-
-
   /// Retrieves the number of groups in the database.
   Future<int> getGroupCount() async {
     final count =
@@ -235,10 +234,13 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
   /// Replaces all players in a group with the provided list of players.
   /// Removes all existing players from the group and adds the new players.
   /// Also adds any new players to the player table if they don't exist.
-  Future<void> replaceGroupPlayers({
+  /// Returns `true` if the group exists and players were replaced, `false` otherwise.
+  Future<bool> replaceGroupPlayers({
     required String groupId,
     required List<Player> newPlayers,
   }) async {
+    if (!await groupExists(groupId: groupId)) return false;
+
     await db.transaction(() async {
       // Remove all existing players from the group
       final deleteQuery = delete(db.playerGroupTable)
@@ -270,5 +272,6 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
         ),
       );
     });
+    return true;
   }
 }
