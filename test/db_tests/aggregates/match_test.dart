@@ -42,7 +42,7 @@ void main() {
       testPlayer4 = Player(name: 'Diana', description: '');
       testPlayer5 = Player(name: 'Eve', description: '');
       testGroup1 = Group(
-        name: 'Test Group 2',
+        name: 'Test Group 1',
         description: '',
         members: [testPlayer1, testPlayer2, testPlayer3],
       );
@@ -350,6 +350,26 @@ void main() {
         matchId: 'non-existing-id',
       );
       expect(removed, isFalse);
+    });
+
+    test('Fetching all matches related to a group', () async {
+      var matches = await database.matchDao.getGroupMatches(
+        groupId: 'non-existing-id',
+      );
+
+      expect(matches, isEmpty);
+
+      await database.matchDao.addMatch(match: testMatch1);
+      print(await database.matchDao.getAllMatches());
+
+      matches = await database.matchDao.getGroupMatches(groupId: testGroup1.id);
+
+      expect(matches, isNotEmpty);
+
+      final match = matches.first;
+      expect(match.id, testMatch1.id);
+      expect(match.group, isNotNull);
+      expect(match.group!.id, testGroup1.id);
     });
   });
 }

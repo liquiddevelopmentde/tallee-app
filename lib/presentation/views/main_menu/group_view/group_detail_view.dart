@@ -248,7 +248,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
   /// Loads statistics for this group
   Future<void> _loadStatistics() async {
     isLoading = true;
-    final groupMatches = await db.groupDao.getGroupMatches(groupId: _group.id);
+    final groupMatches = await db.matchDao.getGroupMatches(groupId: _group.id);
 
     setState(() {
       totalMatches = groupMatches.length;

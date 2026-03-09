@@ -197,7 +197,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   /// obsolete. For each such match, the group association is removed by setting
   /// its [groupId] to null.
   Future<void> deleteObsoleteMatchGroupRelations() async {
-    final groupMatches = await db.groupDao.getGroupMatches(
+    final groupMatches = await db.matchDao.getGroupMatches(
       groupId: widget.groupToEdit!.id,
     );
 

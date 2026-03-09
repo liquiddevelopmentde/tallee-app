@@ -4,7 +4,6 @@ import 'package:tallee/data/db/tables/group_table.dart';
 import 'package:tallee/data/db/tables/match_table.dart';
 import 'package:tallee/data/db/tables/player_group_table.dart';
 import 'package:tallee/data/dto/group.dart';
-import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
 
 part 'group_dao.g.dart';
@@ -171,34 +170,6 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
         });
       }
     });
-  }
-
-  /// Retrieves all matches associated with the given [groupId].
-  /// Queries the database directly, filtering by [groupId].
-  Future<List<Match>> getGroupMatches({required String groupId}) async {
-    final query = select(matchTable)..where((m) => m.groupId.equals(groupId));
-    final rows = await query.get();
-
-    return Future.wait(
-      rows.map((row) async {
-        final game = await db.gameDao.getGameById(gameId: row.gameId);
-        final group = await db.groupDao.getGroupById(groupId: groupId);
-        final players =
-            await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
-        final winner = await db.matchDao.getWinner(matchId: row.id);
-        return Match(
-          id: row.id,
-          name: row.name ?? '',
-          game: game,
-          group: group,
-          players: players,
-          notes: row.notes ?? '',
-          createdAt: row.createdAt,
-          endedAt: row.endedAt,
-          winner: winner,
-        );
-      }),
-    );
   }
 
   /// Deletes the group with the given [id] from the database.

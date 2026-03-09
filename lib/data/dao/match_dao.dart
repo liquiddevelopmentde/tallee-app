@@ -268,6 +268,34 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     return count ?? 0;
   }
 
+  /// Retrieves all matches associated with the given [groupId].
+  /// Queries the database directly, filtering by [groupId].
+  Future<List<Match>> getGroupMatches({required String groupId}) async {
+    final query = select(matchTable)..where((m) => m.groupId.equals(groupId));
+    final rows = await query.get();
+
+    return Future.wait(
+      rows.map((row) async {
+        final game = await db.gameDao.getGameById(gameId: row.gameId);
+        final group = await db.groupDao.getGroupById(groupId: groupId);
+        final players =
+            await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
+        final winner = await db.matchDao.getWinner(matchId: row.id);
+        return Match(
+          id: row.id,
+          name: row.name ?? '',
+          game: game,
+          group: group,
+          players: players,
+          notes: row.notes ?? '',
+          createdAt: row.createdAt,
+          endedAt: row.endedAt,
+          winner: winner,
+        );
+      }),
+    );
+  }
+
   /// Checks if a match with the given [matchId] exists in the database.
   /// Returns `true` if the match exists, otherwise `false`.
   Future<bool> matchExists({required String matchId}) async {
