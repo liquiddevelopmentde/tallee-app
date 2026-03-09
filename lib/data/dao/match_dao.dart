@@ -338,6 +338,17 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     return rowsAffected > 0;
   }
 
+  /// Entfernt die Gruppen-Verknüpfung des Matches mit der gegebenen [matchId].
+  /// Setzt die groupId auf null.
+  /// Gibt `true` zurück, wenn mehr als 0 Zeilen betroffen waren, ansonsten `false`.
+  Future<bool> deleteMatchGroup({required String matchId}) async {
+    final query = update(matchTable)..where((g) => g.id.equals(matchId));
+    final rowsAffected = await query.write(
+      const MatchTableCompanion(groupId: Value(null)),
+    );
+    return rowsAffected > 0;
+  }
+
   /// Updates the createdAt timestamp of the match with the given [matchId].
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> updateMatchCreatedAt({

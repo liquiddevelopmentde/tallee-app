@@ -307,5 +307,52 @@ void main() {
       expect(fetchedMatch.winner, isNotNull);
       expect(fetchedMatch.winner!.id, testPlayer5.id);
     });
+
+    // Tests for removeMatchGroup
+    test(
+      'removeMatchGroup removes group from match with existing group',
+      () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        final removed = await database.matchDao.deleteMatchGroup(
+          matchId: testMatch1.id,
+        );
+        expect(removed, isTrue);
+
+        final updatedMatch = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(updatedMatch.group, null);
+        // Andere Felder bleiben unverändert
+        expect(updatedMatch.game.id, testMatch1.game.id);
+        expect(updatedMatch.name, testMatch1.name);
+        expect(updatedMatch.notes, testMatch1.notes);
+      },
+    );
+
+    test(
+      'removeMatchGroup on match that already has no group still succeeds',
+      () async {
+        await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+        final removed = await database.matchDao.deleteMatchGroup(
+          matchId: testMatchOnlyPlayers.id,
+        );
+        // Update sollte trotzdem eine Zeile betreffen
+        expect(removed, isTrue);
+
+        final updatedMatch = await database.matchDao.getMatchById(
+          matchId: testMatchOnlyPlayers.id,
+        );
+        expect(updatedMatch.group, null);
+      },
+    );
+
+    test('removeMatchGroup on non-existing match returns false', () async {
+      final removed = await database.matchDao.deleteMatchGroup(
+        matchId: 'non-existing-id',
+      );
+      expect(removed, isFalse);
+    });
   });
 }
