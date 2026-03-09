@@ -36318,13 +36318,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// sqlite3_flutter_libs 0.5.41
+/// sqlite3_flutter_libs 0.5.42
 const _sqlite3_flutter_libs = Package(
     name: 'sqlite3_flutter_libs',
     description: 'Flutter plugin to include native sqlite3 libraries with your app',
     homepage: 'https://github.com/simolus3/sqlite3.dart/tree/v2/sqlite3_flutter_libs',
     authors: [],
-    version: '0.5.41',
+    version: '0.5.42',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -37796,12 +37796,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// tallee 0.0.18+252
+/// tallee 0.0.19+253
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.0.18+252',
+    version: '0.0.19+253',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
