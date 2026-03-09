@@ -3,6 +3,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/group_table.dart';
 import 'package:tallee/data/db/tables/player_group_table.dart';
 import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/dto/match.dart';
 import 'package:tallee/data/dto/player.dart';
 
 part 'group_dao.g.dart';
@@ -169,6 +170,12 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
         });
       }
     });
+  }
+
+  /// Retrieves all matches associated with the given [groupId].
+  Future<List<Match>> getGroupMatches({required String groupId}) async {
+    final matches = await db.matchDao.getAllMatches();
+    return matches.where((match) => match.group?.id == groupId).toList();
   }
 
   /// Deletes the group with the given [id] from the database.

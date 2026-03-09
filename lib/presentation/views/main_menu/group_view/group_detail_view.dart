@@ -194,7 +194,6 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                         return CreateGroupView(
                           groupToEdit: _group,
                           onMembersChanged: () {
-                            isLoading = true;
                             _loadStatistics();
                           },
                         );
@@ -248,10 +247,8 @@ class _GroupDetailViewState extends State<GroupDetailView> {
 
   /// Loads statistics for this group
   Future<void> _loadStatistics() async {
-    final matches = await db.matchDao.getAllMatches();
-    final groupMatches = matches
-        .where((match) => match.group?.id == _group.id)
-        .toList();
+    isLoading = true;
+    final groupMatches = await db.groupDao.getGroupMatches(groupId: _group.id);
 
     setState(() {
       totalMatches = groupMatches.length;

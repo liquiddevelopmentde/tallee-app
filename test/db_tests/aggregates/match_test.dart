@@ -308,13 +308,12 @@ void main() {
       expect(fetchedMatch.winner!.id, testPlayer5.id);
     });
 
-    // Tests for removeMatchGroup
     test(
       'removeMatchGroup removes group from match with existing group',
       () async {
         await database.matchDao.addMatch(match: testMatch1);
 
-        final removed = await database.matchDao.deleteMatchGroup(
+        final removed = await database.matchDao.removeMatchGroup(
           matchId: testMatch1.id,
         );
         expect(removed, isTrue);
@@ -323,7 +322,6 @@ void main() {
           matchId: testMatch1.id,
         );
         expect(updatedMatch.group, null);
-        // Andere Felder bleiben unverändert
         expect(updatedMatch.game.id, testMatch1.game.id);
         expect(updatedMatch.name, testMatch1.name);
         expect(updatedMatch.notes, testMatch1.notes);
@@ -335,10 +333,9 @@ void main() {
       () async {
         await database.matchDao.addMatch(match: testMatchOnlyPlayers);
 
-        final removed = await database.matchDao.deleteMatchGroup(
+        final removed = await database.matchDao.removeMatchGroup(
           matchId: testMatchOnlyPlayers.id,
         );
-        // Update sollte trotzdem eine Zeile betreffen
         expect(removed, isTrue);
 
         final updatedMatch = await database.matchDao.getMatchById(
@@ -349,7 +346,7 @@ void main() {
     );
 
     test('removeMatchGroup on non-existing match returns false', () async {
-      final removed = await database.matchDao.deleteMatchGroup(
+      final removed = await database.matchDao.removeMatchGroup(
         matchId: 'non-existing-id',
       );
       expect(removed, isFalse);
