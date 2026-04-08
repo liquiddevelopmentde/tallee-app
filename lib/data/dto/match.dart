@@ -34,9 +34,7 @@ class Match {
 
   @override
   String toString() {
-    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, '
-        'name: $name, game: $game, group: $group, players: $players, '
-        'notes: $notes, scores: $scores, winner: $winner}';
+    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, notes: $notes, scores: $scores, winner: $winner}';
   }
 
   /// Creates a Match instance from a JSON object (ID references format).
@@ -54,12 +52,9 @@ class Match {
         description: '',
         color: GameColor.blue,
         icon: '',
-      ),
-      // Populated during import via DataTransferService
-      group = null,
-      // Populated during import via DataTransferService
-      players = [],
-      // Populated during import via DataTransferService
+      ), // Populated during import via DataTransferService
+      group = null, // Populated during import via DataTransferService
+      players = [], // Populated during import via DataTransferService
       scores = json['scores'],
       notes = json['notes'] ?? '';
 
