@@ -44,22 +44,6 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     return players;
   }
 
-  /// Updates the score for a player in a match.
-  /// Returns `true` if the update was successful, otherwise `false`.
-  Future<bool> updatePlayerScore({
-    required String matchId,
-    required String playerId,
-    required int newScore,
-  }) async {
-    /* final rowsAffected =
-        await (update(playerMatchTable)..where(
-              (p) => p.matchId.equals(matchId) & p.playerId.equals(playerId),
-            ))
-            .write(PlayerMatchTableCompanion(score: Value(newScore)));
-    return rowsAffected > 0;*/
-    return false;
-  }
-
   /// Updates the team for a player in a match.
   /// Returns `true` if the update was successful, otherwise `false`.
   Future<bool> updatePlayerTeam({

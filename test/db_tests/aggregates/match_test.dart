@@ -360,7 +360,6 @@ void main() {
       expect(matches, isEmpty);
 
       await database.matchDao.addMatch(match: testMatch1);
-      print(await database.matchDao.getAllMatches());
 
       matches = await database.matchDao.getGroupMatches(groupId: testGroup1.id);
 

@@ -349,7 +349,7 @@ void main() {
       () async {
         await database.matchDao.addMatch(match: testMatchOnlyGroup);
 
-        final updated = await database.playerMatchDao.updatePlayerScore(
+        final updated = await database.scoreDao.updateScore(
           matchId: testMatchOnlyGroup.id,
           playerId: 'non-existent-player-id',
           newScore: 50,
@@ -611,7 +611,7 @@ void main() {
       await database.matchDao.addMatch(match: testMatchOnlyPlayers);
 
       // Update score for existing player
-      await database.playerMatchDao.updatePlayerScore(
+      await database.scoreDao.updateScore(
         matchId: testMatchOnlyPlayers.id,
         playerId: testPlayer4.id,
         newScore: 75,
@@ -623,6 +623,7 @@ void main() {
         newPlayer: [testPlayer4, testPlayer1],
       );
 
+      // TODO: Fix
       /*// Verify testPlayer4's score is preserved
       final score = await database.playerMatchDao.getPlayerScore(
         matchId: testMatchOnlyPlayers.id,
@@ -649,9 +650,9 @@ void main() {
         matchId: testMatchOnlyGroup.id,
         playerId: testPlayer1.id,
         teamId: testTeam1.id,
-        score: 150,
       );
 
+      // TODO: fix
       /*// Verify score
       final score = await database.playerMatchDao.getPlayerScore(
         matchId: testMatchOnlyGroup.id,
@@ -671,8 +672,13 @@ void main() {
     // Verifies that updating score with negative value works.
     test('updatePlayerScore with negative score works', () async {
       await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+      await database.scoreDao.addScore(
+        playerId: testPlayer4.id,
+        matchId: testMatchOnlyPlayers.id,
+        score: 0,
+      );
 
-      final updated = await database.playerMatchDao.updatePlayerScore(
+      final updated = await database.scoreDao.updateScore(
         matchId: testMatchOnlyPlayers.id,
         playerId: testPlayer4.id,
         newScore: -10,
@@ -680,6 +686,7 @@ void main() {
 
       expect(updated, true);
 
+      // TODO: fix
       /* final score = await database.playerMatchDao.getPlayerScore(
         matchId: testMatchOnlyPlayers.id,
         playerId: testPlayer4.id,
@@ -691,16 +698,14 @@ void main() {
     // Verifies that updating score with zero value works.
     test('updatePlayerScore with zero score works', () async {
       await database.matchDao.addMatch(match: testMatchOnlyPlayers);
-
-      // First set a non-zero score
-      await database.playerMatchDao.updatePlayerScore(
-        matchId: testMatchOnlyPlayers.id,
+      await database.scoreDao.addScore(
         playerId: testPlayer4.id,
-        newScore: 100,
+        matchId: testMatchOnlyPlayers.id,
+        score: 100,
       );
 
       // Then update to zero
-      final updated = await database.playerMatchDao.updatePlayerScore(
+      final updated = await database.scoreDao.updateScore(
         matchId: testMatchOnlyPlayers.id,
         playerId: testPlayer4.id,
         newScore: 0,
@@ -708,6 +713,7 @@ void main() {
 
       expect(updated, true);
 
+      // TODO: Fix
       /*final score = await database.playerMatchDao.getPlayerScore(
         matchId: testMatchOnlyPlayers.id,
         playerId: testPlayer4.id,
@@ -839,19 +845,20 @@ void main() {
       ]);
 
       // Update score in match1
-      await database.playerMatchDao.updatePlayerScore(
+      await database.scoreDao.updateScore(
         matchId: match1.id,
         playerId: testPlayer1.id,
         newScore: 100,
       );
 
       // Update score in match2
-      await database.playerMatchDao.updatePlayerScore(
+      await database.scoreDao.updateScore(
         matchId: match2.id,
         playerId: testPlayer1.id,
         newScore: 50,
       );
 
+      // TODO: fix
       /* // Verify scores are independent
       final scoreInMatch1 = await database.playerMatchDao.getPlayerScore(
         matchId: match1.id,

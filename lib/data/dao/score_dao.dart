@@ -14,9 +14,9 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   Future<void> addScore({
     required String playerId,
     required String matchId,
-    required int roundNumber,
     required int score,
-    required int change,
+    int change = 0,
+    int roundNumber = 0,
   }) async {
     await into(scoreTable).insert(
       ScoreTableCompanion.insert(
@@ -97,9 +97,9 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   Future<bool> updateScore({
     required String playerId,
     required String matchId,
-    required int roundNumber,
     required int newScore,
-    required int newChange,
+    int newChange = 0,
+    int roundNumber = 0,
   }) async {
     final rowsAffected =
         await (update(scoreTable)..where(
@@ -121,7 +121,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   Future<bool> deleteScore({
     required String playerId,
     required String matchId,
-    required int roundNumber,
+    int roundNumber = 0,
   }) async {
     final query = delete(scoreTable)
       ..where(
