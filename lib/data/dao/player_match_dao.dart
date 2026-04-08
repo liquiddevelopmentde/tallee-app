@@ -17,7 +17,6 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     required String matchId,
     required String playerId,
     String? teamId,
-    int score = 0,
   }) async {
     await into(playerMatchTable).insert(
       PlayerMatchTableCompanion.insert(
@@ -43,21 +42,6 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     );
     final players = await Future.wait(futures);
     return players;
-  }
-
-  /// Retrieves a player's score for a specific match.
-  /// Returns null if the player is not in the match.
-  /// TODO: Implement
-  Future<int?> getPlayerScore({
-    required String matchId,
-    required String playerId,
-  }) async {
-    final result =
-        await (select(playerMatchTable)..where(
-              (p) => p.matchId.equals(matchId) & p.playerId.equals(playerId),
-            ))
-            .getSingleOrNull();
-    return 0;
   }
 
   /// Updates the score for a player in a match.

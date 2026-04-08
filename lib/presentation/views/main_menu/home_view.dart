@@ -227,7 +227,7 @@ class _HomeViewState extends State<HomeView> {
   /// Updates the winner information for a specific match in the recent matches list.
   Future<void> updatedWinnerInRecentMatches(String matchId) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final winner = await db.matchDao.getWinner(matchId: matchId);
+    final winner = await db.scoreDao.getWinner(matchId: matchId);
     final matchIndex = recentMatches.indexWhere((match) => match.id == matchId);
     if (matchIndex != -1) {
       setState(() {

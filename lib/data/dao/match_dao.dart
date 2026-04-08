@@ -29,7 +29,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         }
         final players =
             await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
-        final winner = await getWinner(matchId: row.id);
+        final winner = await db.scoreDao.getWinner(matchId: row.id);
         return Match(
           id: row.id,
           name: row.name,
@@ -60,7 +60,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final players =
         await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
 
-    final winner = await getWinner(matchId: matchId);
+    final winner = await db.scoreDao.getWinner(matchId: matchId);
 
     return Match(
       id: result.id,
@@ -101,7 +101,10 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       }
 
       if (match.winner != null) {
-        await setWinner(matchId: match.id, winnerId: match.winner!.id);
+        await db.scoreDao.setWinner(
+          matchId: match.id,
+          playerId: match.winner!.id,
+        );
       }
     });
   }
@@ -279,7 +282,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         final group = await db.groupDao.getGroupById(groupId: groupId);
         final players =
             await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
-        final winner = await db.matchDao.getWinner(matchId: row.id);
+        final winner = await db.scoreDao.getWinner(matchId: row.id);
         return Match(
           id: row.id,
           name: row.name,
@@ -435,94 +438,5 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         ),
       );
     });
-  }
-
-  // ============================================================
-  // Winner methods - handle winner logic via player scores
-  // ============================================================
-
-  /// Checks if a match has a winner.
-  /// Returns true if any player in the match has their score set to 1.
-  Future<bool> hasWinner({required String matchId}) async {
-    final players =
-        await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
-
-    for (final player in players) {
-      final score = await db.playerMatchDao.getPlayerScore(
-        matchId: matchId,
-        playerId: player.id,
-      );
-      if (score == 1) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /// Gets the winner of a match.
-  /// Returns the player with score 1, or null if no winner is set.
-  Future<Player?> getWinner({required String matchId}) async {
-    final players =
-        await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
-
-    for (final player in players) {
-      final score = await db.playerMatchDao.getPlayerScore(
-        matchId: matchId,
-        playerId: player.id,
-      );
-      if (score == 1) {
-        return player;
-      }
-    }
-    return null;
-  }
-
-  /// Sets the winner of a match.
-  /// Sets all players' scores to 0, then sets the specified player's score to 1.
-  /// Returns `true` if the operation was successful, otherwise `false`.
-  Future<bool> setWinner({
-    required String matchId,
-    required String winnerId,
-  }) async {
-    await db.transaction(() async {
-      final players =
-          await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
-
-      // Set all players' scores to 0
-      // TODO: Implement
-      /*for (final player in players) {
-        await db.playerMatchDao.updatePlayerScore(
-          matchId: matchId,
-          playerId: player.id,
-          newScore: 0,
-        );
-      }*/
-
-      // Set the winner's score to 1
-      // TODO: Implement
-      /*await db.playerMatchDao.updatePlayerScore(
-        matchId: matchId,
-        playerId: winnerId,
-        newScore: 1,
-      );*/
-    });
-    return true;
-  }
-
-  /// Removes the winner of a match.
-  /// Sets the current winner's score to 0 (no winner).
-  /// Returns `true` if a winner was removed, otherwise `false`.
-  Future<bool> removeWinner({required String matchId}) async {
-    final winner = await getWinner(matchId: matchId);
-    if (winner == null) {
-      return false;
-    }
-
-    /*final success = await db.playerMatchDao.updatePlayerScore(
-      matchId: matchId,
-      playerId: winner.id,
-      newScore: 0,
-    );*/
-    return false;
   }
 }

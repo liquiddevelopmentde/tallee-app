@@ -357,13 +357,11 @@ void main() {
         playerId: testPlayer1.id,
         matchId: match1.id,
         teamId: testTeam1.id,
-        score: 0,
       );
       await database.playerMatchDao.addPlayerToMatch(
         playerId: testPlayer2.id,
         matchId: match1.id,
         teamId: testTeam1.id,
-        score: 0,
       );
 
       // Associate players with teams through match2
@@ -372,13 +370,11 @@ void main() {
         playerId: testPlayer1.id,
         matchId: match2.id,
         teamId: testTeam3.id,
-        score: 0,
       );
       await database.playerMatchDao.addPlayerToMatch(
         playerId: testPlayer3.id,
         matchId: match2.id,
         teamId: testTeam3.id,
-        score: 0,
       );
 
       final team1 = await database.teamDao.getTeamById(teamId: testTeam1.id);

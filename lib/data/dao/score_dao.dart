@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/score_table.dart';
+import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
 
 part 'score_dao.g.dart';
@@ -168,5 +169,123 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     if (scores.isEmpty) return 0;
     // Return the score from the latest round
     return scores.last.score;
+  }
+
+  Future<bool> hasWinner({required String matchId}) async {
+    return await getWinner(matchId: matchId) != null;
+  }
+
+  // Setting the winner for a game and clearing previous winner if exists.
+  Future<bool> setWinner({
+    required String matchId,
+    required String playerId,
+  }) async {
+    // Clear previous winner if exists
+    deleteScoresForMatch(matchId: matchId);
+
+    // Set the winner's score to 1
+    final rowsAffected = await into(scoreTable).insert(
+      ScoreTableCompanion.insert(
+        playerId: playerId,
+        matchId: matchId,
+        roundNumber: 0,
+        score: 1,
+        change: 0,
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
+
+    return rowsAffected > 0;
+  }
+
+  // Retrieves the winner of a match based on the highest score.
+  Future<Player?> getWinner({required String matchId}) async {
+    final query = select(scoreTable)
+      ..where((s) => s.matchId.equals(matchId))
+      ..orderBy([(s) => OrderingTerm.desc(s.score)])
+      ..limit(1);
+    final result = await query.getSingleOrNull();
+
+    if (result == null) return null;
+
+    final player = await db.playerDao.getPlayerById(playerId: result.playerId);
+    return Player(
+      id: player.id,
+      name: player.name,
+      createdAt: player.createdAt,
+      description: player.description,
+    );
+  }
+
+  /// Removes the winner of a match.
+  ///
+  /// Returns `true` if the winner was removed, `false` if there are multiple
+  /// scores or if the winner cannot be removed.
+  Future<bool> removeWinner({required String matchId}) async {
+    final scores = await getScoresForMatch(matchId: matchId);
+
+    if (scores.length > 1) {
+      return false;
+    } else {
+      return await deleteScoresForMatch(matchId: matchId);
+    }
+  }
+
+  Future<bool> hasLooser({required String matchId}) async {
+    return await getLooser(matchId: matchId) != null;
+  }
+
+  // Setting the looser for a game and clearing previous looser if exists.
+  Future<bool> setLooser({
+    required String matchId,
+    required String playerId,
+  }) async {
+    // Clear previous loosers if exists
+    deleteScoresForMatch(matchId: matchId);
+
+    // Set the loosers score to 0
+    final rowsAffected = await into(scoreTable).insert(
+      ScoreTableCompanion.insert(
+        playerId: playerId,
+        matchId: matchId,
+        roundNumber: 0,
+        score: 0,
+        change: 0,
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
+
+    return rowsAffected > 0;
+  }
+
+  /// Retrieves the looser of a match based on the score 0.
+  Future<Player?> getLooser({required String matchId}) async {
+    final query = select(scoreTable)
+      ..where((s) => s.matchId.equals(matchId) & s.score.equals(0));
+    final result = await query.getSingleOrNull();
+
+    if (result == null) return null;
+
+    final player = await db.playerDao.getPlayerById(playerId: result.playerId);
+    return Player(
+      id: player.id,
+      name: player.name,
+      createdAt: player.createdAt,
+      description: player.description,
+    );
+  }
+
+  /// Removes the looser of a match.
+  ///
+  /// Returns `true` if the looser was removed, `false` if there are multiple
+  /// scores or if the looser cannot be removed.
+  Future<bool> removeLooser({required String matchId}) async {
+    final scores = await getScoresForMatch(matchId: matchId);
+
+    if (scores.length > 1) {
+      return false;
+    } else {
+      return await deleteScoresForMatch(matchId: matchId);
+    }
   }
 }
