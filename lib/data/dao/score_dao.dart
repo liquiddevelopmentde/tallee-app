@@ -1,25 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/score_table.dart';
+import 'package:tallee/data/dto/score_entry.dart';
 
 part 'score_dao.g.dart';
-
-/// A data class representing a score entry.
-class ScoreEntry {
-  final String playerId;
-  final String matchId;
-  final int roundNumber;
-  final int score;
-  final int change;
-
-  ScoreEntry({
-    required this.playerId,
-    required this.matchId,
-    required this.roundNumber,
-    required this.score,
-    required this.change,
-  });
-}
 
 @DriftAccessor(tables: [ScoreTable])
 class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
@@ -68,9 +52,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     required String matchId,
   }) async {
     final query = select(scoreTable)
-      ..where(
-        (s) => s.playerId.equals(playerId) & s.matchId.equals(matchId),
-      )
+      ..where((s) => s.playerId.equals(playerId) & s.matchId.equals(matchId))
       ..orderBy([(s) => OrderingTerm.asc(s.roundNumber)]);
     final result = await query.get();
     return result
@@ -118,19 +100,19 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     required int newScore,
     required int newChange,
   }) async {
-    final rowsAffected = await (update(scoreTable)
-          ..where(
-            (s) =>
-                s.playerId.equals(playerId) &
-                s.matchId.equals(matchId) &
-                s.roundNumber.equals(roundNumber),
-          ))
-        .write(
-          ScoreTableCompanion(
-            score: Value(newScore),
-            change: Value(newChange),
-          ),
-        );
+    final rowsAffected =
+        await (update(scoreTable)..where(
+              (s) =>
+                  s.playerId.equals(playerId) &
+                  s.matchId.equals(matchId) &
+                  s.roundNumber.equals(roundNumber),
+            ))
+            .write(
+              ScoreTableCompanion(
+                score: Value(newScore),
+                change: Value(newChange),
+              ),
+            );
     return rowsAffected > 0;
   }
 
@@ -188,4 +170,3 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     return scores.last.score;
   }
 }
-
