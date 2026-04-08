@@ -30,8 +30,34 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     );
   }
 
+  /// Retrieves the score for a specific round.
+  Future<ScoreEntry?> getScore({
+    required String playerId,
+    required String matchId,
+    int roundNumber = 0,
+  }) async {
+    final query = select(scoreTable)
+      ..where(
+        (s) =>
+            s.playerId.equals(playerId) &
+            s.matchId.equals(matchId) &
+            s.roundNumber.equals(roundNumber),
+      );
+
+    final result = await query.getSingleOrNull();
+    if (result == null) return null;
+
+    return ScoreEntry(
+      playerId: result.playerId,
+      matchId: result.matchId,
+      roundNumber: result.roundNumber,
+      score: result.score,
+      change: result.change,
+    );
+  }
+
   /// Retrieves all scores for a specific match.
-  Future<List<ScoreEntry>> getScoresForMatch({required String matchId}) async {
+  Future<List<ScoreEntry>> getAllMatchScores({required String matchId}) async {
     final query = select(scoreTable)..where((s) => s.matchId.equals(matchId));
     final result = await query.get();
     return result
@@ -48,7 +74,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   }
 
   /// Retrieves all scores for a specific player in a match.
-  Future<List<ScoreEntry>> getPlayerScoresInMatch({
+  Future<List<ScoreEntry>> getAllPlayerScoresInMatch({
     required String playerId,
     required String matchId,
   }) async {
@@ -67,30 +93,6 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
           ),
         )
         .toList();
-  }
-
-  /// Retrieves the score for a specific round.
-  Future<ScoreEntry?> getScoreForRound({
-    required String playerId,
-    required String matchId,
-    required int roundNumber,
-  }) async {
-    final query = select(scoreTable)
-      ..where(
-        (s) =>
-            s.playerId.equals(playerId) &
-            s.matchId.equals(matchId) &
-            s.roundNumber.equals(roundNumber),
-      );
-    final result = await query.getSingleOrNull();
-    if (result == null) return null;
-    return ScoreEntry(
-      playerId: result.playerId,
-      matchId: result.matchId,
-      roundNumber: result.roundNumber,
-      score: result.score,
-      change: result.change,
-    );
   }
 
   /// Updates a score entry.
@@ -134,16 +136,18 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     return rowsAffected > 0;
   }
 
-  /// Deletes all scores for a specific match.
-  Future<bool> deleteScoresForMatch({required String matchId}) async {
+  Future<bool> deleteAllScoresForMatch({required String matchId}) async {
     final query = delete(scoreTable)..where((s) => s.matchId.equals(matchId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
 
-  /// Deletes all scores for a specific player.
-  Future<bool> deleteScoresForPlayer({required String playerId}) async {
-    final query = delete(scoreTable)..where((s) => s.playerId.equals(playerId));
+  Future<bool> deleteAllScoresForPlayerInMatch({
+    required String matchId,
+    required String playerId,
+  }) async {
+    final query = delete(scoreTable)
+      ..where((s) => s.playerId.equals(playerId) & s.matchId.equals(matchId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
@@ -162,7 +166,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     required String playerId,
     required String matchId,
   }) async {
-    final scores = await getPlayerScoresInMatch(
+    final scores = await getAllPlayerScoresInMatch(
       playerId: playerId,
       matchId: matchId,
     );
@@ -181,7 +185,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     required String playerId,
   }) async {
     // Clear previous winner if exists
-    deleteScoresForMatch(matchId: matchId);
+    deleteAllScoresForMatch(matchId: matchId);
 
     // Set the winner's score to 1
     final rowsAffected = await into(scoreTable).insert(
@@ -222,12 +226,12 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   /// Returns `true` if the winner was removed, `false` if there are multiple
   /// scores or if the winner cannot be removed.
   Future<bool> removeWinner({required String matchId}) async {
-    final scores = await getScoresForMatch(matchId: matchId);
+    final scores = await getAllMatchScores(matchId: matchId);
 
     if (scores.length > 1) {
       return false;
     } else {
-      return await deleteScoresForMatch(matchId: matchId);
+      return await deleteAllScoresForMatch(matchId: matchId);
     }
   }
 
@@ -241,7 +245,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     required String playerId,
   }) async {
     // Clear previous loosers if exists
-    deleteScoresForMatch(matchId: matchId);
+    deleteAllScoresForMatch(matchId: matchId);
 
     // Set the loosers score to 0
     final rowsAffected = await into(scoreTable).insert(
@@ -280,12 +284,12 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   /// Returns `true` if the looser was removed, `false` if there are multiple
   /// scores or if the looser cannot be removed.
   Future<bool> removeLooser({required String matchId}) async {
-    final scores = await getScoresForMatch(matchId: matchId);
+    final scores = await getAllMatchScores(matchId: matchId);
 
     if (scores.length > 1) {
       return false;
     } else {
-      return await deleteScoresForMatch(matchId: matchId);
+      return await deleteAllScoresForMatch(matchId: matchId);
     }
   }
 }

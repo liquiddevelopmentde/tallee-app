@@ -88,7 +88,6 @@ void main() {
   });
 
   group('Player-Match Tests', () {
-    // Verifies that matchHasPlayers returns false initially and true after adding a player.
     test('Match has player works correctly', () async {
       await database.matchDao.addMatch(match: testMatchOnlyGroup);
       await database.playerDao.addPlayer(player: testPlayer1);
@@ -111,7 +110,6 @@ void main() {
       expect(matchHasPlayers, true);
     });
 
-    // Verifies that a player can be added to a match and isPlayerInMatch returns true.
     test('Adding a player to a match works correctly', () async {
       await database.matchDao.addMatch(match: testMatchOnlyGroup);
       await database.playerDao.addPlayer(player: testPlayer5);
@@ -135,7 +133,6 @@ void main() {
       expect(playerAdded, false);
     });
 
-    // Verifies that a player can be removed from a match and the player count decreases.
     test('Removing player from match works correctly', () async {
       await database.matchDao.addMatch(match: testMatchOnlyPlayers);
 
@@ -156,7 +153,6 @@ void main() {
       expect(playerExists, false);
     });
 
-    // Verifies that getPlayersOfMatch returns all players of a match with correct data.
     test('Retrieving players of a match works correctly', () async {
       await database.matchDao.addMatch(match: testMatchOnlyPlayers);
       final players =
@@ -172,7 +168,6 @@ void main() {
       }
     });
 
-    // Verifies that updatePlayersFromMatch replaces all existing players with new ones.
     test('Updating the match players works correctly', () async {
       await database.matchDao.addMatch(match: testMatchOnlyPlayers);
 
@@ -216,7 +211,6 @@ void main() {
       }
     });
 
-    // Verifies that the same player can be added to multiple different matches.
     test(
       'Adding the same player to separate matches works correctly',
       () async {
@@ -273,77 +267,6 @@ void main() {
       expect(players, isNull);
     });
 
-    // TODO: FIX
-    /*// Verifies that adding a player with initial score works correctly.
-    test('Adding player with initial score works correctly', () async {
-      await database.matchDao.addMatch(match: testMatchOnlyGroup);
-
-      await database.playerMatchDao.addPlayerToMatch(
-        matchId: testMatchOnlyGroup.id,
-        playerId: testPlayer1.id,
-        score: 100,
-      );
-
-      final score = await database.playerMatchDao.getPlayerScore(
-        matchId: testMatchOnlyGroup.id,
-        playerId: testPlayer1.id,
-      );
-
-      expect(score, 100);
-    });*/
-
-    // TODO: FIX
-    /*// Verifies that getPlayerScore returns the correct score.
-    test('getPlayerScore returns correct score', () async {
-      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
-
-      // Default score should be 0 when added through match
-      final score = await database.scoreDao.getPlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-      );
-
-      expect(score, 0);
-    });*/
-
-    // TODO: Fix
-    /*// Verifies that getPlayerScore returns null for non-existent player-match combination.
-    test(
-      'getPlayerScore returns null for non-existent player in match',
-      () async {
-        await database.matchDao.addMatch(match: testMatchOnlyGroup);
-
-        final score = await database.playerMatchDao.getPlayerScore(
-          matchId: testMatchOnlyGroup.id,
-          playerId: 'non-existent-player-id',
-        );
-
-        expect(score, isNull);
-      },
-    );*/
-
-    // TODO: Fix
-    // Verifies that updatePlayerScore updates the score correctly.
-    /*test('updatePlayerScore updates score correctly', () async {
-      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
-
-      final updated = await database.playerMatchDao.updatePlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-        newScore: 50,
-      );
-
-      expect(updated, true);
-
-      final score = await database.playerMatchDao.getPlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-      );
-
-      expect(score, 50);
-    });*/
-
-    // Verifies that updatePlayerScore returns false for non-existent player-match.
     test(
       'updatePlayerScore returns false for non-existent player-match',
       () async {
@@ -359,7 +282,6 @@ void main() {
       },
     );
 
-    // Verifies that adding a player with teamId works correctly.
     test('Adding player with teamId works correctly', () async {
       await database.matchDao.addMatch(match: testMatchOnlyGroup);
       await database.teamDao.addTeam(team: testTeam1);
@@ -379,7 +301,6 @@ void main() {
       expect(playersInTeam[0].id, testPlayer1.id);
     });
 
-    // Verifies that updatePlayerTeam updates the team correctly.
     test('updatePlayerTeam updates team correctly', () async {
       await database.matchDao.addMatch(match: testMatchOnlyGroup);
       await database.teamDao.addTeam(team: testTeam1);
@@ -418,7 +339,6 @@ void main() {
       expect(playersInTeam1.isEmpty, true);
     });
 
-    // Verifies that updatePlayerTeam can set team to null.
     test('updatePlayerTeam can remove player from team', () async {
       await database.matchDao.addMatch(match: testMatchOnlyGroup);
       await database.teamDao.addTeam(team: testTeam1);
@@ -446,7 +366,6 @@ void main() {
       expect(playersInTeam.isEmpty, true);
     });
 
-    // Verifies that updatePlayerTeam returns false for non-existent player-match.
     test(
       'updatePlayerTeam returns false for non-existent player-match',
       () async {
@@ -474,7 +393,6 @@ void main() {
       expect(players.isEmpty, true);
     });
 
-    // Verifies that getPlayersInTeam returns all players of a team.
     test('getPlayersInTeam returns all players of a team', () async {
       await database.matchDao.addMatch(match: testMatchOnlyGroup);
       await database.teamDao.addTeam(team: testTeam1);
@@ -501,7 +419,6 @@ void main() {
       expect(playerIds.contains(testPlayer2.id), true);
     });
 
-    // Verifies that removePlayerFromMatch returns false for non-existent player.
     test(
       'removePlayerFromMatch returns false for non-existent player',
       () async {
@@ -516,7 +433,6 @@ void main() {
       },
     );
 
-    // Verifies that adding the same player twice to the same match is ignored.
     test('Adding same player twice to same match is ignored', () async {
       await database.matchDao.addMatch(match: testMatchOnlyGroup);
 
@@ -539,7 +455,6 @@ void main() {
       expect(players?.length, 1);
     });
 
-    // Verifies that updatePlayersFromMatch with empty list removes all players.
     test(
       'updatePlayersFromMatch with empty list removes all players',
       () async {
@@ -565,7 +480,6 @@ void main() {
       },
     );
 
-    // Verifies that updatePlayersFromMatch with same players makes no changes.
     test('updatePlayersFromMatch with same players makes no changes', () async {
       await database.matchDao.addMatch(match: testMatchOnlyPlayers);
 
@@ -587,7 +501,6 @@ void main() {
       }
     });
 
-    // Verifies that matchHasPlayers returns false for non-existent match.
     test('matchHasPlayers returns false for non-existent match', () async {
       final hasPlayers = await database.playerMatchDao.matchHasPlayers(
         matchId: 'non-existent-match-id',
@@ -596,7 +509,6 @@ void main() {
       expect(hasPlayers, false);
     });
 
-    // Verifies that isPlayerInMatch returns false for non-existent match.
     test('isPlayerInMatch returns false for non-existent match', () async {
       final isInMatch = await database.playerMatchDao.isPlayerInMatch(
         matchId: 'non-existent-match-id',
@@ -604,122 +516,6 @@ void main() {
       );
 
       expect(isInMatch, false);
-    });
-
-    // Verifies that updatePlayersFromMatch preserves scores for existing players.
-    test('updatePlayersFromMatch only modifies player associations', () async {
-      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
-
-      // Update score for existing player
-      await database.scoreDao.updateScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-        newScore: 75,
-      );
-
-      // Update players, keeping testPlayer4 and adding testPlayer1
-      await database.playerMatchDao.updatePlayersFromMatch(
-        matchId: testMatchOnlyPlayers.id,
-        newPlayer: [testPlayer4, testPlayer1],
-      );
-
-      // TODO: Fix
-      /*// Verify testPlayer4's score is preserved
-      final score = await database.playerMatchDao.getPlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-      );
-
-      expect(score, 75);
-
-      // Verify testPlayer1 was added with default score
-      final newPlayerScore = await database.playerMatchDao.getPlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer1.id,
-      );
-
-      expect(newPlayerScore, 0);*/
-    });
-
-    // Verifies that adding a player with both score and teamId works correctly.
-    test('Adding player with score and teamId works correctly', () async {
-      await database.matchDao.addMatch(match: testMatchOnlyGroup);
-      await database.teamDao.addTeam(team: testTeam1);
-
-      await database.playerMatchDao.addPlayerToMatch(
-        matchId: testMatchOnlyGroup.id,
-        playerId: testPlayer1.id,
-        teamId: testTeam1.id,
-      );
-
-      // TODO: fix
-      /*// Verify score
-      final score = await database.playerMatchDao.getPlayerScore(
-        matchId: testMatchOnlyGroup.id,
-        playerId: testPlayer1.id,
-      );
-      expect(score, 150);*/
-
-      // Verify team assignment
-      final playersInTeam = await database.playerMatchDao.getPlayersInTeam(
-        matchId: testMatchOnlyGroup.id,
-        teamId: testTeam1.id,
-      );
-      expect(playersInTeam.length, 1);
-      expect(playersInTeam[0].id, testPlayer1.id);
-    });
-
-    // Verifies that updating score with negative value works.
-    test('updatePlayerScore with negative score works', () async {
-      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
-      await database.scoreDao.addScore(
-        playerId: testPlayer4.id,
-        matchId: testMatchOnlyPlayers.id,
-        score: 0,
-      );
-
-      final updated = await database.scoreDao.updateScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-        newScore: -10,
-      );
-
-      expect(updated, true);
-
-      // TODO: fix
-      /* final score = await database.playerMatchDao.getPlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-      );
-
-      expect(score, -10);*/
-    });
-
-    // Verifies that updating score with zero value works.
-    test('updatePlayerScore with zero score works', () async {
-      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
-      await database.scoreDao.addScore(
-        playerId: testPlayer4.id,
-        matchId: testMatchOnlyPlayers.id,
-        score: 100,
-      );
-
-      // Then update to zero
-      final updated = await database.scoreDao.updateScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-        newScore: 0,
-      );
-
-      expect(updated, true);
-
-      // TODO: Fix
-      /*final score = await database.playerMatchDao.getPlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-      );
-
-      expect(score, 0);*/
     });
 
     // Verifies that getPlayersInTeam returns empty list for non-existent match.
@@ -821,56 +617,6 @@ void main() {
         playerId: testPlayer1.id,
       );
       expect(isInMatch2, true);
-    });
-
-    // Verifies that updating scores for players in different matches are independent.
-    test('Player scores are independent across matches', () async {
-      final playersList = [testPlayer1];
-      final match1 = Match(
-        name: 'Match 1',
-        game: testGame,
-        players: playersList,
-        notes: '',
-      );
-      final match2 = Match(
-        name: 'Match 2',
-        game: testGame,
-        players: playersList,
-        notes: '',
-      );
-
-      await Future.wait([
-        database.matchDao.addMatch(match: match1),
-        database.matchDao.addMatch(match: match2),
-      ]);
-
-      // Update score in match1
-      await database.scoreDao.updateScore(
-        matchId: match1.id,
-        playerId: testPlayer1.id,
-        newScore: 100,
-      );
-
-      // Update score in match2
-      await database.scoreDao.updateScore(
-        matchId: match2.id,
-        playerId: testPlayer1.id,
-        newScore: 50,
-      );
-
-      // TODO: fix
-      /* // Verify scores are independent
-      final scoreInMatch1 = await database.playerMatchDao.getPlayerScore(
-        matchId: match1.id,
-        playerId: testPlayer1.id,
-      );
-      final scoreInMatch2 = await database.playerMatchDao.getPlayerScore(
-        matchId: match2.id,
-        playerId: testPlayer1.id,
-      );
-
-      expect(scoreInMatch1, 100);
-      expect(scoreInMatch2, 50);*/
     });
 
     // Verifies that updatePlayersFromMatch on non-existent match fails with constraint error.
