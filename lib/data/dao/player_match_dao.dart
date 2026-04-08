@@ -24,7 +24,6 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
         playerId: playerId,
         matchId: matchId,
         teamId: Value(teamId),
-        score: score,
       ),
       mode: InsertMode.insertOrIgnore,
     );
@@ -48,6 +47,7 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
 
   /// Retrieves a player's score for a specific match.
   /// Returns null if the player is not in the match.
+  /// TODO: Implement
   Future<int?> getPlayerScore({
     required String matchId,
     required String playerId,
@@ -57,7 +57,7 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
               (p) => p.matchId.equals(matchId) & p.playerId.equals(playerId),
             ))
             .getSingleOrNull();
-    return result?.score;
+    return 0;
   }
 
   /// Updates the score for a player in a match.
@@ -67,12 +67,13 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     required String playerId,
     required int newScore,
   }) async {
-    final rowsAffected =
+    /* final rowsAffected =
         await (update(playerMatchTable)..where(
               (p) => p.matchId.equals(matchId) & p.playerId.equals(playerId),
             ))
             .write(PlayerMatchTableCompanion(score: Value(newScore)));
-    return rowsAffected > 0;
+    return rowsAffected > 0;*/
+    return false;
   }
 
   /// Updates the team for a player in a match.
@@ -166,7 +167,6 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
               (id) => PlayerMatchTableCompanion.insert(
                 playerId: id,
                 matchId: matchId,
-                score: 0,
               ),
             )
             .toList();
