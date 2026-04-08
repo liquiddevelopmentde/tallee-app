@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/score_table.dart';
 import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/score.dart';
 
 part 'score_dao.g.dart';
 
@@ -31,7 +31,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   }
 
   /// Retrieves the score for a specific round.
-  Future<ScoreEntry?> getScore({
+  Future<Score?> getScore({
     required String playerId,
     required String matchId,
     int roundNumber = 0,
@@ -47,7 +47,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     final result = await query.getSingleOrNull();
     if (result == null) return null;
 
-    return ScoreEntry(
+    return Score(
       playerId: result.playerId,
       matchId: result.matchId,
       roundNumber: result.roundNumber,
@@ -57,12 +57,12 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   }
 
   /// Retrieves all scores for a specific match.
-  Future<List<ScoreEntry>> getAllMatchScores({required String matchId}) async {
+  Future<List<Score>> getAllMatchScores({required String matchId}) async {
     final query = select(scoreTable)..where((s) => s.matchId.equals(matchId));
     final result = await query.get();
     return result
         .map(
-          (row) => ScoreEntry(
+          (row) => Score(
             playerId: row.playerId,
             matchId: row.matchId,
             roundNumber: row.roundNumber,
@@ -74,7 +74,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   }
 
   /// Retrieves all scores for a specific player in a match.
-  Future<List<ScoreEntry>> getAllPlayerScoresInMatch({
+  Future<List<Score>> getAllPlayerScoresInMatch({
     required String playerId,
     required String matchId,
   }) async {
@@ -84,7 +84,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     final result = await query.get();
     return result
         .map(
-          (row) => ScoreEntry(
+          (row) => Score(
             playerId: row.playerId,
             matchId: row.matchId,
             roundNumber: row.roundNumber,

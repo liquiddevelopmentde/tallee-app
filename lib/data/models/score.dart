@@ -1,11 +1,11 @@
-class ScoreEntry {
+class Score {
   final String playerId;
   final String matchId;
   final int roundNumber;
   int score = 0;
   int change = 0;
 
-  ScoreEntry({
+  Score({
     required this.playerId,
     required this.matchId,
     required this.roundNumber,
@@ -13,7 +13,7 @@ class ScoreEntry {
     required this.change,
   });
 
-  ScoreEntry.fromJson(Map<String, dynamic> json)
+  Score.fromJson(Map<String, dynamic> json)
     : playerId = json['playerId'],
       matchId = json['matchId'],
       roundNumber = json['roundNumber'],
