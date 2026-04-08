@@ -3,7 +3,7 @@ import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/player.dart';
 
 void main() {
   late AppDatabase database;
@@ -35,7 +35,6 @@ void main() {
   });
 
   group('Player Tests', () {
-
     // Verifies that players can be added and retrieved with all fields intact.
     test('Adding and fetching single player works correctly', () async {
       await database.playerDao.addPlayer(player: testPlayer1);
@@ -264,16 +263,22 @@ void main() {
     });
 
     // Verifies that a player with special characters in name is stored correctly.
-    test('Player with special characters in name is stored correctly', () async {
-      final specialPlayer = Player(name: 'Test!@#\$%^&*()_+-=[]{}|;\':",.<>?/`~', description: '');
+    test(
+      'Player with special characters in name is stored correctly',
+      () async {
+        final specialPlayer = Player(
+          name: 'Test!@#\$%^&*()_+-=[]{}|;\':",.<>?/`~',
+          description: '',
+        );
 
-      await database.playerDao.addPlayer(player: specialPlayer);
+        await database.playerDao.addPlayer(player: specialPlayer);
 
-      final fetchedPlayer = await database.playerDao.getPlayerById(
-        playerId: specialPlayer.id,
-      );
-      expect(fetchedPlayer.name, specialPlayer.name);
-    });
+        final fetchedPlayer = await database.playerDao.getPlayerById(
+          playerId: specialPlayer.id,
+        );
+        expect(fetchedPlayer.name, specialPlayer.name);
+      },
+    );
 
     // Verifies that a player with description is stored correctly.
     test('Player with description is stored correctly', () async {
@@ -293,7 +298,10 @@ void main() {
 
     // Verifies that a player with null description is stored correctly.
     test('Player with null description is stored correctly', () async {
-      final playerWithoutDescription = Player(name: 'No Description Player', description: '');
+      final playerWithoutDescription = Player(
+        name: 'No Description Player',
+        description: '',
+      );
 
       await database.playerDao.addPlayer(player: playerWithoutDescription);
 

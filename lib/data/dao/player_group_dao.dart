@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/player_group_table.dart';
 import 'package:tallee/data/db/tables/player_table.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/player.dart';
 
 part 'player_group_dao.g.dart';
 

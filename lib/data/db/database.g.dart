@@ -1131,9 +1131,9 @@ class $MatchTableTable extends MatchTable
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
     'name',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
@@ -1212,6 +1212,8 @@ class $MatchTableTable extends MatchTable
         _nameMeta,
         name.isAcceptableOrUnknown(data['name']!, _nameMeta),
       );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('notes')) {
       context.handle(
@@ -1257,7 +1259,7 @@ class $MatchTableTable extends MatchTable
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
-      ),
+      )!,
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -1283,7 +1285,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
   final String id;
   final String gameId;
   final String? groupId;
-  final String? name;
+  final String name;
   final String? notes;
   final DateTime createdAt;
   final DateTime? endedAt;
@@ -1291,7 +1293,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     required this.id,
     required this.gameId,
     this.groupId,
-    this.name,
+    required this.name,
     this.notes,
     required this.createdAt,
     this.endedAt,
@@ -1304,9 +1306,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     if (!nullToAbsent || groupId != null) {
       map['group_id'] = Variable<String>(groupId);
     }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
+    map['name'] = Variable<String>(name);
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
     }
@@ -1324,7 +1324,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       groupId: groupId == null && nullToAbsent
           ? const Value.absent()
           : Value(groupId),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      name: Value(name),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
@@ -1344,7 +1344,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       id: serializer.fromJson<String>(json['id']),
       gameId: serializer.fromJson<String>(json['gameId']),
       groupId: serializer.fromJson<String?>(json['groupId']),
-      name: serializer.fromJson<String?>(json['name']),
+      name: serializer.fromJson<String>(json['name']),
       notes: serializer.fromJson<String?>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       endedAt: serializer.fromJson<DateTime?>(json['endedAt']),
@@ -1357,7 +1357,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       'id': serializer.toJson<String>(id),
       'gameId': serializer.toJson<String>(gameId),
       'groupId': serializer.toJson<String?>(groupId),
-      'name': serializer.toJson<String?>(name),
+      'name': serializer.toJson<String>(name),
       'notes': serializer.toJson<String?>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'endedAt': serializer.toJson<DateTime?>(endedAt),
@@ -1368,7 +1368,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     String? id,
     String? gameId,
     Value<String?> groupId = const Value.absent(),
-    Value<String?> name = const Value.absent(),
+    String? name,
     Value<String?> notes = const Value.absent(),
     DateTime? createdAt,
     Value<DateTime?> endedAt = const Value.absent(),
@@ -1376,7 +1376,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     id: id ?? this.id,
     gameId: gameId ?? this.gameId,
     groupId: groupId.present ? groupId.value : this.groupId,
-    name: name.present ? name.value : this.name,
+    name: name ?? this.name,
     notes: notes.present ? notes.value : this.notes,
     createdAt: createdAt ?? this.createdAt,
     endedAt: endedAt.present ? endedAt.value : this.endedAt,
@@ -1427,7 +1427,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
   final Value<String> id;
   final Value<String> gameId;
   final Value<String?> groupId;
-  final Value<String?> name;
+  final Value<String> name;
   final Value<String?> notes;
   final Value<DateTime> createdAt;
   final Value<DateTime?> endedAt;
@@ -1446,13 +1446,14 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     required String id,
     required String gameId,
     this.groupId = const Value.absent(),
-    this.name = const Value.absent(),
+    required String name,
     this.notes = const Value.absent(),
     required DateTime createdAt,
     this.endedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        gameId = Value(gameId),
+       name = Value(name),
        createdAt = Value(createdAt);
   static Insertable<MatchTableData> custom({
     Expression<String>? id,
@@ -1480,7 +1481,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     Value<String>? id,
     Value<String>? gameId,
     Value<String?>? groupId,
-    Value<String?>? name,
+    Value<String>? name,
     Value<String?>? notes,
     Value<DateTime>? createdAt,
     Value<DateTime?>? endedAt,
@@ -2074,17 +2075,8 @@ class $PlayerMatchTableTable extends PlayerMatchTable
       'REFERENCES team_table (id)',
     ),
   );
-  static const VerificationMeta _scoreMeta = const VerificationMeta('score');
   @override
-  late final GeneratedColumn<int> score = GeneratedColumn<int>(
-    'score',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [playerId, matchId, teamId, score];
+  List<GeneratedColumn> get $columns => [playerId, matchId, teamId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2119,14 +2111,6 @@ class $PlayerMatchTableTable extends PlayerMatchTable
         teamId.isAcceptableOrUnknown(data['team_id']!, _teamIdMeta),
       );
     }
-    if (data.containsKey('score')) {
-      context.handle(
-        _scoreMeta,
-        score.isAcceptableOrUnknown(data['score']!, _scoreMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_scoreMeta);
-    }
     return context;
   }
 
@@ -2148,10 +2132,6 @@ class $PlayerMatchTableTable extends PlayerMatchTable
         DriftSqlType.string,
         data['${effectivePrefix}team_id'],
       ),
-      score: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}score'],
-      )!,
     );
   }
 
@@ -2166,12 +2146,10 @@ class PlayerMatchTableData extends DataClass
   final String playerId;
   final String matchId;
   final String? teamId;
-  final int score;
   const PlayerMatchTableData({
     required this.playerId,
     required this.matchId,
     this.teamId,
-    required this.score,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2181,7 +2159,6 @@ class PlayerMatchTableData extends DataClass
     if (!nullToAbsent || teamId != null) {
       map['team_id'] = Variable<String>(teamId);
     }
-    map['score'] = Variable<int>(score);
     return map;
   }
 
@@ -2192,7 +2169,6 @@ class PlayerMatchTableData extends DataClass
       teamId: teamId == null && nullToAbsent
           ? const Value.absent()
           : Value(teamId),
-      score: Value(score),
     );
   }
 
@@ -2205,7 +2181,6 @@ class PlayerMatchTableData extends DataClass
       playerId: serializer.fromJson<String>(json['playerId']),
       matchId: serializer.fromJson<String>(json['matchId']),
       teamId: serializer.fromJson<String?>(json['teamId']),
-      score: serializer.fromJson<int>(json['score']),
     );
   }
   @override
@@ -2215,7 +2190,6 @@ class PlayerMatchTableData extends DataClass
       'playerId': serializer.toJson<String>(playerId),
       'matchId': serializer.toJson<String>(matchId),
       'teamId': serializer.toJson<String?>(teamId),
-      'score': serializer.toJson<int>(score),
     };
   }
 
@@ -2223,19 +2197,16 @@ class PlayerMatchTableData extends DataClass
     String? playerId,
     String? matchId,
     Value<String?> teamId = const Value.absent(),
-    int? score,
   }) => PlayerMatchTableData(
     playerId: playerId ?? this.playerId,
     matchId: matchId ?? this.matchId,
     teamId: teamId.present ? teamId.value : this.teamId,
-    score: score ?? this.score,
   );
   PlayerMatchTableData copyWithCompanion(PlayerMatchTableCompanion data) {
     return PlayerMatchTableData(
       playerId: data.playerId.present ? data.playerId.value : this.playerId,
       matchId: data.matchId.present ? data.matchId.value : this.matchId,
       teamId: data.teamId.present ? data.teamId.value : this.teamId,
-      score: data.score.present ? data.score.value : this.score,
     );
   }
 
@@ -2244,58 +2215,50 @@ class PlayerMatchTableData extends DataClass
     return (StringBuffer('PlayerMatchTableData(')
           ..write('playerId: $playerId, ')
           ..write('matchId: $matchId, ')
-          ..write('teamId: $teamId, ')
-          ..write('score: $score')
+          ..write('teamId: $teamId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(playerId, matchId, teamId, score);
+  int get hashCode => Object.hash(playerId, matchId, teamId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is PlayerMatchTableData &&
           other.playerId == this.playerId &&
           other.matchId == this.matchId &&
-          other.teamId == this.teamId &&
-          other.score == this.score);
+          other.teamId == this.teamId);
 }
 
 class PlayerMatchTableCompanion extends UpdateCompanion<PlayerMatchTableData> {
   final Value<String> playerId;
   final Value<String> matchId;
   final Value<String?> teamId;
-  final Value<int> score;
   final Value<int> rowid;
   const PlayerMatchTableCompanion({
     this.playerId = const Value.absent(),
     this.matchId = const Value.absent(),
     this.teamId = const Value.absent(),
-    this.score = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   PlayerMatchTableCompanion.insert({
     required String playerId,
     required String matchId,
     this.teamId = const Value.absent(),
-    required int score,
     this.rowid = const Value.absent(),
   }) : playerId = Value(playerId),
-       matchId = Value(matchId),
-       score = Value(score);
+       matchId = Value(matchId);
   static Insertable<PlayerMatchTableData> custom({
     Expression<String>? playerId,
     Expression<String>? matchId,
     Expression<String>? teamId,
-    Expression<int>? score,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (playerId != null) 'player_id': playerId,
       if (matchId != null) 'match_id': matchId,
       if (teamId != null) 'team_id': teamId,
-      if (score != null) 'score': score,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2304,14 +2267,12 @@ class PlayerMatchTableCompanion extends UpdateCompanion<PlayerMatchTableData> {
     Value<String>? playerId,
     Value<String>? matchId,
     Value<String?>? teamId,
-    Value<int>? score,
     Value<int>? rowid,
   }) {
     return PlayerMatchTableCompanion(
       playerId: playerId ?? this.playerId,
       matchId: matchId ?? this.matchId,
       teamId: teamId ?? this.teamId,
-      score: score ?? this.score,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2328,9 +2289,6 @@ class PlayerMatchTableCompanion extends UpdateCompanion<PlayerMatchTableData> {
     if (teamId.present) {
       map['team_id'] = Variable<String>(teamId.value);
     }
-    if (score.present) {
-      map['score'] = Variable<int>(score.value);
-    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2343,7 +2301,6 @@ class PlayerMatchTableCompanion extends UpdateCompanion<PlayerMatchTableData> {
           ..write('playerId: $playerId, ')
           ..write('matchId: $matchId, ')
           ..write('teamId: $teamId, ')
-          ..write('score: $score, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4051,7 +4008,7 @@ typedef $$MatchTableTableCreateCompanionBuilder =
       required String id,
       required String gameId,
       Value<String?> groupId,
-      Value<String?> name,
+      required String name,
       Value<String?> notes,
       required DateTime createdAt,
       Value<DateTime?> endedAt,
@@ -4062,7 +4019,7 @@ typedef $$MatchTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> gameId,
       Value<String?> groupId,
-      Value<String?> name,
+      Value<String> name,
       Value<String?> notes,
       Value<DateTime> createdAt,
       Value<DateTime?> endedAt,
@@ -4520,7 +4477,7 @@ class $$MatchTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> gameId = const Value.absent(),
                 Value<String?> groupId = const Value.absent(),
-                Value<String?> name = const Value.absent(),
+                Value<String> name = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime?> endedAt = const Value.absent(),
@@ -4540,7 +4497,7 @@ class $$MatchTableTableTableManager
                 required String id,
                 required String gameId,
                 Value<String?> groupId = const Value.absent(),
-                Value<String?> name = const Value.absent(),
+                required String name,
                 Value<String?> notes = const Value.absent(),
                 required DateTime createdAt,
                 Value<DateTime?> endedAt = const Value.absent(),
@@ -5334,7 +5291,6 @@ typedef $$PlayerMatchTableTableCreateCompanionBuilder =
       required String playerId,
       required String matchId,
       Value<String?> teamId,
-      required int score,
       Value<int> rowid,
     });
 typedef $$PlayerMatchTableTableUpdateCompanionBuilder =
@@ -5342,7 +5298,6 @@ typedef $$PlayerMatchTableTableUpdateCompanionBuilder =
       Value<String> playerId,
       Value<String> matchId,
       Value<String?> teamId,
-      Value<int> score,
       Value<int> rowid,
     });
 
@@ -5426,11 +5381,6 @@ class $$PlayerMatchTableTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get score => $composableBuilder(
-    column: $table.score,
-    builder: (column) => ColumnFilters(column),
-  );
-
   $$PlayerTableTableFilterComposer get playerId {
     final $$PlayerTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -5510,11 +5460,6 @@ class $$PlayerMatchTableTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get score => $composableBuilder(
-    column: $table.score,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   $$PlayerTableTableOrderingComposer get playerId {
     final $$PlayerTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -5594,9 +5539,6 @@ class $$PlayerMatchTableTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get score =>
-      $composableBuilder(column: $table.score, builder: (column) => column);
-
   $$PlayerTableTableAnnotationComposer get playerId {
     final $$PlayerTableTableAnnotationComposer composer = $composerBuilder(
       composer: this,
@@ -5700,13 +5642,11 @@ class $$PlayerMatchTableTableTableManager
                 Value<String> playerId = const Value.absent(),
                 Value<String> matchId = const Value.absent(),
                 Value<String?> teamId = const Value.absent(),
-                Value<int> score = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PlayerMatchTableCompanion(
                 playerId: playerId,
                 matchId: matchId,
                 teamId: teamId,
-                score: score,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -5714,13 +5654,11 @@ class $$PlayerMatchTableTableTableManager
                 required String playerId,
                 required String matchId,
                 Value<String?> teamId = const Value.absent(),
-                required int score,
                 Value<int> rowid = const Value.absent(),
               }) => PlayerMatchTableCompanion.insert(
                 playerId: playerId,
                 matchId: matchId,
                 teamId: teamId,
-                score: score,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

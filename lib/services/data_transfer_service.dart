@@ -8,11 +8,11 @@ import 'package:json_schema/json_schema.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/game.dart';
-import 'package:tallee/data/dto/group.dart';
-import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
-import 'package:tallee/data/dto/team.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/team.dart';
 
 class DataTransferService {
   /// Deletes all data from the database.
@@ -40,33 +40,39 @@ class DataTransferService {
       'players': players.map((p) => p.toJson()).toList(),
       'games': games.map((g) => g.toJson()).toList(),
       'groups': groups
-          .map((g) => {
-        'id': g.id,
-        'name': g.name,
-        'description': g.description,
-        'createdAt': g.createdAt.toIso8601String(),
-        'memberIds': (g.members).map((m) => m.id).toList(),
-      })
+          .map(
+            (g) => {
+              'id': g.id,
+              'name': g.name,
+              'description': g.description,
+              'createdAt': g.createdAt.toIso8601String(),
+              'memberIds': (g.members).map((m) => m.id).toList(),
+            },
+          )
           .toList(),
       'teams': teams
-          .map((t) => {
-        'id': t.id,
-        'name': t.name,
-        'createdAt': t.createdAt.toIso8601String(),
-        'memberIds': (t.members).map((m) => m.id).toList(),
-      })
+          .map(
+            (t) => {
+              'id': t.id,
+              'name': t.name,
+              'createdAt': t.createdAt.toIso8601String(),
+              'memberIds': (t.members).map((m) => m.id).toList(),
+            },
+          )
           .toList(),
       'matches': matches
-          .map((m) => {
-        'id': m.id,
-        'name': m.name,
-        'createdAt': m.createdAt.toIso8601String(),
-        'endedAt': m.endedAt?.toIso8601String(),
-        'gameId': m.game.id,
-        'groupId': m.group?.id,
-        'playerIds': m.players.map((p) => p.id).toList(),
-        'notes': m.notes,
-      })
+          .map(
+            (m) => {
+              'id': m.id,
+              'name': m.name,
+              'createdAt': m.createdAt.toIso8601String(),
+              'endedAt': m.endedAt?.toIso8601String(),
+              'gameId': m.game.id,
+              'groupId': m.group?.id,
+              'playerIds': m.players.map((p) => p.id).toList(),
+              'notes': m.notes,
+            },
+          )
           .toList(),
     };
 
@@ -79,9 +85,9 @@ class DataTransferService {
   /// [jsonString] The JSON string to be exported.
   /// [fileName] The desired name for the exported file (without extension).
   static Future<ExportResult> exportData(
-      String jsonString,
-      String fileName
-      ) async {
+    String jsonString,
+    String fileName,
+  ) async {
     try {
       final bytes = Uint8List.fromList(utf8.encode(jsonString));
       final path = await FilePicker.platform.saveFile(
@@ -94,7 +100,6 @@ class DataTransferService {
       } else {
         return ExportResult.success;
       }
-
     } catch (e, stack) {
       print('[exportData] $e');
       print(stack);
@@ -122,13 +127,19 @@ class DataTransferService {
       final isValid = await _validateJsonSchema(jsonString);
       if (!isValid) return ImportResult.invalidSchema;
 
-      final Map<String, dynamic> decoded = json.decode(jsonString) as Map<String, dynamic>;
+      final Map<String, dynamic> decoded =
+          json.decode(jsonString) as Map<String, dynamic>;
 
-      final List<dynamic> playersJson = (decoded['players'] as List<dynamic>?) ?? [];
-      final List<dynamic> gamesJson = (decoded['games'] as List<dynamic>?) ?? [];
-      final List<dynamic> groupsJson = (decoded['groups'] as List<dynamic>?) ?? [];
-      final List<dynamic> teamsJson = (decoded['teams'] as List<dynamic>?) ?? [];
-      final List<dynamic> matchesJson = (decoded['matches'] as List<dynamic>?) ?? [];
+      final List<dynamic> playersJson =
+          (decoded['players'] as List<dynamic>?) ?? [];
+      final List<dynamic> gamesJson =
+          (decoded['games'] as List<dynamic>?) ?? [];
+      final List<dynamic> groupsJson =
+          (decoded['groups'] as List<dynamic>?) ?? [];
+      final List<dynamic> teamsJson =
+          (decoded['teams'] as List<dynamic>?) ?? [];
+      final List<dynamic> matchesJson =
+          (decoded['matches'] as List<dynamic>?) ?? [];
 
       // Import Players
       final List<Player> importedPlayers = playersJson
@@ -151,7 +162,8 @@ class DataTransferService {
       // Import Groups
       final List<Group> importedGroups = groupsJson.map((g) {
         final map = g as Map<String, dynamic>;
-        final memberIds = (map['memberIds'] as List<dynamic>? ?? []).cast<String>();
+        final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
+            .cast<String>();
 
         final members = memberIds
             .map((id) => playerById[id])
@@ -174,7 +186,8 @@ class DataTransferService {
       // Import Teams
       final List<Team> importedTeams = teamsJson.map((t) {
         final map = t as Map<String, dynamic>;
-        final memberIds = (map['memberIds'] as List<dynamic>? ?? []).cast<String>();
+        final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
+            .cast<String>();
 
         final members = memberIds
             .map((id) => playerById[id])
@@ -195,8 +208,11 @@ class DataTransferService {
 
         final String gameId = map['gameId'] as String;
         final String? groupId = map['groupId'] as String?;
-        final List<String> playerIds = (map['playerIds'] as List<dynamic>? ?? []).cast<String>();
-        final DateTime? endedAt = map['endedAt'] != null ? DateTime.parse(map['endedAt'] as String) : null;
+        final List<String> playerIds =
+            (map['playerIds'] as List<dynamic>? ?? []).cast<String>();
+        final DateTime? endedAt = map['endedAt'] != null
+            ? DateTime.parse(map['endedAt'] as String)
+            : null;
 
         final game = gameById[gameId];
         final group = (groupId == null) ? null : groupById[groupId];
@@ -208,7 +224,15 @@ class DataTransferService {
         return Match(
           id: map['id'] as String,
           name: map['name'] as String,
-          game: game ?? Game(name: 'Unknown', ruleset: Ruleset.singleWinner, description: '', color: GameColor.blue, icon: ''),
+          game:
+              game ??
+              Game(
+                name: 'Unknown',
+                ruleset: Ruleset.singleWinner,
+                description: '',
+                color: GameColor.blue,
+                icon: '',
+              ),
           group: group,
           players: players,
           createdAt: DateTime.parse(map['createdAt'] as String),

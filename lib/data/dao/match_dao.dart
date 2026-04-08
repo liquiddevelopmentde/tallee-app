@@ -4,10 +4,10 @@ import 'package:tallee/data/db/tables/game_table.dart';
 import 'package:tallee/data/db/tables/group_table.dart';
 import 'package:tallee/data/db/tables/match_table.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
-import 'package:tallee/data/dto/game.dart';
-import 'package:tallee/data/dto/group.dart';
-import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
 
 part 'match_dao.g.dart';
 

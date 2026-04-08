@@ -3,8 +3,8 @@ import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/group.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/player.dart';
 
 void main() {
   late AppDatabase database;
@@ -62,7 +62,6 @@ void main() {
     await database.close();
   });
   group('Group Tests', () {
-
     // Verifies that a single group can be added and retrieved with all fields and members intact.
     test('Adding and fetching a single group works correctly', () async {
       await database.groupDao.addGroup(group: testGroup1);
@@ -277,20 +276,20 @@ void main() {
     });
 
     // Verifies that updateGroupDescription returns false for a non-existent group.
-    test('updateGroupDescription returns false for non-existent group',
-        () async {
-      final updated = await database.groupDao.updateGroupDescription(
-        groupId: 'non-existent-id',
-        newDescription: 'New Description',
-      );
-      expect(updated, false);
-    });
+    test(
+      'updateGroupDescription returns false for non-existent group',
+      () async {
+        final updated = await database.groupDao.updateGroupDescription(
+          groupId: 'non-existent-id',
+          newDescription: 'New Description',
+        );
+        expect(updated, false);
+      },
+    );
 
     // Verifies that deleteAllGroups removes all groups from the database.
     test('deleteAllGroups removes all groups', () async {
-      await database.groupDao.addGroupsAsList(
-        groups: [testGroup1, testGroup2],
-      );
+      await database.groupDao.addGroupsAsList(groups: [testGroup1, testGroup2]);
 
       final countBefore = await database.groupDao.getGroupCount();
       expect(countBefore, 2);

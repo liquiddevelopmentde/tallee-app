@@ -2,12 +2,12 @@ import 'package:clock/clock.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/game.dart';
-import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
-import 'package:tallee/data/dto/team.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/team.dart';
 
 void main() {
   late AppDatabase database;
@@ -37,20 +37,23 @@ void main() {
       testPlayer2 = Player(name: 'Bob', description: '');
       testPlayer3 = Player(name: 'Charlie', description: '');
       testPlayer4 = Player(name: 'Diana', description: '');
-      testTeam1 = Team(
-        name: 'Team Alpha',
-        members: [testPlayer1, testPlayer2],
+      testTeam1 = Team(name: 'Team Alpha', members: [testPlayer1, testPlayer2]);
+      testTeam2 = Team(name: 'Team Beta', members: [testPlayer3, testPlayer4]);
+      testTeam3 = Team(name: 'Team Gamma', members: [testPlayer1, testPlayer3]);
+      testGame1 = Game(
+        name: 'Game 1',
+        ruleset: Ruleset.singleWinner,
+        description: 'Test game 1',
+        color: GameColor.blue,
+        icon: '',
       );
-      testTeam2 = Team(
-        name: 'Team Beta',
-        members: [testPlayer3, testPlayer4],
+      testGame2 = Game(
+        name: 'Game 2',
+        ruleset: Ruleset.highestScore,
+        description: 'Test game 2',
+        color: GameColor.red,
+        icon: '',
       );
-      testTeam3 = Team(
-        name: 'Team Gamma',
-        members: [testPlayer1, testPlayer3],
-      );
-      testGame1 = Game(name: 'Game 1', ruleset: Ruleset.singleWinner, description: 'Test game 1', color: GameColor.blue, icon: '');
-      testGame2 = Game(name: 'Game 2', ruleset: Ruleset.highestScore, description: 'Test game 2', color: GameColor.red, icon: '');
     });
 
     await database.playerDao.addPlayersAsList(
@@ -65,7 +68,6 @@ void main() {
   });
 
   group('Team Tests', () {
-
     // Verifies that a single team can be added and retrieved with all fields intact.
     test('Adding and fetching a single team works correctly', () async {
       final added = await database.teamDao.addTeam(team: testTeam1);
@@ -285,10 +287,7 @@ void main() {
     test('Updating team name to empty string works', () async {
       await database.teamDao.addTeam(team: testTeam1);
 
-      await database.teamDao.updateTeamName(
-        teamId: testTeam1.id,
-        newName: '',
-      );
+      await database.teamDao.updateTeamName(teamId: testTeam1.id, newName: '');
 
       final updatedTeam = await database.teamDao.getTeamById(
         teamId: testTeam1.id,
@@ -350,9 +349,7 @@ void main() {
       await database.matchDao.addMatch(match: match2);
 
       // Add teams to database
-      await database.teamDao.addTeamsAsList(
-        teams: [testTeam1, testTeam3],
-      );
+      await database.teamDao.addTeamsAsList(teams: [testTeam1, testTeam3]);
 
       // Associate players with teams through match1
       // testTeam1: player1, player2
@@ -420,10 +417,11 @@ void main() {
       final allTeams = await database.teamDao.getAllTeams();
 
       expect(allTeams.length, 3);
-      expect(
-        allTeams.map((t) => t.id).toSet(),
-        {testTeam1.id, testTeam2.id, testTeam3.id},
-      );
+      expect(allTeams.map((t) => t.id).toSet(), {
+        testTeam1.id,
+        testTeam2.id,
+        testTeam3.id,
+      });
     });
 
     // Verifies that teamExists returns false for deleted teams.
@@ -462,9 +460,7 @@ void main() {
 
     // Verifies that addTeam after deleteAllTeams works correctly.
     test('Adding team after deleteAllTeams works correctly', () async {
-      await database.teamDao.addTeamsAsList(
-        teams: [testTeam1, testTeam2],
-      );
+      await database.teamDao.addTeamsAsList(teams: [testTeam1, testTeam2]);
       expect(await database.teamDao.getTeamCount(), 2);
 
       await database.teamDao.deleteAllTeams();

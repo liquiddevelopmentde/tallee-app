@@ -2,11 +2,11 @@ import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/game.dart';
-import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
 
 void main() {
   late AppDatabase database;
@@ -32,7 +32,13 @@ void main() {
       testPlayer1 = Player(name: 'Alice', description: '');
       testPlayer2 = Player(name: 'Bob', description: '');
       testPlayer3 = Player(name: 'Charlie', description: '');
-      testGame = Game(name: 'Test Game', ruleset: Ruleset.singleWinner, description: 'A test game', color: GameColor.blue, icon: '');
+      testGame = Game(
+        name: 'Test Game',
+        ruleset: Ruleset.singleWinner,
+        description: 'A test game',
+        color: GameColor.blue,
+        icon: '',
+      );
       testMatch1 = Match(
         name: 'Test Match 1',
         game: testGame,
@@ -60,7 +66,6 @@ void main() {
   });
 
   group('Score Tests', () {
-
     // Verifies that a score can be added and retrieved with all fields intact.
     test('Adding and fetching a score works correctly', () async {
       await database.scoreDao.addScore(
@@ -431,13 +436,16 @@ void main() {
     });
 
     // Verifies that getScoresForMatch returns empty list for match with no scores.
-    test('Getting scores for match with no scores returns empty list', () async {
-      final scores = await database.scoreDao.getScoresForMatch(
-        matchId: testMatch1.id,
-      );
+    test(
+      'Getting scores for match with no scores returns empty list',
+      () async {
+        final scores = await database.scoreDao.getScoresForMatch(
+          matchId: testMatch1.id,
+        );
 
-      expect(scores.isEmpty, true);
-    });
+        expect(scores.isEmpty, true);
+      },
+    );
 
     // Verifies that getPlayerScoresInMatch returns empty list when player has no scores.
     test('Getting player scores with no scores returns empty list', () async {
@@ -666,46 +674,58 @@ void main() {
     });
 
     // Verifies that updating one player's score doesn't affect another player's score in same round.
-    test('Updating one player score does not affect other players in same round', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer2.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 20,
-        change: 20,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer3.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 30,
-        change: 30,
-      );
+    test(
+      'Updating one player score does not affect other players in same round',
+      () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer2.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 20,
+          change: 20,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer3.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 30,
+          change: 30,
+        );
 
-      await database.scoreDao.updateScore(
-        playerId: testPlayer2.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        newScore: 99,
-        newChange: 89,
-      );
+        await database.scoreDao.updateScore(
+          playerId: testPlayer2.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          newScore: 99,
+          newChange: 89,
+        );
 
-      final scores = await database.scoreDao.getScoresForMatch(
-        matchId: testMatch1.id,
-      );
+        final scores = await database.scoreDao.getScoresForMatch(
+          matchId: testMatch1.id,
+        );
 
-      expect(scores.length, 3);
-      expect(scores.where((s) => s.playerId == testPlayer1.id).first.score, 10);
-      expect(scores.where((s) => s.playerId == testPlayer2.id).first.score, 99);
-      expect(scores.where((s) => s.playerId == testPlayer3.id).first.score, 30);
-    });
+        expect(scores.length, 3);
+        expect(
+          scores.where((s) => s.playerId == testPlayer1.id).first.score,
+          10,
+        );
+        expect(
+          scores.where((s) => s.playerId == testPlayer2.id).first.score,
+          99,
+        );
+        expect(
+          scores.where((s) => s.playerId == testPlayer3.id).first.score,
+          30,
+        );
+      },
+    );
 
     // Verifies that deleting a player's scores only affects that specific player.
     test('Deleting player scores only affects target player', () async {
@@ -724,9 +744,7 @@ void main() {
         change: 20,
       );
 
-      await database.scoreDao.deleteScoresForPlayer(
-        playerId: testPlayer1.id,
-      );
+      await database.scoreDao.deleteScoresForPlayer(playerId: testPlayer1.id);
 
       final match1Scores = await database.scoreDao.getScoresForMatch(
         matchId: testMatch1.id,

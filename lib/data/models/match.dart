@@ -1,9 +1,9 @@
 import 'package:clock/clock.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/data/dto/game.dart';
-import 'package:tallee/data/dto/group.dart';
-import 'package:tallee/data/dto/player.dart';
-import 'package:tallee/data/dto/score_entry.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/score_entry.dart';
 import 'package:uuid/uuid.dart';
 
 class Match {

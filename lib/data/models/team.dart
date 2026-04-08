@@ -1,5 +1,5 @@
 import 'package:clock/clock.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/player.dart';
 import 'package:uuid/uuid.dart';
 
 class Team {
@@ -37,4 +37,3 @@ class Team {
     'memberIds': members.map((member) => member.id).toList(),
   };
 }
-
