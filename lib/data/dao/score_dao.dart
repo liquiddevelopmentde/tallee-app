@@ -49,7 +49,6 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
 
     return Score(
       playerId: result.playerId,
-      matchId: result.matchId,
       roundNumber: result.roundNumber,
       score: result.score,
       change: result.change,
@@ -64,7 +63,6 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
         .map(
           (row) => Score(
             playerId: row.playerId,
-            matchId: row.matchId,
             roundNumber: row.roundNumber,
             score: row.score,
             change: row.change,
@@ -86,7 +84,6 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
         .map(
           (row) => Score(
             playerId: row.playerId,
-            matchId: row.matchId,
             roundNumber: row.roundNumber,
             score: row.score,
             change: row.change,

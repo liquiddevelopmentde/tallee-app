@@ -84,7 +84,6 @@ void main() {
 
       expect(score, isNotNull);
       expect(score!.playerId, testPlayer1.id);
-      expect(score.matchId, testMatch1.id);
       expect(score.roundNumber, 1);
       expect(score.score, 10);
       expect(score.change, 10);
