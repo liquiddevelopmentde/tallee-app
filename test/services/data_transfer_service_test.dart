@@ -294,7 +294,7 @@ void main() {
           expect(matchData['notes'], testMatch.notes);
 
           // Check player ids
-          final playerIds = matchData['playerIds'] as List<String>;
+          final playerIds = matchData['playerIds'] as List<dynamic>;
           expect(playerIds.length, 2);
           expect(playerIds, containsAll([testPlayer1.id, testPlayer2.id]));
 
