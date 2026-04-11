@@ -7,6 +7,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/score.dart';
 
 void main() {
   late AppDatabase database;
@@ -66,620 +67,152 @@ void main() {
   });
 
   group('Score Tests', () {
-    // Verifies that a score can be added and retrieved with all fields intact.
-    test('Adding and fetching a score works correctly', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
+    group('Adding and Fetching scores', () {
+      test('Single Score', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
 
-      final score = await database.scoreDao.getScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-      );
+        final score = await database.scoreDao.getScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+        );
 
-      expect(score, isNotNull);
-      expect(score!.playerId, testPlayer1.id);
-      expect(score.roundNumber, 1);
-      expect(score.score, 10);
-      expect(score.change, 10);
-    });
+        expect(score, isNotNull);
+        expect(score!.roundNumber, 1);
+        expect(score.score, 10);
+        expect(score.change, 10);
+      });
 
-    // Verifies that getScoresForMatch returns all scores for a given match.
-    test('Getting scores for a match works correctly', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer2.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 20,
-        change: 20,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 2,
-        score: 25,
-        change: 15,
-      );
+      test('Multiple Scores', () async {
+        final entryList = [
+          Score(roundNumber: 1, score: 5, change: 5),
+          Score(roundNumber: 2, score: 12, change: 7),
+          Score(roundNumber: 3, score: 18, change: 6),
+        ];
 
-      final scores = await database.scoreDao.getAllMatchScores(
-        matchId: testMatch1.id,
-      );
-
-      expect(scores.length, 3);
-    });
-
-    // Verifies that getPlayerScoresInMatch returns all scores for a player in a match, ordered by round.
-    test('Getting player scores in a match works correctly', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 2,
-        score: 25,
-        change: 15,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 3,
-        score: 30,
-        change: 5,
-      );
-
-      final playerScores = await database.scoreDao.getAllPlayerScoresInMatch(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-      );
-
-      expect(playerScores.length, 3);
-      expect(playerScores[0].roundNumber, 1);
-      expect(playerScores[1].roundNumber, 2);
-      expect(playerScores[2].roundNumber, 3);
-      expect(playerScores[0].score, 10);
-      expect(playerScores[1].score, 25);
-      expect(playerScores[2].score, 30);
-    });
-
-    // Verifies that getScoreForRound returns null for a non-existent round number.
-    test('Getting score for a non-existent round returns null', () async {
-      final score = await database.scoreDao.getScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 999,
-      );
-
-      expect(score, isNull);
-    });
-
-    // Verifies that updateScore correctly updates the score and change values.
-    test('Updating a score works correctly', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-
-      final updated = await database.scoreDao.updateScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        newScore: 50,
-        newChange: 40,
-      );
-
-      expect(updated, true);
-
-      final score = await database.scoreDao.getScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-      );
-
-      expect(score, isNotNull);
-      expect(score!.score, 50);
-      expect(score.change, 40);
-    });
-
-    // Verifies that updateScore returns false for a non-existent score entry.
-    test('Updating a non-existent score returns false', () async {
-      final updated = await database.scoreDao.updateScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 999,
-        newScore: 50,
-        newChange: 40,
-      );
-
-      expect(updated, false);
-    });
-
-    // Verifies that deleteScore removes the score entry and returns true.
-    test('Deleting a score works correctly', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-
-      final deleted = await database.scoreDao.deleteScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-      );
-
-      expect(deleted, true);
-
-      final score = await database.scoreDao.getScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-      );
-
-      expect(score, isNull);
-    });
-
-    // Verifies that deleteScore returns false for a non-existent score entry.
-    test('Deleting a non-existent score returns false', () async {
-      final deleted = await database.scoreDao.deleteScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 999,
-      );
-
-      expect(deleted, false);
-    });
-
-    // Verifies that deleteScoresForMatch removes all scores for a match but keeps other match scores.
-    test('Deleting scores for a match works correctly', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer2.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 20,
-        change: 20,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch2.id,
-        roundNumber: 1,
-        score: 15,
-        change: 15,
-      );
-
-      final deleted = await database.scoreDao.deleteAllScoresForMatch(
-        matchId: testMatch1.id,
-      );
-
-      expect(deleted, true);
-
-      final match1Scores = await database.scoreDao.getAllMatchScores(
-        matchId: testMatch1.id,
-      );
-      expect(match1Scores.length, 0);
-
-      final match2Scores = await database.scoreDao.getAllMatchScores(
-        matchId: testMatch2.id,
-      );
-      expect(match2Scores.length, 1);
-    });
-
-    // Verifies that deleteScoresForPlayer removes all scores for a player across all matches.
-    test('Deleting scores for a player works correctly', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 2,
-        score: 10,
-        change: 10,
-      );
-
-      await database.scoreDao.addScore(
-        playerId: testPlayer2.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-
-      final deleted = await database.scoreDao.deleteAllScoresForPlayerInMatch(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-      );
-
-      expect(deleted, true);
-
-      final player1Scores = await database.scoreDao.getAllPlayerScoresInMatch(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-      );
-      expect(player1Scores.length, 0);
-
-      final player2Scores = await database.scoreDao.getAllPlayerScoresInMatch(
-        playerId: testPlayer2.id,
-        matchId: testMatch1.id,
-      );
-      expect(player2Scores.length, 1);
-    });
-
-    // Verifies that getLatestRoundNumber returns the highest round number for a match.
-    test('Getting latest round number works correctly', () async {
-      var latestRound = await database.scoreDao.getLatestRoundNumber(
-        matchId: testMatch1.id,
-      );
-      expect(latestRound, 0);
-
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-
-      latestRound = await database.scoreDao.getLatestRoundNumber(
-        matchId: testMatch1.id,
-      );
-      expect(latestRound, 1);
-
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 5,
-        score: 50,
-        change: 40,
-      );
-
-      latestRound = await database.scoreDao.getLatestRoundNumber(
-        matchId: testMatch1.id,
-      );
-      expect(latestRound, 5);
-    });
-
-    // Verifies that getTotalScoreForPlayer returns the latest score (cumulative) for a player.
-    test('Getting total score for a player works correctly', () async {
-      var totalScore = await database.scoreDao.getTotalScoreForPlayer(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-      );
-      expect(totalScore, 0);
-
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 2,
-        score: 25,
-        change: 15,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 3,
-        score: 40,
-        change: 15,
-      );
-
-      totalScore = await database.scoreDao.getTotalScoreForPlayer(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-      );
-      expect(totalScore, 40);
-    });
-
-    // Verifies that adding a score with the same player/match/round replaces the existing one.
-    test('Adding the same score twice replaces the existing one', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 99,
-        change: 99,
-      );
-
-      final score = await database.scoreDao.getScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-      );
-
-      expect(score, isNotNull);
-      expect(score!.score, 99);
-      expect(score.change, 99);
-    });
-
-    // Verifies that getScoresForMatch returns empty list for match with no scores.
-    test(
-      'Getting scores for match with no scores returns empty list',
-      () async {
-        final scores = await database.scoreDao.getAllMatchScores(
+        await database.scoreDao.addScoresAsList(
+          scores: entryList,
+          playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
 
-        expect(scores.isEmpty, true);
-      },
-    );
+        final scores = await database.scoreDao.getAllPlayerScoresInMatch(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
 
-    // Verifies that getPlayerScoresInMatch returns empty list when player has no scores.
-    test('Getting player scores with no scores returns empty list', () async {
-      final playerScores = await database.scoreDao.getAllPlayerScoresInMatch(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-      );
+        expect(scores, isNotNull);
 
-      expect(playerScores.isEmpty, true);
+        // Scores should be returned in order of round number
+        for (int i = 0; i < entryList.length; i++) {
+          expect(scores[i].roundNumber, entryList[i].roundNumber);
+          expect(scores[i].score, entryList[i].score);
+          expect(scores[i].change, entryList[i].change);
+        }
+      });
     });
 
-    // Verifies that scores can have negative values.
-    test('Score can have negative values', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: -10,
-        change: -10,
-      );
+    group('Undesirable values', () {
+      test('Score & Round can have negative values', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: -2,
+          score: -10,
+          change: -10,
+        );
 
-      final score = await database.scoreDao.getScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-      );
+        final score = await database.scoreDao.getScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: -2,
+        );
 
-      expect(score, isNotNull);
-      expect(score!.score, -10);
-      expect(score.change, -10);
+        expect(score, isNotNull);
+        expect(score!.roundNumber, -2);
+        expect(score.score, -10);
+        expect(score.change, -10);
+      });
+
+      test('Score & Round can have zero values', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 0,
+          score: 0,
+          change: 0,
+        );
+
+        final score = await database.scoreDao.getScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 0,
+        );
+
+        expect(score, isNotNull);
+        expect(score!.score, 0);
+        expect(score.change, 0);
+      });
+
+      test('Getting score for a non-existent entities returns null', () async {
+        var score = await database.scoreDao.getScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: -1,
+        );
+
+        expect(score, isNull);
+
+        score = await database.scoreDao.getScore(
+          playerId: 'non-existin-player',
+          matchId: testMatch1.id,
+        );
+
+        expect(score, isNull);
+
+        score = await database.scoreDao.getScore(
+          playerId: testPlayer1.id,
+          matchId: 'non-existing-match',
+        );
+
+        expect(score, isNull);
+      });
+
+      test('Getting score for a non-match player returns null', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
+
+        await database.scoreDao.addScore(
+          playerId: testPlayer3.id,
+          matchId: testMatch2.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
+
+        var score = await database.scoreDao.getScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch2.id,
+          roundNumber: 1,
+        );
+
+        expect(score, isNull);
+      });
     });
 
-    // Verifies that scores can have zero values.
-    test('Score can have zero values', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 0,
-        change: 0,
-      );
-
-      final score = await database.scoreDao.getScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-      );
-
-      expect(score, isNotNull);
-      expect(score!.score, 0);
-      expect(score.change, 0);
-    });
-
-    // Verifies that very large round numbers are supported.
-    test('Score supports very large round numbers', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 999999,
-        score: 100,
-        change: 100,
-      );
-
-      final score = await database.scoreDao.getScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 999999,
-      );
-
-      expect(score, isNotNull);
-      expect(score!.roundNumber, 999999);
-    });
-
-    // Verifies that getLatestRoundNumber returns max correctly for non-consecutive rounds.
-    test('Getting latest round number with non-consecutive rounds', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 5,
-        score: 50,
-        change: 40,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 3,
-        score: 30,
-        change: 20,
-      );
-
-      final latestRound = await database.scoreDao.getLatestRoundNumber(
-        matchId: testMatch1.id,
-      );
-
-      expect(latestRound, 5);
-    });
-
-    // Verifies that deleteScoresForMatch returns false when no scores exist.
-    test('Deleting scores for empty match returns false', () async {
-      final deleted = await database.scoreDao.deleteAllScoresForMatch(
-        matchId: testMatch1.id,
-      );
-
-      expect(deleted, false);
-    });
-
-    // Verifies that deleteScoresForPlayer returns false when player has no scores.
-    test('Deleting scores for player with no scores returns false', () async {
-      final deleted = await database.scoreDao.deleteAllScoresForPlayerInMatch(
-        playerId: 'non-existing-player-id',
-        matchId: 'non-existing-match-id',
-      );
-
-      expect(deleted, false);
-    });
-
-    // Verifies that multiple players in same match can have independent score updates.
-    test('Multiple players in same match have independent scores', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer2.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 20,
-        change: 20,
-      );
-
-      await database.scoreDao.updateScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        newScore: 100,
-        newChange: 90,
-      );
-
-      final player1Score = await database.scoreDao.getScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-      );
-      final player2Score = await database.scoreDao.getScore(
-        playerId: testPlayer2.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-      );
-
-      expect(player1Score!.score, 100);
-      expect(player2Score!.score, 20);
-    });
-
-    // Verifies that scores are isolated across different matches.
-    test('Scores are isolated across different matches', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch2.id,
-        roundNumber: 1,
-        score: 50,
-        change: 50,
-      );
-
-      final match1Scores = await database.scoreDao.getAllPlayerScoresInMatch(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-      );
-      final match2Scores = await database.scoreDao.getAllPlayerScoresInMatch(
-        playerId: testPlayer1.id,
-        matchId: testMatch2.id,
-      );
-
-      expect(match1Scores.length, 1);
-      expect(match2Scores.length, 1);
-      expect(match1Scores[0].score, 10);
-      expect(match2Scores[0].score, 50);
-    });
-
-    // Verifies that getTotalScoreForPlayer returns latest score across multiple rounds.
-    test('Total score for player returns latest cumulative score', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 2,
-        score: 25,
-        change: 25,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 3,
-        score: 50,
-        change: 25,
-      );
-
-      final totalScore = await database.scoreDao.getTotalScoreForPlayer(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-      );
-
-      // Should return the highest round's score
-      expect(totalScore, 50);
-    });
-
-    // Verifies that updating one player's score doesn't affect another player's score in same round.
-    test(
-      'Updating one player score does not affect other players in same round',
-      () async {
+    group('Scores in matches', () {
+      test('getAllMatchScores()', () async {
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
@@ -695,242 +228,545 @@ void main() {
           change: 20,
         );
         await database.scoreDao.addScore(
-          playerId: testPlayer3.id,
+          playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 30,
-          change: 30,
-        );
-
-        await database.scoreDao.updateScore(
-          playerId: testPlayer2.id,
-          matchId: testMatch1.id,
-          roundNumber: 1,
-          newScore: 99,
-          newChange: 89,
+          roundNumber: 2,
+          score: 25,
+          change: 15,
         );
 
         final scores = await database.scoreDao.getAllMatchScores(
           matchId: testMatch1.id,
         );
 
-        expect(scores.length, 3);
-        expect(
-          scores.where((s) => s.playerId == testPlayer1.id).first.score,
-          10,
+        expect(scores.length, 2);
+        expect(scores[testPlayer1.id]!.length, 2);
+        expect(scores[testPlayer2.id]!.length, 1);
+      });
+
+      test('getAllMatchScores() with no scores saved', () async {
+        final scores = await database.scoreDao.getAllMatchScores(
+          matchId: testMatch1.id,
         );
-        expect(
-          scores.where((s) => s.playerId == testPlayer2.id).first.score,
-          99,
+
+        expect(scores.isEmpty, true);
+      });
+
+      test('getAllPlayerScoresInMatch()', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
         );
-        expect(
-          scores.where((s) => s.playerId == testPlayer3.id).first.score,
-          30,
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 2,
+          score: 25,
+          change: 15,
         );
-      },
-    );
+        await database.scoreDao.addScore(
+          playerId: testPlayer2.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 30,
+          change: 30,
+        );
 
-    // Verifies that deleting a player's scores only affects that specific player.
-    test('Deleting player scores only affects target player', () async {
-      await database.scoreDao.addScore(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 10,
-        change: 10,
-      );
-      await database.scoreDao.addScore(
-        playerId: testPlayer2.id,
-        matchId: testMatch1.id,
-        roundNumber: 1,
-        score: 20,
-        change: 20,
-      );
+        final playerScores = await database.scoreDao.getAllPlayerScoresInMatch(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
 
-      await database.scoreDao.deleteAllScoresForPlayerInMatch(
-        playerId: testPlayer1.id,
-        matchId: testMatch1.id,
-      );
+        expect(playerScores.length, 2);
+        expect(playerScores[0].roundNumber, 1);
+        expect(playerScores[1].roundNumber, 2);
+        expect(playerScores[0].score, 10);
+        expect(playerScores[1].score, 25);
+        expect(playerScores[0].change, 10);
+        expect(playerScores[1].change, 15);
+      });
 
-      final match1Scores = await database.scoreDao.getAllMatchScores(
-        matchId: testMatch1.id,
-      );
+      test('getAllPlayerScoresInMatch() with no scores saved', () async {
+        final playerScores = await database.scoreDao.getAllPlayerScoresInMatch(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
 
-      expect(match1Scores.length, 1);
-      expect(match1Scores[0].playerId, testPlayer2.id);
+        expect(playerScores.isEmpty, true);
+      });
+
+      test('Scores are isolated across different matches', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch2.id,
+          roundNumber: 1,
+          score: 50,
+          change: 50,
+        );
+
+        final match1Scores = await database.scoreDao.getAllPlayerScoresInMatch(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+
+        expect(match1Scores.length, 1);
+        expect(match1Scores[0].score, 10);
+        expect(match1Scores[0].change, 10);
+
+        final match2Scores = await database.scoreDao.getAllPlayerScoresInMatch(
+          playerId: testPlayer1.id,
+          matchId: testMatch2.id,
+        );
+
+        expect(match2Scores.length, 1);
+        expect(match2Scores[0].score, 50);
+        expect(match2Scores[0].change, 50);
+      });
     });
-  });
 
-  // Verifies that updating scores for players in different matches are independent.
-  test('Player scores are independent across matches', () async {
-    final playersList = [testPlayer1];
-    final match1 = Match(
-      name: 'Match 1',
-      game: testGame,
-      players: playersList,
-      notes: '',
-    );
-    final match2 = Match(
-      name: 'Match 2',
-      game: testGame,
-      players: playersList,
-      notes: '',
-    );
+    group('Updating scores', () {
+      test('updateScore()', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
 
-    await Future.wait([
-      database.matchDao.addMatch(match: match1),
-      database.matchDao.addMatch(match: match2),
-    ]);
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 2,
+          score: 15,
+          change: 5,
+        );
 
-    // Update score in match1
-    await database.scoreDao.updateScore(
-      matchId: match1.id,
-      playerId: testPlayer1.id,
-      newScore: 100,
-    );
+        final updated = await database.scoreDao.updateScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 2,
+          newScore: 50,
+          newChange: 40,
+        );
 
-    // Update score in match2
-    await database.scoreDao.updateScore(
-      matchId: match2.id,
-      playerId: testPlayer1.id,
-      newScore: 50,
-    );
+        expect(updated, true);
 
-    // TODO: fix
-    /* // Verify scores are independent
-      final scoreInMatch1 = await database.playerMatchDao.getPlayerScore(
-        matchId: match1.id,
-        playerId: testPlayer1.id,
-      );
-      final scoreInMatch2 = await database.playerMatchDao.getPlayerScore(
-        matchId: match2.id,
-        playerId: testPlayer1.id,
-      );
+        final score = await database.scoreDao.getScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 2,
+        );
 
-      expect(scoreInMatch1, 100);
-      expect(scoreInMatch2, 50);*/
-  });
+        expect(score, isNotNull);
+        expect(score!.score, 50);
+        expect(score.change, 40);
+      });
 
-  // Verifies that updating score with zero value works.
-  test('updatePlayerScore with zero score works', () async {
-    await database.matchDao.addMatch(match: testMatch1);
+      test('Updating a non-existent score returns false', () async {
+        final updated = await database.scoreDao.updateScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          newScore: 20,
+          newChange: 20,
+        );
 
-    await database.scoreDao.addScore(
-      playerId: testPlayer1.id,
-      matchId: testMatch1.id,
-      score: 100,
-    );
+        expect(updated, false);
+      });
+    });
 
-    final updated = await database.scoreDao.updateScore(
-      playerId: testPlayer1.id,
-      matchId: testMatch1.id,
-      newScore: 0,
-    );
+    group('Deleting scores', () {
+      test('deleteScore() ', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
 
-    expect(updated, true);
+        final deleted = await database.scoreDao.deleteScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+        );
 
-    // TODO: Fix
-    /*final score = await database.scoreDao.getAllMatchScores(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-      );
+        expect(deleted, true);
 
-      expect(score, 0);*/
-  });
-
-  // Verifies that updating score with negative value works.
-  /* test('updatePlayerScore with negative score works', () async {
-    await database.matchDao.addMatch(match: testMatchOnlyPlayers);
-    await database.scoreDao.addScore(
-      playerId: testPlayer4.id,
-      matchId: testMatchOnlyPlayers.id,
-      score: 0,
-    );
-
-    final updated = await database.scoreDao.updateScore(
-      matchId: testMatchOnlyPlayers.id,
-      playerId: testPlayer4.id,
-      newScore: -10,
-    );
-
-    expect(updated, true);
-
-    // TODO: fix
-    final score = await database.playerMatchDao.getPlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-      );
-
-      expect(score, -10);
-  });*/
-
-  // TODO: FIX
-  /*// Verifies that adding a player with initial score works correctly.
-    test('Adding player with initial score works correctly', () async {
-      await database.matchDao.addMatch(match: testMatchOnlyGroup);
-
-      await database.playerMatchDao.addPlayerToMatch(
-        matchId: testMatchOnlyGroup.id,
-        playerId: testPlayer1.id,
-        score: 100,
-      );
-
-      final score = await database.playerMatchDao.getPlayerScore(
-        matchId: testMatchOnlyGroup.id,
-        playerId: testPlayer1.id,
-      );
-
-      expect(score, 100);
-    });*/
-
-  // TODO: FIX
-  /*// Verifies that getPlayerScore returns the correct score.
-    test('getPlayerScore returns correct score', () async {
-      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
-
-      // Default score should be 0 when added through match
-      final score = await database.scoreDao.getPlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-      );
-
-      expect(score, 0);
-    });*/
-
-  // TODO: Fix
-  /*// Verifies that getPlayerScore returns null for non-existent player-match combination.
-    test(
-      'getPlayerScore returns null for non-existent player in match',
-      () async {
-        await database.matchDao.addMatch(match: testMatchOnlyGroup);
-
-        final score = await database.playerMatchDao.getPlayerScore(
-          matchId: testMatchOnlyGroup.id,
-          playerId: 'non-existent-player-id',
+        final score = await database.scoreDao.getScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
         );
 
         expect(score, isNull);
-      },
-    );*/
+      });
 
-  // TODO: Fix
-  // Verifies that updatePlayerScore updates the score correctly.
-  /*test('updatePlayerScore updates score correctly', () async {
-      await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+      test('Deleting a non-existent score returns false', () async {
+        final deleted = await database.scoreDao.deleteScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+        );
 
-      final updated = await database.playerMatchDao.updatePlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-        newScore: 50,
-      );
+        expect(deleted, false);
+      });
 
-      expect(updated, true);
+      test('deleteAllScoresForMatch() works correctly', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer2.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 20,
+          change: 20,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch2.id,
+          roundNumber: 1,
+          score: 15,
+          change: 15,
+        );
 
-      final score = await database.playerMatchDao.getPlayerScore(
-        matchId: testMatchOnlyPlayers.id,
-        playerId: testPlayer4.id,
-      );
+        final deleted = await database.scoreDao.deleteAllScoresForMatch(
+          matchId: testMatch1.id,
+        );
 
-      expect(score, 50);
-    });*/
+        expect(deleted, true);
+
+        final match1Scores = await database.scoreDao.getAllMatchScores(
+          matchId: testMatch1.id,
+        );
+        expect(match1Scores.length, 0);
+
+        final match2Scores = await database.scoreDao.getAllMatchScores(
+          matchId: testMatch2.id,
+        );
+        expect(match2Scores.length, 1);
+      });
+
+      test('deleteAllScoresForPlayerInMatch() works correctly', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
+
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 2,
+          score: 15,
+          change: 5,
+        );
+
+        await database.scoreDao.addScore(
+          playerId: testPlayer2.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 6,
+          change: 6,
+        );
+
+        final deleted = await database.scoreDao.deleteAllScoresForPlayerInMatch(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+
+        expect(deleted, true);
+
+        final player1Scores = await database.scoreDao.getAllPlayerScoresInMatch(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+        expect(player1Scores.length, 0);
+
+        final player2Scores = await database.scoreDao.getAllPlayerScoresInMatch(
+          playerId: testPlayer2.id,
+          matchId: testMatch1.id,
+        );
+        expect(player2Scores.length, 1);
+      });
+    });
+
+    group('Score Aggregations & Edge Cases', () {
+      test('getLatestRoundNumber()', () async {
+        var latestRound = await database.scoreDao.getLatestRoundNumber(
+          matchId: testMatch1.id,
+        );
+        expect(latestRound, isNull);
+
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
+
+        latestRound = await database.scoreDao.getLatestRoundNumber(
+          matchId: testMatch1.id,
+        );
+        expect(latestRound, 1);
+
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 5,
+          score: 50,
+          change: 40,
+        );
+
+        latestRound = await database.scoreDao.getLatestRoundNumber(
+          matchId: testMatch1.id,
+        );
+        expect(latestRound, 5);
+      });
+
+      test('getLatestRoundNumber() with non-consecutive rounds', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 5,
+          score: 50,
+          change: 40,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 3,
+          score: 30,
+          change: 20,
+        );
+
+        final latestRound = await database.scoreDao.getLatestRoundNumber(
+          matchId: testMatch1.id,
+        );
+
+        expect(latestRound, 5);
+      });
+
+      test('getTotalScoreForPlayer()', () async {
+        var totalScore = await database.scoreDao.getTotalScoreForPlayer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+        expect(totalScore, 0);
+
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 2,
+          score: 25,
+          change: 15,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 3,
+          score: 40,
+          change: 15,
+        );
+
+        totalScore = await database.scoreDao.getTotalScoreForPlayer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+        expect(totalScore, 40);
+      });
+
+      test('getTotalScoreForPlayer() ignores round score', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 2,
+          score: 25,
+          change: 25,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 25,
+          change: 10,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 3,
+          score: 25,
+          change: 25,
+        );
+
+        final totalScore = await database.scoreDao.getTotalScoreForPlayer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+
+        // Should return the sum of all changes
+        expect(totalScore, 60);
+      });
+
+      test('Adding the same score twice replaces the existing one', () async {
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 10,
+          change: 10,
+        );
+        await database.scoreDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+          score: 20,
+          change: 20,
+        );
+
+        final score = await database.scoreDao.getScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          roundNumber: 1,
+        );
+
+        expect(score, isNotNull);
+        expect(score!.score, 20);
+        expect(score.change, 20);
+      });
+    });
+
+    group('Handling Winner', () {
+      test('hasWinner() works correctly', () async {
+        var hasWinner = await database.scoreDao.hasWinner(
+          matchId: testMatch1.id,
+        );
+        expect(hasWinner, false);
+
+        await database.scoreDao.setWinner(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+
+        hasWinner = await database.scoreDao.hasWinner(matchId: testMatch1.id);
+        expect(hasWinner, true);
+      });
+
+      test('getWinnersForMatch() returns correct winner', () async {
+        var winner = await database.scoreDao.getWinner(matchId: testMatch1.id);
+        expect(winner, isNull);
+
+        await database.scoreDao.setWinner(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+
+        winner = await database.scoreDao.getWinner(matchId: testMatch1.id);
+
+        expect(winner, isNotNull);
+        expect(winner!.id, testPlayer1.id);
+      });
+
+      test('removeWinner() works correctly', () async {
+        var removed = await database.scoreDao.removeWinner(
+          matchId: testMatch1.id,
+        );
+        expect(removed, false);
+
+        await database.scoreDao.setWinner(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+
+        removed = await database.scoreDao.removeWinner(matchId: testMatch1.id);
+        expect(removed, true);
+
+        var winner = await database.scoreDao.getWinner(matchId: testMatch1.id);
+        expect(winner, isNull);
+      });
+    });
+
+    group('Handling Looser', () {
+      test('hasLooser() works correctly', () async {
+        var hasLooser = await database.scoreDao.hasLooser(
+          matchId: testMatch1.id,
+        );
+        expect(hasLooser, false);
+
+        await database.scoreDao.setLooser(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+
+        hasLooser = await database.scoreDao.hasLooser(matchId: testMatch1.id);
+        expect(hasLooser, true);
+      });
+
+      test('getLooser() returns correct winner', () async {
+        var looser = await database.scoreDao.getLooser(matchId: testMatch1.id);
+        expect(looser, isNull);
+
+        await database.scoreDao.setLooser(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+
+        looser = await database.scoreDao.getLooser(matchId: testMatch1.id);
+
+        expect(looser, isNotNull);
+        expect(looser!.id, testPlayer1.id);
+      });
+
+      test('removeLooser() works correctly', () async {
+        var removed = await database.scoreDao.removeLooser(
+          matchId: testMatch1.id,
+        );
+        expect(removed, false);
+
+        await database.scoreDao.setLooser(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+
+        removed = await database.scoreDao.removeLooser(matchId: testMatch1.id);
+        expect(removed, true);
+
+        var looser = await database.scoreDao.getLooser(matchId: testMatch1.id);
+        expect(looser, isNull);
+      });
+    });
+  });
 }
