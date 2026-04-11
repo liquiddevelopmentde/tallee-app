@@ -799,7 +799,7 @@ void main() {
       });
     });
 
-    testWidgets('validateJsonSchema()', (tester) async {
+    test('validateJsonSchema()', () async {
       final validJson = json.encode({
         'players': [
           {
