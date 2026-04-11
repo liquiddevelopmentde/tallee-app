@@ -15,7 +15,7 @@ class Match {
   final Group? group;
   final List<Player> players;
   final String notes;
-  List<Score> scores;
+  Map<String, List<Score>> scores;
   Player? winner;
 
   Match({
@@ -27,10 +27,11 @@ class Match {
     this.group,
     this.players = const [],
     this.notes = '',
-    this.scores = const [],
+    Map<String, List<Score>>? scores,
     this.winner,
   }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? clock.now();
+       createdAt = createdAt ?? clock.now(),
+       scores = scores ?? {for (var player in players) player.id: []};
 
   @override
   String toString() {
@@ -67,7 +68,7 @@ class Match {
     'gameId': game.id,
     'groupId': group?.id,
     'playerIds': players.map((player) => player.id).toList(),
-    'scores': scores.map((score) => score.toJson()).toList(),
+    'scores': scores,
     'notes': notes,
   };
 }

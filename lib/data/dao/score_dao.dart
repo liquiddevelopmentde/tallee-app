@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/score_table.dart';
@@ -30,6 +32,29 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     );
   }
 
+  Future<void> addScoresAsList({
+    required List<Score> scores,
+    required String playerId,
+    required String matchId,
+  }) async {
+    if (scores.isEmpty) return;
+    final entries = scores
+        .map(
+          (score) => ScoreTableCompanion.insert(
+            playerId: playerId,
+            matchId: matchId,
+            roundNumber: score.roundNumber,
+            score: score.score,
+            change: score.change,
+          ),
+        )
+        .toList();
+
+    await batch((batch) {
+      batch.insertAll(scoreTable, entries, mode: InsertMode.insertOrReplace);
+    });
+  }
+
   /// Retrieves the score for a specific round.
   Future<Score?> getScore({
     required String playerId,
@@ -48,7 +73,6 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     if (result == null) return null;
 
     return Score(
-      playerId: result.playerId,
       roundNumber: result.roundNumber,
       score: result.score,
       change: result.change,
@@ -56,19 +80,23 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   }
 
   /// Retrieves all scores for a specific match.
-  Future<List<Score>> getAllMatchScores({required String matchId}) async {
+  Future<Map<String, List<Score>>> getAllMatchScores({
+    required String matchId,
+  }) async {
     final query = select(scoreTable)..where((s) => s.matchId.equals(matchId));
     final result = await query.get();
-    return result
-        .map(
-          (row) => Score(
-            playerId: row.playerId,
-            roundNumber: row.roundNumber,
-            score: row.score,
-            change: row.change,
-          ),
-        )
-        .toList();
+
+    final Map<String, List<Score>> scoresByPlayer = {};
+    for (final row in result) {
+      final score = Score(
+        roundNumber: row.roundNumber,
+        score: row.score,
+        change: row.change,
+      );
+      scoresByPlayer.putIfAbsent(row.playerId, () => []).add(score);
+    }
+
+    return scoresByPlayer;
   }
 
   /// Retrieves all scores for a specific player in a match.
@@ -83,13 +111,15 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     return result
         .map(
           (row) => Score(
-            playerId: row.playerId,
             roundNumber: row.roundNumber,
             score: row.score,
             change: row.change,
           ),
         )
-        .toList();
+        .toList()
+      ..sort(
+        (scoreA, scoreB) => scoreA.roundNumber.compareTo(scoreB.roundNumber),
+      );
   }
 
   /// Updates a score entry.
@@ -149,16 +179,19 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
     return rowsAffected > 0;
   }
 
-  /// Gets the latest round number for a match.
-  Future<int> getLatestRoundNumber({required String matchId}) async {
+  /// Gets the highest (latest) round number for a match.
+  /// Returns `null` if there are no scores for the match.
+  Future<int?> getLatestRoundNumber({required String matchId}) async {
     final query = selectOnly(scoreTable)
       ..where(scoreTable.matchId.equals(matchId))
       ..addColumns([scoreTable.roundNumber.max()]);
     final result = await query.getSingle();
-    return result.read(scoreTable.roundNumber.max()) ?? 0;
+    return result.read(scoreTable.roundNumber.max());
   }
 
-  /// Gets the total score for a player in a match (sum of all changes).
+  /// Aggregates the total score for a player in a match by summing all their
+  /// score entry changes. Returns `0` if there are no scores for the player
+  /// in the match.
   Future<int> getTotalScoreForPlayer({
     required String playerId,
     required String matchId,
@@ -168,8 +201,8 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
       matchId: matchId,
     );
     if (scores.isEmpty) return 0;
-    // Return the score from the latest round
-    return scores.last.score;
+    // Return the sum of all score changes
+    return scores.fold<int>(0, (sum, element) => sum + element.change);
   }
 
   Future<bool> hasWinner({required String matchId}) async {
