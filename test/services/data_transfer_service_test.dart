@@ -192,7 +192,7 @@ void main() {
         });
       });
 
-      group('Specific data', () {
+      group('Checking specific data', () {
         testWidgets('Player data is correct', (tester) async {
           await database.playerDao.addPlayer(player: testPlayer1);
 
@@ -797,6 +797,72 @@ void main() {
         expect(matches.length, 1);
         expect(matches[0].endedAt, endedDate);
       });
+    });
+
+    testWidgets('validateJsonSchema()', (tester) async {
+      final validJson = json.encode({
+        'players': [
+          {
+            'id': testPlayer1.id,
+            'name': testPlayer1.name,
+            'description': testPlayer1.description,
+            'createdAt': testPlayer1.createdAt.toIso8601String(),
+          },
+        ],
+        'games': [
+          {
+            'id': testGame.id,
+            'name': testGame.name,
+            'ruleset': testGame.ruleset.name,
+            'description': testGame.description,
+            'color': testGame.color.name,
+            'icon': testGame.icon,
+            'createdAt': testGame.createdAt.toIso8601String(),
+          },
+        ],
+        'groups': [
+          {
+            'id': testGroup.id,
+            'name': testGroup.name,
+            'description': testGroup.description,
+            'memberIds': [testPlayer1.id, testPlayer2.id],
+            'createdAt': testGroup.createdAt.toIso8601String(),
+          },
+        ],
+        'teams': [
+          {
+            'id': testTeam.id,
+            'name': testTeam.name,
+            'memberIds': [testPlayer1.id, testPlayer2.id],
+            'createdAt': testTeam.createdAt.toIso8601String(),
+          },
+        ],
+        'matches': [
+          {
+            'id': testMatch.id,
+            'name': testMatch.name,
+            'gameId': testGame.id,
+            'groupId': testGroup.id,
+            'playerIds': [testPlayer1.id, testPlayer2.id],
+            'notes': testMatch.notes,
+            'scores': {
+              testPlayer1.id: [
+                {'roundNumber': 1, 'score': 10, 'change': 10},
+                {'roundNumber': 2, 'score': 20, 'change': 10},
+              ],
+              testPlayer2.id: [
+                {'roundNumber': 1, 'score': 15, 'change': 15},
+                {'roundNumber': 2, 'score': 25, 'change': 10},
+              ],
+            },
+            'createdAt': testMatch.createdAt.toIso8601String(),
+            'endedAt': null,
+          },
+        ],
+      });
+
+      final isValid = await DataTransferService.validateJsonSchema(validJson);
+      expect(isValid, true);
     });
   });
 }

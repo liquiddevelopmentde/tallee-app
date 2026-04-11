@@ -138,7 +138,7 @@ class DataTransferService {
       final jsonString = await _readFileContent(path.files.single);
       if (jsonString == null) return ImportResult.fileReadError;
 
-      final isValid = await _validateJsonSchema(jsonString);
+      final isValid = await validateJsonSchema(jsonString);
       if (!isValid) return ImportResult.invalidSchema;
 
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
@@ -321,7 +321,8 @@ class DataTransferService {
   }
 
   /// Validates the given JSON string against the predefined schema.
-  static Future<bool> _validateJsonSchema(String jsonString) async {
+  @visibleForTesting
+  static Future<bool> validateJsonSchema(String jsonString) async {
     final String schemaString;
 
     schemaString = await rootBundle.loadString('assets/schema.json');
