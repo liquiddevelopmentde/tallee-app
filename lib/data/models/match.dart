@@ -68,7 +68,10 @@ class Match {
     'gameId': game.id,
     'groupId': group?.id,
     'playerIds': players.map((player) => player.id).toList(),
-    'scores': scores,
+    'scores': scores.map(
+      (playerId, scoreList) =>
+          MapEntry(playerId, scoreList.map((score) => score.toJson()).toList()),
+    ),
     'notes': notes,
   };
 }
