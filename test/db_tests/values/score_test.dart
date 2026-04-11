@@ -7,7 +7,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score.dart';
+import 'package:tallee/data/models/score_entry.dart';
 
 void main() {
   late AppDatabase database;
@@ -69,12 +69,11 @@ void main() {
   group('Score Tests', () {
     group('Adding and Fetching scores', () {
       test('Single Score', () async {
+        ScoreEntry entry = ScoreEntry(roundNumber: 1, score: 10, change: 10);
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: entry,
         );
 
         final score = await database.scoreDao.getScore(
@@ -91,13 +90,13 @@ void main() {
 
       test('Multiple Scores', () async {
         final entryList = [
-          Score(roundNumber: 1, score: 5, change: 5),
-          Score(roundNumber: 2, score: 12, change: 7),
-          Score(roundNumber: 3, score: 18, change: 6),
+          ScoreEntry(roundNumber: 1, score: 5, change: 5),
+          ScoreEntry(roundNumber: 2, score: 12, change: 7),
+          ScoreEntry(roundNumber: 3, score: 18, change: 6),
         ];
 
         await database.scoreDao.addScoresAsList(
-          scores: entryList,
+          entrys: entryList,
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
@@ -120,12 +119,11 @@ void main() {
 
     group('Undesirable values', () {
       test('Score & Round can have negative values', () async {
+        ScoreEntry entry = ScoreEntry(roundNumber: -2, score: -10, change: -10);
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: -2,
-          score: -10,
-          change: -10,
+          entry: entry,
         );
 
         final score = await database.scoreDao.getScore(
@@ -141,12 +139,11 @@ void main() {
       });
 
       test('Score & Round can have zero values', () async {
+        ScoreEntry entry = ScoreEntry(roundNumber: 0, score: 0, change: 0);
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 0,
-          score: 0,
-          change: 0,
+          entry: entry,
         );
 
         final score = await database.scoreDao.getScore(
@@ -185,20 +182,17 @@ void main() {
       });
 
       test('Getting score for a non-match player returns null', () async {
+        ScoreEntry entry = ScoreEntry(roundNumber: 1, score: 10, change: 10);
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: entry,
         );
 
         await database.scoreDao.addScore(
           playerId: testPlayer3.id,
           matchId: testMatch2.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: entry,
         );
 
         var score = await database.scoreDao.getScore(
@@ -213,26 +207,23 @@ void main() {
 
     group('Scores in matches', () {
       test('getAllMatchScores()', () async {
+        ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
+        ScoreEntry entry2 = ScoreEntry(roundNumber: 1, score: 20, change: 20);
+        ScoreEntry entry3 = ScoreEntry(roundNumber: 2, score: 25, change: 15);
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: entry1,
         );
         await database.scoreDao.addScore(
           playerId: testPlayer2.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 20,
-          change: 20,
+          entry: entry2,
         );
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 2,
-          score: 25,
-          change: 15,
+          entry: entry3,
         );
 
         final scores = await database.scoreDao.getAllMatchScores(
@@ -253,26 +244,18 @@ void main() {
       });
 
       test('getAllPlayerScoresInMatch()', () async {
-        await database.scoreDao.addScore(
+        ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
+        ScoreEntry entry2 = ScoreEntry(roundNumber: 2, score: 25, change: 15);
+        ScoreEntry entry3 = ScoreEntry(roundNumber: 1, score: 30, change: 30);
+        await database.scoreDao.addScoresAsList(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
-        );
-        await database.scoreDao.addScore(
-          playerId: testPlayer1.id,
-          matchId: testMatch1.id,
-          roundNumber: 2,
-          score: 25,
-          change: 15,
+          entrys: [entry1, entry2],
         );
         await database.scoreDao.addScore(
           playerId: testPlayer2.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 30,
-          change: 30,
+          entry: entry3,
         );
 
         final playerScores = await database.scoreDao.getAllPlayerScoresInMatch(
@@ -299,19 +282,17 @@ void main() {
       });
 
       test('Scores are isolated across different matches', () async {
+        ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
+        ScoreEntry entry2 = ScoreEntry(roundNumber: 1, score: 50, change: 50);
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: entry1,
         );
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch2.id,
-          roundNumber: 1,
-          score: 50,
-          change: 50,
+          entry: entry2,
         );
 
         final match1Scores = await database.scoreDao.getAllPlayerScoresInMatch(
@@ -336,28 +317,24 @@ void main() {
 
     group('Updating scores', () {
       test('updateScore()', () async {
+        ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
+        ScoreEntry entry2 = ScoreEntry(roundNumber: 2, score: 15, change: 5);
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: entry1,
         );
 
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 2,
-          score: 15,
-          change: 5,
+          entry: entry2,
         );
 
         final updated = await database.scoreDao.updateScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 2,
-          newScore: 50,
-          newChange: 40,
+          newEntry: ScoreEntry(roundNumber: 2, score: 50, change: 40),
         );
 
         expect(updated, true);
@@ -377,9 +354,7 @@ void main() {
         final updated = await database.scoreDao.updateScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          newScore: 20,
-          newChange: 20,
+          newEntry: ScoreEntry(roundNumber: 1, score: 20, change: 20),
         );
 
         expect(updated, false);
@@ -391,9 +366,7 @@ void main() {
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
 
         final deleted = await database.scoreDao.deleteScore(
@@ -427,23 +400,17 @@ void main() {
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
         await database.scoreDao.addScore(
           playerId: testPlayer2.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 20,
-          change: 20,
+          entry: ScoreEntry(roundNumber: 1, score: 20, change: 20),
         );
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch2.id,
-          roundNumber: 1,
-          score: 15,
-          change: 15,
+          entry: ScoreEntry(roundNumber: 1, score: 15, change: 15),
         );
 
         final deleted = await database.scoreDao.deleteAllScoresForMatch(
@@ -467,25 +434,19 @@ void main() {
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
 
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 2,
-          score: 15,
-          change: 5,
+          entry: ScoreEntry(roundNumber: 2, score: 15, change: 5),
         );
 
         await database.scoreDao.addScore(
           playerId: testPlayer2.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 6,
-          change: 6,
+          entry: ScoreEntry(roundNumber: 1, score: 6, change: 6),
         );
 
         final deleted = await database.scoreDao.deleteAllScoresForPlayerInMatch(
@@ -519,9 +480,7 @@ void main() {
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
 
         latestRound = await database.scoreDao.getLatestRoundNumber(
@@ -532,9 +491,7 @@ void main() {
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 5,
-          score: 50,
-          change: 40,
+          entry: ScoreEntry(roundNumber: 5, score: 50, change: 40),
         );
 
         latestRound = await database.scoreDao.getLatestRoundNumber(
@@ -547,23 +504,17 @@ void main() {
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 5,
-          score: 50,
-          change: 40,
+          entry: ScoreEntry(roundNumber: 5, score: 50, change: 40),
         );
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 3,
-          score: 30,
-          change: 20,
+          entry: ScoreEntry(roundNumber: 3, score: 30, change: 20),
         );
 
         final latestRound = await database.scoreDao.getLatestRoundNumber(
@@ -583,23 +534,17 @@ void main() {
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 2,
-          score: 25,
-          change: 15,
+          entry: ScoreEntry(roundNumber: 2, score: 25, change: 15),
         );
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 3,
-          score: 40,
-          change: 15,
+          entry: ScoreEntry(roundNumber: 3, score: 40, change: 15),
         );
 
         totalScore = await database.scoreDao.getTotalScoreForPlayer(
@@ -613,23 +558,17 @@ void main() {
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 2,
-          score: 25,
-          change: 25,
+          entry: ScoreEntry(roundNumber: 2, score: 25, change: 25),
         );
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 25,
-          change: 10,
+          entry: ScoreEntry(roundNumber: 1, score: 25, change: 10),
         );
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 3,
-          score: 25,
-          change: 25,
+          entry: ScoreEntry(roundNumber: 3, score: 25, change: 25),
         );
 
         final totalScore = await database.scoreDao.getTotalScoreForPlayer(
@@ -645,16 +584,12 @@ void main() {
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 10,
-          change: 10,
+          entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
         await database.scoreDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 1,
-          score: 20,
-          change: 20,
+          entry: ScoreEntry(roundNumber: 1, score: 20, change: 20),
         );
 
         final score = await database.scoreDao.getScore(

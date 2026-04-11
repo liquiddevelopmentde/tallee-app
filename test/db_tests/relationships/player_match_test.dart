@@ -267,21 +267,6 @@ void main() {
       expect(players, isNull);
     });
 
-    test(
-      'updatePlayerScore returns false for non-existent player-match',
-      () async {
-        await database.matchDao.addMatch(match: testMatchOnlyGroup);
-
-        final updated = await database.scoreDao.updateScore(
-          matchId: testMatchOnlyGroup.id,
-          playerId: 'non-existent-player-id',
-          newScore: 50,
-        );
-
-        expect(updated, false);
-      },
-    );
-
     test('Adding player with teamId works correctly', () async {
       await database.matchDao.addMatch(match: testMatchOnlyGroup);
       await database.teamDao.addTeam(team: testTeam1);

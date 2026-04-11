@@ -110,7 +110,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       for (final pid in match.scores.keys) {
         final playerScores = match.scores[pid]!;
         await db.scoreDao.addScoresAsList(
-          scores: playerScores,
+          entrys: playerScores,
           playerId: pid,
           matchId: match.id,
         );

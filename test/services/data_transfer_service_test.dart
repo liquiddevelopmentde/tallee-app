@@ -12,7 +12,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score.dart';
+import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/services/data_transfer_service.dart';
 
@@ -65,12 +65,12 @@ void main() {
         notes: 'Test notes',
         scores: {
           testPlayer1.id: [
-            Score(roundNumber: 1, score: 10, change: 10),
-            Score(roundNumber: 2, score: 20, change: 10),
+            ScoreEntry(roundNumber: 1, score: 10, change: 10),
+            ScoreEntry(roundNumber: 2, score: 20, change: 10),
           ],
           testPlayer2.id: [
-            Score(roundNumber: 1, score: 15, change: 15),
-            Score(roundNumber: 2, score: 25, change: 10),
+            ScoreEntry(roundNumber: 1, score: 15, change: 15),
+            ScoreEntry(roundNumber: 2, score: 25, change: 10),
           ],
         },
       );
@@ -306,12 +306,12 @@ void main() {
             (playerId, scoreList) => MapEntry(
               playerId,
               (scoreList as List)
-                  .map((s) => Score.fromJson(s as Map<String, dynamic>))
+                  .map((s) => ScoreEntry.fromJson(s as Map<String, dynamic>))
                   .toList(),
             ),
           );
 
-          expect(scores, isA<Map<String, List<Score>>>());
+          expect(scores, isA<Map<String, List<ScoreEntry>>>());
 
           /* Player 1 scores */
           // General structure

@@ -8,7 +8,7 @@ mixin _$ScoreDaoMixin on DatabaseAccessor<AppDatabase> {
   $GameTableTable get gameTable => attachedDatabase.gameTable;
   $GroupTableTable get groupTable => attachedDatabase.groupTable;
   $MatchTableTable get matchTable => attachedDatabase.matchTable;
-  $ScoreTableTable get scoreTable => attachedDatabase.scoreTable;
+  $ScoreEntryTableTable get scoreEntryTable => attachedDatabase.scoreEntryTable;
   ScoreDaoManager get managers => ScoreDaoManager(this);
 }
 
@@ -23,6 +23,9 @@ class ScoreDaoManager {
       $$GroupTableTableTableManager(_db.attachedDatabase, _db.groupTable);
   $$MatchTableTableTableManager get matchTable =>
       $$MatchTableTableTableManager(_db.attachedDatabase, _db.matchTable);
-  $$ScoreTableTableTableManager get scoreTable =>
-      $$ScoreTableTableTableManager(_db.attachedDatabase, _db.scoreTable);
+  $$ScoreEntryTableTableTableManager get scoreEntryTable =>
+      $$ScoreEntryTableTableTableManager(
+        _db.attachedDatabase,
+        _db.scoreEntryTable,
+      );
 }

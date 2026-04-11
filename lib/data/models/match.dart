@@ -3,7 +3,7 @@ import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score.dart';
+import 'package:tallee/data/models/score_entry.dart';
 import 'package:uuid/uuid.dart';
 
 class Match {
@@ -15,7 +15,7 @@ class Match {
   final Group? group;
   final List<Player> players;
   final String notes;
-  Map<String, List<Score>> scores;
+  Map<String, List<ScoreEntry>> scores;
   Player? winner;
 
   Match({
@@ -27,7 +27,7 @@ class Match {
     this.group,
     this.players = const [],
     this.notes = '',
-    Map<String, List<Score>>? scores,
+    Map<String, List<ScoreEntry>>? scores,
     this.winner,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),

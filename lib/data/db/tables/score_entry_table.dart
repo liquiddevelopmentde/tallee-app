@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:tallee/data/db/tables/match_table.dart';
 import 'package:tallee/data/db/tables/player_table.dart';
 
-class ScoreTable extends Table {
+class ScoreEntryTable extends Table {
   TextColumn get playerId =>
       text().references(PlayerTable, #id, onDelete: KeyAction.cascade)();
   TextColumn get matchId =>
