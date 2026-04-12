@@ -49,11 +49,7 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
         .toList();
 
     await batch((batch) {
-      batch.insertAll(
-        ScoreEntryTable,
-        entries,
-        mode: InsertMode.insertOrReplace,
-      );
+      batch.insertAll(scoreTable, entries, mode: InsertMode.insertOrReplace);
     });
   }
 
@@ -185,10 +181,10 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
   /// Returns `null` if there are no scores for the match.
   Future<int?> getLatestRoundNumber({required String matchId}) async {
     final query = selectOnly(scoreEntryTable)
-      ..where(ScoreEntryTable.matchId.equals(matchId))
-      ..addColumns([ScoreEntryTable.roundNumber.max()]);
+      ..where(scoreEntryTable.matchId.equals(matchId))
+      ..addColumns([scoreEntryTable.roundNumber.max()]);
     final result = await query.getSingle();
-    return result.read(ScoreEntryTable.roundNumber.max());
+    return result.read(scoreEntryTable.roundNumber.max());
   }
 
   /// Aggregates the total score for a player in a match by summing all their
