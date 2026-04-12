@@ -49,7 +49,11 @@ class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
         .toList();
 
     await batch((batch) {
-      batch.insertAll(scoreTable, entries, mode: InsertMode.insertOrReplace);
+      batch.insertAll(
+        scoreEntryTable,
+        entries,
+        mode: InsertMode.insertOrReplace,
+      );
     });
   }
 
