@@ -18,6 +18,7 @@ class DataTransferService {
   /// Deletes all data from the database.
   static Future<void> deleteAllData(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
+
     await db.matchDao.deleteAllMatches();
     await db.teamDao.deleteAllTeams();
     await db.groupDao.deleteAllGroups();
@@ -96,8 +97,8 @@ class DataTransferService {
   /// Exports the given JSON string to a file with the specified name.
   /// Returns an [ExportResult] indicating the outcome.
   ///
-  /// [jsonString] The JSON string to be exported.
-  /// [fileName] The desired name for the exported file (without extension).
+  /// - [jsonString]: The JSON string to be exported.
+  /// - [fileName]:  The desired name for the exported file (without extension).
   static Future<ExportResult> exportData(
     String jsonString,
     String fileName,
@@ -163,21 +164,22 @@ class DataTransferService {
   @visibleForTesting
   static Future<void> importDataToDatabase(
     AppDatabase db,
-    Map<String, dynamic> decoded,
+    Map<String, dynamic> decodedJson,
   ) async {
-    final importedPlayers = parsePlayersFromJson(decoded);
+    // Fetch all entities first to create lookup maps for relationships
+    final importedPlayers = parsePlayersFromJson(decodedJson);
     final playerById = {for (final p in importedPlayers) p.id: p};
 
-    final importedGames = parseGamesFromJson(decoded);
+    final importedGames = parseGamesFromJson(decodedJson);
     final gameById = {for (final g in importedGames) g.id: g};
 
-    final importedGroups = parseGroupsFromJson(decoded, playerById);
+    final importedGroups = parseGroupsFromJson(decodedJson, playerById);
     final groupById = {for (final g in importedGroups) g.id: g};
 
-    final importedTeams = parseTeamsFromJson(decoded, playerById);
+    final importedTeams = parseTeamsFromJson(decodedJson, playerById);
 
     final importedMatches = parseMatchesFromJson(
-      decoded,
+      decodedJson,
       gameById,
       groupById,
       playerById,
@@ -190,31 +192,30 @@ class DataTransferService {
     await db.matchDao.addMatchAsList(matches: importedMatches);
   }
 
-  /// Parses players from JSON data.
+  /* Parsing Methods */
+
   @visibleForTesting
-  static List<Player> parsePlayersFromJson(Map<String, dynamic> decoded) {
-    final playersJson = (decoded['players'] as List<dynamic>?) ?? [];
+  static List<Player> parsePlayersFromJson(Map<String, dynamic> decodedJson) {
+    final playersJson = (decodedJson['players'] as List<dynamic>?) ?? [];
     return playersJson
         .map((p) => Player.fromJson(p as Map<String, dynamic>))
         .toList();
   }
 
-  /// Parses games from JSON data.
   @visibleForTesting
-  static List<Game> parseGamesFromJson(Map<String, dynamic> decoded) {
-    final gamesJson = (decoded['games'] as List<dynamic>?) ?? [];
+  static List<Game> parseGamesFromJson(Map<String, dynamic> decodedJson) {
+    final gamesJson = (decodedJson['games'] as List<dynamic>?) ?? [];
     return gamesJson
         .map((g) => Game.fromJson(g as Map<String, dynamic>))
         .toList();
   }
 
-  /// Parses groups from JSON data.
   @visibleForTesting
   static List<Group> parseGroupsFromJson(
-    Map<String, dynamic> decoded,
+    Map<String, dynamic> decodedJson,
     Map<String, Player> playerById,
   ) {
-    final groupsJson = (decoded['groups'] as List<dynamic>?) ?? [];
+    final groupsJson = (decodedJson['groups'] as List<dynamic>?) ?? [];
     return groupsJson.map((g) {
       final map = g as Map<String, dynamic>;
       final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
@@ -238,10 +239,10 @@ class DataTransferService {
   /// Parses teams from JSON data.
   @visibleForTesting
   static List<Team> parseTeamsFromJson(
-    Map<String, dynamic> decoded,
+    Map<String, dynamic> decodedJson,
     Map<String, Player> playerById,
   ) {
-    final teamsJson = (decoded['teams'] as List<dynamic>?) ?? [];
+    final teamsJson = (decodedJson['teams'] as List<dynamic>?) ?? [];
     return teamsJson.map((t) {
       final map = t as Map<String, dynamic>;
       final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
@@ -264,46 +265,53 @@ class DataTransferService {
   /// Parses matches from JSON data.
   @visibleForTesting
   static List<Match> parseMatchesFromJson(
-    Map<String, dynamic> decoded,
-    Map<String, Game> gameById,
-    Map<String, Group> groupById,
-    Map<String, Player> playerById,
+    Map<String, dynamic> decodedJson,
+    Map<String, Game> gamesMap,
+    Map<String, Group> groupsMap,
+    Map<String, Player> playersMap,
   ) {
-    final matchesJson = (decoded['matches'] as List<dynamic>?) ?? [];
+    final matchesJson = (decodedJson['matches'] as List<dynamic>?) ?? [];
     return matchesJson.map((m) {
       final map = m as Map<String, dynamic>;
 
+      // Extract attributes from json
+      final id = map['id'] as String;
+      final name = map['name'] as String;
       final gameId = map['gameId'] as String;
       final groupId = map['groupId'] as String?;
-      final playerIds = (map['playerIds'] as List<dynamic>? ?? [])
-          .cast<String>();
+      final createdAt = DateTime.parse(map['createdAt'] as String);
       final endedAt = map['endedAt'] != null
           ? DateTime.parse(map['endedAt'] as String)
           : null;
+      final notes = map['notes'] as String? ?? '';
 
-      final game = gameById[gameId] ?? createUnknownGame();
-      final group = groupId != null ? groupById[groupId] : null;
+      // Link attributes to objects
+      final game = gamesMap[gameId] ?? getFallbackGame();
+      final group = groupId != null ? groupsMap[groupId] : null;
+
+      final playerIds = (map['playerIds'] as List<dynamic>? ?? [])
+          .cast<String>();
       final players = playerIds
-          .map((id) => playerById[id])
+          .map((id) => playersMap[id])
           .whereType<Player>()
           .toList();
 
       return Match(
-        id: map['id'] as String,
-        name: map['name'] as String,
+        id: id,
+        name: name,
         game: game,
         group: group,
         players: players,
-        createdAt: DateTime.parse(map['createdAt'] as String),
+        createdAt: createdAt,
         endedAt: endedAt,
-        notes: map['notes'] as String? ?? '',
+        notes: notes,
       );
     }).toList();
   }
 
   /// Creates a fallback game when the referenced game is not found.
   @visibleForTesting
-  static Game createUnknownGame() {
+  static Game getFallbackGame() {
     return Game(
       name: 'Unknown',
       ruleset: Ruleset.singleWinner,
@@ -320,7 +328,8 @@ class DataTransferService {
     return null;
   }
 
-  /// Validates the given JSON string against the predefined schema.
+  /// Validates the given JSON string against the schema
+  /// in `assets/schema.json`.
   @visibleForTesting
   static Future<bool> validateJsonSchema(String jsonString) async {
     final String schemaString;
