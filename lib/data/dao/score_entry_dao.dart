@@ -6,11 +6,12 @@ import 'package:tallee/data/db/tables/score_entry_table.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
 
-part 'score_dao.g.dart';
+part 'score_entry_dao.g.dart';
 
 @DriftAccessor(tables: [ScoreEntryTable])
-class ScoreDao extends DatabaseAccessor<AppDatabase> with _$ScoreDaoMixin {
-  ScoreDao(super.db);
+class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
+    with _$ScoreEntryDaoMixin {
+  ScoreEntryDao(super.db);
 
   /// Adds a score entry to the database.
   Future<void> addScore({

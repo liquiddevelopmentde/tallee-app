@@ -2710,7 +2710,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final GameDao gameDao = GameDao(this as AppDatabase);
-  late final ScoreDao scoreDao = ScoreDao(this as AppDatabase);
+  late final ScoreEntryDao scoreEntryDao = ScoreEntryDao(this as AppDatabase);
   late final TeamDao teamDao = TeamDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>

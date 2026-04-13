@@ -7,7 +7,7 @@ import 'package:tallee/data/dao/match_dao.dart';
 import 'package:tallee/data/dao/player_dao.dart';
 import 'package:tallee/data/dao/player_group_dao.dart';
 import 'package:tallee/data/dao/player_match_dao.dart';
-import 'package:tallee/data/dao/score_dao.dart';
+import 'package:tallee/data/dao/score_entry_dao.dart';
 import 'package:tallee/data/dao/team_dao.dart';
 import 'package:tallee/data/db/tables/game_table.dart';
 import 'package:tallee/data/db/tables/group_table.dart';
@@ -38,7 +38,7 @@ part 'database.g.dart';
     PlayerGroupDao,
     PlayerMatchDao,
     GameDao,
-    ScoreDao,
+    ScoreEntryDao,
     TeamDao,
   ],
 )
