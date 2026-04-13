@@ -38,8 +38,9 @@ class Match {
     return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, notes: $notes, scores: $scores, winner: $winner}';
   }
 
-  /// Creates a Match instance from a JSON object (ID references format).
-  /// Related objects are reconstructed from IDs by the DataTransferService.
+  /// Creates a Match instance from a JSON object where related objects are
+  /// represented by their IDs. Therefore, the game, group, and players are not
+  /// fully constructed here.
   Match.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       createdAt = DateTime.parse(json['createdAt']),
@@ -53,13 +54,15 @@ class Match {
         description: '',
         color: GameColor.blue,
         icon: '',
-      ), // Populated during import via DataTransferService
-      group = null, // Populated during import via DataTransferService
-      players = [], // Populated during import via DataTransferService
+      ),
+      group = null,
+      players = [],
       scores = json['scores'],
       notes = json['notes'] ?? '';
 
-  /// Converts the Match instance to a JSON object using normalized format (ID references only).
+  /// Converts the Match instance to a JSON object. Related objects are
+  /// represented by their IDs, so the game, group, and players are not fully
+  /// serialized here.
   Map<String, dynamic> toJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),
