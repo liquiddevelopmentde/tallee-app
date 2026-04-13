@@ -30,9 +30,11 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         final players =
             await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
 
-        final scores = await db.scoreDao.getAllMatchScores(matchId: row.id);
+        final scores = await db.scoreEntryDao.getAllMatchScores(
+          matchId: row.id,
+        );
 
-        final winner = await db.scoreDao.getWinner(matchId: row.id);
+        final winner = await db.scoreEntryDao.getWinner(matchId: row.id);
         return Match(
           id: row.id,
           name: row.name,
@@ -64,9 +66,9 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final players =
         await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
 
-    final scores = await db.scoreDao.getAllMatchScores(matchId: matchId);
+    final scores = await db.scoreEntryDao.getAllMatchScores(matchId: matchId);
 
-    final winner = await db.scoreDao.getWinner(matchId: matchId);
+    final winner = await db.scoreEntryDao.getWinner(matchId: matchId);
 
     return Match(
       id: result.id,
@@ -109,7 +111,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       for (final pid in match.scores.keys) {
         final playerScores = match.scores[pid]!;
-        await db.scoreDao.addScoresAsList(
+        await db.scoreEntryDao.addScoresAsList(
           entrys: playerScores,
           playerId: pid,
           matchId: match.id,
@@ -117,7 +119,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       }
 
       if (match.winner != null) {
-        await db.scoreDao.setWinner(
+        await db.scoreEntryDao.setWinner(
           matchId: match.id,
           playerId: match.winner!.id,
         );
@@ -298,7 +300,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         final group = await db.groupDao.getGroupById(groupId: groupId);
         final players =
             await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
-        final winner = await db.scoreDao.getWinner(matchId: row.id);
+        final winner = await db.scoreEntryDao.getWinner(matchId: row.id);
         return Match(
           id: row.id,
           name: row.name,

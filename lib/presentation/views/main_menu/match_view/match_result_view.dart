@@ -139,9 +139,9 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// based on the current selection.
   Future<void> _handleWinnerSaving() async {
     if (_selectedPlayer == null) {
-      await db.scoreDao.removeWinner(matchId: widget.match.id);
+      await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
     } else {
-      await db.scoreDao.setWinner(
+      await db.scoreEntryDao.setWinner(
         matchId: widget.match.id,
         playerId: _selectedPlayer!.id,
       );

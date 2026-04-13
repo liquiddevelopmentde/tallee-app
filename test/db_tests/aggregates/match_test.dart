@@ -296,7 +296,7 @@ void main() {
     test('Setting a winner works correctly', () async {
       await database.matchDao.addMatch(match: testMatch1);
 
-      await database.scoreDao.setWinner(
+      await database.scoreEntryDao.setWinner(
         matchId: testMatch1.id,
         playerId: testPlayer5.id,
       );

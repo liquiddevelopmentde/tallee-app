@@ -70,13 +70,13 @@ void main() {
     group('Adding and Fetching scores', () {
       test('Single Score', () async {
         ScoreEntry entry = ScoreEntry(roundNumber: 1, score: 10, change: 10);
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: entry,
         );
 
-        final score = await database.scoreDao.getScore(
+        final score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           roundNumber: 1,
@@ -95,13 +95,13 @@ void main() {
           ScoreEntry(roundNumber: 3, score: 18, change: 6),
         ];
 
-        await database.scoreDao.addScoresAsList(
+        await database.scoreEntryDao.addScoresAsList(
           entrys: entryList,
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
 
-        final scores = await database.scoreDao.getAllPlayerScoresInMatch(
+        final scores = await database.scoreEntryDao.getAllPlayerScoresInMatch(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
@@ -120,13 +120,13 @@ void main() {
     group('Undesirable values', () {
       test('Score & Round can have negative values', () async {
         ScoreEntry entry = ScoreEntry(roundNumber: -2, score: -10, change: -10);
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: entry,
         );
 
-        final score = await database.scoreDao.getScore(
+        final score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           roundNumber: -2,
@@ -140,13 +140,13 @@ void main() {
 
       test('Score & Round can have zero values', () async {
         ScoreEntry entry = ScoreEntry(roundNumber: 0, score: 0, change: 0);
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: entry,
         );
 
-        final score = await database.scoreDao.getScore(
+        final score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           roundNumber: 0,
@@ -158,7 +158,7 @@ void main() {
       });
 
       test('Getting score for a non-existent entities returns null', () async {
-        var score = await database.scoreDao.getScore(
+        var score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           roundNumber: -1,
@@ -166,14 +166,14 @@ void main() {
 
         expect(score, isNull);
 
-        score = await database.scoreDao.getScore(
+        score = await database.scoreEntryDao.getScore(
           playerId: 'non-existin-player',
           matchId: testMatch1.id,
         );
 
         expect(score, isNull);
 
-        score = await database.scoreDao.getScore(
+        score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
           matchId: 'non-existing-match',
         );
@@ -183,19 +183,19 @@ void main() {
 
       test('Getting score for a non-match player returns null', () async {
         ScoreEntry entry = ScoreEntry(roundNumber: 1, score: 10, change: 10);
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: entry,
         );
 
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer3.id,
           matchId: testMatch2.id,
           entry: entry,
         );
 
-        var score = await database.scoreDao.getScore(
+        var score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
           matchId: testMatch2.id,
           roundNumber: 1,
@@ -210,23 +210,23 @@ void main() {
         ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
         ScoreEntry entry2 = ScoreEntry(roundNumber: 1, score: 20, change: 20);
         ScoreEntry entry3 = ScoreEntry(roundNumber: 2, score: 25, change: 15);
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: entry1,
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer2.id,
           matchId: testMatch1.id,
           entry: entry2,
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: entry3,
         );
 
-        final scores = await database.scoreDao.getAllMatchScores(
+        final scores = await database.scoreEntryDao.getAllMatchScores(
           matchId: testMatch1.id,
         );
 
@@ -236,7 +236,7 @@ void main() {
       });
 
       test('getAllMatchScores() with no scores saved', () async {
-        final scores = await database.scoreDao.getAllMatchScores(
+        final scores = await database.scoreEntryDao.getAllMatchScores(
           matchId: testMatch1.id,
         );
 
@@ -247,21 +247,22 @@ void main() {
         ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
         ScoreEntry entry2 = ScoreEntry(roundNumber: 2, score: 25, change: 15);
         ScoreEntry entry3 = ScoreEntry(roundNumber: 1, score: 30, change: 30);
-        await database.scoreDao.addScoresAsList(
+        await database.scoreEntryDao.addScoresAsList(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entrys: [entry1, entry2],
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer2.id,
           matchId: testMatch1.id,
           entry: entry3,
         );
 
-        final playerScores = await database.scoreDao.getAllPlayerScoresInMatch(
-          playerId: testPlayer1.id,
-          matchId: testMatch1.id,
-        );
+        final playerScores = await database.scoreEntryDao
+            .getAllPlayerScoresInMatch(
+              playerId: testPlayer1.id,
+              matchId: testMatch1.id,
+            );
 
         expect(playerScores.length, 2);
         expect(playerScores[0].roundNumber, 1);
@@ -273,10 +274,11 @@ void main() {
       });
 
       test('getAllPlayerScoresInMatch() with no scores saved', () async {
-        final playerScores = await database.scoreDao.getAllPlayerScoresInMatch(
-          playerId: testPlayer1.id,
-          matchId: testMatch1.id,
-        );
+        final playerScores = await database.scoreEntryDao
+            .getAllPlayerScoresInMatch(
+              playerId: testPlayer1.id,
+              matchId: testMatch1.id,
+            );
 
         expect(playerScores.isEmpty, true);
       });
@@ -284,30 +286,32 @@ void main() {
       test('Scores are isolated across different matches', () async {
         ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
         ScoreEntry entry2 = ScoreEntry(roundNumber: 1, score: 50, change: 50);
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: entry1,
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch2.id,
           entry: entry2,
         );
 
-        final match1Scores = await database.scoreDao.getAllPlayerScoresInMatch(
-          playerId: testPlayer1.id,
-          matchId: testMatch1.id,
-        );
+        final match1Scores = await database.scoreEntryDao
+            .getAllPlayerScoresInMatch(
+              playerId: testPlayer1.id,
+              matchId: testMatch1.id,
+            );
 
         expect(match1Scores.length, 1);
         expect(match1Scores[0].score, 10);
         expect(match1Scores[0].change, 10);
 
-        final match2Scores = await database.scoreDao.getAllPlayerScoresInMatch(
-          playerId: testPlayer1.id,
-          matchId: testMatch2.id,
-        );
+        final match2Scores = await database.scoreEntryDao
+            .getAllPlayerScoresInMatch(
+              playerId: testPlayer1.id,
+              matchId: testMatch2.id,
+            );
 
         expect(match2Scores.length, 1);
         expect(match2Scores[0].score, 50);
@@ -319,19 +323,19 @@ void main() {
       test('updateScore()', () async {
         ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
         ScoreEntry entry2 = ScoreEntry(roundNumber: 2, score: 15, change: 5);
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: entry1,
         );
 
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: entry2,
         );
 
-        final updated = await database.scoreDao.updateScore(
+        final updated = await database.scoreEntryDao.updateScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           newEntry: ScoreEntry(roundNumber: 2, score: 50, change: 40),
@@ -339,7 +343,7 @@ void main() {
 
         expect(updated, true);
 
-        final score = await database.scoreDao.getScore(
+        final score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           roundNumber: 2,
@@ -351,7 +355,7 @@ void main() {
       });
 
       test('Updating a non-existent score returns false', () async {
-        final updated = await database.scoreDao.updateScore(
+        final updated = await database.scoreEntryDao.updateScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           newEntry: ScoreEntry(roundNumber: 1, score: 20, change: 20),
@@ -363,13 +367,13 @@ void main() {
 
     group('Deleting scores', () {
       test('deleteScore() ', () async {
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
 
-        final deleted = await database.scoreDao.deleteScore(
+        final deleted = await database.scoreEntryDao.deleteScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           roundNumber: 1,
@@ -377,7 +381,7 @@ void main() {
 
         expect(deleted, true);
 
-        final score = await database.scoreDao.getScore(
+        final score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           roundNumber: 1,
@@ -387,7 +391,7 @@ void main() {
       });
 
       test('Deleting a non-existent score returns false', () async {
-        final deleted = await database.scoreDao.deleteScore(
+        final deleted = await database.scoreEntryDao.deleteScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           roundNumber: 1,
@@ -397,127 +401,130 @@ void main() {
       });
 
       test('deleteAllScoresForMatch() works correctly', () async {
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer2.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 20, change: 20),
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch2.id,
           entry: ScoreEntry(roundNumber: 1, score: 15, change: 15),
         );
 
-        final deleted = await database.scoreDao.deleteAllScoresForMatch(
+        final deleted = await database.scoreEntryDao.deleteAllScoresForMatch(
           matchId: testMatch1.id,
         );
 
         expect(deleted, true);
 
-        final match1Scores = await database.scoreDao.getAllMatchScores(
+        final match1Scores = await database.scoreEntryDao.getAllMatchScores(
           matchId: testMatch1.id,
         );
         expect(match1Scores.length, 0);
 
-        final match2Scores = await database.scoreDao.getAllMatchScores(
+        final match2Scores = await database.scoreEntryDao.getAllMatchScores(
           matchId: testMatch2.id,
         );
         expect(match2Scores.length, 1);
       });
 
       test('deleteAllScoresForPlayerInMatch() works correctly', () async {
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
 
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 2, score: 15, change: 5),
         );
 
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer2.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 6, change: 6),
         );
 
-        final deleted = await database.scoreDao.deleteAllScoresForPlayerInMatch(
-          playerId: testPlayer1.id,
-          matchId: testMatch1.id,
-        );
+        final deleted = await database.scoreEntryDao
+            .deleteAllScoresForPlayerInMatch(
+              playerId: testPlayer1.id,
+              matchId: testMatch1.id,
+            );
 
         expect(deleted, true);
 
-        final player1Scores = await database.scoreDao.getAllPlayerScoresInMatch(
-          playerId: testPlayer1.id,
-          matchId: testMatch1.id,
-        );
+        final player1Scores = await database.scoreEntryDao
+            .getAllPlayerScoresInMatch(
+              playerId: testPlayer1.id,
+              matchId: testMatch1.id,
+            );
         expect(player1Scores.length, 0);
 
-        final player2Scores = await database.scoreDao.getAllPlayerScoresInMatch(
-          playerId: testPlayer2.id,
-          matchId: testMatch1.id,
-        );
+        final player2Scores = await database.scoreEntryDao
+            .getAllPlayerScoresInMatch(
+              playerId: testPlayer2.id,
+              matchId: testMatch1.id,
+            );
         expect(player2Scores.length, 1);
       });
     });
 
     group('Score Aggregations & Edge Cases', () {
       test('getLatestRoundNumber()', () async {
-        var latestRound = await database.scoreDao.getLatestRoundNumber(
+        var latestRound = await database.scoreEntryDao.getLatestRoundNumber(
           matchId: testMatch1.id,
         );
         expect(latestRound, isNull);
 
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
 
-        latestRound = await database.scoreDao.getLatestRoundNumber(
+        latestRound = await database.scoreEntryDao.getLatestRoundNumber(
           matchId: testMatch1.id,
         );
         expect(latestRound, 1);
 
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 5, score: 50, change: 40),
         );
 
-        latestRound = await database.scoreDao.getLatestRoundNumber(
+        latestRound = await database.scoreEntryDao.getLatestRoundNumber(
           matchId: testMatch1.id,
         );
         expect(latestRound, 5);
       });
 
       test('getLatestRoundNumber() with non-consecutive rounds', () async {
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 5, score: 50, change: 40),
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 3, score: 30, change: 20),
         );
 
-        final latestRound = await database.scoreDao.getLatestRoundNumber(
+        final latestRound = await database.scoreEntryDao.getLatestRoundNumber(
           matchId: testMatch1.id,
         );
 
@@ -525,29 +532,29 @@ void main() {
       });
 
       test('getTotalScoreForPlayer()', () async {
-        var totalScore = await database.scoreDao.getTotalScoreForPlayer(
+        var totalScore = await database.scoreEntryDao.getTotalScoreForPlayer(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
         expect(totalScore, 0);
 
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 2, score: 25, change: 15),
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 3, score: 40, change: 15),
         );
 
-        totalScore = await database.scoreDao.getTotalScoreForPlayer(
+        totalScore = await database.scoreEntryDao.getTotalScoreForPlayer(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
@@ -555,23 +562,23 @@ void main() {
       });
 
       test('getTotalScoreForPlayer() ignores round score', () async {
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 2, score: 25, change: 25),
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 25, change: 10),
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 3, score: 25, change: 25),
         );
 
-        final totalScore = await database.scoreDao.getTotalScoreForPlayer(
+        final totalScore = await database.scoreEntryDao.getTotalScoreForPlayer(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
@@ -581,18 +588,18 @@ void main() {
       });
 
       test('Adding the same score twice replaces the existing one', () async {
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 10, change: 10),
         );
-        await database.scoreDao.addScore(
+        await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           entry: ScoreEntry(roundNumber: 1, score: 20, change: 20),
         );
 
-        final score = await database.scoreDao.getScore(
+        final score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
           roundNumber: 1,
@@ -606,100 +613,116 @@ void main() {
 
     group('Handling Winner', () {
       test('hasWinner() works correctly', () async {
-        var hasWinner = await database.scoreDao.hasWinner(
+        var hasWinner = await database.scoreEntryDao.hasWinner(
           matchId: testMatch1.id,
         );
         expect(hasWinner, false);
 
-        await database.scoreDao.setWinner(
+        await database.scoreEntryDao.setWinner(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
 
-        hasWinner = await database.scoreDao.hasWinner(matchId: testMatch1.id);
+        hasWinner = await database.scoreEntryDao.hasWinner(
+          matchId: testMatch1.id,
+        );
         expect(hasWinner, true);
       });
 
       test('getWinnersForMatch() returns correct winner', () async {
-        var winner = await database.scoreDao.getWinner(matchId: testMatch1.id);
+        var winner = await database.scoreEntryDao.getWinner(
+          matchId: testMatch1.id,
+        );
         expect(winner, isNull);
 
-        await database.scoreDao.setWinner(
+        await database.scoreEntryDao.setWinner(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
 
-        winner = await database.scoreDao.getWinner(matchId: testMatch1.id);
+        winner = await database.scoreEntryDao.getWinner(matchId: testMatch1.id);
 
         expect(winner, isNotNull);
         expect(winner!.id, testPlayer1.id);
       });
 
       test('removeWinner() works correctly', () async {
-        var removed = await database.scoreDao.removeWinner(
+        var removed = await database.scoreEntryDao.removeWinner(
           matchId: testMatch1.id,
         );
         expect(removed, false);
 
-        await database.scoreDao.setWinner(
+        await database.scoreEntryDao.setWinner(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
 
-        removed = await database.scoreDao.removeWinner(matchId: testMatch1.id);
+        removed = await database.scoreEntryDao.removeWinner(
+          matchId: testMatch1.id,
+        );
         expect(removed, true);
 
-        var winner = await database.scoreDao.getWinner(matchId: testMatch1.id);
+        var winner = await database.scoreEntryDao.getWinner(
+          matchId: testMatch1.id,
+        );
         expect(winner, isNull);
       });
     });
 
     group('Handling Looser', () {
       test('hasLooser() works correctly', () async {
-        var hasLooser = await database.scoreDao.hasLooser(
+        var hasLooser = await database.scoreEntryDao.hasLooser(
           matchId: testMatch1.id,
         );
         expect(hasLooser, false);
 
-        await database.scoreDao.setLooser(
+        await database.scoreEntryDao.setLooser(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
 
-        hasLooser = await database.scoreDao.hasLooser(matchId: testMatch1.id);
+        hasLooser = await database.scoreEntryDao.hasLooser(
+          matchId: testMatch1.id,
+        );
         expect(hasLooser, true);
       });
 
       test('getLooser() returns correct winner', () async {
-        var looser = await database.scoreDao.getLooser(matchId: testMatch1.id);
+        var looser = await database.scoreEntryDao.getLooser(
+          matchId: testMatch1.id,
+        );
         expect(looser, isNull);
 
-        await database.scoreDao.setLooser(
+        await database.scoreEntryDao.setLooser(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
 
-        looser = await database.scoreDao.getLooser(matchId: testMatch1.id);
+        looser = await database.scoreEntryDao.getLooser(matchId: testMatch1.id);
 
         expect(looser, isNotNull);
         expect(looser!.id, testPlayer1.id);
       });
 
       test('removeLooser() works correctly', () async {
-        var removed = await database.scoreDao.removeLooser(
+        var removed = await database.scoreEntryDao.removeLooser(
           matchId: testMatch1.id,
         );
         expect(removed, false);
 
-        await database.scoreDao.setLooser(
+        await database.scoreEntryDao.setLooser(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
 
-        removed = await database.scoreDao.removeLooser(matchId: testMatch1.id);
+        removed = await database.scoreEntryDao.removeLooser(
+          matchId: testMatch1.id,
+        );
         expect(removed, true);
 
-        var looser = await database.scoreDao.getLooser(matchId: testMatch1.id);
+        var looser = await database.scoreEntryDao.getLooser(
+          matchId: testMatch1.id,
+        );
         expect(looser, isNull);
       });
     });
