@@ -588,6 +588,18 @@ void main() {
         expect(games[0].ruleset, testGame.ruleset);
       });
 
+      test('parseGamesFromJson() empty list', () {
+        final jsonMap = {'games': []};
+        final games = DataTransferService.parseGamesFromJson(jsonMap);
+        expect(games, isEmpty);
+      });
+
+      test('parseGamesFromJson() missing key', () {
+        final jsonMap = <String, dynamic>{};
+        final games = DataTransferService.parseGamesFromJson(jsonMap);
+        expect(games, isEmpty);
+      });
+
       test('parseGroupsFromJson()', () {
         final playerById = {
           testPlayer1.id: testPlayer1,
@@ -617,6 +629,18 @@ void main() {
         expect(groups[0].members.length, 2);
         expect(groups[0].members[0].id, testPlayer1.id);
         expect(groups[0].members[1].id, testPlayer2.id);
+      });
+
+      test('parseGroupsFromJson() empty list', () {
+        final jsonMap = {'groups': []};
+        final groups = DataTransferService.parseGroupsFromJson(jsonMap, {});
+        expect(groups, isEmpty);
+      });
+
+      test('parseGroupsFromJson() missing key', () {
+        final jsonMap = <String, dynamic>{};
+        final groups = DataTransferService.parseGroupsFromJson(jsonMap, {});
+        expect(groups, isEmpty);
       });
 
       test('parseGroupsFromJson() ignores invalid player ids', () {
@@ -670,6 +694,18 @@ void main() {
         expect(teams[0].members[0].id, testPlayer1.id);
       });
 
+      test('parseTeamsFromJson() empty list', () {
+        final jsonMap = {'teams': []};
+        final teams = DataTransferService.parseTeamsFromJson(jsonMap, {});
+        expect(teams, isEmpty);
+      });
+
+      test('parseTeamsFromJson() missing key', () {
+        final jsonMap = <String, dynamic>{};
+        final teams = DataTransferService.parseTeamsFromJson(jsonMap, {});
+        expect(teams, isEmpty);
+      });
+
       test('parseMatchesFromJson()', () {
         final playerById = {
           testPlayer1.id: testPlayer1,
@@ -705,6 +741,28 @@ void main() {
         expect(matches[0].game.id, testGame.id);
         expect(matches[0].group?.id, testGroup.id);
         expect(matches[0].players.length, 2);
+      });
+
+      test('parseMatchesFromJson() empty list', () {
+        final jsonMap = {'teams': []};
+        final matches = DataTransferService.parseMatchesFromJson(
+          jsonMap,
+          {},
+          {},
+          {},
+        );
+        expect(matches, isEmpty);
+      });
+
+      test('parseMatchesFromJson() missing key', () {
+        final jsonMap = <String, dynamic>{};
+        final matches = DataTransferService.parseMatchesFromJson(
+          jsonMap,
+          {},
+          {},
+          {},
+        );
+        expect(matches, isEmpty);
       });
 
       test('parseMatchesFromJson() creates unknown game for missing game', () {
