@@ -79,6 +79,24 @@ class _MatchTileState extends State<MatchTile> {
               ],
             ),
 
+            const SizedBox(height: 4),
+
+            Container(
+              decoration: BoxDecoration(
+                color: CustomTheme.primaryColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              child: Text(
+                translateRulesetToString(match.game.ruleset, context),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
             const SizedBox(height: 8),
 
             if (group != null) ...[

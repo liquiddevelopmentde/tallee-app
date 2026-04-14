@@ -97,13 +97,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enter_results => 'Ergebnisse eintragen';
 
   @override
-  String get error_creating_group => 'Fehler beim Erstellen der Gruppe, bitte erneut versuchen';
+  String get error_creating_group =>
+      'Fehler beim Erstellen der Gruppe, bitte erneut versuchen';
 
   @override
-  String get error_deleting_group => 'Fehler beim Löschen der Gruppe, bitte erneut versuchen';
+  String get error_deleting_group =>
+      'Fehler beim Löschen der Gruppe, bitte erneut versuchen';
 
   @override
-  String get error_editing_group => 'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
+  String get error_editing_group =>
+      'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
 
   @override
   String get error_reading_file => 'Fehler beim Lesen der Datei';
@@ -199,7 +202,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_players_created_yet => 'Noch keine Spieler:in erstellt';
 
   @override
-  String get no_players_found_with_that_name => 'Keine Spieler:in mit diesem Namen gefunden';
+  String get no_players_found_with_that_name =>
+      'Keine Spieler:in mit diesem Namen gefunden';
 
   @override
   String get no_players_selected => 'Keine Spieler:innen ausgewählt';
@@ -258,16 +262,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get ruleset => 'Regelwerk';
 
   @override
-  String get ruleset_least_points => 'Umgekehrte Wertung: Der/die Spieler:in mit den wenigsten Punkten gewinnt.';
+  String get ruleset_least_points =>
+      'Umgekehrte Wertung: Der/die Spieler:in mit den wenigsten Punkten gewinnt.';
 
   @override
-  String get ruleset_most_points => 'Traditionelles Regelwerk: Der/die Spieler:in mit den meisten Punkten gewinnt.';
+  String get ruleset_most_points =>
+      'Traditionelles Regelwerk: Der/die Spieler:in mit den meisten Punkten gewinnt.';
 
   @override
-  String get ruleset_single_loser => 'Genau ein:e Verlierer:in wird bestimmt; der letzte Platz erhält die Strafe oder Konsequenz.';
+  String get ruleset_single_loser =>
+      'Genau ein:e Verlierer:in wird bestimmt; der letzte Platz erhält die Strafe oder Konsequenz.';
 
   @override
-  String get ruleset_single_winner => 'Genau ein:e Gewinner:in wird gewählt; Unentschieden werden durch einen vordefinierten Tie-Breaker aufgelöst.';
+  String get ruleset_single_winner =>
+      'Genau ein:e Gewinner:in wird gewählt; Unentschieden werden durch einen vordefinierten Tie-Breaker aufgelöst.';
 
   @override
   String get save_changes => 'Änderungen speichern';
@@ -320,10 +328,12 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get there_is_no_group_matching_your_search => 'Es gibt keine Gruppe, die deiner Suche entspricht';
+  String get there_is_no_group_matching_your_search =>
+      'Es gibt keine Gruppe, die deiner Suche entspricht';
 
   @override
-  String get this_cannot_be_undone => 'Dies kann nicht rückgängig gemacht werden.';
+  String get this_cannot_be_undone =>
+      'Dies kann nicht rückgängig gemacht werden.';
 
   @override
   String get today_at => 'Heute um';
