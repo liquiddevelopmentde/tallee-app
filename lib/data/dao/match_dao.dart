@@ -4,10 +4,10 @@ import 'package:tallee/data/db/tables/game_table.dart';
 import 'package:tallee/data/db/tables/group_table.dart';
 import 'package:tallee/data/db/tables/match_table.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
-import 'package:tallee/data/dto/game.dart';
-import 'package:tallee/data/dto/group.dart';
-import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
 
 part 'match_dao.g.dart';
 
@@ -29,16 +29,22 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         }
         final players =
             await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
-        final winner = await getWinner(matchId: row.id);
+
+        final scores = await db.scoreEntryDao.getAllMatchScores(
+          matchId: row.id,
+        );
+
+        final winner = await db.scoreEntryDao.getWinner(matchId: row.id);
         return Match(
           id: row.id,
-          name: row.name ?? '',
+          name: row.name,
           game: game,
           group: group,
           players: players,
           notes: row.notes ?? '',
           createdAt: row.createdAt,
           endedAt: row.endedAt,
+          scores: scores,
           winner: winner,
         );
       }),
@@ -60,17 +66,20 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final players =
         await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
 
-    final winner = await getWinner(matchId: matchId);
+    final scores = await db.scoreEntryDao.getAllMatchScores(matchId: matchId);
+
+    final winner = await db.scoreEntryDao.getWinner(matchId: matchId);
 
     return Match(
       id: result.id,
-      name: result.name ?? '',
+      name: result.name,
       game: game,
       group: group,
       players: players,
       notes: result.notes ?? '',
       createdAt: result.createdAt,
       endedAt: result.endedAt,
+      scores: scores,
       winner: winner,
     );
   }
@@ -85,7 +94,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           id: match.id,
           gameId: match.game.id,
           groupId: Value(match.group?.id),
-          name: Value(match.name),
+          name: match.name,
           notes: Value(match.notes),
           createdAt: match.createdAt,
           endedAt: Value(match.endedAt),
@@ -100,8 +109,20 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         );
       }
 
+      for (final pid in match.scores.keys) {
+        final playerScores = match.scores[pid]!;
+        await db.scoreEntryDao.addScoresAsList(
+          entrys: playerScores,
+          playerId: pid,
+          matchId: match.id,
+        );
+      }
+
       if (match.winner != null) {
-        await setWinner(matchId: match.id, winnerId: match.winner!.id);
+        await db.scoreEntryDao.setWinner(
+          matchId: match.id,
+          playerId: match.winner!.id,
+        );
       }
     });
   }
@@ -170,7 +191,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                   id: match.id,
                   gameId: match.game.id,
                   groupId: Value(match.group?.id),
-                  name: Value(match.name),
+                  name: match.name,
                   notes: Value(match.notes),
                   createdAt: match.createdAt,
                   endedAt: Value(match.endedAt),
@@ -223,7 +244,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
               PlayerMatchTableCompanion.insert(
                 matchId: match.id,
                 playerId: p.id,
-                score: 0,
               ),
               mode: InsertMode.insertOrIgnore,
             );
@@ -280,10 +300,10 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         final group = await db.groupDao.getGroupById(groupId: groupId);
         final players =
             await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
-        final winner = await db.matchDao.getWinner(matchId: row.id);
+        final winner = await db.scoreEntryDao.getWinner(matchId: row.id);
         return Match(
           id: row.id,
-          name: row.name ?? '',
+          name: row.name,
           game: game,
           group: group,
           players: players,
@@ -436,92 +456,5 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         ),
       );
     });
-  }
-
-  // ============================================================
-  // Winner methods - handle winner logic via player scores
-  // ============================================================
-
-  /// Checks if a match has a winner.
-  /// Returns true if any player in the match has their score set to 1.
-  Future<bool> hasWinner({required String matchId}) async {
-    final players =
-        await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
-
-    for (final player in players) {
-      final score = await db.playerMatchDao.getPlayerScore(
-        matchId: matchId,
-        playerId: player.id,
-      );
-      if (score == 1) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /// Gets the winner of a match.
-  /// Returns the player with score 1, or null if no winner is set.
-  Future<Player?> getWinner({required String matchId}) async {
-    final players =
-        await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
-
-    for (final player in players) {
-      final score = await db.playerMatchDao.getPlayerScore(
-        matchId: matchId,
-        playerId: player.id,
-      );
-      if (score == 1) {
-        return player;
-      }
-    }
-    return null;
-  }
-
-  /// Sets the winner of a match.
-  /// Sets all players' scores to 0, then sets the specified player's score to 1.
-  /// Returns `true` if the operation was successful, otherwise `false`.
-  Future<bool> setWinner({
-    required String matchId,
-    required String winnerId,
-  }) async {
-    await db.transaction(() async {
-      final players =
-          await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
-
-      // Set all players' scores to 0
-      for (final player in players) {
-        await db.playerMatchDao.updatePlayerScore(
-          matchId: matchId,
-          playerId: player.id,
-          newScore: 0,
-        );
-      }
-
-      // Set the winner's score to 1
-      await db.playerMatchDao.updatePlayerScore(
-        matchId: matchId,
-        playerId: winnerId,
-        newScore: 1,
-      );
-    });
-    return true;
-  }
-
-  /// Removes the winner of a match.
-  /// Sets the current winner's score to 0 (no winner).
-  /// Returns `true` if a winner was removed, otherwise `false`.
-  Future<bool> removeWinner({required String matchId}) async {
-    final winner = await getWinner(matchId: matchId);
-    if (winner == null) {
-      return false;
-    }
-
-    final success = await db.playerMatchDao.updatePlayerScore(
-      matchId: matchId,
-      playerId: winner.id,
-      newScore: 0,
-    );
-    return success;
   }
 }

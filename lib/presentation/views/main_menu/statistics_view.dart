@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
@@ -167,7 +167,8 @@ class _StatisticsViewState extends State<StatisticsView> {
       final playerId = winCounts[i].$1;
       final player = players.firstWhere(
         (p) => p.id == playerId,
-        orElse: () => Player(id: playerId, name: loc.not_available, description: ''),
+        orElse: () =>
+            Player(id: playerId, name: loc.not_available, description: ''),
       );
       winCounts[i] = (player.name, winCounts[i].$2);
     }
@@ -208,11 +209,11 @@ class _StatisticsViewState extends State<StatisticsView> {
         // -1 means player not found in matchCounts
         if (index != -1) {
           final current = matchCounts[index].$2;
-            matchCounts[index] = (playerId, current + 1);
-          } else {
-            matchCounts.add((playerId, 1));
-          }
+          matchCounts[index] = (playerId, current + 1);
+        } else {
+          matchCounts.add((playerId, 1));
         }
+      }
     }
 
     // Adding all players with zero matches
@@ -229,7 +230,8 @@ class _StatisticsViewState extends State<StatisticsView> {
       final playerId = matchCounts[i].$1;
       final player = players.firstWhere(
         (p) => p.id == playerId,
-        orElse: () => Player(id: playerId, name: loc.not_available, description: ''),
+        orElse: () =>
+            Player(id: playerId, name: loc.not_available, description: ''),
       );
       matchCounts[i] = (player.name, matchCounts[i].$2);
     }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/group_tile.dart';

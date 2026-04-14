@@ -1,5 +1,5 @@
 import 'package:clock/clock.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/player.dart';
 import 'package:uuid/uuid.dart';
 
 class Group {
@@ -24,16 +24,17 @@ class Group {
     return 'Group{id: $id, name: $name, description: $description, members: $members}';
   }
 
-  /// Creates a Group instance from a JSON object (memberIds format).
-  /// Player objects are reconstructed from memberIds by the DataTransferService.
+  /// Creates a Group instance from a JSON object where the related [Player]
+  /// objects are represented by their IDs.
   Group.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       createdAt = DateTime.parse(json['createdAt']),
       name = json['name'],
       description = json['description'],
-      members = []; // Populated during import via DataTransferService
+      members = [];
 
-  /// Converts the Group instance to a JSON object using normalized format (memberIds only).
+  /// Converts the Group instance to a JSON object. Related [Player] objects are
+  /// represented by their IDs.
   Map<String, dynamic> toJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),

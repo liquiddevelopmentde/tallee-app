@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/dto/group.dart';
+import 'package:tallee/data/models/group.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
 class GroupTile extends StatefulWidget {

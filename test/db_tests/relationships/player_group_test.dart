@@ -3,8 +3,8 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/group.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/player.dart';
 
 void main() {
   late AppDatabase database;
@@ -42,7 +42,6 @@ void main() {
   });
 
   group('Player-Group Tests', () {
-
     // Verifies that a player can be added to an existing group and isPlayerInGroup returns true.
     test('Adding a player to a group works correctly', () async {
       await database.groupDao.addGroup(group: testGroup);
@@ -127,67 +126,83 @@ void main() {
     });
 
     // Verifies that addPlayerToGroup returns false when player already in group.
-    test('addPlayerToGroup returns false when player already in group', () async {
-      await database.groupDao.addGroup(group: testGroup);
+    test(
+      'addPlayerToGroup returns false when player already in group',
+      () async {
+        await database.groupDao.addGroup(group: testGroup);
 
-      // testPlayer1 is already in testGroup via group creation
-      final result = await database.playerGroupDao.addPlayerToGroup(
-        player: testPlayer1,
-        groupId: testGroup.id,
-      );
+        // testPlayer1 is already in testGroup via group creation
+        final result = await database.playerGroupDao.addPlayerToGroup(
+          player: testPlayer1,
+          groupId: testGroup.id,
+        );
 
-      expect(result, false);
-    });
+        expect(result, false);
+      },
+    );
 
     // Verifies that addPlayerToGroup adds player to player table if not exists.
-    test('addPlayerToGroup adds player to player table if not exists', () async {
-      await database.groupDao.addGroup(group: testGroup);
+    test(
+      'addPlayerToGroup adds player to player table if not exists',
+      () async {
+        await database.groupDao.addGroup(group: testGroup);
 
-      // testPlayer4 is not in the database yet
-      var playerExists = await database.playerDao.playerExists(
-        playerId: testPlayer4.id,
-      );
-      expect(playerExists, false);
+        // testPlayer4 is not in the database yet
+        var playerExists = await database.playerDao.playerExists(
+          playerId: testPlayer4.id,
+        );
+        expect(playerExists, false);
 
-      await database.playerGroupDao.addPlayerToGroup(
-        player: testPlayer4,
-        groupId: testGroup.id,
-      );
+        await database.playerGroupDao.addPlayerToGroup(
+          player: testPlayer4,
+          groupId: testGroup.id,
+        );
 
-      // Now player should exist in player table
-      playerExists = await database.playerDao.playerExists(
-        playerId: testPlayer4.id,
-      );
-      expect(playerExists, true);
-    });
+        // Now player should exist in player table
+        playerExists = await database.playerDao.playerExists(
+          playerId: testPlayer4.id,
+        );
+        expect(playerExists, true);
+      },
+    );
 
     // Verifies that removePlayerFromGroup returns false for non-existent player.
-    test('removePlayerFromGroup returns false for non-existent player', () async {
-      await database.groupDao.addGroup(group: testGroup);
+    test(
+      'removePlayerFromGroup returns false for non-existent player',
+      () async {
+        await database.groupDao.addGroup(group: testGroup);
 
-      final result = await database.playerGroupDao.removePlayerFromGroup(
-        playerId: 'non-existent-player-id',
-        groupId: testGroup.id,
-      );
+        final result = await database.playerGroupDao.removePlayerFromGroup(
+          playerId: 'non-existent-player-id',
+          groupId: testGroup.id,
+        );
 
-      expect(result, false);
-    });
+        expect(result, false);
+      },
+    );
 
     // Verifies that removePlayerFromGroup returns false for non-existent group.
-    test('removePlayerFromGroup returns false for non-existent group', () async {
-      await database.playerDao.addPlayer(player: testPlayer1);
+    test(
+      'removePlayerFromGroup returns false for non-existent group',
+      () async {
+        await database.playerDao.addPlayer(player: testPlayer1);
 
-      final result = await database.playerGroupDao.removePlayerFromGroup(
-        playerId: testPlayer1.id,
-        groupId: 'non-existent-group-id',
-      );
+        final result = await database.playerGroupDao.removePlayerFromGroup(
+          playerId: testPlayer1.id,
+          groupId: 'non-existent-group-id',
+        );
 
-      expect(result, false);
-    });
+        expect(result, false);
+      },
+    );
 
     // Verifies that getPlayersOfGroup returns empty list for group with no members.
     test('getPlayersOfGroup returns empty list for empty group', () async {
-      final emptyGroup = Group(name: 'Empty Group', description: '', members: []);
+      final emptyGroup = Group(
+        name: 'Empty Group',
+        description: '',
+        members: [],
+      );
       await database.groupDao.addGroup(group: emptyGroup);
 
       final players = await database.playerGroupDao.getPlayersOfGroup(
@@ -198,13 +213,16 @@ void main() {
     });
 
     // Verifies that getPlayersOfGroup returns empty list for non-existent group.
-    test('getPlayersOfGroup returns empty list for non-existent group', () async {
-      final players = await database.playerGroupDao.getPlayersOfGroup(
-        groupId: 'non-existent-group-id',
-      );
+    test(
+      'getPlayersOfGroup returns empty list for non-existent group',
+      () async {
+        final players = await database.playerGroupDao.getPlayersOfGroup(
+          groupId: 'non-existent-group-id',
+        );
 
-      expect(players, isEmpty);
-    });
+        expect(players, isEmpty);
+      },
+    );
 
     // Verifies that removing all players from a group leaves the group empty.
     test('Removing all players from a group leaves group empty', () async {
@@ -231,7 +249,11 @@ void main() {
 
     // Verifies that a player can be in multiple groups.
     test('Player can be in multiple groups', () async {
-      final secondGroup = Group(name: 'Second Group', description: '', members: []);
+      final secondGroup = Group(
+        name: 'Second Group',
+        description: '',
+        members: [],
+      );
       await database.groupDao.addGroup(group: testGroup);
       await database.groupDao.addGroup(group: secondGroup);
 
@@ -255,29 +277,36 @@ void main() {
     });
 
     // Verifies that removing player from one group doesn't affect other groups.
-    test('Removing player from one group does not affect other groups', () async {
-      final secondGroup = Group(name: 'Second Group', description: '', members: [testPlayer1]);
-      await database.groupDao.addGroup(group: testGroup);
-      await database.groupDao.addGroup(group: secondGroup);
+    test(
+      'Removing player from one group does not affect other groups',
+      () async {
+        final secondGroup = Group(
+          name: 'Second Group',
+          description: '',
+          members: [testPlayer1],
+        );
+        await database.groupDao.addGroup(group: testGroup);
+        await database.groupDao.addGroup(group: secondGroup);
 
-      // Remove testPlayer1 from testGroup
-      await database.playerGroupDao.removePlayerFromGroup(
-        playerId: testPlayer1.id,
-        groupId: testGroup.id,
-      );
+        // Remove testPlayer1 from testGroup
+        await database.playerGroupDao.removePlayerFromGroup(
+          playerId: testPlayer1.id,
+          groupId: testGroup.id,
+        );
 
-      final inFirstGroup = await database.playerGroupDao.isPlayerInGroup(
-        playerId: testPlayer1.id,
-        groupId: testGroup.id,
-      );
-      final inSecondGroup = await database.playerGroupDao.isPlayerInGroup(
-        playerId: testPlayer1.id,
-        groupId: secondGroup.id,
-      );
+        final inFirstGroup = await database.playerGroupDao.isPlayerInGroup(
+          playerId: testPlayer1.id,
+          groupId: testGroup.id,
+        );
+        final inSecondGroup = await database.playerGroupDao.isPlayerInGroup(
+          playerId: testPlayer1.id,
+          groupId: secondGroup.id,
+        );
 
-      expect(inFirstGroup, false);
-      expect(inSecondGroup, true);
-    });
+        expect(inFirstGroup, false);
+        expect(inSecondGroup, true);
+      },
+    );
 
     // Verifies that addPlayerToGroup returns true on successful addition.
     test('addPlayerToGroup returns true on successful addition', () async {
@@ -293,21 +322,26 @@ void main() {
     });
 
     // Verifies that removing the same player twice returns false on second attempt.
-    test('Removing same player twice returns false on second attempt', () async {
-      await database.groupDao.addGroup(group: testGroup);
+    test(
+      'Removing same player twice returns false on second attempt',
+      () async {
+        await database.groupDao.addGroup(group: testGroup);
 
-      final firstRemoval = await database.playerGroupDao.removePlayerFromGroup(
-        playerId: testPlayer1.id,
-        groupId: testGroup.id,
-      );
-      expect(firstRemoval, true);
+        final firstRemoval = await database.playerGroupDao
+            .removePlayerFromGroup(
+              playerId: testPlayer1.id,
+              groupId: testGroup.id,
+            );
+        expect(firstRemoval, true);
 
-      final secondRemoval = await database.playerGroupDao.removePlayerFromGroup(
-        playerId: testPlayer1.id,
-        groupId: testGroup.id,
-      );
-      expect(secondRemoval, false);
-    });
+        final secondRemoval = await database.playerGroupDao
+            .removePlayerFromGroup(
+              playerId: testPlayer1.id,
+              groupId: testGroup.id,
+            );
+        expect(secondRemoval, false);
+      },
+    );
 
     // Verifies that replaceGroupPlayers removes all existing players and replaces with new list.
     test('replaceGroupPlayers replaces all group members correctly', () async {

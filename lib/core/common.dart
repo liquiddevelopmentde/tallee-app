@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/data/dto/match.dart';
+import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 /// Translates a [Ruleset] enum value to its corresponding localized string.

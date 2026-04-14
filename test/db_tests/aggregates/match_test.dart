@@ -4,10 +4,10 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/game.dart';
-import 'package:tallee/data/dto/group.dart';
-import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
 
 void main() {
   late AppDatabase database;
@@ -296,9 +296,9 @@ void main() {
     test('Setting a winner works correctly', () async {
       await database.matchDao.addMatch(match: testMatch1);
 
-      await database.matchDao.setWinner(
+      await database.scoreEntryDao.setWinner(
         matchId: testMatch1.id,
-        winnerId: testPlayer5.id,
+        playerId: testPlayer5.id,
       );
 
       final fetchedMatch = await database.matchDao.getMatchById(
@@ -360,7 +360,6 @@ void main() {
       expect(matches, isEmpty);
 
       await database.matchDao.addMatch(match: testMatch1);
-      print(await database.matchDao.getAllMatches());
 
       matches = await database.matchDao.getGroupMatches(groupId: testGroup1.id);
 

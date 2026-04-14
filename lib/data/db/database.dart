@@ -7,7 +7,7 @@ import 'package:tallee/data/dao/match_dao.dart';
 import 'package:tallee/data/dao/player_dao.dart';
 import 'package:tallee/data/dao/player_group_dao.dart';
 import 'package:tallee/data/dao/player_match_dao.dart';
-import 'package:tallee/data/dao/score_dao.dart';
+import 'package:tallee/data/dao/score_entry_dao.dart';
 import 'package:tallee/data/dao/team_dao.dart';
 import 'package:tallee/data/db/tables/game_table.dart';
 import 'package:tallee/data/db/tables/group_table.dart';
@@ -15,7 +15,7 @@ import 'package:tallee/data/db/tables/match_table.dart';
 import 'package:tallee/data/db/tables/player_group_table.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
 import 'package:tallee/data/db/tables/player_table.dart';
-import 'package:tallee/data/db/tables/score_table.dart';
+import 'package:tallee/data/db/tables/score_entry_table.dart';
 import 'package:tallee/data/db/tables/team_table.dart';
 
 part 'database.g.dart';
@@ -29,7 +29,7 @@ part 'database.g.dart';
     PlayerMatchTable,
     GameTable,
     TeamTable,
-    ScoreTable,
+    ScoreEntryTable,
   ],
   daos: [
     PlayerDao,
@@ -38,8 +38,8 @@ part 'database.g.dart';
     PlayerGroupDao,
     PlayerMatchDao,
     GameDao,
-    ScoreDao,
-    TeamDao
+    ScoreEntryDao,
+    TeamDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -60,7 +60,9 @@ class AppDatabase extends _$AppDatabase {
   static QueryExecutor _openConnection() {
     return driftDatabase(
       name: 'gametracker_db',
-      native: const DriftNativeOptions(databaseDirectory: getApplicationSupportDirectory),
+      native: const DriftNativeOptions(
+        databaseDirectory: getApplicationSupportDirectory,
+      ),
     );
   }
 }
