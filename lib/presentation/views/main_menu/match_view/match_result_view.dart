@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
 import 'package:tallee/presentation/widgets/tiles/custom_radio_list_tile.dart';
@@ -204,11 +204,11 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   Future<bool> _handleWinner() async {
     if (_selectedPlayer == null) {
-      return await db.matchDao.removeWinner(matchId: widget.match.id);
+      await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
     } else {
-      return await db.matchDao.setWinner(
+      await db.scoreEntryDao.setWinner(
         matchId: widget.match.id,
-        winnerId: _selectedPlayer!.id,
+        playerId: _selectedPlayer!.id,
       );
     }
   }

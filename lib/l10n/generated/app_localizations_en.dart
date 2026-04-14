@@ -97,16 +97,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enter_results => 'Enter Results';
 
   @override
-  String get error_creating_group =>
-      'Error while creating group, please try again';
+  String get error_creating_group => 'Error while creating group, please try again';
 
   @override
-  String get error_deleting_group =>
-      'Error while deleting group, please try again';
+  String get error_deleting_group => 'Error while deleting group, please try again';
 
   @override
-  String get error_editing_group =>
-      'Error while editing group, please try again';
+  String get error_editing_group => 'Error while editing group, please try again';
 
   @override
   String get error_reading_file => 'Error reading file';
@@ -202,8 +199,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_players_created_yet => 'No players created yet';
 
   @override
-  String get no_players_found_with_that_name =>
-      'No players found with that name';
+  String get no_players_found_with_that_name => 'No players found with that name';
 
   @override
   String get no_players_selected => 'No players selected';
@@ -262,20 +258,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ruleset => 'Ruleset';
 
   @override
-  String get ruleset_least_points =>
-      'Inverse scoring: the player with the fewest points wins.';
+  String get ruleset_least_points => 'Inverse scoring: the player with the fewest points wins.';
 
   @override
-  String get ruleset_most_points =>
-      'Traditional ruleset: the player with the most points wins.';
+  String get ruleset_most_points => 'Traditional ruleset: the player with the most points wins.';
 
   @override
-  String get ruleset_single_loser =>
-      'Exactly one loser is determined; last place receives the penalty or consequence.';
+  String get ruleset_single_loser => 'Exactly one loser is determined; last place receives the penalty or consequence.';
 
   @override
-  String get ruleset_single_winner =>
-      'Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.';
+  String get ruleset_single_winner => 'Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.';
 
   @override
   String get save_changes => 'Save Changes';
@@ -328,8 +320,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get there_is_no_group_matching_your_search =>
-      'There is no group matching your search';
+  String get there_is_no_group_matching_your_search => 'There is no group matching your search';
 
   @override
   String get this_cannot_be_undone => 'This can\'t be undone.';

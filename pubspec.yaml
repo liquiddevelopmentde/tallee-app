@@ -1,7 +1,7 @@
 name: tallee
 description: "Tracking App for Card Games"
 publish_to: 'none'
-version: 0.0.18+252
+version: 0.0.20+254
 
 environment:
   sdk: ^3.8.1
@@ -31,9 +31,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.5.4
+  build_runner: ^2.7.0
   dart_pubspec_licenses: ^3.0.14
-  drift_dev: ^2.27.0
+  drift_dev: ^2.29.0
   flutter_lints: ^6.0.0
 
 flutter:

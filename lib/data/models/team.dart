@@ -1,5 +1,5 @@
 import 'package:clock/clock.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/player.dart';
 import 'package:uuid/uuid.dart';
 
 class Team {
@@ -29,7 +29,8 @@ class Team {
       createdAt = DateTime.parse(json['createdAt']),
       members = []; // Populated during import via DataTransferService
 
-  /// Converts the Team instance to a JSON object using normalized format (memberIds only).
+  /// Converts the Team instance to a JSON object. Related objects are
+  /// represented by their IDs.
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
@@ -37,4 +38,3 @@ class Team {
     'memberIds': members.map((member) => member.id).toList(),
   };
 }
-

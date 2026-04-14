@@ -4,7 +4,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/game.dart';
+import 'package:tallee/data/models/game.dart';
 
 void main() {
   late AppDatabase database;
@@ -54,7 +54,6 @@ void main() {
   });
 
   group('Game Tests', () {
-
     // Verifies that getAllGames returns an empty list when the database has no games.
     test('getAllGames returns empty list when no games exist', () async {
       final allGames = await database.gameDao.getAllGames();
@@ -106,7 +105,7 @@ void main() {
     // Verifies that getGameById throws a StateError when the game doesn't exist.
     test('getGameById throws exception for non-existent game', () async {
       expect(
-            () => database.gameDao.getGameById(gameId: 'non-existent-id'),
+        () => database.gameDao.getGameById(gameId: 'non-existent-id'),
         throwsA(isA<StateError>()),
       );
     });
@@ -134,7 +133,13 @@ void main() {
 
     // Verifies that a game with empty optional fields can be added and retrieved.
     test('addGame handles game with null optional fields', () async {
-      final gameWithNulls = Game(name: 'Simple Game', ruleset: Ruleset.lowestScore, description: 'A simple game', color: GameColor.green, icon: '');
+      final gameWithNulls = Game(
+        name: 'Simple Game',
+        ruleset: Ruleset.lowestScore,
+        description: 'A simple game',
+        color: GameColor.green,
+        icon: '',
+      );
       final result = await database.gameDao.addGame(game: gameWithNulls);
       expect(result, true);
 
@@ -419,9 +424,7 @@ void main() {
 
     // Verifies that getGameCount updates correctly after deleting a game.
     test('getGameCount updates correctly after deletion', () async {
-      await database.gameDao.addGamesAsList(
-        games: [testGame1, testGame2],
-      );
+      await database.gameDao.addGamesAsList(games: [testGame1, testGame2]);
 
       final countBefore = await database.gameDao.getGameCount();
       expect(countBefore, 2);

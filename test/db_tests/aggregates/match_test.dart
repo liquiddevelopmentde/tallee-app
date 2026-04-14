@@ -4,10 +4,10 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/game.dart';
-import 'package:tallee/data/dto/group.dart';
-import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
 
 void main() {
   late AppDatabase database;
@@ -42,7 +42,7 @@ void main() {
       testPlayer4 = Player(name: 'Diana', description: '');
       testPlayer5 = Player(name: 'Eve', description: '');
       testGroup1 = Group(
-        name: 'Test Group 2',
+        name: 'Test Group 1',
         description: '',
         members: [testPlayer1, testPlayer2, testPlayer3],
       );
@@ -296,9 +296,9 @@ void main() {
     test('Setting a winner works correctly', () async {
       await database.matchDao.addMatch(match: testMatch1);
 
-      await database.matchDao.setWinner(
+      await database.scoreEntryDao.setWinner(
         matchId: testMatch1.id,
-        winnerId: testPlayer5.id,
+        playerId: testPlayer5.id,
       );
 
       final fetchedMatch = await database.matchDao.getMatchById(
@@ -306,6 +306,69 @@ void main() {
       );
       expect(fetchedMatch.winner, isNotNull);
       expect(fetchedMatch.winner!.id, testPlayer5.id);
+    });
+
+    test(
+      'removeMatchGroup removes group from match with existing group',
+      () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        final removed = await database.matchDao.removeMatchGroup(
+          matchId: testMatch1.id,
+        );
+        expect(removed, isTrue);
+
+        final updatedMatch = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(updatedMatch.group, null);
+        expect(updatedMatch.game.id, testMatch1.game.id);
+        expect(updatedMatch.name, testMatch1.name);
+        expect(updatedMatch.notes, testMatch1.notes);
+      },
+    );
+
+    test(
+      'removeMatchGroup on match that already has no group still succeeds',
+      () async {
+        await database.matchDao.addMatch(match: testMatchOnlyPlayers);
+
+        final removed = await database.matchDao.removeMatchGroup(
+          matchId: testMatchOnlyPlayers.id,
+        );
+        expect(removed, isTrue);
+
+        final updatedMatch = await database.matchDao.getMatchById(
+          matchId: testMatchOnlyPlayers.id,
+        );
+        expect(updatedMatch.group, null);
+      },
+    );
+
+    test('removeMatchGroup on non-existing match returns false', () async {
+      final removed = await database.matchDao.removeMatchGroup(
+        matchId: 'non-existing-id',
+      );
+      expect(removed, isFalse);
+    });
+
+    test('Fetching all matches related to a group', () async {
+      var matches = await database.matchDao.getGroupMatches(
+        groupId: 'non-existing-id',
+      );
+
+      expect(matches, isEmpty);
+
+      await database.matchDao.addMatch(match: testMatch1);
+
+      matches = await database.matchDao.getGroupMatches(groupId: testGroup1.id);
+
+      expect(matches, isNotEmpty);
+
+      final match = matches.first;
+      expect(match.id, testMatch1.id);
+      expect(match.group, isNotNull);
+      expect(match.group!.id, testGroup1.id);
     });
   });
 }

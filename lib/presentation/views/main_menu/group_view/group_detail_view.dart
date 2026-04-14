@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/dto/group.dart';
-import 'package:tallee/data/dto/match.dart';
-import 'package:tallee/data/dto/player.dart';
+import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
@@ -191,7 +191,12 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     context,
                     adaptivePageRoute(
                       builder: (context) {
-                        return CreateGroupView(groupToEdit: _group);
+                        return CreateGroupView(
+                          groupToEdit: _group,
+                          onMembersChanged: () {
+                            _loadStatistics();
+                          },
+                        );
                       },
                     ),
                   );
@@ -242,10 +247,8 @@ class _GroupDetailViewState extends State<GroupDetailView> {
 
   /// Loads statistics for this group
   Future<void> _loadStatistics() async {
-    final matches = await db.matchDao.getAllMatches();
-    final groupMatches = matches
-        .where((match) => match.group?.id == _group.id)
-        .toList();
+    isLoading = true;
+    final groupMatches = await db.matchDao.getGroupMatches(groupId: _group.id);
 
     setState(() {
       totalMatches = groupMatches.length;
@@ -260,7 +263,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
 
     // Count wins for each player
     for (var match in matches) {
-      if (match.winner != null) {
+      if (match.winner != null &&
+          _group.members.any((m) => m.id == match.winner?.id)) {
+        print(match.winner);
         bestPlayerCounts.update(
           match.winner!,
           (value) => value + 1,

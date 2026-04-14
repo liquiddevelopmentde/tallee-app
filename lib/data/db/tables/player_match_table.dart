@@ -8,9 +8,7 @@ class PlayerMatchTable extends Table {
       text().references(PlayerTable, #id, onDelete: KeyAction.cascade)();
   TextColumn get matchId =>
       text().references(MatchTable, #id, onDelete: KeyAction.cascade)();
-  TextColumn get teamId =>
-      text().references(TeamTable, #id).nullable()();
-  IntColumn get score => integer()();
+  TextColumn get teamId => text().references(TeamTable, #id).nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {playerId, matchId};

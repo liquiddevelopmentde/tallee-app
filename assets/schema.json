@@ -20,6 +20,7 @@
             "type": "string"
           }
         },
+        "additionalProperties": false,
         "required": [
           "id",
           "createdAt",
@@ -55,6 +56,7 @@
             "type": "string"
           }
         },
+        "additionalProperties": false,
         "required": [
           "id",
           "createdAt",
@@ -90,6 +92,7 @@
             }
           }
         },
+        "additionalProperties": false,
         "required": [
           "id",
           "name",
@@ -120,6 +123,7 @@
             }
           }
         },
+        "additionalProperties": false,
         "required": [
           "id",
           "name",
@@ -157,10 +161,31 @@
               "type": "string"
             }
           },
+          "scores": {
+            "type": "object",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "properties": {
+                  "roundNumber": {
+                    "type": "number"
+                  },
+                  "score": {
+                    "type": "number"
+                  },
+                  "change": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          },
           "notes": {
             "type": "string"
           }
         },
+        "additionalProperties": false,
         "required": [
           "id",
           "name",
@@ -172,6 +197,7 @@
       }
     }
   },
+  "additionalProperties": false,
   "required": [
     "players",
     "games",
