@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -140,6 +141,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                               padding: const EdgeInsets.only(right: 8.0),
                               child: TextIconTile(
                                 text: player.name,
+                                suffixText: getNameCountText(player),
                                 onIconTap: () {
                                   setState(() {
                                     // Removes the player from the selection and notifies the parent.
@@ -193,6 +195,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                   itemBuilder: (BuildContext context, int index) {
                     return TextIconListTile(
                       text: suggestedPlayers[index].name,
+                      suffixText: getNameCountText(suggestedPlayers[index]),
                       onPressed: () {
                         setState(() {
                           // If the player is not already selected

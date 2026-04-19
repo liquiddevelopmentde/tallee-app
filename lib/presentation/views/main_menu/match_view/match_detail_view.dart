@@ -161,6 +161,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                     children: match.players.map((player) {
                       return TextIconTile(
                         text: player.name,
+                        suffixText: getNameCountText(player),
                         iconEnabled: false,
                       );
                     }).toList(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
@@ -153,6 +154,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     children: _group.members.map((member) {
                       return TextIconTile(
                         text: member.name,
+                        suffixText: getNameCountText(member),
                         iconEnabled: false,
                       );
                     }).toList(),
