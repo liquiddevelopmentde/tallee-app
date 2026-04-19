@@ -5,12 +5,14 @@ class Player {
   final String id;
   final DateTime createdAt;
   final String name;
+  final int nameCount;
   final String description;
 
   Player({
     String? id,
     DateTime? createdAt,
     required this.name,
+    this.nameCount = 0,
     String? description,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
@@ -26,6 +28,7 @@ class Player {
     : id = json['id'],
       createdAt = DateTime.parse(json['createdAt']),
       name = json['name'],
+      nameCount = 0,
       description = json['description'];
 
   /// Converts the Player instance to a JSON object.

@@ -18,6 +18,17 @@ class $PlayerTableTable extends PlayerTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -26,6 +37,18 @@ class $PlayerTableTable extends PlayerTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameCountMeta = const VerificationMeta(
+    'nameCount',
+  );
+  @override
+  late final GeneratedColumn<int> nameCount = GeneratedColumn<int>(
+    'name_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
   );
   static const VerificationMeta _descriptionMeta = const VerificationMeta(
     'description',
@@ -38,19 +61,14 @@ class $PlayerTableTable extends PlayerTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
   @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, name, description, createdAt];
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    name,
+    nameCount,
+    description,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -68,6 +86,14 @@ class $PlayerTableTable extends PlayerTable
     } else if (isInserting) {
       context.missing(_idMeta);
     }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
     if (data.containsKey('name')) {
       context.handle(
         _nameMeta,
@@ -75,6 +101,12 @@ class $PlayerTableTable extends PlayerTable
       );
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('name_count')) {
+      context.handle(
+        _nameCountMeta,
+        nameCount.isAcceptableOrUnknown(data['name_count']!, _nameCountMeta),
+      );
     }
     if (data.containsKey('description')) {
       context.handle(
@@ -86,14 +118,6 @@ class $PlayerTableTable extends PlayerTable
       );
     } else if (isInserting) {
       context.missing(_descriptionMeta);
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
     }
     return context;
   }
@@ -108,17 +132,21 @@ class $PlayerTableTable extends PlayerTable
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      nameCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}name_count'],
+      )!,
       description: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}description'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
       )!,
     );
   }
@@ -131,31 +159,35 @@ class $PlayerTableTable extends PlayerTable
 
 class PlayerTableData extends DataClass implements Insertable<PlayerTableData> {
   final String id;
-  final String name;
-  final String description;
   final DateTime createdAt;
+  final String name;
+  final int nameCount;
+  final String description;
   const PlayerTableData({
     required this.id,
-    required this.name,
-    required this.description,
     required this.createdAt,
+    required this.name,
+    required this.nameCount,
+    required this.description,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['name'] = Variable<String>(name);
-    map['description'] = Variable<String>(description);
     map['created_at'] = Variable<DateTime>(createdAt);
+    map['name'] = Variable<String>(name);
+    map['name_count'] = Variable<int>(nameCount);
+    map['description'] = Variable<String>(description);
     return map;
   }
 
   PlayerTableCompanion toCompanion(bool nullToAbsent) {
     return PlayerTableCompanion(
       id: Value(id),
-      name: Value(name),
-      description: Value(description),
       createdAt: Value(createdAt),
+      name: Value(name),
+      nameCount: Value(nameCount),
+      description: Value(description),
     );
   }
 
@@ -166,9 +198,10 @@ class PlayerTableData extends DataClass implements Insertable<PlayerTableData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return PlayerTableData(
       id: serializer.fromJson<String>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      description: serializer.fromJson<String>(json['description']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      name: serializer.fromJson<String>(json['name']),
+      nameCount: serializer.fromJson<int>(json['nameCount']),
+      description: serializer.fromJson<String>(json['description']),
     );
   }
   @override
@@ -176,31 +209,35 @@ class PlayerTableData extends DataClass implements Insertable<PlayerTableData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'name': serializer.toJson<String>(name),
-      'description': serializer.toJson<String>(description),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'name': serializer.toJson<String>(name),
+      'nameCount': serializer.toJson<int>(nameCount),
+      'description': serializer.toJson<String>(description),
     };
   }
 
   PlayerTableData copyWith({
     String? id,
-    String? name,
-    String? description,
     DateTime? createdAt,
+    String? name,
+    int? nameCount,
+    String? description,
   }) => PlayerTableData(
     id: id ?? this.id,
-    name: name ?? this.name,
-    description: description ?? this.description,
     createdAt: createdAt ?? this.createdAt,
+    name: name ?? this.name,
+    nameCount: nameCount ?? this.nameCount,
+    description: description ?? this.description,
   );
   PlayerTableData copyWithCompanion(PlayerTableCompanion data) {
     return PlayerTableData(
       id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       name: data.name.present ? data.name.value : this.name,
+      nameCount: data.nameCount.present ? data.nameCount.value : this.nameCount,
       description: data.description.present
           ? data.description.value
           : this.description,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
 
@@ -208,76 +245,85 @@ class PlayerTableData extends DataClass implements Insertable<PlayerTableData> {
   String toString() {
     return (StringBuffer('PlayerTableData(')
           ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
-          ..write('description: $description, ')
-          ..write('createdAt: $createdAt')
+          ..write('nameCount: $nameCount, ')
+          ..write('description: $description')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, description, createdAt);
+  int get hashCode => Object.hash(id, createdAt, name, nameCount, description);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is PlayerTableData &&
           other.id == this.id &&
+          other.createdAt == this.createdAt &&
           other.name == this.name &&
-          other.description == this.description &&
-          other.createdAt == this.createdAt);
+          other.nameCount == this.nameCount &&
+          other.description == this.description);
 }
 
 class PlayerTableCompanion extends UpdateCompanion<PlayerTableData> {
   final Value<String> id;
-  final Value<String> name;
-  final Value<String> description;
   final Value<DateTime> createdAt;
+  final Value<String> name;
+  final Value<int> nameCount;
+  final Value<String> description;
   final Value<int> rowid;
   const PlayerTableCompanion({
     this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.name = const Value.absent(),
+    this.nameCount = const Value.absent(),
+    this.description = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   PlayerTableCompanion.insert({
     required String id,
-    required String name,
-    required String description,
     required DateTime createdAt,
+    required String name,
+    this.nameCount = const Value.absent(),
+    required String description,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
+       createdAt = Value(createdAt),
        name = Value(name),
-       description = Value(description),
-       createdAt = Value(createdAt);
+       description = Value(description);
   static Insertable<PlayerTableData> custom({
     Expression<String>? id,
-    Expression<String>? name,
-    Expression<String>? description,
     Expression<DateTime>? createdAt,
+    Expression<String>? name,
+    Expression<int>? nameCount,
+    Expression<String>? description,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (description != null) 'description': description,
       if (createdAt != null) 'created_at': createdAt,
+      if (name != null) 'name': name,
+      if (nameCount != null) 'name_count': nameCount,
+      if (description != null) 'description': description,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   PlayerTableCompanion copyWith({
     Value<String>? id,
-    Value<String>? name,
-    Value<String>? description,
     Value<DateTime>? createdAt,
+    Value<String>? name,
+    Value<int>? nameCount,
+    Value<String>? description,
     Value<int>? rowid,
   }) {
     return PlayerTableCompanion(
       id: id ?? this.id,
-      name: name ?? this.name,
-      description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
+      name: name ?? this.name,
+      nameCount: nameCount ?? this.nameCount,
+      description: description ?? this.description,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -288,14 +334,17 @@ class PlayerTableCompanion extends UpdateCompanion<PlayerTableData> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (nameCount.present) {
+      map['name_count'] = Variable<int>(nameCount.value);
+    }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -307,9 +356,10 @@ class PlayerTableCompanion extends UpdateCompanion<PlayerTableData> {
   String toString() {
     return (StringBuffer('PlayerTableCompanion(')
           ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
+          ..write('name: $name, ')
+          ..write('nameCount: $nameCount, ')
+          ..write('description: $description, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2790,17 +2840,19 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 typedef $$PlayerTableTableCreateCompanionBuilder =
     PlayerTableCompanion Function({
       required String id,
-      required String name,
-      required String description,
       required DateTime createdAt,
+      required String name,
+      Value<int> nameCount,
+      required String description,
       Value<int> rowid,
     });
 typedef $$PlayerTableTableUpdateCompanionBuilder =
     PlayerTableCompanion Function({
       Value<String> id,
-      Value<String> name,
-      Value<String> description,
       Value<DateTime> createdAt,
+      Value<String> name,
+      Value<int> nameCount,
+      Value<String> description,
       Value<int> rowid,
     });
 
@@ -2892,18 +2944,23 @@ class $$PlayerTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get description => $composableBuilder(
-    column: $table.description,
+  ColumnFilters<int> get nameCount => $composableBuilder(
+    column: $table.nameCount,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2997,18 +3054,23 @@ class $$PlayerTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get description => $composableBuilder(
-    column: $table.description,
+  ColumnOrderings<int> get nameCount => $composableBuilder(
+    column: $table.nameCount,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -3025,16 +3087,19 @@ class $$PlayerTableTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get nameCount =>
+      $composableBuilder(column: $table.nameCount, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
     column: $table.description,
     builder: (column) => column,
   );
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
   Expression<T> playerGroupTableRefs<T extends Object>(
     Expression<T> Function($$PlayerGroupTableTableAnnotationComposer a) f,
@@ -3145,29 +3210,33 @@ class $$PlayerTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<String> name = const Value.absent(),
-                Value<String> description = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> nameCount = const Value.absent(),
+                Value<String> description = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PlayerTableCompanion(
                 id: id,
-                name: name,
-                description: description,
                 createdAt: createdAt,
+                name: name,
+                nameCount: nameCount,
+                description: description,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String id,
-                required String name,
-                required String description,
                 required DateTime createdAt,
+                required String name,
+                Value<int> nameCount = const Value.absent(),
+                required String description,
                 Value<int> rowid = const Value.absent(),
               }) => PlayerTableCompanion.insert(
                 id: id,
-                name: name,
-                description: description,
                 createdAt: createdAt,
+                name: name,
+                nameCount: nameCount,
+                description: description,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
