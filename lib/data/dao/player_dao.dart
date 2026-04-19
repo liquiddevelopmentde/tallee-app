@@ -143,7 +143,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return rowsAffected > 0;
   }
 
-  /// Checks if a player with the given [id] exists in the database.
+  /// Checks if a player with the given [playerId] exists in the database.
   /// Returns `true` if the player exists, `false` otherwise.
   Future<bool> playerExists({required String playerId}) async {
     final query = select(playerTable)..where((p) => p.id.equals(playerId));
@@ -157,9 +157,11 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     required String newName,
   }) async {
     // Get previous name and name count for the player before updating
-    final previousPlayerName = await (select(
-      playerTable,
-    )..where((p) => p.id.equals(playerId))).map((row) => row.name).getSingle();
+    final previousPlayerName =
+        await (select(playerTable)..where((p) => p.id.equals(playerId)))
+            .map((row) => row.name)
+            .getSingleOrNull() ??
+        '';
     final previousNameCount = await getNameCount(name: previousPlayerName);
 
     await (update(playerTable)..where((p) => p.id.equals(playerId))).write(
@@ -197,7 +199,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return count ?? 0;
   }
 
-  /// Retrieves the count of players with the given [name] in the database.
+  /// Retrieves the count of players with the given [name].
   Future<int> getNameCount({required String name}) async {
     final query = select(playerTable)..where((p) => p.name.equals(name));
     final result = await query.get();
