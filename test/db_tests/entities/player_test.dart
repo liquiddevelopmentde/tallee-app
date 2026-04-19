@@ -449,8 +449,8 @@ void main() {
       );
 
       test('getNameCount works  correctly', () async {
-        final player2 = Player(name: testPlayer1.name, description: '');
-        final player3 = Player(name: testPlayer1.name, description: '');
+        final player2 = Player(name: testPlayer1.name);
+        final player3 = Player(name: testPlayer1.name);
 
         await database.playerDao.addPlayersAsList(
           players: [testPlayer1, player2, player3],
@@ -460,7 +460,7 @@ void main() {
           name: testPlayer1.name,
         );
 
-        expect(nameCount, 2);
+        expect(nameCount, 3);
       });
 
       test('updateNameCount works correctly', () async {
@@ -470,14 +470,12 @@ void main() {
           playerId: testPlayer1.id,
           nameCount: 2,
         );
-
         expect(success, true);
 
-        final nameCount = await database.playerDao.getNameCount(
-          name: testPlayer1.name,
+        final player = await database.playerDao.getPlayerById(
+          playerId: testPlayer1.id,
         );
-
-        expect(nameCount, 2);
+        expect(player.nameCount, 2);
       });
 
       test('getPlayerWithHighestNameCount works correctly', () async {

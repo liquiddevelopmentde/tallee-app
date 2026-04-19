@@ -93,7 +93,6 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
 
       // Get the current nameCount
       var nameCount = await calculateNameCount(name: name);
-      if (nameCount == 0) nameCount++;
 
       // One player with the same name
       if (playersWithName.length == 1) {
@@ -108,6 +107,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
           ),
         );
       } else {
+        if (nameCount == 0) nameCount++;
         // Multiple players with the same name
         for (var i = 0; i < playersWithName.length; i++) {
           final player = playersWithName[i];
