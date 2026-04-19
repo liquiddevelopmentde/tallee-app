@@ -5,21 +5,23 @@ class AnimatedDialogButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
   /// when pressed.
   /// - [onPressed]: Callback function that is triggered when the button is pressed.
-  /// - [child]: The child widget to be displayed inside the button, typically a text or icon.
+  /// - [buttonText]: The text to be displayed on the button.
+  /// - [buttonType]: The type of the button, which determines its styling.
   const AnimatedDialogButton({
     super.key,
     required this.onPressed,
-    required this.text,
+    required this.buttonText,
+    this.constraints,
     this.buttonType = ButtonType.primary,
   });
 
-  /// Callback function that is triggered when the button is pressed.
-  final VoidCallback onPressed;
-
-  /// The text to be displayed on the button.
-  final String text;
+  final BoxConstraints? constraints;
 
   final ButtonType buttonType;
+
+  final String buttonText;
+
+  final VoidCallback onPressed;
 
   @override
   State<AnimatedDialogButton> createState() => _AnimatedDialogButtonState();
@@ -66,12 +68,12 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
           duration: const Duration(milliseconds: 100),
           child: Center(
             child: Container(
-              constraints: const BoxConstraints(minWidth: 300),
+              constraints: widget.constraints,
               decoration: buttonDecoration,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               margin: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
-                widget.text,
+                widget.buttonText,
                 style: textStyling,
                 textAlign: TextAlign.center,
               ),

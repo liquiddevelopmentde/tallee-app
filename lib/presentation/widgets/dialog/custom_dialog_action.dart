@@ -3,6 +3,10 @@ import 'package:tallee/core/enums.dart';
 import 'package:tallee/presentation/widgets/dialog/animated_dialog_button.dart';
 
 class CustomDialogAction extends StatelessWidget {
+  /// A custom dialog action widget that represents a button in a dialog.
+  /// - [text]: The text to be displayed on the button.
+  /// - [buttonType]: The type of the button, which determines its styling.
+  /// - [onPressed]: Callback function that is triggered when the button is pressed.
   const CustomDialogAction({
     super.key,
     required this.onPressed,
@@ -10,10 +14,8 @@ class CustomDialogAction extends StatelessWidget {
     this.buttonType = ButtonType.primary,
   });
 
-  // The text displaed on the button
   final String text;
 
-  // The type of the button, which determines its styling
   final ButtonType buttonType;
 
   final VoidCallback onPressed;
@@ -22,8 +24,9 @@ class CustomDialogAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedDialogButton(
       onPressed: onPressed,
-      text: text,
+      buttonText: text,
       buttonType: buttonType,
+      constraints: const BoxConstraints(minWidth: 300),
     );
   }
 }
