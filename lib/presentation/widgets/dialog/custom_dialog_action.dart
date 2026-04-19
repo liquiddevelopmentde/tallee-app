@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/presentation/widgets/dialog/animated_dialog_button.dart';
+import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 
 class CustomDialogAction extends StatelessWidget {
   /// A custom dialog action widget that represents a button in a dialog.
