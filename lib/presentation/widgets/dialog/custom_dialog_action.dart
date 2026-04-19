@@ -26,7 +26,7 @@ class CustomDialogAction extends StatelessWidget {
       onPressed: onPressed,
       buttonText: text,
       buttonType: buttonType,
-      constraints: const BoxConstraints(minWidth: 300),
+      buttonConstraints: const BoxConstraints(minWidth: 300),
     );
   }
 }
