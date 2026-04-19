@@ -5,7 +5,7 @@ class Player {
   final String id;
   final DateTime createdAt;
   final String name;
-  final int nameCount;
+  int nameCount;
   final String description;
 
   Player({
@@ -20,7 +20,7 @@ class Player {
 
   @override
   String toString() {
-    return 'Player{id: $id, name: $name, description: $description}';
+    return 'Player{id: $id, createdAt: $createdAt, name: $name, nameCount: $nameCount, description: $description}';
   }
 
   /// Creates a Player instance from a JSON object.
