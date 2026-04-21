@@ -79,6 +79,7 @@ class _MatchTileState extends State<MatchTile> {
               ],
             ),
 
+            // Group Info
             if (group != null) ...[
               Row(
                 children: [
@@ -121,7 +122,7 @@ class _MatchTileState extends State<MatchTile> {
                   // Game
                   Container(
                     decoration: BoxDecoration(
-                      color: CustomTheme.primaryColor.withAlpha(200),
+                      color: CustomTheme.primaryColor.withAlpha(230),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(8),
                         bottomLeft: Radius.circular(8),
@@ -143,7 +144,7 @@ class _MatchTileState extends State<MatchTile> {
                   // Ruleset
                   Container(
                     decoration: BoxDecoration(
-                      color: CustomTheme.primaryColor.withAlpha(120),
+                      color: CustomTheme.primaryColor.withAlpha(140),
                       borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(8),
                         bottomRight: Radius.circular(8),
@@ -168,6 +169,7 @@ class _MatchTileState extends State<MatchTile> {
 
             const SizedBox(height: 12),
 
+            // Winner / In Progress Info
             if (match.mvp.isNotEmpty) ...[
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -244,6 +246,7 @@ class _MatchTileState extends State<MatchTile> {
               const SizedBox(height: 12),
             ],
 
+            // Players List
             if (players.isNotEmpty && widget.compact == false) ...[
               Text(
                 loc.players,
