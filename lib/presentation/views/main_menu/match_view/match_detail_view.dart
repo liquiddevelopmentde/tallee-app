@@ -10,10 +10,10 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
-import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
-import 'package:tallee/presentation/widgets/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -65,23 +65,16 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 context: context,
                 builder: (context) => CustomAlertDialog(
                   title: '${loc.delete_match}?',
-                  content: loc.this_cannot_be_undone,
+                  content: Text(loc.this_cannot_be_undone),
                   actions: [
-                    AnimatedDialogButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: Text(
-                        loc.cancel,
-                        style: const TextStyle(color: CustomTheme.textColor),
-                      ),
-                    ),
-                    AnimatedDialogButton(
+                    CustomDialogAction(
                       onPressed: () => Navigator.of(context).pop(true),
-                      child: Text(
-                        loc.delete,
-                        style: const TextStyle(
-                          color: CustomTheme.secondaryColor,
-                        ),
-                      ),
+                      text: loc.delete,
+                    ),
+                    CustomDialogAction(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      buttonType: ButtonType.secondary,
+                      text: loc.cancel,
                     ),
                   ],
                 ),
