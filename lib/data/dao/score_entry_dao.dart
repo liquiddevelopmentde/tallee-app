@@ -250,7 +250,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         );
 
     final result = await query.get();
-    if (result.isNotEmpty) return null;
+    if (result.isEmpty) return null;
 
     final playerData = result.first.readTable(db.playerTable);
     return Player(
@@ -317,7 +317,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         );
 
     final result = await query.get();
-    if (result.isNotEmpty) return null;
+    if (result.isEmpty) return null;
 
     final playerData = result.first.readTable(db.playerTable);
     return Player(
