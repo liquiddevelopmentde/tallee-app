@@ -79,26 +79,6 @@ class _MatchTileState extends State<MatchTile> {
               ],
             ),
 
-            const SizedBox(height: 4),
-
-            Container(
-              decoration: BoxDecoration(
-                color: CustomTheme.primaryColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              child: Text(
-                translateRulesetToString(match.game.ruleset, context),
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
             if (group != null) ...[
               Row(
                 children: [
@@ -113,7 +93,7 @@ class _MatchTileState extends State<MatchTile> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 4),
             ] else if (widget.compact) ...[
               Row(
                 children: [
@@ -128,8 +108,65 @@ class _MatchTileState extends State<MatchTile> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 6),
+            ] else ...[
+              const SizedBox(height: 8),
             ],
+
+            // Game + Ruleset Badge
+            IntrinsicHeight(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Game
+                  Container(
+                    decoration: BoxDecoration(
+                      color: CustomTheme.primaryColor.withAlpha(200),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        bottomLeft: Radius.circular(8),
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
+                    child: Text(
+                      match.game.name,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  // Ruleset
+                  Container(
+                    decoration: BoxDecoration(
+                      color: CustomTheme.primaryColor.withAlpha(120),
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(8),
+                        bottomRight: Radius.circular(8),
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
+                    child: Text(
+                      translateRulesetToString(match.game.ruleset, context),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 12),
 
             if (match.mvp.isNotEmpty) ...[
               Container(
