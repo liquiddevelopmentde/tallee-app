@@ -45,25 +45,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     );
   }
 
-  Future<Game> getGameByMatchId({required String matchId}) async {
-    final query = select(gameTable).join([
-      innerJoin(matchTable, matchTable.gameId.equalsExp(gameTable.id)),
-    ])..where(matchTable.id.equals(matchId));
-
-    final result = await query.getSingle();
-    final gameRow = result.readTable(gameTable);
-
-    return Game(
-      id: gameRow.id,
-      name: gameRow.name,
-      ruleset: Ruleset.values.firstWhere((e) => e.name == gameRow.ruleset),
-      description: gameRow.description,
-      color: GameColor.values.firstWhere((e) => e.name == gameRow.color),
-      icon: gameRow.icon,
-      createdAt: gameRow.createdAt,
-    );
-  }
-
   /// Adds a new [game] to the database.
   /// If a game with the same ID already exists, no action is taken.
   /// Returns `true` if the game was added, `false` otherwise.
