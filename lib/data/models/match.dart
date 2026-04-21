@@ -55,7 +55,16 @@ class Match {
       ),
       group = null,
       players = [],
-      scores = json['scores'],
+      scores = json['scores'] != null
+          ? (json['scores'] as Map<String, dynamic>).map(
+              (key, value) => MapEntry(
+                key,
+                value != null
+                    ? ScoreEntry.fromJson(value as Map<String, dynamic>)
+                    : null,
+              ),
+            )
+          : {},
       notes = json['notes'] ?? '';
 
   /// Converts the Match instance to a JSON object. Related objects are
@@ -69,7 +78,7 @@ class Match {
     'gameId': game.id,
     'groupId': group?.id,
     'playerIds': players.map((player) => player.id).toList(),
-    'scores': scores,
+    'scores': scores.map((key, value) => MapEntry(key, value?.toJson())),
     'notes': notes,
   };
 
