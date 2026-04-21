@@ -130,6 +130,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         uniqueGames[match.game.id] = match.game;
       }
 
+      // Add games
       if (uniqueGames.isNotEmpty) {
         await db.batch(
           (b) => b.insertAll(
@@ -152,7 +153,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         );
       }
 
-      // Add all groups of the matches in batch
+      // Add groups
       await db.batch(
         (b) => b.insertAll(
           db.groupTable,
@@ -171,7 +172,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         ),
       );
 
-      // Add all matches in batch
+      // Add matches
       await db.batch(
         (b) => b.insertAll(
           matchTable,
@@ -192,7 +193,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         ),
       );
 
-      // Add all players of the matches in batch (unique)
+      // Add players
       final uniquePlayers = <String, Player>{};
       for (final match in matches) {
         for (final p in match.players) {
@@ -225,7 +226,27 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         );
       }
 
-      // Add all player-match associations in batch
+      await db.batch((b) {
+        for (final match in matches) {
+          for (final entry in match.scores.entries) {
+            if (entry.value != null) {
+              b.insert(
+                db.scoreEntryTable,
+                ScoreEntryTableCompanion.insert(
+                  matchId: match.id,
+                  playerId: entry.key,
+                  score: entry.value!.score,
+                  roundNumber: entry.value!.roundNumber,
+                  change: entry.value!.change,
+                ),
+                mode: InsertMode.insertOrReplace,
+              );
+            }
+          }
+        }
+      });
+
+      // Add player-match associations
       await db.batch((b) {
         for (final match in matches) {
           for (final p in match.players) {
@@ -241,7 +262,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         }
       });
 
-      // Add all player-group associations in batch
+      // Add player-group associations
       await db.batch((b) {
         for (final match in matches) {
           if (match.group != null) {

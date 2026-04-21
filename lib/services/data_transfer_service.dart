@@ -12,6 +12,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 
 class DataTransferService {
@@ -71,7 +72,9 @@ class DataTransferService {
               'gameId': m.game.id,
               'groupId': m.group?.id,
               'playerIds': m.players.map((p) => p.id).toList(),
-              'scores': m.scores,
+              'scores': m.scores.map(
+                (key, value) => MapEntry(key, value?.toJson()),
+              ),
               'notes': m.notes,
             },
           )
@@ -271,6 +274,15 @@ class DataTransferService {
           ? DateTime.parse(map['endedAt'] as String)
           : null;
       final notes = map['notes'] as String? ?? '';
+      final scoresJson = map['scores'] as Map<String, dynamic>? ?? {};
+      final scores = scoresJson.map(
+        (key, value) => MapEntry(
+          key,
+          value != null
+              ? ScoreEntry.fromJson(value as Map<String, dynamic>)
+              : null,
+        ),
+      );
 
       // Link attributes to objects
       final game = gamesMap[gameId] ?? getFallbackGame();
@@ -292,6 +304,7 @@ class DataTransferService {
         createdAt: createdAt,
         endedAt: endedAt,
         notes: notes,
+        scores: scores,
       );
     }).toList();
   }
