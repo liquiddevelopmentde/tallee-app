@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/title_description_list_tile.dart';
@@ -13,14 +13,14 @@ class ChooseGameView extends StatefulWidget {
   const ChooseGameView({
     super.key,
     required this.games,
-    required this.initialGameIndex,
+    required this.initialGameId,
   });
 
   /// A list of tuples containing the game name, description and ruleset
-  final List<(String, String, Ruleset)> games;
+  final List<Game> games;
 
-  /// The index of the initially selected game
-  final int initialGameIndex;
+  /// The id of the initially selected game
+  final String initialGameId;
 
   @override
   State<ChooseGameView> createState() => _ChooseGameViewState();
@@ -31,11 +31,11 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   final TextEditingController searchBarController = TextEditingController();
 
   /// Currently selected game index
-  late int selectedGameIndex;
+  late String selectedGameId;
 
   @override
   void initState() {
-    selectedGameIndex = widget.initialGameIndex;
+    selectedGameId = widget.initialGameId;
     super.initState();
   }
 
@@ -49,7 +49,13 @@ class _ChooseGameViewState extends State<ChooseGameView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context).pop(selectedGameIndex);
+            Navigator.of(context).pop(
+              selectedGameId == ''
+                  ? null
+                  : widget.games.firstWhere(
+                      (game) => game.id == selectedGameId,
+                    ),
+            );
           },
         ),
         title: Text(loc.choose_game),
@@ -62,7 +68,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
           if (didPop) {
             return;
           }
-          Navigator.of(context).pop(selectedGameIndex);
+          Navigator.of(context).pop(widget.initialGameId);
         },
         child: Column(
           children: [
@@ -79,19 +85,19 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 itemCount: widget.games.length,
                 itemBuilder: (BuildContext context, int index) {
                   return TitleDescriptionListTile(
-                    title: widget.games[index].$1,
-                    description: widget.games[index].$2,
+                    title: widget.games[index].name,
+                    description: widget.games[index].description,
                     badgeText: translateRulesetToString(
-                      widget.games[index].$3,
+                      widget.games[index].ruleset,
                       context,
                     ),
-                    isHighlighted: selectedGameIndex == index,
+                    isHighlighted: selectedGameId == widget.games[index].id,
                     onPressed: () async {
                       setState(() {
-                        if (selectedGameIndex == index) {
-                          selectedGameIndex = -1;
+                        if (selectedGameId != widget.games[index].id) {
+                          selectedGameId = widget.games[index].id;
                         } else {
-                          selectedGameIndex = index;
+                          selectedGameId = '';
                         }
                       });
                     },
