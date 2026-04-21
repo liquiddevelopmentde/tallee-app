@@ -36,7 +36,6 @@ class GroupDetailView extends StatefulWidget {
 }
 
 class _GroupDetailViewState extends State<GroupDetailView> {
-  late final AppLocalizations loc;
   late final AppDatabase db;
   bool isLoading = true;
   late Group _group;
@@ -52,12 +51,13 @@ class _GroupDetailViewState extends State<GroupDetailView> {
     super.initState();
     _group = widget.group;
     db = Provider.of<AppDatabase>(context, listen: false);
-    loc = AppLocalizations.of(context);
     _loadStatistics();
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(
@@ -288,6 +288,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
       case 1:
         return topPlayers.first.key.name;
       default:
+        final loc = AppLocalizations.of(context);
         return loc.tie;
     }
   }
