@@ -37,48 +37,12 @@ class DataTransferService {
     final games = await db.gameDao.getAllGames();
     final teams = await db.teamDao.getAllTeams();
 
-    // Construct a JSON representation of the data in normalized format
     final Map<String, dynamic> jsonMap = {
-      'players': players.map((p) => p.toJson()).toList(),
-      'games': games.map((g) => g.toJson()).toList(),
-      'groups': groups
-          .map(
-            (g) => {
-              'id': g.id,
-              'name': g.name,
-              'description': g.description,
-              'createdAt': g.createdAt.toIso8601String(),
-              'memberIds': (g.members).map((m) => m.id).toList(),
-            },
-          )
-          .toList(),
-      'teams': teams
-          .map(
-            (t) => {
-              'id': t.id,
-              'name': t.name,
-              'createdAt': t.createdAt.toIso8601String(),
-              'memberIds': (t.members).map((m) => m.id).toList(),
-            },
-          )
-          .toList(),
-      'matches': matches
-          .map(
-            (m) => {
-              'id': m.id,
-              'name': m.name,
-              'createdAt': m.createdAt.toIso8601String(),
-              'endedAt': m.endedAt?.toIso8601String(),
-              'gameId': m.game.id,
-              'groupId': m.group?.id,
-              'playerIds': m.players.map((p) => p.id).toList(),
-              'scores': m.scores.map(
-                (key, value) => MapEntry(key, value?.toJson()),
-              ),
-              'notes': m.notes,
-            },
-          )
-          .toList(),
+      'players': players.map((player) => player.toJson()).toList(),
+      'games': games.map((game) => game.toJson()).toList(),
+      'groups': groups.map((group) => group.toJson()).toList(),
+      'teams': teams.map((team) => team.toJson()).toList(),
+      'matches': matches.map((match) => match.toJson()).toList(),
     };
 
     return json.encode(jsonMap);
