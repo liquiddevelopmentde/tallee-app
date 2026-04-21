@@ -53,14 +53,30 @@ class _HomeViewState extends State<HomeView> {
         name: 'Skeleton Group',
         description: 'This is a skeleton group description.',
         members: [
-          Player(name: 'Skeleton Player 1', description: ''),
-          Player(name: 'Skeleton Player 2', description: ''),
+          Player(
+            name:
+                'Skeleton Player 1'
+                '',
+          ),
+          Player(
+            name:
+                'Skeleton Player 2'
+                '',
+          ),
         ],
       ),
       notes: 'These are skeleton notes.',
       players: [
-        Player(name: 'Skeleton Player 1', description: ''),
-        Player(name: 'Skeleton Player 2', description: ''),
+        Player(
+          name:
+              'Skeleton Player 1'
+              '',
+        ),
+        Player(
+          name:
+              'Skeleton Player 2'
+              '',
+        ),
       ],
     ),
   );
@@ -231,7 +247,8 @@ class _HomeViewState extends State<HomeView> {
   /// Updates the winner information for a specific match in the recent matches list.
   Future<void> updatedWinnerInRecentMatches(String matchId) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final winner = await db.scoreEntryDao.getWinner(matchId: matchId);
+    // TODO: fix
+    //final winner = await db.scoreEntryDao.getWinner(matchId: matchId);
     final matchIndex = recentMatches.indexWhere((match) => match.id == matchId);
     if (matchIndex != -1) {
       setState(() {
