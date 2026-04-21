@@ -59,7 +59,7 @@ class DataTransferService {
   ) async {
     try {
       final bytes = Uint8List.fromList(utf8.encode(jsonString));
-      final path = await FilePicker.platform.saveFile(
+      final path = await FilePicker.saveFile(
         fileName: '$fileName.json',
         bytes: bytes,
       );
@@ -80,7 +80,7 @@ class DataTransferService {
   static Future<ImportResult> importData(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
 
-    final path = await FilePicker.platform.pickFiles(
+    final path = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['json'],
     );

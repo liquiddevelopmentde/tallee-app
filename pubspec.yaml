@@ -4,24 +4,24 @@ publish_to: 'none'
 version: 0.0.21+255
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.11.5
 
 dependencies:
+  clock: ^1.1.2
+  cupertino_icons: ^1.0.6
+  drift: ^2.32.1
+  drift_flutter: ^0.3.0
+  file_picker: ^11.0.2
+  file_saver: ^0.3.1
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  clock: ^1.1.2
-  cupertino_icons: ^1.0.6
-  drift: ^2.27.0
-  drift_flutter: ^0.2.4
-  file_picker: ^10.3.6
-  file_saver: ^0.3.1
   fluttericon: ^2.0.0
-  font_awesome_flutter: ^10.12.0
+  font_awesome_flutter: ^11.0.0
   intl: any
   json_schema: ^5.2.2
-  package_info_plus: ^9.0.0
+  package_info_plus: ^4.0.2
   path_provider: ^2.1.5
   provider: ^6.1.5
   skeletonizer: ^2.1.0+1
@@ -33,7 +33,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.7.0
   dart_pubspec_licenses: ^3.0.14
-  drift_dev: ^2.29.0
+  drift_dev: ^2.32.1
   flutter_lints: ^6.0.0
 
 flutter:
