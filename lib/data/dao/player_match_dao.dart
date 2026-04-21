@@ -24,7 +24,7 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
         matchId: matchId,
         teamId: Value(teamId),
       ),
-      mode: InsertMode.insertOrIgnore,
+      mode: InsertMode.insertOrReplace,
     );
   }
 
