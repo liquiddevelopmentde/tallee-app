@@ -147,13 +147,19 @@
             "type": "string"
           },
           "endedAt": {
-            "type": ["string", "null"]
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "gameId": {
             "type": "string"
           },
           "groupId": {
-            "type": ["string", "null"]
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "playerIds": {
             "type": "array",
@@ -163,22 +169,28 @@
           },
           "scores": {
             "type": "object",
-            "items": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "properties": {
-                  "roundNumber": {
-                    "type": "number"
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "roundNumber": {
+                      "type": "number"
+                    },
+                    "score": {
+                      "type": "number"
+                    },
+                    "change": {
+                      "type": "number"
+                    }
                   },
-                  "score": {
-                    "type": "number"
-                  },
-                  "change": {
-                    "type": "number"
-                  }
+                  "required": ["roundNumber", "score", "change"],
+                  "additionalProperties": false
                 }
-              }
+              ]
             }
           },
           "notes": {
