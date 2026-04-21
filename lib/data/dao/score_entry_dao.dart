@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:drift/drift.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/score_entry_table.dart';
 import 'package:tallee/data/models/player.dart';
@@ -236,37 +235,29 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return rowsAffected > 0;
   }
 
-  // Retrieves the winner of a match based on the highest score.
+  // Retrieves the winner of a match by looking for a score entry where score
+  /// is 1. Returns `null` if no player found, else the first with the score.
   Future<Player?> getWinner({required String matchId}) async {
-    // Check the ruleset of the match
-    final ruleset = await db.gameDao
-        .getGameByMatchId(matchId: matchId)
-        .then((game) => game.ruleset);
+    final query =
+        select(scoreEntryTable).join([
+          innerJoin(
+            db.playerTable,
+            db.playerTable.id.equalsExp(scoreEntryTable.playerId),
+          ),
+        ])..where(
+          scoreEntryTable.matchId.equals(matchId) &
+              scoreEntryTable.score.equals(1),
+        );
 
-    final query = select(scoreEntryTable)
-      ..where((s) => s.matchId.equals(matchId));
+    final result = await query.get();
+    if (result.isNotEmpty) return null;
 
-    // If the ruleset is lowestScore, the winner is the player with the lowest
-    // score so we order by ascending score.
-    if (ruleset == Ruleset.lowestScore) {
-      query
-        ..orderBy([(s) => OrderingTerm.asc(s.score)])
-        ..limit(1);
-    } else {
-      query
-        ..orderBy([(s) => OrderingTerm.desc(s.score)])
-        ..limit(1);
-    }
-    final result = await query.getSingleOrNull();
-
-    if (result == null) return null;
-
-    final player = await db.playerDao.getPlayerById(playerId: result.playerId);
+    final playerData = result.first.readTable(db.playerTable);
     return Player(
-      id: player.id,
-      name: player.name,
-      createdAt: player.createdAt,
-      description: player.description,
+      id: playerData.id,
+      name: playerData.name,
+      createdAt: playerData.createdAt,
+      description: playerData.description,
     );
   }
 
@@ -311,20 +302,29 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return rowsAffected > 0;
   }
 
-  /// Retrieves the looser of a match based on the score 0.
+  /// Retrieves the looser of a match by looking for a score entry where score
+  /// is 0. Returns `null` if no player found, else the first with the score.
   Future<Player?> getLooser({required String matchId}) async {
-    final query = select(scoreEntryTable)
-      ..where((s) => s.matchId.equals(matchId) & s.score.equals(0));
-    final result = await query.getSingleOrNull();
+    final query =
+        select(scoreEntryTable).join([
+          innerJoin(
+            db.playerTable,
+            db.playerTable.id.equalsExp(scoreEntryTable.playerId),
+          ),
+        ])..where(
+          scoreEntryTable.matchId.equals(matchId) &
+              scoreEntryTable.score.equals(0),
+        );
 
-    if (result == null) return null;
+    final result = await query.get();
+    if (result.isNotEmpty) return null;
 
-    final player = await db.playerDao.getPlayerById(playerId: result.playerId);
+    final playerData = result.first.readTable(db.playerTable);
     return Player(
-      id: player.id,
-      name: player.name,
-      createdAt: player.createdAt,
-      description: player.description,
+      id: playerData.id,
+      name: playerData.name,
+      createdAt: playerData.createdAt,
+      description: playerData.description,
     );
   }
 
