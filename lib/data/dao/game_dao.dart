@@ -2,12 +2,11 @@ import 'package:drift/drift.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/game_table.dart';
-import 'package:tallee/data/db/tables/match_table.dart';
 import 'package:tallee/data/models/game.dart';
 
 part 'game_dao.g.dart';
 
-@DriftAccessor(tables: [MatchTable, GameTable])
+@DriftAccessor(tables: [GameTable])
 class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   GameDao(super.db);
 
