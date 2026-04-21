@@ -5,6 +5,7 @@ import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
 import 'package:tallee/presentation/widgets/tiles/custom_radio_list_tile.dart';
@@ -14,19 +15,10 @@ class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
   /// [match]: The match for which the winner is to be selected
   /// [onWinnerChanged]: Optional callback invoked when the winner is changed
-  const MatchResultView({
-    super.key,
-    required this.match,
-    this.ruleset = Ruleset.singleWinner,
-    this.onWinnerChanged,
-  });
+  const MatchResultView({super.key, required this.match, this.onWinnerChanged});
 
   /// The match for which the winner is to be selected
   final Match match;
-
-  /// The ruleset of the match, determines how the winner is selected or how
-  /// scores are entered
-  final Ruleset ruleset;
 
   /// Optional callback invoked when the winner is changed
   final VoidCallback? onWinnerChanged;
@@ -37,6 +29,8 @@ class MatchResultView extends StatefulWidget {
 
 class _MatchResultViewState extends State<MatchResultView> {
   late final AppDatabase db;
+
+  late final Ruleset ruleset;
 
   /// List of all players who participated in the match
   late final List<Player> allPlayers;
@@ -51,6 +45,8 @@ class _MatchResultViewState extends State<MatchResultView> {
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
 
+    ruleset = widget.match.game.ruleset;
+
     allPlayers = widget.match.players;
     allPlayers.sort((a, b) => a.name.compareTo(b.name));
 
@@ -59,13 +55,17 @@ class _MatchResultViewState extends State<MatchResultView> {
       (index) => TextEditingController(),
     );
 
-    if (widget.match.winner != null) {
+    if (widget.match.mvp.isNotEmpty) {
       if (rulesetSupportsWinnerSelection()) {
         _selectedPlayer = allPlayers.firstWhere(
-          (p) => p.id == widget.match.winner!.id,
+          (p) => p.id == widget.match.mvp.first.id,
         );
       } else if (rulesetSupportsScoreEntry()) {
-        /// TODO: Update when score logic is overhauled
+        for (int i = 0; i < allPlayers.length; i++) {
+          final scoreList = widget.match.scores[allPlayers[i].id];
+          final score = scoreList?.score ?? 0;
+          controller[i].text = score.toString();
+        }
       }
     }
     super.initState();
@@ -154,7 +154,6 @@ class _MatchResultViewState extends State<MatchResultView> {
                         child: ListView.separated(
                           itemCount: allPlayers.length,
                           itemBuilder: (context, index) {
-                            print(allPlayers[index].name);
                             return ScoreListTile(
                               text: allPlayers[index].name,
                               controller: controller[index],
@@ -176,6 +175,11 @@ class _MatchResultViewState extends State<MatchResultView> {
               text: loc.save_changes,
               sizeRelativeToWidth: 0.95,
               onPressed: () async {
+                final ending = DateTime.now();
+                await db.matchDao.updateMatchEndedAt(
+                  matchId: widget.match.id,
+                  endedAt: ending,
+                );
                 await _handleSaving();
                 if (!context.mounted) return;
                 Navigator.of(context).pop(_selectedPlayer);
@@ -190,12 +194,12 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Handles saving or removing the winner in the database
   /// based on the current selection.
   Future<void> _handleSaving() async {
-    if (widget.ruleset == Ruleset.singleWinner) {
+    if (ruleset == Ruleset.singleWinner) {
       await _handleWinner();
-    } else if (widget.ruleset == Ruleset.singleLoser) {
+    } else if (ruleset == Ruleset.singleLoser) {
       await _handleLoser();
-    } else if (widget.ruleset == Ruleset.lowestScore ||
-        widget.ruleset == Ruleset.highestScore) {
+    } else if (ruleset == Ruleset.lowestScore ||
+        ruleset == Ruleset.highestScore) {
       await _handleScores();
     }
 
@@ -204,9 +208,9 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   Future<bool> _handleWinner() async {
     if (_selectedPlayer == null) {
-      await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
+      return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
     } else {
-      await db.scoreEntryDao.setWinner(
+      return await db.scoreEntryDao.setWinner(
         matchId: widget.match.id,
         playerId: _selectedPlayer!.id,
       );
@@ -215,33 +219,33 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   Future<bool> _handleLoser() async {
     if (_selectedPlayer == null) {
-      /// TODO: Update when score logic is overhauled
-      return false;
+      return await db.scoreEntryDao.removeLooser(matchId: widget.match.id);
     } else {
-      /// TODO: Update when score logic is overhauled
-      return false;
+      return await db.scoreEntryDao.setLooser(
+        matchId: widget.match.id,
+        playerId: _selectedPlayer!.id,
+      );
     }
   }
 
   /// Handles saving the scores for each player in the database.
-  Future<bool> _handleScores() async {
+  Future<void> _handleScores() async {
     for (int i = 0; i < allPlayers.length; i++) {
       var text = controller[i].text;
       if (text.isEmpty) {
         text = '0';
       }
       final score = int.parse(text);
-      await db.playerMatchDao.updatePlayerScore(
+      await db.scoreEntryDao.addScore(
         matchId: widget.match.id,
         playerId: allPlayers[i].id,
-        newScore: score,
+        entry: ScoreEntry(roundNumber: 0, score: score, change: 0),
       );
     }
-    return false;
   }
 
   String getTitleForRuleset(AppLocalizations loc) {
-    switch (widget.ruleset) {
+    switch (ruleset) {
       case Ruleset.singleWinner:
         return loc.select_winner;
       case Ruleset.singleLoser:
@@ -252,12 +256,10 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   bool rulesetSupportsWinnerSelection() {
-    return widget.ruleset == Ruleset.singleWinner ||
-        widget.ruleset == Ruleset.singleLoser;
+    return ruleset == Ruleset.singleWinner || ruleset == Ruleset.singleLoser;
   }
 
   bool rulesetSupportsScoreEntry() {
-    return widget.ruleset == Ruleset.lowestScore ||
-        widget.ruleset == Ruleset.highestScore;
+    return ruleset == Ruleset.lowestScore || ruleset == Ruleset.highestScore;
   }
 }

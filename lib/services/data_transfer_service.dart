@@ -71,20 +71,7 @@ class DataTransferService {
               'gameId': m.game.id,
               'groupId': m.group?.id,
               'playerIds': m.players.map((p) => p.id).toList(),
-              'scores': m.scores.map(
-                (playerId, scores) => MapEntry(
-                  playerId,
-                  scores
-                      .map(
-                        (s) => {
-                          'roundNumber': s.roundNumber,
-                          'score': s.score,
-                          'change': s.change,
-                        },
-                      )
-                      .toList(),
-                ),
-              ),
+              'scores': m.scores,
               'notes': m.notes,
             },
           )

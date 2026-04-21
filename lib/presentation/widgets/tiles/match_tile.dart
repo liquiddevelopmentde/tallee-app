@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
@@ -44,7 +45,6 @@ class _MatchTileState extends State<MatchTile> {
   Widget build(BuildContext context) {
     final match = widget.match;
     final group = match.group;
-    final winner = match.winner;
     final players = [...match.players]
       ..sort((a, b) => a.name.compareTo(b.name));
     final loc = AppLocalizations.of(context);
@@ -131,7 +131,7 @@ class _MatchTileState extends State<MatchTile> {
               const SizedBox(height: 12),
             ],
 
-            if (winner != null) ...[
+            if (match.mvp.isNotEmpty) ...[
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -155,7 +155,7 @@ class _MatchTileState extends State<MatchTile> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        '${loc.winner}: ${winner.name}',
+                        getWinner(loc),
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -247,5 +247,22 @@ class _MatchTileState extends State<MatchTile> {
     } else {
       return '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(dateTime)}';
     }
+  }
+
+  String getWinner(AppLocalizations loc) {
+    if (widget.match.mvp.isEmpty) return '';
+    final ruleset = widget.match.game.ruleset;
+
+    if (ruleset == Ruleset.singleWinner || ruleset == Ruleset.singleLoser) {
+      return '${loc.winner}: ${widget.match.mvp.first.name}';
+    } else if (ruleset == Ruleset.lowestScore ||
+        ruleset == Ruleset.lowestScore) {
+      final mvp = widget.match.mvp;
+      final mvpScore = widget.match.scores[mvp.first.id]?.score ?? 0;
+      final mvpNames = mvp.map((player) => player.name).join(', ');
+
+      return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
+    }
+    return '${loc.winner}: n.A.';
   }
 }

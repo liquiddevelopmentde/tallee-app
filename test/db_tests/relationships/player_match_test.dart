@@ -58,6 +58,7 @@ void main() {
       testMatchOnlyGroup = Match(
         name: 'Test Match with Group',
         game: testGame,
+        players: testGroup.members,
         group: testGroup,
         notes: '',
       );

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:drift/drift.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/score_entry_table.dart';
 import 'package:tallee/data/models/player.dart';
@@ -83,21 +84,21 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Retrieves all scores for a specific match.
-  Future<Map<String, List<ScoreEntry>>> getAllMatchScores({
+  Future<Map<String, ScoreEntry?>> getAllMatchScores({
     required String matchId,
   }) async {
     final query = select(scoreEntryTable)
       ..where((s) => s.matchId.equals(matchId));
     final result = await query.get();
 
-    final Map<String, List<ScoreEntry>> scoresByPlayer = {};
+    final Map<String, ScoreEntry?> scoresByPlayer = {};
     for (final row in result) {
       final score = ScoreEntry(
         roundNumber: row.roundNumber,
         score: row.score,
         change: row.change,
       );
-      scoresByPlayer.putIfAbsent(row.playerId, () => []).add(score);
+      scoresByPlayer[row.playerId] = score;
     }
 
     return scoresByPlayer;
@@ -237,10 +238,25 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   // Retrieves the winner of a match based on the highest score.
   Future<Player?> getWinner({required String matchId}) async {
+    // Check the ruleset of the match
+    final ruleset = await db.gameDao
+        .getGameByMatchId(matchId: matchId)
+        .then((game) => game.ruleset);
+
     final query = select(scoreEntryTable)
-      ..where((s) => s.matchId.equals(matchId))
-      ..orderBy([(s) => OrderingTerm.desc(s.score)])
-      ..limit(1);
+      ..where((s) => s.matchId.equals(matchId));
+
+    // If the ruleset is lowestScore, the winner is the player with the lowest
+    // score so we order by ascending score.
+    if (ruleset == Ruleset.lowestScore) {
+      query
+        ..orderBy([(s) => OrderingTerm.asc(s.score)])
+        ..limit(1);
+    } else {
+      query
+        ..orderBy([(s) => OrderingTerm.desc(s.score)])
+        ..limit(1);
+    }
     final result = await query.getSingleOrNull();
 
     if (result == null) return null;

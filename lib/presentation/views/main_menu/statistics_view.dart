@@ -140,8 +140,8 @@ class _StatisticsViewState extends State<StatisticsView> {
 
     // Getting the winners
     for (var match in matches) {
-      final winner = match.winner;
-      if (winner != null) {
+      final mvps = match.mvp;
+      for (var winner in mvps) {
         final index = winCounts.indexWhere((entry) => entry.$1 == winner.id);
         // -1 means winner not found in winCounts
         if (index != -1) {

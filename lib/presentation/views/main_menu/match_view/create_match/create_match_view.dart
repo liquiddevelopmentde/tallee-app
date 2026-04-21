@@ -277,7 +277,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       group: selectedGroup,
       players: selectedPlayers,
       game: tempGame,
-      winner: widget.matchToEdit!.winner,
       createdAt: widget.matchToEdit!.createdAt,
       endedAt: widget.matchToEdit!.endedAt,
       notes: widget.matchToEdit!.notes,
@@ -314,9 +313,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           matchId: widget.matchToEdit!.id,
           playerId: player.id,
         );
-        if (widget.matchToEdit!.winner?.id == player.id) {
-          updatedMatch.winner = null;
-        }
       }
     }
 

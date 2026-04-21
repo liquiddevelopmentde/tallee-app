@@ -43,21 +43,25 @@ class _HomeViewState extends State<HomeView> {
     Match(
       name: 'Skeleton Match',
       game: Game(
-        name: '',
+        name: 'Skeleton Game',
         ruleset: Ruleset.singleWinner,
-        description: '',
+        description: 'This is a skeleton game description.',
         color: GameColor.blue,
         icon: '',
       ),
       group: Group(
         name: 'Skeleton Group',
-        description: '',
+        description: 'This is a skeleton group description.',
         members: [
           Player(name: 'Skeleton Player 1', description: ''),
           Player(name: 'Skeleton Player 2', description: ''),
         ],
       ),
-      notes: '',
+      notes: 'These are skeleton notes.',
+      players: [
+        Player(name: 'Skeleton Player 1', description: ''),
+        Player(name: 'Skeleton Player 2', description: ''),
+      ],
     ),
   );
 
@@ -231,7 +235,8 @@ class _HomeViewState extends State<HomeView> {
     final matchIndex = recentMatches.indexWhere((match) => match.id == matchId);
     if (matchIndex != -1) {
       setState(() {
-        recentMatches[matchIndex].winner = winner;
+        // TODO: fix
+        //recentMatches[matchIndex].winner = winner;
       });
     }
   }

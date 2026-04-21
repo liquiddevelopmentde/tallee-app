@@ -64,14 +64,8 @@ void main() {
         players: [testPlayer1, testPlayer2],
         notes: 'Test notes',
         scores: {
-          testPlayer1.id: [
-            ScoreEntry(roundNumber: 1, score: 10, change: 10),
-            ScoreEntry(roundNumber: 2, score: 20, change: 10),
-          ],
-          testPlayer2.id: [
-            ScoreEntry(roundNumber: 1, score: 15, change: 15),
-            ScoreEntry(roundNumber: 2, score: 25, change: 10),
-          ],
+          testPlayer1.id: ScoreEntry(roundNumber: 1, score: 10, change: 10),
+          testPlayer2.id: ScoreEntry(roundNumber: 1, score: 15, change: 15),
         },
       );
     });

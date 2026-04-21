@@ -343,8 +343,16 @@ void main() {
     // Verifies that teams with overlapping members are independent.
     test('Teams with overlapping members are independent', () async {
       // Create two matches since player_match has primary key {playerId, matchId}
-      final match1 = Match(name: 'Match 1', game: testGame1, notes: '');
-      final match2 = Match(name: 'Match 2', game: testGame2, notes: '');
+      final match1 = Match(
+        name: 'Match 1',
+        game: testGame1,
+        players: [testPlayer1, testPlayer2],
+      );
+      final match2 = Match(
+        name: 'Match 2',
+        game: testGame2,
+        players: [testPlayer1, testPlayer2],
+      );
       await database.matchDao.addMatch(match: match1);
       await database.matchDao.addMatch(match: match2);
 

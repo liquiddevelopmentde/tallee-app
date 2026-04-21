@@ -63,7 +63,6 @@ void main() {
         game: testGame,
         group: testGroup1,
         players: [testPlayer4, testPlayer5],
-        winner: testPlayer4,
         notes: '',
       );
       testMatch2 = Match(
@@ -71,20 +70,19 @@ void main() {
         game: testGame,
         group: testGroup2,
         players: [testPlayer1, testPlayer2, testPlayer3],
-        winner: testPlayer2,
         notes: '',
       );
       testMatchOnlyPlayers = Match(
         name: 'Test Match with Players',
         game: testGame,
         players: [testPlayer1, testPlayer2, testPlayer3],
-        winner: testPlayer3,
         notes: '',
       );
       testMatchOnlyGroup = Match(
         name: 'Test Match with Group',
         game: testGame,
         group: testGroup2,
+        players: testGroup2.members,
         notes: '',
       );
     });
@@ -289,8 +287,8 @@ void main() {
         matchId: testMatch1.id,
       );
 
-      expect(fetchedMatch.winner, isNotNull);
-      expect(fetchedMatch.winner!.id, testPlayer4.id);
+      expect(fetchedMatch.mvp, isNotNull);
+      expect(fetchedMatch.mvp.first.id, testPlayer4.id);
     });
 
     test('Setting a winner works correctly', () async {
@@ -304,8 +302,8 @@ void main() {
       final fetchedMatch = await database.matchDao.getMatchById(
         matchId: testMatch1.id,
       );
-      expect(fetchedMatch.winner, isNotNull);
-      expect(fetchedMatch.winner!.id, testPlayer5.id);
+      expect(fetchedMatch.mvp, isNotNull);
+      expect(fetchedMatch.mvp.first.id, testPlayer5.id);
     });
 
     test(
