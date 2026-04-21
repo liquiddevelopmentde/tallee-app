@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 
 class AnimatedDialogButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
   /// when pressed.
   /// - [onPressed]: Callback function that is triggered when the button is pressed.
-  /// - [child]: The child widget to be displayed inside the button, typically a text or icon.
+  /// - [buttonText]: The text to be displayed on the button.
+  /// - [buttonType]: The type of the button, which determines its styling.
+  /// - [buttonConstraints]: Optional constraints to control the button's size.
   const AnimatedDialogButton({
     super.key,
+    required this.buttonText,
     required this.onPressed,
-    required this.child,
+    this.buttonConstraints,
+    this.buttonType = ButtonType.primary,
   });
 
-  /// Callback function that is triggered when the button is pressed.
+  final String buttonText;
+
   final VoidCallback onPressed;
 
-  /// The child widget to be displayed inside the button, typically a text or icon.
-  final Widget child;
+  final BoxConstraints? buttonConstraints;
+
+  final ButtonType buttonType;
 
   @override
   State<AnimatedDialogButton> createState() => _AnimatedDialogButtonState();
@@ -27,6 +33,29 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
 
   @override
   Widget build(BuildContext context) {
+    final textStyling = TextStyle(
+      color: widget.buttonType == ButtonType.primary
+          ? Colors.black
+          : Colors.white,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    );
+
+    final buttonDecoration = widget.buttonType == ButtonType.primary
+        // Primary
+        ? BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          )
+        : widget.buttonType == ButtonType.secondary
+        // Secondary
+        ? BoxDecoration(
+            border: BoxBorder.all(color: Colors.white, width: 2),
+            borderRadius: BorderRadius.circular(12),
+          )
+        // Tertiary
+        : const BoxDecoration();
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) => setState(() => _isPressed = false),
@@ -38,10 +67,18 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
         child: AnimatedOpacity(
           opacity: _isPressed ? 0.6 : 1.0,
           duration: const Duration(milliseconds: 100),
-          child: Container(
-            decoration: CustomTheme.standardBoxDecoration,
-            padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 6),
-            child: widget.child,
+          child: Center(
+            child: Container(
+              constraints: widget.buttonConstraints,
+              decoration: buttonDecoration,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(
+                widget.buttonText,
+                style: textStyling,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
         ),
       ),

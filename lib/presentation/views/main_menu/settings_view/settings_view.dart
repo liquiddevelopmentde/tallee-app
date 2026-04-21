@@ -9,8 +9,8 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses_view.dart';
-import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
-import 'package:tallee/presentation/widgets/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/data_transfer_service.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -122,25 +122,16 @@ class _SettingsViewState extends State<SettingsView> {
                         context: context,
                         builder: (context) => CustomAlertDialog(
                           title: '${loc.delete_all_data}?',
-                          content: loc.this_cannot_be_undone,
+                          content: Text(loc.this_cannot_be_undone),
                           actions: [
-                            AnimatedDialogButton(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              child: Text(
-                                loc.cancel,
-                                style: const TextStyle(
-                                  color: CustomTheme.textColor,
-                                ),
-                              ),
-                            ),
-                            AnimatedDialogButton(
+                            CustomDialogAction(
                               onPressed: () => Navigator.of(context).pop(true),
-                              child: Text(
-                                loc.delete,
-                                style: const TextStyle(
-                                  color: CustomTheme.secondaryColor,
-                                ),
-                              ),
+                              text: loc.delete,
+                            ),
+                            CustomDialogAction(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              buttonType: ButtonType.secondary,
+                              text: loc.cancel,
                             ),
                           ],
                         ),
