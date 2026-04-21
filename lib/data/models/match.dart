@@ -84,10 +84,10 @@ class Match {
         return _getPlayersWithLowestScore();
 
       case Ruleset.singleWinner:
-        return [_getPlayersWithHighestScore().first];
+        return _getPlayersWithHighestScore().take(1).toList();
 
       case Ruleset.singleLoser:
-        return [_getPlayersWithLowestScore().first];
+        return _getPlayersWithLowestScore().take(1).toList();
 
       case Ruleset.multipleWinners:
         return [];
@@ -95,7 +95,9 @@ class Match {
   }
 
   List<Player> _getPlayersWithHighestScore() {
-    if (players.isEmpty || scores.isEmpty) return [];
+    if (players.isEmpty || scores.values.every((score) => score == null)) {
+      return [];
+    }
 
     final int highestScore = players
         .map((player) => scores[player.id]?.score)
