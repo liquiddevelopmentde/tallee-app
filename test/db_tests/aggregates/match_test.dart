@@ -8,6 +8,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/score_entry.dart';
 
 void main() {
   late AppDatabase database;
@@ -62,24 +63,25 @@ void main() {
         name: 'First Test Match',
         game: testGame,
         group: testGroup1,
-        players: [testPlayer4, testPlayer5]
+        players: [testPlayer4, testPlayer5],
+        scores: {testPlayer4.id: ScoreEntry(score: 1)},
       );
       testMatch2 = Match(
         name: 'Second Test Match',
         game: testGame,
         group: testGroup2,
-        players: [testPlayer1, testPlayer2, testPlayer3]
+        players: [testPlayer1, testPlayer2, testPlayer3],
       );
       testMatchOnlyPlayers = Match(
         name: 'Test Match with Players',
         game: testGame,
-        players: [testPlayer1, testPlayer2, testPlayer3]
+        players: [testPlayer1, testPlayer2, testPlayer3],
       );
       testMatchOnlyGroup = Match(
         name: 'Test Match with Group',
         game: testGame,
         group: testGroup2,
-        players: testGroup2.members
+        players: testGroup2.members,
       );
     });
     await database.playerDao.addPlayersAsList(

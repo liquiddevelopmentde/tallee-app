@@ -59,12 +59,12 @@ void main() {
         name: 'Test Match with Group',
         game: testGame,
         players: testGroup.members,
-        group: testGroup
+        group: testGroup,
       );
       testMatchOnlyPlayers = Match(
         name: 'Test Match with Players',
         game: testGame,
-        players: [testPlayer4, testPlayer5, testPlayer6]
+        players: [testPlayer4, testPlayer5, testPlayer6],
       );
       testTeam1 = Team(name: 'Team Alpha', members: [testPlayer1, testPlayer2]);
       testTeam2 = Team(name: 'Team Beta', members: [testPlayer3, testPlayer4]);
@@ -396,7 +396,6 @@ void main() {
         matchId: testMatchOnlyGroup.id,
         teamId: testTeam1.id,
       );
-
       expect(playersInTeam.length, 2);
       final playerIds = playersInTeam.map((p) => p.id).toSet();
       expect(playerIds.contains(testPlayer1.id), true);
@@ -545,6 +544,7 @@ void main() {
         matchId: testMatchOnlyGroup.id,
         teamId: testTeam1.id,
       );
+
       expect(playersInTeam1.length, 2);
       final team1Ids = playersInTeam1.map((p) => p.id).toSet();
       expect(team1Ids.contains(testPlayer1.id), true);
@@ -566,12 +566,12 @@ void main() {
       final match1 = Match(
         name: 'Match 1',
         game: testGame,
-        players: playersList
+        players: playersList,
       );
       final match2 = Match(
         name: 'Match 2',
         game: testGame,
-        players: playersList
+        players: playersList,
       );
 
       await Future.wait([
