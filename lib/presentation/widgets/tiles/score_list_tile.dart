@@ -11,20 +11,12 @@ class ScoreListTile extends StatelessWidget {
     super.key,
     required this.text,
     required this.controller,
-    /*
-    required this.onContainerTap,
-*/
   });
 
   /// The text to display next to the radio button.
   final String text;
 
   final TextEditingController controller;
-
-  /// The callback invoked when the container is tapped.
-  /*
-  final ValueChanged<T> onContainerTap;
-*/
 
   @override
   Widget build(BuildContext context) {
