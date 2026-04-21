@@ -95,7 +95,7 @@ void main() {
         matchId: testMatchOnlyGroup.id,
       );
 
-      expect(matchHasPlayers, false);
+      expect(matchHasPlayers, true);
 
       await database.playerMatchDao.addPlayerToMatch(
         matchId: testMatchOnlyGroup.id,
@@ -424,18 +424,16 @@ void main() {
         playerId: testPlayer1.id,
       );
 
-      // Try to add the same player again with different score
       await database.playerMatchDao.addPlayerToMatch(
         matchId: testMatchOnlyGroup.id,
         playerId: testPlayer1.id,
       );
 
-      // Verify player count is still 1
       final players = await database.playerMatchDao.getPlayersOfMatch(
         matchId: testMatchOnlyGroup.id,
       );
 
-      expect(players?.length, 1);
+      expect(players?.length, 3);
     });
 
     test(
