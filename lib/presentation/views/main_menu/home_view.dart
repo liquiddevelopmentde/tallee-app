@@ -145,7 +145,11 @@ class _HomeViewState extends State<HomeView> {
                                           MatchResultView(match: match),
                                     ),
                                   );
-                                  await updatedWinnerInRecentMatches(match.id);
+                                  await loadRecentMatches();
+
+                                  setState(() {
+                                    print('loaded');
+                                  });
                                 },
                               ),
                             )
@@ -244,17 +248,12 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  /// Updates the winner information for a specific match in the recent matches list.
-  Future<void> updatedWinnerInRecentMatches(String matchId) async {
+  Future<void> loadRecentMatches() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    // TODO: fix
-    //final winner = await db.scoreEntryDao.getWinner(matchId: matchId);
-    final matchIndex = recentMatches.indexWhere((match) => match.id == matchId);
-    if (matchIndex != -1) {
-      setState(() {
-        // TODO: fix
-        //recentMatches[matchIndex].winner = winner;
-      });
-    }
+    final matches = await db.matchDao.getAllMatches();
+    recentMatches =
+        (matches..sort((a, b) => b.createdAt.compareTo(a.createdAt)))
+            .take(2)
+            .toList();
   }
 }
