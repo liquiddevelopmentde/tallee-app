@@ -38,21 +38,23 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// List of text controllers for score entry, one for each player
   late final List<TextEditingController> controller;
 
+  late bool canSave;
+
   /// Currently selected winner player
   Player? _selectedPlayer;
 
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
-
     ruleset = widget.match.game.ruleset;
+    canSave = !rulesetSupportsScoreEntry();
 
     allPlayers = widget.match.players;
     allPlayers.sort((a, b) => a.name.compareTo(b.name));
 
     controller = List.generate(
       allPlayers.length,
-      (index) => TextEditingController(),
+      (index) => TextEditingController()..addListener(() => onTextEnter()),
     );
 
     if (widget.match.mvp.isNotEmpty) {
@@ -67,8 +69,16 @@ class _MatchResultViewState extends State<MatchResultView> {
           controller[i].text = score.toString();
         }
       }
+      super.initState();
     }
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    for (final c in controller) {
+      c.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -174,21 +184,32 @@ class _MatchResultViewState extends State<MatchResultView> {
             CustomWidthButton(
               text: loc.save_changes,
               sizeRelativeToWidth: 0.95,
-              onPressed: () async {
-                final ending = DateTime.now();
-                await db.matchDao.updateMatchEndedAt(
-                  matchId: widget.match.id,
-                  endedAt: ending,
-                );
-                await _handleSaving();
-                if (!context.mounted) return;
-                Navigator.of(context).pop(_selectedPlayer);
-              },
+              onPressed: canSave
+                  ? () async {
+                      final ending = DateTime.now();
+                      await db.matchDao.updateMatchEndedAt(
+                        matchId: widget.match.id,
+                        endedAt: ending,
+                      );
+                      await _handleSaving();
+                      if (!context.mounted) return;
+                      Navigator.of(context).pop(_selectedPlayer);
+                    }
+                  : null,
             ),
           ],
         ),
       ),
     );
+  }
+
+  /// Updated [canSave] everytime a text is entered in one of the score entry fields.
+  void onTextEnter() {
+    if (rulesetSupportsScoreEntry()) {
+      setState(() {
+        canSave = controller.every((c) => c.text.isNotEmpty);
+      });
+    }
   }
 
   /// Handles saving or removing the winner in the database
@@ -206,6 +227,7 @@ class _MatchResultViewState extends State<MatchResultView> {
     widget.onWinnerChanged?.call();
   }
 
+  /// Handles saving or removing the winner in the database.
   Future<bool> _handleWinner() async {
     if (_selectedPlayer == null) {
       return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
@@ -217,6 +239,7 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
   }
 
+  /// Handles saving or removing the loser in the database.
   Future<bool> _handleLoser() async {
     if (_selectedPlayer == null) {
       return await db.scoreEntryDao.removeLooser(matchId: widget.match.id);
