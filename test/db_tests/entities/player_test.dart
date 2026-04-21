@@ -24,10 +24,10 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Test Player', description: '');
-      testPlayer2 = Player(name: 'Second Player', description: '');
-      testPlayer3 = Player(name: 'Charlie', description: '');
-      testPlayer4 = Player(name: 'Diana', description: '');
+      testPlayer1 = Player(name: 'Test Player');
+      testPlayer2 = Player(name: 'Second Player');
+      testPlayer3 = Player(name: 'Charlie');
+      testPlayer4 = Player(name: 'Diana');
     });
   });
   tearDown(() async {
@@ -348,7 +348,7 @@ void main() {
 
     // Verifies that a player with empty string name is stored correctly.
     test('Player with empty string name is stored correctly', () async {
-      final emptyNamePlayer = Player(name: '', description: '');
+      final emptyNamePlayer = Player(name: '');
 
       await database.playerDao.addPlayer(player: emptyNamePlayer);
 
@@ -361,7 +361,7 @@ void main() {
     // Verifies that a player with very long name is stored correctly.
     test('Player with very long name is stored correctly', () async {
       final longName = 'A' * 1000;
-      final longNamePlayer = Player(name: longName, description: '');
+      final longNamePlayer = Player(name: longName);
 
       await database.playerDao.addPlayer(player: longNamePlayer);
 

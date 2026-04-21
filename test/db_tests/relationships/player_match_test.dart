@@ -37,12 +37,12 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Alice', description: '');
-      testPlayer2 = Player(name: 'Bob', description: '');
-      testPlayer3 = Player(name: 'Charlie', description: '');
-      testPlayer4 = Player(name: 'Diana', description: '');
-      testPlayer5 = Player(name: 'Eve', description: '');
-      testPlayer6 = Player(name: 'Frank', description: '');
+      testPlayer1 = Player(name: 'Alice');
+      testPlayer2 = Player(name: 'Bob');
+      testPlayer3 = Player(name: 'Charlie');
+      testPlayer4 = Player(name: 'Diana');
+      testPlayer5 = Player(name: 'Eve');
+      testPlayer6 = Player(name: 'Frank');
       testGroup = Group(
         name: 'Test Group',
         description: '',
@@ -59,14 +59,12 @@ void main() {
         name: 'Test Match with Group',
         game: testGame,
         players: testGroup.members,
-        group: testGroup,
-        notes: '',
+        group: testGroup
       );
       testMatchOnlyPlayers = Match(
         name: 'Test Match with Players',
         game: testGame,
-        players: [testPlayer4, testPlayer5, testPlayer6],
-        notes: '',
+        players: [testPlayer4, testPlayer5, testPlayer6]
       );
       testTeam1 = Team(name: 'Team Alpha', members: [testPlayer1, testPlayer2]);
       testTeam2 = Team(name: 'Team Beta', members: [testPlayer3, testPlayer4]);
@@ -568,14 +566,12 @@ void main() {
       final match1 = Match(
         name: 'Match 1',
         game: testGame,
-        players: playersList,
-        notes: '',
+        players: playersList
       );
       final match2 = Match(
         name: 'Match 2',
         game: testGame,
-        players: playersList,
-        notes: '',
+        players: playersList
       );
 
       await Future.wait([
