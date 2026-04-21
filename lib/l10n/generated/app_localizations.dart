@@ -722,6 +722,12 @@ abstract class AppLocalizations {
   /// **'This can\'t be undone.'**
   String get this_cannot_be_undone;
 
+  /// No description provided for @tie.
+  ///
+  /// In en, this message translates to:
+  /// **'Tie'**
+  String get tie;
+
   /// Date format for today
   ///
   /// In en, this message translates to:

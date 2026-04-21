@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -338,6 +337,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get this_cannot_be_undone =>
       'Dies kann nicht rückgängig gemacht werden.';
+
+  @override
+  String get tie => 'Unentschieden';
 
   @override
   String get today_at => 'Heute um';

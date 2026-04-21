@@ -105,6 +105,7 @@
   "successfully_added_player": "Spieler:in {playerName} erfolgreich hinzugefügt",
   "there_is_no_group_matching_your_search": "Es gibt keine Gruppe, die deiner Suche entspricht",
   "this_cannot_be_undone": "Dies kann nicht rückgängig gemacht werden.",
+  "tie": "Unentschieden",
   "today_at": "Heute um",
   "undo": "Rückgängig",
   "unknown_exception": "Unbekannter Fehler (siehe Konsole)",
