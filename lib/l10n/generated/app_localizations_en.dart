@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -242,6 +243,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String players_count(int count) {
     return '$count Players';
   }
+
+  @override
+  String get point => 'Point';
 
   @override
   String get points => 'Points';

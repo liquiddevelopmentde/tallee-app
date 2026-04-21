@@ -548,6 +548,12 @@ abstract class AppLocalizations {
   /// **'{count} Players'**
   String players_count(int count);
 
+  /// No description provided for @point.
+  ///
+  /// In en, this message translates to:
+  /// **'Point'**
+  String get point;
+
   /// Points label
   ///
   /// In en, this message translates to:
