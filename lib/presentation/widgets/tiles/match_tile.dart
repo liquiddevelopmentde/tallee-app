@@ -187,15 +187,11 @@ class _MatchTileState extends State<MatchTile> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.emoji_events,
-                      size: 20,
-                      color: Colors.amber,
-                    ),
+                    getMvpIcon(),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        getWinner(loc),
+                        getMvpText(loc),
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -290,13 +286,15 @@ class _MatchTileState extends State<MatchTile> {
     }
   }
 
-  String getWinner(AppLocalizations loc) {
+  String getMvpText(AppLocalizations loc) {
     if (widget.match.mvp.isEmpty) return '';
     final ruleset = widget.match.game.ruleset;
 
-    if (ruleset == Ruleset.singleWinner || ruleset == Ruleset.singleLoser) {
+    if (ruleset == Ruleset.singleWinner) {
       return '${loc.winner}: ${widget.match.mvp.first.name}';
-    } else if (ruleset == Ruleset.lowestScore ||
+    } else if (ruleset == Ruleset.singleLoser) {
+      return '${loc.loser}: ${widget.match.mvp.first.name}';
+    } else if (ruleset == Ruleset.highestScore ||
         ruleset == Ruleset.lowestScore) {
       final mvp = widget.match.mvp;
       final mvpScore = widget.match.scores[mvp.first.id]?.score ?? 0;
@@ -305,5 +303,26 @@ class _MatchTileState extends State<MatchTile> {
       return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
     }
     return '${loc.winner}: n.A.';
+  }
+
+  Icon getMvpIcon() {
+    const Icon(Icons.emoji_events, size: 20, color: Colors.amber);
+
+    switch (widget.match.game.ruleset) {
+      case Ruleset.singleWinner:
+        return const Icon(Icons.emoji_events, size: 20, color: Colors.amber);
+      case Ruleset.singleLoser:
+        return const Icon(
+          Icons.sentiment_dissatisfied_outlined,
+          size: 20,
+          color: Colors.blue,
+        );
+      case Ruleset.lowestScore:
+        return const Icon(Icons.arrow_downward, size: 20, color: Colors.orange);
+      case Ruleset.highestScore:
+        return const Icon(Icons.arrow_upward, size: 20, color: Colors.green);
+      default:
+        return const Icon(Icons.emoji_events, size: 20, color: Colors.amber);
+    }
   }
 }
