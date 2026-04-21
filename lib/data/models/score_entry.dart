@@ -1,13 +1,14 @@
 class ScoreEntry {
-  int roundNumber = 0;
+  final int roundNumber;
   final int score;
   final int change;
 
-  ScoreEntry({
-    required this.roundNumber,
-    required this.score,
-    required this.change,
-  });
+  ScoreEntry({required this.score, this.roundNumber = 0, this.change = 0});
+
+  @override
+  String toString() {
+    return 'ScoreEntry{roundNumber: $roundNumber, score: $score, change: $change}';
+  }
 
   ScoreEntry.fromJson(Map<String, dynamic> json)
     : roundNumber = json['roundNumber'],
