@@ -12,43 +12,7 @@ part 'group_dao.g.dart';
 class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
   GroupDao(super.db);
 
-  /// Retrieves all groups from the database.
-  Future<List<Group>> getAllGroups() async {
-    final query = select(groupTable);
-    final result = await query.get();
-    return Future.wait(
-      result.map((groupData) async {
-        final members = await db.playerGroupDao.getPlayersOfGroup(
-          groupId: groupData.id,
-        );
-        return Group(
-          id: groupData.id,
-          name: groupData.name,
-          description: groupData.description,
-          members: members,
-          createdAt: groupData.createdAt,
-        );
-      }),
-    );
-  }
-
-  /// Retrieves a [Group] by its [groupId], including its members.
-  Future<Group> getGroupById({required String groupId}) async {
-    final query = select(groupTable)..where((g) => g.id.equals(groupId));
-    final result = await query.getSingle();
-
-    List<Player> members = await db.playerGroupDao.getPlayersOfGroup(
-      groupId: groupId,
-    );
-
-    return Group(
-      id: result.id,
-      name: result.name,
-      description: result.description,
-      members: members,
-      createdAt: result.createdAt,
-    );
-  }
+  /* Create */
 
   /// Adds a new group with the given [id] and [name] to the database.
   /// This method also adds the group's members to the [PlayerGroupTable].
@@ -172,6 +136,65 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     });
   }
 
+  /* Read */
+
+  /// Retrieves all groups from the database.
+  Future<List<Group>> getAllGroups() async {
+    final query = select(groupTable);
+    final result = await query.get();
+    return Future.wait(
+      result.map((groupData) async {
+        final members = await db.playerGroupDao.getPlayersOfGroup(
+          groupId: groupData.id,
+        );
+        return Group(
+          id: groupData.id,
+          name: groupData.name,
+          description: groupData.description,
+          members: members,
+          createdAt: groupData.createdAt,
+        );
+      }),
+    );
+  }
+
+  /// Retrieves a [Group] by its [groupId], including its members.
+  Future<Group> getGroupById({required String groupId}) async {
+    final query = select(groupTable)..where((g) => g.id.equals(groupId));
+    final result = await query.getSingle();
+
+    List<Player> members = await db.playerGroupDao.getPlayersOfGroup(
+      groupId: groupId,
+    );
+
+    return Group(
+      id: result.id,
+      name: result.name,
+      description: result.description,
+      members: members,
+      createdAt: result.createdAt,
+    );
+  }
+
+  /// Retrieves the number of groups in the database.
+  Future<int> getGroupCount() async {
+    final count =
+        await (selectOnly(groupTable)..addColumns([groupTable.id.count()]))
+            .map((row) => row.read(groupTable.id.count()))
+            .getSingle();
+    return count ?? 0;
+  }
+
+  /// Checks if a group with the given [groupId] exists in the database.
+  /// Returns `true` if the group exists, `false` otherwise.
+  Future<bool> groupExists({required String groupId}) async {
+    final query = select(groupTable)..where((g) => g.id.equals(groupId));
+    final result = await query.getSingleOrNull();
+    return result != null;
+  }
+
+  /* Delete */
+
   /// Deletes the group with the given [id] from the database.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> deleteGroup({required String groupId}) async {
@@ -179,6 +202,16 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
+
+  /// Deletes all groups from the database.
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> deleteAllGroups() async {
+    final query = delete(groupTable);
+    final rowsAffected = await query.go();
+    return rowsAffected > 0;
+  }
+
+  /* Update */
 
   /// Updates the name of the group with the given [id] to [newName].
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
@@ -203,31 +236,6 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
         await (update(groupTable)..where((g) => g.id.equals(groupId))).write(
           GroupTableCompanion(description: Value(newDescription)),
         );
-    return rowsAffected > 0;
-  }
-
-  /// Retrieves the number of groups in the database.
-  Future<int> getGroupCount() async {
-    final count =
-        await (selectOnly(groupTable)..addColumns([groupTable.id.count()]))
-            .map((row) => row.read(groupTable.id.count()))
-            .getSingle();
-    return count ?? 0;
-  }
-
-  /// Checks if a group with the given [groupId] exists in the database.
-  /// Returns `true` if the group exists, `false` otherwise.
-  Future<bool> groupExists({required String groupId}) async {
-    final query = select(groupTable)..where((g) => g.id.equals(groupId));
-    final result = await query.getSingleOrNull();
-    return result != null;
-  }
-
-  /// Deletes all groups from the database.
-  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
-  Future<bool> deleteAllGroups() async {
-    final query = delete(groupTable);
-    final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
 
