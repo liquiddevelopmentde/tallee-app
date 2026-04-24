@@ -9,12 +9,15 @@ class TextIconTile extends StatelessWidget {
   const TextIconTile({
     super.key,
     required this.text,
+    this.suffixText = '',
     this.iconEnabled = true,
     this.onIconTap,
   });
 
   /// The text to display in the tile.
   final String text;
+
+  final String suffixText;
 
   /// A boolean to determine if the icon should be displayed.
   final bool iconEnabled;
@@ -36,10 +39,28 @@ class TextIconTile extends StatelessWidget {
         children: [
           if (iconEnabled) const SizedBox(width: 3),
           Flexible(
-            child: Text(
-              text,
+            child: RichText(
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              text: TextSpan(
+                style: DefaultTextStyle.of(context).style,
+                children: [
+                  TextSpan(
+                    text: text,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  TextSpan(
+                    text: suffixText,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: CustomTheme.textColor.withAlpha(120),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           if (iconEnabled) ...<Widget>[

@@ -258,7 +258,11 @@ class _MatchTileState extends State<MatchTile> {
                 spacing: 6,
                 runSpacing: 6,
                 children: players.map((player) {
-                  return TextIconTile(text: player.name, iconEnabled: false);
+                  return TextIconTile(
+                    text: player.name,
+                    suffixText: getNameCountText(player),
+                    iconEnabled: false,
+                  );
                 }).toList(),
               ),
             ],
