@@ -159,14 +159,14 @@ const allDependencies = <Package>[
 
 /// Direct `dependencies`.
 const dependencies = <Package>[
-  _flutter,
-  _flutter_localizations,
   _clock,
   _cupertino_icons,
   _drift,
   _drift_flutter,
   _file_picker,
   _file_saver,
+  _flutter,
+  _flutter_localizations,
   _fluttericon,
   _font_awesome_flutter,
   _intl,
@@ -2377,14 +2377,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// file_picker 10.3.10
+/// file_picker 11.0.2
 const _file_picker = Package(
     name: 'file_picker',
     description: 'A package that allows you to use a native file explorer to pick single or multiple absolute file paths, with extension filtering support.',
     homepage: 'https://github.com/miguelpruivo/plugins_flutter_file_picker',
     repository: 'https://github.com/miguelpruivo/flutter_file_picker',
     authors: [],
-    version: '10.3.10',
+    version: '11.0.2',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2690,13 +2690,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// font_awesome_flutter 10.12.0
+/// font_awesome_flutter 11.0.0
 const _font_awesome_flutter = Package(
     name: 'font_awesome_flutter',
     description: 'The Font Awesome Icon pack available as Flutter Icons. Provides 2000 additional icons to use in your apps.',
     repository: 'https://github.com/fluttercommunity/font_awesome_flutter',
     authors: [],
-    version: '10.12.0',
+    version: '11.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -37881,16 +37881,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// tallee 0.0.22+256
+/// tallee 0.0.23+257
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.0.22+256',
+    version: '0.0.23+257',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter'), PackageRef('flutter_localizations'), PackageRef('clock'), PackageRef('cupertino_icons'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('provider'), PackageRef('skeletonizer'), PackageRef('url_launcher'), PackageRef('uuid')],
+    dependencies: [PackageRef('clock'), PackageRef('cupertino_icons'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_localizations'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('provider'), PackageRef('skeletonizer'), PackageRef('url_launcher'), PackageRef('uuid')],
     devDependencies: [PackageRef('flutter_test'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints')],
     license: '''GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
