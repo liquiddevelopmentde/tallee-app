@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -140,6 +141,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                               padding: const EdgeInsets.only(right: 8.0),
                               child: TextIconTile(
                                 text: player.name,
+                                suffixText: getNameCountText(player),
                                 onIconTap: () {
                                   setState(() {
                                     // Removes the player from the selection and notifies the parent.
@@ -193,6 +195,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                   itemBuilder: (BuildContext context, int index) {
                     return TextIconListTile(
                       text: suggestedPlayers[index].name,
+                      suffixText: getNameCountText(suggestedPlayers[index]),
                       onPressed: () {
                         setState(() {
                           // If the player is not already selected
@@ -282,7 +285,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     final loc = AppLocalizations.of(context);
     final playerName = _searchBarController.text.trim();
 
-    final createdPlayer = Player(name: playerName, description: '');
+    int nameCount = _calculateNameCount(playerName);
+    final createdPlayer = Player(name: playerName, nameCount: nameCount);
     final success = await db.playerDao.addPlayer(player: createdPlayer);
 
     if (!context.mounted) return;
@@ -293,6 +297,22 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     } else {
       showSnackBarMessage(loc.could_not_add_player(playerName));
     }
+  }
+
+  int _calculateNameCount(String playerName) {
+    final playersWithSameName =
+        allPlayers.where((player) => player.name == playerName).toList()
+          ..sort((a, b) => a.nameCount.compareTo(b.nameCount));
+
+    if (playersWithSameName.isEmpty) {
+      return 0;
+    } else if (playersWithSameName.length == 1) {
+      // Initialize nameCount
+      playersWithSameName[0].nameCount = 1;
+    }
+
+    // Return following count
+    return playersWithSameName.length + 1;
   }
 
   /// Updates the state after successfully adding a new player.

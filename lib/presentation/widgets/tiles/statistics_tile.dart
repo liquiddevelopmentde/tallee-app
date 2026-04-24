@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:tallee/core/common.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 
@@ -32,7 +35,7 @@ class StatisticsTile extends StatelessWidget {
   final double width;
 
   /// A list of tuples containing labels and their corresponding numeric values.
-  final List<(String, num)> values;
+  final List<(Player, num)> values;
 
   /// The maximum number of items to display.
   final int itemCount;
@@ -89,11 +92,29 @@ class StatisticsTile extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 4.0),
-                              child: Text(
-                                values[index].$1,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                              child: RichText(
+                                overflow: TextOverflow.ellipsis,
+                                text: TextSpan(
+                                  style: DefaultTextStyle.of(context).style,
+                                  children: [
+                                    TextSpan(
+                                      text: values[index].$1.name,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: getNameCountText(values[index].$1),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: CustomTheme.textColor.withAlpha(
+                                          150,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),

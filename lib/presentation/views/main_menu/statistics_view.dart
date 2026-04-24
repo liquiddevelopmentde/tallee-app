@@ -18,9 +18,18 @@ class StatisticsView extends StatefulWidget {
 }
 
 class _StatisticsViewState extends State<StatisticsView> {
-  List<(String, int)> winCounts = List.filled(6, ('Skeleton Player', 1));
-  List<(String, int)> matchCounts = List.filled(6, ('Skeleton Player', 1));
-  List<(String, double)> winRates = List.filled(6, ('Skeleton Player', 1));
+  List<(Player, int)> winCounts = List.filled(6, (
+    Player(name: 'Skeleton Player'),
+    1,
+  ));
+  List<(Player, int)> matchCounts = List.filled(6, (
+    Player(name: 'Skeleton Player'),
+    1,
+  ));
+  List<(Player, double)> winRates = List.filled(6, (
+    Player(name: 'Skeleton Player'),
+    1,
+  ));
   bool isLoading = true;
 
   @override
@@ -121,7 +130,10 @@ class _StatisticsViewState extends State<StatisticsView> {
         players: players,
         context: context,
       );
-      winRates = computeWinRatePercent(wins: winCounts, matches: matchCounts);
+      winRates = computeWinRatePercent(
+        winCounts: winCounts,
+        matchCounts: matchCounts,
+      );
       setState(() {
         isLoading = false;
       });
@@ -130,47 +142,47 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   /// Calculates the number of wins for each player
   /// and returns a sorted list of tuples (playerName, winCount)
-  List<(String, int)> _calculateWinsForAllPlayers({
+  List<(Player, int)> _calculateWinsForAllPlayers({
     required List<Match> matches,
     required List<Player> players,
     required BuildContext context,
   }) {
-    List<(String, int)> winCounts = [];
+    List<(Player, int)> winCounts = [];
     final loc = AppLocalizations.of(context);
 
     // Getting the winners
     for (var match in matches) {
       final winner = match.winner;
       if (winner != null) {
-        final index = winCounts.indexWhere((entry) => entry.$1 == winner.id);
+        final index = winCounts.indexWhere((entry) => entry.$1.id == winner.id);
         // -1 means winner not found in winCounts
         if (index != -1) {
           final current = winCounts[index].$2;
-          winCounts[index] = (winner.id, current + 1);
+          winCounts[index] = (winner, current + 1);
         } else {
-          winCounts.add((winner.id, 1));
+          winCounts.add((winner, 1));
         }
       }
     }
 
     // Adding all players with zero wins
     for (var player in players) {
-      final index = winCounts.indexWhere((entry) => entry.$1 == player.id);
+      final index = winCounts.indexWhere((entry) => entry.$1.id == player.id);
       // -1 means player not found in winCounts
       if (index == -1) {
-        winCounts.add((player.id, 0));
+        winCounts.add((player, 0));
       }
     }
 
     // Replace player IDs with names
     for (int i = 0; i < winCounts.length; i++) {
-      final playerId = winCounts[i].$1;
+      final playerId = winCounts[i].$1.id;
       final player = players.firstWhere(
         (p) => p.id == playerId,
         orElse: () =>
             Player(id: playerId, name: loc.not_available, description: ''),
       );
-      winCounts[i] = (player.name, winCounts[i].$2);
+      winCounts[i] = (player, winCounts[i].$2);
     }
 
     winCounts.sort((a, b) => b.$2.compareTo(a.$2));
@@ -180,60 +192,51 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   /// Calculates the number of matches played for each player
   /// and returns a sorted list of tuples (playerName, matchCount)
-  List<(String, int)> _calculateMatchAmountsForAllPlayers({
+  List<(Player, int)> _calculateMatchAmountsForAllPlayers({
     required List<Match> matches,
     required List<Player> players,
     required BuildContext context,
   }) {
-    List<(String, int)> matchCounts = [];
+    List<(Player, int)> matchCounts = [];
     final loc = AppLocalizations.of(context);
 
     // Counting matches for each player
     for (var match in matches) {
-      if (match.group != null) {
-        final members = match.group!.members.map((p) => p.id).toList();
-        for (var playerId in members) {
-          final index = matchCounts.indexWhere((entry) => entry.$1 == playerId);
-          // -1 means player not found in matchCounts
-          if (index != -1) {
-            final current = matchCounts[index].$2;
-            matchCounts[index] = (playerId, current + 1);
-          } else {
-            matchCounts.add((playerId, 1));
-          }
-        }
-      }
-      final members = match.players.map((p) => p.id).toList();
-      for (var playerId in members) {
-        final index = matchCounts.indexWhere((entry) => entry.$1 == playerId);
-        // -1 means player not found in matchCounts
-        if (index != -1) {
-          final current = matchCounts[index].$2;
-          matchCounts[index] = (playerId, current + 1);
+      for (Player player in match.players) {
+        // Check if the player is already in matchCounts
+        final index = matchCounts.indexWhere(
+          (entry) => entry.$1.id == player.id,
+        );
+
+        // -1 -> not found
+        if (index == -1) {
+          // Add new entry
+          matchCounts.add((player, 1));
         } else {
-          matchCounts.add((playerId, 1));
+          // Update existing entry
+          final currentMatchAmount = matchCounts[index].$2;
+          matchCounts[index] = (player, currentMatchAmount + 1);
         }
       }
     }
 
     // Adding all players with zero matches
     for (var player in players) {
-      final index = matchCounts.indexWhere((entry) => entry.$1 == player.id);
+      final index = matchCounts.indexWhere((entry) => entry.$1.id == player.id);
       // -1 means player not found in matchCounts
       if (index == -1) {
-        matchCounts.add((player.id, 0));
+        matchCounts.add((player, 0));
       }
     }
 
     // Replace player IDs with names
     for (int i = 0; i < matchCounts.length; i++) {
-      final playerId = matchCounts[i].$1;
+      final playerId = matchCounts[i].$1.id;
       final player = players.firstWhere(
         (p) => p.id == playerId,
-        orElse: () =>
-            Player(id: playerId, name: loc.not_available, description: ''),
+        orElse: () => Player(id: playerId, name: loc.not_available),
       );
-      matchCounts[i] = (player.name, matchCounts[i].$2);
+      matchCounts[i] = (player, matchCounts[i].$2);
     }
 
     matchCounts.sort((a, b) => b.$2.compareTo(a.$2));
@@ -241,25 +244,24 @@ class _StatisticsViewState extends State<StatisticsView> {
     return matchCounts;
   }
 
-  // dart
-  List<(String, double)> computeWinRatePercent({
-    required List<(String, int)> wins,
-    required List<(String, int)> matches,
+  List<(Player, double)> computeWinRatePercent({
+    required List<(Player, int)> winCounts,
+    required List<(Player, int)> matchCounts,
   }) {
-    final Map<String, int> winsMap = {for (var e in wins) e.$1: e.$2};
-    final Map<String, int> matchesMap = {for (var e in matches) e.$1: e.$2};
+    final Map<Player, int> winsMap = {for (var e in winCounts) e.$1: e.$2};
+    final Map<Player, int> matchesMap = {for (var e in matchCounts) e.$1: e.$2};
 
     // Get all unique player names
-    final names = {...winsMap.keys, ...matchesMap.keys};
+    final player = {...matchesMap.keys};
 
     // Calculate win rates
-    final result = names.map((name) {
+    final result = player.map((name) {
       final int w = winsMap[name] ?? 0;
-      final int g = matchesMap[name] ?? 0;
+      final int m = matchesMap[name] ?? 0;
       // Calculate percentage and round to 2 decimal places
       // Avoid division by zero
-      final double percent = (g > 0)
-          ? double.parse(((w / g)).toStringAsFixed(2))
+      final double percent = (m > 0)
+          ? double.parse(((w / m)).toStringAsFixed(2))
           : 0;
       return (name, percent);
     }).toList();
