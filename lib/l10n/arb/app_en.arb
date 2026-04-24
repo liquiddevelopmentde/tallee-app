@@ -83,6 +83,9 @@
   "@edit_match": {
       "description": "Button & Appbar label for editing a match"
   },
+  "@enter_points": {
+    "description": "Label to enter players points"
+  },
   "@enter_results": {
     "description": "Button text to enter match results"
   },
@@ -232,6 +235,9 @@
       }
     }
   },
+  "@points": {
+    "description": "Points label"
+  },
   "@privacy_policy": {
     "description": "Privacy policy menu item"
   },
@@ -270,6 +276,9 @@
   },
   "@select_winner": {
     "description": "Label to select the winner"
+  },
+  "@select_loser": {
+    "description": "Label to select the loser"
   },
   "@selected_players": {
     "description": "Shows the number of selected players"
@@ -351,6 +360,7 @@
   "delete_match": "Delete Match",
   "edit_group": "Edit Group",
   "edit_match": "Edit Match",
+  "enter_points": "Enter points",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
   "error_deleting_group": "Error while deleting group, please try again",
@@ -399,6 +409,8 @@
   "player_name": "Player name",
   "players": "Players",
   "players_count": "{count} Players",
+  "point": "Point",
+  "points": "Points",
   "privacy_policy": "Privacy Policy",
   "quick_create": "Quick Create",
   "recent_matches": "Recent Matches",
@@ -411,12 +423,14 @@
   "save_changes": "Save Changes",
   "search_for_groups": "Search for groups",
   "search_for_players": "Search for players",
-  "select_winner": "Select Winner:",
+  "select_winner": "Select Winner",
+  "select_loser": "Select Loser",
   "selected_players": "Selected players",
   "settings": "Settings",
   "single_loser": "Single Loser",
   "single_winner": "Single Winner",
   "highest_score": "Highest Score",
+  "loser": "Loser",
   "lowest_score": "Lowest Score",
   "multiple_winners": "Multiple Winners",
   "statistics": "Statistics",
@@ -424,6 +438,7 @@
   "successfully_added_player": "Successfully added player {playerName}",
   "there_is_no_group_matching_your_search": "There is no group matching your search",
   "this_cannot_be_undone": "This can't be undone.",
+  "tie": "Tie",
   "today_at": "Today at",
   "undo": "Undo",
   "unknown_exception": "Unknown Exception (see console)",

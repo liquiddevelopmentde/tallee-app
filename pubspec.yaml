@@ -7,18 +7,18 @@ environment:
   sdk: ^3.8.1
 
 dependencies:
-  flutter:
-    sdk: flutter
-  flutter_localizations:
-    sdk: flutter
   clock: ^1.1.2
   cupertino_icons: ^1.0.6
   drift: ^2.27.0
   drift_flutter: ^0.2.4
-  file_picker: ^10.3.6
+  file_picker: ^11.0.2
   file_saver: ^0.3.1
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   fluttericon: ^2.0.0
-  font_awesome_flutter: ^10.12.0
+  font_awesome_flutter: ^11.0.0
   intl: any
   json_schema: ^5.2.2
   package_info_plus: ^9.0.0
@@ -33,7 +33,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.7.0
   dart_pubspec_licenses: ^3.0.14
-  drift_dev: ^2.29.0
+  drift_dev: ^2.27.0
   flutter_lints: ^6.0.0
 
 flutter:

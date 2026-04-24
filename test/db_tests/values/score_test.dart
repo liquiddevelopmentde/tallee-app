@@ -30,9 +30,9 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Alice', description: '');
-      testPlayer2 = Player(name: 'Bob', description: '');
-      testPlayer3 = Player(name: 'Charlie', description: '');
+      testPlayer1 = Player(name: 'Alice');
+      testPlayer2 = Player(name: 'Bob');
+      testPlayer3 = Player(name: 'Charlie');
       testGame = Game(
         name: 'Test Game',
         ruleset: Ruleset.singleWinner,
@@ -44,13 +44,11 @@ void main() {
         name: 'Test Match 1',
         game: testGame,
         players: [testPlayer1, testPlayer2],
-        notes: '',
       );
       testMatch2 = Match(
         name: 'Test Match 2',
         game: testGame,
         players: [testPlayer2, testPlayer3],
-        notes: '',
       );
     });
 
@@ -231,8 +229,8 @@ void main() {
         );
 
         expect(scores.length, 2);
-        expect(scores[testPlayer1.id]!.length, 2);
-        expect(scores[testPlayer2.id]!.length, 1);
+        expect(scores[testPlayer1.id]!, isNotNull);
+        expect(scores[testPlayer2.id]!, isNotNull);
       });
 
       test('getAllMatchScores() with no scores saved', () async {

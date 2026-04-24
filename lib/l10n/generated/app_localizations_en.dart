@@ -91,6 +91,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_match => 'Edit Match';
 
   @override
+  String get enter_points => 'Enter points';
+
+  @override
   String get enter_results => 'Enter Results';
 
   @override
@@ -241,6 +244,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get point => 'Point';
+
+  @override
+  String get points => 'Points';
+
+  @override
   String get privacy_policy => 'Privacy Policy';
 
   @override
@@ -281,7 +290,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_for_players => 'Search for players';
 
   @override
-  String get select_winner => 'Select Winner:';
+  String get select_winner => 'Select Winner';
+
+  @override
+  String get select_loser => 'Select Loser';
 
   @override
   String get selected_players => 'Selected players';
@@ -297,6 +309,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get highest_score => 'Highest Score';
+
+  @override
+  String get loser => 'Loser';
 
   @override
   String get lowest_score => 'Lowest Score';
@@ -321,6 +336,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get this_cannot_be_undone => 'This can\'t be undone.';
+
+  @override
+  String get tie => 'Tie';
 
   @override
   String get today_at => 'Today at';

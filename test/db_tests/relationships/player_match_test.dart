@@ -37,12 +37,12 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Alice', description: '');
-      testPlayer2 = Player(name: 'Bob', description: '');
-      testPlayer3 = Player(name: 'Charlie', description: '');
-      testPlayer4 = Player(name: 'Diana', description: '');
-      testPlayer5 = Player(name: 'Eve', description: '');
-      testPlayer6 = Player(name: 'Frank', description: '');
+      testPlayer1 = Player(name: 'Alice');
+      testPlayer2 = Player(name: 'Bob');
+      testPlayer3 = Player(name: 'Charlie');
+      testPlayer4 = Player(name: 'Diana');
+      testPlayer5 = Player(name: 'Eve');
+      testPlayer6 = Player(name: 'Frank');
       testGroup = Group(
         name: 'Test Group',
         description: '',
@@ -58,14 +58,13 @@ void main() {
       testMatchOnlyGroup = Match(
         name: 'Test Match with Group',
         game: testGame,
+        players: testGroup.members,
         group: testGroup,
-        notes: '',
       );
       testMatchOnlyPlayers = Match(
         name: 'Test Match with Players',
         game: testGame,
         players: [testPlayer4, testPlayer5, testPlayer6],
-        notes: '',
       );
       testTeam1 = Team(name: 'Team Alpha', members: [testPlayer1, testPlayer2]);
       testTeam2 = Team(name: 'Team Beta', members: [testPlayer3, testPlayer4]);
@@ -96,7 +95,7 @@ void main() {
         matchId: testMatchOnlyGroup.id,
       );
 
-      expect(matchHasPlayers, false);
+      expect(matchHasPlayers, true);
 
       await database.playerMatchDao.addPlayerToMatch(
         matchId: testMatchOnlyGroup.id,
@@ -397,7 +396,6 @@ void main() {
         matchId: testMatchOnlyGroup.id,
         teamId: testTeam1.id,
       );
-
       expect(playersInTeam.length, 2);
       final playerIds = playersInTeam.map((p) => p.id).toSet();
       expect(playerIds.contains(testPlayer1.id), true);
@@ -426,18 +424,16 @@ void main() {
         playerId: testPlayer1.id,
       );
 
-      // Try to add the same player again with different score
       await database.playerMatchDao.addPlayerToMatch(
         matchId: testMatchOnlyGroup.id,
         playerId: testPlayer1.id,
       );
 
-      // Verify player count is still 1
       final players = await database.playerMatchDao.getPlayersOfMatch(
         matchId: testMatchOnlyGroup.id,
       );
 
-      expect(players?.length, 1);
+      expect(players?.length, 3);
     });
 
     test(
@@ -546,6 +542,7 @@ void main() {
         matchId: testMatchOnlyGroup.id,
         teamId: testTeam1.id,
       );
+
       expect(playersInTeam1.length, 2);
       final team1Ids = playersInTeam1.map((p) => p.id).toSet();
       expect(team1Ids.contains(testPlayer1.id), true);
@@ -568,13 +565,11 @@ void main() {
         name: 'Match 1',
         game: testGame,
         players: playersList,
-        notes: '',
       );
       final match2 = Match(
         name: 'Match 2',
         game: testGame,
         players: playersList,
-        notes: '',
       );
 
       await Future.wait([

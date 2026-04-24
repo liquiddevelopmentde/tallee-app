@@ -20,7 +20,9 @@ import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 
 class CreateMatchView extends StatefulWidget {
   /// A view that allows creating a new match
-  /// [onWinnerChanged]: Optional callback invoked when the winner is changed
+  /// - [onWinnerChanged]: Optional callback invoked when the winner is changed
+  /// - [matchToEdit]: An optional match to prefill the fields for editing.
+  /// - [onMatchUpdated]: Optional callback invoked when the match is updated (only in
   const CreateMatchView({
     super.key,
     this.onWinnerChanged,
@@ -28,13 +30,11 @@ class CreateMatchView extends StatefulWidget {
     this.onMatchUpdated,
   });
 
-  /// Optional callback invoked when the winner is changed
   final VoidCallback? onWinnerChanged;
 
-  /// Optional callback invoked when the match is updated
   final void Function(Match)? onMatchUpdated;
 
-  /// An optional match to prefill the fields
+  /// An optional match to prefill the fields for editing.
   final Match? matchToEdit;
 
   @override
@@ -50,20 +50,12 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// Hint text for the match name input field
   String? hintText;
 
-  /// List of all groups from the database
   List<Group> groupsList = [];
-
-  /// List of all players from the database
   List<Player> playerList = [];
+  List<Game> gamesList = [];
 
-  /// The currently selected group
   Group? selectedGroup;
-
-  /// The index of the currently selected game in [games] to mark it in
-  /// the [ChooseGameView]
-  int selectedGameIndex = -1;
-
-  /// The currently selected players
+  Game? selectedGame;
   List<Player> selectedPlayers = [];
 
   /// GlobalKey for ScaffoldMessenger to show snackbars
@@ -81,12 +73,14 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     Future.wait([
       db.groupDao.getAllGroups(),
       db.playerDao.getAllPlayers(),
+      db.gameDao.getAllGames(),
     ]).then((result) async {
       groupsList = result[0] as List<Group>;
       playerList = result[1] as List<Player>;
+      gamesList = (result[2] as List<Game>);
 
       // If a match is provided, prefill the fields
-      if (widget.matchToEdit != null) {
+      if (isEditMode()) {
         prefillMatchDetails();
       }
     });
@@ -105,20 +99,11 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     hintText ??= loc.match_name;
   }
 
-  List<(String, String, Ruleset)> games = [
-    ('Example Game 1', 'This is a description', Ruleset.lowestScore),
-    ('Example Game 2', '', Ruleset.singleWinner),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final buttonText = widget.matchToEdit != null
-        ? loc.save_changes
-        : loc.create_match;
-    final viewTitle = widget.matchToEdit != null
-        ? loc.edit_match
-        : loc.create_new_match;
+    final buttonText = isEditMode() ? loc.save_changes : loc.create_match;
+    final viewTitle = isEditMode() ? loc.edit_match : loc.create_new_match;
 
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
@@ -140,21 +125,21 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               ),
               ChooseTile(
                 title: loc.game,
-                trailingText: selectedGameIndex == -1
-                    ? loc.none
-                    : games[selectedGameIndex].$1,
+                trailingText: selectedGame == null
+                    ? loc.none_group
+                    : selectedGame!.name,
                 onPressed: () async {
-                  selectedGameIndex = await Navigator.of(context).push(
+                  selectedGame = await Navigator.of(context).push(
                     adaptivePageRoute(
                       builder: (context) => ChooseGameView(
-                        games: games,
-                        initialGameIndex: selectedGameIndex,
+                        games: gamesList,
+                        initialGameId: selectedGame?.id ?? '',
                       ),
                     ),
                   );
                   setState(() {
-                    if (selectedGameIndex != -1) {
-                      hintText = games[selectedGameIndex].$1;
+                    if (selectedGame != null) {
+                      hintText = selectedGame!.name;
                     } else {
                       hintText = loc.match_name;
                     }
@@ -225,6 +210,10 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     );
   }
 
+  bool isEditMode() {
+    return widget.matchToEdit != null;
+  }
+
   /// Determines whether the "Create Match" button should be enabled.
   ///
   /// Returns `true` if:
@@ -232,7 +221,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// - Either a group is selected OR at least 2 players are selected
   bool _enableCreateGameButton() {
     return (selectedGroup != null ||
-        (selectedPlayers.length > 1) && selectedGameIndex != -1);
+        (selectedPlayers.length > 1) && selectedGame != null);
   }
 
   // If a match was provided to the view, it updates the match in the database
@@ -240,7 +229,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   // If no match was provided, it creates a new match in the database and
   // navigates to the MatchResultView for the newly created match.
   void buttonNavigation(BuildContext context) async {
-    if (widget.matchToEdit != null) {
+    if (isEditMode()) {
       await updateMatch();
       if (context.mounted) {
         Navigator.pop(context);
@@ -266,9 +255,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// Updates attributes of the existing match in the database based on the
   /// changes made in the edit view.
   Future<void> updateMatch() async {
-    //TODO: Remove when Games implemented
-    final tempGame = await getTemporaryGame();
-
     final updatedMatch = Match(
       id: widget.matchToEdit!.id,
       name: _matchNameController.text.isEmpty
@@ -276,8 +262,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           : _matchNameController.text.trim(),
       group: selectedGroup,
       players: selectedPlayers,
-      game: tempGame,
-      winner: widget.matchToEdit!.winner,
+      game: widget.matchToEdit!.game,
       createdAt: widget.matchToEdit!.createdAt,
       endedAt: widget.matchToEdit!.endedAt,
       notes: widget.matchToEdit!.notes,
@@ -314,9 +299,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           matchId: widget.matchToEdit!.id,
           playerId: player.id,
         );
-        if (widget.matchToEdit!.winner?.id == player.id) {
-          updatedMatch.winner = null;
-        }
       }
     }
 
@@ -326,8 +308,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   // Creates a new match and adds it to the database.
   // Returns the created match.
   Future<Match> createMatch() async {
-    final tempGame = await getTemporaryGame();
-
     Match match = Match(
       name: _matchNameController.text.isEmpty
           ? (hintText ?? '')
@@ -335,27 +315,10 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       createdAt: DateTime.now(),
       group: selectedGroup,
       players: selectedPlayers,
-      game: tempGame,
+      game: selectedGame!,
     );
     await db.matchDao.addMatch(match: match);
     return match;
-  }
-
-  // TODO: Remove when games fully implemented
-  Future<Game> getTemporaryGame() async {
-    Game? game;
-
-    final selectedGame = games[selectedGameIndex];
-    game = Game(
-      name: selectedGame.$1,
-      description: selectedGame.$2,
-      ruleset: selectedGame.$3,
-      color: GameColor.blue,
-      icon: '',
-    );
-
-    await db.gameDao.addGame(game: game);
-    return game;
   }
 
   // If a match was provided to the view, this method prefills the input fields
@@ -363,7 +326,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     final match = widget.matchToEdit!;
     _matchNameController.text = match.name;
     selectedPlayers = match.players;
-    selectedGameIndex = 0;
+    selectedGame = match.game;
 
     if (match.group != null) {
       selectedGroup = match.group;

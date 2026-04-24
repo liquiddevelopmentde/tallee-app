@@ -64,14 +64,8 @@ void main() {
         players: [testPlayer1, testPlayer2],
         notes: 'Test notes',
         scores: {
-          testPlayer1.id: [
-            ScoreEntry(roundNumber: 1, score: 10, change: 10),
-            ScoreEntry(roundNumber: 2, score: 20, change: 10),
-          ],
-          testPlayer2.id: [
-            ScoreEntry(roundNumber: 1, score: 15, change: 15),
-            ScoreEntry(roundNumber: 2, score: 25, change: 10),
-          ],
+          testPlayer1.id: ScoreEntry(roundNumber: 1, score: 10, change: 10),
+          testPlayer2.id: ScoreEntry(roundNumber: 1, score: 15, change: 15),
         },
       );
     });
@@ -302,46 +296,25 @@ void main() {
           final scoresJson = matchData['scores'] as Map<String, dynamic>;
           expect(scoresJson, isA<Map<String, dynamic>>());
 
-          final scores = scoresJson.map(
-            (playerId, scoreList) => MapEntry(
-              playerId,
-              (scoreList as List)
-                  .map((s) => ScoreEntry.fromJson(s as Map<String, dynamic>))
-                  .toList(),
-            ),
-          );
+          // Verify scores are properly structured (single score per player, not list)
+          expect(scoresJson[testPlayer1.id], isNotNull);
+          expect(scoresJson[testPlayer2.id], isNotNull);
 
-          expect(scores, isA<Map<String, List<ScoreEntry>>>());
+          // Parse player 1 score
+          final player1ScoreJson =
+              scoresJson[testPlayer1.id] as Map<String, dynamic>;
+          final player1Score = ScoreEntry.fromJson(player1ScoreJson);
+          expect(player1Score.roundNumber, 1);
+          expect(player1Score.score, 10);
+          expect(player1Score.change, 10);
 
-          /* Player 1 scores */
-          // General structure
-          expect(scores[testPlayer1.id], isNotNull);
-          expect(scores[testPlayer1.id]!.length, 2);
-
-          // Round 1
-          expect(scores[testPlayer1.id]![0].roundNumber, 1);
-          expect(scores[testPlayer1.id]![0].score, 10);
-          expect(scores[testPlayer1.id]![0].change, 10);
-
-          // Round 2
-          expect(scores[testPlayer1.id]![1].roundNumber, 2);
-          expect(scores[testPlayer1.id]![1].score, 20);
-          expect(scores[testPlayer1.id]![1].change, 10);
-
-          /* Player 2 scores */
-          // General structure
-          expect(scores[testPlayer2.id], isNotNull);
-          expect(scores[testPlayer2.id]!.length, 2);
-
-          // Round 1
-          expect(scores[testPlayer2.id]![0].roundNumber, 1);
-          expect(scores[testPlayer2.id]![0].score, 15);
-          expect(scores[testPlayer2.id]![0].change, 15);
-
-          // Round 2
-          expect(scores[testPlayer2.id]![1].roundNumber, 2);
-          expect(scores[testPlayer2.id]![1].score, 25);
-          expect(scores[testPlayer2.id]![1].change, 10);
+          // Parse player 2 score
+          final player2ScoreJson =
+              scoresJson[testPlayer2.id] as Map<String, dynamic>;
+          final player2Score = ScoreEntry.fromJson(player2ScoreJson);
+          expect(player2Score.roundNumber, 1);
+          expect(player2Score.score, 15);
+          expect(player2Score.change, 15);
         });
 
         testWidgets('Match without group is handled correctly', (tester) async {
@@ -904,14 +877,8 @@ void main() {
             'playerIds': [testPlayer1.id, testPlayer2.id],
             'notes': testMatch.notes,
             'scores': {
-              testPlayer1.id: [
-                {'roundNumber': 1, 'score': 10, 'change': 10},
-                {'roundNumber': 2, 'score': 20, 'change': 10},
-              ],
-              testPlayer2.id: [
-                {'roundNumber': 1, 'score': 15, 'change': 15},
-                {'roundNumber': 2, 'score': 25, 'change': 10},
-              ],
+              testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
+              testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
             },
             'createdAt': testMatch.createdAt.toIso8601String(),
             'endedAt': null,

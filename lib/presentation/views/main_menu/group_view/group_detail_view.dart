@@ -255,28 +255,37 @@ class _GroupDetailViewState extends State<GroupDetailView> {
 
   /// Determines the best player in the group based on match wins
   String _getBestPlayer(List<Match> matches) {
-    final bestPlayerCounts = <Player, int>{};
+    final mvpCounts = <Player, int>{};
 
-    // Count wins for each player
     for (var match in matches) {
-      if (match.winner != null &&
-          _group.members.any((m) => m.id == match.winner?.id)) {
-        print(match.winner);
-        bestPlayerCounts.update(
-          match.winner!,
-          (value) => value + 1,
-          ifAbsent: () => 1,
-        );
+      final mvps = match.mvp;
+      for (final mvpPlayer in mvps) {
+        if (_group.members.any((m) => m.id == mvpPlayer.id)) {
+          mvpCounts.update(mvpPlayer, (value) => value + 1, ifAbsent: () => 1);
+        }
       }
     }
 
-    // Sort players by win count
-    final sortedPlayers = bestPlayerCounts.entries.toList()
+    final sortedMvps = mvpCounts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
-    // Get the best player
-    bestPlayer = sortedPlayers.isNotEmpty ? sortedPlayers.first.key.name : '-';
+    if (sortedMvps.isEmpty) {
+      return '-';
+    }
 
-    return bestPlayer;
+    // Check if there are multiple players with the same value
+    final highestMvpCount = sortedMvps.first.value;
+    final topPlayers = sortedMvps
+        .where((entry) => entry.value == highestMvpCount)
+        .toList();
+    switch (topPlayers.length) {
+      case 0:
+        return '-';
+      case 1:
+        return topPlayers.first.key.name;
+      default:
+        final loc = AppLocalizations.of(context);
+        return loc.tie;
+    }
   }
 }

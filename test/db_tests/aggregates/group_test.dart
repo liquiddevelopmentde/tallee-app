@@ -29,10 +29,10 @@ void main() {
     );
 
     withClock(fakeClock, () {
-      testPlayer1 = Player(name: 'Alice', description: '');
-      testPlayer2 = Player(name: 'Bob', description: '');
-      testPlayer3 = Player(name: 'Charlie', description: '');
-      testPlayer4 = Player(name: 'Diana', description: '');
+      testPlayer1 = Player(name: 'Alice');
+      testPlayer2 = Player(name: 'Bob');
+      testPlayer3 = Player(name: 'Charlie');
+      testPlayer4 = Player(name: 'Diana');
       testGroup1 = Group(
         name: 'Test Group',
         description: '',

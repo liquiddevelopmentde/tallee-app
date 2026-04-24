@@ -63,7 +63,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   /// Skeleton data used while loading players.
   late final List<Player> skeletonData = List.filled(
     7,
-    Player(name: 'Player 0', description: ''),
+    Player(name: 'Player 0'),
   );
 
   @override

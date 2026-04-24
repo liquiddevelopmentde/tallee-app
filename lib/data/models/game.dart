@@ -1,6 +1,6 @@
 import 'package:clock/clock.dart';
-import 'package:uuid/uuid.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:uuid/uuid.dart';
 
 class Game {
   final String id;
@@ -33,7 +33,10 @@ class Game {
     : id = json['id'],
       createdAt = DateTime.parse(json['createdAt']),
       name = json['name'],
-      ruleset = Ruleset.values.firstWhere((e) => e.name == json['ruleset']),
+      ruleset = Ruleset.values.firstWhere(
+        (e) => e.name == json['ruleset'],
+        orElse: () => Ruleset.singleWinner,
+      ),
       description = json['description'],
       color = GameColor.values.firstWhere((e) => e.name == json['color']),
       icon = json['icon'];
@@ -49,4 +52,3 @@ class Game {
     'icon': icon,
   };
 }
-

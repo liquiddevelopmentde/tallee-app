@@ -85,21 +85,21 @@ class CustomTheme {
   );
 
   static const SearchBarThemeData searchBarTheme = SearchBarThemeData(
-    textStyle: WidgetStatePropertyAll(TextStyle(color: CustomTheme.textColor)),
-    hintStyle: WidgetStatePropertyAll(TextStyle(color: CustomTheme.hintColor)),
+    textStyle: WidgetStatePropertyAll(TextStyle(color: textColor)),
+    hintStyle: WidgetStatePropertyAll(TextStyle(color: hintColor)),
   );
 
   static final RadioThemeData radioTheme = RadioThemeData(
     fillColor: WidgetStateProperty.resolveWith<Color>((states) {
       if (states.contains(WidgetState.selected)) {
-        return CustomTheme.primaryColor;
+        return primaryColor;
       }
-      return CustomTheme.textColor;
+      return textColor;
     }),
   );
 
   static const InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
-    labelStyle: TextStyle(color: CustomTheme.textColor),
-    hintStyle: TextStyle(color: CustomTheme.hintColor),
+    labelStyle: TextStyle(color: textColor),
+    hintStyle: TextStyle(color: hintColor),
   );
 }

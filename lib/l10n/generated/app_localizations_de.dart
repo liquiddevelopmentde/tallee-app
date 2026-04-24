@@ -79,7 +79,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_all_data => 'Alle Daten löschen';
 
   @override
-  String get delete_group => 'Diese Gruppe löschen';
+  String get delete_group => 'Gruppe löschen';
 
   @override
   String get delete_match => 'Spiel löschen';
@@ -89,6 +89,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get edit_match => 'Gruppe bearbeiten';
+
+  @override
+  String get enter_points => 'Punkte eingeben';
 
   @override
   String get enter_results => 'Ergebnisse eintragen';
@@ -241,6 +244,12 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get point => 'Punkt';
+
+  @override
+  String get points => 'Punkte';
+
+  @override
   String get privacy_policy => 'Datenschutzerklärung';
 
   @override
@@ -281,7 +290,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get search_for_players => 'Nach Spieler:innen suchen';
 
   @override
-  String get select_winner => 'Gewinner:in wählen:';
+  String get select_winner => 'Gewinner:in wählen';
+
+  @override
+  String get select_loser => 'Verlierer:in wählen';
 
   @override
   String get selected_players => 'Ausgewählte Spieler:innen';
@@ -297,6 +309,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get highest_score => 'Höchste Punkte';
+
+  @override
+  String get loser => 'Verlierer:in';
 
   @override
   String get lowest_score => 'Niedrigste Punkte';
@@ -322,6 +337,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get this_cannot_be_undone =>
       'Dies kann nicht rückgängig gemacht werden.';
+
+  @override
+  String get tie => 'Unentschieden';
 
   @override
   String get today_at => 'Heute um';

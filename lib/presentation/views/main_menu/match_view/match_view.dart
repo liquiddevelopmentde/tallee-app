@@ -37,20 +37,16 @@ class _MatchViewState extends State<MatchView> {
     Match(
       name: 'Skeleton match name',
       game: Game(
-        name: '',
+        name: 'Game name',
         ruleset: Ruleset.singleWinner,
-        description: '',
         color: GameColor.blue,
         icon: '',
       ),
       group: Group(
         name: 'Group name',
-        description: '',
-        members: List.filled(5, Player(name: 'Player', description: '')),
+        members: List.filled(5, Player(name: 'Player')),
       ),
-      winner: Player(name: 'Player', description: ''),
-      players: [Player(name: 'Player', description: '')],
-      notes: '',
+      players: [Player(name: 'Player')],
     ),
   );
 
@@ -116,7 +112,7 @@ class _MatchViewState extends State<MatchView> {
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: MainMenuButton(
-              text: 'Spiel erstellen',
+              text: loc.create_match,
               icon: RpgAwesome.clovers_card,
               onPressed: () async {
                 Navigator.push(

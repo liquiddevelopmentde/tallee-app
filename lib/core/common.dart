@@ -51,3 +51,11 @@ String getNameCountText(Player player) {
   }
   return '';
 }
+
+String getPointLabel(AppLocalizations loc, int points) {
+  if (points == 1) {
+    return '$points ${loc.point}';
+  } else {
+    return '$points ${loc.points}';
+  }
+}

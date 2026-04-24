@@ -34,7 +34,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           matchId: row.id,
         );
 
-        final winner = await db.scoreEntryDao.getWinner(matchId: row.id);
         return Match(
           id: row.id,
           name: row.name,
@@ -45,7 +44,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           createdAt: row.createdAt,
           endedAt: row.endedAt,
           scores: scores,
-          winner: winner,
         );
       }),
     );
@@ -68,8 +66,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
     final scores = await db.scoreEntryDao.getAllMatchScores(matchId: matchId);
 
-    final winner = await db.scoreEntryDao.getWinner(matchId: matchId);
-
     return Match(
       id: result.id,
       name: result.name,
@@ -80,7 +76,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       createdAt: result.createdAt,
       endedAt: result.endedAt,
       scores: scores,
-      winner: winner,
     );
   }
 
@@ -110,19 +105,14 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       }
 
       for (final pid in match.scores.keys) {
-        final playerScores = match.scores[pid]!;
-        await db.scoreEntryDao.addScoresAsList(
-          entrys: playerScores,
-          playerId: pid,
-          matchId: match.id,
-        );
-      }
-
-      if (match.winner != null) {
-        await db.scoreEntryDao.setWinner(
-          matchId: match.id,
-          playerId: match.winner!.id,
-        );
+        final playerScores = match.scores[pid];
+        if (playerScores != null) {
+          await db.scoreEntryDao.addScore(
+            entry: playerScores,
+            playerId: pid,
+            matchId: match.id,
+          );
+        }
       }
     });
   }
@@ -140,6 +130,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         uniqueGames[match.game.id] = match.game;
       }
 
+      // Add games
       if (uniqueGames.isNotEmpty) {
         await db.batch(
           (b) => b.insertAll(
@@ -162,7 +153,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         );
       }
 
-      // Add all groups of the matches in batch
+      // Add groups
       await db.batch(
         (b) => b.insertAll(
           db.groupTable,
@@ -181,7 +172,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         ),
       );
 
-      // Add all matches in batch
+      // Add matches
       await db.batch(
         (b) => b.insertAll(
           matchTable,
@@ -202,7 +193,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         ),
       );
 
-      // Add all players of the matches in batch (unique)
+      // Add players
       final uniquePlayers = <String, Player>{};
       for (final match in matches) {
         for (final p in match.players) {
@@ -235,7 +226,27 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         );
       }
 
-      // Add all player-match associations in batch
+      await db.batch((b) {
+        for (final match in matches) {
+          for (final entry in match.scores.entries) {
+            if (entry.value != null) {
+              b.insert(
+                db.scoreEntryTable,
+                ScoreEntryTableCompanion.insert(
+                  matchId: match.id,
+                  playerId: entry.key,
+                  score: entry.value!.score,
+                  roundNumber: entry.value!.roundNumber,
+                  change: entry.value!.change,
+                ),
+                mode: InsertMode.insertOrReplace,
+              );
+            }
+          }
+        }
+      });
+
+      // Add player-match associations
       await db.batch((b) {
         for (final match in matches) {
           for (final p in match.players) {
@@ -251,7 +262,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         }
       });
 
-      // Add all player-group associations in batch
+      // Add player-group associations
       await db.batch((b) {
         for (final match in matches) {
           if (match.group != null) {
@@ -300,7 +311,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         final group = await db.groupDao.getGroupById(groupId: groupId);
         final players =
             await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
-        final winner = await db.scoreEntryDao.getWinner(matchId: row.id);
         return Match(
           id: row.id,
           name: row.name,
@@ -310,7 +320,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           notes: row.notes ?? '',
           createdAt: row.createdAt,
           endedAt: row.endedAt,
-          winner: winner,
         );
       }),
     );

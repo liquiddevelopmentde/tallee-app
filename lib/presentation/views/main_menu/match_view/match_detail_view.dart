@@ -170,37 +170,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       vertical: 4,
                       horizontal: 8,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        /// TODO: Implement different ruleset results display
-                        if (match.winner != null) ...[
-                          Text(
-                            loc.winner,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: CustomTheme.textColor,
-                            ),
-                          ),
-                          Text(
-                            match.winner!.name,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: CustomTheme.primaryColor,
-                            ),
-                          ),
-                        ] else ...[
-                          Text(
-                            loc.no_results_entered_yet,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: CustomTheme.textColor,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
+                    child: getResultWidget(loc),
                   ),
                 ),
               ],
@@ -227,7 +197,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                     text: loc.enter_results,
                     icon: Icons.emoji_events,
                     onPressed: () async {
-                      match.winner = await Navigator.push(
+                      await Navigator.push(
                         context,
                         adaptivePageRoute(
                           fullscreenDialog: true,
@@ -258,5 +228,109 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       match = editedMatch;
     });
     widget.onMatchUpdate.call();
+  }
+
+  /// Returns the widget to be displayed in the result [InfoTile]
+  Widget getResultWidget(AppLocalizations loc) {
+    if (isSingleRowResult()) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: getSingleResultRow(loc),
+      );
+    } else {
+      return getScoreResultWidget(loc);
+    }
+  }
+
+  /// Returns the result row for single winner/loser rulesets or a placeholder
+  /// if no result is entered yet
+  List<Widget> getSingleResultRow(AppLocalizations loc) {
+    // Single Winner
+    if (match.mvp.isNotEmpty && match.game.ruleset == Ruleset.singleWinner) {
+      return [
+        Text(
+          loc.winner,
+          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
+        ),
+        Text(
+          match.mvp.first.name,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: CustomTheme.primaryColor,
+          ),
+        ),
+      ];
+      // Single Loser
+    } else if (match.game.ruleset == Ruleset.singleLoser) {
+      return [
+        Text(
+          loc.loser,
+          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
+        ),
+        Text(
+          match.mvp.first.name,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: CustomTheme.primaryColor,
+          ),
+        ),
+      ];
+      // No result entered yet
+    } else {
+      return [
+        Text(
+          loc.no_results_entered_yet,
+          style: const TextStyle(fontSize: 14, color: CustomTheme.textColor),
+        ),
+      ];
+    }
+  }
+
+  /// Returns the result widget for scores
+  Widget getScoreResultWidget(AppLocalizations loc) {
+    List<(String, int)> playerScores = [];
+    for (var player in match.players) {
+      int score = match.scores[player.id]?.score ?? 0;
+      playerScores.add((player.name, score));
+    }
+    if (widget.match.game.ruleset == Ruleset.highestScore) {
+      playerScores.sort((a, b) => b.$2.compareTo(a.$2));
+    } else if (widget.match.game.ruleset == Ruleset.lowestScore) {
+      playerScores.sort((a, b) => a.$2.compareTo(b.$2));
+    }
+
+    return Column(
+      children: [
+        for (var score in playerScores)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                score.$1,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: CustomTheme.textColor,
+                ),
+              ),
+              Text(
+                getPointLabel(loc, score.$2),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: CustomTheme.primaryColor,
+                ),
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  // Returns if the result can be displayed in a single row
+  bool isSingleRowResult() {
+    return match.game.ruleset == Ruleset.singleWinner ||
+        match.game.ruleset == Ruleset.singleLoser;
   }
 }

@@ -152,8 +152,8 @@ class _StatisticsViewState extends State<StatisticsView> {
 
     // Getting the winners
     for (var match in matches) {
-      final winner = match.winner;
-      if (winner != null) {
+      final mvps = match.mvp;
+      for (var winner in mvps) {
         final index = winCounts.indexWhere((entry) => entry.$1.id == winner.id);
         // -1 means winner not found in winCounts
         if (index != -1) {
@@ -179,8 +179,7 @@ class _StatisticsViewState extends State<StatisticsView> {
       final playerId = winCounts[i].$1.id;
       final player = players.firstWhere(
         (p) => p.id == playerId,
-        orElse: () =>
-            Player(id: playerId, name: loc.not_available, description: ''),
+        orElse: () => Player(id: playerId, name: loc.not_available),
       );
       winCounts[i] = (player, winCounts[i].$2);
     }

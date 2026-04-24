@@ -254,6 +254,12 @@ abstract class AppLocalizations {
   /// **'Edit Match'**
   String get edit_match;
 
+  /// Label to enter players points
+  ///
+  /// In en, this message translates to:
+  /// **'Enter points'**
+  String get enter_points;
+
   /// Button text to enter match results
   ///
   /// In en, this message translates to:
@@ -542,6 +548,18 @@ abstract class AppLocalizations {
   /// **'{count} Players'**
   String players_count(int count);
 
+  /// No description provided for @point.
+  ///
+  /// In en, this message translates to:
+  /// **'Point'**
+  String get point;
+
+  /// Points label
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get points;
+
   /// Privacy policy menu item
   ///
   /// In en, this message translates to:
@@ -617,8 +635,14 @@ abstract class AppLocalizations {
   /// Label to select the winner
   ///
   /// In en, this message translates to:
-  /// **'Select Winner:'**
+  /// **'Select Winner'**
   String get select_winner;
+
+  /// Label to select the loser
+  ///
+  /// In en, this message translates to:
+  /// **'Select Loser'**
+  String get select_loser;
 
   /// Shows the number of selected players
   ///
@@ -649,6 +673,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Highest Score'**
   String get highest_score;
+
+  /// No description provided for @loser.
+  ///
+  /// In en, this message translates to:
+  /// **'Loser'**
+  String get loser;
 
   /// No description provided for @lowest_score.
   ///
@@ -691,6 +721,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This can\'t be undone.'**
   String get this_cannot_be_undone;
+
+  /// No description provided for @tie.
+  ///
+  /// In en, this message translates to:
+  /// **'Tie'**
+  String get tie;
 
   /// Date format for today
   ///

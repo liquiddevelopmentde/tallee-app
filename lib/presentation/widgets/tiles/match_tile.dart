@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
@@ -44,7 +45,6 @@ class _MatchTileState extends State<MatchTile> {
   Widget build(BuildContext context) {
     final match = widget.match;
     final group = match.group;
-    final winner = match.winner;
     final players = [...match.players]
       ..sort((a, b) => a.name.compareTo(b.name));
     final loc = AppLocalizations.of(context);
@@ -79,8 +79,7 @@ class _MatchTileState extends State<MatchTile> {
               ],
             ),
 
-            const SizedBox(height: 8),
-
+            // Group Info
             if (group != null) ...[
               Row(
                 children: [
@@ -95,7 +94,7 @@ class _MatchTileState extends State<MatchTile> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 4),
             ] else if (widget.compact) ...[
               Row(
                 children: [
@@ -110,10 +109,69 @@ class _MatchTileState extends State<MatchTile> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 6),
+            ] else ...[
+              const SizedBox(height: 8),
             ],
 
-            if (winner != null) ...[
+            // Game + Ruleset Badge
+            if (!widget.compact)
+              IntrinsicHeight(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Game
+                    Container(
+                      decoration: BoxDecoration(
+                        color: CustomTheme.primaryColor.withAlpha(230),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomLeft: Radius.circular(8),
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 8,
+                      ),
+                      child: Text(
+                        match.game.name,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    // Ruleset
+                    Container(
+                      decoration: BoxDecoration(
+                        color: CustomTheme.primaryColor.withAlpha(140),
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          bottomRight: Radius.circular(8),
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 8,
+                      ),
+                      child: Text(
+                        translateRulesetToString(match.game.ruleset, context),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            const SizedBox(height: 12),
+
+            // Winner / In Progress Info
+            if (match.mvp.isNotEmpty) ...[
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -129,15 +187,11 @@ class _MatchTileState extends State<MatchTile> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.emoji_events,
-                      size: 20,
-                      color: Colors.amber,
-                    ),
+                    getMvpIcon(),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        '${loc.winner}: ${winner.name}',
+                        getMvpText(loc),
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -189,6 +243,7 @@ class _MatchTileState extends State<MatchTile> {
               const SizedBox(height: 12),
             ],
 
+            // Players List
             if (players.isNotEmpty && widget.compact == false) ...[
               Text(
                 loc.players,
@@ -232,6 +287,46 @@ class _MatchTileState extends State<MatchTile> {
       return loc.days_ago(difference.inDays);
     } else {
       return '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(dateTime)}';
+    }
+  }
+
+  String getMvpText(AppLocalizations loc) {
+    if (widget.match.mvp.isEmpty) return '';
+    final ruleset = widget.match.game.ruleset;
+
+    if (ruleset == Ruleset.singleWinner) {
+      return '${loc.winner}: ${widget.match.mvp.first.name}';
+    } else if (ruleset == Ruleset.singleLoser) {
+      return '${loc.loser}: ${widget.match.mvp.first.name}';
+    } else if (ruleset == Ruleset.highestScore ||
+        ruleset == Ruleset.lowestScore) {
+      final mvp = widget.match.mvp;
+      final mvpScore = widget.match.scores[mvp.first.id]?.score ?? 0;
+      final mvpNames = mvp.map((player) => player.name).join(', ');
+
+      return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
+    }
+    return '${loc.winner}: n.A.';
+  }
+
+  Icon getMvpIcon() {
+    const Icon(Icons.emoji_events, size: 20, color: Colors.amber);
+
+    switch (widget.match.game.ruleset) {
+      case Ruleset.singleWinner:
+        return const Icon(Icons.emoji_events, size: 20, color: Colors.amber);
+      case Ruleset.singleLoser:
+        return const Icon(
+          Icons.sentiment_dissatisfied_outlined,
+          size: 20,
+          color: Colors.blue,
+        );
+      case Ruleset.lowestScore:
+        return const Icon(Icons.arrow_downward, size: 20, color: Colors.orange);
+      case Ruleset.highestScore:
+        return const Icon(Icons.arrow_upward, size: 20, color: Colors.green);
+      default:
+        return const Icon(Icons.emoji_events, size: 20, color: Colors.amber);
     }
   }
 }

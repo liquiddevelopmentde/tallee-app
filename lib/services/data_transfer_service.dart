@@ -12,6 +12,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 
 class DataTransferService {
@@ -36,59 +37,12 @@ class DataTransferService {
     final games = await db.gameDao.getAllGames();
     final teams = await db.teamDao.getAllTeams();
 
-    // Construct a JSON representation of the data in normalized format
     final Map<String, dynamic> jsonMap = {
-      'players': players.map((p) => p.toJson()).toList(),
-      'games': games.map((g) => g.toJson()).toList(),
-      'groups': groups
-          .map(
-            (g) => {
-              'id': g.id,
-              'name': g.name,
-              'description': g.description,
-              'createdAt': g.createdAt.toIso8601String(),
-              'memberIds': (g.members).map((m) => m.id).toList(),
-            },
-          )
-          .toList(),
-      'teams': teams
-          .map(
-            (t) => {
-              'id': t.id,
-              'name': t.name,
-              'createdAt': t.createdAt.toIso8601String(),
-              'memberIds': (t.members).map((m) => m.id).toList(),
-            },
-          )
-          .toList(),
-      'matches': matches
-          .map(
-            (m) => {
-              'id': m.id,
-              'name': m.name,
-              'createdAt': m.createdAt.toIso8601String(),
-              'endedAt': m.endedAt?.toIso8601String(),
-              'gameId': m.game.id,
-              'groupId': m.group?.id,
-              'playerIds': m.players.map((p) => p.id).toList(),
-              'scores': m.scores.map(
-                (playerId, scores) => MapEntry(
-                  playerId,
-                  scores
-                      .map(
-                        (s) => {
-                          'roundNumber': s.roundNumber,
-                          'score': s.score,
-                          'change': s.change,
-                        },
-                      )
-                      .toList(),
-                ),
-              ),
-              'notes': m.notes,
-            },
-          )
-          .toList(),
+      'players': players.map((player) => player.toJson()).toList(),
+      'games': games.map((game) => game.toJson()).toList(),
+      'groups': groups.map((group) => group.toJson()).toList(),
+      'teams': teams.map((team) => team.toJson()).toList(),
+      'matches': matches.map((match) => match.toJson()).toList(),
     };
 
     return json.encode(jsonMap);
@@ -105,7 +59,7 @@ class DataTransferService {
   ) async {
     try {
       final bytes = Uint8List.fromList(utf8.encode(jsonString));
-      final path = await FilePicker.platform.saveFile(
+      final path = await FilePicker.saveFile(
         fileName: '$fileName.json',
         bytes: bytes,
       );
@@ -126,7 +80,7 @@ class DataTransferService {
   static Future<ImportResult> importData(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
 
-    final path = await FilePicker.platform.pickFiles(
+    final path = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['json'],
     );
@@ -284,6 +238,15 @@ class DataTransferService {
           ? DateTime.parse(map['endedAt'] as String)
           : null;
       final notes = map['notes'] as String? ?? '';
+      final scoresJson = map['scores'] as Map<String, dynamic>? ?? {};
+      final scores = scoresJson.map(
+        (key, value) => MapEntry(
+          key,
+          value != null
+              ? ScoreEntry.fromJson(value as Map<String, dynamic>)
+              : null,
+        ),
+      );
 
       // Link attributes to objects
       final game = gamesMap[gameId] ?? getFallbackGame();
@@ -305,6 +268,7 @@ class DataTransferService {
         createdAt: createdAt,
         endedAt: endedAt,
         notes: notes,
+        scores: scores,
       );
     }).toList();
   }

@@ -15,27 +15,25 @@ class Match {
   final Group? group;
   final List<Player> players;
   final String notes;
-  Map<String, List<ScoreEntry>> scores;
-  Player? winner;
+  Map<String, ScoreEntry?> scores;
 
   Match({
-    String? id,
-    DateTime? createdAt,
-    this.endedAt,
     required this.name,
     required this.game,
+    required this.players,
+    this.endedAt,
     this.group,
-    this.players = const [],
     this.notes = '',
-    Map<String, List<ScoreEntry>>? scores,
-    this.winner,
+    String? id,
+    DateTime? createdAt,
+    Map<String, ScoreEntry?>? scores,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
-       scores = scores ?? {for (var player in players) player.id: []};
+       scores = scores ?? {for (Player p in players) p.id: null};
 
   @override
   String toString() {
-    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, notes: $notes, scores: $scores, winner: $winner}';
+    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, notes: $notes, scores: $scores, mvp: $mvp}';
   }
 
   /// Creates a Match instance from a JSON object where related objects are
@@ -57,7 +55,16 @@ class Match {
       ),
       group = null,
       players = [],
-      scores = json['scores'],
+      scores = json['scores'] != null
+          ? (json['scores'] as Map<String, dynamic>).map(
+              (key, value) => MapEntry(
+                key,
+                value != null
+                    ? ScoreEntry.fromJson(value as Map<String, dynamic>)
+                    : null,
+              ),
+            )
+          : {},
       notes = json['notes'] ?? '';
 
   /// Converts the Match instance to a JSON object. Related objects are
@@ -71,10 +78,62 @@ class Match {
     'gameId': game.id,
     'groupId': group?.id,
     'playerIds': players.map((player) => player.id).toList(),
-    'scores': scores.map(
-      (playerId, scoreList) =>
-          MapEntry(playerId, scoreList.map((score) => score.toJson()).toList()),
-    ),
+    'scores': scores.map((key, value) => MapEntry(key, value?.toJson())),
     'notes': notes,
   };
+
+  List<Player> get mvp {
+    if (players.isEmpty || scores.isEmpty) return [];
+
+    switch (game.ruleset) {
+      case Ruleset.highestScore:
+        return _getPlayersWithHighestScore();
+
+      case Ruleset.lowestScore:
+        return _getPlayersWithLowestScore();
+
+      case Ruleset.singleWinner:
+        return _getPlayersWithHighestScore().take(1).toList();
+
+      case Ruleset.singleLoser:
+        return _getPlayersWithLowestScore().take(1).toList();
+
+      case Ruleset.multipleWinners:
+        return [];
+    }
+  }
+
+  List<Player> _getPlayersWithHighestScore() {
+    if (players.isEmpty || scores.values.every((score) => score == null)) {
+      return [];
+    }
+
+    final int highestScore = players
+        .map((player) => scores[player.id]?.score)
+        .whereType<int>()
+        .reduce((max, score) => score > max ? score : max);
+
+    return players.where((player) {
+      final playerScores = scores[player.id];
+      if (playerScores == null) return false;
+      return playerScores.score == highestScore;
+    }).toList();
+  }
+
+  List<Player> _getPlayersWithLowestScore() {
+    if (players.isEmpty || scores.values.every((score) => score == null)) {
+      return [];
+    }
+
+    final int lowestScore = players
+        .map((player) => scores[player.id]?.score)
+        .whereType<int>()
+        .reduce((min, score) => score < min ? score : min);
+
+    return players.where((player) {
+      final playerScore = scores[player.id];
+      if (playerScore == null) return false;
+      return playerScore.score == lowestScore;
+    }).toList();
+  }
 }

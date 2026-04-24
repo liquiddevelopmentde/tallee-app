@@ -43,21 +43,41 @@ class _HomeViewState extends State<HomeView> {
     Match(
       name: 'Skeleton Match',
       game: Game(
-        name: '',
+        name: 'Skeleton Game',
         ruleset: Ruleset.singleWinner,
-        description: '',
+        description: 'This is a skeleton game description.',
         color: GameColor.blue,
         icon: '',
       ),
       group: Group(
         name: 'Skeleton Group',
-        description: '',
+        description: 'This is a skeleton group description.',
         members: [
-          Player(name: 'Skeleton Player 1', description: ''),
-          Player(name: 'Skeleton Player 2', description: ''),
+          Player(
+            name:
+                'Skeleton Player 1'
+                '',
+          ),
+          Player(
+            name:
+                'Skeleton Player 2'
+                '',
+          ),
         ],
       ),
-      notes: '',
+      notes: 'These are skeleton notes.',
+      players: [
+        Player(
+          name:
+              'Skeleton Player 1'
+              '',
+        ),
+        Player(
+          name:
+              'Skeleton Player 2'
+              '',
+        ),
+      ],
     ),
   );
 
@@ -125,7 +145,11 @@ class _HomeViewState extends State<HomeView> {
                                           MatchResultView(match: match),
                                     ),
                                   );
-                                  await updatedWinnerInRecentMatches(match.id);
+                                  await loadRecentMatches();
+
+                                  setState(() {
+                                    print('loaded');
+                                  });
                                 },
                               ),
                             )
@@ -224,15 +248,12 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  /// Updates the winner information for a specific match in the recent matches list.
-  Future<void> updatedWinnerInRecentMatches(String matchId) async {
+  Future<void> loadRecentMatches() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final winner = await db.scoreEntryDao.getWinner(matchId: matchId);
-    final matchIndex = recentMatches.indexWhere((match) => match.id == matchId);
-    if (matchIndex != -1) {
-      setState(() {
-        recentMatches[matchIndex].winner = winner;
-      });
-    }
+    final matches = await db.matchDao.getAllMatches();
+    recentMatches =
+        (matches..sort((a, b) => b.createdAt.compareTo(a.createdAt)))
+            .take(2)
+            .toList();
   }
 }

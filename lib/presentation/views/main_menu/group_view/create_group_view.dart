@@ -148,7 +148,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     final groupName = _groupNameController.text.trim();
 
     final success = await db.groupDao.addGroup(
-      group: Group(name: groupName, description: '', members: selectedPlayers),
+      group: Group(name: groupName, members: selectedPlayers),
     );
 
     return success;
