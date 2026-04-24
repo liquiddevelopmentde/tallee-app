@@ -13,6 +13,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     with _$ScoreEntryDaoMixin {
   ScoreEntryDao(super.db);
 
+  /* Create */
+
   /// Adds a score entry to the database.
   Future<void> addScore({
     required String playerId,
@@ -57,6 +59,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       );
     });
   }
+
+  /* Read */
 
   /// Retrieves the score for a specific round.
   Future<ScoreEntry?> getScore({
@@ -126,6 +130,34 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       );
   }
 
+  /// Gets the highest (latest) round number for a match.
+  /// Returns `null` if there are no scores for the match.
+  Future<int?> getLatestRoundNumber({required String matchId}) async {
+    final query = selectOnly(scoreEntryTable)
+      ..where(scoreEntryTable.matchId.equals(matchId))
+      ..addColumns([scoreEntryTable.roundNumber.max()]);
+    final result = await query.getSingle();
+    return result.read(scoreEntryTable.roundNumber.max());
+  }
+
+  /// Aggregates the total score for a player in a match by summing all their
+  /// score entry changes. Returns `0` if there are no scores for the player
+  /// in the match.
+  Future<int> getTotalScoreForPlayer({
+    required String playerId,
+    required String matchId,
+  }) async {
+    final scores = await getAllPlayerScoresInMatch(
+      playerId: playerId,
+      matchId: matchId,
+    );
+    if (scores.isEmpty) return 0;
+    // Return the sum of all score changes
+    return scores.fold<int>(0, (sum, element) => sum + element.change);
+  }
+
+  /* Update */
+
   /// Updates a score entry.
   Future<bool> updateScore({
     required String playerId,
@@ -147,6 +179,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
             );
     return rowsAffected > 0;
   }
+
+  /* Delete */
 
   /// Deletes a score entry.
   Future<bool> deleteScore({
@@ -182,31 +216,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return rowsAffected > 0;
   }
 
-  /// Gets the highest (latest) round number for a match.
-  /// Returns `null` if there are no scores for the match.
-  Future<int?> getLatestRoundNumber({required String matchId}) async {
-    final query = selectOnly(scoreEntryTable)
-      ..where(scoreEntryTable.matchId.equals(matchId))
-      ..addColumns([scoreEntryTable.roundNumber.max()]);
-    final result = await query.getSingle();
-    return result.read(scoreEntryTable.roundNumber.max());
-  }
-
-  /// Aggregates the total score for a player in a match by summing all their
-  /// score entry changes. Returns `0` if there are no scores for the player
-  /// in the match.
-  Future<int> getTotalScoreForPlayer({
-    required String playerId,
-    required String matchId,
-  }) async {
-    final scores = await getAllPlayerScoresInMatch(
-      playerId: playerId,
-      matchId: matchId,
-    );
-    if (scores.isEmpty) return 0;
-    // Return the sum of all score changes
-    return scores.fold<int>(0, (sum, element) => sum + element.change);
-  }
+  /* Winner handling */
 
   Future<bool> hasWinner({required String matchId}) async {
     return await getWinner(matchId: matchId) != null;
@@ -275,12 +285,14 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     }
   }
 
-  Future<bool> hasLooser({required String matchId}) async {
-    return await getLooser(matchId: matchId) != null;
+  /* Loser handling */
+
+  Future<bool> hasLoser({required String matchId}) async {
+    return await getLoser(matchId: matchId) != null;
   }
 
   // Setting the looser for a game and clearing previous looser if exists.
-  Future<bool> setLooser({
+  Future<bool> setLoser({
     required String matchId,
     required String playerId,
   }) async {
@@ -304,7 +316,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   /// Retrieves the looser of a match by looking for a score entry where score
   /// is 0. Returns `null` if no player found, else the first with the score.
-  Future<Player?> getLooser({required String matchId}) async {
+  Future<Player?> getLoser({required String matchId}) async {
     final query =
         select(scoreEntryTable).join([
           innerJoin(
@@ -332,7 +344,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   ///
   /// Returns `true` if the looser was removed, `false` if there are multiple
   /// scores or if the looser cannot be removed.
-  Future<bool> removeLooser({required String matchId}) async {
+  Future<bool> removeLoser({required String matchId}) async {
     final scores = await getAllMatchScores(matchId: matchId);
 
     if (scores.length > 1) {
