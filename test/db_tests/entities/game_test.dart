@@ -24,6 +24,7 @@ void main() {
 
     withClock(fakeClock, () {
       testGame1 = Game(
+        id: 'game1',
         name: 'Chess',
         ruleset: Ruleset.singleWinner,
         description: 'A classic strategy game',
@@ -142,12 +143,12 @@ void main() {
         await database.gameDao.addGame(game: testGame1);
 
         final game = await database.gameDao.getGameById(gameId: testGame1.id);
-        expect(game.id, testGame2.id);
-        expect(game.name, testGame2.name);
-        expect(game.ruleset, testGame2.ruleset);
-        expect(game.description, testGame2.description);
-        expect(game.color, testGame2.color);
-        expect(game.icon, testGame2.icon);
+        expect(game.id, testGame1.id);
+        expect(game.name, testGame1.name);
+        expect(game.ruleset, testGame1.ruleset);
+        expect(game.description, testGame1.description);
+        expect(game.color, testGame1.color);
+        expect(game.icon, testGame1.icon);
       });
 
       test('getGameById() throws exception for non-existent game', () async {
@@ -190,7 +191,7 @@ void main() {
     });
 
     group('UPDATE', () {
-      test('updateGameName() updates the name correctly', () async {
+      test('updateGameName() works correctly', () async {
         await database.gameDao.addGame(game: testGame1);
         const newName = 'New name';
 
@@ -217,7 +218,7 @@ void main() {
         expect(allGames, isEmpty);
       });
 
-      test('updateGameRuleset() updates the ruleset correctly', () async {
+      test('updateGameRuleset() works correctly', () async {
         await database.gameDao.addGame(game: testGame1);
         const ruleset = Ruleset.highestScore;
 
@@ -244,24 +245,21 @@ void main() {
         expect(allGames, isEmpty);
       });
 
-      test(
-        'updateGameDescription() updates the description correctly',
-        () async {
-          await database.gameDao.addGame(game: testGame1);
-          const newDescription = 'New description';
+      test('updateGameDescription() works correctly', () async {
+        await database.gameDao.addGame(game: testGame1);
+        const newDescription = 'New description';
 
-          final updated = await database.gameDao.updateGameDescription(
-            gameId: testGame1.id,
-            newDescription: newDescription,
-          );
-          expect(updated, true);
+        final updated = await database.gameDao.updateGameDescription(
+          gameId: testGame1.id,
+          newDescription: newDescription,
+        );
+        expect(updated, true);
 
-          final updatedGame = await database.gameDao.getGameById(
-            gameId: testGame1.id,
-          );
-          expect(updatedGame.description, newDescription);
-        },
-      );
+        final updatedGame = await database.gameDao.getGameById(
+          gameId: testGame1.id,
+        );
+        expect(updatedGame.description, newDescription);
+      });
 
       test(
         'updateGameDescription() does nothing for non-existent game',
