@@ -115,6 +115,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              // Match name input field.
               Container(
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
@@ -123,6 +124,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   maxLength: Constants.MAX_MATCH_NAME_LENGTH,
                 ),
               ),
+
+              // Game selection tile.
               ChooseTile(
                 title: loc.game,
                 trailingText: selectedGame == null
@@ -146,6 +149,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   });
                 },
               ),
+
+              // Group selection tile.
               ChooseTile(
                 title: loc.group,
                 trailingText: selectedGroup == null
@@ -181,6 +186,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   });
                 },
               ),
+
+              // Player selection widget.
               Expanded(
                 child: PlayerSelection(
                   key: ValueKey(selectedGroup?.id ?? 'no_group'),
@@ -193,6 +200,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   },
                 ),
               ),
+
+              // Create or save button.
               CustomWidthButton(
                 text: buttonText,
                 sizeRelativeToWidth: 0.95,
@@ -218,16 +227,16 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   ///
   /// Returns `true` if:
   /// - A ruleset is selected AND
-  /// - Either a group is selected OR at least 2 players are selected
+  /// - Either a group is selected OR at least 2 players are selected.
   bool _enableCreateGameButton() {
     return (selectedGroup != null ||
         (selectedPlayers.length > 1) && selectedGame != null);
   }
 
-  // If a match was provided to the view, it updates the match in the database
-  // and navigates back to the previous screen.
-  // If no match was provided, it creates a new match in the database and
-  // navigates to the MatchResultView for the newly created match.
+  /// Handles navigation when the create or save button is pressed.
+  ///
+  /// If a match is being edited, updates the match in the database.
+  /// Otherwise, creates a new match and navigates to the MatchResultView.
   void buttonNavigation(BuildContext context) async {
     if (isEditMode()) {
       await updateMatch();
@@ -252,8 +261,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     }
   }
 
-  /// Updates attributes of the existing match in the database based on the
-  /// changes made in the edit view.
+  /// Updates the existing match in the database.
   Future<void> updateMatch() async {
     final updatedMatch = Match(
       id: widget.matchToEdit!.id,
@@ -262,7 +270,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           : _matchNameController.text.trim(),
       group: selectedGroup,
       players: selectedPlayers,
-      game: widget.matchToEdit!.game,
+      game: selectedGame!,
       createdAt: widget.matchToEdit!.createdAt,
       endedAt: widget.matchToEdit!.endedAt,
       notes: widget.matchToEdit!.notes,
@@ -279,6 +287,13 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       await db.matchDao.updateMatchGroup(
         matchId: widget.matchToEdit!.id,
         newGroupId: updatedMatch.group?.id,
+      );
+    }
+
+    if (widget.matchToEdit!.game.id != updatedMatch.game.id) {
+      await db.matchDao.updateMatchGame(
+        matchId: widget.matchToEdit!.id,
+        gameId: updatedMatch.game.id,
       );
     }
 

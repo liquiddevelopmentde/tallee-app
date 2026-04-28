@@ -27,6 +27,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
+  String get choose_color => 'Farbe wählen';
+
+  @override
   String get choose_game => 'Spielvorlage wählen';
 
   @override
@@ -36,9 +39,39 @@ class AppLocalizationsDe extends AppLocalizations {
   String get choose_ruleset => 'Regelwerk wählen';
 
   @override
+  String get color => 'Farbe';
+
+  @override
+  String get color_blue => 'Blau';
+
+  @override
+  String get color_green => 'Grün';
+
+  @override
+  String get color_orange => 'Orange';
+
+  @override
+  String get color_pink => 'Rosa';
+
+  @override
+  String get color_purple => 'Lila';
+
+  @override
+  String get color_red => 'Rot';
+
+  @override
+  String get color_teal => 'Türkis';
+
+  @override
+  String get color_yellow => 'Gelb';
+
+  @override
   String could_not_add_player(Object playerName) {
     return 'Spieler:in $playerName konnte nicht hinzugefügt werden';
   }
+
+  @override
+  String get create_game => 'Spielvorlage erstellen';
 
   @override
   String get create_group => 'Gruppe erstellen';
@@ -79,10 +112,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_all_data => 'Alle Daten löschen';
 
   @override
+  String get delete_game => 'Spielvorlage löschen';
+
+  @override
   String get delete_group => 'Gruppe löschen';
 
   @override
   String get delete_match => 'Spiel löschen';
+
+  @override
+  String get description => 'Beschreibung';
+
+  @override
+  String get edit_game => 'Spielvorlage bearbeiten';
 
   @override
   String get edit_group => 'Gruppe bearbeiten';
@@ -99,6 +141,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get error_creating_group =>
       'Fehler beim Erstellen der Gruppe, bitte erneut versuchen';
+
+  @override
+  String get error_deleting_game =>
+      'Fehler beim Löschen der Spielvorlage, bitte erneut versuchen';
 
   @override
   String get error_deleting_group =>

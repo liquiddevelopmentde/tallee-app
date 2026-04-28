@@ -18,6 +18,9 @@
   "@cancel": {
     "description": "Cancel button text"
   },
+  "@choose_color": {
+    "description": "Label for choosing a color"
+  },
   "@choose_game": {
     "description": "Label for choosing a game"
   },
@@ -27,8 +30,14 @@
   "@choose_ruleset": {
     "description": "Label for choosing a ruleset"
   },
+  "@color": {
+    "description": "Color label"
+  },
   "@could_not_add_player": {
     "description": "Error message when adding a player fails"
+  },
+  "@create_game": {
+    "description": "Button text to create a game"
   },
   "@create_group": {
     "description": "Button text to create a group"
@@ -71,11 +80,20 @@
   "@delete_all_data": {
     "description": "Confirmation dialog for deleting all data"
   },
+  "@delete_game": {
+    "description": "Button text to delete a game"
+  },
   "@delete_group": {
     "description": "Confirmation dialog for deleting a group"
   },
   "@delete_match": {
     "description": "Button text to delete a match"
+  },
+  "@description": {
+    "description": "Description label"
+  },
+  "@edit_game": {
+    "description": "Button text to edit a game"
   },
   "@edit_group": {
       "description": "Button & Appbar label for editing a group"
@@ -91,6 +109,9 @@
   },
   "@error_creating_group": {
     "description": "Error message when group creation fails"
+  },
+  "@error_deleting_game": {
+    "description": "Error message when game deletion fails"
   },
   "@error_deleting_group": {
       "description": "Error message when group deletion fails"
@@ -340,10 +361,21 @@
   "app_name": "Tallee",
   "best_player": "Best Player",
   "cancel": "Cancel",
+  "choose_color": "Choose Color",
   "choose_game": "Choose Game",
   "choose_group": "Choose Group",
   "choose_ruleset": "Choose Ruleset",
+  "color": "Color",
+  "color_blue": "Blue",
+  "color_green": "Green",
+  "color_orange": "Orange",
+  "color_pink": "Pink",
+  "color_purple": "Purple",
+  "color_red": "Red",
+  "color_teal": "Teal",
+  "color_yellow": "Yellow",
   "could_not_add_player": "Could not add player",
+  "create_game": "Create Game",
   "create_group": "Create Group",
   "create_match": "Create match",
   "create_new_group": "Create new group",
@@ -356,13 +388,17 @@
   "days_ago": "{count} days ago",
   "delete": "Delete",
   "delete_all_data": "Delete all data",
+  "delete_game": "Delete Game",
   "delete_group": "Delete Group",
   "delete_match": "Delete Match",
+  "description": "Description",
+  "edit_game": "Edit Game",
   "edit_group": "Edit Group",
   "edit_match": "Edit Match",
   "enter_points": "Enter points",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
+  "error_deleting_game": "Error while deleting game, please try again",
   "error_deleting_group": "Error while deleting group, please try again",
   "error_editing_group": "Error while editing group, please try again",
   "error_reading_file": "Error reading file",

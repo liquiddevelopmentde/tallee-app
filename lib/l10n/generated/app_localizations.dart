@@ -134,6 +134,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// Label for choosing a color
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Color'**
+  String get choose_color;
+
   /// Label for choosing a game
   ///
   /// In en, this message translates to:
@@ -152,11 +158,71 @@ abstract class AppLocalizations {
   /// **'Choose Ruleset'**
   String get choose_ruleset;
 
+  /// Color label
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get color;
+
+  /// No description provided for @color_blue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get color_blue;
+
+  /// No description provided for @color_green.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get color_green;
+
+  /// No description provided for @color_orange.
+  ///
+  /// In en, this message translates to:
+  /// **'Orange'**
+  String get color_orange;
+
+  /// No description provided for @color_pink.
+  ///
+  /// In en, this message translates to:
+  /// **'Pink'**
+  String get color_pink;
+
+  /// No description provided for @color_purple.
+  ///
+  /// In en, this message translates to:
+  /// **'Purple'**
+  String get color_purple;
+
+  /// No description provided for @color_red.
+  ///
+  /// In en, this message translates to:
+  /// **'Red'**
+  String get color_red;
+
+  /// No description provided for @color_teal.
+  ///
+  /// In en, this message translates to:
+  /// **'Teal'**
+  String get color_teal;
+
+  /// No description provided for @color_yellow.
+  ///
+  /// In en, this message translates to:
+  /// **'Yellow'**
+  String get color_yellow;
+
   /// Error message when adding a player fails
   ///
   /// In en, this message translates to:
   /// **'Could not add player'**
   String could_not_add_player(Object playerName);
+
+  /// Button text to create a game
+  ///
+  /// In en, this message translates to:
+  /// **'Create Game'**
+  String get create_game;
 
   /// Button text to create a group
   ///
@@ -230,6 +296,12 @@ abstract class AppLocalizations {
   /// **'Delete all data'**
   String get delete_all_data;
 
+  /// Button text to delete a game
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Game'**
+  String get delete_game;
+
   /// Confirmation dialog for deleting a group
   ///
   /// In en, this message translates to:
@@ -241,6 +313,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Match'**
   String get delete_match;
+
+  /// Description label
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// Button text to edit a game
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Game'**
+  String get edit_game;
 
   /// Button & Appbar label for editing a group
   ///
@@ -271,6 +355,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error while creating group, please try again'**
   String get error_creating_group;
+
+  /// Error message when game deletion fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting game, please try again'**
+  String get error_deleting_game;
 
   /// Error message when group deletion fails
   ///

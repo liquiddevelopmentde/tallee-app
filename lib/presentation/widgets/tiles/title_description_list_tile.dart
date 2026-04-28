@@ -5,7 +5,8 @@ class TitleDescriptionListTile extends StatelessWidget {
   /// A list tile widget that displays a title and description, with optional highlighting and badge.
   /// - [title]: The title text displayed on the tile.
   /// - [description]: The description text displayed below the title.
-  /// - [onPressed]: The callback invoked when the tile is tapped.
+  /// - [onTap]: The callback invoked when the tile is tapped.
+  /// - [onLongPress]: The callback invoked when the tile is tapped.
   /// - [isHighlighted]: A boolean to determine if the tile should be highlighted.
   /// - [badgeText]: Optional text to display in a badge on the right side of the title.
   /// - [badgeColor]: Optional color for the badge background.
@@ -13,7 +14,8 @@ class TitleDescriptionListTile extends StatelessWidget {
     super.key,
     required this.title,
     required this.description,
-    this.onPressed,
+    this.onTap,
+    this.onLongPress,
     this.isHighlighted = false,
     this.badgeText,
     this.badgeColor,
@@ -26,7 +28,10 @@ class TitleDescriptionListTile extends StatelessWidget {
   final String description;
 
   /// The callback invoked when the tile is tapped.
-  final VoidCallback? onPressed;
+  final VoidCallback? onTap;
+
+  /// The callback invoked when the tile is long-pressed.
+  final VoidCallback? onLongPress;
 
   /// A boolean to determine if the tile should be highlighted.
   final bool isHighlighted;
@@ -40,7 +45,8 @@ class TitleDescriptionListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: onTap,
+      onLongPress: onLongPress,
       child: AnimatedContainer(
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),

@@ -27,6 +27,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get choose_color => 'Choose Color';
+
+  @override
   String get choose_game => 'Choose Game';
 
   @override
@@ -36,9 +39,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get choose_ruleset => 'Choose Ruleset';
 
   @override
+  String get color => 'Color';
+
+  @override
+  String get color_blue => 'Blue';
+
+  @override
+  String get color_green => 'Green';
+
+  @override
+  String get color_orange => 'Orange';
+
+  @override
+  String get color_pink => 'Pink';
+
+  @override
+  String get color_purple => 'Purple';
+
+  @override
+  String get color_red => 'Red';
+
+  @override
+  String get color_teal => 'Teal';
+
+  @override
+  String get color_yellow => 'Yellow';
+
+  @override
   String could_not_add_player(Object playerName) {
     return 'Could not add player';
   }
+
+  @override
+  String get create_game => 'Create Game';
 
   @override
   String get create_group => 'Create Group';
@@ -79,10 +112,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_all_data => 'Delete all data';
 
   @override
+  String get delete_game => 'Delete Game';
+
+  @override
   String get delete_group => 'Delete Group';
 
   @override
   String get delete_match => 'Delete Match';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get edit_game => 'Edit Game';
 
   @override
   String get edit_group => 'Edit Group';
@@ -99,6 +141,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get error_creating_group =>
       'Error while creating group, please try again';
+
+  @override
+  String get error_deleting_game =>
+      'Error while deleting game, please try again';
 
   @override
   String get error_deleting_group =>

@@ -12,16 +12,17 @@ class Game {
   final String icon;
 
   Game({
-    String? id,
-    DateTime? createdAt,
     required this.name,
     required this.ruleset,
-    String? description,
     required this.color,
-    required this.icon,
+    String? id,
+    DateTime? createdAt,
+    String? description,
+    String? icon,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
-       description = description ?? '';
+       description = description ?? '',
+       icon = icon ?? '';
 
   @override
   String toString() {
