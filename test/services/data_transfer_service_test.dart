@@ -99,7 +99,9 @@ void main() {
       await database.playerDao.addPlayer(player: testPlayer1);
       await database.gameDao.addGame(game: testGame);
       await database.groupDao.addGroup(group: testGroup);
+      /*
       await database.teamDao.addTeam(team: testTeam);
+*/
       await database.matchDao.addMatch(match: testMatch);
 
       var playerCount = await database.playerDao.getPlayerCount();
@@ -137,7 +139,9 @@ void main() {
           await database.playerDao.addPlayer(player: testPlayer2);
           await database.gameDao.addGame(game: testGame);
           await database.groupDao.addGroup(group: testGroup);
+          /*
           await database.teamDao.addTeam(team: testTeam);
+*/
           await database.matchDao.addMatch(match: testMatch);
 
           final ctx = await getContext(tester);
@@ -244,7 +248,9 @@ void main() {
         });
 
         testWidgets('Team data is correct', (tester) async {
+          /*
           await database.teamDao.addTeam(team: testTeam);
+*/
 
           final ctx = await getContext(tester);
           final jsonString = await DataTransferService.getAppDataAsJson(ctx);
@@ -644,19 +650,17 @@ void main() {
       test('parseTeamsFromJson()', () {
         final playerById = {testPlayer1.id: testPlayer1};
 
-        final jsonMap = {
-          'teams': [
-            {
-              'id': testTeam.id,
-              'name': testTeam.name,
-              'memberIds': [testPlayer1.id],
-              'createdAt': testTeam.createdAt.toIso8601String(),
-            },
-          ],
-        };
+        final teamsJson = [
+          {
+            'id': testTeam.id,
+            'name': testTeam.name,
+            'memberIds': [testPlayer1.id],
+            'createdAt': testTeam.createdAt.toIso8601String(),
+          },
+        ];
 
         final teams = DataTransferService.parseTeamsFromJson(
-          jsonMap,
+          teamsJson,
           playerById,
         );
 
@@ -668,15 +672,21 @@ void main() {
       });
 
       test('parseTeamsFromJson() empty list', () {
-        final jsonMap = {'teams': []};
-        final teams = DataTransferService.parseTeamsFromJson(jsonMap, {});
+        final teams = DataTransferService.parseTeamsFromJson([], {});
         expect(teams, isEmpty);
       });
 
-      test('parseTeamsFromJson() missing key', () {
-        final jsonMap = <String, dynamic>{};
-        final teams = DataTransferService.parseTeamsFromJson(jsonMap, {});
-        expect(teams, isEmpty);
+      test('parseTeamsFromJson() missing memberIds', () {
+        final teamsJson = [
+          {
+            'id': testTeam.id,
+            'name': testTeam.name,
+            'createdAt': testTeam.createdAt.toIso8601String(),
+          },
+        ];
+        final teams = DataTransferService.parseTeamsFromJson(teamsJson, {});
+        expect(teams.length, 1);
+        expect(teams[0].members, isEmpty);
       });
 
       test('parseMatchesFromJson()', () {

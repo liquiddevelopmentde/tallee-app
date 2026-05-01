@@ -35,13 +35,11 @@ class DataTransferService {
     final groups = await db.groupDao.getAllGroups();
     final players = await db.playerDao.getAllPlayers();
     final games = await db.gameDao.getAllGames();
-    final teams = await db.teamDao.getAllTeams();
 
     final Map<String, dynamic> jsonMap = {
       'players': players.map((player) => player.toJson()).toList(),
       'games': games.map((game) => game.toJson()).toList(),
       'groups': groups.map((group) => group.toJson()).toList(),
-      'teams': teams.map((team) => team.toJson()).toList(),
       'matches': matches.map((match) => match.toJson()).toList(),
     };
 
@@ -130,8 +128,6 @@ class DataTransferService {
     final importedGroups = parseGroupsFromJson(decodedJson, playerById);
     final groupById = {for (final g in importedGroups) g.id: g};
 
-    final importedTeams = parseTeamsFromJson(decodedJson, playerById);
-
     final importedMatches = parseMatchesFromJson(
       decodedJson,
       gameById,
@@ -142,7 +138,6 @@ class DataTransferService {
     await db.playerDao.addPlayersAsList(players: importedPlayers);
     await db.gameDao.addGamesAsList(games: importedGames);
     await db.groupDao.addGroupsAsList(groups: importedGroups);
-    await db.teamDao.addTeamsAsList(teams: importedTeams);
     await db.matchDao.addMatchesAsList(matches: importedMatches);
   }
 
@@ -190,13 +185,12 @@ class DataTransferService {
     }).toList();
   }
 
-  /// Parses teams from JSON data.
+  /// Parses teams from a list of JSON objects.
   @visibleForTesting
   static List<Team> parseTeamsFromJson(
-    Map<String, dynamic> decodedJson,
+    List<dynamic> teamsJson,
     Map<String, Player> playerById,
   ) {
-    final teamsJson = (decodedJson['teams'] as List<dynamic>?) ?? [];
     return teamsJson.map((t) {
       final map = t as Map<String, dynamic>;
       final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
@@ -259,12 +253,16 @@ class DataTransferService {
           .whereType<Player>()
           .toList();
 
+      final teamsJson = (map['teams'] as List<dynamic>?) ?? [];
+      final teams = parseTeamsFromJson(teamsJson, playersMap);
+
       return Match(
         id: id,
         name: name,
         game: game,
         group: group,
         players: players,
+        teams: teams.isEmpty ? null : teams,
         createdAt: createdAt,
         endedAt: endedAt,
         notes: notes,

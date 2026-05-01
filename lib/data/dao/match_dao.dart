@@ -8,6 +8,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/team.dart';
 
 part 'match_dao.g.dart';
 
@@ -17,7 +18,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
   /* Create */
 
-  /// Adds a new [Match] to the database. Also adds players associations.
+  /// Adds a new [Match] to the database. Also adds players associations and teams.
   /// This method assumes that the game and group (if any) are already present
   /// in the database.
   Future<bool> addMatch({required Match match}) async {
@@ -36,6 +37,11 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         mode: InsertMode.insertOrReplace,
       );
 
+      // Add teams
+      if (match.teams != null && match.teams!.isNotEmpty) {
+        await db.teamDao.addTeamsAsList(teams: match.teams!, matchId: match.id);
+      }
+
       for (final p in match.players) {
         await db.playerMatchDao.addPlayerToMatch(
           matchId: match.id,
@@ -53,7 +59,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           );
         }
       }
-      print('Return true');
     });
     return true;
   }
@@ -220,6 +225,16 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           }
         }
       });
+
+      // Add teams for matches
+      for (final match in matches) {
+        if (match.teams != null && match.teams!.isNotEmpty) {
+          await db.teamDao.addTeamsAsList(
+            teams: match.teams!,
+            matchId: match.id,
+          );
+        }
+      }
     });
     return true;
   }
@@ -262,12 +277,15 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           matchId: row.id,
         );
 
+        final teams = await _getMatchTeams(matchId: row.id);
+
         return Match(
           id: row.id,
           name: row.name,
           game: game,
           group: group,
           players: players,
+          teams: teams.isEmpty ? null : teams,
           notes: row.notes ?? '',
           createdAt: row.createdAt,
           endedAt: row.endedAt,
@@ -294,12 +312,15 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
     final scores = await db.scoreEntryDao.getAllMatchScores(matchId: matchId);
 
+    final teams = await _getMatchTeams(matchId: matchId);
+
     return Match(
       id: result.id,
       name: result.name,
       game: game,
       group: group,
       players: players,
+      teams: teams.isEmpty ? null : teams,
       notes: result.notes ?? '',
       createdAt: result.createdAt,
       endedAt: result.endedAt,
@@ -319,18 +340,43 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         final group = await db.groupDao.getGroupById(groupId: groupId);
         final players =
             await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
+        final teams = await _getMatchTeams(matchId: row.id);
         return Match(
           id: row.id,
           name: row.name,
           game: game,
           group: group,
           players: players,
+          teams: teams.isEmpty ? null : teams,
           notes: row.notes ?? '',
           createdAt: row.createdAt,
           endedAt: row.endedAt,
         );
       }),
     );
+  }
+
+  /// Helper method to retrieve teams for a specific match
+  Future<List<Team>> _getMatchTeams({required String matchId}) async {
+    // Get all unique team IDs from PlayerMatchTable for this match
+    final playerMatchQuery = select(db.playerMatchTable)
+      ..where((pm) => pm.matchId.equals(matchId) & pm.teamId.isNotNull());
+    final playerMatches = await playerMatchQuery.get();
+
+    if (playerMatches.isEmpty) return [];
+
+    final teamIds = playerMatches
+        .map((pm) => pm.teamId)
+        .whereType<String>()
+        .toSet()
+        .toList();
+
+    // Fetch all teams
+    final teams = await Future.wait(
+      teamIds.map((teamId) => db.teamDao.getTeamById(teamId: teamId)),
+    );
+
+    return teams;
   }
 
   /* Update */

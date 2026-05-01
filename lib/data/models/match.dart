@@ -4,6 +4,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/team.dart';
 import 'package:uuid/uuid.dart';
 
 class Match {
@@ -14,6 +15,7 @@ class Match {
   final Game game;
   final Group? group;
   final List<Player> players;
+  final List<Team>? teams;
   final String notes;
   Map<String, ScoreEntry?> scores;
 
@@ -23,6 +25,7 @@ class Match {
     required this.players,
     this.endedAt,
     this.group,
+    this.teams,
     this.notes = '',
     String? id,
     DateTime? createdAt,
@@ -55,6 +58,7 @@ class Match {
       ),
       group = null,
       players = [],
+      teams = [],
       scores = json['scores'] != null
           ? (json['scores'] as Map<String, dynamic>).map(
               (key, value) => MapEntry(
@@ -78,6 +82,7 @@ class Match {
     'gameId': game.id,
     'groupId': group?.id,
     'playerIds': players.map((player) => player.id).toList(),
+    'teams': teams?.map((team) => team.toJson()).toList(),
     'scores': scores.map((key, value) => MapEntry(key, value?.toJson())),
     'notes': notes,
   };

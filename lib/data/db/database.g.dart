@@ -2122,7 +2122,7 @@ class $PlayerMatchTableTable extends PlayerMatchTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES team_table (id)',
+      'REFERENCES team_table (id) ON DELETE SET NULL',
     ),
   );
   @override
@@ -2819,6 +2819,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('player_match_table', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'team_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('player_match_table', kind: UpdateKind.update)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
