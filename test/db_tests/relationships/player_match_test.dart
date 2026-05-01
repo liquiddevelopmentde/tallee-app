@@ -253,7 +253,7 @@ void main() {
 
         await database.playerMatchDao.updateMatchPlayers(
           matchId: testMatch1.id,
-          newPlayer: newPlayers,
+          player: newPlayers,
         );
 
         final updatedPlayers = await database.playerMatchDao.getPlayersOfMatch(
@@ -337,7 +337,7 @@ void main() {
         final newPlayersList = [testPlayer1, testPlayer2];
         await database.playerMatchDao.updateMatchPlayers(
           matchId: testMatch1.id,
-          newPlayer: newPlayersList,
+          player: newPlayersList,
         );
 
         matchPlayers = await database.matchDao.getMatchById(
@@ -356,7 +356,7 @@ void main() {
 
         final updated = await database.playerMatchDao.updateMatchPlayers(
           matchId: testMatch1.id,
-          newPlayer: originalPlayers,
+          player: originalPlayers,
         );
         expect(updated, isFalse);
 
@@ -375,7 +375,7 @@ void main() {
         await database.matchDao.addMatch(match: testMatch1);
         final updated = await database.playerMatchDao.updateMatchPlayers(
           matchId: testMatch1.id,
-          newPlayer: [],
+          player: [],
         );
 
         expect(updated, isFalse);

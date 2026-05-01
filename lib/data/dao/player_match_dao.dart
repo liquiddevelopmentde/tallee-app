@@ -116,18 +116,18 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Updates the players associated with a match based on the provided
-  /// [newPlayer] list. It adds new players and removes players that are no
+  /// [player] list. It adds new players and removes players that are no
   /// longer associated with the match.
   Future<bool> updateMatchPlayers({
     required String matchId,
-    required List<Player> newPlayer,
+    required List<Player> player,
   }) async {
-    if (newPlayer.isEmpty) return false;
+    if (player.isEmpty) return false;
 
     final currentPlayers = await getPlayersOfMatch(matchId: matchId);
     // Create sets of player IDs for easy comparison
     final currentPlayerIds = currentPlayers.map((p) => p.id).toSet();
-    final newPlayerIdsSet = newPlayer.map((p) => p.id).toSet();
+    final newPlayerIdsSet = player.map((p) => p.id).toSet();
 
     // Are the current and new player identical?
     if (currentPlayerIds.containsAll(newPlayerIdsSet) &&

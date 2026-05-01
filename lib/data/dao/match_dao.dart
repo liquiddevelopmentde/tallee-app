@@ -395,30 +395,30 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
   /* Update */
 
-  /// Changes the name of the match with the given [matchId] to [newName].
+  /// Changes the name of the match with the given [matchId] to [name].
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> updateMatchName({
     required String matchId,
-    required String newName,
+    required String name,
   }) async {
     final query = update(matchTable)..where((g) => g.id.equals(matchId));
     final rowsAffected = await query.write(
-      MatchTableCompanion(name: Value(newName)),
+      MatchTableCompanion(name: Value(name)),
     );
     return rowsAffected > 0;
   }
 
   /// Updates the group of the match with the given [matchId].
-  /// Replaces the existing group association with the new group specified by [newGroupId].
+  /// Replaces the existing group association with the new group specified by [groupId].
   /// Pass null to remove the group association.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> updateMatchGroup({
     required String matchId,
-    required String? newGroupId,
+    required String? groupId,
   }) async {
     final query = update(matchTable)..where((g) => g.id.equals(matchId));
     final rowsAffected = await query.write(
-      MatchTableCompanion(groupId: Value(newGroupId)),
+      MatchTableCompanion(groupId: Value(groupId)),
     );
     return rowsAffected > 0;
   }

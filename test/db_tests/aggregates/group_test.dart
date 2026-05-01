@@ -211,7 +211,7 @@ void main() {
         const newName = 'New name';
         await database.groupDao.updateGroupName(
           groupId: testGroup1.id,
-          newName: newName,
+          name: newName,
         );
 
         final result = await database.groupDao.getGroupById(
@@ -223,7 +223,7 @@ void main() {
       test('updateGroupName() returns false for non-existent group', () async {
         final updated = await database.groupDao.updateGroupName(
           groupId: 'non-existent-id',
-          newName: 'New name',
+          name: 'New name',
         );
         expect(updated, isFalse);
       });
@@ -234,7 +234,7 @@ void main() {
         const newDescription = 'New description';
         final updated = await database.groupDao.updateGroupDescription(
           groupId: testGroup1.id,
-          newDescription: newDescription,
+          description: newDescription,
         );
         expect(updated, isTrue);
 
@@ -249,7 +249,7 @@ void main() {
         () async {
           final updated = await database.groupDao.updateGroupDescription(
             groupId: 'non-existent-id',
-            newDescription: 'New description',
+            description: 'New description',
           );
           expect(updated, isFalse);
         },
@@ -262,11 +262,11 @@ void main() {
 
         await database.groupDao.updateGroupName(
           groupId: testGroup1.id,
-          newName: newName,
+          name: newName,
         );
         await database.groupDao.updateGroupDescription(
           groupId: testGroup1.id,
-          newDescription: newDescription,
+          description: newDescription,
         );
 
         final updatedGroup = await database.groupDao.getGroupById(

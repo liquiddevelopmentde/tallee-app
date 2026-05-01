@@ -213,28 +213,28 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
 
   /* Update */
 
-  /// Updates the name of the group with the given [id] to [newName].
+  /// Updates the name of the group with the given [id] to [name].
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> updateGroupName({
     required String groupId,
-    required String newName,
+    required String name,
   }) async {
     final rowsAffected =
         await (update(groupTable)..where((g) => g.id.equals(groupId))).write(
-          GroupTableCompanion(name: Value(newName)),
+          GroupTableCompanion(name: Value(name)),
         );
     return rowsAffected > 0;
   }
 
-  /// Updates the description of the group with the given [groupId] to [newDescription].
+  /// Updates the description of the group with the given [groupId] to [description].
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> updateGroupDescription({
     required String groupId,
-    required String newDescription,
+    required String description,
   }) async {
     final rowsAffected =
         await (update(groupTable)..where((g) => g.id.equals(groupId))).write(
-          GroupTableCompanion(description: Value(newDescription)),
+          GroupTableCompanion(description: Value(description)),
         );
     return rowsAffected > 0;
   }

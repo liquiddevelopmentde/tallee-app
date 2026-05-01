@@ -263,7 +263,7 @@ void main() {
         const newName = 'New name';
         await database.teamDao.updateTeamName(
           teamId: testTeam1.id,
-          newName: newName,
+          name: newName,
         );
 
         fetchedTeam = await database.teamDao.getTeamById(teamId: testTeam1.id);
@@ -273,7 +273,7 @@ void main() {
       test('updateTeamName() does nothing for non-existent team', () async {
         final updated = await database.teamDao.updateTeamName(
           teamId: 'non-existing-id',
-          newName: 'New Name',
+          name: 'New Name',
         );
         expect(updated, isFalse);
 

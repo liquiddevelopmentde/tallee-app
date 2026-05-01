@@ -162,19 +162,19 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   Future<bool> updateScore({
     required String playerId,
     required String matchId,
-    required ScoreEntry newEntry,
+    required ScoreEntry entry,
   }) async {
     final rowsAffected =
         await (update(scoreEntryTable)..where(
               (s) =>
                   s.playerId.equals(playerId) &
                   s.matchId.equals(matchId) &
-                  s.roundNumber.equals(newEntry.roundNumber),
+                  s.roundNumber.equals(entry.roundNumber),
             ))
             .write(
               ScoreEntryTableCompanion(
-                score: Value(newEntry.score),
-                change: Value(newEntry.change),
+                score: Value(entry.score),
+                change: Value(entry.change),
               ),
             );
     return rowsAffected > 0;

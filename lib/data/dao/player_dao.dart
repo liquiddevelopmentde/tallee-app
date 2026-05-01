@@ -158,10 +158,10 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
 
   /* Update */
 
-  /// Updates the name of the player with the given [playerId] to [newName].
+  /// Updates the name of the player with the given [playerId] to [name].
   Future<bool> updatePlayerName({
     required String playerId,
-    required String newName,
+    required String name,
   }) async {
     // Get previous name and name count for the player before updating
     final previousPlayerName =
@@ -173,13 +173,13 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
 
     final rowsAffected =
         await (update(playerTable)..where((p) => p.id.equals(playerId))).write(
-          PlayerTableCompanion(name: Value(newName)),
+          PlayerTableCompanion(name: Value(name)),
         );
 
     // Update name count for the new name
-    final count = await calculateNameCount(name: newName);
+    final count = await calculateNameCount(name: name);
     if (count > 0) {
-      await (update(playerTable)..where((p) => p.name.equals(newName))).write(
+      await (update(playerTable)..where((p) => p.name.equals(name))).write(
         PlayerTableCompanion(nameCount: Value(count)),
       );
     }
@@ -200,15 +200,15 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   }
 
   /// Updates the description of the player with the given [playerId] to
-  /// [newDescription].
+  /// [description].
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> updatePlayerDescription({
     required String playerId,
-    required String newDescription,
+    required String description,
   }) async {
     final rowsAffected =
         await (update(playerTable)..where((g) => g.id.equals(playerId))).write(
-          PlayerTableCompanion(description: Value(newDescription)),
+          PlayerTableCompanion(description: Value(description)),
         );
     return rowsAffected > 0;
   }

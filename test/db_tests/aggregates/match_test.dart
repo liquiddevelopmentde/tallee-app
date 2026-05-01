@@ -268,7 +268,7 @@ void main() {
         const newName = 'New name';
         await database.matchDao.updateMatchName(
           matchId: testMatch1.id,
-          newName: newName,
+          name: newName,
         );
 
         final fetchedMatch = await database.matchDao.getMatchById(
@@ -280,7 +280,7 @@ void main() {
       test('updateMatchName() does nothing for non-existent match', () async {
         final updated = await database.matchDao.updateMatchName(
           matchId: 'non-existing-id',
-          newName: 'New Name',
+          name: 'New Name',
         );
         expect(updated, isFalse);
 
@@ -294,7 +294,7 @@ void main() {
 
         await database.matchDao.updateMatchGroup(
           matchId: testMatch1.id,
-          newGroupId: testGroup2.id,
+          groupId: testGroup2.id,
         );
 
         final fetchedMatch = await database.matchDao.getMatchById(
@@ -306,7 +306,7 @@ void main() {
       test('updateMatchGroup() does nothing for non-existent match', () async {
         final updated = await database.matchDao.updateMatchGroup(
           matchId: 'non-existing-id',
-          newGroupId: 'group-id',
+          groupId: 'group-id',
         );
         expect(updated, isFalse);
 
@@ -362,7 +362,7 @@ void main() {
         const newName = 'New name';
         await database.matchDao.updateMatchName(
           matchId: testMatch1.id,
-          newName: newName,
+          name: newName,
         );
 
         final fetchedMatch = await database.matchDao.getMatchById(

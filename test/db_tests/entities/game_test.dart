@@ -197,7 +197,7 @@ void main() {
 
         final updated = await database.gameDao.updateGameName(
           gameId: testGame1.id,
-          newName: newName,
+          name: newName,
         );
         expect(updated, isTrue);
 
@@ -210,7 +210,7 @@ void main() {
       test('updateGameName() does nothing for non-existent game', () async {
         final updated = await database.gameDao.updateGameName(
           gameId: 'non-existent-id',
-          newName: 'New name',
+          name: 'New name',
         );
         expect(updated, isFalse);
 
@@ -224,7 +224,7 @@ void main() {
 
         final updated = await database.gameDao.updateGameRuleset(
           gameId: testGame1.id,
-          newRuleset: ruleset,
+          ruleset: ruleset,
         );
         expect(updated, isTrue);
 
@@ -237,7 +237,7 @@ void main() {
       test('updateGameRuleset() does nothing for non-existent game', () async {
         final updated = await database.gameDao.updateGameRuleset(
           gameId: 'non-existent-id',
-          newRuleset: Ruleset.lowestScore,
+          ruleset: Ruleset.lowestScore,
         );
         expect(updated, isFalse);
 
@@ -251,7 +251,7 @@ void main() {
 
         final updated = await database.gameDao.updateGameDescription(
           gameId: testGame1.id,
-          newDescription: newDescription,
+          description: newDescription,
         );
         expect(updated, isTrue);
 
@@ -266,7 +266,7 @@ void main() {
         () async {
           final updated = await database.gameDao.updateGameDescription(
             gameId: 'non-existent-id',
-            newDescription: 'New description',
+            description: 'New description',
           );
           expect(updated, isFalse);
 
@@ -280,7 +280,7 @@ void main() {
 
         await database.gameDao.updateGameColor(
           gameId: testGame1.id,
-          newColor: GameColor.green,
+          color: GameColor.green,
         );
 
         final updatedGame = await database.gameDao.getGameById(
@@ -292,7 +292,7 @@ void main() {
       test('updateGameColor() does nothing for non-existent game', () async {
         final updated = await database.gameDao.updateGameColor(
           gameId: 'non-existent-id',
-          newColor: GameColor.green,
+          color: GameColor.green,
         );
         expect(updated, isFalse);
 
@@ -306,7 +306,7 @@ void main() {
 
         final updated = await database.gameDao.updateGameIcon(
           gameId: testGame1.id,
-          newIcon: newIcon,
+          icon: newIcon,
         );
         expect(updated, isTrue);
 
@@ -319,7 +319,7 @@ void main() {
       test('updateGameIcon() does nothing for non-existent game', () async {
         final updated = await database.gameDao.updateGameIcon(
           gameId: 'non-existent-id',
-          newIcon: 'New icon',
+          icon: 'New icon',
         );
         expect(updated, isFalse);
 
@@ -333,19 +333,19 @@ void main() {
         const newName = 'New name';
         await database.gameDao.updateGameName(
           gameId: testGame1.id,
-          newName: newName,
+          name: newName,
         );
 
         const newGameColor = GameColor.teal;
         await database.gameDao.updateGameColor(
           gameId: testGame1.id,
-          newColor: newGameColor,
+          color: newGameColor,
         );
 
         const newDescription = 'New description';
         await database.gameDao.updateGameDescription(
           gameId: testGame1.id,
-          newDescription: newDescription,
+          description: newDescription,
         );
 
         final updatedGame = await database.gameDao.getGameById(

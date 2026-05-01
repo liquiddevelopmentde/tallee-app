@@ -172,7 +172,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     if (widget.groupToEdit!.name != groupName) {
       successfullNameChange = await db.groupDao.updateGroupName(
         groupId: widget.groupToEdit!.id,
-        newName: groupName,
+        name: groupName,
       );
     }
 

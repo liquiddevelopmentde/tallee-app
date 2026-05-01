@@ -153,11 +153,11 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   /// Updates the name of the team with the given [teamId].
   Future<bool> updateTeamName({
     required String teamId,
-    required String newName,
+    required String name,
   }) async {
     final rowsAffected =
         await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
-          TeamTableCompanion(name: Value(newName)),
+          TeamTableCompanion(name: Value(name)),
         );
     return rowsAffected > 0;
   }

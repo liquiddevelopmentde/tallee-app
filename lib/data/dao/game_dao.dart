@@ -117,14 +117,14 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
 
   /* Update */
 
-  /// Updates the name of the game with the given [gameId] to [newName].
+  /// Updates the name of the game with the given [gameId] to [name].
   Future<bool> updateGameName({
     required String gameId,
-    required String newName,
+    required String name,
   }) async {
     final rowsAffected =
         await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-          GameTableCompanion(name: Value(newName)),
+          GameTableCompanion(name: Value(name)),
         );
     return rowsAffected > 0;
   }
@@ -132,11 +132,11 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   /// Updates the ruleset of the game with the given [gameId].
   Future<bool> updateGameRuleset({
     required String gameId,
-    required Ruleset newRuleset,
+    required Ruleset ruleset,
   }) async {
     final rowsAffected =
         await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-          GameTableCompanion(ruleset: Value(newRuleset.name)),
+          GameTableCompanion(ruleset: Value(ruleset.name)),
         );
     return rowsAffected > 0;
   }
@@ -144,11 +144,11 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   /// Updates the description of the game with the given [gameId].
   Future<bool> updateGameDescription({
     required String gameId,
-    required String newDescription,
+    required String description,
   }) async {
     final rowsAffected =
         await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-          GameTableCompanion(description: Value(newDescription)),
+          GameTableCompanion(description: Value(description)),
         );
     return rowsAffected > 0;
   }
@@ -156,11 +156,11 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   /// Updates the color of the game with the given [gameId].
   Future<bool> updateGameColor({
     required String gameId,
-    required GameColor newColor,
+    required GameColor color,
   }) async {
     final rowsAffected =
         await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-          GameTableCompanion(color: Value(newColor.name)),
+          GameTableCompanion(color: Value(color.name)),
         );
     return rowsAffected > 0;
   }
@@ -168,11 +168,11 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   /// Updates the icon of the game with the given [gameId].
   Future<bool> updateGameIcon({
     required String gameId,
-    required String newIcon,
+    required String icon,
   }) async {
     final rowsAffected =
         await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-          GameTableCompanion(icon: Value(newIcon)),
+          GameTableCompanion(icon: Value(icon)),
         );
     return rowsAffected > 0;
   }

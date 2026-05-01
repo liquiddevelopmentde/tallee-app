@@ -435,7 +435,7 @@ void main() {
         final updated = await database.scoreEntryDao.updateScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          newEntry: newEntry,
+          entry: newEntry,
         );
 
         expect(updated, isTrue);
@@ -455,7 +455,7 @@ void main() {
         final updated = await database.scoreEntryDao.updateScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          newEntry: entryRound1,
+          entry: entryRound1,
         );
 
         expect(updated, isFalse);

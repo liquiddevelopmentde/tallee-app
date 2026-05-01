@@ -213,7 +213,7 @@ void main() {
 
         await database.playerDao.updatePlayerName(
           playerId: testPlayer1.id,
-          newName: newName,
+          name: newName,
         );
 
         final player = await database.playerDao.getPlayerById(
@@ -225,7 +225,7 @@ void main() {
       test('updatePlayerName() does nothing for non-existent player', () async {
         final updated = await database.playerDao.updatePlayerName(
           playerId: 'non-existent-id',
-          newName: 'New name',
+          name: 'New name',
         );
         expect(updated, isFalse);
 
@@ -240,7 +240,7 @@ void main() {
 
         final updated = await database.playerDao.updatePlayerDescription(
           playerId: testPlayer1.id,
-          newDescription: newDescription,
+          description: newDescription,
         );
         expect(updated, isTrue);
 
@@ -255,7 +255,7 @@ void main() {
         () async {
           final updated = await database.playerDao.updatePlayerDescription(
             playerId: 'non-existent-id',
-            newDescription: 'New description',
+            description: 'New description',
           );
           expect(updated, isFalse);
 
@@ -269,7 +269,7 @@ void main() {
 
         await database.playerDao.updatePlayerName(
           playerId: testPlayer1.id,
-          newName: 'First Update',
+          name: 'First Update',
         );
 
         var fetchedPlayer = await database.playerDao.getPlayerById(
@@ -279,7 +279,7 @@ void main() {
 
         await database.playerDao.updatePlayerName(
           playerId: testPlayer1.id,
-          newName: 'Second Update',
+          name: 'Second Update',
         );
 
         fetchedPlayer = await database.playerDao.getPlayerById(
@@ -289,7 +289,7 @@ void main() {
 
         await database.playerDao.updatePlayerDescription(
           playerId: testPlayer1.id,
-          newDescription: 'Third Update',
+          description: 'Third Update',
         );
 
         fetchedPlayer = await database.playerDao.getPlayerById(
