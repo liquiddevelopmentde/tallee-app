@@ -306,7 +306,7 @@ void main() {
         );
 
         final newPlayers = [testPlayer2, testPlayer4];
-        final replaced = await database.groupDao.replaceGroupPlayers(
+        final replaced = await database.playerGroupDao.replaceGroupPlayers(
           groupId: testGroup1.id,
           newPlayers: newPlayers,
         );
@@ -332,7 +332,7 @@ void main() {
         );
         expect(initialGroup.members.length, 3);
 
-        final replaced = await database.groupDao.replaceGroupPlayers(
+        final replaced = await database.playerGroupDao.replaceGroupPlayers(
           groupId: testGroup1.id,
           newPlayers: [],
         );
@@ -348,7 +348,7 @@ void main() {
       test(
         'replaceGroupPlayers() returns false for non-existent group',
         () async {
-          final replaced = await database.groupDao.replaceGroupPlayers(
+          final replaced = await database.playerGroupDao.replaceGroupPlayers(
             groupId: 'non-existent-id',
             newPlayers: [testPlayer1],
           );

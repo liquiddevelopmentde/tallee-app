@@ -177,7 +177,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     }
 
     if (widget.groupToEdit!.members != selectedPlayers) {
-      successfullMemberChange = await db.groupDao.replaceGroupPlayers(
+      successfullMemberChange = await db.playerGroupDao.replaceGroupPlayers(
         groupId: widget.groupToEdit!.id,
         newPlayers: selectedPlayers,
       );
