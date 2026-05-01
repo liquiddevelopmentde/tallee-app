@@ -42,11 +42,24 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         await db.teamDao.addTeamsAsList(teams: match.teams!, matchId: match.id);
       }
 
+      // Collect all player IDs that are already in teams
+      final playersInTeams = <String>{};
+      if (match.teams != null) {
+        for (final team in match.teams!) {
+          for (final member in team.members) {
+            playersInTeams.add(member.id);
+          }
+        }
+      }
+
+      // Add players that are not in teams
       for (final p in match.players) {
-        await db.playerMatchDao.addPlayerToMatch(
-          matchId: match.id,
-          playerId: p.id,
-        );
+        if (!playersInTeams.contains(p.id)) {
+          await db.playerMatchDao.addPlayerToMatch(
+            matchId: match.id,
+            playerId: p.id,
+          );
+        }
       }
 
       for (final pid in match.scores.keys) {

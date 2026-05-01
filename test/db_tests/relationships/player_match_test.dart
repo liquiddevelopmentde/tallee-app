@@ -103,6 +103,7 @@ void main() {
 
       test('addPlayerToMatch() ignores duplicates', () async {
         await database.matchDao.addMatch(match: testMatch1);
+        await database.playerDao.addPlayer(player: testPlayer5);
 
         final isInMatch = await database.playerMatchDao.isPlayerInMatch(
           matchId: testMatch1.id,
@@ -117,11 +118,11 @@ void main() {
 
         await database.playerMatchDao.addPlayerToMatch(
           matchId: testMatch1.id,
-          playerId: testPlayer1.id,
+          playerId: testPlayer5.id,
         );
         await database.playerMatchDao.addPlayerToMatch(
           matchId: testMatch1.id,
-          playerId: testPlayer1.id,
+          playerId: testPlayer5.id,
         );
 
         players = await database.playerMatchDao.getPlayersOfMatch(
@@ -149,6 +150,7 @@ void main() {
       });
 
       test('isPlayerInMatch() works correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
         final isInMatch = await database.playerMatchDao.isPlayerInMatch(
           matchId: testMatch1.id,
           playerId: testPlayer1.id,

@@ -99,10 +99,8 @@ void main() {
       await database.playerDao.addPlayer(player: testPlayer1);
       await database.gameDao.addGame(game: testGame);
       await database.groupDao.addGroup(group: testGroup);
-      /*
-      await database.teamDao.addTeam(team: testTeam);
-*/
       await database.matchDao.addMatch(match: testMatch);
+      await database.teamDao.addTeam(team: testTeam, matchId: testMatch.id);
 
       var playerCount = await database.playerDao.getPlayerCount();
       var gameCount = await database.gameDao.getGameCount();
@@ -154,19 +152,16 @@ void main() {
           expect(decoded.containsKey('players'), true);
           expect(decoded.containsKey('games'), true);
           expect(decoded.containsKey('groups'), true);
-          expect(decoded.containsKey('teams'), true);
           expect(decoded.containsKey('matches'), true);
 
           final players = decoded['players'] as List<dynamic>;
           final games = decoded['games'] as List<dynamic>;
           final groups = decoded['groups'] as List<dynamic>;
-          final teams = decoded['teams'] as List<dynamic>;
           final matches = decoded['matches'] as List<dynamic>;
 
           expect(players.length, 2);
           expect(games.length, 1);
           expect(groups.length, 1);
-          expect(teams.length, 1);
           expect(matches.length, 1);
         });
 
@@ -179,13 +174,11 @@ void main() {
           final players = decoded['players'] as List<dynamic>;
           final games = decoded['games'] as List<dynamic>;
           final groups = decoded['groups'] as List<dynamic>;
-          final teams = decoded['teams'] as List<dynamic>;
           final matches = decoded['matches'] as List<dynamic>;
 
           expect(players, isEmpty);
           expect(games, isEmpty);
           expect(groups, isEmpty);
-          expect(teams, isEmpty);
           expect(matches, isEmpty);
         });
       });
@@ -247,31 +240,6 @@ void main() {
           expect(memberIds, containsAll([testPlayer1.id, testPlayer2.id]));
         });
 
-        testWidgets('Team data is correct', (tester) async {
-          /*
-          await database.teamDao.addTeam(team: testTeam);
-*/
-
-          final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
-          final decoded = json.decode(jsonString) as Map<String, dynamic>;
-          final teams = decoded['teams'] as List<dynamic>;
-
-          expect(teams.length, 1);
-
-          final teamData = teams[0] as Map<String, dynamic>;
-
-          expect(teamData['id'], testTeam.id);
-          expect(teamData['name'], testTeam.name);
-          expect(teamData['memberIds'], isA<List>());
-
-          // Note: In this system, teams don't have independent members.
-          // Team members are only tracked through matches via PlayerMatchTable.
-          // Therefore, memberIds will be empty for standalone teams.
-          final memberIds = teamData['memberIds'] as List<dynamic>;
-          expect(memberIds, isEmpty);
-        });
-
         testWidgets('Match data is correct', (tester) async {
           await database.playerDao.addPlayersAsList(
             players: [testPlayer1, testPlayer2],
@@ -321,6 +289,51 @@ void main() {
           expect(player2Score.roundNumber, 1);
           expect(player2Score.score, 15);
           expect(player2Score.change, 15);
+        });
+
+        testWidgets('Match with teams is handled correctly', (tester) async {
+          final matchWithTeams = Match(
+            name: 'Match with Teams',
+            game: testGame,
+            players: [testPlayer1, testPlayer2],
+            teams: [testTeam],
+            notes: 'Team match',
+          );
+
+          await database.playerDao.addPlayersAsList(
+            players: [testPlayer1, testPlayer2],
+          );
+          await database.gameDao.addGame(game: testGame);
+          await database.matchDao.addMatch(match: matchWithTeams);
+
+          final ctx = await getContext(tester);
+          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final decoded = json.decode(jsonString) as Map<String, dynamic>;
+          final matches = decoded['matches'] as List<dynamic>;
+
+          expect(matches.length, 1);
+
+          final matchData = matches[0] as Map<String, dynamic>;
+          expect(matchData['id'], matchWithTeams.id);
+          expect(matchData['name'], matchWithTeams.name);
+          expect(
+            matchData['teams'],
+            isNotNull,
+            reason: 'teams should not be null',
+          );
+          expect(matchData['teams'], isA<List>());
+
+          final teamsInMatch = matchData['teams'] as List<dynamic>;
+          expect(teamsInMatch.length, 1);
+
+          final teamData = teamsInMatch[0] as Map<String, dynamic>;
+          expect(teamData['id'], testTeam.id);
+          expect(teamData['name'], testTeam.name);
+          expect(teamData['memberIds'], isA<List>());
+
+          final memberIds = teamData['memberIds'] as List<dynamic>;
+          expect(memberIds.length, 2);
+          expect(memberIds, containsAll([testPlayer1.id, testPlayer2.id]));
         });
 
         testWidgets('Match without group is handled correctly', (tester) async {
