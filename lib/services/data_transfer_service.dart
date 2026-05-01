@@ -143,7 +143,7 @@ class DataTransferService {
     await db.gameDao.addGamesAsList(games: importedGames);
     await db.groupDao.addGroupsAsList(groups: importedGroups);
     await db.teamDao.addTeamsAsList(teams: importedTeams);
-    await db.matchDao.addMatchAsList(matches: importedMatches);
+    await db.matchDao.addMatchesAsList(matches: importedMatches);
   }
 
   /* Parsing Methods */
