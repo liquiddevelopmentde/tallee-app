@@ -1190,9 +1190,9 @@ class $MatchTableTable extends MatchTable
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
     'notes',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
@@ -1270,6 +1270,8 @@ class $MatchTableTable extends MatchTable
         _notesMeta,
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
       );
+    } else if (isInserting) {
+      context.missing(_notesMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -1313,7 +1315,7 @@ class $MatchTableTable extends MatchTable
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
-      ),
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1336,7 +1338,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
   final String gameId;
   final String? groupId;
   final String name;
-  final String? notes;
+  final String notes;
   final DateTime createdAt;
   final DateTime? endedAt;
   const MatchTableData({
@@ -1344,7 +1346,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     required this.gameId,
     this.groupId,
     required this.name,
-    this.notes,
+    required this.notes,
     required this.createdAt,
     this.endedAt,
   });
@@ -1357,9 +1359,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       map['group_id'] = Variable<String>(groupId);
     }
     map['name'] = Variable<String>(name);
-    if (!nullToAbsent || notes != null) {
-      map['notes'] = Variable<String>(notes);
-    }
+    map['notes'] = Variable<String>(notes);
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || endedAt != null) {
       map['ended_at'] = Variable<DateTime>(endedAt);
@@ -1375,9 +1375,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
           ? const Value.absent()
           : Value(groupId),
       name: Value(name),
-      notes: notes == null && nullToAbsent
-          ? const Value.absent()
-          : Value(notes),
+      notes: Value(notes),
       createdAt: Value(createdAt),
       endedAt: endedAt == null && nullToAbsent
           ? const Value.absent()
@@ -1395,7 +1393,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       gameId: serializer.fromJson<String>(json['gameId']),
       groupId: serializer.fromJson<String?>(json['groupId']),
       name: serializer.fromJson<String>(json['name']),
-      notes: serializer.fromJson<String?>(json['notes']),
+      notes: serializer.fromJson<String>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       endedAt: serializer.fromJson<DateTime?>(json['endedAt']),
     );
@@ -1408,7 +1406,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       'gameId': serializer.toJson<String>(gameId),
       'groupId': serializer.toJson<String?>(groupId),
       'name': serializer.toJson<String>(name),
-      'notes': serializer.toJson<String?>(notes),
+      'notes': serializer.toJson<String>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'endedAt': serializer.toJson<DateTime?>(endedAt),
     };
@@ -1419,7 +1417,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     String? gameId,
     Value<String?> groupId = const Value.absent(),
     String? name,
-    Value<String?> notes = const Value.absent(),
+    String? notes,
     DateTime? createdAt,
     Value<DateTime?> endedAt = const Value.absent(),
   }) => MatchTableData(
@@ -1427,7 +1425,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     gameId: gameId ?? this.gameId,
     groupId: groupId.present ? groupId.value : this.groupId,
     name: name ?? this.name,
-    notes: notes.present ? notes.value : this.notes,
+    notes: notes ?? this.notes,
     createdAt: createdAt ?? this.createdAt,
     endedAt: endedAt.present ? endedAt.value : this.endedAt,
   );
@@ -1478,7 +1476,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
   final Value<String> gameId;
   final Value<String?> groupId;
   final Value<String> name;
-  final Value<String?> notes;
+  final Value<String> notes;
   final Value<DateTime> createdAt;
   final Value<DateTime?> endedAt;
   final Value<int> rowid;
@@ -1497,13 +1495,14 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     required String gameId,
     this.groupId = const Value.absent(),
     required String name,
-    this.notes = const Value.absent(),
+    required String notes,
     required DateTime createdAt,
     this.endedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        gameId = Value(gameId),
        name = Value(name),
+       notes = Value(notes),
        createdAt = Value(createdAt);
   static Insertable<MatchTableData> custom({
     Expression<String>? id,
@@ -1532,7 +1531,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     Value<String>? gameId,
     Value<String?>? groupId,
     Value<String>? name,
-    Value<String?>? notes,
+    Value<String>? notes,
     Value<DateTime>? createdAt,
     Value<DateTime?>? endedAt,
     Value<int>? rowid,
@@ -4093,7 +4092,7 @@ typedef $$MatchTableTableCreateCompanionBuilder =
       required String gameId,
       Value<String?> groupId,
       required String name,
-      Value<String?> notes,
+      required String notes,
       required DateTime createdAt,
       Value<DateTime?> endedAt,
       Value<int> rowid,
@@ -4104,7 +4103,7 @@ typedef $$MatchTableTableUpdateCompanionBuilder =
       Value<String> gameId,
       Value<String?> groupId,
       Value<String> name,
-      Value<String?> notes,
+      Value<String> notes,
       Value<DateTime> createdAt,
       Value<DateTime?> endedAt,
       Value<int> rowid,
@@ -4567,7 +4566,7 @@ class $$MatchTableTableTableManager
                 Value<String> gameId = const Value.absent(),
                 Value<String?> groupId = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<String?> notes = const Value.absent(),
+                Value<String> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime?> endedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -4587,7 +4586,7 @@ class $$MatchTableTableTableManager
                 required String gameId,
                 Value<String?> groupId = const Value.absent(),
                 required String name,
-                Value<String?> notes = const Value.absent(),
+                required String notes,
                 required DateTime createdAt,
                 Value<DateTime?> endedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
