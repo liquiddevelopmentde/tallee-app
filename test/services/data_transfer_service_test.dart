@@ -149,10 +149,10 @@ void main() {
 
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
-          expect(decoded.containsKey('players'), true);
-          expect(decoded.containsKey('games'), true);
-          expect(decoded.containsKey('groups'), true);
-          expect(decoded.containsKey('matches'), true);
+          expect(decoded.containsKey('players'), isTrue);
+          expect(decoded.containsKey('games'), isTrue);
+          expect(decoded.containsKey('groups'), isTrue);
+          expect(decoded.containsKey('matches'), isTrue);
 
           final players = decoded['players'] as List<dynamic>;
           final games = decoded['games'] as List<dynamic>;

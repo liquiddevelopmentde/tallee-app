@@ -58,7 +58,7 @@ void main() {
     group('CREATE', () {
       test('Adding and fetching a single game works correctly', () async {
         final added = await database.gameDao.addGame(game: testGame1);
-        expect(added, true);
+        expect(added, isTrue);
 
         final game = await database.gameDao.getGameById(gameId: testGame1.id);
         expect(game.id, testGame1.id);
@@ -74,7 +74,7 @@ void main() {
         final added = await database.gameDao.addGamesAsList(
           games: [testGame1, testGame2, testGame3],
         );
-        expect(added, true);
+        expect(added, isTrue);
 
         final allGames = await database.gameDao.getAllGames();
         expect(allGames.length, 3);
@@ -101,7 +101,7 @@ void main() {
 
       test('addGamesAsList() returns false for empty list', () async {
         final result = await database.gameDao.addGamesAsList(games: []);
-        expect(result, false);
+        expect(result, isFalse);
 
         final allGames = await database.gameDao.getAllGames();
         expect(allGames.length, 0);
@@ -111,7 +111,7 @@ void main() {
         final added = await database.gameDao.addGamesAsList(
           games: [testGame1, testGame2, testGame1],
         );
-        expect(added, true);
+        expect(added, isTrue);
 
         final allGames = await database.gameDao.getAllGames();
         expect(allGames.length, 2);
@@ -160,11 +160,11 @@ void main() {
 
       test('gameExists() works correctly', () async {
         var exists = await database.gameDao.gameExists(gameId: testGame1.id);
-        expect(exists, false);
+        expect(exists, isFalse);
 
         await database.gameDao.addGame(game: testGame1);
         exists = await database.gameDao.gameExists(gameId: testGame1.id);
-        expect(exists, true);
+        expect(exists, isTrue);
       });
 
       test('getAllGames() returns empty list when no games exist', () async {
@@ -199,7 +199,7 @@ void main() {
           gameId: testGame1.id,
           newName: newName,
         );
-        expect(updated, true);
+        expect(updated, isTrue);
 
         final updatedGame = await database.gameDao.getGameById(
           gameId: testGame1.id,
@@ -212,7 +212,7 @@ void main() {
           gameId: 'non-existent-id',
           newName: 'New name',
         );
-        expect(updated, false);
+        expect(updated, isFalse);
 
         final allGames = await database.gameDao.getAllGames();
         expect(allGames, isEmpty);
@@ -226,7 +226,7 @@ void main() {
           gameId: testGame1.id,
           newRuleset: ruleset,
         );
-        expect(updated, true);
+        expect(updated, isTrue);
 
         final updatedGame = await database.gameDao.getGameById(
           gameId: testGame1.id,
@@ -239,7 +239,7 @@ void main() {
           gameId: 'non-existent-id',
           newRuleset: Ruleset.lowestScore,
         );
-        expect(updated, false);
+        expect(updated, isFalse);
 
         final allGames = await database.gameDao.getAllGames();
         expect(allGames, isEmpty);
@@ -253,7 +253,7 @@ void main() {
           gameId: testGame1.id,
           newDescription: newDescription,
         );
-        expect(updated, true);
+        expect(updated, isTrue);
 
         final updatedGame = await database.gameDao.getGameById(
           gameId: testGame1.id,
@@ -268,7 +268,7 @@ void main() {
             gameId: 'non-existent-id',
             newDescription: 'New description',
           );
-          expect(updated, false);
+          expect(updated, isFalse);
 
           final allGames = await database.gameDao.getAllGames();
           expect(allGames, isEmpty);
@@ -294,7 +294,7 @@ void main() {
           gameId: 'non-existent-id',
           newColor: GameColor.green,
         );
-        expect(updated, false);
+        expect(updated, isFalse);
 
         final allGames = await database.gameDao.getAllGames();
         expect(allGames, isEmpty);
@@ -308,7 +308,7 @@ void main() {
           gameId: testGame1.id,
           newIcon: newIcon,
         );
-        expect(updated, true);
+        expect(updated, isTrue);
 
         final updatedGame = await database.gameDao.getGameById(
           gameId: testGame1.id,
@@ -321,7 +321,7 @@ void main() {
           gameId: 'non-existent-id',
           newIcon: 'New icon',
         );
-        expect(updated, false);
+        expect(updated, isFalse);
 
         final allGames = await database.gameDao.getAllGames();
         expect(allGames, isEmpty);
@@ -367,7 +367,7 @@ void main() {
         await database.gameDao.addGame(game: testGame1);
 
         final deleted = await database.gameDao.deleteGame(gameId: testGame1.id);
-        expect(deleted, true);
+        expect(deleted, isTrue);
 
         final allGames = await database.gameDao.getAllGames();
         expect(allGames, isEmpty);
@@ -377,7 +377,7 @@ void main() {
         final deleted = await database.gameDao.deleteGame(
           gameId: 'non-existent-id',
         );
-        expect(deleted, false);
+        expect(deleted, isFalse);
       });
 
       test('deleteAllGames() removes all games', () async {
@@ -389,7 +389,7 @@ void main() {
         expect(count, 3);
 
         final deleted = await database.gameDao.deleteAllGames();
-        expect(deleted, true);
+        expect(deleted, isTrue);
 
         count = await database.gameDao.getGameCount();
         expect(count, 0);
@@ -397,7 +397,7 @@ void main() {
 
       test('deleteAllGames() returns false when no games exist', () async {
         final deleted = await database.gameDao.deleteAllGames();
-        expect(deleted, false);
+        expect(deleted, isFalse);
       });
     });
   });

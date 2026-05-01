@@ -99,10 +99,10 @@ void main() {
 
       test('addGroup() returns false when group already exists', () async {
         final firstAdd = await database.groupDao.addGroup(group: testGroup1);
-        expect(firstAdd, true);
+        expect(firstAdd, isTrue);
 
         final secondAdd = await database.groupDao.addGroup(group: testGroup1);
-        expect(secondAdd, false);
+        expect(secondAdd, isFalse);
 
         final allGroups = await database.groupDao.getAllGroups();
         expect(allGroups.length, 1);
@@ -150,14 +150,14 @@ void main() {
         var groupExists = await database.groupDao.groupExists(
           groupId: testGroup1.id,
         );
-        expect(groupExists, false);
+        expect(groupExists, isFalse);
 
         await database.groupDao.addGroup(group: testGroup1);
 
         groupExists = await database.groupDao.groupExists(
           groupId: testGroup1.id,
         );
-        expect(groupExists, true);
+        expect(groupExists, isTrue);
       });
 
       test('getGroupCount() works correctly', () async {
@@ -165,19 +165,19 @@ void main() {
         expect(count, 0);
 
         var added = await database.groupDao.addGroup(group: testGroup1);
-        expect(added, true);
+        expect(added, isTrue);
         count = await database.groupDao.getGroupCount();
         expect(count, 1);
 
         added = await database.groupDao.addGroup(group: testGroup2);
-        expect(added, true);
+        expect(added, isTrue);
         count = await database.groupDao.getGroupCount();
         expect(count, 2);
 
         final removed = await database.groupDao.deleteGroup(
           groupId: testGroup1.id,
         );
-        expect(removed, true);
+        expect(removed, isTrue);
         count = await database.groupDao.getGroupCount();
         expect(count, 1);
       });
@@ -225,7 +225,7 @@ void main() {
           groupId: 'non-existent-id',
           newName: 'New name',
         );
-        expect(updated, false);
+        expect(updated, isFalse);
       });
 
       test('updateGroupDescription() works correctly', () async {
@@ -236,7 +236,7 @@ void main() {
           groupId: testGroup1.id,
           newDescription: newDescription,
         );
-        expect(updated, true);
+        expect(updated, isTrue);
 
         final group = await database.groupDao.getGroupById(
           groupId: testGroup1.id,
@@ -251,7 +251,7 @@ void main() {
             groupId: 'non-existent-id',
             newDescription: 'New description',
           );
-          expect(updated, false);
+          expect(updated, isFalse);
         },
       );
 
@@ -288,21 +288,21 @@ void main() {
               .map((p) => p.id)
               .toList()
               .contains(testPlayer1.id),
-          true,
+          isTrue,
         );
         expect(
           initialGroup.members
               .map((p) => p.id)
               .toList()
               .contains(testPlayer2.id),
-          true,
+          isTrue,
         );
         expect(
           initialGroup.members
               .map((p) => p.id)
               .toList()
               .contains(testPlayer3.id),
-          true,
+          isTrue,
         );
 
         final newPlayers = [testPlayer2, testPlayer4];
@@ -310,7 +310,7 @@ void main() {
           groupId: testGroup1.id,
           newPlayers: newPlayers,
         );
-        expect(replaced, true);
+        expect(replaced, isTrue);
 
         final updatedGroup = await database.groupDao.getGroupById(
           groupId: testGroup1.id,
@@ -318,31 +318,25 @@ void main() {
         expect(updatedGroup.members.length, 2);
 
         final memberIds = updatedGroup.members.map((p) => p.id).toList();
-        expect(memberIds.contains(testPlayer2.id), true);
-        expect(memberIds.contains(testPlayer4.id), true);
-        expect(memberIds.contains(testPlayer1.id), false);
-        expect(memberIds.contains(testPlayer3.id), false);
+        expect(memberIds.contains(testPlayer2.id), isTrue);
+        expect(memberIds.contains(testPlayer4.id), isTrue);
+        expect(memberIds.contains(testPlayer1.id), isFalse);
+        expect(memberIds.contains(testPlayer3.id), isFalse);
       });
 
-      test('replaceGroupPlayers() with empty list works correctly', () async {
+      test('replaceGroupPlayers() ignores empty list ', () async {
         await database.groupDao.addGroup(group: testGroup1);
-
-        final initialGroup = await database.groupDao.getGroupById(
-          groupId: testGroup1.id,
-        );
-        expect(initialGroup.members.length, 3);
 
         final replaced = await database.playerGroupDao.replaceGroupPlayers(
           groupId: testGroup1.id,
           newPlayers: [],
         );
-        expect(replaced, true);
+        expect(replaced, isFalse);
 
         final updatedGroup = await database.groupDao.getGroupById(
           groupId: testGroup1.id,
         );
-        expect(updatedGroup.members.length, 0);
-        expect(updatedGroup.members, isEmpty);
+        expect(updatedGroup.members.length, testGroup1.members.length);
       });
 
       test(
@@ -352,7 +346,7 @@ void main() {
             groupId: 'non-existent-id',
             newPlayers: [testPlayer1],
           );
-          expect(replaced, false);
+          expect(replaced, isFalse);
         },
       );
     });
@@ -364,19 +358,19 @@ void main() {
         final groupDeleted = await database.groupDao.deleteGroup(
           groupId: testGroup1.id,
         );
-        expect(groupDeleted, true);
+        expect(groupDeleted, isTrue);
 
         final groupExists = await database.groupDao.groupExists(
           groupId: testGroup1.id,
         );
-        expect(groupExists, false);
+        expect(groupExists, isFalse);
       });
 
       test('deleteGroup() returns false for non-existent group', () async {
         final deleted = await database.groupDao.deleteGroup(
           groupId: 'non-existent-id',
         );
-        expect(deleted, false);
+        expect(deleted, isFalse);
       });
 
       test('deleteAllGroups() works correctly', () async {
@@ -388,7 +382,7 @@ void main() {
         expect(count, 2);
 
         final deleted = await database.groupDao.deleteAllGroups();
-        expect(deleted, true);
+        expect(deleted, isTrue);
 
         count = await database.groupDao.getGroupCount();
         expect(count, 0);
@@ -396,7 +390,7 @@ void main() {
 
       test('deleteAllGroups() returns false when no groups exist', () async {
         final deleted = await database.groupDao.deleteAllGroups();
-        expect(deleted, false);
+        expect(deleted, isFalse);
       });
     });
 

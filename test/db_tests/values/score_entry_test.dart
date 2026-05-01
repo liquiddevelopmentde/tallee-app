@@ -259,7 +259,7 @@ void main() {
           matchId: testMatch1.id,
         );
 
-        expect(scores.isEmpty, true);
+        expect(scores.isEmpty, isTrue);
       });
 
       test('getAllPlayerScoresInMatch() works correctly', () async {
@@ -299,7 +299,7 @@ void main() {
               matchId: testMatch1.id,
             );
 
-        expect(playerScores.isEmpty, true);
+        expect(playerScores.isEmpty, isTrue);
       });
 
       test('Scores are isolated across different matches', () async {
@@ -438,7 +438,7 @@ void main() {
           newEntry: newEntry,
         );
 
-        expect(updated, true);
+        expect(updated, isTrue);
 
         final score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
@@ -458,7 +458,7 @@ void main() {
           newEntry: entryRound1,
         );
 
-        expect(updated, false);
+        expect(updated, isFalse);
       });
     });
 
@@ -476,7 +476,7 @@ void main() {
           roundNumber: 1,
         );
 
-        expect(deleted, true);
+        expect(deleted, isTrue);
 
         final score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
@@ -494,7 +494,7 @@ void main() {
           roundNumber: 1,
         );
 
-        expect(deleted, false);
+        expect(deleted, isFalse);
       });
 
       test('deleteAllScoresForMatch() works correctly', () async {
@@ -523,7 +523,7 @@ void main() {
           matchId: testMatch1.id,
         );
 
-        expect(deleted, true);
+        expect(deleted, isTrue);
 
         final match1Scores = await database.scoreEntryDao.getAllMatchScores(
           matchId: testMatch1.id,
@@ -555,7 +555,7 @@ void main() {
               matchId: testMatch1.id,
             );
 
-        expect(deleted, true);
+        expect(deleted, isTrue);
 
         final player1Scores = await database.scoreEntryDao
             .getAllPlayerScoresInMatch(
@@ -578,7 +578,7 @@ void main() {
         var hasWinner = await database.scoreEntryDao.hasWinner(
           matchId: testMatch1.id,
         );
-        expect(hasWinner, false);
+        expect(hasWinner, isFalse);
 
         await database.scoreEntryDao.setWinner(
           playerId: testPlayer1.id,
@@ -588,7 +588,7 @@ void main() {
         hasWinner = await database.scoreEntryDao.hasWinner(
           matchId: testMatch1.id,
         );
-        expect(hasWinner, true);
+        expect(hasWinner, isTrue);
       });
 
       test('getWinnersForMatch() returns correct winner', () async {
@@ -612,7 +612,7 @@ void main() {
         var removed = await database.scoreEntryDao.removeWinner(
           matchId: testMatch1.id,
         );
-        expect(removed, false);
+        expect(removed, isFalse);
 
         await database.scoreEntryDao.setWinner(
           playerId: testPlayer1.id,
@@ -622,7 +622,7 @@ void main() {
         removed = await database.scoreEntryDao.removeWinner(
           matchId: testMatch1.id,
         );
-        expect(removed, true);
+        expect(removed, isTrue);
 
         var winner = await database.scoreEntryDao.getWinner(
           matchId: testMatch1.id,
@@ -636,7 +636,7 @@ void main() {
         var hasLooser = await database.scoreEntryDao.hasLoser(
           matchId: testMatch1.id,
         );
-        expect(hasLooser, false);
+        expect(hasLooser, isFalse);
 
         await database.scoreEntryDao.setLoser(
           playerId: testPlayer1.id,
@@ -646,7 +646,7 @@ void main() {
         hasLooser = await database.scoreEntryDao.hasLoser(
           matchId: testMatch1.id,
         );
-        expect(hasLooser, true);
+        expect(hasLooser, isTrue);
       });
 
       test('getLoser() returns correct winner', () async {
@@ -670,7 +670,7 @@ void main() {
         var removed = await database.scoreEntryDao.removeLoser(
           matchId: testMatch1.id,
         );
-        expect(removed, false);
+        expect(removed, isFalse);
 
         await database.scoreEntryDao.setLoser(
           playerId: testPlayer1.id,
@@ -680,7 +680,7 @@ void main() {
         removed = await database.scoreEntryDao.removeLoser(
           matchId: testMatch1.id,
         );
-        expect(removed, true);
+        expect(removed, isTrue);
 
         var looser = await database.scoreEntryDao.getLoser(
           matchId: testMatch1.id,

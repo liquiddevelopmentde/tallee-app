@@ -56,7 +56,7 @@ void main() {
           playerId: testPlayer4.id,
         );
 
-        expect(playerAdded, true);
+        expect(playerAdded, isTrue);
       });
 
       test(
@@ -104,19 +104,19 @@ void main() {
             playerId: 'non-existent-player-id',
             groupId: testGroup.id,
           );
-          expect(isInGroup, false);
+          expect(isInGroup, isFalse);
 
           isInGroup = await database.playerGroupDao.isPlayerInGroup(
             playerId: testPlayer1.id,
             groupId: 'non-existent-group-id',
           );
-          expect(isInGroup, false);
+          expect(isInGroup, isFalse);
 
           isInGroup = await database.playerGroupDao.isPlayerInGroup(
             playerId: 'non-existent-player-id',
             groupId: 'non-existent-group-id',
           );
-          expect(isInGroup, false);
+          expect(isInGroup, isFalse);
         },
       );
 
@@ -174,8 +174,8 @@ void main() {
           groupId: testGroup.id,
         );
         expect(groupMembers.members.length, 2);
-        expect(groupMembers.members.any((p) => p.id == testPlayer3.id), true);
-        expect(groupMembers.members.any((p) => p.id == testPlayer4.id), true);
+        expect(groupMembers.members.any((p) => p.id == testPlayer3.id), isTrue);
+        expect(groupMembers.members.any((p) => p.id == testPlayer4.id), isTrue);
       });
     });
     group('DELETE', () {
@@ -186,7 +186,7 @@ void main() {
           playerId: testPlayer1.id,
           groupId: testGroup.id,
         );
-        expect(removed, true);
+        expect(removed, isTrue);
 
         final result = await database.groupDao.getGroupById(
           groupId: testGroup.id,
@@ -194,7 +194,7 @@ void main() {
         expect(result.members.length, testGroup.members.length - 1);
 
         final playerExists = result.members.any((p) => p.id == testPlayer1.id);
-        expect(playerExists, false);
+        expect(playerExists, isFalse);
       });
     });
 
@@ -216,7 +216,7 @@ void main() {
       final groupExists = await database.groupDao.groupExists(
         groupId: testGroup.id,
       );
-      expect(groupExists, true);
+      expect(groupExists, isTrue);
     });
 
     test('removePlayerFromGroup() works correctly', () async {
@@ -226,13 +226,13 @@ void main() {
         playerId: testPlayer1.id,
         groupId: testGroup.id,
       );
-      expect(removed, true);
+      expect(removed, isTrue);
 
       removed = await database.playerGroupDao.removePlayerFromGroup(
         playerId: testPlayer1.id,
         groupId: testGroup.id,
       );
-      expect(removed, false);
+      expect(removed, isFalse);
     });
 
     test(
@@ -246,19 +246,19 @@ void main() {
           playerId: 'non-existent-player-id',
           groupId: testGroup.id,
         );
-        expect(removed, false);
+        expect(removed, isFalse);
 
         removed = await database.playerGroupDao.removePlayerFromGroup(
           playerId: testPlayer1.id,
           groupId: 'non-existent-group-id',
         );
-        expect(removed, false);
+        expect(removed, isFalse);
 
         removed = await database.playerGroupDao.removePlayerFromGroup(
           playerId: 'non-existent-player-id',
           groupId: 'non-existent-group-id',
         );
-        expect(removed, false);
+        expect(removed, isFalse);
       },
     );
   });
