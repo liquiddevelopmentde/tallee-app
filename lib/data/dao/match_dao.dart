@@ -270,8 +270,9 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         if (row.groupId != null) {
           group = await db.groupDao.getGroupById(groupId: row.groupId!);
         }
-        final players =
-            await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
+        final players = await db.playerMatchDao.getPlayersOfMatch(
+          matchId: row.id,
+        );
 
         final scores = await db.scoreEntryDao.getAllMatchScores(
           matchId: row.id,
@@ -307,8 +308,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       group = await db.groupDao.getGroupById(groupId: result.groupId!);
     }
 
-    final players =
-        await db.playerMatchDao.getPlayersOfMatch(matchId: matchId) ?? [];
+    final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId);
 
     final scores = await db.scoreEntryDao.getAllMatchScores(matchId: matchId);
 
@@ -338,8 +338,9 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       rows.map((row) async {
         final game = await db.gameDao.getGameById(gameId: row.gameId);
         final group = await db.groupDao.getGroupById(groupId: groupId);
-        final players =
-            await db.playerMatchDao.getPlayersOfMatch(matchId: row.id) ?? [];
+        final players = await db.playerMatchDao.getPlayersOfMatch(
+          matchId: row.id,
+        );
         final teams = await _getMatchTeams(matchId: row.id);
         return Match(
           id: row.id,
@@ -445,40 +446,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       MatchTableCompanion(endedAt: Value(endedAt)),
     );
     return rowsAffected > 0;
-  }
-
-  /// Replaces all players in a match with the provided list of players.
-  /// Removes all existing players from the match and adds the new players.
-  /// Also adds any new players to the player table if they don't exist.
-  Future<void> updateMatchPlayers({
-    required String matchId,
-    required List<Player> newPlayers,
-  }) async {
-    await db.transaction(() async {
-      // Remove all existing players from the match
-      final deleteQuery = delete(db.playerMatchTable)
-        ..where((p) => p.matchId.equals(matchId));
-      await deleteQuery.go();
-
-      // Add new players to the player table if they don't exist
-      await Future.wait(
-        newPlayers.map((player) async {
-          if (!await db.playerDao.playerExists(playerId: player.id)) {
-            await db.playerDao.addPlayer(player: player);
-          }
-        }),
-      );
-
-      // Add the new players to the match
-      await Future.wait(
-        newPlayers.map(
-          (player) => db.playerMatchDao.addPlayerToMatch(
-            matchId: matchId,
-            playerId: player.id,
-          ),
-        ),
-      );
-    });
   }
 
   /* Delete */

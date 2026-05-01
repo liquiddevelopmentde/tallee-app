@@ -11,14 +11,16 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     with _$PlayerMatchDaoMixin {
   PlayerMatchDao(super.db);
 
+  /* Create */
+
   /// Associates a player with a match by inserting a record into the
   /// [PlayerMatchTable]. Optionally associates with a team and sets initial score.
-  Future<void> addPlayerToMatch({
+  Future<bool> addPlayerToMatch({
     required String matchId,
     required String playerId,
     String? teamId,
   }) async {
-    await into(playerMatchTable).insert(
+    final rowsAffected = await into(playerMatchTable).insert(
       PlayerMatchTableCompanion.insert(
         playerId: playerId,
         matchId: matchId,
@@ -26,42 +28,14 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
       ),
       mode: InsertMode.insertOrReplace,
     );
-  }
-
-  /// Retrieves a list of [Player]s associated with the given [matchId].
-  /// Returns null if no players are found.
-  Future<List<Player>?> getPlayersOfMatch({required String matchId}) async {
-    final result = await (select(
-      playerMatchTable,
-    )..where((p) => p.matchId.equals(matchId))).get();
-
-    if (result.isEmpty) return null;
-
-    final futures = result.map(
-      (row) => db.playerDao.getPlayerById(playerId: row.playerId),
-    );
-    final players = await Future.wait(futures);
-    return players;
-  }
-
-  /// Updates the team for a player in a match.
-  /// Returns `true` if the update was successful, otherwise `false`.
-  Future<bool> updatePlayerTeam({
-    required String matchId,
-    required String playerId,
-    required String? teamId,
-  }) async {
-    final rowsAffected =
-        await (update(playerMatchTable)..where(
-              (p) => p.matchId.equals(matchId) & p.playerId.equals(playerId),
-            ))
-            .write(PlayerMatchTableCompanion(teamId: Value(teamId)));
     return rowsAffected > 0;
   }
 
+  /* Read */
+
   /// Checks if there are any players associated with the given [matchId].
   /// Returns `true` if there are players, otherwise `false`.
-  Future<bool> matchHasPlayers({required String matchId}) async {
+  Future<bool> hasMatchPlayers({required String matchId}) async {
     final count =
         await (selectOnly(playerMatchTable)
               ..where(playerMatchTable.matchId.equals(matchId))
@@ -87,31 +61,79 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     return (count ?? 0) > 0;
   }
 
-  /// Removes the association of a player with a match by deleting the record
-  /// from the [PlayerMatchTable].
-  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
-  Future<bool> removePlayerFromMatch({
+  /// Retrieves a list of [Player]s associated with the given [matchId].
+  /// Returns empty list if no players are found.
+  Future<List<Player>> getPlayersOfMatch({required String matchId}) async {
+    final result = await (select(
+      playerMatchTable,
+    )..where((p) => p.matchId.equals(matchId))).get();
+
+    if (result.isEmpty) return [];
+
+    final futures = result.map(
+      (row) => db.playerDao.getPlayerById(playerId: row.playerId),
+    );
+    final players = await Future.wait(futures);
+    return players;
+  }
+
+  /// Retrieves a list of [Player]s associated with a specific team in a match.
+  /// Returns empty list if no players are found for the team in the match.
+  Future<List<Player>> getPlayersOfTeamInMatch({
+    required String matchId,
+    required String teamId,
+  }) async {
+    final result =
+        await (select(playerMatchTable)
+              ..where((p) => p.matchId.equals(matchId))
+              ..where((p) => p.teamId.equals(teamId)))
+            .get();
+
+    if (result.isEmpty) return [];
+
+    final futures = result.map(
+      (row) => db.playerDao.getPlayerById(playerId: row.playerId),
+    );
+    final players = await Future.wait(futures);
+    return players;
+  }
+
+  /* Updated */
+
+  /// Updates the team for a player in a match.
+  /// Returns `true` if the update was successful, otherwise `false`.
+  Future<bool> updatePlayersTeam({
     required String matchId,
     required String playerId,
+    required String? teamId,
   }) async {
-    final query = delete(playerMatchTable)
-      ..where((pg) => pg.matchId.equals(matchId))
-      ..where((pg) => pg.playerId.equals(playerId));
-    final rowsAffected = await query.go();
+    final rowsAffected =
+        await (update(playerMatchTable)..where(
+              (p) => p.matchId.equals(matchId) & p.playerId.equals(playerId),
+            ))
+            .write(PlayerMatchTableCompanion(teamId: Value(teamId)));
     return rowsAffected > 0;
   }
 
   /// Updates the players associated with a match based on the provided
   /// [newPlayer] list. It adds new players and removes players that are no
   /// longer associated with the match.
-  Future<void> updatePlayersFromMatch({
+  Future<bool> updateMatchPlayers({
     required String matchId,
     required List<Player> newPlayer,
   }) async {
+    if (newPlayer.isEmpty) return false;
+
     final currentPlayers = await getPlayersOfMatch(matchId: matchId);
     // Create sets of player IDs for easy comparison
-    final currentPlayerIds = currentPlayers?.map((p) => p.id).toSet() ?? {};
+    final currentPlayerIds = currentPlayers.map((p) => p.id).toSet();
     final newPlayerIdsSet = newPlayer.map((p) => p.id).toSet();
+
+    // Are the current and new player identical?
+    if (currentPlayerIds.containsAll(newPlayerIdsSet) &&
+        newPlayerIdsSet.containsAll(currentPlayerIds)) {
+      return false;
+    }
 
     // Determine players to add and remove
     final playersToAdd = newPlayerIdsSet.difference(currentPlayerIds);
@@ -147,22 +169,22 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
         );
       }
     });
+    return true;
   }
 
-  /// Retrieves all players in a specific team for a match.
-  Future<List<Player>> getPlayersInTeam({
+  /* Delete */
+
+  /// Removes the association of a player with a match by deleting the record
+  /// from the [PlayerMatchTable].
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> removePlayerFromMatch({
     required String matchId,
-    required String teamId,
+    required String playerId,
   }) async {
-    final result = await (select(
-      playerMatchTable,
-    )..where((p) => p.matchId.equals(matchId) & p.teamId.equals(teamId))).get();
-
-    if (result.isEmpty) return [];
-
-    final futures = result.map(
-      (row) => db.playerDao.getPlayerById(playerId: row.playerId),
-    );
-    return Future.wait(futures);
+    final query = delete(playerMatchTable)
+      ..where((pg) => pg.matchId.equals(matchId))
+      ..where((pg) => pg.playerId.equals(playerId));
+    final rowsAffected = await query.go();
+    return rowsAffected > 0;
   }
 }
