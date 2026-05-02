@@ -58,7 +58,7 @@ Color getColorFromGameColor(GameColor color) {
     case GameColor.purple:
       return Colors.purple;
     case GameColor.orange:
-      return Colors.orange;
+      return const Color(0xFFef681f);
     case GameColor.pink:
       return Colors.pink;
     case GameColor.teal:
@@ -66,8 +66,10 @@ Color getColorFromGameColor(GameColor color) {
   }
 }
 
-/// Counts how many players in the match are not part of the group
-/// Returns the count as a string, or an empty string if there is no group
+/// Counts how many players in the [match] are not part of the group
+///
+/// Returns the text you append after the group name, e.g. " + 5" or an empty
+/// string if there are no extra players
 String getExtraPlayerCount(Match match) {
   int count = 0;
 

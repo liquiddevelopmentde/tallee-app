@@ -6,7 +6,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game/create_game_view.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
-import 'package:tallee/presentation/widgets/tiles/title_description_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/game_tile.dart';
 
 class ChooseGameView extends StatefulWidget {
   /// A view that allows the user to choose a game from a list of available games
@@ -110,6 +110,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
         },
         child: Column(
           children: [
+            // Search Bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: CustomSearchBar(
@@ -121,15 +122,18 @@ class _ChooseGameViewState extends State<ChooseGameView> {
               ),
             ),
             const SizedBox(height: 5),
+
+            // Game list
             Expanded(
               child: ListView.builder(
                 itemCount: filteredGames.length,
                 itemBuilder: (BuildContext context, int index) {
                   final game = filteredGames[index];
-                  return TitleDescriptionListTile(
+                  return GameTile(
                     title: game.name,
                     description: game.description,
                     badgeText: translateRulesetToString(game.ruleset, context),
+                    badgeColor: getColorFromGameColor(game.color),
                     isHighlighted: selectedGameId == game.id,
                     onTap: () async {
                       setState(() {

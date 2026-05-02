@@ -3,7 +3,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/tiles/title_description_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/game_tile.dart';
 
 class ChooseColorView extends StatefulWidget {
   /// A view that allows the user to choose a color from a list of available game colors
@@ -54,7 +54,7 @@ class _ChooseColorViewState extends State<ChooseColorView> {
           itemCount: colors.length,
           itemBuilder: (BuildContext context, int index) {
             final color = colors[index];
-            return TitleDescriptionListTile(
+            return GameTile(
               onTap: () {
                 setState(() {
                   if (selectedColor == color) {
