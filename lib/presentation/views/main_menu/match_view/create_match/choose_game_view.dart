@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game/create_game_view.dart';
@@ -34,6 +36,10 @@ class ChooseGameView extends StatefulWidget {
 }
 
 class _ChooseGameViewState extends State<ChooseGameView> {
+  late final AppDatabase db;
+
+  late List<(Game, int)> gameCounts = [];
+
   /// Controller for the search bar
   final TextEditingController searchBarController = TextEditingController();
 
@@ -45,6 +51,9 @@ class _ChooseGameViewState extends State<ChooseGameView> {
 
   @override
   void initState() {
+    db = Provider.of<AppDatabase>(context, listen: false);
+    fetchGameCounts();
+
     selectedGameId = widget.initialGameId;
 
     // Start with all games visible
@@ -150,6 +159,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                         adaptivePageRoute(
                           builder: (context) => CreateGameView(
                             gameToEdit: game,
+                            canDelete: canDeleteGame(game),
                             onGameChanged: () {
                               widget.onGamesUpdated?.call();
                             },
@@ -208,5 +218,17 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   /// Re-applies the current filter after the underlying games list changed.
   void _refreshFromSource() {
     _applySearchFilter(searchBarController.text);
+  }
+
+  Future<void> fetchGameCounts() async {
+    gameCounts = await db.gameDao.getGameUsage();
+  }
+
+  // A game can only be deleted if there are no matches using it
+  bool canDeleteGame(Game game) {
+    final count = gameCounts
+        .firstWhere((gc) => gc.$1.id == game.id, orElse: () => (game, 0))
+        .$2;
+    return count == 0;
   }
 }

@@ -23,15 +23,18 @@ import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 class CreateGameView extends StatefulWidget {
   const CreateGameView({
     super.key,
-    this.gameToEdit,
     required this.onGameChanged,
+    this.gameToEdit,
+    this.canDelete = false,
   });
+
+  /// Callback to invoke when the game is created or edited
+  final VoidCallback onGameChanged;
 
   /// An optional game to prefill the fields
   final Game? gameToEdit;
 
-  /// Callback to invoke when the game is created or edited
-  final VoidCallback onGameChanged;
+  final bool canDelete;
 
   @override
   State<CreateGameView> createState() => _CreateGameViewState();
@@ -41,7 +44,6 @@ class _CreateGameViewState extends State<CreateGameView> {
   /// GlobalKey for ScaffoldMessenger to show snackbars
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
-  /// The database instance for accessing game data.
   late final AppDatabase db;
 
   /// The currently selected ruleset for the game.
@@ -133,13 +135,12 @@ class _CreateGameViewState extends State<CreateGameView> {
         backgroundColor: CustomTheme.backgroundColor,
         appBar: AppBar(
           title: Text(isEditing ? loc.edit_game : loc.create_game),
-          actions: widget.gameToEdit == null
-              ? []
-              : [
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async {
-                      if (widget.gameToEdit != null) {
+          actions: [
+            if (isEditMode())
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: widget.canDelete
+                    ? () async {
                         showDialog<bool>(
                           context: context,
                           builder: (context) => CustomAlertDialog(
@@ -176,9 +177,9 @@ class _CreateGameViewState extends State<CreateGameView> {
                           }
                         });
                       }
-                    },
-                  ),
-                ],
+                    : null,
+              ),
+          ],
         ),
         body: SafeArea(
           child: Column(
