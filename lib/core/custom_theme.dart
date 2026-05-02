@@ -63,9 +63,8 @@ class CustomTheme {
 
   static BoxDecoration highlightedBoxDecoration = BoxDecoration(
     color: boxColor,
-    border: Border.all(color: primaryColor),
+    border: Border.all(color: textColor, width: 2),
     borderRadius: standardBorderRadiusAll,
-    boxShadow: [BoxShadow(color: primaryColor.withAlpha(120), blurRadius: 12)],
   );
 
   // ==================== Component Themes ====================
