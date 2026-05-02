@@ -126,29 +126,30 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               ),
 
               // Game selection tile.
-              ChooseTile(
-                title: loc.game,
-                trailingText: selectedGame == null
-                    ? loc.none_group
-                    : selectedGame!.name,
-                onPressed: () async {
-                  selectedGame = await Navigator.of(context).push(
-                    adaptivePageRoute(
-                      builder: (context) => ChooseGameView(
-                        games: gamesList,
-                        initialGameId: selectedGame?.id ?? '',
+              if (!isEditMode())
+                ChooseTile(
+                  title: loc.game,
+                  trailingText: selectedGame == null
+                      ? loc.none_group
+                      : selectedGame!.name,
+                  onPressed: () async {
+                    selectedGame = await Navigator.of(context).push(
+                      adaptivePageRoute(
+                        builder: (context) => ChooseGameView(
+                          games: gamesList,
+                          initialGameId: selectedGame?.id ?? '',
+                        ),
                       ),
-                    ),
-                  );
-                  setState(() {
-                    if (selectedGame != null) {
-                      hintText = selectedGame!.name;
-                    } else {
-                      hintText = loc.match_name;
-                    }
-                  });
-                },
-              ),
+                    );
+                    setState(() {
+                      if (selectedGame != null) {
+                        hintText = selectedGame!.name;
+                      } else {
+                        hintText = loc.match_name;
+                      }
+                    });
+                  },
+                ),
 
               // Group selection tile.
               ChooseTile(

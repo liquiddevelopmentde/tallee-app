@@ -183,6 +183,7 @@ class _CreateGameViewState extends State<CreateGameView> {
         body: SafeArea(
           child: Column(
             children: [
+              // Game name input field
               Container(
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
@@ -191,30 +192,35 @@ class _CreateGameViewState extends State<CreateGameView> {
                   hintText: loc.game_name,
                 ),
               ),
-              ChooseTile(
-                title: loc.ruleset,
-                trailingText: selectedRuleset == null
-                    ? loc.none
-                    : translateRulesetToString(selectedRuleset!, context),
-                onPressed: () async {
-                  final result = await Navigator.of(context).push<Ruleset?>(
-                    adaptivePageRoute(
-                      builder: (context) => ChooseRulesetView(
-                        rulesets: _rulesets,
-                        initialRulesetIndex: selectedRulesetIndex,
+
+              // Choose ruleset tile
+              if (!isEditMode())
+                ChooseTile(
+                  title: loc.ruleset,
+                  trailingText: selectedRuleset == null
+                      ? loc.none
+                      : translateRulesetToString(selectedRuleset!, context),
+                  onPressed: () async {
+                    final result = await Navigator.of(context).push<Ruleset?>(
+                      adaptivePageRoute(
+                        builder: (context) => ChooseRulesetView(
+                          rulesets: _rulesets,
+                          initialRulesetIndex: selectedRulesetIndex,
+                        ),
                       ),
-                    ),
-                  );
-                  if (mounted) {
-                    setState(() {
-                      selectedRuleset = result;
-                      selectedRulesetIndex = result == null
-                          ? -1
-                          : _rulesets.indexWhere((r) => r.$1 == result);
-                    });
-                  }
-                },
-              ),
+                    );
+                    if (mounted) {
+                      setState(() {
+                        selectedRuleset = result;
+                        selectedRulesetIndex = result == null
+                            ? -1
+                            : _rulesets.indexWhere((r) => r.$1 == result);
+                      });
+                    }
+                  },
+                ),
+
+              // Choose color tile
               ChooseTile(
                 title: loc.color,
                 trailingText: selectedColor == null
@@ -234,6 +240,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                   }
                 },
               ),
+
+              // Description input field
               Container(
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
@@ -245,7 +253,10 @@ class _CreateGameViewState extends State<CreateGameView> {
                   showCounterText: true,
                 ),
               ),
+
               const Spacer(),
+
+              // Create/Edit game button
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: CustomWidthButton(
@@ -348,5 +359,9 @@ class _CreateGameViewState extends State<CreateGameView> {
         ),
       );
     }
+  }
+
+  bool isEditMode() {
+    return widget.gameToEdit != null;
   }
 }
