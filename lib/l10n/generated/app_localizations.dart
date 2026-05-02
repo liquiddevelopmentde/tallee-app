@@ -302,6 +302,12 @@ abstract class AppLocalizations {
   /// **'Delete Game'**
   String get delete_game;
 
+  /// No description provided for @delete_game_with_matches_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.'**
+  String delete_game_with_matches_warning(int count);
+
   /// Confirmation dialog for deleting a group
   ///
   /// In en, this message translates to:

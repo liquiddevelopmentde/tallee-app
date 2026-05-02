@@ -159,7 +159,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                         adaptivePageRoute(
                           builder: (context) => CreateGameView(
                             gameToEdit: game,
-                            canDelete: canDeleteGame(game),
+                            matchCount: getMatchCount(game),
                             onGameChanged: () {
                               widget.onGamesUpdated?.call();
                             },
@@ -224,11 +224,10 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     gameCounts = await db.gameDao.getGameUsage();
   }
 
-  // A game can only be deleted if there are no matches using it
-  bool canDeleteGame(Game game) {
-    final count = gameCounts
+  // Returns the number of matches that use the given [game].
+  int getMatchCount(Game game) {
+    return gameCounts
         .firstWhere((gc) => gc.$1.id == game.id, orElse: () => (game, 0))
         .$2;
-    return count == 0;
   }
 }

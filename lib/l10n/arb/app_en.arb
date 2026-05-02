@@ -389,6 +389,14 @@
   "delete": "Delete",
   "delete_all_data": "Delete all data",
   "delete_game": "Delete Game",
+  "delete_game_with_matches_warning": "If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.",
+  "@delete_game_with_matches_warning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "delete_group": "Delete Group",
   "delete_match": "Delete Match",
   "description": "Description",

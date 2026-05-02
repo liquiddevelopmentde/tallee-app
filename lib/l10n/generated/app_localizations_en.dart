@@ -115,6 +115,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_game => 'Delete Game';
 
   @override
+  String delete_game_with_matches_warning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matches',
+      one: '1 match',
+    );
+    return 'If you delete this game template, $_temp0 using this game template will also be deleted.';
+  }
+
+  @override
   String get delete_group => 'Delete Group';
 
   @override

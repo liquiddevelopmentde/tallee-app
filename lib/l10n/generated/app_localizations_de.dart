@@ -115,6 +115,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_game => 'Spielvorlage löschen';
 
   @override
+  String delete_game_with_matches_warning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Spiele',
+      one: '1 Spiel',
+    );
+    return 'Wenn du diese Spielvorlage löschst, werden $_temp0 mit dieser Spielvorlage ebenfalls gelöscht.';
+  }
+
+  @override
   String get delete_group => 'Gruppe löschen';
 
   @override

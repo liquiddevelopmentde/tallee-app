@@ -12,6 +12,7 @@ class CustomDialogAction extends StatelessWidget {
     required this.onPressed,
     required this.text,
     this.buttonType = ButtonType.primary,
+    this.isDestructive = false,
   });
 
   final String text;
@@ -20,12 +21,15 @@ class CustomDialogAction extends StatelessWidget {
 
   final VoidCallback onPressed;
 
+  final bool isDestructive;
+
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogButton(
       onPressed: onPressed,
       buttonText: text,
       buttonType: buttonType,
+      isDescructive: isDestructive,
       buttonConstraints: const BoxConstraints(minWidth: 300),
     );
   }
