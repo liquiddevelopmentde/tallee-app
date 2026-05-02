@@ -54,7 +54,7 @@ Color getColorFromGameColor(GameColor color) {
     case GameColor.green:
       return Colors.green;
     case GameColor.yellow:
-      return Colors.yellow;
+      return const Color(0xFFF7CA28);
     case GameColor.purple:
       return Colors.purple;
     case GameColor.orange:
