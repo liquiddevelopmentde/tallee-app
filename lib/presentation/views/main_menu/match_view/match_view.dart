@@ -118,8 +118,10 @@ class _MatchViewState extends State<MatchView> {
                 Navigator.push(
                   context,
                   adaptivePageRoute(
-                    builder: (context) =>
-                        CreateMatchView(onWinnerChanged: loadMatches),
+                    builder: (context) => CreateMatchView(
+                      onWinnerChanged: loadMatches,
+                      onMatchesUpdated: loadMatches,
+                    ),
                   ),
                 );
               },

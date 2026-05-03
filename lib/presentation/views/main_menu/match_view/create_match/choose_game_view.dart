@@ -177,6 +177,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                         if (result.delete) {
                           setState(() {
                             widget.games.removeAt(originalIndex);
+                            widget.onGamesUpdated?.call();
                           });
                         } else {
                           setState(() {

@@ -28,9 +28,12 @@ class CreateMatchView extends StatefulWidget {
     this.onWinnerChanged,
     this.matchToEdit,
     this.onMatchUpdated,
+    this.onMatchesUpdated,
   });
 
   final VoidCallback? onWinnerChanged;
+
+  final VoidCallback? onMatchesUpdated;
 
   final void Function(Match)? onMatchUpdated;
 
@@ -138,6 +141,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                         builder: (context) => ChooseGameView(
                           games: gamesList,
                           initialGameId: selectedGame?.id ?? '',
+                          onGamesUpdated: widget.onMatchesUpdated,
                         ),
                       ),
                     );
