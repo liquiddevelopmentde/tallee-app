@@ -56,7 +56,7 @@ class _CreateGameViewState extends State<CreateGameView> {
   late List<(Ruleset, String)> _rulesets;
 
   /// The currently selected color for the game.
-  GameColor? selectedColor;
+  GameColor? selectedColor = GameColor.orange;
 
   /// Controller for the game name input field.
   final _gameNameController = TextEditingController();
@@ -212,9 +212,11 @@ class _CreateGameViewState extends State<CreateGameView> {
               if (!isEditMode())
                 ChooseTile(
                   title: loc.ruleset,
-                  trailingText: selectedRuleset == null
-                      ? loc.none
-                      : translateRulesetToString(selectedRuleset!, context),
+                  trailing: selectedRuleset == null
+                      ? Text(loc.none)
+                      : Text(
+                          translateRulesetToString(selectedRuleset!, context),
+                        ),
                   onPressed: () async {
                     final result = await Navigator.of(context).push<Ruleset?>(
                       adaptivePageRoute(
@@ -238,9 +240,24 @@ class _CreateGameViewState extends State<CreateGameView> {
               // Choose color tile
               ChooseTile(
                 title: loc.color,
-                trailingText: selectedColor == null
-                    ? loc.none
-                    : translateGameColorToString(selectedColor!, context),
+                trailing: selectedColor == null
+                    ? Text(loc.none)
+                    : Row(
+                        children: [
+                          Text(
+                            translateGameColorToString(selectedColor!, context),
+                          ),
+                          Container(
+                            width: 16,
+                            height: 16,
+                            margin: const EdgeInsets.only(left: 12),
+                            decoration: BoxDecoration(
+                              color: getColorFromGameColor(selectedColor!),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ],
+                      ),
                 onPressed: () async {
                   final result = await Navigator.of(context).push<GameColor?>(
                     adaptivePageRoute(

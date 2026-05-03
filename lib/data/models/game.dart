@@ -14,15 +14,13 @@ class Game {
   Game({
     required this.name,
     required this.ruleset,
-    required this.color,
+    this.color = GameColor.orange,
+    this.description = '',
+    this.icon = '',
     String? id,
     DateTime? createdAt,
-    String? description,
-    String? icon,
   }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? clock.now(),
-       description = description ?? '',
-       icon = icon ?? '';
+       createdAt = createdAt ?? clock.now();
 
   @override
   String toString() {

@@ -132,9 +132,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               if (!isEditMode())
                 ChooseTile(
                   title: loc.game,
-                  trailingText: selectedGame == null
-                      ? loc.none_group
-                      : selectedGame!.name,
+                  trailing: selectedGame == null
+                      ? Text(loc.none_group)
+                      : Text(selectedGame!.name),
                   onPressed: () async {
                     selectedGame = await Navigator.of(context).push(
                       adaptivePageRoute(
@@ -158,9 +158,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               // Group selection tile.
               ChooseTile(
                 title: loc.group,
-                trailingText: selectedGroup == null
-                    ? loc.none_group
-                    : selectedGroup!.name,
+                trailing: selectedGroup == null
+                    ? Text(loc.none_group)
+                    : Text(selectedGroup!.name),
                 onPressed: () async {
                   // Remove all players from the previously selected group from
                   // the selected players list, in case the user deselects the
