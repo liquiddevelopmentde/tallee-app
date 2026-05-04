@@ -45,7 +45,7 @@ class _CreateGameViewState extends State<CreateGameView> {
   late final AppDatabase db;
 
   late List<(Ruleset, String)> _rulesets;
-  Ruleset? selectedRuleset;
+  Ruleset? selectedRuleset = Ruleset.singleWinner;
 
   late List<(GameColor, String)> _colors;
   GameColor? selectedColor = GameColor.orange;
