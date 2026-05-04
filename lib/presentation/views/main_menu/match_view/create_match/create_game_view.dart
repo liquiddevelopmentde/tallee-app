@@ -44,19 +44,10 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   late final AppDatabase db;
 
-  /// The currently selected ruleset for the game.
+  late List<(Ruleset, String)> _rulesets;
   Ruleset? selectedRuleset;
 
-  /// The index of the currently selected ruleset.
-  int selectedRulesetIndex = -1;
-
-  /// A list of available rulesets and their localized names.
-  late List<(Ruleset, String)> _rulesets;
-
-  /// A list of available game colors and their localized names.
   late List<(GameColor, String)> _colors;
-
-  /// The currently selected color for the game.
   GameColor? selectedColor = GameColor.orange;
 
   /// Controller for the game name input field.
@@ -122,10 +113,7 @@ class _CreateGameViewState extends State<CreateGameView> {
       _descriptionController.text = widget.gameToEdit!.description;
       selectedRuleset = widget.gameToEdit!.ruleset;
       selectedColor = widget.gameToEdit!.color;
-
-      selectedRulesetIndex = _rulesets.indexWhere(
-        (r) => r.$1 == selectedRuleset,
-      );
+      selectedRuleset = widget.gameToEdit!.ruleset;
     }
   }
 
@@ -435,7 +423,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                   buttonType: ButtonType.primary,
                   onPressed:
                       _gameNameController.text.trim().isNotEmpty &&
-                          selectedRulesetIndex != -1 &&
+                          selectedRuleset != null &&
                           selectedColor != null
                       ? () async {
                           Game newGame = Game(
