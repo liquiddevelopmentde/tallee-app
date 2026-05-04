@@ -8,8 +8,9 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
-import 'package:tallee/presentation/widgets/tiles/custom_radio_list_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/score_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/match_result_view/score_list_tile.dart';
 
 class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
@@ -29,6 +30,8 @@ class MatchResultView extends StatefulWidget {
 
 class _MatchResultViewState extends State<MatchResultView> {
   late final AppDatabase db;
+
+  bool isLiveEditMode = false;
 
   late final Ruleset ruleset;
 
@@ -88,115 +91,159 @@ class _MatchResultViewState extends State<MatchResultView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () {
-            widget.onWinnerChanged?.call();
-            Navigator.of(context).pop(_selectedPlayer);
-          },
-        ),
+        leading: isLiveEditMode
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  setState(() {
+                    isLiveEditMode = false;
+                  });
+                },
+              )
+            : IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  widget.onWinnerChanged?.call();
+                  Navigator.of(context).pop(_selectedPlayer);
+                },
+              ),
         title: Text(widget.match.name),
       ),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
-              child: Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: CustomTheme.boxColor,
-                  border: Border.all(color: CustomTheme.boxBorderColor),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${getTitleForRuleset(loc)}:',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    if (rulesetSupportsWinnerSelection())
-                      Expanded(
-                        child: RadioGroup<Player>(
-                          groupValue: _selectedPlayer,
-                          onChanged: (Player? value) async {
+              child: isLiveEditMode && rulesetSupportsScoreEntry()
+                  ? ListView.builder(
+                      itemCount: allPlayers.length,
+                      itemBuilder: (context, index) {
+                        return LiveEditListTile(
+                          title: allPlayers[index].name,
+                          onChanged: (value) {
                             setState(() {
-                              _selectedPlayer = value;
+                              controller[index].text = value.toString();
                             });
                           },
-                          child: ListView.builder(
-                            itemCount: allPlayers.length,
-                            itemBuilder: (context, index) {
-                              return CustomRadioListTile(
-                                text: allPlayers[index].name,
-                                value: allPlayers[index],
-                                onContainerTap: (value) async {
+                          value: int.tryParse(controller[index].text) ?? 0,
+                        );
+                      },
+                    )
+                  : Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: CustomTheme.boxColor,
+                        border: Border.all(color: CustomTheme.boxBorderColor),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${getTitleForRuleset(loc)}:',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          if (rulesetSupportsWinnerSelection())
+                            Expanded(
+                              child: RadioGroup<Player>(
+                                groupValue: _selectedPlayer,
+                                onChanged: (Player? value) async {
                                   setState(() {
-                                    // Check if the already selected player is the same as the newly tapped player.
-                                    if (_selectedPlayer == value) {
-                                      // If yes deselected the player by setting it to null.
-                                      _selectedPlayer = null;
-                                    } else {
-                                      // If no assign the newly tapped player to the selected player.
-                                      (_selectedPlayer = value);
-                                    }
+                                    _selectedPlayer = value;
                                   });
                                 },
-                              );
-                            },
-                          ),
-                        ),
+                                child: ListView.builder(
+                                  itemCount: allPlayers.length,
+                                  itemBuilder: (context, index) {
+                                    return CustomRadioListTile(
+                                      text: allPlayers[index].name,
+                                      value: allPlayers[index],
+                                      onContainerTap: (value) async {
+                                        setState(() {
+                                          // Check if the already selected player is the same as the newly tapped player.
+                                          if (_selectedPlayer == value) {
+                                            // If yes deselected the player by setting it to null.
+                                            _selectedPlayer = null;
+                                          } else {
+                                            // If no assign the newly tapped player to the selected player.
+                                            (_selectedPlayer = value);
+                                          }
+                                        });
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          if (rulesetSupportsScoreEntry())
+                            Expanded(
+                              child: ListView.separated(
+                                itemCount: allPlayers.length,
+                                itemBuilder: (context, index) {
+                                  return ScoreListTile(
+                                    text: allPlayers[index].name,
+                                    controller: controller[index],
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                      return const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 8.0,
+                                        ),
+                                        child: Divider(indent: 20),
+                                      );
+                                    },
+                              ),
+                            ),
+                        ],
                       ),
-                    if (rulesetSupportsScoreEntry())
-                      Expanded(
-                        child: ListView.separated(
-                          itemCount: allPlayers.length,
-                          itemBuilder: (context, index) {
-                            return ScoreListTile(
-                              text: allPlayers[index].name,
-                              controller: controller[index],
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.0),
-                              child: Divider(indent: 20),
-                            );
-                          },
-                        ),
-                      ),
-                  ],
+                    ),
+            ),
+            if (!isLiveEditMode) ...[
+              if (rulesetSupportsScoreEntry())
+              // Button to switch to live edit mode
+              ...[
+                CustomWidthButton(
+                  text: 'Live-Edit Modus',
+                  sizeRelativeToWidth: 0.95,
+                  buttonType: ButtonType.secondary,
+                  onPressed: () => setState(() {
+                    isLiveEditMode = true;
+                  }),
                 ),
+                const SizedBox(height: 10),
+              ],
+
+              // Save Changes Button
+              CustomWidthButton(
+                text: loc.save_changes,
+                sizeRelativeToWidth: 0.95,
+                onPressed: canSave
+                    ? () async {
+                        final ending = DateTime.now();
+                        await db.matchDao.updateMatchEndedAt(
+                          matchId: widget.match.id,
+                          endedAt: ending,
+                        );
+                        await _handleSaving();
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop(_selectedPlayer);
+                      }
+                    : null,
               ),
-            ),
-            CustomWidthButton(
-              text: loc.save_changes,
-              sizeRelativeToWidth: 0.95,
-              onPressed: canSave
-                  ? () async {
-                      final ending = DateTime.now();
-                      await db.matchDao.updateMatchEndedAt(
-                        matchId: widget.match.id,
-                        endedAt: ending,
-                      );
-                      await _handleSaving();
-                      if (!context.mounted) return;
-                      Navigator.of(context).pop(_selectedPlayer);
-                    }
-                  : null,
-            ),
+            ],
           ],
         ),
       ),
