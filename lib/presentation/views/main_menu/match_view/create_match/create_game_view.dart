@@ -285,7 +285,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                     child: Row(
                       children: [
                         Icon(getRulesetIcon(selectedRuleset!), size: 16),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Text(
                           translateRulesetToString(selectedRuleset!, context),
                         ),
