@@ -222,7 +222,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                     contentDecoration: CustomTheme.standardBoxDecoration,
                     content: StatefulBuilder(
                       builder: (context, setPopupState) => SizedBox(
-                        width: 250,
+                        width: 280,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,6 +258,10 @@ class _CreateGameViewState extends State<CreateGameView> {
                                       child: Row(
                                         spacing: 8,
                                         children: [
+                                          Icon(
+                                            getRulesetIcon(_rulesets[index].$1),
+                                            size: 16,
+                                          ),
                                           Text(
                                             _rulesets[index].$2,
                                             style: const TextStyle(
@@ -278,11 +282,15 @@ class _CreateGameViewState extends State<CreateGameView> {
                         ),
                       ),
                     ),
-                    child: selectedRuleset == null
-                        ? Text(loc.none)
-                        : Text(
-                            translateRulesetToString(selectedRuleset!, context),
-                          ),
+                    child: Row(
+                      children: [
+                        Icon(getRulesetIcon(selectedRuleset!), size: 16),
+                        SizedBox(width: 5),
+                        Text(
+                          translateRulesetToString(selectedRuleset!, context),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
 

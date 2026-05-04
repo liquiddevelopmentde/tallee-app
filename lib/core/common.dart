@@ -66,6 +66,22 @@ Color getColorFromGameColor(GameColor color) {
   }
 }
 
+/// Returns [IconData] corresponding to a [Ruleset] enum value.
+IconData getRulesetIcon(Ruleset ruleset) {
+  switch (ruleset) {
+    case Ruleset.highestScore:
+      return Icons.arrow_upward;
+    case Ruleset.lowestScore:
+      return Icons.arrow_downward;
+    case Ruleset.singleWinner:
+      return Icons.emoji_events;
+    case Ruleset.singleLoser:
+      return Icons.sentiment_dissatisfied;
+    case Ruleset.multipleWinners:
+      return Icons.group;
+  }
+}
+
 /// Counts how many players in the [match] are not part of the group
 ///
 /// Returns the text you append after the group name, e.g. " + 5" or an empty
