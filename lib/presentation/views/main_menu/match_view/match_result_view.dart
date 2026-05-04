@@ -8,6 +8,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/score_list_tile.dart';
@@ -91,22 +92,15 @@ class _MatchResultViewState extends State<MatchResultView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(
-        leading: isLiveEditMode
+        leading: !isLiveEditMode
             ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  setState(() {
-                    isLiveEditMode = false;
-                  });
-                },
-              )
-            : IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () {
                   widget.onWinnerChanged?.call();
                   Navigator.of(context).pop(_selectedPlayer);
                 },
-              ),
+              )
+            : null,
         title: Text(widget.match.name),
       ),
       body: SafeArea(
@@ -115,17 +109,34 @@ class _MatchResultViewState extends State<MatchResultView> {
             Expanded(
               child: isLiveEditMode && rulesetSupportsScoreEntry()
                   ? ListView.builder(
-                      itemCount: allPlayers.length,
+                      itemCount: allPlayers.length + 1,
                       itemBuilder: (context, index) {
-                        return LiveEditListTile(
-                          title: allPlayers[index].name,
-                          onChanged: (value) {
-                            setState(() {
-                              controller[index].text = value.toString();
-                            });
-                          },
-                          value: int.tryParse(controller[index].text) ?? 0,
-                        );
+                        if (index < allPlayers.length) {
+                          return LiveEditListTile(
+                            title: allPlayers[index].name,
+                            onChanged: (value) {
+                              setState(() {
+                                controller[index].text = value.toString();
+                              });
+                            },
+                            value: int.tryParse(controller[index].text) ?? 0,
+                          );
+                        } else {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 30),
+                              child: MainMenuButton(
+                                text: 'Ansicht verlassen',
+                                onPressed: () => {
+                                  setState(() {
+                                    isLiveEditMode = false;
+                                  }),
+                                },
+                                icon: Icons.close,
+                              ),
+                            ),
+                          );
+                        }
                       },
                     )
                   : Container(
@@ -147,7 +158,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${getTitleForRuleset(loc)}:',
+                            getTitleForRuleset(loc),
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
