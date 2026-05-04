@@ -62,7 +62,7 @@ class ScoreListTile extends StatelessWidget {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(
-                    color: CustomTheme.textColor.withAlpha(100),
+                    color: CustomTheme.textColor.withAlpha(250),
                     width: 2,
                   ),
                 ),
