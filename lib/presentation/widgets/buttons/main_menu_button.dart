@@ -53,10 +53,11 @@ class _MainMenuButtonState extends State<MainMenuButton>
           _animationController.forward();
         },
         onTapUp: (_) async {
-          await _animationController.reverse();
           if (mounted) {
             widget.onPressed();
           }
+          await Future.delayed(const Duration(milliseconds: 100));
+          await _animationController.reverse();
         },
         onTapCancel: () {
           _animationController.reverse();
