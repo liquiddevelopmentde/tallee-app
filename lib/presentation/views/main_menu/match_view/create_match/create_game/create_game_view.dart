@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_popup/flutter_popup.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -9,8 +9,6 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game/choose_color_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game/choose_ruleset_view.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
@@ -54,6 +52,9 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   /// A list of available rulesets and their localized names.
   late List<(Ruleset, String)> _rulesets;
+
+  /// A list of available game colors and their localized names.
+  late List<(GameColor, String)> _colors;
 
   /// The currently selected color for the game.
   GameColor? selectedColor = GameColor.orange;
@@ -104,6 +105,16 @@ class _CreateGameViewState extends State<CreateGameView> {
         Ruleset.multipleWinners,
         translateRulesetToString(Ruleset.multipleWinners, context),
       ),
+    ];
+    _colors = [
+      (GameColor.green, translateGameColorToString(GameColor.green, context)),
+      (GameColor.teal, translateGameColorToString(GameColor.teal, context)),
+      (GameColor.blue, translateGameColorToString(GameColor.blue, context)),
+      (GameColor.purple, translateGameColorToString(GameColor.purple, context)),
+      (GameColor.pink, translateGameColorToString(GameColor.pink, context)),
+      (GameColor.red, translateGameColorToString(GameColor.red, context)),
+      (GameColor.orange, translateGameColorToString(GameColor.orange, context)),
+      (GameColor.yellow, translateGameColorToString(GameColor.yellow, context)),
     ];
 
     if (widget.gameToEdit != null) {
@@ -212,65 +223,192 @@ class _CreateGameViewState extends State<CreateGameView> {
               if (!isEditMode())
                 ChooseTile(
                   title: loc.ruleset,
-                  trailing: selectedRuleset == null
-                      ? Text(loc.none)
-                      : Text(
-                          translateRulesetToString(selectedRuleset!, context),
-                        ),
-                  onPressed: () async {
-                    final result = await Navigator.of(context).push<Ruleset?>(
-                      adaptivePageRoute(
-                        builder: (context) => ChooseRulesetView(
-                          rulesets: _rulesets,
-                          initialRulesetIndex: selectedRulesetIndex,
+                  trailing: CustomPopup(
+                    showArrow: true,
+                    arrowColor: CustomTheme.boxBorderColor,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 0,
+                      vertical: 10,
+                    ),
+                    barrierColor: Colors.transparent,
+                    contentDecoration: CustomTheme.standardBoxDecoration,
+                    content: StatefulBuilder(
+                      builder: (context, setPopupState) => SizedBox(
+                        width: 250,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(
+                            _rulesets.length,
+                            (index) => GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedRuleset = _rulesets[index].$1;
+                                });
+                                setPopupState(() {});
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(8),
+                                      ),
+                                      color:
+                                          selectedRuleset == _rulesets[index].$1
+                                          ? CustomTheme.textColor.withAlpha(20)
+                                          : Colors.transparent,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 8,
+                                        horizontal: 16,
+                                      ),
+                                      child: Row(
+                                        spacing: 8,
+                                        children: [
+                                          Text(
+                                            _rulesets[index].$2,
+                                            style: const TextStyle(
+                                              color: CustomTheme.textColor,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  if (index < _rulesets.length - 1)
+                                    const Divider(indent: 15, endIndent: 15),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    );
-                    if (mounted) {
-                      setState(() {
-                        selectedRuleset = result;
-                        selectedRulesetIndex = result == null
-                            ? -1
-                            : _rulesets.indexWhere((r) => r.$1 == result);
-                      });
-                    }
-                  },
+                    ),
+                    child: selectedRuleset == null
+                        ? Text(loc.none)
+                        : Text(
+                            translateRulesetToString(selectedRuleset!, context),
+                          ),
+                  ),
                 ),
 
               // Choose color tile
               ChooseTile(
                 title: loc.color,
-                trailing: selectedColor == null
-                    ? Text(loc.none)
-                    : Row(
-                        children: [
-                          Text(
-                            translateGameColorToString(selectedColor!, context),
-                          ),
-                          Container(
-                            width: 16,
-                            height: 16,
-                            margin: const EdgeInsets.only(left: 12),
-                            decoration: BoxDecoration(
-                              color: getColorFromGameColor(selectedColor!),
-                              shape: BoxShape.circle,
+                trailing: Row(
+                  spacing: 8,
+                  children: [
+                    // Selected Color
+                    Container(
+                      width: 16,
+                      height: 16,
+                      margin: const EdgeInsets.only(left: 12),
+                      decoration: BoxDecoration(
+                        color: getColorFromGameColor(selectedColor!),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+
+                    //Popup
+                    CustomPopup(
+                      showArrow: true,
+                      arrowColor: CustomTheme.boxBorderColor,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 0,
+                        vertical: 10,
+                      ),
+                      barrierColor: Colors.transparent,
+                      contentDecoration: CustomTheme.standardBoxDecoration,
+                      content: StatefulBuilder(
+                        builder: (context, setPopupState) => SizedBox(
+                          width: 150,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(
+                              _colors.length,
+                              (index) => GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedColor = _colors[index].$1;
+                                  });
+                                  setPopupState(() {});
+                                },
+                                child: Column(
+                                  children: [
+                                    // Selected Highlighting
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(8),
+                                        ),
+                                        color:
+                                            selectedColor == _colors[index].$1
+                                            ? CustomTheme.textColor.withAlpha(
+                                                20,
+                                              )
+                                            : Colors.transparent,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 6,
+                                        ),
+                                        child: Row(
+                                          spacing: 8,
+                                          children: selectedColor == null
+                                              ? [Text(loc.none)]
+                                              : [
+                                                  Container(
+                                                    width: 16,
+                                                    height: 16,
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                          left: 12,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          getColorFromGameColor(
+                                                            _colors[index].$1,
+                                                          ),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    _colors[index].$2,
+                                                    style: const TextStyle(
+                                                      color:
+                                                          CustomTheme.textColor,
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                ],
+                                        ),
+                                      ),
+                                    ),
+                                    if (index < _colors.length - 1)
+                                      const Divider(indent: 15, endIndent: 15),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                onPressed: () async {
-                  final result = await Navigator.of(context).push<GameColor?>(
-                    adaptivePageRoute(
-                      builder: (context) =>
-                          ChooseColorView(initialColor: selectedColor),
+                      child: Text(
+                        translateGameColorToString(selectedColor!, context),
+                      ),
                     ),
-                  );
-                  if (mounted) {
-                    setState(() {
-                      selectedColor = result;
-                    });
-                  }
-                },
+                  ],
+                ),
               ),
 
               // Description input field

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 
@@ -44,7 +46,12 @@ class _ChooseTileState extends State<ChooseTile> {
             const Spacer(),
             if (widget.trailing != null) widget.trailing!,
             const SizedBox(width: 10),
-            const Icon(Icons.arrow_forward_ios, size: 16),
+            widget.onPressed == null
+                ? Transform.rotate(
+                    angle: pi / 2,
+                    child: const Icon(Icons.arrow_forward_ios, size: 16),
+                  )
+                : const Icon(Icons.arrow_forward_ios, size: 16),
           ],
         ),
       ),
