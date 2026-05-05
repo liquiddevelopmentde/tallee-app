@@ -241,15 +241,15 @@ void main() {
         expect(matchExists, isTrue);
       });
 
-      test('getGroupMatches() works correctly', () async {
-        var matches = await database.matchDao.getGroupMatches(
+      test('getMatchesByGroup() works correctly', () async {
+        var matches = await database.matchDao.getMatchesByGroup(
           groupId: 'non-existing-id',
         );
 
         expect(matches, isEmpty);
 
         await database.matchDao.addMatch(match: testMatch1);
-        matches = await database.matchDao.getGroupMatches(
+        matches = await database.matchDao.getMatchesByGroup(
           groupId: testGroup1.id,
         );
         expect(matches, isNotEmpty);

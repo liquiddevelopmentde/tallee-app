@@ -354,7 +354,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
   /// Retrieves all matches associated with the given [groupId].
   /// Queries the database directly, filtering by [groupId].
-  Future<List<Match>> getGroupMatches({required String groupId}) async {
+  Future<List<Match>> getMatchesByGroup({required String groupId}) async {
     final query = select(matchTable)..where((m) => m.groupId.equals(groupId));
     final rows = await query.get();
 
