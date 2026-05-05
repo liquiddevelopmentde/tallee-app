@@ -23,7 +23,36 @@ class Player {
     return 'Player{id: $id, createdAt: $createdAt, name: $name, nameCount: $nameCount, description: $description}';
   }
 
-  /// Creates a Player instance from a JSON object.
+  Player copyWith({
+    String? id,
+    DateTime? createdAt,
+    String? name,
+    int? nameCount,
+    String? description,
+  }) {
+    return Player(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      name: name ?? this.name,
+      nameCount: nameCount ?? this.nameCount,
+      description: description ?? this.description,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Player &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          createdAt == other.createdAt &&
+          name == other.name &&
+          nameCount == other.nameCount &&
+          description == other.description;
+
+  @override
+  int get hashCode => Object.hash(id, createdAt, name, nameCount, description);
+
   Player.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       createdAt = DateTime.parse(json['createdAt']),
@@ -31,7 +60,6 @@ class Player {
       nameCount = 0,
       description = json['description'];
 
-  /// Converts the Player instance to a JSON object.
   Map<String, dynamic> toJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),

@@ -293,9 +293,9 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Handles saving or removing the loser in the database.
   Future<bool> _handleLoser() async {
     if (_selectedPlayer == null) {
-      return await db.scoreEntryDao.removeLooser(matchId: widget.match.id);
+      return await db.scoreEntryDao.removeLoser(matchId: widget.match.id);
     } else {
-      return await db.scoreEntryDao.setLooser(
+      return await db.scoreEntryDao.setLoser(
         matchId: widget.match.id,
         playerId: _selectedPlayer!.id,
       );
