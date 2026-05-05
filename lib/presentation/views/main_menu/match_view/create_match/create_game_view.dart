@@ -469,38 +469,32 @@ class _CreateGameViewState extends State<CreateGameView> {
     final oldGame = widget.gameToEdit!;
 
     if (oldGame.name != newGame.name) {
-      await db.gameDao.updateGameName(
-        gameId: oldGame.id,
-        newName: newGame.name,
-      );
+      await db.gameDao.updateGameName(gameId: oldGame.id, name: newGame.name);
     }
 
     if (oldGame.description != newGame.description) {
       await db.gameDao.updateGameDescription(
         gameId: oldGame.id,
-        newDescription: newGame.description,
+        description: newGame.description,
       );
     }
 
     if (oldGame.ruleset != newGame.ruleset) {
       await db.gameDao.updateGameRuleset(
         gameId: oldGame.id,
-        newRuleset: newGame.ruleset,
+        ruleset: newGame.ruleset,
       );
     }
 
     if (oldGame.color != newGame.color) {
       await db.gameDao.updateGameColor(
         gameId: oldGame.id,
-        newColor: newGame.color,
+        color: newGame.color,
       );
     }
 
     if (oldGame.icon != newGame.icon) {
-      await db.gameDao.updateGameIcon(
-        gameId: oldGame.id,
-        newIcon: newGame.icon,
-      );
+      await db.gameDao.updateGameIcon(gameId: oldGame.id, icon: newGame.icon);
     }
   }
 

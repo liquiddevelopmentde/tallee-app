@@ -295,13 +295,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       );
     }
 
-    if (widget.matchToEdit!.game.id != updatedMatch.game.id) {
-      await db.matchDao.updateMatchGame(
-        matchId: widget.matchToEdit!.id,
-        gameId: updatedMatch.game.id,
-      );
-    }
-
     // Add players who are in updatedMatch but not in the original match
     for (var player in updatedMatch.players) {
       if (!widget.matchToEdit!.players.any((p) => p.id == player.id)) {
