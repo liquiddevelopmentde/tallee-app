@@ -27,7 +27,43 @@ class Game {
     return 'Game{id: $id, name: $name, ruleset: $ruleset, description: $description, color: $color, icon: $icon}';
   }
 
-  /// Creates a Game instance from a JSON object.
+  Game copyWith({
+    String? id,
+    DateTime? createdAt,
+    String? name,
+    Ruleset? ruleset,
+    String? description,
+    GameColor? color,
+    String? icon,
+  }) {
+    return Game(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      name: name ?? this.name,
+      ruleset: ruleset ?? this.ruleset,
+      description: description ?? this.description,
+      color: color ?? this.color,
+      icon: icon ?? this.icon,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Game &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          createdAt == other.createdAt &&
+          name == other.name &&
+          ruleset == other.ruleset &&
+          description == other.description &&
+          color == other.color &&
+          icon == other.icon;
+
+  @override
+  int get hashCode =>
+      Object.hash(id, createdAt, name, ruleset, description, color, icon);
+
   Game.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       createdAt = DateTime.parse(json['createdAt']),
@@ -40,7 +76,6 @@ class Game {
       color = GameColor.values.firstWhere((e) => e.name == json['color']),
       icon = json['icon'];
 
-  /// Converts the Game instance to a JSON object.
   Map<String, dynamic> toJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),

@@ -1,13 +1,14 @@
 name: tallee
 description: "Tracking App for Card Games"
 publish_to: 'none'
-version: 0.0.23+257
+version: 0.0.24+258
 
 environment:
   sdk: ^3.8.1
 
 dependencies:
   clock: ^1.1.2
+  collection: ^1.19.1
   cupertino_icons: ^1.0.6
   drift: ^2.27.0
   drift_flutter: ^0.2.4

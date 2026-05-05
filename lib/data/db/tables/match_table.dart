@@ -12,7 +12,7 @@ class MatchTable extends Table {
       .references(GroupTable, #id, onDelete: KeyAction.setNull)
       .nullable()();
   TextColumn get name => text()();
-  TextColumn get notes => text().nullable()();
+  TextColumn get notes => text()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get endedAt => dateTime().nullable()();
 

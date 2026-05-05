@@ -1,17 +1,105 @@
 import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/db/tables/player_match_table.dart';
 import 'package:tallee/data/db/tables/team_table.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 
 part 'team_dao.g.dart';
 
-@DriftAccessor(tables: [TeamTable])
+@DriftAccessor(tables: [TeamTable, PlayerMatchTable])
 class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   TeamDao(super.db);
 
+  /* Create */
+
+  /// Adds a new [team] to the database.
+  /// Returns `true` if the team was added, `false` otherwise.
+  Future<bool> addTeam({required Team team, required String matchId}) async {
+    if (await teamExists(teamId: team.id)) return false;
+    await into(teamTable).insert(
+      TeamTableCompanion.insert(
+        id: team.id,
+        name: team.name,
+        createdAt: team.createdAt,
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
+    await db.batch((batch) async {
+      for (final player in team.members) {
+        await into(playerMatchTable).insert(
+          PlayerMatchTableCompanion.insert(
+            playerId: player.id,
+            matchId: matchId,
+            teamId: Value(team.id),
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
+      }
+    });
+    return true;
+  }
+
+  /// Adds multiple [teams] to the database in a batch operation.
+  Future<bool> addTeamsAsList({
+    required List<Team> teams,
+    required String matchId,
+  }) async {
+    if (teams.isEmpty) return false;
+
+    await db.batch(
+      (b) => b.insertAll(
+        teamTable,
+        teams
+            .map(
+              (team) => TeamTableCompanion.insert(
+                id: team.id,
+                name: team.name,
+                createdAt: team.createdAt,
+              ),
+            )
+            .toList(),
+        mode: InsertMode.insertOrIgnore,
+      ),
+    );
+
+    for (final team in teams) {
+      await db.batch((batch) async {
+        for (final player in team.members) {
+          await into(db.playerMatchTable).insert(
+            PlayerMatchTableCompanion.insert(
+              playerId: player.id,
+              matchId: matchId,
+              teamId: Value(team.id),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+      });
+    }
+    return true;
+  }
+
+  /* Read */
+
+  /// Retrieves the total count of teams in the database.
+  Future<int> getTeamCount() async {
+    final count =
+        await (selectOnly(teamTable)..addColumns([teamTable.id.count()]))
+            .map((row) => row.read(teamTable.id.count()))
+            .getSingle();
+    return count ?? 0;
+  }
+
+  /// Checks if a team with the given [teamId] exists in the database.
+  /// Returns `true` if the team exists, `false` otherwise.
+  Future<bool> teamExists({required String teamId}) async {
+    final query = select(teamTable)..where((t) => t.id.equals(teamId));
+    final result = await query.getSingleOrNull();
+    return result != null;
+  }
+
   /// Retrieves all teams from the database.
-  /// Note: This returns teams without their members. Use getTeamById for full team data.
   Future<List<Team>> getAllTeams() async {
     final query = select(teamTable);
     final result = await query.get();
@@ -41,8 +129,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     );
   }
 
-  /// Helper method to get team members from player_match_table.
-  /// This assumes team members are tracked via the player_match_table.
+  /// Helper method to get team members from PlayerMatchTable.
   Future<List<Player>> _getTeamMembers({required String teamId}) async {
     // Get all player_match entries with this teamId
     final playerMatchQuery = select(db.playerMatchTable)
@@ -61,85 +148,34 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     return players;
   }
 
-  /// Adds a new [team] to the database.
-  /// Returns `true` if the team was added, `false` otherwise.
-  Future<bool> addTeam({required Team team}) async {
-    if (!await teamExists(teamId: team.id)) {
-      await into(teamTable).insert(
-        TeamTableCompanion.insert(
-          id: team.id,
-          name: team.name,
-          createdAt: team.createdAt,
-        ),
-        mode: InsertMode.insertOrReplace,
-      );
-      return true;
-    }
-    return false;
+  /* Update */
+
+  /// Updates the name of the team with the given [teamId].
+  Future<bool> updateTeamName({
+    required String teamId,
+    required String name,
+  }) async {
+    final rowsAffected =
+        await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
+          TeamTableCompanion(name: Value(name)),
+        );
+    return rowsAffected > 0;
   }
 
-  /// Adds multiple [teams] to the database in a batch operation.
-  Future<bool> addTeamsAsList({required List<Team> teams}) async {
-    if (teams.isEmpty) return false;
+  /* Delete */
 
-    await db.batch(
-      (b) => b.insertAll(
-        teamTable,
-        teams
-            .map(
-              (team) => TeamTableCompanion.insert(
-                id: team.id,
-                name: team.name,
-                createdAt: team.createdAt,
-              ),
-            )
-            .toList(),
-        mode: InsertMode.insertOrIgnore,
-      ),
-    );
-
-    return true;
+  /// Deletes all teams from the database.
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> deleteAllTeams() async {
+    final query = delete(teamTable);
+    final rowsAffected = await query.go();
+    return rowsAffected > 0;
   }
 
   /// Deletes the team with the given [teamId] from the database.
   /// Returns `true` if the team was deleted, `false` otherwise.
   Future<bool> deleteTeam({required String teamId}) async {
     final query = delete(teamTable)..where((t) => t.id.equals(teamId));
-    final rowsAffected = await query.go();
-    return rowsAffected > 0;
-  }
-
-  /// Checks if a team with the given [teamId] exists in the database.
-  /// Returns `true` if the team exists, `false` otherwise.
-  Future<bool> teamExists({required String teamId}) async {
-    final query = select(teamTable)..where((t) => t.id.equals(teamId));
-    final result = await query.getSingleOrNull();
-    return result != null;
-  }
-
-  /// Updates the name of the team with the given [teamId].
-  Future<void> updateTeamName({
-    required String teamId,
-    required String newName,
-  }) async {
-    await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
-      TeamTableCompanion(name: Value(newName)),
-    );
-  }
-
-  /// Retrieves the total count of teams in the database.
-  Future<int> getTeamCount() async {
-    final count =
-        await (selectOnly(teamTable)..addColumns([teamTable.id.count()]))
-            .map((row) => row.read(teamTable.id.count()))
-            .getSingle();
-    return count ?? 0;
-  }
-
-  /// Deletes all teams from the database.
-  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
-  Future<bool> deleteAllTeams() async {
-    final query = delete(teamTable);
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
