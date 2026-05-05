@@ -1,4 +1,5 @@
 import 'package:clock/clock.dart';
+import 'package:collection/collection.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,6 +24,42 @@ class Group {
   String toString() {
     return 'Group{id: $id, name: $name, description: $description, members: $members}';
   }
+
+  Group copyWith({
+    String? id,
+    String? name,
+    String? description,
+    DateTime? createdAt,
+    List<Player>? members,
+  }) {
+    return Group(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
+      members: members ?? this.members,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Group &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          description == other.description &&
+          createdAt == other.createdAt &&
+          const DeepCollectionEquality().equals(members, other.members);
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    description,
+    createdAt,
+    const DeepCollectionEquality().hash(members),
+  );
 
   /// Creates a Group instance from a JSON object where the related [Player]
   /// objects are represented by their IDs.

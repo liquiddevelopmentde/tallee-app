@@ -1,4 +1,5 @@
 import 'package:clock/clock.dart';
+import 'package:collection/collection.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:uuid/uuid.dart';
 
@@ -21,16 +22,44 @@ class Team {
     return 'Team{id: $id, name: $name, members: $members}';
   }
 
-  /// Creates a Team instance from a JSON object (memberIds format).
-  /// Player objects are reconstructed from memberIds by the DataTransferService.
+  Team copyWith({
+    String? id,
+    String? name,
+    DateTime? createdAt,
+    List<Player>? members,
+  }) {
+    return Team(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      members: members ?? this.members,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Team &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          createdAt == other.createdAt &&
+          const DeepCollectionEquality().equals(members, other.members);
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    createdAt,
+    const DeepCollectionEquality().hash(members),
+  );
+
   Team.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       name = json['name'],
       createdAt = DateTime.parse(json['createdAt']),
       members = []; // Populated during import via DataTransferService
 
-  /// Converts the Team instance to a JSON object. Related objects are
-  /// represented by their IDs.
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,

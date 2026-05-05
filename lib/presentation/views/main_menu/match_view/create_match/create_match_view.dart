@@ -271,14 +271,14 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     if (widget.matchToEdit!.name != updatedMatch.name) {
       await db.matchDao.updateMatchName(
         matchId: widget.matchToEdit!.id,
-        newName: updatedMatch.name,
+        name: updatedMatch.name,
       );
     }
 
     if (widget.matchToEdit!.group?.id != updatedMatch.group?.id) {
       await db.matchDao.updateMatchGroup(
         matchId: widget.matchToEdit!.id,
-        newGroupId: updatedMatch.group?.id,
+        groupId: updatedMatch.group?.id,
       );
     }
 

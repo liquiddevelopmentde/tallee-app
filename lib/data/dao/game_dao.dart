@@ -10,39 +10,7 @@ part 'game_dao.g.dart';
 class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   GameDao(super.db);
 
-  /// Retrieves all games from the database.
-  Future<List<Game>> getAllGames() async {
-    final query = select(gameTable);
-    final result = await query.get();
-    return result
-        .map(
-          (row) => Game(
-            id: row.id,
-            name: row.name,
-            ruleset: Ruleset.values.firstWhere((e) => e.name == row.ruleset),
-            description: row.description,
-            color: GameColor.values.firstWhere((e) => e.name == row.color),
-            icon: row.icon,
-            createdAt: row.createdAt,
-          ),
-        )
-        .toList();
-  }
-
-  /// Retrieves a [Game] by its [gameId].
-  Future<Game> getGameById({required String gameId}) async {
-    final query = select(gameTable)..where((g) => g.id.equals(gameId));
-    final result = await query.getSingle();
-    return Game(
-      id: result.id,
-      name: result.name,
-      ruleset: Ruleset.values.firstWhere((e) => e.name == result.ruleset),
-      description: result.description,
-      color: GameColor.values.firstWhere((e) => e.name == result.color),
-      icon: result.icon,
-      createdAt: result.createdAt,
-    );
-  }
+  /* Create */
 
   /// Adds a new [game] to the database.
   /// If a game with the same ID already exists, no action is taken.
@@ -94,12 +62,15 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     return true;
   }
 
-  /// Deletes the game with the given [gameId] from the database.
-  /// Returns `true` if the game was deleted, `false` if the game did not exist.
-  Future<bool> deleteGame({required String gameId}) async {
-    final query = delete(gameTable)..where((g) => g.id.equals(gameId));
-    final rowsAffected = await query.go();
-    return rowsAffected > 0;
+  /* Read */
+
+  /// Retrieves the total count of games in the database.
+  Future<int> getGameCount() async {
+    final count =
+        await (selectOnly(gameTable)..addColumns([gameTable.id.count()]))
+            .map((row) => row.read(gameTable.id.count()))
+            .getSingle();
+    return count ?? 0;
   }
 
   /// Checks if a game with the given [gameId] exists in the database.
@@ -110,63 +81,110 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     return result != null;
   }
 
-  /// Updates the name of the game with the given [gameId] to [newName].
-  Future<void> updateGameName({
-    required String gameId,
-    required String newName,
-  }) async {
-    await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-      GameTableCompanion(name: Value(newName)),
+  /// Retrieves all games from the database.
+  Future<List<Game>> getAllGames() async {
+    final query = select(gameTable);
+    final result = await query.get();
+    return result
+        .map(
+          (row) => Game(
+            id: row.id,
+            name: row.name,
+            ruleset: Ruleset.values.firstWhere((e) => e.name == row.ruleset),
+            description: row.description,
+            color: GameColor.values.firstWhere((e) => e.name == row.color),
+            icon: row.icon,
+            createdAt: row.createdAt,
+          ),
+        )
+        .toList();
+  }
+
+  /// Retrieves a [Game] by its [gameId].
+  Future<Game> getGameById({required String gameId}) async {
+    final query = select(gameTable)..where((g) => g.id.equals(gameId));
+    final result = await query.getSingle();
+    return Game(
+      id: result.id,
+      name: result.name,
+      ruleset: Ruleset.values.firstWhere((e) => e.name == result.ruleset),
+      description: result.description,
+      color: GameColor.values.firstWhere((e) => e.name == result.color),
+      icon: result.icon,
+      createdAt: result.createdAt,
     );
+  }
+
+  /* Update */
+
+  /// Updates the name of the game with the given [gameId] to [name].
+  Future<bool> updateGameName({
+    required String gameId,
+    required String name,
+  }) async {
+    final rowsAffected =
+        await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
+          GameTableCompanion(name: Value(name)),
+        );
+    return rowsAffected > 0;
   }
 
   /// Updates the ruleset of the game with the given [gameId].
-  Future<void> updateGameRuleset({
+  Future<bool> updateGameRuleset({
     required String gameId,
-    required Ruleset newRuleset,
+    required Ruleset ruleset,
   }) async {
-    await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-      GameTableCompanion(ruleset: Value(newRuleset.name)),
-    );
+    final rowsAffected =
+        await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
+          GameTableCompanion(ruleset: Value(ruleset.name)),
+        );
+    return rowsAffected > 0;
   }
 
   /// Updates the description of the game with the given [gameId].
-  Future<void> updateGameDescription({
+  Future<bool> updateGameDescription({
     required String gameId,
-    required String newDescription,
+    required String description,
   }) async {
-    await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-      GameTableCompanion(description: Value(newDescription)),
-    );
+    final rowsAffected =
+        await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
+          GameTableCompanion(description: Value(description)),
+        );
+    return rowsAffected > 0;
   }
 
   /// Updates the color of the game with the given [gameId].
-  Future<void> updateGameColor({
+  Future<bool> updateGameColor({
     required String gameId,
-    required GameColor newColor,
+    required GameColor color,
   }) async {
-    await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-      GameTableCompanion(color: Value(newColor.name)),
-    );
+    final rowsAffected =
+        await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
+          GameTableCompanion(color: Value(color.name)),
+        );
+    return rowsAffected > 0;
   }
 
   /// Updates the icon of the game with the given [gameId].
-  Future<void> updateGameIcon({
+  Future<bool> updateGameIcon({
     required String gameId,
-    required String newIcon,
+    required String icon,
   }) async {
-    await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
-      GameTableCompanion(icon: Value(newIcon)),
-    );
+    final rowsAffected =
+        await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
+          GameTableCompanion(icon: Value(icon)),
+        );
+    return rowsAffected > 0;
   }
 
-  /// Retrieves the total count of games in the database.
-  Future<int> getGameCount() async {
-    final count =
-        await (selectOnly(gameTable)..addColumns([gameTable.id.count()]))
-            .map((row) => row.read(gameTable.id.count()))
-            .getSingle();
-    return count ?? 0;
+  /* Delete */
+
+  /// Deletes the game with the given [gameId] from the database.
+  /// Returns `true` if the game was deleted, `false` if the game did not exist.
+  Future<bool> deleteGame({required String gameId}) async {
+    final query = delete(gameTable)..where((g) => g.id.equals(gameId));
+    final rowsAffected = await query.go();
+    return rowsAffected > 0;
   }
 
   /// Deletes all games from the database.

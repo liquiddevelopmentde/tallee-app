@@ -10,35 +10,7 @@ part 'player_dao.g.dart';
 class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   PlayerDao(super.db);
 
-  /// Retrieves all players from the database.
-  Future<List<Player>> getAllPlayers() async {
-    final query = select(playerTable);
-    final result = await query.get();
-    return result
-        .map(
-          (row) => Player(
-            id: row.id,
-            name: row.name,
-            description: row.description,
-            createdAt: row.createdAt,
-            nameCount: row.nameCount,
-          ),
-        )
-        .toList();
-  }
-
-  /// Retrieves a [Player] by their [id].
-  Future<Player> getPlayerById({required String playerId}) async {
-    final query = select(playerTable)..where((p) => p.id.equals(playerId));
-    final result = await query.getSingle();
-    return Player(
-      id: result.id,
-      name: result.name,
-      description: result.description,
-      createdAt: result.createdAt,
-      nameCount: result.nameCount,
-    );
-  }
+  /* Create */
 
   /// Adds a new [player] to the database.
   /// If a player with the same ID already exists, updates their name to
@@ -135,12 +107,15 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return true;
   }
 
-  /// Deletes the player with the given [id] from the database.
-  /// Returns `true` if the player was deleted, `false` if the player did not exist.
-  Future<bool> deletePlayer({required String playerId}) async {
-    final query = delete(playerTable)..where((p) => p.id.equals(playerId));
-    final rowsAffected = await query.go();
-    return rowsAffected > 0;
+  /* Read */
+
+  /// Retrieves the total count of players in the database.
+  Future<int> getPlayerCount() async {
+    final count =
+        await (selectOnly(playerTable)..addColumns([playerTable.id.count()]))
+            .map((row) => row.read(playerTable.id.count()))
+            .getSingle();
+    return count ?? 0;
   }
 
   /// Checks if a player with the given [playerId] exists in the database.
@@ -151,10 +126,42 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return result != null;
   }
 
-  /// Updates the name of the player with the given [playerId] to [newName].
-  Future<void> updatePlayerName({
+  /// Retrieves all players from the database.
+  Future<List<Player>> getAllPlayers() async {
+    final query = select(playerTable);
+    final result = await query.get();
+    return result
+        .map(
+          (row) => Player(
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            createdAt: row.createdAt,
+            nameCount: row.nameCount,
+          ),
+        )
+        .toList();
+  }
+
+  /// Retrieves a [Player] by their [id].
+  Future<Player> getPlayerById({required String playerId}) async {
+    final query = select(playerTable)..where((p) => p.id.equals(playerId));
+    final result = await query.getSingle();
+    return Player(
+      id: result.id,
+      name: result.name,
+      description: result.description,
+      createdAt: result.createdAt,
+      nameCount: result.nameCount,
+    );
+  }
+
+  /* Update */
+
+  /// Updates the name of the player with the given [playerId] to [name].
+  Future<bool> updatePlayerName({
     required String playerId,
-    required String newName,
+    required String name,
   }) async {
     // Get previous name and name count for the player before updating
     final previousPlayerName =
@@ -164,14 +171,15 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
         '';
     final previousNameCount = await getNameCount(name: previousPlayerName);
 
-    await (update(playerTable)..where((p) => p.id.equals(playerId))).write(
-      PlayerTableCompanion(name: Value(newName)),
-    );
+    final rowsAffected =
+        await (update(playerTable)..where((p) => p.id.equals(playerId))).write(
+          PlayerTableCompanion(name: Value(name)),
+        );
 
     // Update name count for the new name
-    final count = await calculateNameCount(name: newName);
+    final count = await calculateNameCount(name: name);
     if (count > 0) {
-      await (update(playerTable)..where((p) => p.name.equals(newName))).write(
+      await (update(playerTable)..where((p) => p.name.equals(name))).write(
         PlayerTableCompanion(nameCount: Value(count)),
       );
     }
@@ -188,16 +196,34 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
         );
       }
     }
+    return rowsAffected > 0;
   }
 
-  /// Retrieves the total count of players in the database.
-  Future<int> getPlayerCount() async {
-    final count =
-        await (selectOnly(playerTable)..addColumns([playerTable.id.count()]))
-            .map((row) => row.read(playerTable.id.count()))
-            .getSingle();
-    return count ?? 0;
+  /// Updates the description of the player with the given [playerId] to
+  /// [description].
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> updatePlayerDescription({
+    required String playerId,
+    required String description,
+  }) async {
+    final rowsAffected =
+        await (update(playerTable)..where((g) => g.id.equals(playerId))).write(
+          PlayerTableCompanion(description: Value(description)),
+        );
+    return rowsAffected > 0;
   }
+
+  /* Delete */
+
+  /// Deletes the player with the given [id] from the database.
+  /// Returns `true` if the player was deleted, `false` if the player did not exist.
+  Future<bool> deletePlayer({required String playerId}) async {
+    final query = delete(playerTable)..where((p) => p.id.equals(playerId));
+    final rowsAffected = await query.go();
+    return rowsAffected > 0;
+  }
+
+  /* Name count management */
 
   /// Retrieves the count of players with the given [name].
   Future<int> getNameCount({required String name}) async {

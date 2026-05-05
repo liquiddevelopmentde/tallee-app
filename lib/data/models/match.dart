@@ -1,9 +1,11 @@
 import 'package:clock/clock.dart';
+import 'package:collection/collection.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/team.dart';
 import 'package:uuid/uuid.dart';
 
 class Match {
@@ -14,6 +16,7 @@ class Match {
   final Game game;
   final Group? group;
   final List<Player> players;
+  final List<Team>? teams;
   final String notes;
   Map<String, ScoreEntry?> scores;
 
@@ -23,6 +26,7 @@ class Match {
     required this.players,
     this.endedAt,
     this.group,
+    this.teams,
     this.notes = '',
     String? id,
     DateTime? createdAt,
@@ -36,9 +40,62 @@ class Match {
     return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, notes: $notes, scores: $scores, mvp: $mvp}';
   }
 
-  /// Creates a Match instance from a JSON object where related objects are
-  /// represented by their IDs. Therefore, the game, group, and players are not
-  /// fully constructed here.
+  Match copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? endedAt,
+    String? name,
+    Game? game,
+    Group? group,
+    List<Player>? players,
+    List<Team>? teams,
+    String? notes,
+    Map<String, ScoreEntry?>? scores,
+  }) {
+    return Match(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      endedAt: endedAt ?? this.endedAt,
+      name: name ?? this.name,
+      game: game ?? this.game,
+      group: group ?? this.group,
+      players: players ?? this.players,
+      teams: teams ?? this.teams,
+      notes: notes ?? this.notes,
+      scores: scores ?? this.scores,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Match &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          createdAt == other.createdAt &&
+          endedAt == other.endedAt &&
+          name == other.name &&
+          game == other.game &&
+          group == other.group &&
+          const DeepCollectionEquality().equals(players, other.players) &&
+          const DeepCollectionEquality().equals(teams, other.teams) &&
+          notes == other.notes &&
+          const DeepCollectionEquality().equals(scores, other.scores);
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    endedAt,
+    name,
+    game,
+    group,
+    const DeepCollectionEquality().hash(players),
+    const DeepCollectionEquality().hash(teams),
+    notes,
+    const DeepCollectionEquality().hash(scores),
+  );
+
   Match.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       createdAt = DateTime.parse(json['createdAt']),
@@ -55,6 +112,7 @@ class Match {
       ),
       group = null,
       players = [],
+      teams = [],
       scores = json['scores'] != null
           ? (json['scores'] as Map<String, dynamic>).map(
               (key, value) => MapEntry(
@@ -67,9 +125,6 @@ class Match {
           : {},
       notes = json['notes'] ?? '';
 
-  /// Converts the Match instance to a JSON object. Related objects are
-  /// represented by their IDs, so the game, group, and players are not fully
-  /// serialized here.
   Map<String, dynamic> toJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),
@@ -78,6 +133,7 @@ class Match {
     'gameId': game.id,
     'groupId': group?.id,
     'playerIds': players.map((player) => player.id).toList(),
+    'teams': teams?.map((team) => team.toJson()).toList(),
     'scores': scores.map((key, value) => MapEntry(key, value?.toJson())),
     'notes': notes,
   };
