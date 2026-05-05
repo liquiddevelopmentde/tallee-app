@@ -205,7 +205,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             match: match,
                             onWinnerChanged: () {
                               widget.onMatchUpdate.call();
-                              setState(() {});
+                              setState(() {
+                                updateScoresForCurrentMatch();
+                              });
                             },
                           ),
                         ),
@@ -332,5 +334,11 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   bool isSingleRowResult() {
     return match.game.ruleset == Ruleset.singleWinner ||
         match.game.ruleset == Ruleset.singleLoser;
+  }
+
+  void updateScoresForCurrentMatch() {
+    db.scoreEntryDao
+        .getAllMatchScores(matchId: match.id)
+        .then((scores) => match.scores = scores);
   }
 }
