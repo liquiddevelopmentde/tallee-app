@@ -3,7 +3,6 @@ import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
-import 'package:tallee/presentation/views/main_menu/home_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view.dart';
@@ -31,7 +30,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     final loc = AppLocalizations.of(context);
     // Pretty ugly but works
     final List<Widget> tabs = [
-      KeyedSubtree(key: ValueKey('home_$tabKeyCount'), child: const HomeView()),
       KeyedSubtree(
         key: ValueKey('matches_$tabKeyCount'),
         child: const MatchView(),
@@ -101,27 +99,20 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               NavbarItem(
                 index: 0,
                 isSelected: currentIndex == 0,
-                icon: Icons.home_rounded,
-                label: loc.home,
-                onTabTapped: onTabTapped,
-              ),
-              NavbarItem(
-                index: 1,
-                isSelected: currentIndex == 1,
                 icon: Icons.gamepad_rounded,
                 label: loc.matches,
                 onTabTapped: onTabTapped,
               ),
               NavbarItem(
-                index: 2,
-                isSelected: currentIndex == 2,
+                index: 1,
+                isSelected: currentIndex == 1,
                 icon: Icons.group_rounded,
                 label: loc.groups,
                 onTabTapped: onTabTapped,
               ),
               NavbarItem(
-                index: 3,
-                isSelected: currentIndex == 3,
+                index: 2,
+                isSelected: currentIndex == 2,
                 icon: Icons.bar_chart_rounded,
                 label: loc.statistics,
                 onTabTapped: onTabTapped,
