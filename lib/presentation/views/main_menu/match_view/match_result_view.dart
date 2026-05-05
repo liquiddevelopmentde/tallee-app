@@ -91,6 +91,7 @@ class _MatchResultViewState extends State<MatchResultView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: !isLiveEditMode,
         leading: !isLiveEditMode
             ? IconButton(
                 icon: const Icon(Icons.close),
@@ -209,7 +210,7 @@ class _MatchResultViewState extends State<MatchResultView> {
               // Button to switch to live edit mode
               ...[
                 CustomWidthButton(
-                  text: 'Live-Edit Modus',
+                  text: loc.live_edit_mode,
                   sizeRelativeToWidth: 0.95,
                   buttonType: ButtonType.secondary,
                   onPressed: () => setState(() {
@@ -238,7 +239,7 @@ class _MatchResultViewState extends State<MatchResultView> {
               ),
             ] else ...[
               CustomWidthButton(
-                text: 'Ansicht verlassen',
+                text: loc.exit_view,
                 sizeRelativeToWidth: 0.95,
                 onPressed: () => setState(() {
                   isLiveEditMode = false;
