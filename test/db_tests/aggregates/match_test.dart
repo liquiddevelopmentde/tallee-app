@@ -259,6 +259,57 @@ void main() {
         expect(match.group, isNotNull);
         expect(match.group!.id, testGroup1.id);
       });
+
+      test('getMatchCount() works correctly', () async {
+        var matchCount = await database.matchDao.getMatchCount();
+        expect(matchCount, 0);
+
+        await database.matchDao.addMatch(match: testMatch1);
+
+        matchCount = await database.matchDao.getMatchCount();
+        expect(matchCount, 1);
+
+        await database.matchDao.addMatch(match: testMatch2);
+
+        matchCount = await database.matchDao.getMatchCount();
+        expect(matchCount, 2);
+
+        await database.matchDao.deleteMatch(matchId: testMatch1.id);
+
+        matchCount = await database.matchDao.getMatchCount();
+        expect(matchCount, 1);
+
+        await database.matchDao.deleteMatch(matchId: testMatch2.id);
+
+        matchCount = await database.matchDao.getMatchCount();
+        expect(matchCount, 0);
+      });
+
+      test('getMatchCountByGame() works correctly', () async {
+        var count = await database.matchDao.getMatchCountByGame(
+          gameId: testGame.id,
+        );
+        expect(count, 0);
+
+        await database.matchDao.addMatch(match: testMatch1);
+        count = await database.matchDao.getMatchCountByGame(
+          gameId: testGame.id,
+        );
+        expect(count, 1);
+
+        await database.matchDao.addMatch(match: testMatch2);
+        count = await database.matchDao.getMatchCountByGame(
+          gameId: testGame.id,
+        );
+        expect(count, 2);
+      });
+
+      test('getMatchCountByGame() returns 0 for non-existent game', () async {
+        final count = await database.matchDao.getMatchCountByGame(
+          gameId: 'non-existent-game-id',
+        );
+        expect(count, 0);
+      });
     });
 
     group('UPDATE', () {
@@ -408,31 +459,6 @@ void main() {
         final allMatches = await database.matchDao.getAllMatches();
         expect(allMatches, isEmpty);
       });
-
-      test('Getting the match count works correctly', () async {
-        var matchCount = await database.matchDao.getMatchCount();
-        expect(matchCount, 0);
-
-        await database.matchDao.addMatch(match: testMatch1);
-
-        matchCount = await database.matchDao.getMatchCount();
-        expect(matchCount, 1);
-
-        await database.matchDao.addMatch(match: testMatch2);
-
-        matchCount = await database.matchDao.getMatchCount();
-        expect(matchCount, 2);
-
-        await database.matchDao.deleteMatch(matchId: testMatch1.id);
-
-        matchCount = await database.matchDao.getMatchCount();
-        expect(matchCount, 1);
-
-        await database.matchDao.deleteMatch(matchId: testMatch2.id);
-
-        matchCount = await database.matchDao.getMatchCount();
-        expect(matchCount, 0);
-      });
     });
 
     group('DELETE', () {
@@ -470,28 +496,6 @@ void main() {
         deleted = await database.matchDao.deleteAllMatches();
         expect(deleted, isFalse);
       });
-    });
-
-    test('getMatchCountByGame() works correctly', () async {
-      var count = await database.matchDao.getMatchCountByGame(
-        gameId: testGame.id,
-      );
-      expect(count, 0);
-
-      await database.matchDao.addMatch(match: testMatch1);
-      count = await database.matchDao.getMatchCountByGame(gameId: testGame.id);
-      expect(count, 1);
-
-      await database.matchDao.addMatch(match: testMatch2);
-      count = await database.matchDao.getMatchCountByGame(gameId: testGame.id);
-      expect(count, 2);
-    });
-
-    test('getMatchCountByGame() returns 0 for non-existent game', () async {
-      final count = await database.matchDao.getMatchCountByGame(
-        gameId: 'non-existent-game-id',
-      );
-      expect(count, 0);
     });
 
     test('deleteMatchesByGame() deletes all matches for a game', () async {
