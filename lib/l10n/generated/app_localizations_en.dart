@@ -112,6 +112,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_reading_file => 'Error reading file';
 
   @override
+  String get exit_view => 'Exit View';
+
+  @override
   String get export_canceled => 'Export canceled';
 
   @override
@@ -164,6 +167,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenses => 'Licenses';
+
+  @override
+  String get live_edit_mode => 'Live Edit Mode';
 
   @override
   String get match_in_progress => 'Match in progress...';

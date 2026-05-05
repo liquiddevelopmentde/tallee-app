@@ -112,6 +112,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get error_reading_file => 'Fehler beim Lesen der Datei';
 
   @override
+  String get exit_view => 'Ansicht verlassen';
+
+  @override
   String get export_canceled => 'Export abgebrochen';
 
   @override
@@ -164,6 +167,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get licenses => 'Lizenzen';
+
+  @override
+  String get live_edit_mode => 'Live-Bearbeitungsmodus';
 
   @override
   String get match_in_progress => 'Spiel läuft...';
