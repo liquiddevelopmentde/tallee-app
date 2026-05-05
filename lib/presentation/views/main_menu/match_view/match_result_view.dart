@@ -41,6 +41,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// List of text controllers for score entry, one for each player
   late final List<TextEditingController> controller;
 
+  /// Flag to indicate if the save button should be enabled
   late bool canSave;
 
   /// Currently selected winner player
@@ -60,6 +61,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       (index) => TextEditingController()..addListener(() => onTextEnter()),
     );
 
+    // Prefill fields
     if (widget.match.mvp.isNotEmpty) {
       if (rulesetSupportsWinnerSelection()) {
         _selectedPlayer = allPlayers.firstWhere(
