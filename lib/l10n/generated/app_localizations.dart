@@ -98,67 +98,67 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
-  /// Label for all players list
+  /// No description provided for @all_players.
   ///
   /// In en, this message translates to:
   /// **'All players'**
   String get all_players;
 
-  /// Message when all players are added to selection
+  /// No description provided for @all_players_selected.
   ///
   /// In en, this message translates to:
   /// **'All players selected'**
   String get all_players_selected;
 
-  /// Label for amount of matches statistic
+  /// No description provided for @amount_of_matches.
   ///
   /// In en, this message translates to:
   /// **'Amount of Matches'**
   String get amount_of_matches;
 
-  /// The name of the App
+  /// No description provided for @app_name.
   ///
   /// In en, this message translates to:
   /// **'Tallee'**
   String get app_name;
 
-  /// Label for best player statistic
+  /// No description provided for @best_player.
   ///
   /// In en, this message translates to:
   /// **'Best Player'**
   String get best_player;
 
-  /// Cancel button text
+  /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
 
-  /// Label for choosing a color
+  /// No description provided for @choose_color.
   ///
   /// In en, this message translates to:
   /// **'Choose Color'**
   String get choose_color;
 
-  /// Label for choosing a game
+  /// No description provided for @choose_game.
   ///
   /// In en, this message translates to:
   /// **'Choose Game'**
   String get choose_game;
 
-  /// Label for choosing a group
+  /// No description provided for @choose_group.
   ///
   /// In en, this message translates to:
   /// **'Choose Group'**
   String get choose_group;
 
-  /// Label for choosing a ruleset
+  /// No description provided for @choose_ruleset.
   ///
   /// In en, this message translates to:
   /// **'Choose Ruleset'**
   String get choose_ruleset;
 
-  /// Color label
+  /// No description provided for @color.
   ///
   /// In en, this message translates to:
   /// **'Color'**
@@ -212,91 +212,91 @@ abstract class AppLocalizations {
   /// **'Yellow'**
   String get color_yellow;
 
-  /// Error message when adding a player fails
+  /// No description provided for @could_not_add_player.
   ///
   /// In en, this message translates to:
   /// **'Could not add player'**
   String could_not_add_player(Object playerName);
 
-  /// Button text to create a game
+  /// No description provided for @create_game.
   ///
   /// In en, this message translates to:
   /// **'Create Game'**
   String get create_game;
 
-  /// Button text to create a group
+  /// No description provided for @create_group.
   ///
   /// In en, this message translates to:
   /// **'Create Group'**
   String get create_group;
 
-  /// Button text to create a match
+  /// No description provided for @create_match.
   ///
   /// In en, this message translates to:
   /// **'Create match'**
   String get create_match;
 
-  /// Appbar text to create a new group
+  /// No description provided for @create_new_group.
   ///
   /// In en, this message translates to:
   /// **'Create new group'**
   String get create_new_group;
 
-  /// Label for creation date
+  /// No description provided for @created_on.
   ///
   /// In en, this message translates to:
   /// **'Created on'**
   String get created_on;
 
-  /// Appbar text to create a new match
+  /// No description provided for @create_new_match.
   ///
   /// In en, this message translates to:
   /// **'Create new match'**
   String get create_new_match;
 
-  /// Data label
+  /// No description provided for @data.
   ///
   /// In en, this message translates to:
   /// **'Data'**
   String get data;
 
-  /// Success message after deleting data
+  /// No description provided for @data_successfully_deleted.
   ///
   /// In en, this message translates to:
   /// **'Data successfully deleted'**
   String get data_successfully_deleted;
 
-  /// Success message after exporting data
+  /// No description provided for @data_successfully_exported.
   ///
   /// In en, this message translates to:
   /// **'Data successfully exported'**
   String get data_successfully_exported;
 
-  /// Success message after importing data
+  /// No description provided for @data_successfully_imported.
   ///
   /// In en, this message translates to:
   /// **'Data successfully imported'**
   String get data_successfully_imported;
 
-  /// Date format for days ago
+  /// No description provided for @days_ago.
   ///
   /// In en, this message translates to:
   /// **'{count} days ago'**
-  String days_ago(int count);
+  String days_ago(Object count);
 
-  /// Delete button text
+  /// No description provided for @delete.
   ///
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
 
-  /// Confirmation dialog for deleting all data
+  /// No description provided for @delete_all_data.
   ///
   /// In en, this message translates to:
   /// **'Delete all data'**
   String get delete_all_data;
 
-  /// Button text to delete a game
+  /// No description provided for @delete_game.
   ///
   /// In en, this message translates to:
   /// **'Delete Game'**
@@ -308,341 +308,335 @@ abstract class AppLocalizations {
   /// **'If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.'**
   String delete_game_with_matches_warning(int count);
 
-  /// Confirmation dialog for deleting a group
+  /// No description provided for @delete_group.
   ///
   /// In en, this message translates to:
   /// **'Delete Group'**
   String get delete_group;
 
-  /// Button text to delete a match
+  /// No description provided for @delete_match.
   ///
   /// In en, this message translates to:
   /// **'Delete Match'**
   String get delete_match;
 
-  /// Description label
+  /// No description provided for @description.
   ///
   /// In en, this message translates to:
   /// **'Description'**
   String get description;
 
-  /// Button text to edit a game
+  /// No description provided for @edit_game.
   ///
   /// In en, this message translates to:
   /// **'Edit Game'**
   String get edit_game;
 
-  /// Button & Appbar label for editing a group
+  /// No description provided for @edit_group.
   ///
   /// In en, this message translates to:
   /// **'Edit Group'**
   String get edit_group;
 
-  /// Button & Appbar label for editing a match
+  /// No description provided for @edit_match.
   ///
   /// In en, this message translates to:
   /// **'Edit Match'**
   String get edit_match;
 
-  /// Label to enter players points
+  /// No description provided for @enter_points.
   ///
   /// In en, this message translates to:
   /// **'Enter points'**
   String get enter_points;
 
-  /// Button text to enter match results
+  /// No description provided for @enter_results.
   ///
   /// In en, this message translates to:
   /// **'Enter Results'**
   String get enter_results;
 
-  /// Error message when group creation fails
+  /// No description provided for @error_creating_group.
   ///
   /// In en, this message translates to:
   /// **'Error while creating group, please try again'**
   String get error_creating_group;
 
-  /// Error message when game deletion fails
+  /// No description provided for @error_deleting_game.
   ///
   /// In en, this message translates to:
   /// **'Error while deleting game, please try again'**
   String get error_deleting_game;
 
-  /// Error message when group deletion fails
+  /// No description provided for @error_deleting_group.
   ///
   /// In en, this message translates to:
   /// **'Error while deleting group, please try again'**
   String get error_deleting_group;
 
-  /// Error message when group editing fails
+  /// No description provided for @error_editing_group.
   ///
   /// In en, this message translates to:
   /// **'Error while editing group, please try again'**
   String get error_editing_group;
 
-  /// Error message when file cannot be read
+  /// No description provided for @error_reading_file.
   ///
   /// In en, this message translates to:
   /// **'Error reading file'**
   String get error_reading_file;
 
-  /// Message when export is canceled
+  /// No description provided for @export_canceled.
   ///
   /// In en, this message translates to:
   /// **'Export canceled'**
   String get export_canceled;
 
-  /// Export data menu item
+  /// No description provided for @export_data.
   ///
   /// In en, this message translates to:
   /// **'Export data'**
   String get export_data;
 
-  /// Error message for format exceptions
+  /// No description provided for @format_exception.
   ///
   /// In en, this message translates to:
   /// **'Format Exception (see console)'**
   String get format_exception;
 
-  /// Game label
+  /// No description provided for @game.
   ///
   /// In en, this message translates to:
   /// **'Game'**
   String get game;
 
-  /// Placeholder for game name search
+  /// No description provided for @game_name.
   ///
   /// In en, this message translates to:
   /// **'Game Name'**
   String get game_name;
 
-  /// Group label
+  /// No description provided for @group.
   ///
   /// In en, this message translates to:
   /// **'Group'**
   String get group;
 
-  /// Placeholder for group name input
+  /// No description provided for @group_name.
   ///
   /// In en, this message translates to:
   /// **'Group name'**
   String get group_name;
 
-  /// Title for group profile view
+  /// No description provided for @group_profile.
   ///
   /// In en, this message translates to:
   /// **'Group Profile'**
   String get group_profile;
 
-  /// Label for groups
+  /// No description provided for @groups.
   ///
   /// In en, this message translates to:
   /// **'Groups'**
   String get groups;
 
-  /// Home tab label
+  /// No description provided for @home.
   ///
   /// In en, this message translates to:
   /// **'Home'**
   String get home;
 
-  /// Message when import is canceled
+  /// No description provided for @import_canceled.
   ///
   /// In en, this message translates to:
   /// **'Import canceled'**
   String get import_canceled;
 
-  /// Import data menu item
+  /// No description provided for @import_data.
   ///
   /// In en, this message translates to:
   /// **'Import data'**
   String get import_data;
 
-  /// Info label
+  /// No description provided for @info.
   ///
   /// In en, this message translates to:
   /// **'Info'**
   String get info;
 
-  /// Error message for invalid schema
+  /// No description provided for @invalid_schema.
   ///
   /// In en, this message translates to:
   /// **'Invalid Schema'**
   String get invalid_schema;
 
-  /// Title for least points ruleset
+  /// No description provided for @least_points.
   ///
   /// In en, this message translates to:
   /// **'Least Points'**
   String get least_points;
 
-  /// Legal section header
+  /// No description provided for @legal.
   ///
   /// In en, this message translates to:
   /// **'Legal'**
   String get legal;
 
-  /// Legal notice menu item
+  /// No description provided for @legal_notice.
   ///
   /// In en, this message translates to:
   /// **'Legal Notice'**
   String get legal_notice;
 
-  /// Licenses menu item
+  /// No description provided for @licenses.
   ///
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
 
-  /// Message when match is in progress
+  /// No description provided for @match_in_progress.
   ///
   /// In en, this message translates to:
   /// **'Match in progress...'**
   String get match_in_progress;
 
-  /// Placeholder for match name input
+  /// No description provided for @match_name.
   ///
   /// In en, this message translates to:
   /// **'Match name'**
   String get match_name;
 
-  /// Title for match profile view
+  /// No description provided for @match_profile.
   ///
   /// In en, this message translates to:
   /// **'Match Profile'**
   String get match_profile;
 
-  /// Label for matches
+  /// No description provided for @matches.
   ///
   /// In en, this message translates to:
   /// **'Matches'**
   String get matches;
 
-  /// Label for group members
+  /// No description provided for @members.
   ///
   /// In en, this message translates to:
   /// **'Members'**
   String get members;
 
-  /// Title for most points ruleset
+  /// No description provided for @most_points.
   ///
   /// In en, this message translates to:
   /// **'Most Points'**
   String get most_points;
 
-  /// Message when no data in the statistic tiles is given
+  /// No description provided for @no_data_available.
   ///
   /// In en, this message translates to:
   /// **'No data available'**
   String get no_data_available;
 
-  /// Message when no groups exist
+  /// No description provided for @no_groups_created_yet.
   ///
   /// In en, this message translates to:
   /// **'No groups created yet'**
   String get no_groups_created_yet;
 
-  /// Message when no licenses are found
+  /// No description provided for @no_licenses_found.
   ///
   /// In en, this message translates to:
   /// **'No licenses found'**
   String get no_licenses_found;
 
-  /// Message when no license text is available
+  /// No description provided for @no_license_text_available.
   ///
   /// In en, this message translates to:
   /// **'No license text available'**
   String get no_license_text_available;
 
-  /// Message when no matches exist
+  /// No description provided for @no_matches_created_yet.
   ///
   /// In en, this message translates to:
   /// **'No matches created yet'**
   String get no_matches_created_yet;
 
-  /// Message when no players exist
+  /// No description provided for @no_players_created_yet.
   ///
   /// In en, this message translates to:
   /// **'No players created yet'**
   String get no_players_created_yet;
 
-  /// Message when search returns no results
+  /// No description provided for @no_players_found_with_that_name.
   ///
   /// In en, this message translates to:
   /// **'No players found with that name'**
   String get no_players_found_with_that_name;
 
-  /// Message when no players are selected
+  /// No description provided for @no_players_selected.
   ///
   /// In en, this message translates to:
   /// **'No players selected'**
   String get no_players_selected;
 
-  /// Message when no recent matches exist
+  /// No description provided for @no_recent_matches_available.
   ///
   /// In en, this message translates to:
   /// **'No recent matches available'**
   String get no_recent_matches_available;
 
-  /// Message when no results have been entered yet
+  /// No description provided for @no_results_entered_yet.
   ///
   /// In en, this message translates to:
   /// **'No results entered yet'**
   String get no_results_entered_yet;
 
-  /// Message when no second match exists
+  /// No description provided for @no_second_match_available.
   ///
   /// In en, this message translates to:
   /// **'No second match available'**
   String get no_second_match_available;
 
-  /// Message when no statistics are available, because no matches were played yet
+  /// No description provided for @no_statistics_available.
   ///
   /// In en, this message translates to:
   /// **'No statistics available'**
   String get no_statistics_available;
 
-  /// None option label
+  /// No description provided for @none.
   ///
   /// In en, this message translates to:
   /// **'None'**
   String get none;
 
-  /// None group option label
+  /// No description provided for @none_group.
   ///
   /// In en, this message translates to:
   /// **'None'**
   String get none_group;
 
-  /// Abbreviation for not available
+  /// No description provided for @not_available.
   ///
   /// In en, this message translates to:
   /// **'Not available'**
   String get not_available;
 
-  /// Label for played matches statistic
+  /// No description provided for @played_matches.
   ///
   /// In en, this message translates to:
   /// **'Played Matches'**
   String get played_matches;
 
-  /// Placeholder for player name input
+  /// No description provided for @player_name.
   ///
   /// In en, this message translates to:
   /// **'Player name'**
   String get player_name;
 
-  /// Players label
+  /// No description provided for @players.
   ///
   /// In en, this message translates to:
   /// **'Players'**
   String get players;
-
-  /// Shows the number of players
-  ///
-  /// In en, this message translates to:
-  /// **'{count} Players'**
-  String players_count(int count);
 
   /// No description provided for @point.
   ///
@@ -650,115 +644,115 @@ abstract class AppLocalizations {
   /// **'Point'**
   String get point;
 
-  /// Points label
+  /// No description provided for @points.
   ///
   /// In en, this message translates to:
   /// **'Points'**
   String get points;
 
-  /// Privacy policy menu item
+  /// No description provided for @privacy_policy.
   ///
   /// In en, this message translates to:
   /// **'Privacy Policy'**
   String get privacy_policy;
 
-  /// Title for quick create section
+  /// No description provided for @quick_create.
   ///
   /// In en, this message translates to:
   /// **'Quick Create'**
   String get quick_create;
 
-  /// Title for recent matches section
+  /// No description provided for @recent_matches.
   ///
   /// In en, this message translates to:
   /// **'Recent Matches'**
   String get recent_matches;
 
-  /// Label for match results
+  /// No description provided for @results.
   ///
   /// In en, this message translates to:
   /// **'Results'**
   String get results;
 
-  /// Ruleset label
+  /// No description provided for @ruleset.
   ///
   /// In en, this message translates to:
   /// **'Ruleset'**
   String get ruleset;
 
-  /// Description for least points ruleset
+  /// No description provided for @ruleset_least_points.
   ///
   /// In en, this message translates to:
   /// **'Inverse scoring: the player with the fewest points wins.'**
   String get ruleset_least_points;
 
-  /// Description for most points ruleset
+  /// No description provided for @ruleset_most_points.
   ///
   /// In en, this message translates to:
   /// **'Traditional ruleset: the player with the most points wins.'**
   String get ruleset_most_points;
 
-  /// Description for single loser ruleset
+  /// No description provided for @ruleset_single_loser.
   ///
   /// In en, this message translates to:
   /// **'Exactly one loser is determined; last place receives the penalty or consequence.'**
   String get ruleset_single_loser;
 
-  /// Description for single winner ruleset
+  /// No description provided for @ruleset_single_winner.
   ///
   /// In en, this message translates to:
   /// **'Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.'**
   String get ruleset_single_winner;
 
-  /// Save changes button text
+  /// No description provided for @save_changes.
   ///
   /// In en, this message translates to:
   /// **'Save Changes'**
   String get save_changes;
 
-  /// Hint text for group search input field
+  /// No description provided for @search_for_groups.
   ///
   /// In en, this message translates to:
   /// **'Search for groups'**
   String get search_for_groups;
 
-  /// Hint text for player search input field
+  /// No description provided for @search_for_players.
   ///
   /// In en, this message translates to:
   /// **'Search for players'**
   String get search_for_players;
 
-  /// Label to select the winner
+  /// No description provided for @select_winner.
   ///
   /// In en, this message translates to:
   /// **'Select Winner'**
   String get select_winner;
 
-  /// Label to select the loser
+  /// No description provided for @select_loser.
   ///
   /// In en, this message translates to:
   /// **'Select Loser'**
   String get select_loser;
 
-  /// Shows the number of selected players
+  /// No description provided for @selected_players.
   ///
   /// In en, this message translates to:
   /// **'Selected players'**
   String get selected_players;
 
-  /// Label for the App Settings
+  /// No description provided for @settings.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
 
-  /// Title for single loser ruleset
+  /// No description provided for @single_loser.
   ///
   /// In en, this message translates to:
   /// **'Single Loser'**
   String get single_loser;
 
-  /// Title for single winner ruleset
+  /// No description provided for @single_winner.
   ///
   /// In en, this message translates to:
   /// **'Single Winner'**
@@ -788,13 +782,13 @@ abstract class AppLocalizations {
   /// **'Multiple Winners'**
   String get multiple_winners;
 
-  /// Statistics tab label
+  /// No description provided for @statistics.
   ///
   /// In en, this message translates to:
   /// **'Statistics'**
   String get statistics;
 
-  /// Stats tab label (short)
+  /// No description provided for @stats.
   ///
   /// In en, this message translates to:
   /// **'Stats'**
@@ -806,13 +800,13 @@ abstract class AppLocalizations {
   /// **'Successfully added player {playerName}'**
   String successfully_added_player(String playerName);
 
-  /// Message when search returns no groups
+  /// No description provided for @there_is_no_group_matching_your_search.
   ///
   /// In en, this message translates to:
   /// **'There is no group matching your search'**
   String get there_is_no_group_matching_your_search;
 
-  /// Warning message for irreversible actions
+  /// No description provided for @this_cannot_be_undone.
   ///
   /// In en, this message translates to:
   /// **'This can\'t be undone.'**
@@ -824,43 +818,43 @@ abstract class AppLocalizations {
   /// **'Tie'**
   String get tie;
 
-  /// Date format for today
+  /// No description provided for @today_at.
   ///
   /// In en, this message translates to:
   /// **'Today at'**
   String get today_at;
 
-  /// Undo button text
+  /// No description provided for @undo.
   ///
   /// In en, this message translates to:
   /// **'Undo'**
   String get undo;
 
-  /// Error message for unknown exceptions
+  /// No description provided for @unknown_exception.
   ///
   /// In en, this message translates to:
   /// **'Unknown Exception (see console)'**
   String get unknown_exception;
 
-  /// Winner label
+  /// No description provided for @winner.
   ///
   /// In en, this message translates to:
   /// **'Winner'**
   String get winner;
 
-  /// Label for winrate statistic
+  /// No description provided for @winrate.
   ///
   /// In en, this message translates to:
   /// **'Winrate'**
   String get winrate;
 
-  /// Label for wins statistic
+  /// No description provided for @wins.
   ///
   /// In en, this message translates to:
   /// **'Wins'**
   String get wins;
 
-  /// Date format for yesterday
+  /// No description provided for @yesterday_at.
   ///
   /// In en, this message translates to:
   /// **'Yesterday at'**

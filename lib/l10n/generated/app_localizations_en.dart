@@ -101,7 +101,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get data_successfully_imported => 'Data successfully imported';
 
   @override
-  String days_ago(int count) {
+  String days_ago(Object count) {
     return '$count days ago';
   }
 
@@ -294,11 +294,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get players => 'Players';
-
-  @override
-  String players_count(int count) {
-    return '$count Players';
-  }
 
   @override
   String get point => 'Point';
