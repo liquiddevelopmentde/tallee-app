@@ -35,32 +35,35 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: CustomTheme.standardBoxDecoration,
-      child: Column(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            widget.title,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          MainMenuButton(
+            onPressed: () => _score > minScore
+                ? {
+                    setState(() {
+                      _score--;
+                      if (widget.onChanged != null) {
+                        widget.onChanged!(_score);
+                      }
+                    }),
+                  }
+                : null,
+            icon: Icons.remove_rounded,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Expanded(
+            child: Column(
               children: [
-                MainMenuButton(
-                  onPressed: () => _score > minScore
-                      ? {
-                          setState(() {
-                            _score--;
-                            if (widget.onChanged != null) {
-                              widget.onChanged!(_score);
-                            }
-                          }),
-                        }
-                      : null,
-                  icon: Icons.remove_rounded,
+                Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(
                   width: 150,
@@ -68,27 +71,32 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                     _score.toString(),
                     maxLines: 1,
                     textAlign: TextAlign.center,
+                    textWidthBasis: TextWidthBasis.longestLine,
+                    textHeightBehavior: const TextHeightBehavior(
+                      applyHeightToFirstAscent: false,
+                      applyHeightToLastDescent: false,
+                    ),
                     style: const TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-                MainMenuButton(
-                  onPressed: () => _score < maxScore
-                      ? {
-                          setState(() {
-                            _score++;
-                            if (widget.onChanged != null) {
-                              widget.onChanged!(_score);
-                            }
-                          }),
-                        }
-                      : null,
-                  icon: Icons.add_rounded,
-                ),
               ],
             ),
+          ),
+          MainMenuButton(
+            onPressed: () => _score < maxScore
+                ? {
+                    setState(() {
+                      _score++;
+                      if (widget.onChanged != null) {
+                        widget.onChanged!(_score);
+                      }
+                    }),
+                  }
+                : null,
+            icon: Icons.add_rounded,
           ),
         ],
       ),

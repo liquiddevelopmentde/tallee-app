@@ -110,6 +110,7 @@ class _MatchResultViewState extends State<MatchResultView> {
           children: [
             Expanded(
               child: isLiveEditMode && rulesetSupportsScoreEntry()
+                  // Live Edit Mode
                   ? ListView.builder(
                       itemCount: allPlayers.length,
                       itemBuilder: (context, index) {
@@ -124,6 +125,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                         );
                       },
                     )
+                  // Normal Mode
                   : Container(
                       margin: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -150,6 +152,8 @@ class _MatchResultViewState extends State<MatchResultView> {
                             ),
                           ),
                           const SizedBox(height: 10),
+
+                          // Show player selection
                           if (rulesetSupportsWinnerSelection())
                             Expanded(
                               child: RadioGroup<Player>(
@@ -182,6 +186,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                                 ),
                               ),
                             ),
+                          // Show score entry
                           if (rulesetSupportsScoreEntry())
                             Expanded(
                               child: ListView.separated(
