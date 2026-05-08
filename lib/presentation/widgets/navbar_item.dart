@@ -44,24 +44,49 @@ class _NavbarItemState extends State<NavbarItem>
   /// Scale animation for the icon when selected
   late Animation<double> _scaleAnimation;
 
+  /// Color animation for the icon
+  late Animation<Color?> _iconColorAnimation;
+
+  /// Background color animation for the icon container
+  late Animation<Color?> _bgColorAnimation;
+
+  /// Font size animation for the label
+  late Animation<double> _fontSizeAnimation;
+
+  /// A simple double tween used to lerp between two font weights
+  late Animation<double> _fontWeightT;
+
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
+      // Set initial value directly so the visual state matches widget.isSelected
+      value: widget.isSelected ? 1.0 : 0.0,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOutBack,
-      ),
+    final curved = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
     );
 
-    if (widget.isSelected) {
-      _animationController.forward();
-    }
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(curved);
+
+    _iconColorAnimation = ColorTween(
+      begin: CustomTheme.navBarItemUnselectedColor,
+      end: CustomTheme.navBarItemSelectedColor,
+    ).animate(curved);
+
+    _bgColorAnimation = ColorTween(
+      begin: Colors.transparent,
+      end: CustomTheme.primaryColor.withAlpha(50),
+    ).animate(curved);
+
+    _fontSizeAnimation = Tween<double>(begin: 11.0, end: 12.0).animate(curved);
+
+    // drives font weight interpolation
+    _fontWeightT = Tween<double>(begin: 0.0, end: 1.0).animate(curved);
   }
 
   // Retrigger animation on selection change
@@ -83,46 +108,44 @@ class _NavbarItemState extends State<NavbarItem>
         behavior: HitTestBehavior.opaque,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedContainer(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: widget.isSelected
-                      ? CustomTheme.primaryColor.withAlpha(50)
-                      : Colors.transparent,
-                  borderRadius: const BorderRadius.all(Radius.circular(15)),
-                ),
-                duration: const Duration(milliseconds: 200),
-                child: ScaleTransition(
-                  scale: widget.isSelected
-                      ? _scaleAnimation
-                      : const AlwaysStoppedAnimation(1.0),
-                  child: Icon(
-                    widget.icon,
-                    color: widget.isSelected
-                        ? CustomTheme.navBarItemSelectedColor
-                        : CustomTheme.navBarItemUnselectedColor,
-                    size: 32,
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              final iconColor = _iconColorAnimation.value!;
+              final bgColor = _bgColorAnimation.value!;
+              final fontSize = _fontSizeAnimation.value;
+              final fontWeight = FontWeight.lerp(
+                FontWeight.w500,
+                FontWeight.bold,
+                _fontWeightT.value,
+              );
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: bgColor,
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
+                    ),
+                    child: ScaleTransition(
+                      scale: _scaleAnimation,
+                      child: Icon(widget.icon, color: iconColor, size: 32),
+                    ),
                   ),
-                ),
-              ),
-              Text(
-                widget.label,
-                style: TextStyle(
-                  color: widget.isSelected
-                      ? CustomTheme.navBarItemSelectedColor
-                      : CustomTheme.navBarItemUnselectedColor,
-                  fontSize: widget.isSelected ? 12 : 11,
-                  fontWeight: widget.isSelected
-                      ? FontWeight.bold
-                      : FontWeight.w500,
-                ),
-              ),
-            ],
+                  Text(
+                    widget.label,
+                    style: TextStyle(
+                      color: iconColor,
+                      fontSize: fontSize,
+                      fontWeight: fontWeight,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
