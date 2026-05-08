@@ -150,7 +150,10 @@ class _CreateGameViewState extends State<CreateGameView> {
                     context: context,
                     builder: (context) => CustomAlertDialog(
                       title: loc.delete_game,
-                      content: Text(dialogContent),
+                      content: Text(
+                        dialogContent,
+                        style: const TextStyle(fontSize: 15),
+                      ),
                       actions: [
                         CustomDialogAction(
                           isDestructive: true,
