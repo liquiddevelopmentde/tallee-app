@@ -50,7 +50,7 @@ class _QuickInfoTileState extends State<QuickInfoTile> {
       width: widget.width ?? 180,
       decoration: CustomTheme.standardBoxDecoration,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
@@ -65,7 +65,6 @@ class _QuickInfoTileState extends State<QuickInfoTile> {
               ),
             ],
           ),
-          const Spacer(),
           Text(
             widget.value.toString(),
             style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
