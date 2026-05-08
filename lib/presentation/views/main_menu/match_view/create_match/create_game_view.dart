@@ -297,20 +297,7 @@ class _CreateGameViewState extends State<CreateGameView> {
               // Choose color tile
               ChooseTile(
                 title: loc.color,
-                trailing: Row(
-                  spacing: 8,
-                  children: [
-                    // Selected Color
-                    Container(
-                      width: 16,
-                      height: 16,
-                      margin: const EdgeInsets.only(left: 12),
-                      decoration: BoxDecoration(
-                        color: getColorFromGameColor(selectedColor!),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-
+                trailing:
                     //Popup
                     CustomPopup(
                       showArrow: true,
@@ -399,12 +386,25 @@ class _CreateGameViewState extends State<CreateGameView> {
                           ),
                         ),
                       ),
-                      child: Text(
-                        translateGameColorToString(selectedColor!, context),
+                      child: Row(
+                        spacing: 8,
+                        children: [
+                          // Selected Color
+                          Container(
+                            width: 16,
+                            height: 16,
+                            margin: const EdgeInsets.only(left: 12),
+                            decoration: BoxDecoration(
+                              color: getColorFromGameColor(selectedColor!),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          Text(
+                            translateGameColorToString(selectedColor!, context),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
               ),
 
               // Description input field
