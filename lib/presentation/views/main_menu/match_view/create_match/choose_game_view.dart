@@ -176,6 +176,10 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                         }
                         if (result.delete) {
                           setState(() {
+                            // deselect the game
+                            if (selectedGameId == game.id) {
+                              selectedGameId = '';
+                            }
                             widget.games.removeAt(originalIndex);
                             widget.onGamesUpdated?.call();
                           });
