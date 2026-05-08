@@ -104,7 +104,7 @@ class _HomeViewState extends State<HomeView> {
                   children: [
                     QuickInfoTile(
                       width: constraints.maxWidth * 0.45,
-                      height: constraints.maxHeight * 0.15,
+                      height: constraints.maxHeight * 0.13,
                       title: loc.matches,
                       icon: Icons.groups_rounded,
                       value: matchCount,
@@ -112,7 +112,7 @@ class _HomeViewState extends State<HomeView> {
                     SizedBox(width: constraints.maxWidth * 0.05),
                     QuickInfoTile(
                       width: constraints.maxWidth * 0.45,
-                      height: constraints.maxHeight * 0.15,
+                      height: constraints.maxHeight * 0.13,
                       title: loc.groups,
                       icon: Icons.groups_rounded,
                       value: groupCount,
