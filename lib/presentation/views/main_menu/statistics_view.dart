@@ -6,6 +6,7 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/tiles/quick_info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
@@ -18,6 +19,9 @@ class StatisticsView extends StatefulWidget {
 }
 
 class _StatisticsViewState extends State<StatisticsView> {
+  int matchCount = 0;
+  int groupCount = 0;
+
   List<(Player, int)> winCounts = List.filled(6, (
     Player(name: 'Skeleton Player'),
     1,
@@ -53,7 +57,27 @@ class _StatisticsViewState extends State<StatisticsView> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: constraints.maxHeight * 0.01),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      QuickInfoTile(
+                        width: constraints.maxWidth * 0.45,
+                        height: constraints.maxHeight * 0.13,
+                        title: loc.matches,
+                        icon: Icons.groups_rounded,
+                        value: matchCount,
+                      ),
+                      SizedBox(width: constraints.maxWidth * 0.05),
+                      QuickInfoTile(
+                        width: constraints.maxWidth * 0.45,
+                        height: constraints.maxHeight * 0.13,
+                        title: loc.groups,
+                        icon: Icons.groups_rounded,
+                        value: groupCount,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: constraints.maxHeight * 0.02),
                   Visibility(
                     visible:
                         winCounts.isEmpty &&
@@ -115,11 +139,17 @@ class _StatisticsViewState extends State<StatisticsView> {
     Future.wait([
       db.matchDao.getAllMatches(),
       db.playerDao.getAllPlayers(),
+      db.matchDao.getMatchCount(),
+      db.groupDao.getGroupCount(),
       Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
     ]).then((results) async {
       if (!mounted) return;
+
       final matches = results[0] as List<Match>;
       final players = results[1] as List<Player>;
+      matchCount = results[2] as int;
+      groupCount = results[3] as int;
+
       winCounts = _calculateWinsForAllPlayers(
         matches: matches,
         players: players,
@@ -134,6 +164,7 @@ class _StatisticsViewState extends State<StatisticsView> {
         winCounts: winCounts,
         matchCounts: matchCounts,
       );
+
       setState(() {
         isLoading = false;
       });
