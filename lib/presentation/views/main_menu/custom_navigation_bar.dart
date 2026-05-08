@@ -136,12 +136,10 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     final loc = AppLocalizations.of(context);
     switch (currentIndex) {
       case 0:
-        return loc.home;
-      case 1:
         return loc.matches;
-      case 2:
+      case 1:
         return loc.groups;
-      case 3:
+      case 2:
         return loc.statistics;
       default:
         return '';
