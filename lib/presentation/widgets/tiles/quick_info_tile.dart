@@ -50,7 +50,7 @@ class _QuickInfoTileState extends State<QuickInfoTile> {
       width: widget.width ?? 180,
       decoration: CustomTheme.standardBoxDecoration,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
