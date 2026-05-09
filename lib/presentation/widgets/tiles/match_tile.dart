@@ -303,8 +303,9 @@ class _MatchTileState extends State<MatchTile> {
       final mvp = widget.match.mvp;
       final mvpScore = widget.match.scores[mvp.first.id]?.score ?? 0;
       final mvpNames = mvp.map((player) => player.name).join(', ');
-
       return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
+    } else if (ruleset == Ruleset.placement) {
+      return '${loc.winner}: ${widget.match.mvp.first.name}';
     }
     return '${loc.winner}: n.A.';
   }

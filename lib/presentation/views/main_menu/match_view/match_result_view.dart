@@ -199,7 +199,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                                       height: 60,
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: CustomTheme.boxColor,
+                                          color: CustomTheme.primaryColor,
                                           border: Border.all(
                                             color: CustomTheme.primaryColor,
                                           ),
@@ -212,7 +212,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                                         child: Text(
                                           ' #${i + 1} ',
                                           style: const TextStyle(
-                                            color: CustomTheme.primaryColor,
+                                            color: CustomTheme.textColor,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                           ),
@@ -383,17 +383,10 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Handles saving the placement for each player in the database.
   Future<void> _handlePlacement() async {
-    for (int i = 0; i < allPlayers.length; i++) {
-      await db.scoreEntryDao.addScore(
-        matchId: widget.match.id,
-        playerId: allPlayers[i].id,
-        entry: ScoreEntry(
-          roundNumber: 0,
-          score: allPlayers.length - i,
-          change: 0,
-        ),
-      );
-    }
+    await db.scoreEntryDao.setPlacements(
+      matchId: widget.match.id,
+      players: allPlayers,
+    );
   }
 
   String getTitleForRuleset(AppLocalizations loc) {
