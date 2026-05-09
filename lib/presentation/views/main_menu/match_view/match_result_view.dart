@@ -11,6 +11,7 @@ import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/score_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
 class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
@@ -50,7 +51,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
-    ruleset = Ruleset.highestScore; //widget.match.game.ruleset;
+    ruleset = widget.match.game.ruleset;
     canSave = !rulesetSupportsScoreEntry();
 
     allPlayers = widget.match.players;
@@ -73,6 +74,12 @@ class _MatchResultViewState extends State<MatchResultView> {
           final score = scoreList?.score ?? 0;
           controller[i].text = score.toString();
         }
+      } else if (rulesetSupportsPlacement()) {
+        allPlayers.sort((a, b) {
+          final scoreA = widget.match.scores[a.id]?.score ?? 0;
+          final scoreB = widget.match.scores[b.id]?.score ?? 0;
+          return scoreB.compareTo(scoreA);
+        });
       }
       super.initState();
     }
@@ -106,7 +113,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         child: Column(
           children: [
             Expanded(
-              child: isLiveEditMode && rulesetSupportsScoreEntry()
+              child: isLiveEditMode
                   // Live Edit Mode
                   ? ListView.builder(
                       itemCount: allPlayers.length,
@@ -122,7 +129,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                         );
                       },
                     )
-                  // Normal Mode
+                  // Normal Container
                   : Container(
                       margin: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -161,6 +168,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                                   });
                                 },
                                 child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemCount: allPlayers.length,
                                   itemBuilder: (context, index) {
                                     return CustomRadioListTile(
@@ -183,6 +191,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                                 ),
                               ),
                             ),
+
                           // Show score entry
                           if (rulesetSupportsScoreEntry())
                             Expanded(
@@ -203,6 +212,111 @@ class _MatchResultViewState extends State<MatchResultView> {
                                         child: Divider(indent: 20),
                                       );
                                     },
+                              ),
+                            ),
+
+                          // Show draggable placement list
+                          if (rulesetSupportsPlacement())
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  // Placement indicators
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Column(
+                                      children: [
+                                        for (
+                                          int i = 0;
+                                          i < allPlayers.length;
+                                          i++
+                                        )
+                                          Container(
+                                            alignment: Alignment.center,
+                                            height: 60,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    CustomTheme.boxBorderColor,
+                                                borderRadius: CustomTheme
+                                                    .standardBorderRadiusAll,
+                                              ),
+                                              alignment: Alignment.center,
+                                              height: 50,
+                                              width: 50,
+                                              child: Text(
+                                                ' #${i + 1} ',
+                                                style: const TextStyle(
+                                                  color: CustomTheme.textColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Drag list
+                                  Expanded(
+                                    child: ReorderableListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      padding: EdgeInsets.zero,
+                                      proxyDecorator: (child, index, animation) {
+                                        return AnimatedBuilder(
+                                          animation: animation,
+                                          child: child,
+                                          builder: (context, child) {
+                                            final alpha =
+                                                (Curves.easeInOut.transform(
+                                                          animation.value,
+                                                        ) *
+                                                        40)
+                                                    .toInt();
+                                            return Stack(
+                                              children: [
+                                                child!,
+                                                Positioned.fill(
+                                                  left: 4,
+                                                  top: 4,
+                                                  right: 4,
+                                                  bottom: 4,
+                                                  child: DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white
+                                                          .withAlpha(alpha),
+                                                      borderRadius: CustomTheme
+                                                          .standardBorderRadiusAll,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      onReorder: (int oldIndex, int newIndex) {
+                                        setState(() {
+                                          if (newIndex > oldIndex) {
+                                            newIndex -= 1;
+                                          }
+                                          final Player item = allPlayers
+                                              .removeAt(oldIndex);
+                                          allPlayers.insert(newIndex, item);
+                                        });
+                                      },
+                                      itemCount: allPlayers.length,
+                                      itemBuilder: (context, index) {
+                                        return TextIconListTile(
+                                          key: ValueKey(allPlayers[index].id),
+                                          text: allPlayers[index].name,
+                                          icon: Icons.drag_handle,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                         ],
@@ -266,6 +380,8 @@ class _MatchResultViewState extends State<MatchResultView> {
     } else if (ruleset == Ruleset.lowestScore ||
         ruleset == Ruleset.highestScore) {
       await _handleScores();
+    } else if (ruleset == Ruleset.placement) {
+      await _handlePlacement();
     }
 
     widget.onWinnerChanged?.call();
@@ -311,12 +427,22 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
   }
 
+  /// Handles saving the placement for each player in the database.
+  Future<void> _handlePlacement() async {
+    await db.scoreEntryDao.setPlacements(
+      matchId: widget.match.id,
+      players: allPlayers,
+    );
+  }
+
   String getTitleForRuleset(AppLocalizations loc) {
     switch (ruleset) {
       case Ruleset.singleWinner:
         return loc.select_winner;
       case Ruleset.singleLoser:
         return loc.select_loser;
+      case Ruleset.placement:
+        return loc.drag_to_set_placement;
       default:
         return loc.enter_points;
     }
@@ -328,5 +454,9 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool rulesetSupportsScoreEntry() {
     return ruleset == Ruleset.lowestScore || ruleset == Ruleset.highestScore;
+  }
+
+  bool rulesetSupportsPlacement() {
+    return ruleset == Ruleset.placement;
   }
 }

@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'Delete Match'**
   String get delete_match;
 
+  /// No description provided for @drag_to_set_placement.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to set placement'**
+  String get drag_to_set_placement;
+
   /// No description provided for @description.
   ///
   /// In en, this message translates to:
@@ -638,6 +644,18 @@ abstract class AppLocalizations {
   /// **'Not available'**
   String get not_available;
 
+  /// No description provided for @placement.
+  ///
+  /// In en, this message translates to:
+  /// **'Placement'**
+  String get placement;
+
+  /// No description provided for @place.
+  ///
+  /// In en, this message translates to:
+  /// **'place'**
+  String get place;
+
   /// No description provided for @played_matches.
   ///
   /// In en, this message translates to:
@@ -709,6 +727,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Traditional ruleset: the player with the most points wins.'**
   String get ruleset_most_points;
+
+  /// No description provided for @ruleset_placement.
+  ///
+  /// In en, this message translates to:
+  /// **'Players can be arranged in an order, which reflects their placement.'**
+  String get ruleset_placement;
 
   /// No description provided for @ruleset_single_loser.
   ///

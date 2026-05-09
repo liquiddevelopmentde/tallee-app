@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
@@ -18,6 +19,8 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
       return loc.single_loser;
     case Ruleset.multipleWinners:
       return loc.multiple_winners;
+    case Ruleset.placement:
+      return loc.placement;
   }
 }
 
@@ -79,6 +82,8 @@ IconData getRulesetIcon(Ruleset ruleset) {
       return Icons.sentiment_dissatisfied;
     case Ruleset.multipleWinners:
       return Icons.group;
+    case Ruleset.placement:
+      return RpgAwesome.podium;
   }
 }
 

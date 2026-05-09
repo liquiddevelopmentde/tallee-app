@@ -275,7 +275,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         children: getSingleResultRow(loc),
       );
     } else {
-      return getScoreResultWidget(loc);
+      return getMultiResultRows(loc);
     }
   }
 
@@ -325,50 +325,111 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     }
   }
 
-  /// Returns the result widget for scores
-  Widget getScoreResultWidget(AppLocalizations loc) {
+  /// Returns the result widget for scores or placement
+  Widget getMultiResultRows(AppLocalizations loc) {
     List<(String, int)> playerScores = [];
     for (var player in match.players) {
       int score = match.scores[player.id]?.score ?? 0;
       playerScores.add((player.name, score));
     }
-    if (widget.match.game.ruleset == Ruleset.highestScore) {
+
+    final ruleset = match.game.ruleset;
+
+    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
       playerScores.sort((a, b) => b.$2.compareTo(a.$2));
-    } else if (widget.match.game.ruleset == Ruleset.lowestScore) {
+    } else if (ruleset == Ruleset.lowestScore) {
       playerScores.sort((a, b) => a.$2.compareTo(b.$2));
     }
 
     return Column(
       children: [
-        for (var score in playerScores)
+        for (var i = 0; i < playerScores.length; i++)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                score.$1,
+                playerScores[i].$1,
                 style: const TextStyle(
                   fontSize: 16,
                   color: CustomTheme.textColor,
                 ),
               ),
-              Text(
-                getPointLabel(loc, score.$2),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: CustomTheme.primaryColor,
-                ),
-              ),
+              getResultValueText(loc, i, playerScores[i].$2),
             ],
           ),
       ],
     );
   }
 
+  Widget getResultValueText(AppLocalizations loc, int index, int score) {
+    final ruleset = match.game.ruleset;
+
+    if (ruleset == Ruleset.placement) {
+      return Text(
+        getPlacementText(context, index + 1),
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: getPlacementTextcolor(index),
+        ),
+      );
+    } else {
+      return Text(
+        getPointLabel(loc, score),
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: CustomTheme.primaryColor,
+        ),
+      );
+    }
+  }
+
+  Color getPlacementTextcolor(int placement) {
+    switch (placement) {
+      case 0:
+        return const Color(0xFFFFBF00);
+      case 1:
+        return const Color(0xBBFFFFFF);
+      case 2:
+        return const Color(0xFFCD7F32);
+      default:
+        return CustomTheme.textColor;
+    }
+  }
+
   // Returns if the result can be displayed in a single row
   bool isSingleRowResult() {
     return match.game.ruleset == Ruleset.singleWinner ||
         match.game.ruleset == Ruleset.singleLoser;
+  }
+
+  String getPlacementText(BuildContext context, int rank) {
+    final loc = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).languageCode;
+
+    if (locale == 'de') {
+      return '$rank. ${loc.place}';
+    }
+
+    return '${_ordinalEn(rank)} ${loc.place}';
+  }
+
+  String _ordinalEn(int number) {
+    if (number % 100 >= 11 && number % 100 <= 13) {
+      return '${number}th';
+    }
+
+    switch (number % 10) {
+      case 1:
+        return '${number}st';
+      case 2:
+        return '${number}nd';
+      case 3:
+        return '${number}rd';
+      default:
+        return '${number}th';
+    }
   }
 
   void updateScoresForCurrentMatch() {

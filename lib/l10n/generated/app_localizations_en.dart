@@ -132,6 +132,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_match => 'Delete Match';
 
   @override
+  String get drag_to_set_placement => 'Drag to set placement';
+
+  @override
   String get description => 'Description';
 
   @override
@@ -296,6 +299,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get not_available => 'Not available';
 
   @override
+  String get placement => 'Placement';
+
+  @override
+  String get place => 'place';
+
+  @override
   String get played_matches => 'Played Matches';
 
   @override
@@ -332,6 +341,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ruleset_most_points =>
       'Traditional ruleset: the player with the most points wins.';
+
+  @override
+  String get ruleset_placement =>
+      'Players can be arranged in an order, which reflects their placement.';
 
   @override
   String get ruleset_single_loser =>

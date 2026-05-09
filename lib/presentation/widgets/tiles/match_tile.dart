@@ -261,30 +261,29 @@ class _MatchTileState extends State<MatchTile> {
       final mvp = widget.match.mvp;
       final mvpScore = widget.match.scores[mvp.first.id]?.score ?? 0;
       final mvpNames = mvp.map((player) => player.name).join(', ');
-
       return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
+    } else if (ruleset == Ruleset.placement) {
+      return '${loc.winner}: ${widget.match.mvp.first.name}';
     }
     return '${loc.winner}: n.A.';
   }
 
   Icon getMvpIcon() {
-    const Icon(Icons.emoji_events, size: 20, color: Colors.amber);
+    final icon = getRulesetIcon(widget.match.game.ruleset);
 
     switch (widget.match.game.ruleset) {
       case Ruleset.singleWinner:
-        return const Icon(Icons.emoji_events, size: 20, color: Colors.amber);
+        return Icon(icon, size: 20, color: Colors.amber);
       case Ruleset.singleLoser:
-        return const Icon(
-          Icons.sentiment_dissatisfied_outlined,
-          size: 20,
-          color: Colors.blue,
-        );
+        return Icon(icon, size: 20, color: Colors.blue);
       case Ruleset.lowestScore:
-        return const Icon(Icons.arrow_downward, size: 20, color: Colors.orange);
+        return Icon(icon, size: 20, color: Colors.orange);
       case Ruleset.highestScore:
-        return const Icon(Icons.arrow_upward, size: 20, color: Colors.green);
-      default:
-        return const Icon(Icons.emoji_events, size: 20, color: Colors.amber);
+        return Icon(icon, size: 20, color: Colors.green);
+      case Ruleset.multipleWinners:
+        return Icon(icon, size: 20, color: Colors.amber);
+      case Ruleset.placement:
+        return Icon(icon, size: 20, color: Colors.deepOrangeAccent);
     }
   }
 }

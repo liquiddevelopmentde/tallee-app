@@ -196,6 +196,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                     return TextIconListTile(
                       text: suggestedPlayers[index].name,
                       suffixText: getNameCountText(suggestedPlayers[index]),
+                      icon: Icons.add,
                       onPressed: () {
                         setState(() {
                           // If the player is not already selected
