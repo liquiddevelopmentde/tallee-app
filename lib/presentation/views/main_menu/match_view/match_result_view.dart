@@ -227,10 +227,42 @@ class _MatchResultViewState extends State<MatchResultView> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 padding: EdgeInsets.zero,
                                 proxyDecorator: (child, index, animation) {
-                                  return Material(
-                                    color: Colors.transparent,
-                                    elevation: 8,
-                                    child: Opacity(opacity: 0.9, child: child),
+                                  return AnimatedBuilder(
+                                    animation: animation,
+                                    builder: (context, child) {
+                                      final t = Curves.easeInOut.transform(
+                                        animation.value,
+                                      );
+                                      return Opacity(
+                                        opacity: t,
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: CustomTheme
+                                                  .standardBorderRadiusAll,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: CustomTheme
+                                                      .primaryColor
+                                                      .withAlpha(30),
+                                                  blurRadius: 4,
+                                                ),
+                                                BoxShadow(
+                                                  color: CustomTheme
+                                                      .primaryColor
+                                                      .withAlpha(18),
+                                                  blurRadius: 12,
+                                                  spreadRadius: 2,
+                                                ),
+                                              ],
+                                            ),
+                                            child: child,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: child,
                                   );
                                 },
                                 onReorder: (int oldIndex, int newIndex) {
