@@ -55,6 +55,7 @@ const allDependencies = <Package>[
   _flutter_lints,
   _flutter_localizations,
   _flutter_plugin_android_lifecycle,
+  _flutter_popup,
   _flutter_test,
   _flutter_web_plugins,
   _fluttericon,
@@ -168,6 +169,7 @@ const dependencies = <Package>[
   _file_saver,
   _flutter,
   _flutter_localizations,
+  _flutter_popup,
   _fluttericon,
   _font_awesome_flutter,
   _intl,
@@ -2626,6 +2628,41 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// flutter_popup 3.3.9
+const _flutter_popup = Package(
+    name: 'flutter_popup',
+    description: 'The flutter_popup package is a versatile tool for creating customizable popups in Flutter apps. Its highlight feature effectively guides user attention to specific areas',
+    homepage: 'https://github.com/herowws/flutter_popup',
+    authors: [],
+    version: '3.3.9',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
+    license: '''MIT License
+
+Copyright (c) 2023 mopriestt
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
   );
 
 /// flutter_test null
@@ -37676,16 +37713,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// tallee 0.0.27+261
+/// tallee 0.0.28+262
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.0.27+261',
+    version: '0.0.28+262',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_localizations'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('provider'), PackageRef('skeletonizer'), PackageRef('url_launcher'), PackageRef('uuid')],
+    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_localizations'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('provider'), PackageRef('skeletonizer'), PackageRef('url_launcher'), PackageRef('uuid')],
     devDependencies: [PackageRef('flutter_test'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints')],
     license: '''GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

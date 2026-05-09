@@ -14,6 +14,7 @@ class AnimatedDialogButton extends StatefulWidget {
     required this.onPressed,
     this.buttonConstraints,
     this.buttonType = ButtonType.primary,
+    this.isDescructive = false,
   });
 
   final String buttonText;
@@ -24,6 +25,8 @@ class AnimatedDialogButton extends StatefulWidget {
 
   final ButtonType buttonType;
 
+  final bool isDescructive;
+
   @override
   State<AnimatedDialogButton> createState() => _AnimatedDialogButtonState();
 }
@@ -33,28 +36,8 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
 
   @override
   Widget build(BuildContext context) {
-    final textStyling = TextStyle(
-      color: widget.buttonType == ButtonType.primary
-          ? Colors.black
-          : Colors.white,
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-    );
-
-    final buttonDecoration = widget.buttonType == ButtonType.primary
-        // Primary
-        ? BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-          )
-        : widget.buttonType == ButtonType.secondary
-        // Secondary
-        ? BoxDecoration(
-            border: BoxBorder.all(color: Colors.white, width: 2),
-            borderRadius: BorderRadius.circular(12),
-          )
-        // Tertiary
-        : const BoxDecoration();
+    final textStyling = _getTextStyling();
+    final buttonDecoration = _getButtonDecoration();
 
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
@@ -83,5 +66,43 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
         ),
       ),
     );
+  }
+
+  TextStyle _getTextStyling() {
+    late Color textColor;
+    if (widget.buttonType == ButtonType.primary) {
+      textColor = widget.isDescructive ? Colors.white : Colors.black;
+    } else if (widget.buttonType == ButtonType.secondary) {
+      textColor = widget.isDescructive ? Colors.red : Colors.white;
+    } else {
+      textColor = widget.isDescructive ? Colors.red : Colors.white;
+    }
+
+    return TextStyle(
+      color: textColor,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  BoxDecoration _getButtonDecoration() {
+    if (widget.buttonType == ButtonType.primary) {
+      // Primary
+      return BoxDecoration(
+        color: widget.isDescructive ? Colors.red : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      );
+    } else if (widget.buttonType == ButtonType.secondary) {
+      // Secondary
+      return BoxDecoration(
+        border: BoxBorder.all(
+          color: widget.isDescructive ? Colors.red : Colors.white,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      );
+    }
+    // Tertiary
+    return const BoxDecoration();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
@@ -14,6 +15,7 @@ import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
+import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -102,6 +104,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 bottom: 100,
               ),
               children: [
+                // Controller Icon
                 const Center(
                   child: ColoredIconContainer(
                     icon: Icons.sports_esports,
@@ -110,6 +113,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   ),
                 ),
                 const SizedBox(height: 10),
+
+                // Match Name
                 Text(
                   match.name,
                   style: const TextStyle(
@@ -120,6 +125,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 5),
+
+                // Creation Date
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(match.createdAt)}',
                   style: const TextStyle(
@@ -129,6 +136,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
+
+                // Group Name
                 if (match.group != null) ...[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -143,6 +152,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   ),
                   const SizedBox(height: 20),
                 ],
+
+                // Players
                 InfoTile(
                   title: loc.players,
                   icon: Icons.people,
@@ -162,6 +173,30 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   ),
                 ),
                 const SizedBox(height: 15),
+
+                // Game
+                InfoTile(
+                  title: loc.game,
+                  icon: RpgAwesome.clovers_card,
+                  horizontalAlignment: CrossAxisAlignment.start,
+                  content: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
+                    child: GameLabel(
+                      title: match.game.name,
+                      description: translateRulesetToString(
+                        match.game.ruleset,
+                        context,
+                      ),
+                      color: match.game.color,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+
+                // Results
                 InfoTile(
                   title: loc.results,
                   icon: Icons.emoji_events,
