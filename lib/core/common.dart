@@ -81,6 +81,8 @@ IconData getRulesetIcon(Ruleset ruleset) {
       return Icons.sentiment_dissatisfied;
     case Ruleset.multipleWinners:
       return Icons.group;
+    case Ruleset.placement:
+      return Icons.leaderboard;
   }
 }
 
