@@ -50,7 +50,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
-    ruleset = widget.match.game.ruleset;
+    ruleset = Ruleset.highestScore; //widget.match.game.ruleset;
     canSave = !rulesetSupportsScoreEntry();
 
     allPlayers = widget.match.players;
@@ -93,16 +93,13 @@ class _MatchResultViewState extends State<MatchResultView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(
-        automaticallyImplyLeading: !isLiveEditMode,
-        leading: !isLiveEditMode
-            ? IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  widget.onWinnerChanged?.call();
-                  Navigator.of(context).pop(_selectedPlayer);
-                },
-              )
-            : null,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            widget.onWinnerChanged?.call();
+            Navigator.of(context).pop(_selectedPlayer);
+          },
+        ),
         title: Text(widget.match.name),
       ),
       body: SafeArea(
@@ -212,47 +209,38 @@ class _MatchResultViewState extends State<MatchResultView> {
                       ),
                     ),
             ),
-            if (!isLiveEditMode) ...[
-              if (rulesetSupportsScoreEntry())
-              // Button to switch to live edit mode
-              ...[
-                CustomWidthButton(
-                  text: loc.live_edit_mode,
-                  sizeRelativeToWidth: 0.95,
-                  buttonType: ButtonType.secondary,
-                  onPressed: () => setState(() {
-                    isLiveEditMode = true;
-                  }),
-                ),
-                const SizedBox(height: 10),
-              ],
 
-              // Save Changes Button
+            if (rulesetSupportsScoreEntry())
+            // Button to switch to live edit mode
+            ...[
               CustomWidthButton(
-                text: loc.save_changes,
+                text: isLiveEditMode ? loc.exit_view : loc.live_edit_mode,
                 sizeRelativeToWidth: 0.95,
-                onPressed: canSave
-                    ? () async {
-                        final ending = DateTime.now();
-                        await db.matchDao.updateMatchEndedAt(
-                          matchId: widget.match.id,
-                          endedAt: ending,
-                        );
-                        await _handleSaving();
-                        if (!context.mounted) return;
-                        Navigator.of(context).pop(_selectedPlayer);
-                      }
-                    : null,
-              ),
-            ] else ...[
-              CustomWidthButton(
-                text: loc.exit_view,
-                sizeRelativeToWidth: 0.95,
+                buttonType: ButtonType.secondary,
                 onPressed: () => setState(() {
-                  isLiveEditMode = false;
+                  isLiveEditMode = !isLiveEditMode;
                 }),
               ),
+              const SizedBox(height: 10),
             ],
+
+            // Save Changes Button
+            CustomWidthButton(
+              text: loc.save_changes,
+              sizeRelativeToWidth: 0.95,
+              onPressed: canSave
+                  ? () async {
+                      final ending = DateTime.now();
+                      await db.matchDao.updateMatchEndedAt(
+                        matchId: widget.match.id,
+                        endedAt: ending,
+                      );
+                      await _handleSaving();
+                      if (!context.mounted) return;
+                      Navigator.of(context).pop(_selectedPlayer);
+                    }
+                  : null,
+            ),
           ],
         ),
       ),
