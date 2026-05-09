@@ -34,7 +34,7 @@
   "delete": "Löschen",
   "delete_all_data": "Alle Daten löschen",
   "delete_game": "Spielvorlage löschen",
-  "delete_game_with_matches_warning": "Wenn du diese Spielvorlage löschst, werden {count, plural, =1{1 Spiel} other{{count} Spiele}} mit dieser Spielvorlage ebenfalls gelöscht.",
+  "delete_game_with_matches_warning": "Wenn du diese Spielvorlage löschst, {count, plural, =1{wird 1 Spiel} other{werden {count} Spiele}} mit dieser Spielvorlage ebenfalls gelöscht.",
   "@delete_game_with_matches_warning": {
     "placeholders": {
       "count": {
