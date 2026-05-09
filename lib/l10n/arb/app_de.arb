@@ -24,6 +24,7 @@
   "delete_all_data": "Alle Daten löschen",
   "delete_group": "Gruppe löschen",
   "delete_match": "Spiel löschen",
+  "drag_to_set_placement": "Ziehen um Platzierung zu setzen",
   "edit_group": "Gruppe bearbeiten",
   "edit_match": "Gruppe bearbeiten",
   "enter_points": "Punkte eingeben",
