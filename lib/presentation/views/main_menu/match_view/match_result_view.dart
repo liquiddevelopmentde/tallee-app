@@ -198,11 +198,17 @@ class _MatchResultViewState extends State<MatchResultView> {
                                       alignment: Alignment.center,
                                       height: 60,
                                       child: Container(
-                                        decoration:
-                                            CustomTheme.standardBoxDecoration,
+                                        decoration: BoxDecoration(
+                                          color: CustomTheme.boxColor,
+                                          border: Border.all(
+                                            color: CustomTheme.primaryColor,
+                                          ),
+                                          borderRadius: CustomTheme
+                                              .standardBorderRadiusAll,
+                                        ),
                                         alignment: Alignment.center,
                                         height: 50,
-                                        width: 40,
+                                        width: 41,
                                         child: Text(
                                           ' #${i + 1} ',
                                           style: const TextStyle(
@@ -223,7 +229,8 @@ class _MatchResultViewState extends State<MatchResultView> {
                                 proxyDecorator: (child, index, animation) {
                                   return Material(
                                     color: Colors.transparent,
-                                    child: child,
+                                    elevation: 8,
+                                    child: Opacity(opacity: 0.9, child: child),
                                   );
                                 },
                                 onReorder: (int oldIndex, int newIndex) {
