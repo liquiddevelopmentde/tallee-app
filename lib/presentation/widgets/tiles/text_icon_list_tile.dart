@@ -11,7 +11,7 @@ class TextIconListTile extends StatelessWidget {
     required this.text,
     this.suffixText = '',
     this.prefixText = '',
-    this.iconEnabled = true,
+    this.icon,
     this.onPressed,
   });
 
@@ -24,8 +24,8 @@ class TextIconListTile extends StatelessWidget {
   /// An optional prefix text to display before the main text.
   final String prefixText;
 
-  /// A boolean to determine if the icon should be displayed.
-  final bool iconEnabled;
+  /// The icon to display in the tile.
+  final IconData? icon;
 
   /// The callback to be invoked when the icon is pressed.
   final VoidCallback? onPressed;
@@ -76,11 +76,8 @@ class TextIconListTile extends StatelessWidget {
               ),
             ),
           ),
-          if (iconEnabled)
-            GestureDetector(
-              onTap: onPressed,
-              child: const Icon(Icons.add, size: 20),
-            ),
+          if (icon != null)
+            GestureDetector(onTap: onPressed, child: Icon(icon, size: 20)),
         ],
       ),
     );

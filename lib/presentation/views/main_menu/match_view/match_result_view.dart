@@ -240,7 +240,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                                   return TextIconListTile(
                                     key: ValueKey(allPlayers[index].id),
                                     text: allPlayers[index].name,
-                                    iconEnabled: false,
+                                    icon: Icons.drag_handle,
                                   );
                                 },
                               ),
