@@ -85,7 +85,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_match => 'Spiel löschen';
 
   @override
-  String get drag_to_set_placement => 'Drag to set placement';
+  String get drag_to_set_placement => 'Ziehen um Platzierung zu setzen';
 
   @override
   String get edit_group => 'Gruppe bearbeiten';
@@ -234,6 +234,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get placement => 'Platzierung';
+
+  @override
+  String get place => 'Platz';
 
   @override
   String get played_matches => 'Gespielte Spiele';

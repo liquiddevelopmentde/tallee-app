@@ -318,7 +318,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
               ),
               Text(
                 ruleset == Ruleset.placement
-                    ? '#${i + 1}'
+                    ? getPlacementText(i + 1, context, loc)
                     : getPointLabel(loc, playerScores[i].$2),
                 style: const TextStyle(
                   fontSize: 16,
@@ -336,5 +336,36 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   bool isSingleRowResult() {
     return match.game.ruleset == Ruleset.singleWinner ||
         match.game.ruleset == Ruleset.singleLoser;
+  }
+
+  String getPlacementText(
+    int rank,
+    BuildContext context,
+    AppLocalizations loc,
+  ) {
+    final locale = Localizations.localeOf(context).languageCode;
+
+    if (locale == 'de') {
+      return '$rank. ${loc.place}';
+    }
+
+    return '${_ordinalEn(rank)} ${loc.place}';
+  }
+
+  String _ordinalEn(int number) {
+    if (number % 100 >= 11 && number % 100 <= 13) {
+      return '${number}th';
+    }
+
+    switch (number % 10) {
+      case 1:
+        return '${number}st';
+      case 2:
+        return '${number}nd';
+      case 3:
+        return '${number}rd';
+      default:
+        return '${number}th';
+    }
   }
 }

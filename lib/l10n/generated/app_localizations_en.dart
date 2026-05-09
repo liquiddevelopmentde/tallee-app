@@ -236,6 +236,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get placement => 'Placement';
 
   @override
+  String get place => 'place';
+
+  @override
   String get played_matches => 'Played Matches';
 
   @override

@@ -536,6 +536,12 @@ abstract class AppLocalizations {
   /// **'Placement'**
   String get placement;
 
+  /// Label for placement text in match detail view
+  ///
+  /// In en, this message translates to:
+  /// **'place'**
+  String get place;
+
   /// Label for played matches statistic
   ///
   /// In en, this message translates to:

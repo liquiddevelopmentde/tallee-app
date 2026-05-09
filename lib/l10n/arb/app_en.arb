@@ -224,6 +224,9 @@
   "@placement": {
     "description": "Title for placement ruleset"
   },
+  "@place": {
+    "description": "Label for placement text in match detail view"
+  },
   "@played_matches": {
     "description": "Label for played matches statistic"
   },
@@ -416,6 +419,7 @@
   "none_group": "None",
   "not_available": "Not available",
   "placement": "Placement",
+  "place": "place",
   "played_matches": "Played Matches",
   "player_name": "Player name",
   "players": "Players",
