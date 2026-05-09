@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
@@ -82,7 +83,7 @@ IconData getRulesetIcon(Ruleset ruleset) {
     case Ruleset.multipleWinners:
       return Icons.group;
     case Ruleset.placement:
-      return Icons.leaderboard;
+      return RpgAwesome.podium;
   }
 }
 
