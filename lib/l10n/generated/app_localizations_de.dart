@@ -119,10 +119,10 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Spiele',
-      one: '1 Spiel',
+      other: 'werden $count Spiele',
+      one: 'wird 1 Spiel',
     );
-    return 'Wenn du diese Spielvorlage löschst, werden $_temp0 mit dieser Spielvorlage ebenfalls gelöscht.';
+    return 'Wenn du diese Spielvorlage löschst, $_temp0 mit dieser Spielvorlage ebenfalls gelöscht.';
   }
 
   @override

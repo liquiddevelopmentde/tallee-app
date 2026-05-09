@@ -214,223 +214,10 @@ class _CreateGameViewState extends State<CreateGameView> {
 
               // Choose ruleset tile
               if (!isEditMode())
-                ChooseTile(
-                  title: loc.ruleset,
-                  trailing: CustomPopup(
-                    showArrow: true,
-                    arrowColor: CustomTheme.boxBorderColor,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 0,
-                      vertical: 10,
-                    ),
-                    barrierColor: Colors.transparent,
-                    contentDecoration: CustomTheme.standardBoxDecoration,
-                    content: StatefulBuilder(
-                      builder: (context, setPopupState) => SizedBox(
-                        width: 280,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: List.generate(
-                            _rulesets.length,
-                            (index) => GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedRuleset = _rulesets[index].$1;
-                                });
-                                setPopupState(() {});
-                              },
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(8),
-                                      ),
-                                      color:
-                                          selectedRuleset == _rulesets[index].$1
-                                          ? CustomTheme.textColor.withAlpha(20)
-                                          : Colors.transparent,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 8,
-                                        horizontal: 16,
-                                      ),
-                                      child: Row(
-                                        spacing: 8,
-                                        children: [
-                                          Icon(
-                                            getRulesetIcon(_rulesets[index].$1),
-                                            size: 16,
-                                          ),
-                                          Text(
-                                            _rulesets[index].$2,
-                                            style: const TextStyle(
-                                              color: CustomTheme.textColor,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  if (index < _rulesets.length - 1)
-                                    const Divider(indent: 15, endIndent: 15),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      spacing: 8,
-                      children: [
-                        Icon(getRulesetIcon(selectedRuleset!), size: 16),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Text(
-                            translateRulesetToString(selectedRuleset!, context),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        Transform.rotate(
-                          angle: pi / 2,
-                          child: const Icon(Icons.arrow_forward_ios, size: 16),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                ChooseTile(title: loc.ruleset, trailing: getColorDropdown(loc)),
 
               // Choose color tile
-              ChooseTile(
-                title: loc.color,
-                trailing:
-                    //Popup
-                    CustomPopup(
-                      showArrow: true,
-                      arrowColor: CustomTheme.boxBorderColor,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 0,
-                        vertical: 10,
-                      ),
-                      barrierColor: Colors.transparent,
-                      contentDecoration: CustomTheme.standardBoxDecoration,
-                      content: StatefulBuilder(
-                        builder: (context, setPopupState) => SizedBox(
-                          width: 150,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(
-                              _colors.length,
-                              (index) => GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selectedColor = _colors[index].$1;
-                                  });
-                                  setPopupState(() {});
-                                },
-                                child: Column(
-                                  children: [
-                                    // Selected Highlighting
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(8),
-                                        ),
-                                        color:
-                                            selectedColor == _colors[index].$1
-                                            ? CustomTheme.textColor.withAlpha(
-                                                20,
-                                              )
-                                            : Colors.transparent,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 6,
-                                        ),
-                                        child: Row(
-                                          spacing: 8,
-                                          children: selectedColor == null
-                                              ? [Text(loc.none)]
-                                              : [
-                                                  Container(
-                                                    width: 16,
-                                                    height: 16,
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                          left: 12,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                          getColorFromGameColor(
-                                                            _colors[index].$1,
-                                                          ),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    _colors[index].$2,
-                                                    style: const TextStyle(
-                                                      color:
-                                                          CustomTheme.textColor,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                ],
-                                        ),
-                                      ),
-                                    ),
-                                    if (index < _colors.length - 1)
-                                      const Divider(indent: 15, endIndent: 15),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        spacing: 8,
-                        children: [
-                          // Selected Color
-                          Container(
-                            width: 16,
-                            height: 16,
-                            decoration: BoxDecoration(
-                              color: getColorFromGameColor(selectedColor!),
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5),
-                            child: Text(
-                              translateGameColorToString(
-                                selectedColor!,
-                                context,
-                              ),
-                            ),
-                          ),
-                          Transform.rotate(
-                            angle: pi / 2,
-                            child: const Icon(
-                              Icons.arrow_forward_ios,
-                              size: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-              ),
+              ChooseTile(title: loc.color, trailing: getRulesetDropdown(loc)),
 
               // Description input field
               Container(
@@ -548,5 +335,186 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   bool isEditMode() {
     return widget.gameToEdit != null;
+  }
+
+  Widget getRulesetDropdown(AppLocalizations loc) {
+    return CustomPopup(
+      showArrow: true,
+      arrowColor: CustomTheme.boxBorderColor,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+      barrierColor: Colors.transparent,
+      contentDecoration: CustomTheme.standardBoxDecoration,
+      content: StatefulBuilder(
+        builder: (context, setPopupState) => SizedBox(
+          width: 280,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(
+              _rulesets.length,
+              (index) => GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedRuleset = _rulesets[index].$1;
+                  });
+                  setPopupState(() {});
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                        color: selectedRuleset == _rulesets[index].$1
+                            ? CustomTheme.textColor.withAlpha(20)
+                            : Colors.transparent,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 16,
+                        ),
+                        child: Row(
+                          spacing: 8,
+                          children: [
+                            Icon(getRulesetIcon(_rulesets[index].$1), size: 16),
+                            Text(
+                              _rulesets[index].$2,
+                              style: const TextStyle(
+                                color: CustomTheme.textColor,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (index < _rulesets.length - 1)
+                      const Divider(indent: 15, endIndent: 15),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      child: Row(
+        spacing: 8,
+        children: [
+          Icon(getRulesetIcon(selectedRuleset!), size: 16),
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: Text(
+              translateRulesetToString(selectedRuleset!, context),
+              textAlign: TextAlign.right,
+            ),
+          ),
+          Transform.rotate(
+            angle: pi / 2,
+            child: const Icon(Icons.arrow_forward_ios, size: 16),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getColorDropdown(AppLocalizations loc) {
+    return CustomPopup(
+      showArrow: true,
+      arrowColor: CustomTheme.boxBorderColor,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+      barrierColor: Colors.transparent,
+      contentDecoration: CustomTheme.standardBoxDecoration,
+      content: StatefulBuilder(
+        builder: (context, setPopupState) => SizedBox(
+          width: 150,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(
+              _colors.length,
+              (index) => GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedColor = _colors[index].$1;
+                  });
+                  setPopupState(() {});
+                },
+                child: Column(
+                  children: [
+                    // Selected Highlighting
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                        color: selectedColor == _colors[index].$1
+                            ? CustomTheme.textColor.withAlpha(20)
+                            : Colors.transparent,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Row(
+                          spacing: 8,
+                          children: selectedColor == null
+                              ? [Text(loc.none)]
+                              : [
+                                  Container(
+                                    width: 16,
+                                    height: 16,
+                                    margin: const EdgeInsets.only(left: 12),
+                                    decoration: BoxDecoration(
+                                      color: getColorFromGameColor(
+                                        _colors[index].$1,
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  Text(
+                                    _colors[index].$2,
+                                    style: const TextStyle(
+                                      color: CustomTheme.textColor,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ],
+                        ),
+                      ),
+                    ),
+                    if (index < _colors.length - 1)
+                      const Divider(indent: 15, endIndent: 15),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      child: Row(
+        spacing: 8,
+        children: [
+          // Selected Color
+          Container(
+            width: 16,
+            height: 16,
+            decoration: BoxDecoration(
+              color: getColorFromGameColor(selectedColor!),
+              shape: BoxShape.circle,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: Text(translateGameColorToString(selectedColor!, context)),
+          ),
+          Transform.rotate(
+            angle: pi / 2,
+            child: const Icon(Icons.arrow_forward_ios, size: 16),
+          ),
+        ],
+      ),
+    );
   }
 }
