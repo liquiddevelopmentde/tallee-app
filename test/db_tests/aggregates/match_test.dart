@@ -449,7 +449,6 @@ void main() {
         await database.matchDao.addMatch(match: testMatch1);
 
         DateTime newEndedAt = DateTime(2030, 1, 1, 12, 0, 0);
-        print(newEndedAt);
         await database.matchDao.updateMatchEndedAt(
           matchId: testMatch1.id,
           endedAt: newEndedAt,
