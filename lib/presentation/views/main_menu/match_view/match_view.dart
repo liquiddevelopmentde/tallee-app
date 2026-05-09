@@ -10,6 +10,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
@@ -30,8 +31,7 @@ class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
   bool isLoading = true;
 
-  /// Loaded matches from the database,
-  /// initially filled with skeleton matches
+  /// Loaded matches from the database, initially filled with skeleton matches
   List<Match> matches = List.filled(
     4,
     Match(
@@ -46,7 +46,15 @@ class _MatchViewState extends State<MatchView> {
         name: 'Group name',
         members: List.filled(5, Player(name: 'Player')),
       ),
-      players: [Player(name: 'Player')],
+      players: [
+        Player(name: 'Player'),
+        Player(name: 'Player'),
+        Player(name: 'Player'),
+        Player(name: 'Player'),
+        Player(id: 'mvp_id', name: 'Player'),
+      ],
+      scores: {'mvp_id': ScoreEntry(score: 1)},
+      endedAt: DateTime.now(),
     ),
   );
 
