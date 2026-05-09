@@ -229,40 +229,35 @@ class _MatchResultViewState extends State<MatchResultView> {
                                 proxyDecorator: (child, index, animation) {
                                   return AnimatedBuilder(
                                     animation: animation,
+                                    child: child,
                                     builder: (context, child) {
-                                      final t = Curves.easeInOut.transform(
-                                        animation.value,
-                                      );
-                                      return Opacity(
-                                        opacity: t,
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: CustomTheme
-                                                  .standardBorderRadiusAll,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: CustomTheme
-                                                      .primaryColor
-                                                      .withAlpha(30),
-                                                  blurRadius: 4,
+                                      final alpha =
+                                          (Curves.easeInOut.transform(
+                                                    animation.value,
+                                                  ) *
+                                                  40)
+                                              .toInt();
+                                      return Stack(
+                                        children: [
+                                          child!,
+                                          Positioned.fill(
+                                            left: 4,
+                                            top: 4,
+                                            right: 4,
+                                            bottom: 4,
+                                            child: DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white.withAlpha(
+                                                  alpha,
                                                 ),
-                                                BoxShadow(
-                                                  color: CustomTheme
-                                                      .primaryColor
-                                                      .withAlpha(18),
-                                                  blurRadius: 12,
-                                                  spreadRadius: 2,
-                                                ),
-                                              ],
+                                                borderRadius: CustomTheme
+                                                    .standardBorderRadiusAll,
+                                              ),
                                             ),
-                                            child: child,
                                           ),
-                                        ),
+                                        ],
                                       );
                                     },
-                                    child: child,
                                   );
                                 },
                                 onReorder: (int oldIndex, int newIndex) {
