@@ -40,9 +40,13 @@ class ScoreListTile extends StatelessWidget {
             height: 40,
             child: TextField(
               controller: controller,
-              keyboardType: TextInputType.number,
-              maxLength: 4,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              keyboardType: const TextInputType.numberWithOptions(signed: true),
+              maxLength: 5,
+              inputFormatters: [
+                TextInputFormatter.withFunction((oldValue, newValue) {
+                  return isValidScoreInput(newValue.text) ? newValue : oldValue;
+                }),
+              ],
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 16,
@@ -79,5 +83,22 @@ class ScoreListTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Validates the input for the score text field.
+  bool isValidScoreInput(String text) {
+    if (text.isEmpty || text == '-') {
+      return true;
+    }
+
+    final isNegative = text.startsWith('-');
+    final digits = isNegative ? text.substring(1) : text;
+
+    if (digits.isEmpty || digits.length > 4) {
+      return false;
+    }
+
+    // CHeck if all characters are digits 0 <= x <= 9
+    return digits.codeUnits.every((unit) => unit >= 48 && unit <= 57);
   }
 }
