@@ -272,7 +272,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         children: getSingleResultRow(loc),
       );
     } else {
-      return getScoreResultWidget(loc);
+      return getMultiResultRows(loc);
     }
   }
 
@@ -323,7 +323,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   }
 
   /// Returns the result widget for scores or placement
-  Widget getScoreResultWidget(AppLocalizations loc) {
+  Widget getMultiResultRows(AppLocalizations loc) {
     List<(String, int)> playerScores = [];
     for (var player in match.players) {
       int score = match.scores[player.id]?.score ?? 0;
@@ -351,20 +351,48 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   color: CustomTheme.textColor,
                 ),
               ),
-              Text(
-                ruleset == Ruleset.placement
-                    ? getPlacementText(i + 1, context, loc)
-                    : getPointLabel(loc, playerScores[i].$2),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: CustomTheme.primaryColor,
-                ),
-              ),
+              getResultValueText(loc, i, playerScores[i].$2),
             ],
           ),
       ],
     );
+  }
+
+  Widget getResultValueText(AppLocalizations loc, int index, int score) {
+    final ruleset = match.game.ruleset;
+
+    if (ruleset == Ruleset.placement) {
+      return Text(
+        getPlacementText(context, index + 1),
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: getPlacementTextcolor(index),
+        ),
+      );
+    } else {
+      return Text(
+        getPointLabel(loc, score),
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: CustomTheme.primaryColor,
+        ),
+      );
+    }
+  }
+
+  Color getPlacementTextcolor(int placement) {
+    switch (placement) {
+      case 0:
+        return const Color(0xFFFFBF00);
+      case 1:
+        return const Color(0xBBFFFFFF);
+      case 2:
+        return const Color(0xFFCD7F32);
+      default:
+        return CustomTheme.textColor;
+    }
   }
 
   // Returns if the result can be displayed in a single row
@@ -373,11 +401,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         match.game.ruleset == Ruleset.singleLoser;
   }
 
-  String getPlacementText(
-    int rank,
-    BuildContext context,
-    AppLocalizations loc,
-  ) {
+  String getPlacementText(BuildContext context, int rank) {
+    final loc = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).languageCode;
 
     if (locale == 'de') {
