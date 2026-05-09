@@ -89,7 +89,7 @@ class CustomWidthButton extends StatelessWidget {
             MediaQuery.sizeOf(context).width * sizeRelativeToWidth,
             60,
           ),
-          side: BorderSide(color: borderSideColor, width: 2),
+          side: BorderSide(color: borderSideColor, width: 3),
           shape: RoundedRectangleBorder(
             borderRadius: CustomTheme.standardBorderRadiusAll,
           ),
