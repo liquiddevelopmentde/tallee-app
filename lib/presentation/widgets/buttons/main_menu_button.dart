@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class MainMenuButton extends StatefulWidget {
@@ -10,6 +12,7 @@ class MainMenuButton extends StatefulWidget {
     required this.onPressed,
     required this.icon,
     this.text,
+    this.onLongPressed,
   });
 
   /// The callback to be invoked when the button is pressed.
@@ -21,6 +24,8 @@ class MainMenuButton extends StatefulWidget {
   /// The text of the button.
   final String? text;
 
+  final void Function()? onLongPressed;
+
   @override
   State<MainMenuButton> createState() => _MainMenuButtonState();
 }
@@ -29,6 +34,14 @@ class _MainMenuButtonState extends State<MainMenuButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
+
+  /// How long the button needs to be pressed to register it as long press
+  Timer? _longPressTimer;
+
+  /// How much time between two onLongPressed calls
+  Timer? _repeatTimer;
+
+  bool _isLongPressing = false;
 
   @override
   void initState() {
@@ -51,15 +64,29 @@ class _MainMenuButtonState extends State<MainMenuButton>
       child: GestureDetector(
         onTapDown: (_) {
           _animationController.forward();
+          if (widget.onLongPressed != null) {
+            _longPressTimer = Timer(const Duration(milliseconds: 400), () {
+              _isLongPressing = true;
+              widget.onLongPressed?.call();
+              _repeatTimer = Timer.periodic(
+                const Duration(milliseconds: 250),
+                (_) => widget.onLongPressed?.call(),
+              );
+            });
+          }
         },
         onTapUp: (_) async {
-          if (mounted) {
+          _cancelTimers();
+          if (mounted && !_isLongPressing) {
             widget.onPressed();
           }
+          _isLongPressing = false;
           await Future.delayed(const Duration(milliseconds: 100));
           await _animationController.reverse();
         },
         onTapCancel: () {
+          _isLongPressing = false;
+          _cancelTimers();
           _animationController.reverse();
         },
         child: Container(
@@ -93,7 +120,15 @@ class _MainMenuButtonState extends State<MainMenuButton>
 
   @override
   void dispose() {
+    _cancelTimers();
     _animationController.dispose();
     super.dispose();
+  }
+
+  void _cancelTimers() {
+    _longPressTimer?.cancel();
+    _longPressTimer = null;
+    _repeatTimer?.cancel();
+    _repeatTimer = null;
   }
 }

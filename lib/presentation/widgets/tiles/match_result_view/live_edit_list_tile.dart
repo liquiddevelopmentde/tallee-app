@@ -53,6 +53,16 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                     }),
                   }
                 : null,
+            onLongPressed: () => _score > minScore
+                ? {
+                    setState(() {
+                      _score -= 10;
+                      if (widget.onChanged != null) {
+                        widget.onChanged!(_score);
+                      }
+                    }),
+                  }
+                : null,
             icon: Icons.remove_rounded,
           ),
           Expanded(
@@ -90,6 +100,16 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                 ? {
                     setState(() {
                       _score++;
+                      if (widget.onChanged != null) {
+                        widget.onChanged!(_score);
+                      }
+                    }),
+                  }
+                : null,
+            onLongPressed: () => _score > minScore
+                ? {
+                    setState(() {
+                      _score += 10;
                       if (widget.onChanged != null) {
                         widget.onChanged!(_score);
                       }
