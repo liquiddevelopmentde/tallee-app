@@ -341,9 +341,20 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     );
   }
 
+  /// Retrieves the number of matches associated with a specific game.
+  Future<int> getMatchCountByGame({required String gameId}) async {
+    final count =
+        await (selectOnly(matchTable)
+              ..where(matchTable.gameId.equals(gameId))
+              ..addColumns([matchTable.id.count()]))
+            .map((row) => row.read(matchTable.id.count()))
+            .getSingle();
+    return count ?? 0;
+  }
+
   /// Retrieves all matches associated with the given [groupId].
   /// Queries the database directly, filtering by [groupId].
-  Future<List<Match>> getGroupMatches({required String groupId}) async {
+  Future<List<Match>> getMatchesByGroup({required String groupId}) async {
     final query = select(matchTable)..where((m) => m.groupId.equals(groupId));
     final rows = await query.get();
 
@@ -477,5 +488,13 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final query = delete(matchTable);
     final rowsAffected = await query.go();
     return rowsAffected > 0;
+  }
+
+  /// Deletes all matches associated with a specific game.
+  /// Returns the number of matches deleted.
+  Future<int> deleteMatchesByGame({required String gameId}) async {
+    final query = delete(matchTable)..where((m) => m.gameId.equals(gameId));
+    final rowsAffected = await query.go();
+    return rowsAffected;
   }
 }

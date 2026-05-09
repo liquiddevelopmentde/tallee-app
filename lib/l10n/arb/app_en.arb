@@ -1,349 +1,27 @@
 {
   "@@locale": "en",
-  "@all_players": {
-    "description": "Label for all players list"
-  },
-  "@all_players_selected": {
-    "description": "Message when all players are added to selection"
-  },
-  "@amount_of_matches": {
-    "description": "Label for amount of matches statistic"
-  },
-  "@app_name": {
-    "description": "The name of the App"
-  },
-  "@best_player": {
-    "description": "Label for best player statistic"
-  },
-  "@cancel": {
-    "description": "Cancel button text"
-  },
-  "@choose_game": {
-    "description": "Label for choosing a game"
-  },
-  "@choose_group": {
-    "description": "Label for choosing a group"
-  },
-  "@choose_ruleset": {
-    "description": "Label for choosing a ruleset"
-  },
-  "@could_not_add_player": {
-    "description": "Error message when adding a player fails"
-  },
-  "@create_group": {
-    "description": "Button text to create a group"
-  },
-  "@create_match": {
-    "description": "Button text to create a match"
-  },
-  "@create_new_group": {
-    "description": "Appbar text to create a new group"
-  },
-  "@create_new_match": {
-    "description": "Appbar text to create a new match"
-  },
-  "@created_on": {
-    "description": "Label for creation date"
-  },
-  "@data": {
-    "description": "Data label"
-  },
-  "@data_successfully_deleted": {
-    "description": "Success message after deleting data"
-  },
-  "@data_successfully_exported": {
-    "description": "Success message after exporting data"
-  },
-  "@data_successfully_imported": {
-    "description": "Success message after importing data"
-  },
-  "@days_ago": {
-    "description": "Date format for days ago",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@delete": {
-    "description": "Delete button text"
-  },
-  "@delete_all_data": {
-    "description": "Confirmation dialog for deleting all data"
-  },
-  "@delete_group": {
-    "description": "Confirmation dialog for deleting a group"
-  },
-  "@delete_match": {
-    "description": "Button text to delete a match"
-  },
-  "@edit_group": {
-      "description": "Button & Appbar label for editing a group"
-  },
-  "@edit_match": {
-      "description": "Button & Appbar label for editing a match"
-  },
-  "@enter_points": {
-    "description": "Label to enter players points"
-  },
-  "@enter_results": {
-    "description": "Button text to enter match results"
-  },
-  "@error_creating_group": {
-    "description": "Error message when group creation fails"
-  },
-  "@error_deleting_group": {
-      "description": "Error message when group deletion fails"
-  },
-  "@error_editing_group": {
-      "description": "Error message when group editing fails"
-  },
-  "@error_reading_file": {
-    "description": "Error message when file cannot be read"
-  },
-  "@export_canceled": {
-    "description": "Message when export is canceled"
-  },
-  "@export_data": {
-    "description": "Export data menu item"
-  },
-  "@format_exception": {
-    "description": "Error message for format exceptions"
-  },
-  "@game": {
-    "description": "Game label"
-  },
-  "@game_name": {
-    "description": "Placeholder for game name search"
-  },
-  "@group": {
-    "description": "Group label"
-  },
-  "@group_name": {
-    "description": "Placeholder for group name input"
-  },
-  "@group_profile": {
-    "description": "Title for group profile view"
-  },
-  "@groups": {
-    "description": "Label for groups"
-  },
-  "@home": {
-    "description": "Home tab label"
-  },
-  "@import_canceled": {
-    "description": "Message when import is canceled"
-  },
-  "@import_data": {
-    "description": "Import data menu item"
-  },
-  "@info": {
-    "description": "Info label"
-  },
-  "@invalid_schema": {
-    "description": "Error message for invalid schema"
-  },
-  "@least_points": {
-    "description": "Title for least points ruleset"
-  },
-  "@legal": {
-    "description": "Legal section header"
-  },
-  "@legal_notice": {
-    "description": "Legal notice menu item"
-  },
-  "@licenses": {
-    "description": "Licenses menu item"
-  },
-  "@match_in_progress": {
-    "description": "Message when match is in progress"
-  },
-  "@match_name": {
-    "description": "Placeholder for match name input"
-  },
-  "@match_profile": {
-    "description": "Title for match profile view"
-  },
-  "@matches": {
-    "description": "Label for matches"
-  },
-  "@members": {
-    "description": "Label for group members"
-  },
-  "@most_points": {
-    "description": "Title for most points ruleset"
-  },
-  "@no_data_available": {
-    "description": "Message when no data in the statistic tiles is given"
-  },
-  "@no_groups_created_yet": {
-    "description": "Message when no groups exist"
-  },
-  "@no_licenses_found": {
-    "description": "Message when no licenses are found"
-  },
-  "@no_license_text_available": {
-    "description": "Message when no license text is available"
-  },
-  "@no_matches_created_yet": {
-    "description": "Message when no matches exist"
-  },
-  "@no_players_created_yet": {
-    "description": "Message when no players exist"
-  },
-  "@no_players_found_with_that_name": {
-    "description": "Message when search returns no results"
-  },
-  "@no_players_selected": {
-    "description": "Message when no players are selected"
-  },
-  "@no_recent_matches_available": {
-    "description": "Message when no recent matches exist"
-  },
-  "@no_results_entered_yet": {
-    "description": "Message when no results have been entered yet"
-  },
-  "@no_second_match_available": {
-    "description": "Message when no second match exists"
-  },
-  "@no_statistics_available": {
-    "description": "Message when no statistics are available, because no matches were played yet"
-  },
-  "@none": {
-    "description": "None option label"
-  },
-  "@none_group": {
-    "description": "None group option label"
-  },
-  "@not_available": {
-    "description": "Abbreviation for not available"
-  },
-  "@played_matches": {
-    "description": "Label for played matches statistic"
-  },
-  "@player_name": {
-    "description": "Placeholder for player name input"
-  },
-  "@players": {
-    "description": "Players label"
-  },
-  "@players_count": {
-    "description": "Shows the number of players",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@points": {
-    "description": "Points label"
-  },
-  "@privacy_policy": {
-    "description": "Privacy policy menu item"
-  },
-  "@quick_create": {
-    "description": "Title for quick create section"
-  },
-  "@recent_matches": {
-    "description": "Title for recent matches section"
-  },
-  "@results": {
-    "description": "Label for match results"
-  },
-  "@ruleset": {
-    "description": "Ruleset label"
-  },
-  "@ruleset_least_points": {
-    "description": "Description for least points ruleset"
-  },
-  "@ruleset_most_points": {
-    "description": "Description for most points ruleset"
-  },
-  "@ruleset_single_loser": {
-    "description": "Description for single loser ruleset"
-  },
-  "@ruleset_single_winner": {
-    "description": "Description for single winner ruleset"
-  },
-  "@save_changes": {
-    "description": "Save changes button text"
-  },
-  "@search_for_groups": {
-    "description": "Hint text for group search input field"
-  },
-  "@search_for_players": {
-    "description": "Hint text for player search input field"
-  },
-  "@select_winner": {
-    "description": "Label to select the winner"
-  },
-  "@select_loser": {
-    "description": "Label to select the loser"
-  },
-  "@selected_players": {
-    "description": "Shows the number of selected players"
-  },
-  "@settings": {
-    "description": "Label for the App Settings"
-  },
-  "@single_loser": {
-    "description": "Title for single loser ruleset"
-  },
-  "@single_winner": {
-    "description": "Title for single winner ruleset"
-  },
-  "@statistics": {
-    "description": "Statistics tab label"
-  },
-  "@stats": {
-    "description": "Stats tab label (short)"
-  },
-  "@successfully_added_player": {
-    "description": "Success message when adding a player",
-    "placeholders": {
-      "playerName": {
-        "type": "String",
-        "example": "John"
-      }
-    }
-  },
-  "@there_is_no_group_matching_your_search": {
-    "description": "Message when search returns no groups"
-  },
-  "@this_cannot_be_undone": {
-    "description": "Warning message for irreversible actions"
-  },
-  "@today_at": {
-    "description": "Date format for today"
-  },
-  "@undo": {
-    "description": "Undo button text"
-  },
-  "@unknown_exception": {
-    "description": "Error message for unknown exceptions"
-  },
-  "@winner": {
-    "description": "Winner label"
-  },
-  "@winrate": {
-    "description": "Label for winrate statistic"
-  },
-  "@wins": {
-    "description": "Label for wins statistic"
-  },
-  "@yesterday_at": {
-    "description": "Date format for yesterday"
-  },
+
   "all_players": "All players",
   "all_players_selected": "All players selected",
   "amount_of_matches": "Amount of Matches",
   "app_name": "Tallee",
   "best_player": "Best Player",
   "cancel": "Cancel",
+  "choose_color": "Choose Color",
   "choose_game": "Choose Game",
   "choose_group": "Choose Group",
   "choose_ruleset": "Choose Ruleset",
+  "color": "Color",
+  "color_blue": "Blue",
+  "color_green": "Green",
+  "color_orange": "Orange",
+  "color_pink": "Pink",
+  "color_purple": "Purple",
+  "color_red": "Red",
+  "color_teal": "Teal",
+  "color_yellow": "Yellow",
   "could_not_add_player": "Could not add player",
+  "create_game": "Create Game",
   "create_group": "Create Group",
   "create_match": "Create match",
   "create_new_group": "Create new group",
@@ -356,13 +34,25 @@
   "days_ago": "{count} days ago",
   "delete": "Delete",
   "delete_all_data": "Delete all data",
+  "delete_game": "Delete Game",
+  "delete_game_with_matches_warning": "If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.",
+  "@delete_game_with_matches_warning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "delete_group": "Delete Group",
   "delete_match": "Delete Match",
+  "description": "Description",
+  "edit_game": "Edit Game",
   "edit_group": "Edit Group",
   "edit_match": "Edit Match",
   "enter_points": "Enter points",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
+  "error_deleting_game": "Error while deleting game, please try again",
   "error_deleting_group": "Error while deleting group, please try again",
   "error_editing_group": "Error while editing group, please try again",
   "error_reading_file": "Error reading file",
@@ -391,6 +81,7 @@
   "members": "Members",
   "most_points": "Most Points",
   "no_data_available": "No data available",
+  "no_games_created_yet": "No games created yet",
   "no_groups_created_yet": "No groups created yet",
   "no_licenses_found": "No licenses found",
   "no_license_text_available": "No license text available",
@@ -408,7 +99,6 @@
   "played_matches": "Played Matches",
   "player_name": "Player name",
   "players": "Players",
-  "players_count": "{count} Players",
   "point": "Point",
   "points": "Points",
   "privacy_policy": "Privacy Policy",
@@ -436,6 +126,16 @@
   "statistics": "Statistics",
   "stats": "Stats",
   "successfully_added_player": "Successfully added player {playerName}",
+  "@successfully_added_player": {
+    "description": "Success message when adding a player",
+    "placeholders": {
+      "playerName": {
+        "type": "String",
+        "example": "John"
+      }
+    }
+  },
+  "there_are_no_games_matching_your_search": "There are no games matching your search",
   "there_is_no_group_matching_your_search": "There is no group matching your search",
   "this_cannot_be_undone": "This can't be undone.",
   "tie": "Tie",
