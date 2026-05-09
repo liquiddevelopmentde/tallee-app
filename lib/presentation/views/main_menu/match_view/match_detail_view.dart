@@ -205,7 +205,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             match: match,
                             onWinnerChanged: () {
                               widget.onMatchUpdate.call();
-                              setState(() {});
+                              updateMatchStateAfterSave();
                             },
                           ),
                         ),
@@ -228,6 +228,17 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       match = editedMatch;
     });
     widget.onMatchUpdate.call();
+  }
+
+  /// Updates the match scores after saving in MatchResultView
+  Future<void> updateMatchStateAfterSave() async {
+    final scores = await db.scoreEntryDao.getAllMatchScores(matchId: match.id);
+
+    if (!mounted) return;
+
+    setState(() {
+      match.scores = scores;
+    });
   }
 
   /// Returns the widget to be displayed in the result [InfoTile]
