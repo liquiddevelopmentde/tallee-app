@@ -10,7 +10,6 @@ class TextIconListTile extends StatelessWidget {
     super.key,
     required this.text,
     this.suffixText = '',
-    this.prefixText = '',
     this.icon,
     this.onPressed,
   });
@@ -20,9 +19,6 @@ class TextIconListTile extends StatelessWidget {
 
   /// An optional suffix text to display after the main text.
   final String suffixText;
-
-  /// An optional prefix text to display before the main text.
-  final String prefixText;
 
   /// The icon to display in the tile.
   final IconData? icon;
@@ -48,14 +44,6 @@ class TextIconListTile extends StatelessWidget {
                 text: TextSpan(
                   style: DefaultTextStyle.of(context).style,
                   children: [
-                    TextSpan(
-                      text: prefixText,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: CustomTheme.primaryColor,
-                      ),
-                    ),
                     TextSpan(
                       text: text,
                       style: const TextStyle(
