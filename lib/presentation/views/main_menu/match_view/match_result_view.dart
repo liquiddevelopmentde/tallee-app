@@ -189,6 +189,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                       Expanded(
                         child: Row(
                           children: [
+                            // Placement indicators
                             Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: Column(
@@ -199,16 +200,13 @@ class _MatchResultViewState extends State<MatchResultView> {
                                       height: 60,
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: CustomTheme.primaryColor,
-                                          border: Border.all(
-                                            color: CustomTheme.primaryColor,
-                                          ),
+                                          color: CustomTheme.boxBorderColor,
                                           borderRadius: CustomTheme
                                               .standardBorderRadiusAll,
                                         ),
                                         alignment: Alignment.center,
                                         height: 50,
-                                        width: 41,
+                                        width: 50,
                                         child: Text(
                                           ' #${i + 1} ',
                                           style: const TextStyle(
@@ -222,6 +220,8 @@ class _MatchResultViewState extends State<MatchResultView> {
                                 ],
                               ),
                             ),
+
+                            // Drag list
                             Expanded(
                               child: ReorderableListView.builder(
                                 physics: const NeverScrollableScrollPhysics(),
