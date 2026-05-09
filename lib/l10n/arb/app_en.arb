@@ -81,6 +81,7 @@
   "members": "Members",
   "most_points": "Most Points",
   "no_data_available": "No data available",
+  "no_games_created_yet": "No games created yet",
   "no_groups_created_yet": "No groups created yet",
   "no_licenses_found": "No licenses found",
   "no_license_text_available": "No license text available",
@@ -134,6 +135,7 @@
       }
     }
   },
+  "there_are_no_games_matching_your_search": "There are no games matching your search",
   "there_is_no_group_matching_your_search": "There is no group matching your search",
   "this_cannot_be_undone": "This can't be undone.",
   "tie": "Tie",

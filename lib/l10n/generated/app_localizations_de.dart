@@ -244,6 +244,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_data_available => 'Keine Daten verfügbar';
 
   @override
+  String get no_games_created_yet => 'Noch keine Spielvorlagen erstellt';
+
+  @override
   String get no_groups_created_yet => 'Noch keine Gruppen erstellt';
 
   @override
@@ -381,6 +384,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String successfully_added_player(String playerName) {
     return 'Spieler:in $playerName erfolgreich hinzugefügt';
   }
+
+  @override
+  String get there_are_no_games_matching_your_search =>
+      'Es gibt keine Spielvorlagen, die deiner Suche entspricht';
 
   @override
   String get there_is_no_group_matching_your_search =>

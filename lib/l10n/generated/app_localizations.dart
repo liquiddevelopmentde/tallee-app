@@ -536,6 +536,12 @@ abstract class AppLocalizations {
   /// **'No data available'**
   String get no_data_available;
 
+  /// No description provided for @no_games_created_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No games created yet'**
+  String get no_games_created_yet;
+
   /// No description provided for @no_groups_created_yet.
   ///
   /// In en, this message translates to:
@@ -799,6 +805,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Successfully added player {playerName}'**
   String successfully_added_player(String playerName);
+
+  /// No description provided for @there_are_no_games_matching_your_search.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no games matching your search'**
+  String get there_are_no_games_matching_your_search;
 
   /// No description provided for @there_is_no_group_matching_your_search.
   ///

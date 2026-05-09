@@ -9,6 +9,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/game_tile.dart';
+import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class ChooseGameView extends StatefulWidget {
   /// A view that allows the user to choose a game from a list of available games
@@ -134,65 +135,86 @@ class _ChooseGameViewState extends State<ChooseGameView> {
 
             // Game list
             Expanded(
-              child: ListView.builder(
-                itemCount: filteredGames.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final game = filteredGames[index];
-                  return GameTile(
-                    title: game.name,
-                    description: game.description,
-                    badgeText: translateRulesetToString(game.ruleset, context),
-                    badgeColor: getColorFromGameColor(game.color),
-                    isHighlighted: selectedGameId == game.id,
-                    onTap: () async {
-                      setState(() {
-                        if (selectedGameId == game.id) {
-                          selectedGameId = '';
-                        } else {
-                          selectedGameId = game.id;
-                        }
-                      });
-                    },
-                    onLongPress: () async {
-                      final result = await Navigator.push(
+              child: Visibility(
+                visible: filteredGames.isNotEmpty,
+                replacement: Visibility(
+                  visible: widget.games.isNotEmpty,
+                  replacement: TopCenteredMessage(
+                    icon: Icons.info,
+                    title: loc.info,
+                    message: loc.no_games_created_yet,
+                  ),
+                  child: TopCenteredMessage(
+                    icon: Icons.info,
+                    title: loc.info,
+                    message: AppLocalizations.of(
+                      context,
+                    ).there_are_no_games_matching_your_search,
+                  ),
+                ),
+                child: ListView.builder(
+                  itemCount: filteredGames.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final game = filteredGames[index];
+                    return GameTile(
+                      title: game.name,
+                      description: game.description,
+                      badgeText: translateRulesetToString(
+                        game.ruleset,
                         context,
-                        adaptivePageRoute(
-                          builder: (context) => CreateGameView(
-                            gameToEdit: game,
-                            matchCount: getMatchCount(game),
-                            onGameChanged: () {
-                              widget.onGamesUpdated?.call();
-                            },
+                      ),
+                      badgeColor: getColorFromGameColor(game.color),
+                      isHighlighted: selectedGameId == game.id,
+                      onTap: () async {
+                        setState(() {
+                          if (selectedGameId == game.id) {
+                            selectedGameId = '';
+                          } else {
+                            selectedGameId = game.id;
+                          }
+                        });
+                      },
+                      onLongPress: () async {
+                        final result = await Navigator.push(
+                          context,
+                          adaptivePageRoute(
+                            builder: (context) => CreateGameView(
+                              gameToEdit: game,
+                              matchCount: getMatchCount(game),
+                              onGameChanged: () {
+                                widget.onGamesUpdated?.call();
+                              },
+                            ),
                           ),
-                        ),
-                      );
-                      if (result != null && result.game != null) {
-                        // Find the index in the original list to mutate
-                        final originalIndex = widget.games.indexWhere(
-                          (g) => g.id == game.id,
                         );
-                        if (originalIndex == -1) {
-                          return;
+                        if (result != null && result.game != null) {
+                          // Find the index in the original list to mutate
+                          final originalIndex = widget.games.indexWhere(
+                            (g) => g.id == game.id,
+                          );
+                          if (originalIndex == -1) {
+                            return;
+                          }
+                          if (result.delete) {
+                            setState(() {
+                              // deselect the game
+                              if (selectedGameId == game.id) {
+                                selectedGameId = '';
+                              }
+                              widget.games.removeAt(originalIndex);
+                              widget.onGamesUpdated?.call();
+                            });
+                          } else {
+                            setState(() {
+                              widget.games[originalIndex] = result.game;
+                            });
+                          }
+                          _refreshFromSource();
                         }
-                        if (result.delete) {
-                          setState(() {
-                            // deselect the game
-                            if (selectedGameId == game.id) {
-                              selectedGameId = '';
-                            }
-                            widget.games.removeAt(originalIndex);
-                            widget.onGamesUpdated?.call();
-                          });
-                        } else {
-                          setState(() {
-                            widget.games[originalIndex] = result.game;
-                          });
-                        }
-                        _refreshFromSource();
-                      }
-                    },
-                  );
-                },
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ],
