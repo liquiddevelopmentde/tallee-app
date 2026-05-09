@@ -386,6 +386,12 @@ abstract class AppLocalizations {
   /// **'Error reading file'**
   String get error_reading_file;
 
+  /// No description provided for @exit_view.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit View'**
+  String get exit_view;
+
   /// No description provided for @export_canceled.
   ///
   /// In en, this message translates to:
@@ -493,6 +499,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
+
+  /// No description provided for @live_edit_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Edit Mode'**
+  String get live_edit_mode;
 
   /// No description provided for @match_in_progress.
   ///
