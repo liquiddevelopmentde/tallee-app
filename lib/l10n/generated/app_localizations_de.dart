@@ -85,6 +85,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_match => 'Spiel löschen';
 
   @override
+  String get drag_to_set_placement => 'Ziehen, um die Platzierung zu setzen';
+
+  @override
   String get edit_group => 'Gruppe bearbeiten';
 
   @override
@@ -230,6 +233,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get not_available => 'Nicht verfügbar';
 
   @override
+  String get placement => 'Platzierung';
+
+  @override
   String get played_matches => 'Gespielte Spiele';
 
   @override
@@ -271,6 +277,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get ruleset_most_points =>
       'Traditionelles Regelwerk: Der/die Spieler:in mit den meisten Punkten gewinnt.';
+
+  @override
+  String get ruleset_placement =>
+      'Spieler:innen können in einer Reihenfolge angeordnet werden, die ihre Platzierung reflektiert.';
 
   @override
   String get ruleset_single_loser =>

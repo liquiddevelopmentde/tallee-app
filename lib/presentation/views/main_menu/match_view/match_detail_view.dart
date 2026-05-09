@@ -288,34 +288,39 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     }
   }
 
-  /// Returns the result widget for scores
+  /// Returns the result widget for scores or placement
   Widget getScoreResultWidget(AppLocalizations loc) {
     List<(String, int)> playerScores = [];
     for (var player in match.players) {
       int score = match.scores[player.id]?.score ?? 0;
       playerScores.add((player.name, score));
     }
-    if (widget.match.game.ruleset == Ruleset.highestScore) {
+
+    final ruleset = match.game.ruleset;
+
+    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
       playerScores.sort((a, b) => b.$2.compareTo(a.$2));
-    } else if (widget.match.game.ruleset == Ruleset.lowestScore) {
+    } else if (ruleset == Ruleset.lowestScore) {
       playerScores.sort((a, b) => a.$2.compareTo(b.$2));
     }
 
     return Column(
       children: [
-        for (var score in playerScores)
+        for (var i = 0; i < playerScores.length; i++)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                score.$1,
+                playerScores[i].$1,
                 style: const TextStyle(
                   fontSize: 16,
                   color: CustomTheme.textColor,
                 ),
               ),
               Text(
-                getPointLabel(loc, score.$2),
+                ruleset == Ruleset.placement
+                    ? '#${i + 1}'
+                    : getPointLabel(loc, playerScores[i].$2),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

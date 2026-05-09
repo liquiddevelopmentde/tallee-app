@@ -77,6 +77,9 @@
   "@delete_match": {
     "description": "Button text to delete a match"
   },
+  "@drag_to_set_placement": {
+    "description": "Label for dragging to set placement"
+  },
   "@edit_group": {
       "description": "Button & Appbar label for editing a group"
   },
@@ -218,6 +221,9 @@
   "@not_available": {
     "description": "Abbreviation for not available"
   },
+  "@placement": {
+    "description": "Title for placement ruleset"
+  },
   "@played_matches": {
     "description": "Label for played matches statistic"
   },
@@ -258,6 +264,9 @@
   },
   "@ruleset_most_points": {
     "description": "Description for most points ruleset"
+  },
+  "@ruleset_placement": {
+    "description": "Description for placement ruleset"
   },
   "@ruleset_single_loser": {
     "description": "Description for single loser ruleset"
@@ -358,6 +367,7 @@
   "delete_all_data": "Delete all data",
   "delete_group": "Delete Group",
   "delete_match": "Delete Match",
+  "drag_to_set_placement": "Drag to set placement",
   "edit_group": "Edit Group",
   "edit_match": "Edit Match",
   "enter_points": "Enter points",
@@ -405,6 +415,7 @@
   "none": "None",
   "none_group": "None",
   "not_available": "Not available",
+  "placement": "Placement",
   "played_matches": "Played Matches",
   "player_name": "Player name",
   "players": "Players",
@@ -418,6 +429,7 @@
   "ruleset": "Ruleset",
   "ruleset_least_points": "Inverse scoring: the player with the fewest points wins.",
   "ruleset_most_points": "Traditional ruleset: the player with the most points wins.",
+  "ruleset_placement": "Players can be arranged in an order, which reflects their placement.",
   "ruleset_single_loser": "Exactly one loser is determined; last place receives the penalty or consequence.",
   "ruleset_single_winner": "Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.",
   "save_changes": "Save Changes",

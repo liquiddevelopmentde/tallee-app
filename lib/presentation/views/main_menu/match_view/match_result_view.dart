@@ -10,6 +10,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
 import 'package:tallee/presentation/widgets/tiles/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/score_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
 class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
@@ -68,6 +69,12 @@ class _MatchResultViewState extends State<MatchResultView> {
           final score = scoreList?.score ?? 0;
           controller[i].text = score.toString();
         }
+      } else if (rulesetSupportsPlacement()) {
+        allPlayers.sort((a, b) {
+          final scoreA = widget.match.scores[a.id]?.score ?? 0;
+          final scoreB = widget.match.scores[b.id]?.score ?? 0;
+          return scoreB.compareTo(scoreA);
+        });
       }
       super.initState();
     }
@@ -177,6 +184,70 @@ class _MatchResultViewState extends State<MatchResultView> {
                           },
                         ),
                       ),
+                    if (rulesetSupportsPlacement())
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Column(
+                                children: [
+                                  for (int i = 0; i < allPlayers.length; i++)
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height: 60,
+                                      child: Container(
+                                        decoration:
+                                            CustomTheme.standardBoxDecoration,
+                                        alignment: Alignment.center,
+                                        height: 50,
+                                        width: 40,
+                                        child: Text(
+                                          " #${i + 1} ",
+                                          style: const TextStyle(
+                                            color: CustomTheme.primaryColor,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: ReorderableListView.builder(
+                                padding: EdgeInsets.zero,
+                                proxyDecorator: (child, index, animation) {
+                                  return Material(
+                                    color: Colors.transparent,
+                                    child: child,
+                                  );
+                                },
+                                onReorder: (int oldIndex, int newIndex) {
+                                  setState(() {
+                                    if (newIndex > oldIndex) {
+                                      newIndex -= 1;
+                                    }
+                                    final Player item = allPlayers.removeAt(
+                                      oldIndex,
+                                    );
+                                    allPlayers.insert(newIndex, item);
+                                  });
+                                },
+                                itemCount: allPlayers.length,
+                                itemBuilder: (context, index) {
+                                  return TextIconListTile(
+                                    key: ValueKey(allPlayers[index].id),
+                                    text: allPlayers[index].name,
+                                    iconEnabled: false,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -222,6 +293,8 @@ class _MatchResultViewState extends State<MatchResultView> {
     } else if (ruleset == Ruleset.lowestScore ||
         ruleset == Ruleset.highestScore) {
       await _handleScores();
+    } else if (ruleset == Ruleset.placement) {
+      await _handlePlacement();
     }
 
     widget.onWinnerChanged?.call();
@@ -267,12 +340,29 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
   }
 
+  /// Handles saving the placement for each player in the database.
+  Future<void> _handlePlacement() async {
+    for (int i = 0; i < allPlayers.length; i++) {
+      await db.scoreEntryDao.addScore(
+        matchId: widget.match.id,
+        playerId: allPlayers[i].id,
+        entry: ScoreEntry(
+          roundNumber: 0,
+          score: allPlayers.length - i,
+          change: 0,
+        ),
+      );
+    }
+  }
+
   String getTitleForRuleset(AppLocalizations loc) {
     switch (ruleset) {
       case Ruleset.singleWinner:
         return loc.select_winner;
       case Ruleset.singleLoser:
         return loc.select_loser;
+      case Ruleset.placement:
+        return loc.drag_to_set_placement;
       default:
         return loc.enter_points;
     }
@@ -284,5 +374,9 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool rulesetSupportsScoreEntry() {
     return ruleset == Ruleset.lowestScore || ruleset == Ruleset.highestScore;
+  }
+
+  bool rulesetSupportsPlacement() {
+    return ruleset == Ruleset.placement;
   }
 }

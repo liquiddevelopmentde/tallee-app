@@ -18,6 +18,8 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
       return loc.single_loser;
     case Ruleset.multipleWinners:
       return loc.multiple_winners;
+    case Ruleset.placement:
+      return loc.placement;
   }
 }
 

@@ -156,6 +156,9 @@ class Match {
 
       case Ruleset.multipleWinners:
         return [];
+
+      case Ruleset.placement:
+        return _getPlayersWithHighestScore().take(1).toList();
     }
   }
 

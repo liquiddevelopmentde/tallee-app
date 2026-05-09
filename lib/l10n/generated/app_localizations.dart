@@ -242,6 +242,12 @@ abstract class AppLocalizations {
   /// **'Delete Match'**
   String get delete_match;
 
+  /// Label for dragging to set placement
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to set placement'**
+  String get drag_to_set_placement;
+
   /// Button & Appbar label for editing a group
   ///
   /// In en, this message translates to:
@@ -524,6 +530,12 @@ abstract class AppLocalizations {
   /// **'Not available'**
   String get not_available;
 
+  /// Title for placement ruleset
+  ///
+  /// In en, this message translates to:
+  /// **'Placement'**
+  String get placement;
+
   /// Label for played matches statistic
   ///
   /// In en, this message translates to:
@@ -601,6 +613,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Traditional ruleset: the player with the most points wins.'**
   String get ruleset_most_points;
+
+  /// Description for placement ruleset
+  ///
+  /// In en, this message translates to:
+  /// **'Players can be arranged in an order, which reflects their placement.'**
+  String get ruleset_placement;
 
   /// Description for single loser ruleset
   ///
