@@ -240,6 +240,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             match: match,
                             onWinnerChanged: () {
                               widget.onMatchUpdate.call();
+                              setState(() {
+                                updateScoresForCurrentMatch();
+                              });
                             },
                           ),
                         ),
@@ -427,5 +430,11 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       default:
         return '${number}th';
     }
+  }
+
+  void updateScoresForCurrentMatch() {
+    db.scoreEntryDao
+        .getAllMatchScores(matchId: match.id)
+        .then((scores) => match.scores = scores);
   }
 }
