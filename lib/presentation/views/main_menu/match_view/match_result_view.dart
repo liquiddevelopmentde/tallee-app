@@ -144,7 +144,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                             });
                           },
                           child: ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: allPlayers.length,
                             itemBuilder: (context, index) {
                               return CustomRadioListTile(
