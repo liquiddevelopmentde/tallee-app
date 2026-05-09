@@ -203,7 +203,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                                         height: 50,
                                         width: 40,
                                         child: Text(
-                                          " #${i + 1} ",
+                                          ' #${i + 1} ',
                                           style: const TextStyle(
                                             color: CustomTheme.primaryColor,
                                             fontWeight: FontWeight.bold,

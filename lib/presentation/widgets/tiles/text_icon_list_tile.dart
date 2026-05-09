@@ -50,7 +50,7 @@ class TextIconListTile extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: prefixText,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: CustomTheme.primaryColor,
