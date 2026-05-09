@@ -28,9 +28,12 @@ class CreateMatchView extends StatefulWidget {
     this.onWinnerChanged,
     this.matchToEdit,
     this.onMatchUpdated,
+    this.onMatchesUpdated,
   });
 
   final VoidCallback? onWinnerChanged;
+
+  final VoidCallback? onMatchesUpdated;
 
   final void Function(Match)? onMatchUpdated;
 
@@ -115,6 +118,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              // Match name input field.
               Container(
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
@@ -123,34 +127,40 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   maxLength: Constants.MAX_MATCH_NAME_LENGTH,
                 ),
               ),
-              ChooseTile(
-                title: loc.game,
-                trailingText: selectedGame == null
-                    ? loc.none_group
-                    : selectedGame!.name,
-                onPressed: () async {
-                  selectedGame = await Navigator.of(context).push(
-                    adaptivePageRoute(
-                      builder: (context) => ChooseGameView(
-                        games: gamesList,
-                        initialGameId: selectedGame?.id ?? '',
+
+              // Game selection tile.
+              if (!isEditMode())
+                ChooseTile(
+                  title: loc.game,
+                  trailing: selectedGame == null
+                      ? Text(loc.none_group)
+                      : Text(selectedGame!.name),
+                  onPressed: () async {
+                    selectedGame = await Navigator.of(context).push(
+                      adaptivePageRoute(
+                        builder: (context) => ChooseGameView(
+                          games: gamesList,
+                          initialGameId: selectedGame?.id ?? '',
+                          onGamesUpdated: widget.onMatchesUpdated,
+                        ),
                       ),
-                    ),
-                  );
-                  setState(() {
-                    if (selectedGame != null) {
-                      hintText = selectedGame!.name;
-                    } else {
-                      hintText = loc.match_name;
-                    }
-                  });
-                },
-              ),
+                    );
+                    setState(() {
+                      if (selectedGame != null) {
+                        hintText = selectedGame!.name;
+                      } else {
+                        hintText = loc.match_name;
+                      }
+                    });
+                  },
+                ),
+
+              // Group selection tile.
               ChooseTile(
                 title: loc.group,
-                trailingText: selectedGroup == null
-                    ? loc.none_group
-                    : selectedGroup!.name,
+                trailing: selectedGroup == null
+                    ? Text(loc.none_group)
+                    : Text(selectedGroup!.name),
                 onPressed: () async {
                   // Remove all players from the previously selected group from
                   // the selected players list, in case the user deselects the
@@ -181,6 +191,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   });
                 },
               ),
+
+              // Player selection widget.
               Expanded(
                 child: PlayerSelection(
                   key: ValueKey(selectedGroup?.id ?? 'no_group'),
@@ -193,6 +205,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   },
                 ),
               ),
+
+              // Create or save button.
               CustomWidthButton(
                 text: buttonText,
                 sizeRelativeToWidth: 0.95,
@@ -218,16 +232,16 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   ///
   /// Returns `true` if:
   /// - A ruleset is selected AND
-  /// - Either a group is selected OR at least 2 players are selected
+  /// - Either a group is selected OR at least 2 players are selected.
   bool _enableCreateGameButton() {
     return (selectedGroup != null ||
         (selectedPlayers.length > 1) && selectedGame != null);
   }
 
-  // If a match was provided to the view, it updates the match in the database
-  // and navigates back to the previous screen.
-  // If no match was provided, it creates a new match in the database and
-  // navigates to the MatchResultView for the newly created match.
+  /// Handles navigation when the create or save button is pressed.
+  ///
+  /// If a match is being edited, updates the match in the database.
+  /// Otherwise, creates a new match and navigates to the MatchResultView.
   void buttonNavigation(BuildContext context) async {
     if (isEditMode()) {
       await updateMatch();
@@ -252,8 +266,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     }
   }
 
-  /// Updates attributes of the existing match in the database based on the
-  /// changes made in the edit view.
+  /// Updates the existing match in the database.
   Future<void> updateMatch() async {
     final updatedMatch = Match(
       id: widget.matchToEdit!.id,
@@ -262,7 +275,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           : _matchNameController.text.trim(),
       group: selectedGroup,
       players: selectedPlayers,
-      game: widget.matchToEdit!.game,
+      game: selectedGame!,
       createdAt: widget.matchToEdit!.createdAt,
       endedAt: widget.matchToEdit!.endedAt,
       notes: widget.matchToEdit!.notes,

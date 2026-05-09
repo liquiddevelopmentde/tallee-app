@@ -1,5 +1,6 @@
 {
   "@@locale": "en",
+
   "@all_players": {
     "description": "Label for all players list"
   },
@@ -352,10 +353,21 @@
   "app_name": "Tallee",
   "best_player": "Best Player",
   "cancel": "Cancel",
+  "choose_color": "Choose Color",
   "choose_game": "Choose Game",
   "choose_group": "Choose Group",
   "choose_ruleset": "Choose Ruleset",
+  "color": "Color",
+  "color_blue": "Blue",
+  "color_green": "Green",
+  "color_orange": "Orange",
+  "color_pink": "Pink",
+  "color_purple": "Purple",
+  "color_red": "Red",
+  "color_teal": "Teal",
+  "color_yellow": "Yellow",
   "could_not_add_player": "Could not add player",
+  "create_game": "Create Game",
   "create_group": "Create Group",
   "create_match": "Create match",
   "create_new_group": "Create new group",
@@ -368,14 +380,26 @@
   "days_ago": "{count} days ago",
   "delete": "Delete",
   "delete_all_data": "Delete all data",
+  "delete_game": "Delete Game",
+  "delete_game_with_matches_warning": "If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.",
+  "@delete_game_with_matches_warning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "delete_group": "Delete Group",
   "delete_match": "Delete Match",
   "drag_to_set_placement": "Drag to set placement",
+  "description": "Description",
+  "edit_game": "Edit Game",
   "edit_group": "Edit Group",
   "edit_match": "Edit Match",
   "enter_points": "Enter points",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
+  "error_deleting_game": "Error while deleting game, please try again",
   "error_deleting_group": "Error while deleting group, please try again",
   "error_editing_group": "Error while editing group, please try again",
   "error_reading_file": "Error reading file",
@@ -404,6 +428,7 @@
   "members": "Members",
   "most_points": "Most Points",
   "no_data_available": "No data available",
+  "no_games_created_yet": "No games created yet",
   "no_groups_created_yet": "No groups created yet",
   "no_licenses_found": "No licenses found",
   "no_license_text_available": "No license text available",
@@ -423,7 +448,6 @@
   "played_matches": "Played Matches",
   "player_name": "Player name",
   "players": "Players",
-  "players_count": "{count} Players",
   "point": "Point",
   "points": "Points",
   "privacy_policy": "Privacy Policy",
@@ -452,6 +476,16 @@
   "statistics": "Statistics",
   "stats": "Stats",
   "successfully_added_player": "Successfully added player {playerName}",
+  "@successfully_added_player": {
+    "description": "Success message when adding a player",
+    "placeholders": {
+      "playerName": {
+        "type": "String",
+        "example": "John"
+      }
+    }
+  },
+  "there_are_no_games_matching_your_search": "There are no games matching your search",
   "there_is_no_group_matching_your_search": "There is no group matching your search",
   "this_cannot_be_undone": "This can't be undone.",
   "tie": "Tie",

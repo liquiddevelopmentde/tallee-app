@@ -7,6 +7,7 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
 class MatchTile extends StatefulWidget {
@@ -116,56 +117,13 @@ class _MatchTileState extends State<MatchTile> {
 
             // Game + Ruleset Badge
             if (!widget.compact)
-              IntrinsicHeight(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Game
-                    Container(
-                      decoration: BoxDecoration(
-                        color: CustomTheme.primaryColor.withAlpha(230),
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          bottomLeft: Radius.circular(8),
-                        ),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 4,
-                        horizontal: 8,
-                      ),
-                      child: Text(
-                        match.game.name,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    // Ruleset
-                    Container(
-                      decoration: BoxDecoration(
-                        color: CustomTheme.primaryColor.withAlpha(140),
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomRight: Radius.circular(8),
-                        ),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 4,
-                        horizontal: 8,
-                      ),
-                      child: Text(
-                        translateRulesetToString(match.game.ruleset, context),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
+              GameLabel(
+                title: match.game.name,
+                description: translateRulesetToString(
+                  match.game.ruleset,
+                  context,
                 ),
+                color: match.game.color,
               ),
 
             const SizedBox(height: 12),

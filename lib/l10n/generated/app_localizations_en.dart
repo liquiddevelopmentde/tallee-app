@@ -27,6 +27,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get choose_color => 'Choose Color';
+
+  @override
   String get choose_game => 'Choose Game';
 
   @override
@@ -36,9 +39,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get choose_ruleset => 'Choose Ruleset';
 
   @override
+  String get color => 'Color';
+
+  @override
+  String get color_blue => 'Blue';
+
+  @override
+  String get color_green => 'Green';
+
+  @override
+  String get color_orange => 'Orange';
+
+  @override
+  String get color_pink => 'Pink';
+
+  @override
+  String get color_purple => 'Purple';
+
+  @override
+  String get color_red => 'Red';
+
+  @override
+  String get color_teal => 'Teal';
+
+  @override
+  String get color_yellow => 'Yellow';
+
+  @override
   String could_not_add_player(Object playerName) {
     return 'Could not add player';
   }
+
+  @override
+  String get create_game => 'Create Game';
 
   @override
   String get create_group => 'Create Group';
@@ -68,7 +101,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get data_successfully_imported => 'Data successfully imported';
 
   @override
-  String days_ago(int count) {
+  String days_ago(Object count) {
     return '$count days ago';
   }
 
@@ -79,13 +112,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_all_data => 'Delete all data';
 
   @override
+  String get delete_game => 'Delete Game';
+
+  @override
+  String delete_game_with_matches_warning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matches',
+      one: '1 match',
+    );
+    return 'If you delete this game template, $_temp0 using this game template will also be deleted.';
+  }
+
+  @override
   String get delete_group => 'Delete Group';
 
   @override
   String get delete_match => 'Delete Match';
 
   @override
-  String get drag_to_set_placement => 'Drag to set placement';
+  String get description => 'Description';
+
+  @override
+  String get edit_game => 'Edit Game';
 
   @override
   String get edit_group => 'Edit Group';
@@ -102,6 +152,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get error_creating_group =>
       'Error while creating group, please try again';
+
+  @override
+  String get error_deleting_game =>
+      'Error while deleting game, please try again';
 
   @override
   String get error_deleting_group =>
@@ -190,6 +244,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_data_available => 'No data available';
 
   @override
+  String get no_games_created_yet => 'No games created yet';
+
+  @override
   String get no_groups_created_yet => 'No groups created yet';
 
   @override
@@ -233,12 +290,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get not_available => 'Not available';
 
   @override
-  String get placement => 'Placement';
-
-  @override
-  String get place => 'place';
-
-  @override
   String get played_matches => 'Played Matches';
 
   @override
@@ -246,11 +297,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get players => 'Players';
-
-  @override
-  String players_count(int count) {
-    return '$count Players';
-  }
 
   @override
   String get point => 'Point';
@@ -280,10 +326,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ruleset_most_points =>
       'Traditional ruleset: the player with the most points wins.';
-
-  @override
-  String get ruleset_placement =>
-      'Players can be arranged in an order, which reflects their placement.';
 
   @override
   String get ruleset_single_loser =>
@@ -342,6 +384,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String successfully_added_player(String playerName) {
     return 'Successfully added player $playerName';
   }
+
+  @override
+  String get there_are_no_games_matching_your_search =>
+      'There are no games matching your search';
 
   @override
   String get there_is_no_group_matching_your_search =>

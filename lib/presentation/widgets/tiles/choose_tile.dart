@@ -4,12 +4,12 @@ import 'package:tallee/core/custom_theme.dart';
 class ChooseTile extends StatefulWidget {
   /// A tile widget that allows users to choose an option by tapping on it.
   /// - [title]: The title text displayed on the tile.
-  /// - [trailingText]: Optional trailing text displayed on the tile.
+  /// - [trailing]: Optional trailing text displayed on the tile.
   /// - [onPressed]: The callback invoked when the tile is tapped.
   const ChooseTile({
     super.key,
     required this.title,
-    this.trailingText,
+    this.trailing,
     this.onPressed,
   });
 
@@ -20,7 +20,7 @@ class ChooseTile extends StatefulWidget {
   final VoidCallback? onPressed;
 
   /// Optional trailing text displayed on the tile.
-  final String? trailingText;
+  final Widget? trailing;
 
   @override
   State<ChooseTile> createState() => _ChooseTileState();
@@ -42,9 +42,11 @@ class _ChooseTileState extends State<ChooseTile> {
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const Spacer(),
-            if (widget.trailingText != null) Text(widget.trailingText!),
-            const SizedBox(width: 10),
-            const Icon(Icons.arrow_forward_ios, size: 16),
+            if (widget.trailing != null) widget.trailing!,
+            if (widget.onPressed != null) ...[
+              const SizedBox(width: 10),
+              const Icon(Icons.arrow_forward_ios, size: 16),
+            ],
           ],
         ),
       ),
