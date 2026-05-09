@@ -288,13 +288,16 @@ class _CreateGameViewState extends State<CreateGameView> {
                       ),
                     ),
                     child: Row(
+                      spacing: 8,
                       children: [
                         Icon(getRulesetIcon(selectedRuleset!), size: 16),
-                        const SizedBox(width: 5),
-                        Text(
-                          translateRulesetToString(selectedRuleset!, context),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Text(
+                            translateRulesetToString(selectedRuleset!, context),
+                            textAlign: TextAlign.right,
+                          ),
                         ),
-                        const SizedBox(width: 5),
                         Transform.rotate(
                           angle: pi / 2,
                           child: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -403,16 +406,20 @@ class _CreateGameViewState extends State<CreateGameView> {
                           Container(
                             width: 16,
                             height: 16,
-                            margin: const EdgeInsets.only(left: 12),
                             decoration: BoxDecoration(
                               color: getColorFromGameColor(selectedColor!),
                               shape: BoxShape.circle,
                             ),
                           ),
-                          Text(
-                            translateGameColorToString(selectedColor!, context),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Text(
+                              translateGameColorToString(
+                                selectedColor!,
+                                context,
+                              ),
+                            ),
                           ),
-                          const SizedBox(width: 5),
                           Transform.rotate(
                             angle: pi / 2,
                             child: const Icon(
