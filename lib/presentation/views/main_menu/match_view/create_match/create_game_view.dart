@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:provider/provider.dart';
@@ -292,6 +294,11 @@ class _CreateGameViewState extends State<CreateGameView> {
                         Text(
                           translateRulesetToString(selectedRuleset!, context),
                         ),
+                        const SizedBox(width: 5),
+                        Transform.rotate(
+                          angle: pi / 2,
+                          child: const Icon(Icons.arrow_forward_ios, size: 16),
+                        ),
                       ],
                     ),
                   ),
@@ -404,6 +411,14 @@ class _CreateGameViewState extends State<CreateGameView> {
                           ),
                           Text(
                             translateGameColorToString(selectedColor!, context),
+                          ),
+                          const SizedBox(width: 5),
+                          Transform.rotate(
+                            angle: pi / 2,
+                            child: const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                            ),
                           ),
                         ],
                       ),
