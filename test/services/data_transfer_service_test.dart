@@ -883,14 +883,6 @@ void main() {
             'createdAt': testGroup.createdAt.toIso8601String(),
           },
         ],
-        'teams': [
-          {
-            'id': testTeam.id,
-            'name': testTeam.name,
-            'memberIds': [testPlayer1.id, testPlayer2.id],
-            'createdAt': testTeam.createdAt.toIso8601String(),
-          },
-        ],
         'matches': [
           {
             'id': testMatch.id,

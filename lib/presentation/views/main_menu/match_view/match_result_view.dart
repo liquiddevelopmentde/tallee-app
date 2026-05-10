@@ -8,6 +8,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/score_list_tile.dart';
@@ -45,8 +46,11 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Flag to indicate if the save button should be enabled
   late bool canSave;
 
-  /// Currently selected winner player
+  /// Currently selected player (single winner / looser)
   Player? _selectedPlayer;
+
+  /// Currently selected players (multiple winners)
+  final Set<Player> _selectedPlayers = {};
 
   @override
   void initState() {
@@ -64,17 +68,25 @@ class _MatchResultViewState extends State<MatchResultView> {
 
     // Prefill fields
     if (widget.match.mvp.isNotEmpty) {
-      if (rulesetSupportsWinnerSelection()) {
-        _selectedPlayer = allPlayers.firstWhere(
-          (p) => p.id == widget.match.mvp.first.id,
-        );
+      if (rulesetSupportsPlayerSelection()) {
+        if (ruleset == Ruleset.multipleWinners) {
+          for (int i = 0; i < allPlayers.length; i++) {
+            if (widget.match.scores[allPlayers[i].id]?.score == 1) {
+              _selectedPlayers.add(allPlayers[i]);
+            }
+          }
+        } else {
+          _selectedPlayer = allPlayers.firstWhere(
+            (p) => p.id == widget.match.mvp.first.id,
+          );
+        }
       } else if (rulesetSupportsScoreEntry()) {
         for (int i = 0; i < allPlayers.length; i++) {
           final scoreList = widget.match.scores[allPlayers[i].id];
           final score = scoreList?.score ?? 0;
           controller[i].text = score.toString();
         }
-      } else if (rulesetSupportsPlacement()) {
+      } else if (rulesetSupportsDragBehaviour()) {
         allPlayers.sort((a, b) {
           final scoreA = widget.match.scores[a.id]?.score ?? 0;
           final scoreB = widget.match.scores[b.id]?.score ?? 0;
@@ -158,38 +170,68 @@ class _MatchResultViewState extends State<MatchResultView> {
                           const SizedBox(height: 10),
 
                           // Show player selection
-                          if (rulesetSupportsWinnerSelection())
+                          if (rulesetSupportsPlayerSelection())
                             Expanded(
-                              child: RadioGroup<Player>(
-                                groupValue: _selectedPlayer,
-                                onChanged: (Player? value) async {
-                                  setState(() {
-                                    _selectedPlayer = value;
-                                  });
-                                },
-                                child: ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: allPlayers.length,
-                                  itemBuilder: (context, index) {
-                                    return CustomRadioListTile(
-                                      text: allPlayers[index].name,
-                                      value: allPlayers[index],
-                                      onContainerTap: (value) async {
+                              child: ruleset == Ruleset.multipleWinners
+                                  // Multiple winners
+                                  ? ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: allPlayers.length,
+                                      itemBuilder: (context, index) {
+                                        return CustomCheckboxListTile(
+                                          text: allPlayers[index].name,
+                                          value: _selectedPlayers.contains(
+                                            allPlayers[index],
+                                          ),
+                                          onChanged: (bool value) {
+                                            setState(() {
+                                              if (value) {
+                                                _selectedPlayers.add(
+                                                  allPlayers[index],
+                                                );
+                                              } else {
+                                                _selectedPlayers.remove(
+                                                  allPlayers[index],
+                                                );
+                                              }
+                                            });
+                                          },
+                                        );
+                                      },
+                                    )
+                                  // Single winner / looser
+                                  : RadioGroup<Player>(
+                                      groupValue: _selectedPlayer,
+                                      onChanged: (Player? value) async {
                                         setState(() {
-                                          // Check if the already selected player is the same as the newly tapped player.
-                                          if (_selectedPlayer == value) {
-                                            // If yes deselected the player by setting it to null.
-                                            _selectedPlayer = null;
-                                          } else {
-                                            // If no assign the newly tapped player to the selected player.
-                                            (_selectedPlayer = value);
-                                          }
+                                          _selectedPlayer = value;
                                         });
                                       },
-                                    );
-                                  },
-                                ),
-                              ),
+                                      child: ListView.builder(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: allPlayers.length,
+                                        itemBuilder: (context, index) {
+                                          return CustomRadioListTile(
+                                            text: allPlayers[index].name,
+                                            value: allPlayers[index],
+                                            onContainerTap: (value) async {
+                                              setState(() {
+                                                // Check if the already selected player is the same as the newly tapped player.
+                                                if (_selectedPlayer == value) {
+                                                  // If yes deselected the player by setting it to null.
+                                                  _selectedPlayer = null;
+                                                } else {
+                                                  // If no assign the newly tapped player to the selected player.
+                                                  (_selectedPlayer = value);
+                                                }
+                                              });
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
                             ),
 
                           // Show score entry
@@ -216,7 +258,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                             ),
 
                           // Show draggable placement list
-                          if (rulesetSupportsPlacement())
+                          if (rulesetSupportsDragBehaviour())
                             Expanded(
                               child: Row(
                                 children: [
@@ -382,12 +424,14 @@ class _MatchResultViewState extends State<MatchResultView> {
       await _handleScores();
     } else if (ruleset == Ruleset.placement) {
       await _handlePlacement();
+    } else if (ruleset == Ruleset.multipleWinners) {
+      await _handleWinners();
     }
 
     widget.onWinnerChanged?.call();
   }
 
-  /// Handles saving or removing the winner in the database.
+  /// Handles saving or removing the (single) winner in the database.
   Future<bool> _handleWinner() async {
     if (_selectedPlayer == null) {
       return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
@@ -395,6 +439,18 @@ class _MatchResultViewState extends State<MatchResultView> {
       return await db.scoreEntryDao.setWinner(
         matchId: widget.match.id,
         playerId: _selectedPlayer!.id,
+      );
+    }
+  }
+
+  /// Handles saving the (multiple) winners to the database.
+  Future<bool> _handleWinners() async {
+    if (_selectedPlayers.isEmpty) {
+      return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
+    } else {
+      return await db.scoreEntryDao.setWinners(
+        matchId: widget.match.id,
+        winners: allPlayers.where((p) => _selectedPlayers.contains(p)).toList(),
       );
     }
   }
@@ -443,20 +499,24 @@ class _MatchResultViewState extends State<MatchResultView> {
         return loc.select_loser;
       case Ruleset.placement:
         return loc.drag_to_set_placement;
+      case Ruleset.multipleWinners:
+        return loc.select_winners;
       default:
         return loc.enter_points;
     }
   }
 
-  bool rulesetSupportsWinnerSelection() {
-    return ruleset == Ruleset.singleWinner || ruleset == Ruleset.singleLoser;
+  bool rulesetSupportsPlayerSelection() {
+    return ruleset == Ruleset.singleWinner ||
+        ruleset == Ruleset.singleLoser ||
+        ruleset == Ruleset.multipleWinners;
   }
 
   bool rulesetSupportsScoreEntry() {
     return ruleset == Ruleset.lowestScore || ruleset == Ruleset.highestScore;
   }
 
-  bool rulesetSupportsPlacement() {
+  bool rulesetSupportsDragBehaviour() {
     return ruleset == Ruleset.placement;
   }
 }

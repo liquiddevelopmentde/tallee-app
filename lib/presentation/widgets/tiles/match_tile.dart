@@ -264,6 +264,9 @@ class _MatchTileState extends State<MatchTile> {
       return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
     } else if (ruleset == Ruleset.placement) {
       return '${loc.winner}: ${widget.match.mvp.first.name}';
+    } else if (ruleset == Ruleset.multipleWinners) {
+      final mvpNames = widget.match.mvp.map((player) => player.name).join(', ');
+      return '${loc.winners}: $mvpNames';
     }
     return '${loc.winner}: n.A.';
   }

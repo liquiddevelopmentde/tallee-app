@@ -34,21 +34,13 @@ enum ExportResult { success, canceled, unknownException }
 /// - [Ruleset.multipleWinners]: Multiple players can be winners.
 /// - [Ruleset.placement]: The player with the highest placement wins.
 enum Ruleset {
+  singleWinner,
+  multipleWinners,
   highestScore,
   lowestScore,
-  singleWinner,
-  singleLoser,
-  multipleWinners,
   placement,
+  singleLoser,
 }
 
-/// Different colors available for games
-/// - [GameColor.red]: Red color
-/// - [GameColor.blue]: Blue color
-/// - [GameColor.green]: Green color
-/// - [GameColor.yellow]: Yellow color
-/// - [GameColor.purple]: Purple color
-/// - [GameColor.orange]: Orange color
-/// - [GameColor.pink]: Pink color
-/// - [GameColor.teal]: Teal color
-enum GameColor { red, blue, green, yellow, purple, orange, pink, teal }
+/// Different colors for highlighting games
+enum GameColor { red, orange, yellow, green, teal, blue, purple, pink }

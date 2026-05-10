@@ -271,6 +271,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   Widget getResultWidget(AppLocalizations loc) {
     if (isSingleRowResult()) {
       return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: getSingleResultRow(loc),
       );
@@ -282,47 +283,55 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   /// Returns the result row for single winner/loser rulesets or a placeholder
   /// if no result is entered yet
   List<Widget> getSingleResultRow(AppLocalizations loc) {
-    // Single Winner
-    if (match.mvp.isNotEmpty && match.game.ruleset == Ruleset.singleWinner) {
-      return [
-        Text(
-          loc.winner,
-          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
-        ),
-        Text(
-          match.mvp.first.name,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: CustomTheme.primaryColor,
+    if (match.mvp.isNotEmpty) {
+      final ruleset = match.game.ruleset;
+
+      if (ruleset == Ruleset.singleWinner || ruleset == Ruleset.singleLoser) {
+        return [
+          Text(
+            ruleset == Ruleset.singleWinner ? loc.winner : loc.loser,
+            style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
           ),
-        ),
-      ];
-      // Single Loser
-    } else if (match.game.ruleset == Ruleset.singleLoser) {
-      return [
-        Text(
-          loc.loser,
-          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
-        ),
-        Text(
-          match.mvp.first.name,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: CustomTheme.primaryColor,
+          Text(
+            match.mvp.first.name,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: CustomTheme.primaryColor,
+            ),
           ),
-        ),
-      ];
-      // No result entered yet
-    } else {
-      return [
-        Text(
-          loc.no_results_entered_yet,
-          style: const TextStyle(fontSize: 14, color: CustomTheme.textColor),
-        ),
-      ];
+        ];
+      } else if (match.game.ruleset == Ruleset.multipleWinners) {
+        return [
+          Text(
+            loc.winners,
+            style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
+          ),
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                match.mvp.map((player) => player.name).join(', '),
+                textAlign: TextAlign.end,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: CustomTheme.primaryColor,
+                ),
+              ),
+            ),
+          ),
+        ];
+      }
     }
+
+    // No results yet
+    return [
+      Text(
+        loc.no_results_entered_yet,
+        style: const TextStyle(fontSize: 14, color: CustomTheme.textColor),
+      ),
+    ];
   }
 
   /// Returns the result widget for scores or placement
@@ -401,7 +410,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   // Returns if the result can be displayed in a single row
   bool isSingleRowResult() {
     return match.game.ruleset == Ruleset.singleWinner ||
-        match.game.ruleset == Ruleset.singleLoser;
+        match.game.ruleset == Ruleset.singleLoser ||
+        match.game.ruleset == Ruleset.multipleWinners;
   }
 
   String getPlacementText(BuildContext context, int rank) {
