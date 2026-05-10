@@ -47,9 +47,9 @@ class _CreateGameViewState extends State<CreateGameView> {
   late final AppDatabase db;
 
   late List<(Ruleset, String)> _rulesets;
-  Ruleset? selectedRuleset = Ruleset.singleWinner;
-
   late List<(GameColor, String)> _colors;
+
+  Ruleset? selectedRuleset = Ruleset.singleWinner;
   GameColor? selectedColor = GameColor.orange;
 
   /// Controller for the game name input field.
@@ -77,39 +77,20 @@ class _CreateGameViewState extends State<CreateGameView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _rulesets = [
-      (
-        Ruleset.singleWinner,
-        translateRulesetToString(Ruleset.singleWinner, context),
+    _rulesets = List.generate(
+      Ruleset.values.length,
+      (index) => (
+        Ruleset.values[index],
+        translateRulesetToString(Ruleset.values[index], context),
       ),
-      (
-        Ruleset.singleLoser,
-        translateRulesetToString(Ruleset.singleLoser, context),
+    );
+    _colors = List.generate(
+      GameColor.values.length,
+      (index) => (
+        GameColor.values[index],
+        translateGameColorToString(GameColor.values[index], context),
       ),
-      (
-        Ruleset.highestScore,
-        translateRulesetToString(Ruleset.highestScore, context),
-      ),
-      (
-        Ruleset.lowestScore,
-        translateRulesetToString(Ruleset.lowestScore, context),
-      ),
-      (
-        Ruleset.multipleWinners,
-        translateRulesetToString(Ruleset.multipleWinners, context),
-      ),
-      (Ruleset.placement, translateRulesetToString(Ruleset.placement, context)),
-    ];
-    _colors = [
-      (GameColor.green, translateGameColorToString(GameColor.green, context)),
-      (GameColor.teal, translateGameColorToString(GameColor.teal, context)),
-      (GameColor.blue, translateGameColorToString(GameColor.blue, context)),
-      (GameColor.purple, translateGameColorToString(GameColor.purple, context)),
-      (GameColor.pink, translateGameColorToString(GameColor.pink, context)),
-      (GameColor.red, translateGameColorToString(GameColor.red, context)),
-      (GameColor.orange, translateGameColorToString(GameColor.orange, context)),
-      (GameColor.yellow, translateGameColorToString(GameColor.yellow, context)),
-    ];
+    );
 
     if (widget.gameToEdit != null) {
       _gameNameController.text = widget.gameToEdit!.name;
