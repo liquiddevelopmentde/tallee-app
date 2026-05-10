@@ -276,13 +276,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   /// Returns `true` if the winner was removed, `false` if there are multiple
   /// scores or if the winner cannot be removed.
   Future<bool> removeWinner({required String matchId}) async {
-    final scores = await getAllMatchScores(matchId: matchId);
-
-    if (scores.length > 1) {
-      return false;
-    } else {
-      return await deleteAllScoresForMatch(matchId: matchId);
-    }
+    return await deleteAllScoresForMatch(matchId: matchId);
   }
 
   /* multiple winners handling */
@@ -318,13 +312,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     });
 
     return true;
-  }
-
-  /// Removes the winners of a match.
-  ///
-  /// Returns `true` if more than 0 rows were affected, `false` otherwise.
-  Future<bool> removeWinners({required String matchId}) async {
-    return await deleteAllScoresForMatch(matchId: matchId);
   }
 
   /* Loser handling */

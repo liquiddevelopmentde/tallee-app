@@ -444,7 +444,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Handles saving the (multiple) winners to the database.
   Future<bool> _handleWinners() async {
     if (_selectedWinners.isEmpty) {
-      return await db.scoreEntryDao.removeWinners(matchId: widget.match.id);
+      return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
     } else {
       return await db.scoreEntryDao.setWinners(
         matchId: widget.match.id,
