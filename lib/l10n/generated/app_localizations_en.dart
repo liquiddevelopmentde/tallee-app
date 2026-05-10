@@ -367,6 +367,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_winner => 'Select Winner';
 
   @override
+  String get select_winners => 'Select Winners';
+
+  @override
   String get select_loser => 'Select Loser';
 
   @override

@@ -770,6 +770,12 @@ abstract class AppLocalizations {
   /// **'Select Winner'**
   String get select_winner;
 
+  /// No description provided for @select_winners.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Winners'**
+  String get select_winners;
+
   /// No description provided for @select_loser.
   ///
   /// In en, this message translates to:

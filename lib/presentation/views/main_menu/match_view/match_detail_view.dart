@@ -269,6 +269,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   /// Returns the widget to be displayed in the result [InfoTile]
   Widget getResultWidget(AppLocalizations loc) {
+    ///TODO: add support for multiple winners
     if (isSingleRowResult()) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

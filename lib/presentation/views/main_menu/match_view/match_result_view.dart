@@ -8,6 +8,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/score_list_tile.dart';
@@ -45,8 +46,11 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Flag to indicate if the save button should be enabled
   late bool canSave;
 
-  /// Currently selected winner player
+  /// Currently selected winner player (single winner)
   Player? _selectedPlayer;
+
+  /// Currently selected winners (multiple winners)
+  Set<String> _selectedWinners = {};
 
   @override
   void initState() {
@@ -80,7 +84,10 @@ class _MatchResultViewState extends State<MatchResultView> {
           final scoreB = widget.match.scores[b.id]?.score ?? 0;
           return scoreB.compareTo(scoreA);
         });
+      } else if (rulesetSupportsMultipleWinners()) {
+        //TODO: Implement winners pre filling
       }
+      ;
       super.initState();
     }
   }
@@ -319,6 +326,36 @@ class _MatchResultViewState extends State<MatchResultView> {
                                 ],
                               ),
                             ),
+
+                          // Show multiple winner selection
+                          if (rulesetSupportsMultipleWinners())
+                            Expanded(
+                              child: ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: allPlayers.length,
+                                itemBuilder: (context, index) {
+                                  return CustomCheckboxListTile(
+                                    text: allPlayers[index].name,
+                                    value: _selectedWinners.contains(
+                                      allPlayers[index].id,
+                                    ),
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        if (value) {
+                                          _selectedWinners.add(
+                                            allPlayers[index].id,
+                                          );
+                                        } else {
+                                          _selectedWinners.remove(
+                                            allPlayers[index].id,
+                                          );
+                                        }
+                                      });
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -382,6 +419,8 @@ class _MatchResultViewState extends State<MatchResultView> {
       await _handleScores();
     } else if (ruleset == Ruleset.placement) {
       await _handlePlacement();
+    } else if (ruleset == Ruleset.multipleWinners) {
+      await _handleWinners();
     }
 
     widget.onWinnerChanged?.call();
@@ -397,6 +436,12 @@ class _MatchResultViewState extends State<MatchResultView> {
         playerId: _selectedPlayer!.id,
       );
     }
+  }
+
+  /// Handles saving the winners to the database.
+  Future<bool> _handleWinners() async {
+    //TODO: Implement winner handling
+    return true;
   }
 
   /// Handles saving or removing the loser in the database.
@@ -443,6 +488,8 @@ class _MatchResultViewState extends State<MatchResultView> {
         return loc.select_loser;
       case Ruleset.placement:
         return loc.drag_to_set_placement;
+      case Ruleset.multipleWinners:
+        return loc.select_winners;
       default:
         return loc.enter_points;
     }
@@ -458,5 +505,9 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool rulesetSupportsPlacement() {
     return ruleset == Ruleset.placement;
+  }
+
+  bool rulesetSupportsMultipleWinners() {
+    return ruleset == Ruleset.multipleWinners;
   }
 }
