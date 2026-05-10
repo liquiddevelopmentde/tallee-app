@@ -326,9 +326,10 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ),
         Flexible(
           child: Container(
-            padding: const EdgeInsets.only(left: 40),
+            padding: const EdgeInsets.only(left: 10),
             child: Text(
               match.mvp.map((player) => player.name).join(', '),
+              textAlign: TextAlign.end,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
