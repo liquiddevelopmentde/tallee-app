@@ -231,11 +231,11 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// Determines whether the "Create Match" button should be enabled.
   ///
   /// Returns `true` if:
-  /// - A ruleset is selected AND
+  /// - A game is selected AND
   /// - Either a group is selected OR at least 2 players are selected.
   bool _enableCreateGameButton() {
-    return (selectedGroup != null ||
-        (selectedPlayers.length > 1) && selectedGame != null);
+    return ((selectedGroup != null || selectedPlayers.length > 1) &&
+        selectedGame != null);
   }
 
   /// Handles navigation when the create or save button is pressed.
