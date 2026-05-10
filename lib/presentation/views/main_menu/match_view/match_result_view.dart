@@ -46,7 +46,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Flag to indicate if the save button should be enabled
   late bool canSave;
 
-  /// Currently selected winner player (single winner)
+  /// Currently selected player (single winner / looser)
   Player? _selectedPlayer;
 
   /// Currently selected players (multiple winners)
