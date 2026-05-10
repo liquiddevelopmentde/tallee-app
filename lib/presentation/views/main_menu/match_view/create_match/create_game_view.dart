@@ -98,6 +98,7 @@ class _CreateGameViewState extends State<CreateGameView> {
         Ruleset.multipleWinners,
         translateRulesetToString(Ruleset.multipleWinners, context),
       ),
+      (Ruleset.placement, translateRulesetToString(Ruleset.placement, context)),
     ];
     _colors = [
       (GameColor.green, translateGameColorToString(GameColor.green, context)),
@@ -212,12 +213,12 @@ class _CreateGameViewState extends State<CreateGameView> {
                 ),
               ),
 
+              // Choose color tile
+              ChooseTile(title: loc.ruleset, trailing: getRulesetDropdown(loc)),
+
               // Choose ruleset tile
               if (!isEditMode())
-                ChooseTile(title: loc.ruleset, trailing: getColorDropdown(loc)),
-
-              // Choose color tile
-              ChooseTile(title: loc.color, trailing: getRulesetDropdown(loc)),
+                ChooseTile(title: loc.color, trailing: getColorDropdown(loc)),
 
               // Description input field
               Container(
