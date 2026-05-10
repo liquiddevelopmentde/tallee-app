@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -55,8 +56,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         actions: [
           IconButton(
             onPressed: () async {
-              await Navigator.push(
-                context,
+              final navigator = Navigator.of(context);
+              await HapticFeedback.selectionClick();
+              await navigator.push(
                 adaptivePageRoute(builder: (_) => const SettingsView()),
               );
               setState(() {
@@ -125,7 +127,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   }
 
   /// Handles tab tap events. Updates the current [index] state.
-  void onTabTapped(int index) {
+  void onTabTapped(int index) async {
+    await HapticFeedback.selectionClick();
     setState(() {
       currentIndex = index;
     });

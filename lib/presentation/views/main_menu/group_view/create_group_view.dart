@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -133,8 +134,10 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     if (!mounted) return;
 
     if (success) {
+      await HapticFeedback.successNotification();
       Navigator.pop(context, updatedGroup);
     } else {
+      await HapticFeedback.errorNotification();
       showSnackbar(
         message: widget.groupToEdit == null
             ? loc.error_creating_group

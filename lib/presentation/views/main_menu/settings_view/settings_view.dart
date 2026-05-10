@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -201,7 +202,8 @@ class _SettingsViewState extends State<SettingsView> {
                               children: [
                                 GestureDetector(
                                   child: const Icon(Icons.language),
-                                  onTap: () => {
+                                  onTap: () async => {
+                                    await HapticFeedback.lightImpact(),
                                     launchUrl(
                                       Uri.parse('https://liquid-dev.de'),
                                     ),
@@ -209,7 +211,8 @@ class _SettingsViewState extends State<SettingsView> {
                                 ),
                                 GestureDetector(
                                   child: const FaIcon(FontAwesomeIcons.github),
-                                  onTap: () => {
+                                  onTap: () async => {
+                                    await HapticFeedback.lightImpact(),
                                     launchUrl(
                                       Uri.parse(
                                         'https://github.com/liquiddevelopmentde',
@@ -223,9 +226,12 @@ class _SettingsViewState extends State<SettingsView> {
                                         ? CupertinoIcons.mail_solid
                                         : Icons.email,
                                   ),
-                                  onTap: () => launchUrl(
-                                    Uri.parse('mailto:hi@liquid-dev.de'),
-                                  ),
+                                  onTap: () async => {
+                                    await HapticFeedback.lightImpact(),
+                                    launchUrl(
+                                      Uri.parse('mailto:hi@liquid-dev.de'),
+                                    ),
+                                  },
                                 ),
                               ],
                             ),
@@ -266,20 +272,38 @@ class _SettingsViewState extends State<SettingsView> {
   void showImportSnackBar({
     required BuildContext context,
     required ImportResult result,
-  }) {
+  }) async {
     final loc = AppLocalizations.of(context);
     switch (result) {
       case ImportResult.success:
+        if (context.mounted) {
+          await HapticFeedback.successNotification();
+        }
         showSnackbar(context: context, message: loc.data_successfully_imported);
       case ImportResult.invalidSchema:
+        if (context.mounted) {
+          await HapticFeedback.errorNotification();
+        }
         showSnackbar(context: context, message: loc.invalid_schema);
       case ImportResult.fileReadError:
+        if (context.mounted) {
+          await HapticFeedback.errorNotification();
+        }
         showSnackbar(context: context, message: loc.error_reading_file);
       case ImportResult.canceled:
+        if (context.mounted) {
+          await HapticFeedback.errorNotification();
+        }
         showSnackbar(context: context, message: loc.import_canceled);
       case ImportResult.formatException:
+        if (context.mounted) {
+          await HapticFeedback.errorNotification();
+        }
         showSnackbar(context: context, message: loc.format_exception);
       case ImportResult.unknownException:
+        if (context.mounted) {
+          await HapticFeedback.errorNotification();
+        }
         showSnackbar(context: context, message: loc.unknown_exception);
     }
   }
@@ -291,13 +315,16 @@ class _SettingsViewState extends State<SettingsView> {
   void showExportSnackBar({
     required BuildContext context,
     required ExportResult result,
-  }) {
+  }) async {
     final loc = AppLocalizations.of(context);
     switch (result) {
       case ExportResult.success:
+        await HapticFeedback.successNotification();
         showSnackbar(context: context, message: loc.data_successfully_exported);
       case ExportResult.canceled:
+        await HapticFeedback.errorNotification();
         showSnackbar(context: context, message: loc.export_canceled);
+        await HapticFeedback.errorNotification();
       case ExportResult.unknownException:
         showSnackbar(context: context, message: loc.unknown_exception);
     }

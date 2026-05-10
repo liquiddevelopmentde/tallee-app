@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
@@ -68,6 +69,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
+              await HapticFeedback.selectionClick();
               showDialog<bool>(
                 context: context,
                 builder: (context) => CustomAlertDialog(
@@ -75,11 +77,17 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   content: Text(loc.this_cannot_be_undone),
                   actions: [
                     CustomDialogAction(
-                      onPressed: () => Navigator.of(context).pop(true),
+                      onPressed: () async {
+                        await HapticFeedback.warningNotification();
+                        Navigator.of(context).pop(true);
+                      },
                       text: loc.delete,
                     ),
                     CustomDialogAction(
-                      onPressed: () => Navigator.of(context).pop(false),
+                      onPressed: () async {
+                        await HapticFeedback.selectionClick();
+                        Navigator.of(context).pop(false);
+                      },
                       buttonType: ButtonType.secondary,
                       text: loc.cancel,
                     ),

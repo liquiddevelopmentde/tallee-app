@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
@@ -33,7 +34,10 @@ class _GroupTileState extends State<GroupTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: () async {
+        await HapticFeedback.selectionClick();
+        widget.onTap?.call();
+      },
       child: AnimatedContainer(
         margin: CustomTheme.standardMargin,
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
