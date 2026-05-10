@@ -50,7 +50,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   Player? _selectedPlayer;
 
   /// Currently selected winners (multiple winners)
-  Set<Player> _selectedWinners = {};
+  final Set<Player> _selectedWinners = {};
 
   @override
   void initState() {
