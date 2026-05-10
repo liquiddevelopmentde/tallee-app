@@ -50,7 +50,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   Player? _selectedPlayer;
 
   /// Currently selected winners (multiple winners)
-  Set<String> _selectedWinners = {};
+  Set<Player> _selectedWinners = {};
 
   @override
   void initState() {
@@ -85,9 +85,12 @@ class _MatchResultViewState extends State<MatchResultView> {
           return scoreB.compareTo(scoreA);
         });
       } else if (rulesetSupportsMultipleWinners()) {
-        //TODO: Implement winners pre filling
+        for (int i = 0; i < allPlayers.length; i++) {
+          if (widget.match.scores[allPlayers[i].id]?.score == 1) {
+            _selectedWinners.add(allPlayers[i]);
+          }
+        }
       }
-      ;
       super.initState();
     }
   }
@@ -337,17 +340,17 @@ class _MatchResultViewState extends State<MatchResultView> {
                                   return CustomCheckboxListTile(
                                     text: allPlayers[index].name,
                                     value: _selectedWinners.contains(
-                                      allPlayers[index].id,
+                                      allPlayers[index],
                                     ),
                                     onChanged: (bool value) {
                                       setState(() {
                                         if (value) {
                                           _selectedWinners.add(
-                                            allPlayers[index].id,
+                                            allPlayers[index],
                                           );
                                         } else {
                                           _selectedWinners.remove(
-                                            allPlayers[index].id,
+                                            allPlayers[index],
                                           );
                                         }
                                       });
@@ -426,7 +429,7 @@ class _MatchResultViewState extends State<MatchResultView> {
     widget.onWinnerChanged?.call();
   }
 
-  /// Handles saving or removing the winner in the database.
+  /// Handles saving or removing the (single) winner in the database.
   Future<bool> _handleWinner() async {
     if (_selectedPlayer == null) {
       return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
@@ -438,10 +441,16 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
   }
 
-  /// Handles saving the winners to the database.
+  /// Handles saving the (multiple) winners to the database.
   Future<bool> _handleWinners() async {
-    //TODO: Implement winner handling
-    return true;
+    if (_selectedWinners.isEmpty) {
+      return await db.scoreEntryDao.removeWinners(matchId: widget.match.id);
+    } else {
+      return await db.scoreEntryDao.setWinners(
+        matchId: widget.match.id,
+        winners: allPlayers.where((p) => _selectedWinners.contains(p)).toList(),
+      );
+    }
   }
 
   /// Handles saving or removing the loser in the database.

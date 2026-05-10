@@ -269,9 +269,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   /// Returns the widget to be displayed in the result [InfoTile]
   Widget getResultWidget(AppLocalizations loc) {
-    ///TODO: add support for multiple winners
     if (isSingleRowResult()) {
       return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: getSingleResultRow(loc),
       );
@@ -300,7 +300,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ),
       ];
       // Single Loser
-    } else if (match.game.ruleset == Ruleset.singleLoser) {
+    } else if (match.mvp.isNotEmpty &&
+        match.game.ruleset == Ruleset.singleLoser) {
       return [
         Text(
           loc.loser,
@@ -312,6 +313,28 @@ class _MatchDetailViewState extends State<MatchDetailView> {
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: CustomTheme.primaryColor,
+          ),
+        ),
+      ];
+      // Multiple Winners
+    } else if (match.mvp.isNotEmpty &&
+        match.game.ruleset == Ruleset.multipleWinners) {
+      return [
+        Text(
+          loc.winners,
+          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
+        ),
+        Flexible(
+          child: Container(
+            padding: EdgeInsets.only(left: 40),
+            child: Text(
+              match.mvp.map((player) => player.name).join(', '),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: CustomTheme.primaryColor,
+              ),
+            ),
           ),
         ),
       ];
@@ -402,7 +425,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   // Returns if the result can be displayed in a single row
   bool isSingleRowResult() {
     return match.game.ruleset == Ruleset.singleWinner ||
-        match.game.ruleset == Ruleset.singleLoser;
+        match.game.ruleset == Ruleset.singleLoser ||
+        match.game.ruleset == Ruleset.multipleWinners;
   }
 
   String getPlacementText(BuildContext context, int rank) {

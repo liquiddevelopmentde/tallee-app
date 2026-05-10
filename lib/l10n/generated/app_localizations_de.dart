@@ -435,6 +435,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get winner => 'Gewinner:in';
 
   @override
+  String get winners => 'Gewinner:innen';
+
+  @override
   String get winrate => 'Siegquote';
 
   @override

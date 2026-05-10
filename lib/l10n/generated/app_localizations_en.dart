@@ -434,6 +434,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get winner => 'Winner';
 
   @override
+  String get winners => 'Winners';
+
+  @override
   String get winrate => 'Winrate';
 
   @override
