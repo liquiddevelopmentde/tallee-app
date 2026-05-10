@@ -102,36 +102,6 @@
         ]
       }
     },
-    "teams": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string"
-          },
-          "memberIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "additionalProperties": false,
-        "required": [
-          "id",
-          "name",
-          "createdAt",
-          "memberIds"
-        ]
-      }
-    },
     "matches": {
       "type": "array",
       "items": {
@@ -195,6 +165,9 @@
           },
           "notes": {
             "type": "string"
+          },
+          "teams": {
+            "type": ["array", "null"]
           }
         },
         "additionalProperties": false,
@@ -214,7 +187,6 @@
     "players",
     "games",
     "groups",
-    "teams",
     "matches"
   ]
 }
