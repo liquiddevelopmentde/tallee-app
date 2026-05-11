@@ -137,9 +137,6 @@ void main() {
           await database.playerDao.addPlayer(player: testPlayer2);
           await database.gameDao.addGame(game: testGame);
           await database.groupDao.addGroup(group: testGroup);
-          /*
-          await database.teamDao.addTeam(team: testTeam);
-*/
           await database.matchDao.addMatch(match: testMatch);
 
           final ctx = await getContext(tester);
@@ -853,7 +850,7 @@ void main() {
       });
     });
 
-    test('validateJsonSchema()', () async {
+    test('validateJsonSchema() works correctly', () async {
       final validJson = json.encode({
         'players': [
           {
@@ -910,6 +907,24 @@ void main() {
       });
 
       final isValid = await DataTransferService.validateJsonSchema(validJson);
+      expect(isValid, true);
+    });
+
+    testWidgets('validateJsonSchema() validates exported json file', (
+      tester,
+    ) async {
+      await database.playerDao.addPlayer(player: testPlayer1);
+      await database.playerDao.addPlayer(player: testPlayer2);
+      await database.gameDao.addGame(game: testGame);
+      await database.groupDao.addGroup(group: testGroup);
+      await database.matchDao.addMatch(match: testMatch);
+
+      final ctx = await getContext(tester);
+      final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+
+      expect(jsonString, isNotEmpty);
+
+      final isValid = await DataTransferService.validateJsonSchema(jsonString);
       expect(isValid, true);
     });
   });
