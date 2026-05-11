@@ -73,7 +73,6 @@ const allDependencies = <Package>[
   _io,
   _jni,
   _jni_flutter,
-  _js,
   _json_annotation,
   _json_schema,
   _leak_tracker,
@@ -244,13 +243,13 @@ class PackageRef {
   Package resolve() => allDependencies.firstWhere((d) => d.name == name);
 }
 
-/// _fe_analyzer_shared 91.0.0
+/// _fe_analyzer_shared 92.0.0
 const __fe_analyzer_shared = Package(
     name: '_fe_analyzer_shared',
     description: 'Logic that is shared between the front_end and analyzer packages.',
     repository: 'https://github.com/dart-lang/sdk/tree/main/pkg/_fe_analyzer_shared',
     authors: [],
-    version: '91.0.0',
+    version: '92.0.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -285,13 +284,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// analyzer 8.4.1
+/// analyzer 9.0.0
 const _analyzer = Package(
     name: 'analyzer',
     description: 'This package provides a library that performs static analysis of Dart code.',
     repository: 'https://github.com/dart-lang/sdk/tree/main/pkg/analyzer',
     authors: [],
-    version: '8.4.1',
+    version: '9.0.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -699,13 +698,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// characters 1.4.0
+/// characters 1.4.1
 const _characters = Package(
     name: 'characters',
     description: 'String replacement with operations that are Unicode/grapheme cluster aware.',
     repository: 'https://github.com/dart-lang/core/tree/main/pkgs/characters',
     authors: [],
-    version: '1.4.0',
+    version: '1.4.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -2503,13 +2502,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// flutter 3.38.6
+/// flutter 3.41.0
 const _flutter = Package(
     name: 'flutter',
     description: 'A framework for writing Flutter applications',
     homepage: 'https://flutter.dev',
     authors: [],
-    version: '3.38.6',
+    version: '3.41.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: true,
@@ -3292,47 +3291,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// js 0.7.2
-const _js = Package(
-    name: 'js',
-    description: 'Annotations to create static Dart interfaces for JavaScript APIs.',
-    repository: 'https://github.com/dart-lang/sdk/tree/main/pkg/js',
-    authors: [],
-    version: '0.7.2',
-    spdxIdentifiers: ['BSD-3-Clause'],
-    isMarkdown: false,
-    isSdk: false,
-    dependencies: [],
-    devDependencies: [PackageRef('lints')],
-    license: '''Copyright 2012, the Dart project authors.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following
-      disclaimer in the documentation and/or other materials provided
-      with the distribution.
-    * Neither the name of Google LLC nor the names of its
-      contributors may be used to endorse or promote products derived
-      from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
-  );
-
 /// json_annotation 4.11.0
 const _json_annotation = Package(
     name: 'json_annotation',
@@ -3671,18 +3629,18 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// matcher 0.12.17
+/// matcher 0.12.18
 const _matcher = Package(
     name: 'matcher',
     description: 'Support for specifying test expectations via an extensible Matcher class. Also includes a number of built-in Matcher implementations for common cases.',
     repository: 'https://github.com/dart-lang/test/tree/master/pkgs/matcher',
     authors: [],
-    version: '0.12.17',
+    version: '0.12.18',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('async'), PackageRef('meta'), PackageRef('stack_trace'), PackageRef('term_glyph'), PackageRef('test_api')],
-    devDependencies: [PackageRef('fake_async'), PackageRef('lints'), PackageRef('test')],
+    devDependencies: [PackageRef('fake_async'), PackageRef('test')],
     license: '''Copyright 2014, the Dart project authors.
 
 Redistribution and use in source and binary forms, with or without
@@ -3712,18 +3670,18 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// material_color_utilities 0.11.1
+/// material_color_utilities 0.13.0
 const _material_color_utilities = Package(
     name: 'material_color_utilities',
     description: 'Algorithms and utilities that power the Material Design 3 color system, including choosing theme colors from images and creating tones of colors; all in a new color space.',
     repository: 'https://github.com/material-foundation/material-color-utilities/tree/main/dart',
     authors: [],
-    version: '0.11.1',
+    version: '0.13.0',
     spdxIdentifiers: ['Apache-2.0'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('collection')],
-    devDependencies: [PackageRef('matcher'), PackageRef('lints'), PackageRef('test')],
+    devDependencies: [PackageRef('matcher'), PackageRef('test')],
     license: '''Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -6288,6 +6246,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 --------------------------------------------------------------------------------
+icu
 json
 
 
@@ -6913,6 +6872,7 @@ skia
    limitations under the License.
 --------------------------------------------------------------------------------
 angle
+benchmark
 boringssl
 cpu_features
 flatbuffers
@@ -10342,6 +10302,7 @@ prospectively choose to deem waived or otherwise exclude such Section(s) of
 the License, but only in their entirety and only with respect to the Combined
 Software.
 --------------------------------------------------------------------------------
+icu
 include
 json
 
@@ -13918,43 +13879,7 @@ icu
 Copyright (C) 2016 and later: Unicode, Inc. and others.
 License & terms of use: http://www.unicode.org/copyright.html
 
-Copyright (C) 2002-2010, International Business Machines
-Corporation and others.  All Rights Reserved.
-
-
---------------------------------------------------------------------------------
-icu
-
-Copyright (C) 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
-
-Copyright (c) 2001-2003 International Business Machines
-Corporation and others. All Rights Reserved.
-
---------------------------------------------------------------------------------
-icu
-
-Copyright (C) 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
-
-Copyright (c) 2001-2010 International Business Machines
-Corporation and others. All Rights Reserved.
-
---------------------------------------------------------------------------------
-icu
-
-Copyright (C) 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
-
 Copyright (c) 2002-2005, International Business Machines Corporation and others. All Rights Reserved.
-
---------------------------------------------------------------------------------
-icu
-
-Copyright (C) 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
-
-Copyright (c) 2002-2010, International Business Machines Corporation and others. All Rights Reserved.
 
 --------------------------------------------------------------------------------
 icu
@@ -13975,22 +13900,6 @@ License & terms of use: http://www.unicode.org/copyright.html
 Copyright (c) 2002-2016  International Business Machines Corporation and
 others. All Rights Reserved.
 
-
---------------------------------------------------------------------------------
-icu
-
-Copyright (C) 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
-
-Copyright (c) 2003-2005, International Business Machines Corporation and others. All Rights Reserved.
-
---------------------------------------------------------------------------------
-icu
-
-Copyright (C) 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
-
-Copyright (c) 2003-2010, International Business Machines Corporation and others. All Rights Reserved.
 
 --------------------------------------------------------------------------------
 icu
@@ -14168,36 +14077,12 @@ icu
 
 Copyright (C) 2016 and later: Unicode, Inc. and others.
 License & terms of use: http://www.unicode.org/copyright.html
-***************************************************************************
-*
-* Copyright (C) 2009 International Business Machines
-* Corporation and others.  All Rights Reserved.
-*
-***************************************************************************
---------------------------------------------------------------------------------
-icu
-
-Copyright (C) 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
 *****************************************************************************
 
   Copyright (C) 2002-2015, International Business Machines Corporation and others.
   All Rights Reserved.
 
 *****************************************************************************
-
-
---------------------------------------------------------------------------------
-icu
-
-Copyright (C) 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
-*******************************************************************************
-*
-*   Copyright (C) 1995-2001, International Business Machines
-*   Corporation and others.  All Rights Reserved.
-*
-*******************************************************************************
 
 
 --------------------------------------------------------------------------------
@@ -14277,6 +14162,15 @@ License & terms of use: http://www.unicode.org/copyright.html
 *
 *******************************************************************************
 
+
+--------------------------------------------------------------------------------
+icu
+
+Copyright (C) 2016 and later: Unicode, Inc. and others.
+License & terms of use: http://www.unicode.org/copyright.html
+---------------------------------------------------------
+Copyright (C) 2013, International Business Machines
+Corporation and others.  All Rights Reserved.
 
 --------------------------------------------------------------------------------
 icu
@@ -15560,6 +15454,22 @@ limitations under the License.
 angle
 
 Copyright (c) 2008-2021 The Khronos Group Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+angle
+
+Copyright (c) 2008-2023 The Khronos Group Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18045,6 +17955,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --------------------------------------------------------------------------------
+volk
+
+Copyright (c) 2018-2024 Arseny Kapoulkine
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------
 vulkan-validation-layers
 
 Copyright (c) 2018-2024 The Khronos Group Inc.
@@ -18569,7 +18501,6 @@ Copyright (c) 2020 The ANGLE Project Authors. All rights reserved.
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
 --------------------------------------------------------------------------------
-angle
 spirv-tools
 
 Copyright (c) 2020 The Khronos Group Inc.
@@ -19392,6 +19323,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --------------------------------------------------------------------------------
+angle
+
+Copyright (c) 2023 The Khronos Group Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
 vulkan-validation-layers
 
 Copyright (c) 2023 The Khronos Group Inc.
@@ -19417,6 +19364,7 @@ for details. All rights reserved. Use of this source code is governed by a
 BSD-style license that can be found in the LICENSE file.
 --------------------------------------------------------------------------------
 dart
+perfetto
 
 Copyright (c) 2023, the Dart project authors. Please see the AUTHORS file
 for details. All rights reserved. Use of this source code is governed by a
@@ -19947,6 +19895,12 @@ limitations under the License.
 dart
 
 Copyright (c) 2025, the Dart project authors.  Please see the AUTHORS file
+for details. All rights reserved. Use of this source code is governed by a
+BSD-style license that can be found in the LICENSE file.
+--------------------------------------------------------------------------------
+perfetto
+
+Copyright (c) 2025, the Dart project authors. Please see the AUTHORS file
 for details. All rights reserved. Use of this source code is governed by a
 BSD-style license that can be found in the LICENSE file.
 --------------------------------------------------------------------------------
@@ -20809,11 +20763,6 @@ Copyright 2014-2022 The Khronos Group Inc.
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
 swiftshader
-
-Copyright 2014-2023 The Khronos Group Inc.
-
-SPDX-License-Identifier: Apache-2.0
---------------------------------------------------------------------------------
 vulkan
 vulkan-headers
 
@@ -20851,6 +20800,7 @@ tree. An additional intellectual property rights grant can be found
 in the file PATENTS. All contributing project authors may
 be found in the AUTHORS file in the root of the source tree.
 --------------------------------------------------------------------------------
+benchmark
 flatbuffers
 
 Copyright 2015 Google Inc. All rights reserved.
@@ -20936,12 +20886,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 --------------------------------------------------------------------------------
 swiftshader
-
-Copyright 2015-2023 The Khronos Group Inc.
-
-SPDX-License-Identifier: Apache-2.0
---------------------------------------------------------------------------------
-swiftshader
 vulkan
 vulkan-headers
 
@@ -20951,6 +20895,7 @@ Copyright 2015-2023 LunarG, Inc.
 
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
+swiftshader
 vulkan
 vulkan-headers
 
@@ -20981,18 +20926,6 @@ Copyright 2016 Google Inc.
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
 --------------------------------------------------------------------------------
-skia
-
-Copyright 2016 Google Inc.
-
-Use of this source code is governed by a BSD-style license that can be
-found in the LICENSE file.
-
-Copyright 2014 Google Inc.
-
-Use of this source code is governed by a BSD-style license that can be
-found in the LICENSE file.
---------------------------------------------------------------------------------
 libwebp
 
 Copyright 2016 Google Inc. All Rights Reserved.
@@ -21006,6 +20939,39 @@ be found in the AUTHORS file in the root of the source tree.
 flatbuffers
 
 Copyright 2016 Google Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+benchmark
+
+Copyright 2016 Ismael Jimenez Martinez. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+benchmark
+
+Copyright 2016 Ismael Jimenez Martinez. All rights reserved.
+Copyright 2017 Roman Lebedev. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21437,6 +21403,7 @@ tree. An additional intellectual property rights grant can be found
 in the file PATENTS. All contributing project authors may
 be found in the AUTHORS file in the root of the source tree.
 --------------------------------------------------------------------------------
+benchmark
 flatbuffers
 
 Copyright 2018 Google Inc. All rights reserved.
@@ -22213,7 +22180,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
-angle
 swiftshader
 
 Copyright 2020 The SwiftShader Authors. All Rights Reserved.
@@ -22263,6 +22229,7 @@ tree. An additional intellectual property rights grant can be found
 in the file PATENTS. All contributing project authors may
 be found in the AUTHORS file in the root of the source tree.
 --------------------------------------------------------------------------------
+benchmark
 flatbuffers
 
 Copyright 2021 Google Inc. All rights reserved.
@@ -22695,6 +22662,22 @@ Copyright 2023 The ANGLE Project Authors. All rights reserved.
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
 --------------------------------------------------------------------------------
+angle
+
+Copyright 2023 The Android Open Source Project
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
 skia
 
 Copyright 2023 The Android Open Source Project
@@ -22772,6 +22755,7 @@ Copyright 2023-2025 The Khronos Group Inc.
 
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
+swiftshader
 vulkan-utility-libraries
 
 Copyright 2023-2025 The Khronos Group Inc.
@@ -22789,6 +22773,12 @@ skia
 
 Copyright 2024 Google Inc.
 
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+--------------------------------------------------------------------------------
+angle
+
+Copyright 2024 Google Inc.  All rights reserved.
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
 --------------------------------------------------------------------------------
@@ -22825,6 +22815,12 @@ found in the LICENSE file.
 skia
 
 Copyright 2024 Google LLC.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+--------------------------------------------------------------------------------
+skia
+
+Copyright 2024 Google LLC.
 Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
 --------------------------------------------------------------------------------
 skia
@@ -22833,6 +22829,17 @@ Copyright 2024 Google, LLC
 
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
+--------------------------------------------------------------------------------
+angle
+
+Copyright 2024 The ANGLE Project Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+--------------------------------------------------------------------------------
+angle
+
+Copyright 2024 The ANGLE Project Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
 --------------------------------------------------------------------------------
 skia
 
@@ -22918,6 +22925,19 @@ Copyright 2025 Google LLC.
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
 --------------------------------------------------------------------------------
+skia
+
+Copyright 2025 Google, LLC
+
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+--------------------------------------------------------------------------------
+angle
+
+Copyright 2025 The ANGLE Project Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+--------------------------------------------------------------------------------
 dart
 
 Copyright 2025 The Dart Authors. All rights reserved.
@@ -22976,6 +22996,12 @@ Copyright The ANGLE Project Authors. All rights reserved.
 angle
 
 Copyright The ANGLE Project Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+--------------------------------------------------------------------------------
+angle
+
+Copyright {copyright_year} The ANGLE Project Authors. All rights reserved.
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
 --------------------------------------------------------------------------------
@@ -26723,6 +26749,48 @@ FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
 ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
 PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 --------------------------------------------------------------------------------
+flutter
+
+License for the Ahem font embedded below is from:
+https://www.w3.org/Style/CSS/Test/Fonts/Ahem/COPYING
+
+The Ahem font in this directory belongs to the public domain. In
+jurisdictions that do not recognize public domain ownership of these
+files, the following Creative Commons Zero declaration applies:
+
+<http://labs.creativecommons.org/licenses/zero-waive/1.0/us/legalcode>
+
+which is quoted below:
+
+  The person who has associated a work with this document (the "Work")
+  affirms that he or she (the "Affirmer") is the/an author or owner of
+  the Work. The Work may be any work of authorship, including a
+  database.
+
+  The Affirmer hereby fully, permanently and irrevocably waives and
+  relinquishes all of her or his copyright and related or neighboring
+  legal rights in the Work available under any federal or state law,
+  treaty or contract, including but not limited to moral rights,
+  publicity and privacy rights, rights protecting against unfair
+  competition and any rights protecting the extraction, dissemination
+  and reuse of data, whether such rights are present or future, vested
+  or contingent (the "Waiver"). The Affirmer makes the Waiver for the
+  benefit of the public at large and to the detriment of the Affirmer's
+  heirs or successors.
+
+  The Affirmer understands and intends that the Waiver has the effect
+  of eliminating and entirely removing from the Affirmer's control all
+  the copyright and related or neighboring legal rights previously held
+  by the Affirmer in the Work, to that extent making the Work freely
+  available to the public for any and all uses and purposes without
+  restriction of any kind, including commercial use and uses in media
+  and formats or by methods that have not yet been invented or
+  conceived. Should the Waiver for any reason be judged legally
+  ineffective in any jurisdiction, the Affirmer hereby grants a free,
+  full, permanent, irrevocable, nonexclusive and worldwide license for
+  all her or his copyright and related or neighboring legal rights in
+  the Work.
+--------------------------------------------------------------------------------
 fallback_root_certificates
 
 Mozilla Public License Version 2.0
@@ -27105,8 +27173,8 @@ libpng
 PNG Reference Library License version 2
 ---------------------------------------
 
- * Copyright (c) 1995-2024 The PNG Reference Library Authors.
- * Copyright (c) 2018-2024 Cosmin Truta.
+ * Copyright (c) 1995-2025 The PNG Reference Library Authors.
+ * Copyright (c) 2018-2025 Cosmin Truta.
  * Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson.
  * Copyright (c) 1996-1997 Andreas Dilger.
  * Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
@@ -27240,8 +27308,8 @@ libpng
 PNG Reference Library License version 2
 ---------------------------------------
 
- * Copyright (c) 1995-2024 The PNG Reference Library Authors.
- * Copyright (c) 2018-2024 Cosmin Truta.
+ * Copyright (c) 1995-2025 The PNG Reference Library Authors.
+ * Copyright (c) 2018-2025 Cosmin Truta.
  * Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson.
  * Copyright (c) 1996-1997 Andreas Dilger.
  * Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
@@ -28708,7 +28776,7 @@ UNICODE LICENSE V3
 
 COPYRIGHT AND PERMISSION NOTICE
 
-Copyright © 2016-2023 Unicode, Inc.
+Copyright © 2016-2025 Unicode, Inc.
 
 NOTICE TO USER: Carefully read the following legal agreement. BY
 DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING DATA FILES, AND/OR
@@ -28743,6 +28811,8 @@ Except as contained in this notice, the name of a copyright holder shall
 not be used in advertising or otherwise to promote the sale, use or other
 dealings in these Data Files or Software without prior written
 authorization of the copyright holder.
+
+SPDX-License-Identifier: Unicode-3.0
 
 ----------------------------------------------------------------------
 
@@ -29134,6 +29204,34 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+----------------------------------------------------------------------
+
+JSON parsing library (nlohmann/json)
+
+File: vendor/json/upstream/single_include/nlohmann/json.hpp (only for ICU4C)
+
+MIT License
+
+Copyright (c) 2013-2022 Niels Lohmann
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ----------------------------------------------------------------------
 
@@ -32429,17 +32527,6 @@ icu
 License & terms of use: http://www.unicode.org/copyright.html
 
 
-Copyright (C) 2008-2013, International Business Machines Corporation and
-others. All Rights Reserved.
-
-
---------------------------------------------------------------------------------
-icu
-
-© 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
-
-
 Copyright (C) 2009-2011, International Business Machines
                Corporation and others. All Rights Reserved.
 
@@ -32463,16 +32550,6 @@ License & terms of use: http://www.unicode.org/copyright.html
 
 
 Copyright (c) 1999-2003, International Business Machines Corporation and
-others. All Rights Reserved.
-
---------------------------------------------------------------------------------
-icu
-
-© 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
-
-
-Copyright (c) 1999-2007, International Business Machines Corporation and
 others. All Rights Reserved.
 
 --------------------------------------------------------------------------------
@@ -35977,15 +36054,6 @@ icu
 
 © 2016 and later: Unicode, Inc. and others.
 License & terms of use: http://www.unicode.org/copyright.html
-Copyright (C) 2008-2014, International Business Machines Corporation and
-others. All Rights Reserved.
-
-
---------------------------------------------------------------------------------
-icu
-
-© 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
 Copyright (C) 2008-2016, International Business Machines Corporation and
 others. All Rights Reserved.
 
@@ -36215,14 +36283,6 @@ icu
 © 2016 and later: Unicode, Inc. and others.
 License & terms of use: http://www.unicode.org/copyright.html
 Copyright (c) 2008-2011, International Business Machines Corporation and
-others. All Rights Reserved.
-
---------------------------------------------------------------------------------
-icu
-
-© 2016 and later: Unicode, Inc. and others.
-License & terms of use: http://www.unicode.org/copyright.html
-Copyright (c) 2008-2014, International Business Machines Corporation and
 others. All Rights Reserved.
 
 --------------------------------------------------------------------------------
@@ -36755,17 +36815,17 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// test 1.26.3
+/// test 1.28.0
 const _test = Package(
     name: 'test',
     description: 'A full featured library for writing and running Dart tests across platforms.',
     repository: 'https://github.com/dart-lang/test/tree/master/pkgs/test',
     authors: [],
-    version: '1.26.3',
+    version: '1.28.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('analyzer'), PackageRef('async'), PackageRef('boolean_selector'), PackageRef('collection'), PackageRef('coverage'), PackageRef('http_multi_server'), PackageRef('io'), PackageRef('js'), PackageRef('matcher'), PackageRef('node_preamble'), PackageRef('package_config'), PackageRef('path'), PackageRef('pool'), PackageRef('shelf'), PackageRef('shelf_packages_handler'), PackageRef('shelf_static'), PackageRef('shelf_web_socket'), PackageRef('source_span'), PackageRef('stack_trace'), PackageRef('stream_channel'), PackageRef('test_api'), PackageRef('test_core'), PackageRef('typed_data'), PackageRef('web_socket_channel'), PackageRef('webkit_inspection_protocol'), PackageRef('yaml')],
+    dependencies: [PackageRef('analyzer'), PackageRef('async'), PackageRef('boolean_selector'), PackageRef('collection'), PackageRef('coverage'), PackageRef('http_multi_server'), PackageRef('io'), PackageRef('matcher'), PackageRef('node_preamble'), PackageRef('package_config'), PackageRef('path'), PackageRef('pool'), PackageRef('shelf'), PackageRef('shelf_packages_handler'), PackageRef('shelf_static'), PackageRef('shelf_web_socket'), PackageRef('source_span'), PackageRef('stack_trace'), PackageRef('stream_channel'), PackageRef('test_api'), PackageRef('test_core'), PackageRef('typed_data'), PackageRef('web_socket_channel'), PackageRef('webkit_inspection_protocol'), PackageRef('yaml')],
     devDependencies: [PackageRef('fake_async'), PackageRef('glob')],
     license: '''Copyright 2014, the Dart project authors.
 
@@ -36796,13 +36856,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// test_api 0.7.7
+/// test_api 0.7.8
 const _test_api = Package(
     name: 'test_api',
     description: 'The user facing API for structuring Dart tests and checking expectations.',
     repository: 'https://github.com/dart-lang/test/tree/master/pkgs/test_api',
     authors: [],
-    version: '0.7.7',
+    version: '0.7.8',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -36837,13 +36897,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// test_core 0.6.12
+/// test_core 0.6.14
 const _test_core = Package(
     name: 'test_core',
     description: 'A basic library for writing tests and running them on the VM.',
     repository: 'https://github.com/dart-lang/test/tree/master/pkgs/test_core',
     authors: [],
-    version: '0.6.12',
+    version: '0.6.14',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -37751,12 +37811,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// tallee 0.0.31+265
+/// tallee 0.0.32+266
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.0.31+265',
+    version: '0.0.32+266',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
