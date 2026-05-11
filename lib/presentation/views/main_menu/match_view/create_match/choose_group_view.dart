@@ -112,7 +112,10 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                   padding: const EdgeInsets.only(bottom: 85),
                   itemCount: filteredGroups.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
+                    return GroupTile(
+                      group: filteredGroups[index],
+                      isHighlighted:
+                          selectedGroupId == filteredGroups[index].id,
                       onTap: () {
                         setState(() {
                           if (selectedGroupId != filteredGroups[index].id) {
@@ -122,11 +125,6 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                           }
                         });
                       },
-                      child: GroupTile(
-                        group: filteredGroups[index],
-                        isHighlighted:
-                            selectedGroupId == filteredGroups[index].id,
-                      ),
                     );
                   },
                 ),

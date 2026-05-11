@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -53,8 +54,18 @@ class GameTile extends StatelessWidget {
     final gameColor = badgeColor ?? getColorFromGameColor(GameColor.orange);
 
     return GestureDetector(
-      onTap: onTap,
-      onLongPress: onLongPress,
+      onTap: () async {
+        await HapticFeedback.selectionClick();
+        if (onTap != null) {
+          onTap!.call();
+        }
+      },
+      onLongPress: () async {
+        await HapticFeedback.vibrate();
+        if (onLongPress != null) {
+          onLongPress!.call();
+        }
+      },
       child: AnimatedContainer(
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         decoration: !isHighlighted

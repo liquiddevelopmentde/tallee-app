@@ -36,7 +36,9 @@ class _GroupTileState extends State<GroupTile> {
     return GestureDetector(
       onTap: () async {
         await HapticFeedback.selectionClick();
-        widget.onTap?.call();
+        if (widget.onTap != null) {
+          widget.onTap!.call();
+        }
       },
       child: AnimatedContainer(
         margin: CustomTheme.standardMargin,

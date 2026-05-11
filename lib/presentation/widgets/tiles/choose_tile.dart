@@ -31,12 +31,14 @@ class _ChooseTileState extends State<ChooseTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        await HapticFeedback.vibrate();
-        if (widget.onPressed != null) {
-          widget.onPressed!.call();
-        }
-      },
+      onTap: widget.onPressed != null
+          ? () async {
+              await HapticFeedback.selectionClick();
+              if (widget.onPressed != null) {
+                widget.onPressed!.call();
+              }
+            }
+          : null,
       child: Container(
         margin: CustomTheme.tileMargin,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
