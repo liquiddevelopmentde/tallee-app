@@ -276,35 +276,38 @@ class _SettingsViewState extends State<SettingsView> {
     final loc = AppLocalizations.of(context);
     switch (result) {
       case ImportResult.success:
+        await HapticFeedback.successNotification();
         if (context.mounted) {
-          await HapticFeedback.successNotification();
+          showSnackbar(
+            context: context,
+            message: loc.data_successfully_imported,
+          );
         }
-        showSnackbar(context: context, message: loc.data_successfully_imported);
       case ImportResult.invalidSchema:
+        await HapticFeedback.errorNotification();
         if (context.mounted) {
-          await HapticFeedback.errorNotification();
+          showSnackbar(context: context, message: loc.invalid_schema);
         }
-        showSnackbar(context: context, message: loc.invalid_schema);
       case ImportResult.fileReadError:
+        await HapticFeedback.errorNotification();
         if (context.mounted) {
-          await HapticFeedback.errorNotification();
+          showSnackbar(context: context, message: loc.error_reading_file);
         }
-        showSnackbar(context: context, message: loc.error_reading_file);
       case ImportResult.canceled:
+        await HapticFeedback.errorNotification();
         if (context.mounted) {
-          await HapticFeedback.errorNotification();
+          showSnackbar(context: context, message: loc.import_canceled);
         }
-        showSnackbar(context: context, message: loc.import_canceled);
       case ImportResult.formatException:
+        await HapticFeedback.errorNotification();
         if (context.mounted) {
-          await HapticFeedback.errorNotification();
+          showSnackbar(context: context, message: loc.format_exception);
         }
-        showSnackbar(context: context, message: loc.format_exception);
       case ImportResult.unknownException:
+        await HapticFeedback.errorNotification();
         if (context.mounted) {
-          await HapticFeedback.errorNotification();
+          showSnackbar(context: context, message: loc.unknown_exception);
         }
-        showSnackbar(context: context, message: loc.unknown_exception);
     }
   }
 
@@ -320,13 +323,22 @@ class _SettingsViewState extends State<SettingsView> {
     switch (result) {
       case ExportResult.success:
         await HapticFeedback.successNotification();
-        showSnackbar(context: context, message: loc.data_successfully_exported);
+        if (context.mounted) {
+          showSnackbar(
+            context: context,
+            message: loc.data_successfully_exported,
+          );
+        }
       case ExportResult.canceled:
         await HapticFeedback.errorNotification();
-        showSnackbar(context: context, message: loc.export_canceled);
-        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(context: context, message: loc.export_canceled);
+        }
       case ExportResult.unknownException:
-        showSnackbar(context: context, message: loc.unknown_exception);
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(context: context, message: loc.unknown_exception);
+        }
     }
   }
 

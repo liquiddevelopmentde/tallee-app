@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MainMenuButton extends StatefulWidget {
   /// A button for the main menu with an optional icon and a press animation.
@@ -78,6 +79,7 @@ class _MainMenuButtonState extends State<MainMenuButton>
         onTapUp: (_) async {
           _cancelTimers();
           if (mounted && !_isLongPressing) {
+            await HapticFeedback.selectionClick();
             widget.onPressed();
           }
           _isLongPressing = false;

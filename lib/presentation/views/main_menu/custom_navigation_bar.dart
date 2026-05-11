@@ -7,6 +7,7 @@ import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 
 class CustomNavigationBar extends StatefulWidget {
@@ -54,7 +55,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
         actions: [
-          IconButton(
+          HapticIconButton(
             onPressed: () async {
               final navigator = Navigator.of(context);
               await HapticFeedback.selectionClick();

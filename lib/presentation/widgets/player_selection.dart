@@ -144,7 +144,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                                 text: player.name,
                                 suffixText: getNameCountText(player),
                                 onIconTap: () {
-                                  setState(() {
+                                  setState(() async {
+                                    await HapticFeedback.selectionClick();
                                     // Removes the player from the selection and notifies the parent.
                                     selectedPlayers.remove(player);
                                     widget.onChanged([...selectedPlayers]);

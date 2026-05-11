@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 
@@ -48,7 +49,12 @@ class CustomWidthButton extends StatelessWidget {
       )!;
 
       return ElevatedButton(
-        onPressed: onPressed,
+        onPressed: onPressed == null
+            ? null
+            : () async {
+                await HapticFeedback.selectionClick();
+                onPressed!.call();
+              },
         style: ElevatedButton.styleFrom(
           foregroundColor: textcolor,
           disabledForegroundColor: disabledTextColor,
@@ -78,7 +84,12 @@ class CustomWidthButton extends StatelessWidget {
           : Color.lerp(CustomTheme.primaryColor, Colors.black, 0.5)!;
 
       return OutlinedButton(
-        onPressed: onPressed,
+        onPressed: onPressed == null
+            ? null
+            : () async {
+                await HapticFeedback.selectionClick();
+                onPressed!.call();
+              },
         style: OutlinedButton.styleFrom(
           foregroundColor: textcolor,
           disabledForegroundColor: disabledTextColor,
@@ -110,7 +121,12 @@ class CustomWidthButton extends StatelessWidget {
       disabledBackgroundColor = Colors.transparent;
 
       return TextButton(
-        onPressed: onPressed,
+        onPressed: onPressed == null
+            ? null
+            : () async {
+                await HapticFeedback.selectionClick();
+                onPressed!.call();
+              },
         style: TextButton.styleFrom(
           foregroundColor: textcolor,
           disabledForegroundColor: disabledTextColor,

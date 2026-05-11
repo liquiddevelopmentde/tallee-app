@@ -1,6 +1,7 @@
 import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -51,7 +52,10 @@ class _MatchTileState extends State<MatchTile> {
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: () async {
+        await HapticFeedback.selectionClick();
+        widget.onTap.call();
+      },
       child: Container(
         margin: EdgeInsets.zero,
         width: widget.width,

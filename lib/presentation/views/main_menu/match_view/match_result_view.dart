@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -8,6 +9,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
@@ -112,7 +114,7 @@ class _MatchResultViewState extends State<MatchResultView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(
-        leading: IconButton(
+        leading: HapticIconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
             widget.onWinnerChanged?.call();
@@ -204,6 +206,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                                   : RadioGroup<Player>(
                                       groupValue: _selectedPlayer,
                                       onChanged: (Player? value) async {
+                                        await HapticFeedback.selectionClick();
                                         setState(() {
                                           _selectedPlayer = value;
                                         });
@@ -217,6 +220,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                                             text: allPlayers[index].name,
                                             value: allPlayers[index],
                                             onContainerTap: (value) async {
+                                              await HapticFeedback.selectionClick();
                                               setState(() {
                                                 // Check if the already selected player is the same as the newly tapped player.
                                                 if (_selectedPlayer == value) {
@@ -337,6 +341,12 @@ class _MatchResultViewState extends State<MatchResultView> {
                                             );
                                           },
                                         );
+                                      },
+                                      onReorderStart: (int n) async {
+                                        await HapticFeedback.selectionClick();
+                                      },
+                                      onReorderEnd: (int n) async {
+                                        await HapticFeedback.selectionClick();
                                       },
                                       onReorder: (int oldIndex, int newIndex) {
                                         setState(() {

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 
 class HapticBackButton extends StatelessWidget {
   const HapticBackButton({super.key});
@@ -13,10 +13,9 @@ class HapticBackButton extends StatelessWidget {
       _ => Icons.arrow_back_rounded,
     };
 
-    return IconButton(
+    return HapticIconButton(
       icon: Icon(iconData),
       onPressed: () async {
-        await HapticFeedback.mediumImpact();
         Navigator.of(context).maybePop();
       },
     );

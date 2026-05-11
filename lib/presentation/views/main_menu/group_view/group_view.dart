@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/constants.dart';
@@ -103,7 +102,6 @@ class _GroupViewState extends State<GroupView> {
               text: loc.create_group,
               icon: Icons.group_add,
               onPressed: () async {
-                await HapticFeedback.selectionClick();
                 await Navigator.push(
                   context,
                   adaptivePageRoute(

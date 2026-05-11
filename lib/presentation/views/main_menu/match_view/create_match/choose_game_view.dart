@@ -7,6 +7,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/game_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -70,7 +71,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
       backgroundColor: CustomTheme.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: IconButton(
+        leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.of(context).pop(
@@ -83,7 +84,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
           },
         ),
         actions: [
-          IconButton(
+          HapticIconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
               final result = await Navigator.push(

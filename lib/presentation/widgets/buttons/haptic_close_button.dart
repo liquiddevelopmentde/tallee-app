@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 
 class HapticCloseButton extends StatelessWidget {
   const HapticCloseButton({super.key});
@@ -13,10 +13,9 @@ class HapticCloseButton extends StatelessWidget {
       _ => Icons.close_rounded,
     };
 
-    return IconButton(
+    return HapticIconButton(
       icon: Icon(iconData),
       onPressed: () async {
-        await HapticFeedback.mediumImpact();
         Navigator.of(context).maybePop();
       },
     );

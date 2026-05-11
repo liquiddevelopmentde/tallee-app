@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 
 class ChooseTile extends StatefulWidget {
@@ -30,7 +31,12 @@ class _ChooseTileState extends State<ChooseTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onPressed,
+      onTap: () async {
+        await HapticFeedback.vibrate();
+        if (widget.onPressed != null) {
+          widget.onPressed!.call();
+        }
+      },
       child: Container(
         margin: CustomTheme.tileMargin,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
