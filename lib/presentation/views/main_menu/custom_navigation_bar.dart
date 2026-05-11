@@ -3,6 +3,7 @@ import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_scan_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view.dart';
@@ -52,6 +53,17 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         ),
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
+        leading: currentIndex == 0
+            ? IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    adaptivePageRoute(builder: (_) => const MatchScanView()),
+                  );
+                },
+                icon: Icon(Icons.qr_code_scanner),
+              )
+            : null,
         actions: [
           IconButton(
             onPressed: () async {

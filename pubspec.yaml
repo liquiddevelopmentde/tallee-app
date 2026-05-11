@@ -24,8 +24,10 @@ dependencies:
   font_awesome_flutter: ^11.0.0
   intl: any
   json_schema: ^5.2.2
+  mobile_scanner: ^7.2.0
   package_info_plus: ^9.0.0
   path_provider: ^2.1.5
+  pretty_qr_code: ^3.6.0
   provider: ^6.1.5
   skeletonizer: ^2.1.0+1
   url_launcher: ^6.3.2
