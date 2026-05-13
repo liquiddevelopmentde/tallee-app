@@ -18,7 +18,6 @@ class HapticIconButton extends StatelessWidget {
 
   final Widget icon;
   final VoidCallback? onPressed;
-
   final double? iconSize;
   final Color? color;
   final EdgeInsetsGeometry? padding;
