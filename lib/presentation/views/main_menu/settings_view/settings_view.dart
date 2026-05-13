@@ -10,6 +10,7 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses_view.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
@@ -198,20 +199,22 @@ class _SettingsViewState extends State<SettingsView> {
                             padding: const EdgeInsets.only(bottom: 12),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: 40,
+                              spacing: 10,
                               children: [
-                                GestureDetector(
-                                  child: const Icon(Icons.language),
-                                  onTap: () async => {
+                                HapticIconButton(
+                                  color: CustomTheme.textColor,
+                                  icon: const Icon(Icons.language),
+                                  onPressed: () async => {
                                     await HapticFeedback.lightImpact(),
                                     launchUrl(
                                       Uri.parse('https://liquid-dev.de'),
                                     ),
                                   },
                                 ),
-                                GestureDetector(
-                                  child: const FaIcon(FontAwesomeIcons.github),
-                                  onTap: () async => {
+                                HapticIconButton(
+                                  color: CustomTheme.textColor,
+                                  icon: const FaIcon(FontAwesomeIcons.github),
+                                  onPressed: () async => {
                                     await HapticFeedback.lightImpact(),
                                     launchUrl(
                                       Uri.parse(
@@ -220,13 +223,14 @@ class _SettingsViewState extends State<SettingsView> {
                                     ),
                                   },
                                 ),
-                                GestureDetector(
-                                  child: Icon(
+                                HapticIconButton(
+                                  color: CustomTheme.textColor,
+                                  icon: Icon(
                                     Platform.isIOS
                                         ? CupertinoIcons.mail_solid
                                         : Icons.email,
                                   ),
-                                  onTap: () async => {
+                                  onPressed: () async => {
                                     await HapticFeedback.lightImpact(),
                                     launchUrl(
                                       Uri.parse('mailto:hi@liquid-dev.de'),
