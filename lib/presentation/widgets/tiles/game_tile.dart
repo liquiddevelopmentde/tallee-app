@@ -61,7 +61,7 @@ class GameTile extends StatelessWidget {
         }
       },
       onLongPress: () async {
-        await HapticFeedback.vibrate();
+        await HapticFeedback.heavyImpact();
         if (onLongPress != null) {
           onLongPress!.call();
         }
