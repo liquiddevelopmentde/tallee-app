@@ -31,6 +31,7 @@ class HapticIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       iconSize: iconSize,
+      highlightColor: Colors.transparent, //disable splash animation
       color: color,
       padding: padding,
       alignment: alignment ?? Alignment.center,
