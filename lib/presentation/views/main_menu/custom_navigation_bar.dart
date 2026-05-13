@@ -58,7 +58,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           HapticIconButton(
             onPressed: () async {
               final navigator = Navigator.of(context);
-              await HapticFeedback.selectionClick();
               await navigator.push(
                 adaptivePageRoute(builder: (_) => const SettingsView()),
               );
