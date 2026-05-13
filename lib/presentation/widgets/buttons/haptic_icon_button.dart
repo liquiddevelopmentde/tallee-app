@@ -6,7 +6,6 @@ class HapticIconButton extends StatelessWidget {
     super.key,
     required this.icon,
     required this.onPressed,
-    this.tooltip,
     this.iconSize,
     this.color,
     this.padding,
@@ -20,7 +19,6 @@ class HapticIconButton extends StatelessWidget {
   final Widget icon;
   final VoidCallback? onPressed;
 
-  final String? tooltip;
   final double? iconSize;
   final Color? color;
   final EdgeInsetsGeometry? padding;
@@ -33,7 +31,6 @@ class HapticIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      tooltip: tooltip,
       iconSize: iconSize,
       color: color,
       padding: padding,
