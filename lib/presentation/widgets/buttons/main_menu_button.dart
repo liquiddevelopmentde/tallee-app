@@ -66,14 +66,18 @@ class _MainMenuButtonState extends State<MainMenuButton>
         onTapDown: (_) {
           _animationController.forward();
           if (widget.onLongPressed != null) {
-            _longPressTimer = Timer(const Duration(milliseconds: 400), () {
-              _isLongPressing = true;
-              widget.onLongPressed?.call();
-              _repeatTimer = Timer.periodic(
-                const Duration(milliseconds: 250),
-                (_) => widget.onLongPressed?.call(),
-              );
-            });
+            _longPressTimer = Timer(
+              const Duration(milliseconds: 400),
+              () async {
+                _isLongPressing = true;
+                await HapticFeedback.vibrate();
+                widget.onLongPressed?.call();
+                _repeatTimer = Timer.periodic(
+                  const Duration(milliseconds: 250),
+                  (_) => widget.onLongPressed?.call(),
+                );
+              },
+            );
           }
         },
         onTapUp: (_) async {
