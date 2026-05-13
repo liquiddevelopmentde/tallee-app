@@ -70,11 +70,14 @@ class _MainMenuButtonState extends State<MainMenuButton>
               const Duration(milliseconds: 400),
               () async {
                 _isLongPressing = true;
-                await HapticFeedback.vibrate();
                 widget.onLongPressed?.call();
+                await HapticFeedback.heavyImpact();
                 _repeatTimer = Timer.periodic(
                   const Duration(milliseconds: 250),
-                  (_) => widget.onLongPressed?.call(),
+                  (_) async {
+                    widget.onLongPressed?.call();
+                    await HapticFeedback.heavyImpact();
+                  },
                 );
               },
             );
