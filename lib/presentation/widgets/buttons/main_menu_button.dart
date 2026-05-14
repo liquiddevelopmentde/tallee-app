@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MainMenuButton extends StatefulWidget {
   /// A button for the main menu with an optional icon and a press animation.
@@ -65,19 +66,27 @@ class _MainMenuButtonState extends State<MainMenuButton>
         onTapDown: (_) {
           _animationController.forward();
           if (widget.onLongPressed != null) {
-            _longPressTimer = Timer(const Duration(milliseconds: 400), () {
-              _isLongPressing = true;
-              widget.onLongPressed?.call();
-              _repeatTimer = Timer.periodic(
-                const Duration(milliseconds: 250),
-                (_) => widget.onLongPressed?.call(),
-              );
-            });
+            _longPressTimer = Timer(
+              const Duration(milliseconds: 400),
+              () async {
+                _isLongPressing = true;
+                widget.onLongPressed?.call();
+                await HapticFeedback.heavyImpact();
+                _repeatTimer = Timer.periodic(
+                  const Duration(milliseconds: 250),
+                  (_) async {
+                    widget.onLongPressed?.call();
+                    await HapticFeedback.heavyImpact();
+                  },
+                );
+              },
+            );
           }
         },
         onTapUp: (_) async {
           _cancelTimers();
           if (mounted && !_isLongPressing) {
+            await HapticFeedback.selectionClick();
             widget.onPressed();
           }
           _isLongPressing = false;

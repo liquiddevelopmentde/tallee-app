@@ -172,7 +172,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                         ) ??
                         false,
                   );
-
                   selectedGroup = await Navigator.of(context).push(
                     adaptivePageRoute(
                       builder: (context) => ChooseGroupView(

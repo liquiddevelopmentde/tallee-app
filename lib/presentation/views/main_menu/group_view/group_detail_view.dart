@@ -12,6 +12,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
@@ -65,7 +66,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
       appBar: AppBar(
         title: Text(loc.group_profile),
         actions: [
-          IconButton(
+          HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
               showDialog<bool>(

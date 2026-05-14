@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
@@ -143,7 +144,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                                 text: player.name,
                                 suffixText: getNameCountText(player),
                                 onIconTap: () {
-                                  setState(() {
+                                  setState(() async {
+                                    await HapticFeedback.selectionClick();
                                     // Removes the player from the selection and notifies the parent.
                                     selectedPlayers.remove(player);
                                     widget.onChanged([...selectedPlayers]);
@@ -197,7 +199,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                       text: suggestedPlayers[index].name,
                       suffixText: getNameCountText(suggestedPlayers[index]),
                       icon: Icons.add,
-                      onPressed: () {
+                      onPressed: () async {
+                        await HapticFeedback.selectionClick();
                         setState(() {
                           // If the player is not already selected
                           if (!selectedPlayers.contains(
@@ -294,8 +297,10 @@ class _PlayerSelectionState extends State<PlayerSelection> {
 
     if (success) {
       _handleSuccessfulPlayerCreation(createdPlayer);
+      await HapticFeedback.successNotification();
       showSnackBarMessage(loc.successfully_added_player(playerName));
     } else {
+      await HapticFeedback.errorNotification();
       showSnackBarMessage(loc.could_not_add_player(playerName));
     }
   }
