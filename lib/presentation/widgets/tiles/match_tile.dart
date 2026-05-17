@@ -236,9 +236,9 @@ class _MatchTileState extends State<MatchTile> {
             ],
 
             if (match.teams != null && match.teams!.isNotEmpty) ...[
-              const Text(
-                'Teams',
-                style: TextStyle(
+              Text(
+                loc.teams,
+                style: const TextStyle(
                   fontSize: 13,
                   color: Colors.grey,
                   fontWeight: FontWeight.w500,
