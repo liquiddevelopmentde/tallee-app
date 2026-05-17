@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
@@ -36,8 +38,8 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   late final Ruleset ruleset;
 
-  /// List of all players who participated in the match
   late final List<Player> allPlayers;
+  late final List<Team> allTeams;
 
   /// List of text controllers for score entry, one for each player
   late final List<TextEditingController> controller;
@@ -45,44 +47,27 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Flag to indicate if the save button should be enabled
   late bool canSave;
 
+  late bool isTeamMatch;
+
   /// Currently selected winner player
   Player? _selectedPlayer;
+  Team? _selectedTeam;
 
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
     ruleset = widget.match.game.ruleset;
     canSave = !rulesetSupportsScoreEntry();
+    isTeamMatch = widget.match.isTeamMatch;
+    print(widget.match.teams);
 
-    allPlayers = widget.match.players;
-    allPlayers.sort((a, b) => a.name.compareTo(b.name));
-
-    controller = List.generate(
-      allPlayers.length,
-      (index) => TextEditingController()..addListener(() => onTextEnter()),
-    );
-
-    // Prefill fields
-    if (widget.match.mvp.isNotEmpty) {
-      if (rulesetSupportsWinnerSelection()) {
-        _selectedPlayer = allPlayers.firstWhere(
-          (p) => p.id == widget.match.mvp.first.id,
-        );
-      } else if (rulesetSupportsScoreEntry()) {
-        for (int i = 0; i < allPlayers.length; i++) {
-          final scoreList = widget.match.scores[allPlayers[i].id];
-          final score = scoreList?.score ?? 0;
-          controller[i].text = score.toString();
-        }
-      } else if (rulesetSupportsPlacement()) {
-        allPlayers.sort((a, b) {
-          final scoreA = widget.match.scores[a.id]?.score ?? 0;
-          final scoreB = widget.match.scores[b.id]?.score ?? 0;
-          return scoreB.compareTo(scoreA);
-        });
-      }
-      super.initState();
+    if (isTeamMatch) {
+      initializeAsTeamMatch();
+    } else {
+      inizializeAsNormalMatch();
     }
+
+    super.initState();
   }
 
   @override
@@ -160,165 +145,16 @@ class _MatchResultViewState extends State<MatchResultView> {
                           // Show player selection
                           if (rulesetSupportsWinnerSelection())
                             Expanded(
-                              child: RadioGroup<Player>(
-                                groupValue: _selectedPlayer,
-                                onChanged: (Player? value) async {
-                                  setState(() {
-                                    _selectedPlayer = value;
-                                  });
-                                },
-                                child: ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: allPlayers.length,
-                                  itemBuilder: (context, index) {
-                                    return CustomRadioListTile(
-                                      text: allPlayers[index].name,
-                                      value: allPlayers[index],
-                                      onContainerTap: (value) async {
-                                        setState(() {
-                                          // Check if the already selected player is the same as the newly tapped player.
-                                          if (_selectedPlayer == value) {
-                                            // If yes deselected the player by setting it to null.
-                                            _selectedPlayer = null;
-                                          } else {
-                                            // If no assign the newly tapped player to the selected player.
-                                            (_selectedPlayer = value);
-                                          }
-                                        });
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
+                              child: buildWinnerSelectionWidget(isTeamMatch),
                             ),
 
                           // Show score entry
                           if (rulesetSupportsScoreEntry())
-                            Expanded(
-                              child: ListView.separated(
-                                itemCount: allPlayers.length,
-                                itemBuilder: (context, index) {
-                                  return ScoreListTile(
-                                    text: allPlayers[index].name,
-                                    controller: controller[index],
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                      return const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 8.0,
-                                        ),
-                                        child: Divider(indent: 20),
-                                      );
-                                    },
-                              ),
-                            ),
+                            Expanded(child: buildScoreEntryWidget(isTeamMatch)),
 
                           // Show draggable placement list
                           if (rulesetSupportsPlacement())
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  // Placement indicators
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Column(
-                                      children: [
-                                        for (
-                                          int i = 0;
-                                          i < allPlayers.length;
-                                          i++
-                                        )
-                                          Container(
-                                            alignment: Alignment.center,
-                                            height: 60,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    CustomTheme.boxBorderColor,
-                                                borderRadius: CustomTheme
-                                                    .standardBorderRadiusAll,
-                                              ),
-                                              alignment: Alignment.center,
-                                              height: 50,
-                                              width: 50,
-                                              child: Text(
-                                                ' #${i + 1} ',
-                                                style: const TextStyle(
-                                                  color: CustomTheme.textColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  // Drag list
-                                  Expanded(
-                                    child: ReorderableListView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      padding: EdgeInsets.zero,
-                                      proxyDecorator: (child, index, animation) {
-                                        return AnimatedBuilder(
-                                          animation: animation,
-                                          child: child,
-                                          builder: (context, child) {
-                                            final alpha =
-                                                (Curves.easeInOut.transform(
-                                                          animation.value,
-                                                        ) *
-                                                        40)
-                                                    .toInt();
-                                            return Stack(
-                                              children: [
-                                                child!,
-                                                Positioned.fill(
-                                                  left: 4,
-                                                  top: 4,
-                                                  right: 4,
-                                                  bottom: 4,
-                                                  child: DecoratedBox(
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white
-                                                          .withAlpha(alpha),
-                                                      borderRadius: CustomTheme
-                                                          .standardBorderRadiusAll,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
-                                      onReorder: (int oldIndex, int newIndex) {
-                                        setState(() {
-                                          if (newIndex > oldIndex) {
-                                            newIndex -= 1;
-                                          }
-                                          final Player item = allPlayers
-                                              .removeAt(oldIndex);
-                                          allPlayers.insert(newIndex, item);
-                                        });
-                                      },
-                                      itemCount: allPlayers.length,
-                                      itemBuilder: (context, index) {
-                                        return TextIconListTile(
-                                          key: ValueKey(allPlayers[index].id),
-                                          text: allPlayers[index].name,
-                                          icon: Icons.drag_handle,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            Expanded(child: buildPlacementWidget(isTeamMatch)),
                         ],
                       ),
                     ),
@@ -359,6 +195,63 @@ class _MatchResultViewState extends State<MatchResultView> {
         ),
       ),
     );
+  }
+
+  void initializeAsTeamMatch() {
+    allTeams =
+        widget.match.teams ??
+        List.generate(
+          4,
+          (index) => Team(
+            name: 'Team ${index + 1}',
+            members: [
+              Player(name: 'Player ${index + 1}'),
+              Player(name: 'Player ${index + 2}'),
+              Player(name: 'Player ${index + 3}'),
+              Player(name: 'Player ${index + 4}'),
+            ],
+          ),
+        );
+    allTeams.sort((a, b) => a.name.compareTo(b.name));
+
+    controller = List.generate(
+      allTeams.length,
+      (index) => TextEditingController()..addListener(() => onTextEnter()),
+    );
+
+    // Prefill fields
+    //TODO
+  }
+
+  void inizializeAsNormalMatch() {
+    allPlayers = widget.match.players;
+    allPlayers.sort((a, b) => a.name.compareTo(b.name));
+
+    controller = List.generate(
+      allPlayers.length,
+      (index) => TextEditingController()..addListener(() => onTextEnter()),
+    );
+
+    // Prefill fields
+    if (widget.match.mvp.isNotEmpty) {
+      if (rulesetSupportsWinnerSelection()) {
+        _selectedPlayer = allPlayers.firstWhere(
+          (p) => p.id == widget.match.mvp.first.id,
+        );
+      } else if (rulesetSupportsScoreEntry()) {
+        for (int i = 0; i < allPlayers.length; i++) {
+          final scoreList = widget.match.scores[allPlayers[i].id];
+          final score = scoreList?.score ?? 0;
+          controller[i].text = score.toString();
+        }
+      } else if (rulesetSupportsPlacement()) {
+        allPlayers.sort((a, b) {
+          final scoreA = widget.match.scores[a.id]?.score ?? 0;
+          final scoreB = widget.match.scores[b.id]?.score ?? 0;
+          return scoreB.compareTo(scoreA);
+        });
+      }
+    }
   }
 
   /// Updated [canSave] everytime a text is entered in one of the score entry fields.
@@ -458,5 +351,312 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool rulesetSupportsPlacement() {
     return ruleset == Ruleset.placement;
+  }
+
+  Widget buildTeamTile({required Team team, double? width}) {
+    return Container(
+      width: width,
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: getColorFromGameColor(team.color).withAlpha(30),
+        border: Border.all(color: getColorFromGameColor(team.color), width: 2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            team.name,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.start,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+          Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: [
+              for (final member in team.members)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: CustomTheme.onBoxColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    member.name,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: CustomTheme.textColor.withAlpha(180),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildWinnerSelectionWidget(bool isTeamMatch) {
+    if (isTeamMatch) {
+      return RadioGroup<Team>(
+        groupValue: _selectedTeam,
+        onChanged: (Team? team) async {
+          setState(() {
+            _selectedTeam = team;
+          });
+        },
+        child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: allTeams.length,
+          itemBuilder: (context, index) {
+            return CustomRadioListTile(
+              content: buildTeamTile(team: allTeams[index]),
+              value: allTeams[index],
+              onContainerTap: (team) async {
+                setState(() {
+                  // Check if the already selected player is the same as the newly tapped player.
+                  if (_selectedTeam == team) {
+                    // If yes deselected the player by setting it to null.
+                    _selectedTeam = null;
+                  } else {
+                    // If no assign the newly tapped player to the selected player.
+                    (_selectedTeam = team);
+                  }
+                });
+              },
+            );
+          },
+        ),
+      );
+    } else {
+      return RadioGroup<Player>(
+        groupValue: _selectedPlayer,
+        onChanged: (Player? value) async {
+          setState(() {
+            _selectedPlayer = value;
+          });
+        },
+        child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: allPlayers.length,
+          itemBuilder: (context, index) {
+            return CustomRadioListTile(
+              content: Text(
+                allPlayers[index].name,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              value: allPlayers[index],
+              onContainerTap: (value) async {
+                setState(() {
+                  // Check if the already selected player is the same as the newly tapped player.
+                  if (_selectedPlayer == value) {
+                    // If yes deselected the player by setting it to null.
+                    _selectedPlayer = null;
+                  } else {
+                    // If no assign the newly tapped player to the selected player.
+                    (_selectedPlayer = value);
+                  }
+                });
+              },
+            );
+          },
+        ),
+      );
+    }
+  }
+
+  Widget buildScoreEntryWidget(bool isTeamMatch) {
+    if (isTeamMatch) {
+      return ListView.separated(
+        itemCount: allTeams.length,
+        itemBuilder: (context, index) {
+          return ScoreListTile(
+            content: buildTeamTile(team: allTeams[index], width: 220),
+            horizontalPadding: 0,
+            controller: controller[index],
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Divider(indent: 20),
+          );
+        },
+      );
+    } else {
+      return ListView.separated(
+        itemCount: allPlayers.length,
+        itemBuilder: (context, index) {
+          return ScoreListTile(
+            content: Text(
+              allPlayers[index].name,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+            ),
+            controller: controller[index],
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Divider(indent: 20),
+          );
+        },
+      );
+    }
+  }
+
+  Widget buildPlacementWidget(bool isTeamMatch) {
+    final placementCol = Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: Column(
+        children: [
+          for (
+            int i = 0;
+            i < (isTeamMatch ? allTeams.length : allPlayers.length);
+            i++
+          )
+            Container(
+              alignment: Alignment.center,
+              height: 60,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: CustomTheme.boxBorderColor,
+                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                ),
+                alignment: Alignment.center,
+                height: 50,
+                width: 50,
+                child: Text(
+                  ' #${i + 1} ',
+                  style: const TextStyle(
+                    color: CustomTheme.textColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+    final valueCol = isTeamMatch
+        ? Expanded(
+            child: ReorderableListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              proxyDecorator: (child, index, animation) {
+                return AnimatedBuilder(
+                  animation: animation,
+                  child: child,
+                  builder: (context, child) {
+                    final alpha =
+                        (Curves.easeInOut.transform(animation.value) * 40)
+                            .toInt();
+                    return Stack(
+                      children: [
+                        child!,
+                        Positioned.fill(
+                          left: 4,
+                          top: 4,
+                          right: 4,
+                          bottom: 4,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withAlpha(alpha),
+                              borderRadius: CustomTheme.standardBorderRadiusAll,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              onReorder: (int oldIndex, int newIndex) {
+                setState(() {
+                  if (newIndex > oldIndex) {
+                    newIndex -= 1;
+                  }
+                  final Team team = allTeams.removeAt(oldIndex);
+                  allTeams.insert(newIndex, team);
+                });
+              },
+              itemCount: allTeams.length,
+              itemBuilder: (context, index) {
+                return TextIconListTile(
+                  key: ValueKey(allTeams[index].id),
+                  text: allTeams[index].name,
+                  icon: Icons.drag_handle,
+                  color: getColorFromGameColor(allTeams[index].color),
+                );
+              },
+            ),
+          )
+        : Expanded(
+            child: ReorderableListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              proxyDecorator: (child, index, animation) {
+                return AnimatedBuilder(
+                  animation: animation,
+                  child: child,
+                  builder: (context, child) {
+                    final alpha =
+                        (Curves.easeInOut.transform(animation.value) * 40)
+                            .toInt();
+                    return Stack(
+                      children: [
+                        child!,
+                        Positioned.fill(
+                          left: 4,
+                          top: 4,
+                          right: 4,
+                          bottom: 4,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withAlpha(alpha),
+                              borderRadius: CustomTheme.standardBorderRadiusAll,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              onReorder: (int oldIndex, int newIndex) {
+                setState(() {
+                  if (newIndex > oldIndex) {
+                    newIndex -= 1;
+                  }
+                  final Player item = allPlayers.removeAt(oldIndex);
+                  allPlayers.insert(newIndex, item);
+                });
+              },
+              itemCount: allPlayers.length,
+              itemBuilder: (context, index) {
+                return TextIconListTile(
+                  key: ValueKey(allPlayers[index].id),
+                  text: allPlayers[index].name,
+                  icon: Icons.drag_handle,
+                );
+              },
+            ),
+          );
+
+    return Row(children: [placementCol, valueCol]);
   }
 }

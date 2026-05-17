@@ -128,6 +128,12 @@ class _MatchTileState extends State<MatchTile> {
 
             const SizedBox(height: 12),
 
+            Text(
+              'team match: ${match.isTeamMatch}',
+              style: const TextStyle(fontSize: 14, color: Colors.white),
+            ),
+
+            const SizedBox(height: 12),
             // Winner / In Progress Info
             if (match.mvp.isNotEmpty) ...[
               Container(

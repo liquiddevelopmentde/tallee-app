@@ -6,12 +6,14 @@ class TextIconTile extends StatelessWidget {
   /// - [text]: The text to display in the tile.
   /// - [iconEnabled]: A boolean to determine if the icon should be displayed.
   /// - [onIconTap]: The callback to be invoked when the icon is tapped.
+  /// - [icon]: Optional custom icon. Defaults to [Icons.close].
   const TextIconTile({
     super.key,
     required this.text,
     this.suffixText = '',
     this.iconEnabled = true,
     this.onIconTap,
+    this.icon = Icons.close,
   });
 
   /// The text to display in the tile.
@@ -24,6 +26,9 @@ class TextIconTile extends StatelessWidget {
 
   /// The callback to be invoked when the icon is tapped.
   final VoidCallback? onIconTap;
+
+  /// The icon to display. Defaults to [Icons.close].
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +70,7 @@ class TextIconTile extends StatelessWidget {
           ),
           if (iconEnabled) ...<Widget>[
             const SizedBox(width: 3),
-            GestureDetector(
-              onTap: onIconTap,
-              child: const Icon(Icons.close, size: 20),
-            ),
+            GestureDetector(onTap: onIconTap, child: Icon(icon, size: 20)),
           ],
         ],
       ),

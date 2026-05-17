@@ -12,6 +12,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/organize_teams_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
@@ -59,6 +60,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
   Group? selectedGroup;
   Game? selectedGame;
+  bool isTeamMatch = false;
   List<Player> selectedPlayers = [];
 
   /// GlobalKey for ScaffoldMessenger to show snackbars
@@ -135,24 +137,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   trailing: selectedGame == null
                       ? Text(loc.none_group)
                       : Text(selectedGame!.name),
-                  onPressed: () async {
-                    selectedGame = await Navigator.of(context).push(
-                      adaptivePageRoute(
-                        builder: (context) => ChooseGameView(
-                          games: gamesList,
-                          initialGameId: selectedGame?.id ?? '',
-                          onGamesUpdated: widget.onMatchesUpdated,
-                        ),
-                      ),
-                    );
-                    setState(() {
-                      if (selectedGame != null) {
-                        hintText = selectedGame!.name;
-                      } else {
-                        hintText = loc.match_name;
-                      }
-                    });
-                  },
+                  onPressed: () async => await onChoosingGame(),
                 ),
 
               // Group selection tile.
@@ -161,36 +146,19 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 trailing: selectedGroup == null
                     ? Text(loc.none_group)
                     : Text(selectedGroup!.name),
-                onPressed: () async {
-                  // Remove all players from the previously selected group from
-                  // the selected players list, in case the user deselects the
-                  // group or selects a different group.
-                  selectedPlayers.removeWhere(
-                    (player) =>
-                        selectedGroup?.members.any(
-                          (member) => member.id == player.id,
-                        ) ??
-                        false,
-                  );
-
-                  selectedGroup = await Navigator.of(context).push(
-                    adaptivePageRoute(
-                      builder: (context) => ChooseGroupView(
-                        groups: groupsList,
-                        initialGroupId: selectedGroup?.id ?? '',
-                      ),
-                    ),
-                  );
-
-                  setState(() {
-                    if (selectedGroup != null) {
-                      setState(() {
-                        selectedPlayers += [...selectedGroup!.members];
-                      });
-                    }
-                  });
-                },
+                onPressed: () async => onChoosingGroup(),
               ),
+
+              if (!isEditMode())
+                ChooseTile(
+                  title: 'Team Match',
+                  trailing: Switch.adaptive(
+                    activeTrackColor: CustomTheme.primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: -15),
+                    value: isTeamMatch,
+                    onChanged: (value) => setState(() => isTeamMatch = value),
+                  ),
+                ),
 
               // Player selection widget.
               Expanded(
@@ -211,9 +179,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 text: buttonText,
                 sizeRelativeToWidth: 0.95,
                 buttonType: ButtonType.primary,
-                onPressed: _enableCreateGameButton()
+                onPressed: isSubmitButtonEnabled()
                     ? () {
-                        buttonNavigation(context);
+                        submitButtonNavigation(context);
                       }
                     : null,
               ),
@@ -228,12 +196,86 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     return widget.matchToEdit != null;
   }
 
+  // If a match was provided to the view, this method prefills the input fields
+  void prefillMatchDetails() {
+    final match = widget.matchToEdit!;
+    _matchNameController.text = match.name;
+    selectedPlayers = match.players;
+    selectedGame = match.game;
+
+    if (match.group != null) {
+      selectedGroup = match.group;
+    }
+  }
+
+  Future<void> onChoosingGame() async {
+    selectedGame = await Navigator.of(context).push(
+      adaptivePageRoute(
+        builder: (context) => ChooseGameView(
+          games: gamesList,
+          initialGameId: selectedGame?.id ?? '',
+          onGamesUpdated: widget.onMatchesUpdated,
+        ),
+      ),
+    );
+    setState(() {
+      if (selectedGame != null) {
+        hintText = selectedGame!.name;
+      } else {
+        hintText = AppLocalizations.of(context).match_name;
+      }
+    });
+  }
+
+  Future<void> onChoosingGroup() async {
+    // Remove all players from the previously selected group from
+    // the selected players list, in case the user deselects the
+    // group or selects a different group.
+    selectedPlayers.removeWhere(
+      (player) =>
+          selectedGroup?.members.any((member) => member.id == player.id) ??
+          false,
+    );
+
+    selectedGroup = await Navigator.of(context).push(
+      adaptivePageRoute(
+        builder: (context) => ChooseGroupView(
+          groups: groupsList,
+          initialGroupId: selectedGroup?.id ?? '',
+        ),
+      ),
+    );
+
+    setState(() {
+      if (selectedGroup != null) {
+        setState(() {
+          selectedPlayers += [...selectedGroup!.members];
+        });
+      }
+    });
+  }
+
+  // If none of the selected players are from the currently selected group,
+  // the group is also deselected.
+  Future<void> removeGroupWhenNoMemberLeft() async {
+    if (selectedGroup == null) return;
+
+    if (!selectedPlayers.any(
+      (player) =>
+          selectedGroup!.members.any((member) => member.id == player.id),
+    )) {
+      setState(() {
+        selectedGroup = null;
+      });
+    }
+  }
+
   /// Determines whether the "Create Match" button should be enabled.
   ///
   /// Returns `true` if:
   /// - A ruleset is selected AND
   /// - Either a group is selected OR at least 2 players are selected.
-  bool _enableCreateGameButton() {
+  bool isSubmitButtonEnabled() {
     return (selectedGroup != null ||
         (selectedPlayers.length > 1) && selectedGame != null);
   }
@@ -242,20 +284,32 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   ///
   /// If a match is being edited, updates the match in the database.
   /// Otherwise, creates a new match and navigates to the MatchResultView.
-  void buttonNavigation(BuildContext context) async {
+  void submitButtonNavigation(BuildContext context) async {
     if (isEditMode()) {
       await updateMatch();
       if (context.mounted) {
         Navigator.pop(context);
       }
-    } else {
-      final match = await createMatch();
+    }
 
+    final match = await createMatch();
+
+    if (isTeamMatch) {
       if (context.mounted) {
         Navigator.pushReplacement(
           context,
           adaptivePageRoute(
-            fullscreenDialog: true,
+            fullscreenDialog: !isTeamMatch,
+            builder: (context) => OrganizeTeamsView(match: match),
+          ),
+        );
+      }
+    } else {
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          adaptivePageRoute(
+            fullscreenDialog: !isTeamMatch,
             builder: (context) => MatchResultView(
               match: match,
               onWinnerChanged: widget.onWinnerChanged,
@@ -328,36 +382,10 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       createdAt: DateTime.now(),
       group: selectedGroup,
       players: selectedPlayers,
+      isTeamMatch: isTeamMatch,
       game: selectedGame!,
     );
     await db.matchDao.addMatch(match: match);
     return match;
-  }
-
-  // If a match was provided to the view, this method prefills the input fields
-  void prefillMatchDetails() {
-    final match = widget.matchToEdit!;
-    _matchNameController.text = match.name;
-    selectedPlayers = match.players;
-    selectedGame = match.game;
-
-    if (match.group != null) {
-      selectedGroup = match.group;
-    }
-  }
-
-  // If none of the selected players are from the currently selected group,
-  // the group is also deselected.
-  Future<void> removeGroupWhenNoMemberLeft() async {
-    if (selectedGroup == null) return;
-
-    if (!selectedPlayers.any(
-      (player) =>
-          selectedGroup!.members.any((member) => member.id == player.id),
-    )) {
-      setState(() {
-        selectedGroup = null;
-      });
-    }
   }
 }

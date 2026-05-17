@@ -24,6 +24,21 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
   }
 }
 
+// Returns a [GameColor] enum value based on the provided team [index].
+GameColor getTeamColor(int index) {
+  final colors = [
+    GameColor.red,
+    GameColor.blue,
+    GameColor.green,
+    GameColor.yellow,
+    GameColor.purple,
+    GameColor.orange,
+    GameColor.pink,
+    GameColor.teal,
+  ];
+  return colors[index % colors.length];
+}
+
 /// Translates a [GameColor] enum value to its corresponding localized string.
 String translateGameColorToString(GameColor color, BuildContext context) {
   final loc = AppLocalizations.of(context);

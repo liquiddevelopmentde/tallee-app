@@ -1185,6 +1185,21 @@ class $MatchTableTable extends MatchTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _isTeamMatchMeta = const VerificationMeta(
+    'isTeamMatch',
+  );
+  @override
+  late final GeneratedColumn<bool> isTeamMatch = GeneratedColumn<bool>(
+    'is_team_match',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_team_match" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -1222,6 +1237,7 @@ class $MatchTableTable extends MatchTable
     gameId,
     groupId,
     name,
+    isTeamMatch,
     notes,
     createdAt,
     endedAt,
@@ -1264,6 +1280,15 @@ class $MatchTableTable extends MatchTable
       );
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('is_team_match')) {
+      context.handle(
+        _isTeamMatchMeta,
+        isTeamMatch.isAcceptableOrUnknown(
+          data['is_team_match']!,
+          _isTeamMatchMeta,
+        ),
+      );
     }
     if (data.containsKey('notes')) {
       context.handle(
@@ -1312,6 +1337,10 @@ class $MatchTableTable extends MatchTable
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      isTeamMatch: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_team_match'],
+      )!,
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -1338,6 +1367,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
   final String gameId;
   final String? groupId;
   final String name;
+  final bool isTeamMatch;
   final String notes;
   final DateTime createdAt;
   final DateTime? endedAt;
@@ -1346,6 +1376,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     required this.gameId,
     this.groupId,
     required this.name,
+    required this.isTeamMatch,
     required this.notes,
     required this.createdAt,
     this.endedAt,
@@ -1359,6 +1390,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       map['group_id'] = Variable<String>(groupId);
     }
     map['name'] = Variable<String>(name);
+    map['is_team_match'] = Variable<bool>(isTeamMatch);
     map['notes'] = Variable<String>(notes);
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || endedAt != null) {
@@ -1375,6 +1407,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
           ? const Value.absent()
           : Value(groupId),
       name: Value(name),
+      isTeamMatch: Value(isTeamMatch),
       notes: Value(notes),
       createdAt: Value(createdAt),
       endedAt: endedAt == null && nullToAbsent
@@ -1393,6 +1426,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       gameId: serializer.fromJson<String>(json['gameId']),
       groupId: serializer.fromJson<String?>(json['groupId']),
       name: serializer.fromJson<String>(json['name']),
+      isTeamMatch: serializer.fromJson<bool>(json['isTeamMatch']),
       notes: serializer.fromJson<String>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       endedAt: serializer.fromJson<DateTime?>(json['endedAt']),
@@ -1406,6 +1440,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       'gameId': serializer.toJson<String>(gameId),
       'groupId': serializer.toJson<String?>(groupId),
       'name': serializer.toJson<String>(name),
+      'isTeamMatch': serializer.toJson<bool>(isTeamMatch),
       'notes': serializer.toJson<String>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'endedAt': serializer.toJson<DateTime?>(endedAt),
@@ -1417,6 +1452,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     String? gameId,
     Value<String?> groupId = const Value.absent(),
     String? name,
+    bool? isTeamMatch,
     String? notes,
     DateTime? createdAt,
     Value<DateTime?> endedAt = const Value.absent(),
@@ -1425,6 +1461,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     gameId: gameId ?? this.gameId,
     groupId: groupId.present ? groupId.value : this.groupId,
     name: name ?? this.name,
+    isTeamMatch: isTeamMatch ?? this.isTeamMatch,
     notes: notes ?? this.notes,
     createdAt: createdAt ?? this.createdAt,
     endedAt: endedAt.present ? endedAt.value : this.endedAt,
@@ -1435,6 +1472,9 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       gameId: data.gameId.present ? data.gameId.value : this.gameId,
       groupId: data.groupId.present ? data.groupId.value : this.groupId,
       name: data.name.present ? data.name.value : this.name,
+      isTeamMatch: data.isTeamMatch.present
+          ? data.isTeamMatch.value
+          : this.isTeamMatch,
       notes: data.notes.present ? data.notes.value : this.notes,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       endedAt: data.endedAt.present ? data.endedAt.value : this.endedAt,
@@ -1448,6 +1488,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
           ..write('gameId: $gameId, ')
           ..write('groupId: $groupId, ')
           ..write('name: $name, ')
+          ..write('isTeamMatch: $isTeamMatch, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('endedAt: $endedAt')
@@ -1456,8 +1497,16 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, gameId, groupId, name, notes, createdAt, endedAt);
+  int get hashCode => Object.hash(
+    id,
+    gameId,
+    groupId,
+    name,
+    isTeamMatch,
+    notes,
+    createdAt,
+    endedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1466,6 +1515,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
           other.gameId == this.gameId &&
           other.groupId == this.groupId &&
           other.name == this.name &&
+          other.isTeamMatch == this.isTeamMatch &&
           other.notes == this.notes &&
           other.createdAt == this.createdAt &&
           other.endedAt == this.endedAt);
@@ -1476,6 +1526,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
   final Value<String> gameId;
   final Value<String?> groupId;
   final Value<String> name;
+  final Value<bool> isTeamMatch;
   final Value<String> notes;
   final Value<DateTime> createdAt;
   final Value<DateTime?> endedAt;
@@ -1485,6 +1536,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     this.gameId = const Value.absent(),
     this.groupId = const Value.absent(),
     this.name = const Value.absent(),
+    this.isTeamMatch = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.endedAt = const Value.absent(),
@@ -1495,6 +1547,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     required String gameId,
     this.groupId = const Value.absent(),
     required String name,
+    this.isTeamMatch = const Value.absent(),
     required String notes,
     required DateTime createdAt,
     this.endedAt = const Value.absent(),
@@ -1509,6 +1562,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     Expression<String>? gameId,
     Expression<String>? groupId,
     Expression<String>? name,
+    Expression<bool>? isTeamMatch,
     Expression<String>? notes,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? endedAt,
@@ -1519,6 +1573,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
       if (gameId != null) 'game_id': gameId,
       if (groupId != null) 'group_id': groupId,
       if (name != null) 'name': name,
+      if (isTeamMatch != null) 'is_team_match': isTeamMatch,
       if (notes != null) 'notes': notes,
       if (createdAt != null) 'created_at': createdAt,
       if (endedAt != null) 'ended_at': endedAt,
@@ -1531,6 +1586,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     Value<String>? gameId,
     Value<String?>? groupId,
     Value<String>? name,
+    Value<bool>? isTeamMatch,
     Value<String>? notes,
     Value<DateTime>? createdAt,
     Value<DateTime?>? endedAt,
@@ -1541,6 +1597,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
       gameId: gameId ?? this.gameId,
       groupId: groupId ?? this.groupId,
       name: name ?? this.name,
+      isTeamMatch: isTeamMatch ?? this.isTeamMatch,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       endedAt: endedAt ?? this.endedAt,
@@ -1562,6 +1619,9 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (isTeamMatch.present) {
+      map['is_team_match'] = Variable<bool>(isTeamMatch.value);
     }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
@@ -1585,6 +1645,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
           ..write('gameId: $gameId, ')
           ..write('groupId: $groupId, ')
           ..write('name: $name, ')
+          ..write('isTeamMatch: $isTeamMatch, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('endedAt: $endedAt, ')
@@ -1854,8 +1915,28 @@ class $TeamTableTable extends TeamTable
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
   @override
-  List<GeneratedColumn> get $columns => [id, name, createdAt];
+  late final GeneratedColumn<String> color = GeneratedColumn<String>(
+    'color',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('blue'),
+  );
+  static const VerificationMeta _scoreMeta = const VerificationMeta('score');
+  @override
+  late final GeneratedColumn<int> score = GeneratedColumn<int>(
+    'score',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, createdAt, color, score];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1889,6 +1970,18 @@ class $TeamTableTable extends TeamTable
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('color')) {
+      context.handle(
+        _colorMeta,
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+      );
+    }
+    if (data.containsKey('score')) {
+      context.handle(
+        _scoreMeta,
+        score.isAcceptableOrUnknown(data['score']!, _scoreMeta),
+      );
+    }
     return context;
   }
 
@@ -1910,6 +2003,14 @@ class $TeamTableTable extends TeamTable
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      color: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color'],
+      )!,
+      score: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}score'],
+      )!,
     );
   }
 
@@ -1923,10 +2024,14 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
   final String id;
   final String name;
   final DateTime createdAt;
+  final String color;
+  final int score;
   const TeamTableData({
     required this.id,
     required this.name,
     required this.createdAt,
+    required this.color,
+    required this.score,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1934,6 +2039,8 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
     map['created_at'] = Variable<DateTime>(createdAt);
+    map['color'] = Variable<String>(color);
+    map['score'] = Variable<int>(score);
     return map;
   }
 
@@ -1942,6 +2049,8 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       id: Value(id),
       name: Value(name),
       createdAt: Value(createdAt),
+      color: Value(color),
+      score: Value(score),
     );
   }
 
@@ -1954,6 +2063,8 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      color: serializer.fromJson<String>(json['color']),
+      score: serializer.fromJson<int>(json['score']),
     );
   }
   @override
@@ -1963,20 +2074,31 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'color': serializer.toJson<String>(color),
+      'score': serializer.toJson<int>(score),
     };
   }
 
-  TeamTableData copyWith({String? id, String? name, DateTime? createdAt}) =>
-      TeamTableData(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        createdAt: createdAt ?? this.createdAt,
-      );
+  TeamTableData copyWith({
+    String? id,
+    String? name,
+    DateTime? createdAt,
+    String? color,
+    int? score,
+  }) => TeamTableData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    createdAt: createdAt ?? this.createdAt,
+    color: color ?? this.color,
+    score: score ?? this.score,
+  );
   TeamTableData copyWithCompanion(TeamTableCompanion data) {
     return TeamTableData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      color: data.color.present ? data.color.value : this.color,
+      score: data.score.present ? data.score.value : this.score,
     );
   }
 
@@ -1985,37 +2107,47 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
     return (StringBuffer('TeamTableData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('color: $color, ')
+          ..write('score: $score')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, createdAt);
+  int get hashCode => Object.hash(id, name, createdAt, color, score);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TeamTableData &&
           other.id == this.id &&
           other.name == this.name &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.color == this.color &&
+          other.score == this.score);
 }
 
 class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
   final Value<String> id;
   final Value<String> name;
   final Value<DateTime> createdAt;
+  final Value<String> color;
+  final Value<int> score;
   final Value<int> rowid;
   const TeamTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.color = const Value.absent(),
+    this.score = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TeamTableCompanion.insert({
     required String id,
     required String name,
     required DateTime createdAt,
+    this.color = const Value.absent(),
+    this.score = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
@@ -2024,12 +2156,16 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     Expression<String>? id,
     Expression<String>? name,
     Expression<DateTime>? createdAt,
+    Expression<String>? color,
+    Expression<int>? score,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (createdAt != null) 'created_at': createdAt,
+      if (color != null) 'color': color,
+      if (score != null) 'score': score,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2038,12 +2174,16 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     Value<String>? id,
     Value<String>? name,
     Value<DateTime>? createdAt,
+    Value<String>? color,
+    Value<int>? score,
     Value<int>? rowid,
   }) {
     return TeamTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       createdAt: createdAt ?? this.createdAt,
+      color: color ?? this.color,
+      score: score ?? this.score,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2060,6 +2200,12 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
+    }
+    if (score.present) {
+      map['score'] = Variable<int>(score.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2072,6 +2218,8 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('createdAt: $createdAt, ')
+          ..write('color: $color, ')
+          ..write('score: $score, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4092,6 +4240,7 @@ typedef $$MatchTableTableCreateCompanionBuilder =
       required String gameId,
       Value<String?> groupId,
       required String name,
+      Value<bool> isTeamMatch,
       required String notes,
       required DateTime createdAt,
       Value<DateTime?> endedAt,
@@ -4103,6 +4252,7 @@ typedef $$MatchTableTableUpdateCompanionBuilder =
       Value<String> gameId,
       Value<String?> groupId,
       Value<String> name,
+      Value<bool> isTeamMatch,
       Value<String> notes,
       Value<DateTime> createdAt,
       Value<DateTime?> endedAt,
@@ -4212,6 +4362,11 @@ class $$MatchTableTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isTeamMatch => $composableBuilder(
+    column: $table.isTeamMatch,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4346,6 +4501,11 @@ class $$MatchTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isTeamMatch => $composableBuilder(
+    column: $table.isTeamMatch,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
@@ -4422,6 +4582,11 @@ class $$MatchTableTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get isTeamMatch => $composableBuilder(
+    column: $table.isTeamMatch,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
@@ -4566,6 +4731,7 @@ class $$MatchTableTableTableManager
                 Value<String> gameId = const Value.absent(),
                 Value<String?> groupId = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<bool> isTeamMatch = const Value.absent(),
                 Value<String> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime?> endedAt = const Value.absent(),
@@ -4575,6 +4741,7 @@ class $$MatchTableTableTableManager
                 gameId: gameId,
                 groupId: groupId,
                 name: name,
+                isTeamMatch: isTeamMatch,
                 notes: notes,
                 createdAt: createdAt,
                 endedAt: endedAt,
@@ -4586,6 +4753,7 @@ class $$MatchTableTableTableManager
                 required String gameId,
                 Value<String?> groupId = const Value.absent(),
                 required String name,
+                Value<bool> isTeamMatch = const Value.absent(),
                 required String notes,
                 required DateTime createdAt,
                 Value<DateTime?> endedAt = const Value.absent(),
@@ -4595,6 +4763,7 @@ class $$MatchTableTableTableManager
                 gameId: gameId,
                 groupId: groupId,
                 name: name,
+                isTeamMatch: isTeamMatch,
                 notes: notes,
                 createdAt: createdAt,
                 endedAt: endedAt,
@@ -5109,6 +5278,8 @@ typedef $$TeamTableTableCreateCompanionBuilder =
       required String id,
       required String name,
       required DateTime createdAt,
+      Value<String> color,
+      Value<int> score,
       Value<int> rowid,
     });
 typedef $$TeamTableTableUpdateCompanionBuilder =
@@ -5116,6 +5287,8 @@ typedef $$TeamTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> name,
       Value<DateTime> createdAt,
+      Value<String> color,
+      Value<int> score,
       Value<int> rowid,
     });
 
@@ -5171,6 +5344,16 @@ class $$TeamTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get score => $composableBuilder(
+    column: $table.score,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> playerMatchTableRefs(
     Expression<bool> Function($$PlayerMatchTableTableFilterComposer f) f,
   ) {
@@ -5220,6 +5403,16 @@ class $$TeamTableTableOrderingComposer
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get score => $composableBuilder(
+    column: $table.score,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TeamTableTableAnnotationComposer
@@ -5239,6 +5432,12 @@ class $$TeamTableTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<int> get score =>
+      $composableBuilder(column: $table.score, builder: (column) => column);
 
   Expression<T> playerMatchTableRefs<T extends Object>(
     Expression<T> Function($$PlayerMatchTableTableAnnotationComposer a) f,
@@ -5297,11 +5496,15 @@ class $$TeamTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String> color = const Value.absent(),
+                Value<int> score = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TeamTableCompanion(
                 id: id,
                 name: name,
                 createdAt: createdAt,
+                color: color,
+                score: score,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -5309,11 +5512,15 @@ class $$TeamTableTableTableManager
                 required String id,
                 required String name,
                 required DateTime createdAt,
+                Value<String> color = const Value.absent(),
+                Value<int> score = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TeamTableCompanion.insert(
                 id: id,
                 name: name,
                 createdAt: createdAt,
+                color: color,
+                score: score,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
 import 'package:tallee/data/db/tables/team_table.dart';
@@ -22,6 +23,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
         id: team.id,
         name: team.name,
         createdAt: team.createdAt,
+        color: Value(team.color.name),
+        score: Value(team.score),
       ),
       mode: InsertMode.insertOrReplace,
     );
@@ -56,6 +59,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
                 id: team.id,
                 name: team.name,
                 createdAt: team.createdAt,
+                color: Value(team.color.name),
+                score: Value(team.score),
               ),
             )
             .toList(),
@@ -110,6 +115,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
           id: row.id,
           name: row.name,
           createdAt: row.createdAt,
+          color: GameColor.values.byName(row.color),
+          score: row.score,
           members: members,
         );
       }),
@@ -125,6 +132,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
       id: result.id,
       name: result.name,
       createdAt: result.createdAt,
+      color: GameColor.values.byName(result.color),
+      score: result.score,
       members: members,
     );
   }
@@ -158,6 +167,30 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     final rowsAffected =
         await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
           TeamTableCompanion(name: Value(name)),
+        );
+    return rowsAffected > 0;
+  }
+
+  /// Updates the color of the team with the given [teamId].
+  Future<bool> updateTeamColor({
+    required String teamId,
+    required GameColor color,
+  }) async {
+    final rowsAffected =
+        await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
+          TeamTableCompanion(color: Value(color.name)),
+        );
+    return rowsAffected > 0;
+  }
+
+  /// Updates the score of the team with the given [teamId].
+  Future<bool> updateTeamScore({
+    required String teamId,
+    required int score,
+  }) async {
+    final rowsAffected =
+        await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
+          TeamTableCompanion(score: Value(score)),
         );
     return rowsAffected > 0;
   }

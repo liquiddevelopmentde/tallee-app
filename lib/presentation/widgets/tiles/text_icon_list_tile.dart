@@ -11,6 +11,7 @@ class TextIconListTile extends StatelessWidget {
     required this.text,
     this.suffixText = '',
     this.icon,
+    this.color,
     this.onPressed,
   });
 
@@ -23,6 +24,8 @@ class TextIconListTile extends StatelessWidget {
   /// The icon to display in the tile.
   final IconData? icon;
 
+  final Color? color;
+
   /// The callback to be invoked when the icon is pressed.
   final VoidCallback? onPressed;
 
@@ -31,7 +34,17 @@ class TextIconListTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: BoxDecoration(
+        color:
+            Color.lerp(CustomTheme.onBoxColor, color?.withAlpha(10), 0.1) ??
+            CustomTheme.boxColor,
+        border: Border.all(
+          color: color ?? CustomTheme.boxBorderColor,
+          width: color != null ? 2 : 1,
+          strokeAlign: BorderSide.strokeAlignCenter,
+        ),
+        borderRadius: CustomTheme.standardBorderRadiusAll,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
