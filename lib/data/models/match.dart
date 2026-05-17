@@ -19,7 +19,7 @@ class Match {
   final bool isTeamMatch;
   final List<Team>? teams;
   final String notes;
-  Map<String, ScoreEntry?> scores;
+  final Map<String, ScoreEntry?> scores;
 
   Match({
     required this.name,

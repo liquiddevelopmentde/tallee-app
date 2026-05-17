@@ -124,6 +124,24 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     );
   }
 
+  Future<List<Team>> getTeamsByMatchId({required String matchId}) async {
+    final playerMatchQuery = select(db.playerMatchTable)
+      ..where((pm) => pm.matchId.equals(matchId));
+    final playerMatches = await playerMatchQuery.get();
+
+    if (playerMatches.isEmpty) return [];
+
+    final teamIds = playerMatches
+        .map((pm) => pm.teamId)
+        .whereType<String>()
+        .toSet();
+
+    final teams = await Future.wait(
+      teamIds.map((id) => getTeamById(teamId: id)),
+    );
+    return teams;
+  }
+
   /// Retrieves a [Team] by its [teamId], including its members.
   Future<Team> getTeamById({required String teamId}) async {
     final query = select(teamTable)..where((t) => t.id.equals(teamId));

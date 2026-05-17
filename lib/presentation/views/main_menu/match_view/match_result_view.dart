@@ -186,7 +186,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                       );
                       await _handleSaving();
                       if (!context.mounted) return;
-                      Navigator.of(context).pop(_selectedPlayer);
+                      Navigator.pop(context);
                     }
                   : null,
             ),
