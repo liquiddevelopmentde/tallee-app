@@ -148,6 +148,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                           // Show player selection
                           if (rulesetSupportsPlayerSelection())
                             if (ruleset == Ruleset.multipleWinners)
+                              // TODO: Implement view for teams
                               Expanded(
                                 child: ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),

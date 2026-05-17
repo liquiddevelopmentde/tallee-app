@@ -8,8 +8,6 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/score_entry.dart';
-import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
@@ -48,17 +46,11 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   late Match localMatch;
 
-  late List<Team> localTeams;
-
-  late Map<String, ScoreEntry?> localScores;
-
   @override
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
     localMatch = widget.match;
-    localScores = localMatch.scores;
-    localTeams = localMatch.teams ?? [];
   }
 
   @override
@@ -175,7 +167,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       crossAxisAlignment: WrapCrossAlignment.start,
                       spacing: 12,
                       runSpacing: 8,
-                      children: localMatch.teams!.map((team) {
+                      children: (localMatch.teams ?? []).map((team) {
                         return TeamCard(team: team);
                       }).toList(),
                     ),
@@ -313,30 +305,38 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     final ruleset = localMatch.game.ruleset;
 
     if (localMatch.mvp.isNotEmpty || localMatch.mvt.isNotEmpty) {
-      // Single Winner / Loser
-      final mvps = localMatch.isTeamMatch
-          ? localMatch.mvt
-          : localMatch.mvp;
-      final mvpName = ruleset == Ruleset.multipleWinners
-        ? mvps.map((party) => party.name).join(', ')
-          : mvps.first.name;
+      // Single winner/loser, multiple winner
+      final names = localMatch.isTeamMatch
+          ? localMatch.mvt.map((t) => t.name).toList()
+          : localMatch.mvp.map((p) => p.name).toList();
+      final mvpNames = names.length == 1 ? names.first : names.join(', ');
+
+      final label = ruleset == Ruleset.singleWinner
+          ? loc.winner
+          : ruleset == Ruleset.singleLoser
+          ? loc.loser
+          : loc.winners;
 
       return [
         Text(
-          ruleset == Ruleset.singleWinner ? loc.winner : loc.loser,
+          label,
           style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
         ),
-        Text(
-          mvpName,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: CustomTheme.primaryColor,
+        SizedBox(
+          width: 200,
+          child: Text(
+            mvpNames,
+            textAlign: TextAlign.end,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: CustomTheme.primaryColor,
+            ),
           ),
         ),
       ];
     } else {
-      // No result entered yet
+      // No result yet
       return [
         Text(
           loc.no_results_entered_yet,
@@ -375,7 +375,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     List<(String, int)> namedScores = [];
 
     if (localMatch.isTeamMatch) {
-      for (var team in localTeams) {
+      final teams = localMatch.teams ?? [];
+      for (var team in teams) {
         int score = team.score ?? 0;
         namedScores.add((team.name, score));
       }
@@ -388,8 +389,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         namedScores.sort((a, b) => a.$2.compareTo(b.$2));
       }
     } else {
+      final scores = localMatch.scores;
       for (var player in localMatch.players) {
-        int score = localScores[player.id]?.score ?? 0;
+        int score = scores[player.id]?.score ?? 0;
         namedScores.add((player.name, score));
       }
 
@@ -477,16 +479,19 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     }
   }
 
-  // Die Methode selbst:
   Future<void> updateScoresForCurrentMatch() async {
-    if (widget.match.isTeamMatch) {
+    if (localMatch.isTeamMatch) {
       final teams = await db.teamDao.getTeamsByMatchId(matchId: localMatch.id);
-      if (mounted) setState(() => localTeams = teams);
+      setState(() {
+        localMatch = localMatch.copyWith(teams: teams);
+      });
     } else {
       final scores = await db.scoreEntryDao.getAllMatchScores(
         matchId: localMatch.id,
       );
-      if (mounted) setState(() => localScores = scores);
+      setState(() {
+        localMatch = localMatch.copyWith(scores: scores);
+      });
     }
   }
 }
