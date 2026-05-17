@@ -12,6 +12,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
@@ -153,25 +154,43 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   const SizedBox(height: 20),
                 ],
 
-                // Players
-                InfoTile(
-                  title: loc.players,
-                  icon: Icons.people,
-                  horizontalAlignment: CrossAxisAlignment.start,
-                  content: Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
-                    spacing: 12,
-                    runSpacing: 8,
-                    children: match.players.map((player) {
-                      return TextIconTile(
-                        text: player.name,
-                        suffixText: getNameCountText(player),
-                        iconEnabled: false,
-                      );
-                    }).toList(),
+                if (match.isTeamMatch) ...[
+                  // Teams
+                  InfoTile(
+                    title: loc.teams,
+                    icon: Icons.scoreboard,
+                    horizontalAlignment: CrossAxisAlignment.start,
+                    content: Wrap(
+                      alignment: WrapAlignment.start,
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      spacing: 12,
+                      runSpacing: 8,
+                      children: match.teams!.map((team) {
+                        return TeamCard(team: team);
+                      }).toList(),
+                    ),
                   ),
-                ),
+                ] else ...[
+                  // Players
+                  InfoTile(
+                    title: loc.players,
+                    icon: Icons.people,
+                    horizontalAlignment: CrossAxisAlignment.start,
+                    content: Wrap(
+                      alignment: WrapAlignment.start,
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      spacing: 12,
+                      runSpacing: 8,
+                      children: match.players.map((player) {
+                        return TextIconTile(
+                          text: player.name,
+                          suffixText: getNameCountText(player),
+                          iconEnabled: false,
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 15),
 
                 // Game

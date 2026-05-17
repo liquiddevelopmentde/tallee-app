@@ -405,6 +405,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get teams => 'Teams';
+
+  @override
   String get there_are_no_games_matching_your_search =>
       'There are no games matching your search';
 

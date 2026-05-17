@@ -7,6 +7,7 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -244,56 +245,29 @@ class _MatchTileState extends State<MatchTile> {
                 ),
               ),
               const SizedBox(height: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (var team in match.teams!) ...[
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 6,
-                        horizontal: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: getColorFromGameColor(
-                          team.color,
-                        ).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: getColorFromGameColor(
-                            team.color,
-                          ).withValues(alpha: 0.3),
-                          width: 1,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            team.name,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: CustomTheme.textColor,
-                            ),
-                          ),
-                          Wrap(
-                            spacing: 6,
-                            runSpacing: 6,
-                            children: team.members.map((player) {
-                              return TextIconTile(
-                                text: player.name,
-                                suffixText: getNameCountText(player),
-                                iconEnabled: false,
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                ],
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final useSingleColumn = match.teams!.any(
+                    (team) => team.name.length > 14,
+                  );
+
+                  const spacing = 8.0;
+                  final itemWidth = useSingleColumn
+                      ? constraints.maxWidth
+                      : (constraints.maxWidth - spacing) / 2;
+
+                  return Wrap(
+                    spacing: spacing,
+                    runSpacing: spacing,
+                    children: match.teams!.map((team) {
+                      return TeamCard(
+                        team: team,
+                        compact: true,
+                        width: itemWidth,
+                      );
+                    }).toList(),
+                  );
+                },
               ),
               const SizedBox(height: 12),
             ] else if (players.isNotEmpty && widget.compact == false) ...[

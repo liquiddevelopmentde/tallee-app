@@ -59,7 +59,6 @@ class _MatchResultViewState extends State<MatchResultView> {
     ruleset = widget.match.game.ruleset;
     canSave = !rulesetSupportsScoreEntry();
     isTeamMatch = widget.match.isTeamMatch;
-    print(widget.match.teams);
 
     if (isTeamMatch) {
       initializeAsTeamMatch();
@@ -290,12 +289,12 @@ class _MatchResultViewState extends State<MatchResultView> {
   Future<bool> _handleWinner() async {
     if (isTeamMatch) {
       if (_selectedTeam == null) {
-        return await db.teamDao.setWinnerTeam(
+        return await db.teamDao.removeWinnerTeam(
           matchId: widget.match.id,
           teamId: _selectedTeam!.id,
         );
       } else {
-        return await db.teamDao.setLoserTeam(
+        return await db.teamDao.setWinnerTeam(
           matchId: widget.match.id,
           teamId: _selectedTeam!.id,
         );

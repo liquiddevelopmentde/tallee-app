@@ -842,6 +842,12 @@ abstract class AppLocalizations {
   /// **'Successfully added player {playerName}'**
   String successfully_added_player(String playerName);
 
+  /// No description provided for @teams.
+  ///
+  /// In en, this message translates to:
+  /// **'Teams'**
+  String get teams;
+
   /// No description provided for @there_are_no_games_matching_your_search.
   ///
   /// In en, this message translates to:
