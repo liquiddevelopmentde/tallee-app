@@ -48,7 +48,7 @@ class _OrganizeTeamsViewState extends State<OrganizeTeamsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
-      appBar: AppBar(title: const Text('Teams organisieren')),
+      appBar: AppBar(title: const Text('Organize Teams')),
       body: SafeArea(
         child: Column(
           children: [
