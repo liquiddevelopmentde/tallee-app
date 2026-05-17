@@ -1930,10 +1930,9 @@ class $TeamTableTable extends TeamTable
   late final GeneratedColumn<int> score = GeneratedColumn<int>(
     'score',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(0),
   );
   @override
   List<GeneratedColumn> get $columns => [id, name, createdAt, color, score];
@@ -2010,7 +2009,7 @@ class $TeamTableTable extends TeamTable
       score: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}score'],
-      )!,
+      ),
     );
   }
 
@@ -2025,13 +2024,13 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
   final String name;
   final DateTime createdAt;
   final String color;
-  final int score;
+  final int? score;
   const TeamTableData({
     required this.id,
     required this.name,
     required this.createdAt,
     required this.color,
-    required this.score,
+    this.score,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2040,7 +2039,9 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
     map['name'] = Variable<String>(name);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['color'] = Variable<String>(color);
-    map['score'] = Variable<int>(score);
+    if (!nullToAbsent || score != null) {
+      map['score'] = Variable<int>(score);
+    }
     return map;
   }
 
@@ -2050,7 +2051,9 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       name: Value(name),
       createdAt: Value(createdAt),
       color: Value(color),
-      score: Value(score),
+      score: score == null && nullToAbsent
+          ? const Value.absent()
+          : Value(score),
     );
   }
 
@@ -2064,7 +2067,7 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       name: serializer.fromJson<String>(json['name']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       color: serializer.fromJson<String>(json['color']),
-      score: serializer.fromJson<int>(json['score']),
+      score: serializer.fromJson<int?>(json['score']),
     );
   }
   @override
@@ -2075,7 +2078,7 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       'name': serializer.toJson<String>(name),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'color': serializer.toJson<String>(color),
-      'score': serializer.toJson<int>(score),
+      'score': serializer.toJson<int?>(score),
     };
   }
 
@@ -2084,13 +2087,13 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
     String? name,
     DateTime? createdAt,
     String? color,
-    int? score,
+    Value<int?> score = const Value.absent(),
   }) => TeamTableData(
     id: id ?? this.id,
     name: name ?? this.name,
     createdAt: createdAt ?? this.createdAt,
     color: color ?? this.color,
-    score: score ?? this.score,
+    score: score.present ? score.value : this.score,
   );
   TeamTableData copyWithCompanion(TeamTableCompanion data) {
     return TeamTableData(
@@ -2132,7 +2135,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
   final Value<String> name;
   final Value<DateTime> createdAt;
   final Value<String> color;
-  final Value<int> score;
+  final Value<int?> score;
   final Value<int> rowid;
   const TeamTableCompanion({
     this.id = const Value.absent(),
@@ -2175,7 +2178,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     Value<String>? name,
     Value<DateTime>? createdAt,
     Value<String>? color,
-    Value<int>? score,
+    Value<int?>? score,
     Value<int>? rowid,
   }) {
     return TeamTableCompanion(
@@ -5279,7 +5282,7 @@ typedef $$TeamTableTableCreateCompanionBuilder =
       required String name,
       required DateTime createdAt,
       Value<String> color,
-      Value<int> score,
+      Value<int?> score,
       Value<int> rowid,
     });
 typedef $$TeamTableTableUpdateCompanionBuilder =
@@ -5288,7 +5291,7 @@ typedef $$TeamTableTableUpdateCompanionBuilder =
       Value<String> name,
       Value<DateTime> createdAt,
       Value<String> color,
-      Value<int> score,
+      Value<int?> score,
       Value<int> rowid,
     });
 
@@ -5497,7 +5500,7 @@ class $$TeamTableTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String> color = const Value.absent(),
-                Value<int> score = const Value.absent(),
+                Value<int?> score = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TeamTableCompanion(
                 id: id,
@@ -5513,7 +5516,7 @@ class $$TeamTableTableTableManager
                 required String name,
                 required DateTime createdAt,
                 Value<String> color = const Value.absent(),
-                Value<int> score = const Value.absent(),
+                Value<int?> score = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TeamTableCompanion.insert(
                 id: id,

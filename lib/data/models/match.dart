@@ -231,8 +231,13 @@ class Match {
   }
 
   List<Team> _getHighestScoreTeam() {
+    if (teams!.every((team) => team.score == null)) {
+      return [];
+    }
+
     final int highestScore = teams!
         .map((team) => team.score)
+        .whereType<int>()
         .reduce((max, score) => score > max ? score : max);
 
     return teams!.where((team) {
@@ -241,8 +246,13 @@ class Match {
   }
 
   List<Team> _getLowestScoreTeam() {
+    if (teams!.every((team) => team.score == null)) {
+      return [];
+    }
+
     final int lowestScore = teams!
         .map((team) => team.score)
+        .whereType<int>()
         .reduce((min, score) => score < min ? score : min);
 
     return teams!.where((team) {

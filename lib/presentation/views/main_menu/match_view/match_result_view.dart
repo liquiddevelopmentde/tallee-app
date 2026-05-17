@@ -198,20 +198,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   void initializeAsTeamMatch() {
-    allTeams =
-        widget.match.teams ??
-        List.generate(
-          4,
-          (index) => Team(
-            name: 'Team ${index + 1}',
-            members: [
-              Player(name: 'Player ${index + 1}'),
-              Player(name: 'Player ${index + 2}'),
-              Player(name: 'Player ${index + 3}'),
-              Player(name: 'Player ${index + 4}'),
-            ],
-          ),
-        );
+    allTeams = widget.match.teams ?? [];
     allTeams.sort((a, b) => a.name.compareTo(b.name));
 
     controller = List.generate(
@@ -220,7 +207,26 @@ class _MatchResultViewState extends State<MatchResultView> {
     );
 
     // Prefill fields
-    //TODO
+    if (widget.match.mvt.isNotEmpty) {
+      if (rulesetSupportsWinnerSelection()) {
+        _selectedTeam = allTeams.firstWhere(
+          (p) => p.id == widget.match.mvt.first.id,
+        );
+      } else if (rulesetSupportsScoreEntry()) {
+        for (int i = 0; i < allTeams.length; i++) {
+          final score = allTeams[i].score;
+          controller[i].text = score.toString();
+        }
+      } else if (rulesetSupportsPlacement()) {
+        allTeams.sort((a, b) {
+          final scoreA =
+              allTeams.where((team) => a.id == team.id).first.score ?? 0;
+          final scoreB =
+              allTeams.where((team) => b.id == team.id).first.score ?? 0;
+          return scoreB.compareTo(scoreA);
+        });
+      }
+    }
   }
 
   void inizializeAsNormalMatch() {
@@ -282,41 +288,84 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Handles saving or removing the winner in the database.
   Future<bool> _handleWinner() async {
-    if (_selectedPlayer == null) {
-      return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
+    if (isTeamMatch) {
+      if (_selectedTeam == null) {
+        return await db.teamDao.setWinnerTeam(
+          matchId: widget.match.id,
+          teamId: _selectedTeam!.id,
+        );
+      } else {
+        return await db.teamDao.setLoserTeam(
+          matchId: widget.match.id,
+          teamId: _selectedTeam!.id,
+        );
+      }
     } else {
-      return await db.scoreEntryDao.setWinner(
-        matchId: widget.match.id,
-        playerId: _selectedPlayer!.id,
-      );
+      if (_selectedPlayer == null) {
+        return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
+      } else {
+        return await db.scoreEntryDao.setWinner(
+          matchId: widget.match.id,
+          playerId: _selectedPlayer!.id,
+        );
+      }
     }
   }
 
   /// Handles saving or removing the loser in the database.
   Future<bool> _handleLoser() async {
-    if (_selectedPlayer == null) {
-      return await db.scoreEntryDao.removeLoser(matchId: widget.match.id);
+    if (isTeamMatch) {
+      if (_selectedTeam == null) {
+        return await db.teamDao.removeLoserTeam(
+          matchId: widget.match.id,
+          teamId: _selectedTeam!.id,
+        );
+      } else {
+        return await db.teamDao.setLoserTeam(
+          matchId: widget.match.id,
+          teamId: _selectedTeam!.id,
+        );
+      }
     } else {
-      return await db.scoreEntryDao.setLoser(
-        matchId: widget.match.id,
-        playerId: _selectedPlayer!.id,
-      );
+      if (_selectedPlayer == null) {
+        return await db.scoreEntryDao.removeLoser(matchId: widget.match.id);
+      } else {
+        return await db.scoreEntryDao.setLoser(
+          matchId: widget.match.id,
+          playerId: _selectedPlayer!.id,
+        );
+      }
     }
   }
 
   /// Handles saving the scores for each player in the database.
   Future<void> _handleScores() async {
-    for (int i = 0; i < allPlayers.length; i++) {
-      var text = controller[i].text;
-      if (text.isEmpty) {
-        text = '0';
+    if (isTeamMatch) {
+      for (int i = 0; i < allTeams.length; i++) {
+        var text = controller[i].text;
+        if (text.isEmpty) {
+          text = '0';
+        }
+        final score = int.parse(text);
+        await db.teamDao.updateTeamScore(
+          matchId: widget.match.id,
+          teamId: allTeams[i].id,
+          score: score,
+        );
       }
-      final score = int.parse(text);
-      await db.scoreEntryDao.addScore(
-        matchId: widget.match.id,
-        playerId: allPlayers[i].id,
-        entry: ScoreEntry(roundNumber: 0, score: score, change: 0),
-      );
+    } else {
+      for (int i = 0; i < allPlayers.length; i++) {
+        var text = controller[i].text;
+        if (text.isEmpty) {
+          text = '0';
+        }
+        final score = int.parse(text);
+        await db.scoreEntryDao.addScore(
+          matchId: widget.match.id,
+          playerId: allPlayers[i].id,
+          entry: ScoreEntry(roundNumber: 0, score: score, change: 0),
+        );
+      }
     }
   }
 

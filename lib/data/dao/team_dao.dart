@@ -4,6 +4,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
 import 'package:tallee/data/db/tables/team_table.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 
 part 'team_dao.g.dart';
@@ -186,13 +187,40 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   /// Updates the score of the team with the given [teamId].
   Future<bool> updateTeamScore({
     required String teamId,
+    required String matchId,
     required int score,
   }) async {
+    await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
+      const TeamTableCompanion(score: Value(null)),
+    );
+    await db.scoreEntryDao.deleteAllScoresForMatch(matchId: matchId);
+
     final rowsAffected =
         await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
           TeamTableCompanion(score: Value(score)),
         );
+
+    final members = await _getTeamMembers(teamId: teamId);
+    for (final member in members) {
+      await db.scoreEntryDao.updateScore(
+        playerId: member.id,
+        matchId: matchId,
+        entry: ScoreEntry(score: score),
+      );
+    }
+
     return rowsAffected > 0;
+  }
+
+  Future<bool> removeScoreForTeam({
+    required String teamId,
+    required String matchId,
+  }) async {
+    await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
+      const TeamTableCompanion(score: Value(null)),
+    );
+    await db.scoreEntryDao.deleteAllScoresForMatch(matchId: matchId);
+    return true;
   }
 
   /* Delete */
@@ -211,5 +239,51 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     final query = delete(teamTable)..where((t) => t.id.equals(teamId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
+  }
+
+  /* Score handling */
+
+  Future<bool> setWinnerTeam({
+    required String teamId,
+    required String matchId,
+  }) async {
+    return await updateTeamScore(teamId: teamId, matchId: matchId, score: 1);
+  }
+
+  Future<bool> removeWinnerTeam({
+    required String teamId,
+    required String matchId,
+  }) async {
+    return await removeScoreForTeam(teamId: teamId, matchId: matchId);
+  }
+
+  Future<bool> setLoserTeam({
+    required String teamId,
+    required String matchId,
+  }) async {
+    return await updateTeamScore(teamId: teamId, matchId: matchId, score: 0);
+  }
+
+  Future<bool> removeLoserTeam({
+    required String teamId,
+    required String matchId,
+  }) async {
+    return await removeScoreForTeam(teamId: teamId, matchId: matchId);
+  }
+
+  Future<bool> setTeamPlacements({
+    required String teamId,
+    required String matchId,
+    required List<Team> teams,
+  }) async {
+    List<bool?> success = List.generate(teams.length, (index) => null);
+    for (int i = 0; i < teams.length; i++) {
+      success[i] = await updateTeamScore(
+        matchId: matchId,
+        teamId: teams[i].id,
+        score: teams.length - i,
+      );
+    }
+    return success.every((result) => result == true);
   }
 }

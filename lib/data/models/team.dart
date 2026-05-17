@@ -9,7 +9,7 @@ class Team {
   final String name;
   final DateTime createdAt;
   final GameColor color;
-  final int score;
+  final int? score;
   final List<Player> members;
 
   Team({
@@ -17,7 +17,7 @@ class Team {
     required this.name,
     DateTime? createdAt,
     this.color = GameColor.blue,
-    this.score = 0,
+    this.score,
     required this.members,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now();
