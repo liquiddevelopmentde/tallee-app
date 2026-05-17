@@ -128,14 +128,41 @@ class _MatchTileState extends State<MatchTile> {
 
             const SizedBox(height: 12),
 
-            Text(
-              'team match: ${match.isTeamMatch}',
-              style: const TextStyle(fontSize: 14, color: Colors.white),
-            ),
-
-            const SizedBox(height: 12),
             // Winner / In Progress Info
-            if (match.mvp.isNotEmpty) ...[
+            if (match.isTeamMatch && match.mvt.isNotEmpty) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.green.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Colors.green.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    getMvpIcon(),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        getMvtText(loc),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: CustomTheme.textColor,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+            ] else if (match.mvp.isNotEmpty) ...[
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -207,8 +234,69 @@ class _MatchTileState extends State<MatchTile> {
               const SizedBox(height: 12),
             ],
 
-            // Players List
-            if (players.isNotEmpty && widget.compact == false) ...[
+            if (match.teams != null && match.teams!.isNotEmpty) ...[
+              const Text(
+                'Teams',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (var team in match.teams!) ...[
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 6,
+                        horizontal: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: getColorFromGameColor(
+                          team.color,
+                        ).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: getColorFromGameColor(
+                            team.color,
+                          ).withValues(alpha: 0.3),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            team.name,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            children: team.members.map((player) {
+                              return TextIconTile(
+                                text: player.name,
+                                suffixText: getNameCountText(player),
+                                iconEnabled: false,
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 12),
+            ] else if (players.isNotEmpty && widget.compact == false) ...[
               Text(
                 loc.players,
                 style: const TextStyle(
@@ -270,6 +358,30 @@ class _MatchTileState extends State<MatchTile> {
       return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
     } else if (ruleset == Ruleset.placement) {
       return '${loc.winner}: ${widget.match.mvp.first.name}';
+    }
+    return '${loc.winner}: n.A.';
+  }
+
+  String getMvtText(AppLocalizations loc) {
+    if (widget.match.mvt.isEmpty) return '';
+    final ruleset = widget.match.game.ruleset;
+
+    if (ruleset == Ruleset.singleWinner) {
+      return '${loc.winner}: ${widget.match.mvt.first.name}';
+    } else if (ruleset == Ruleset.singleLoser) {
+      return '${loc.loser}: ${widget.match.mvt.first.name}';
+    } else if (ruleset == Ruleset.highestScore ||
+        ruleset == Ruleset.lowestScore) {
+      final mvt = widget.match.mvt;
+      final mvtScore =
+          widget.match.teams!
+              .firstWhere((team) => team.id == mvt.first.id)
+              .score ??
+          0;
+      final mvtNames = mvt.map((team) => team.name).join(', ');
+      return '${loc.winner}: $mvtNames (${getPointLabel(loc, mvtScore)})';
+    } else if (ruleset == Ruleset.placement) {
+      return '${loc.winner}: ${widget.match.mvt.first.name}';
     }
     return '${loc.winner}: n.A.';
   }
