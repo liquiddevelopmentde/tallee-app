@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
@@ -36,7 +37,10 @@ class SettingsListTile extends StatelessWidget {
         child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.95,
           child: GestureDetector(
-            onTap: onPressed ?? () {},
+            onTap: () async {
+              await HapticFeedback.selectionClick();
+              onPressed?.call();
+            },
             child: Container(
               margin: EdgeInsets.zero,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),

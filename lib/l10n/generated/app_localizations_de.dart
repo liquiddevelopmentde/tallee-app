@@ -367,6 +367,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get select_winner => 'Gewinner:in wählen';
 
   @override
+  String get select_winners => 'Gewinner:innen wählen';
+
+  @override
   String get select_loser => 'Verlierer:in wählen';
 
   @override
@@ -433,6 +436,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get winner => 'Gewinner:in';
+
+  @override
+  String get winners => 'Gewinner:innen';
 
   @override
   String get winrate => 'Siegquote';

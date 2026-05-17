@@ -164,7 +164,7 @@ class Match {
         return _getPlayersWithLowestScore().take(1).toList();
 
       case Ruleset.multipleWinners:
-        return [];
+        return _getPlayersWithHighestScore().toList();
 
       case Ruleset.placement:
         return _getPlayersWithHighestScore().take(1).toList();

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
@@ -12,6 +13,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
@@ -47,9 +49,9 @@ class _CreateGameViewState extends State<CreateGameView> {
   late final AppDatabase db;
 
   late List<(Ruleset, String)> _rulesets;
-  Ruleset? selectedRuleset = Ruleset.singleWinner;
-
   late List<(GameColor, String)> _colors;
+
+  Ruleset? selectedRuleset = Ruleset.singleWinner;
   GameColor? selectedColor = GameColor.orange;
 
   /// Controller for the game name input field.
@@ -77,38 +79,20 @@ class _CreateGameViewState extends State<CreateGameView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _rulesets = [
-      (
-        Ruleset.singleWinner,
-        translateRulesetToString(Ruleset.singleWinner, context),
+    _rulesets = List.generate(
+      Ruleset.values.length,
+      (index) => (
+        Ruleset.values[index],
+        translateRulesetToString(Ruleset.values[index], context),
       ),
-      (
-        Ruleset.singleLoser,
-        translateRulesetToString(Ruleset.singleLoser, context),
+    );
+    _colors = List.generate(
+      GameColor.values.length,
+      (index) => (
+        GameColor.values[index],
+        translateGameColorToString(GameColor.values[index], context),
       ),
-      (
-        Ruleset.highestScore,
-        translateRulesetToString(Ruleset.highestScore, context),
-      ),
-      (
-        Ruleset.lowestScore,
-        translateRulesetToString(Ruleset.lowestScore, context),
-      ),
-      (
-        Ruleset.multipleWinners,
-        translateRulesetToString(Ruleset.multipleWinners, context),
-      ),
-    ];
-    _colors = [
-      (GameColor.green, translateGameColorToString(GameColor.green, context)),
-      (GameColor.teal, translateGameColorToString(GameColor.teal, context)),
-      (GameColor.blue, translateGameColorToString(GameColor.blue, context)),
-      (GameColor.purple, translateGameColorToString(GameColor.purple, context)),
-      (GameColor.pink, translateGameColorToString(GameColor.pink, context)),
-      (GameColor.red, translateGameColorToString(GameColor.red, context)),
-      (GameColor.orange, translateGameColorToString(GameColor.orange, context)),
-      (GameColor.yellow, translateGameColorToString(GameColor.yellow, context)),
-    ];
+    );
 
     if (widget.gameToEdit != null) {
       _gameNameController.text = widget.gameToEdit!.name;
@@ -138,7 +122,7 @@ class _CreateGameViewState extends State<CreateGameView> {
           title: Text(isEditing ? loc.edit_game : loc.create_game),
           actions: [
             if (isEditMode())
-              IconButton(
+              HapticIconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () async {
                   if (!context.mounted) return;
@@ -214,10 +198,13 @@ class _CreateGameViewState extends State<CreateGameView> {
 
               // Choose ruleset tile
               if (!isEditMode())
-                ChooseTile(title: loc.ruleset, trailing: getColorDropdown(loc)),
+                ChooseTile(
+                  title: loc.ruleset,
+                  trailing: getRulesetDropdown(loc),
+                ),
 
               // Choose color tile
-              ChooseTile(title: loc.color, trailing: getRulesetDropdown(loc)),
+              ChooseTile(title: loc.color, trailing: getColorDropdown(loc)),
 
               // Description input field
               Container(
@@ -344,6 +331,12 @@ class _CreateGameViewState extends State<CreateGameView> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       barrierColor: Colors.transparent,
       contentDecoration: CustomTheme.standardBoxDecoration,
+      onBeforePopup: () async {
+        await HapticFeedback.selectionClick();
+      },
+      onAfterPopup: () async {
+        await HapticFeedback.selectionClick();
+      },
       content: StatefulBuilder(
         builder: (context, setPopupState) => SizedBox(
           width: 280,
@@ -353,7 +346,8 @@ class _CreateGameViewState extends State<CreateGameView> {
             children: List.generate(
               _rulesets.length,
               (index) => GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  await HapticFeedback.selectionClick();
                   setState(() {
                     selectedRuleset = _rulesets[index].$1;
                   });
@@ -427,6 +421,12 @@ class _CreateGameViewState extends State<CreateGameView> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       barrierColor: Colors.transparent,
       contentDecoration: CustomTheme.standardBoxDecoration,
+      onBeforePopup: () async {
+        await HapticFeedback.selectionClick();
+      },
+      onAfterPopup: () async {
+        await HapticFeedback.selectionClick();
+      },
       content: StatefulBuilder(
         builder: (context, setPopupState) => SizedBox(
           width: 150,
@@ -436,7 +436,8 @@ class _CreateGameViewState extends State<CreateGameView> {
             children: List.generate(
               _colors.length,
               (index) => GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  await HapticFeedback.selectionClick();
                   setState(() {
                     selectedColor = _colors[index].$1;
                   });

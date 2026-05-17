@@ -120,6 +120,7 @@
   "search_for_groups": "Search for groups",
   "search_for_players": "Search for players",
   "select_winner": "Select Winner",
+  "select_winners": "Select Winners",
   "select_loser": "Select Loser",
   "selected_players": "Selected players",
   "settings": "Settings",
@@ -150,6 +151,7 @@
   "undo": "Undo",
   "unknown_exception": "Unknown Exception (see console)",
   "winner": "Winner",
+  "winners": "Winners",
   "winrate": "Winrate",
   "wins": "Wins",
   "yesterday_at": "Yesterday at"

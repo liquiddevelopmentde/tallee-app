@@ -13,6 +13,7 @@ import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -69,7 +70,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       appBar: AppBar(
         title: Text(loc.match_profile),
         actions: [
-          IconButton(
+          HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
               showDialog<bool>(
@@ -297,6 +298,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   Widget getResultWidget(AppLocalizations loc) {
     if (isSingleRowResult()) {
       return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: getSingleResultRow(loc),
       );
@@ -312,9 +314,12 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
     if (localMatch.mvp.isNotEmpty || localMatch.mvt.isNotEmpty) {
       // Single Winner / Loser
-      final mvpName = localMatch.isTeamMatch
-          ? localMatch.mvt.first.name
-          : localMatch.mvp.first.name;
+      final mvps = localMatch.isTeamMatch
+          ? localMatch.mvt
+          : localMatch.mvp;
+      final mvpName = ruleset == Ruleset.multipleWinners
+        ? mvps.map((party) => party.name).join(', ')
+          : mvps.first.name;
 
       return [
         Text(
@@ -440,7 +445,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   // Returns if the result can be displayed in a single row
   bool isSingleRowResult() {
     return localMatch.game.ruleset == Ruleset.singleWinner ||
-        localMatch.game.ruleset == Ruleset.singleLoser;
+        localMatch.game.ruleset == Ruleset.singleLoser ||
+        localMatch.game.ruleset == Ruleset.multipleWinners;
   }
 
   String getPlacementText(BuildContext context, int rank) {

@@ -10,6 +10,8 @@ import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/score_list_tile.dart';
@@ -49,9 +51,11 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   late bool isTeamMatch;
 
-  /// Currently selected winner player
+  /// Currently selected player(s)/team(s) (winner / looser)
   Player? _selectedPlayer;
   Team? _selectedTeam;
+  final Set<Player> _selectedPlayers = {};
+  final Set<Team> _selectedTeams = {};
 
   @override
   void initState() {
@@ -84,11 +88,11 @@ class _MatchResultViewState extends State<MatchResultView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(
-        leading: IconButton(
+        leading: HapticIconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
             widget.onWinnerChanged?.call();
-            Navigator.of(context).pop(_selectedPlayer);
+            Navigator.pop(context);
           },
         ),
         title: Text(widget.match.name),
@@ -142,17 +146,46 @@ class _MatchResultViewState extends State<MatchResultView> {
                           const SizedBox(height: 10),
 
                           // Show player selection
-                          if (rulesetSupportsWinnerSelection())
-                            Expanded(
-                              child: buildWinnerSelectionWidget(isTeamMatch),
-                            ),
+                          if (rulesetSupportsPlayerSelection())
+                            if (ruleset == Ruleset.multipleWinners)
+                              Expanded(
+                                child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: allPlayers.length,
+                                  itemBuilder: (context, index) {
+                                    return CustomCheckboxListTile(
+                                      text: allPlayers[index].name,
+                                      value: _selectedPlayers.contains(
+                                        allPlayers[index],
+                                      ),
+                                      onChanged: (bool value) {
+                                        setState(() {
+                                          if (value) {
+                                            _selectedPlayers.add(
+                                              allPlayers[index],
+                                            );
+                                          } else {
+                                            _selectedPlayers.remove(
+                                              allPlayers[index],
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  },
+                                ),
+                              )
+                            else
+                              Expanded(
+                                child: buildWinnerSelectionWidget(isTeamMatch),
+                              ),
 
                           // Show score entry
                           if (rulesetSupportsScoreEntry())
                             Expanded(child: buildScoreEntryWidget(isTeamMatch)),
 
                           // Show draggable placement list
-                          if (rulesetSupportsPlacement())
+                          if (rulesetSupportsDragBehaviour())
                             Expanded(child: buildPlacementWidget(isTeamMatch)),
                         ],
                       ),
@@ -207,16 +240,24 @@ class _MatchResultViewState extends State<MatchResultView> {
 
     // Prefill fields
     if (widget.match.mvt.isNotEmpty) {
-      if (rulesetSupportsWinnerSelection()) {
-        _selectedTeam = allTeams.firstWhere(
-          (p) => p.id == widget.match.mvt.first.id,
-        );
+      if (rulesetSupportsPlayerSelection()) {
+        if (ruleset == Ruleset.multipleWinners) {
+          for (int i = 0; i < allTeams.length; i++) {
+            if (allTeams[i].score == 1) {
+              _selectedTeams.add(allTeams[i]);
+            }
+          }
+        } else {
+          _selectedTeam = allTeams.firstWhere(
+            (team) => team.id == widget.match.mvt.first.id,
+          );
+        }
       } else if (rulesetSupportsScoreEntry()) {
         for (int i = 0; i < allTeams.length; i++) {
-          final score = allTeams[i].score;
+          final score = allTeams[i].score ?? 0;
           controller[i].text = score.toString();
         }
-      } else if (rulesetSupportsPlacement()) {
+      } else if (rulesetSupportsDragBehaviour()) {
         allTeams.sort((a, b) {
           final scoreA = a.score ?? 0;
           final scoreB = b.score ?? 0;
@@ -237,17 +278,25 @@ class _MatchResultViewState extends State<MatchResultView> {
 
     // Prefill fields
     if (widget.match.mvp.isNotEmpty) {
-      if (rulesetSupportsWinnerSelection()) {
-        _selectedPlayer = allPlayers.firstWhere(
-          (p) => p.id == widget.match.mvp.first.id,
-        );
+      if (rulesetSupportsPlayerSelection()) {
+        if (ruleset == Ruleset.multipleWinners) {
+          for (int i = 0; i < allPlayers.length; i++) {
+            if (widget.match.scores[allPlayers[i].id]?.score == 1) {
+              _selectedPlayers.add(allPlayers[i]);
+            }
+          }
+        } else {
+          _selectedPlayer = allPlayers.firstWhere(
+            (p) => p.id == widget.match.mvp.first.id,
+          );
+        }
       } else if (rulesetSupportsScoreEntry()) {
         for (int i = 0; i < allPlayers.length; i++) {
           final scoreList = widget.match.scores[allPlayers[i].id];
           final score = scoreList?.score ?? 0;
           controller[i].text = score.toString();
         }
-      } else if (rulesetSupportsPlacement()) {
+      } else if (rulesetSupportsDragBehaviour()) {
         allPlayers.sort((a, b) {
           final scoreA = widget.match.scores[a.id]?.score ?? 0;
           final scoreB = widget.match.scores[b.id]?.score ?? 0;
@@ -278,12 +327,14 @@ class _MatchResultViewState extends State<MatchResultView> {
       await _handleScores();
     } else if (ruleset == Ruleset.placement) {
       await _handlePlacement();
+    } else if (ruleset == Ruleset.multipleWinners) {
+      await _handleWinners();
     }
 
     widget.onWinnerChanged?.call();
   }
 
-  /// Handles saving or removing the winner in the database.
+  /// Handles saving or removing the (single) winner in the database.
   Future<bool> _handleWinner() async {
     if (isTeamMatch) {
       if (_selectedTeam == null) {
@@ -306,6 +357,18 @@ class _MatchResultViewState extends State<MatchResultView> {
           playerId: _selectedPlayer!.id,
         );
       }
+    }
+  }
+
+  /// Handles saving the (multiple) winners to the database.
+  Future<bool> _handleWinners() async {
+    if (_selectedPlayers.isEmpty) {
+      return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
+    } else {
+      return await db.scoreEntryDao.setWinners(
+        matchId: widget.match.id,
+        winners: allPlayers.where((p) => _selectedPlayers.contains(p)).toList(),
+      );
     }
   }
 
@@ -389,20 +452,24 @@ class _MatchResultViewState extends State<MatchResultView> {
         return loc.select_loser;
       case Ruleset.placement:
         return loc.drag_to_set_placement;
+      case Ruleset.multipleWinners:
+        return loc.select_winners;
       default:
         return loc.enter_points;
     }
   }
 
-  bool rulesetSupportsWinnerSelection() {
-    return ruleset == Ruleset.singleWinner || ruleset == Ruleset.singleLoser;
+  bool rulesetSupportsPlayerSelection() {
+    return ruleset == Ruleset.singleWinner ||
+        ruleset == Ruleset.singleLoser ||
+        ruleset == Ruleset.multipleWinners;
   }
 
   bool rulesetSupportsScoreEntry() {
     return ruleset == Ruleset.lowestScore || ruleset == Ruleset.highestScore;
   }
 
-  bool rulesetSupportsPlacement() {
+  bool rulesetSupportsDragBehaviour() {
     return ruleset == Ruleset.placement;
   }
 

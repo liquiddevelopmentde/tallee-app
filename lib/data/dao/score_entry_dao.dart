@@ -228,7 +228,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String playerId,
   }) async {
     // Clear previous winner if exists
-    deleteAllScoresForMatch(matchId: matchId);
+    await deleteAllScoresForMatch(matchId: matchId);
 
     // Set the winner's score to 1
     final rowsAffected = await into(scoreEntryTable).insert(
@@ -245,7 +245,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return rowsAffected > 0;
   }
 
-  // Retrieves the winner of a match by looking for a score entry where score
+  /// Retrieves the winner of a match by looking for a score entry where score
   /// is 1. Returns `null` if no player found, else the first with the score.
   Future<Player?> getWinner({required String matchId}) async {
     final query =
@@ -276,13 +276,42 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   /// Returns `true` if the winner was removed, `false` if there are multiple
   /// scores or if the winner cannot be removed.
   Future<bool> removeWinner({required String matchId}) async {
-    final scores = await getAllMatchScores(matchId: matchId);
+    return await deleteAllScoresForMatch(matchId: matchId);
+  }
 
-    if (scores.length > 1) {
-      return false;
-    } else {
-      return await deleteAllScoresForMatch(matchId: matchId);
-    }
+  /* multiple winners handling */
+
+  /// Sets the winners for a match.
+  ///
+  /// Returns `true` if more than 0 rows were affected
+  Future<bool> setWinners({
+    required List<Player> winners,
+    required String matchId,
+  }) async {
+    // Clear previous winners if exists
+    await deleteAllScoresForMatch(matchId: matchId);
+
+    if (winners.isEmpty) return false;
+
+    await batch((batch) {
+      batch.insertAll(
+        scoreEntryTable,
+        winners
+            .map(
+              (player) => ScoreEntryTableCompanion.insert(
+                playerId: player.id,
+                matchId: matchId,
+                roundNumber: 0,
+                score: 1,
+                change: 0,
+              ),
+            )
+            .toList(),
+        mode: InsertMode.insertOrReplace,
+      );
+    });
+
+    return true;
   }
 
   /* Loser handling */
@@ -353,6 +382,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       return await deleteAllScoresForMatch(matchId: matchId);
     }
   }
+
+  /* placement handling */
 
   /// Sets the placement for each player in a match.
   /// The highest score is assigned to the first player, the second highest to the second player, and so on.

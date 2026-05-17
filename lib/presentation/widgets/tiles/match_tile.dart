@@ -1,6 +1,7 @@
 import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -52,7 +53,10 @@ class _MatchTileState extends State<MatchTile> {
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: () async {
+        await HapticFeedback.selectionClick();
+        widget.onTap.call();
+      },
       child: Container(
         margin: EdgeInsets.zero,
         width: widget.width,
@@ -332,6 +336,9 @@ class _MatchTileState extends State<MatchTile> {
       return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
     } else if (ruleset == Ruleset.placement) {
       return '${loc.winner}: ${widget.match.mvp.first.name}';
+    } else if (ruleset == Ruleset.multipleWinners) {
+      final mvpNames = widget.match.mvp.map((player) => player.name).join(', ');
+      return '${loc.winners}: $mvpNames';
     }
     return '${loc.winner}: n.A.';
   }
