@@ -154,6 +154,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   const SizedBox(height: 20),
                 ],
 
+                // Teams or Players
                 if (match.isTeamMatch) ...[
                   // Teams
                   InfoTile(
@@ -301,15 +302,21 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   /// Returns the result row for single winner/loser rulesets or a placeholder
   /// if no result is entered yet
   List<Widget> getSingleResultRow(AppLocalizations loc) {
-    // Single Winner
-    if (match.mvp.isNotEmpty && match.game.ruleset == Ruleset.singleWinner) {
+    final ruleset = match.game.ruleset;
+
+    if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
+      // Single Winner / Loser
+      final mvpName = match.isTeamMatch
+          ? match.mvt.first.name
+          : match.mvp.first.name;
+
       return [
         Text(
-          loc.winner,
+          ruleset == Ruleset.singleWinner ? loc.winner : loc.loser,
           style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
         ),
         Text(
-          match.mvp.first.name,
+          mvpName,
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -317,24 +324,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           ),
         ),
       ];
-      // Single Loser
-    } else if (match.game.ruleset == Ruleset.singleLoser) {
-      return [
-        Text(
-          loc.loser,
-          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
-        ),
-        Text(
-          match.mvp.first.name,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: CustomTheme.primaryColor,
-          ),
-        ),
-      ];
-      // No result entered yet
     } else {
+      // No result entered yet
       return [
         Text(
           loc.no_results_entered_yet,
@@ -346,40 +337,63 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   /// Returns the result widget for scores or placement
   Widget getMultiResultRows(AppLocalizations loc) {
-    List<(String, int)> playerScores = [];
-    for (var player in match.players) {
-      int score = match.scores[player.id]?.score ?? 0;
-      playerScores.add((player.name, score));
-    }
-
-    final ruleset = match.game.ruleset;
-
-    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
-      playerScores.sort((a, b) => b.$2.compareTo(a.$2));
-    } else if (ruleset == Ruleset.lowestScore) {
-      playerScores.sort((a, b) => a.$2.compareTo(b.$2));
-    }
+    List<(String, int)> scores = getSortedScores();
 
     return Column(
       children: [
-        for (var i = 0; i < playerScores.length; i++)
+        for (var i = 0; i < scores.length; i++)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                playerScores[i].$1,
+                scores[i].$1,
                 style: const TextStyle(
                   fontSize: 16,
                   color: CustomTheme.textColor,
                 ),
               ),
-              getResultValueText(loc, i, playerScores[i].$2),
+              getResultValueText(loc, i, scores[i].$2),
             ],
           ),
       ],
     );
   }
 
+  /// Returns a list of player/team names and their corresponding scores, sorted by score according to the ruleset
+  List<(String, int)> getSortedScores() {
+    List<(String, int)> scores = [];
+
+    if (match.isTeamMatch) {
+      for (var team in match.teams!) {
+        int score = team.score ?? 0;
+        scores.add((team.name, score));
+      }
+
+      final ruleset = match.game.ruleset;
+
+      if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
+        scores.sort((a, b) => b.$2.compareTo(a.$2));
+      } else if (ruleset == Ruleset.lowestScore) {
+        scores.sort((a, b) => a.$2.compareTo(b.$2));
+      }
+    } else {
+      for (var player in match.players) {
+        int score = match.scores[player.id]?.score ?? 0;
+        scores.add((player.name, score));
+      }
+
+      final ruleset = match.game.ruleset;
+
+      if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
+        scores.sort((a, b) => b.$2.compareTo(a.$2));
+      } else if (ruleset == Ruleset.lowestScore) {
+        scores.sort((a, b) => a.$2.compareTo(b.$2));
+      }
+    }
+    return scores;
+  }
+
+  /// Returns the text widget for the score or placement value, styled according to the ruleset
   Widget getResultValueText(AppLocalizations loc, int index, int score) {
     final ruleset = match.game.ruleset;
 

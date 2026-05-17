@@ -197,7 +197,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   void initializeAsTeamMatch() {
-    allTeams = widget.match.teams ?? [];
+    allTeams = [...(widget.match.teams ?? [])];
     allTeams.sort((a, b) => a.name.compareTo(b.name));
 
     controller = List.generate(
@@ -218,10 +218,8 @@ class _MatchResultViewState extends State<MatchResultView> {
         }
       } else if (rulesetSupportsPlacement()) {
         allTeams.sort((a, b) {
-          final scoreA =
-              allTeams.where((team) => a.id == team.id).first.score ?? 0;
-          final scoreB =
-              allTeams.where((team) => b.id == team.id).first.score ?? 0;
+          final scoreA = a.score ?? 0;
+          final scoreB = b.score ?? 0;
           return scoreB.compareTo(scoreA);
         });
       }
@@ -229,7 +227,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   void inizializeAsNormalMatch() {
-    allPlayers = widget.match.players;
+    allPlayers = [...widget.match.players];
     allPlayers.sort((a, b) => a.name.compareTo(b.name));
 
     controller = List.generate(
@@ -370,10 +368,17 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Handles saving the placement for each player in the database.
   Future<void> _handlePlacement() async {
-    await db.scoreEntryDao.setPlacements(
-      matchId: widget.match.id,
-      players: allPlayers,
-    );
+    if (isTeamMatch) {
+      await db.teamDao.setTeamPlacements(
+        matchId: widget.match.id,
+        teams: allTeams,
+      );
+    } else {
+      await db.scoreEntryDao.setPlacements(
+        matchId: widget.match.id,
+        players: allPlayers,
+      );
+    }
   }
 
   String getTitleForRuleset(AppLocalizations loc) {
