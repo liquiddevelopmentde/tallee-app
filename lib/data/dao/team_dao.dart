@@ -272,7 +272,6 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   }
 
   Future<bool> setTeamPlacements({
-    required String teamId,
     required String matchId,
     required List<Team> teams,
   }) async {
