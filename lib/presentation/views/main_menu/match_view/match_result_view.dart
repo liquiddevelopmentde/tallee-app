@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
@@ -103,20 +105,7 @@ class _MatchResultViewState extends State<MatchResultView> {
             Expanded(
               child: isLiveEditMode
                   // Live Edit Mode
-                  ? ListView.builder(
-                      itemCount: allPlayers.length,
-                      itemBuilder: (context, index) {
-                        return LiveEditListTile(
-                          title: allPlayers[index].name,
-                          onChanged: (value) {
-                            setState(() {
-                              controller[index].text = value.toString();
-                            });
-                          },
-                          value: int.tryParse(controller[index].text) ?? 0,
-                        );
-                      },
-                    )
+                  ? buildLiveEditWidet(isTeamMatch)
                   // Normal Container
                   : Container(
                       margin: const EdgeInsets.symmetric(
@@ -150,35 +139,13 @@ class _MatchResultViewState extends State<MatchResultView> {
                             if (ruleset == Ruleset.multipleWinners)
                               // TODO: Implement view for teams
                               Expanded(
-                                child: ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: allPlayers.length,
-                                  itemBuilder: (context, index) {
-                                    return CustomCheckboxListTile(
-                                      text: allPlayers[index].name,
-                                      value: _selectedPlayers.contains(
-                                        allPlayers[index],
-                                      ),
-                                      onChanged: (bool value) {
-                                        setState(() {
-                                          if (value) {
-                                            _selectedPlayers.add(
-                                              allPlayers[index],
-                                            );
-                                          } else {
-                                            _selectedPlayers.remove(
-                                              allPlayers[index],
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  },
+                                child: buildMultipleWinnerSelectionWidget(
+                                  isTeamMatch,
                                 ),
                               )
                             else
                               Expanded(
-                                child: buildWinnerSelectionWidget(isTeamMatch),
+                                child: buildPlayerSelectionWidget(isTeamMatch),
                               ),
 
                           // Show score entry
@@ -363,13 +330,24 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Handles saving the (multiple) winners to the database.
   Future<bool> _handleWinners() async {
-    if (_selectedPlayers.isEmpty) {
-      return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
+    if (isTeamMatch) {
+      if (_selectedTeams.isEmpty) {
+        return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
+      } else {
+        return await db.teamDao.setWinnerTeams(
+          matchId: widget.match.id,
+          winners: _selectedTeams.toList(),
+        );
+      }
     } else {
-      return await db.scoreEntryDao.setWinners(
-        matchId: widget.match.id,
-        winners: allPlayers.where((p) => _selectedPlayers.contains(p)).toList(),
-      );
+      if (_selectedPlayers.isEmpty) {
+        return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
+      } else {
+        return await db.scoreEntryDao.setWinners(
+          matchId: widget.match.id,
+          winners: _selectedPlayers.toList(),
+        );
+      }
     }
   }
 
@@ -474,7 +452,11 @@ class _MatchResultViewState extends State<MatchResultView> {
     return ruleset == Ruleset.placement;
   }
 
-  Widget buildTeamTile({required Team team, double? width}) {
+  Widget buildTeamTile({
+    required Team team,
+    double? width,
+    int showingPlayerAmount = 3,
+  }) {
     return Container(
       width: width,
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
@@ -498,7 +480,11 @@ class _MatchResultViewState extends State<MatchResultView> {
             spacing: 4,
             runSpacing: 4,
             children: [
-              for (final member in team.members)
+              for (
+                int i = 0;
+                i < min(team.members.length, showingPlayerAmount);
+                i++
+              )
                 Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 4,
@@ -509,7 +495,23 @@ class _MatchResultViewState extends State<MatchResultView> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    member.name,
+                    team.members[i].name,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: CustomTheme.textColor.withAlpha(180),
+                    ),
+                  ),
+                ),
+              if (team.members.length > 4)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 4,
+                  ),
+                  child: Text(
+                    '+${team.members.length - showingPlayerAmount}',
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.start,
                     style: TextStyle(
@@ -525,7 +527,7 @@ class _MatchResultViewState extends State<MatchResultView> {
     );
   }
 
-  Widget buildWinnerSelectionWidget(bool isTeamMatch) {
+  Widget buildPlayerSelectionWidget(bool isTeamMatch) {
     if (isTeamMatch) {
       return RadioGroup<Team>(
         groupValue: _selectedTeam,
@@ -604,7 +606,11 @@ class _MatchResultViewState extends State<MatchResultView> {
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return ScoreListTile(
-            content: buildTeamTile(team: allTeams[index], width: 220),
+            content: buildTeamTile(
+              team: allTeams[index],
+              width: 220,
+              showingPlayerAmount: 2,
+            ),
             horizontalPadding: 0,
             controller: controller[index],
           );
@@ -779,5 +785,87 @@ class _MatchResultViewState extends State<MatchResultView> {
           );
 
     return Row(children: [placementCol, valueCol]);
+  }
+
+  Widget buildMultipleWinnerSelectionWidget(bool isTeamMatch) {
+    if (isTeamMatch) {
+      return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: allTeams.length,
+        itemBuilder: (context, index) {
+          return CustomCheckboxListTile(
+            content: buildTeamTile(team: allTeams[index]),
+            value: _selectedTeams.contains(allTeams[index]),
+            onChanged: (bool value) {
+              setState(() {
+                if (value) {
+                  _selectedTeams.add(allTeams[index]);
+                } else {
+                  _selectedTeams.remove(allTeams[index]);
+                }
+              });
+            },
+          );
+        },
+      );
+    } else {
+      return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: allPlayers.length,
+        itemBuilder: (context, index) {
+          return CustomCheckboxListTile(
+            content: Text(
+              allPlayers[index].name,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            value: _selectedPlayers.contains(allPlayers[index]),
+            onChanged: (bool value) {
+              setState(() {
+                if (value) {
+                  _selectedPlayers.add(allPlayers[index]);
+                } else {
+                  _selectedPlayers.remove(allPlayers[index]);
+                }
+              });
+            },
+          );
+        },
+      );
+    }
+  }
+
+  Widget buildLiveEditWidet(bool isTeamMatch) {
+    if (isTeamMatch) {
+      return ListView.builder(
+        itemCount: allTeams.length,
+        itemBuilder: (context, index) {
+          return LiveEditListTile(
+            title: allTeams[index].name,
+            onChanged: (value) {
+              setState(() {
+                controller[index].text = value.toString();
+              });
+            },
+            value: int.tryParse(controller[index].text) ?? 0,
+          );
+        },
+      );
+    } else {
+      return ListView.builder(
+        itemCount: allPlayers.length,
+        itemBuilder: (context, index) {
+          return LiveEditListTile(
+            title: allPlayers[index].name,
+            onChanged: (value) {
+              setState(() {
+                controller[index].text = value.toString();
+              });
+            },
+            value: int.tryParse(controller[index].text) ?? 0,
+          );
+        },
+      );
+    }
   }
 }

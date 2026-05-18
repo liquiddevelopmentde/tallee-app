@@ -347,24 +347,27 @@ class _MatchTileState extends State<MatchTile> {
     if (widget.match.mvt.isEmpty) return '';
     final ruleset = widget.match.game.ruleset;
 
-    if (ruleset == Ruleset.singleWinner) {
-      return '${loc.winner}: ${widget.match.mvt.first.name}';
-    } else if (ruleset == Ruleset.singleLoser) {
-      return '${loc.loser}: ${widget.match.mvt.first.name}';
-    } else if (ruleset == Ruleset.highestScore ||
-        ruleset == Ruleset.lowestScore) {
-      final mvt = widget.match.mvt;
-      final mvtScore =
-          widget.match.teams!
-              .firstWhere((team) => team.id == mvt.first.id)
-              .score ??
-          0;
-      final mvtNames = mvt.map((team) => team.name).join(', ');
-      return '${loc.winner}: $mvtNames (${getPointLabel(loc, mvtScore)})';
-    } else if (ruleset == Ruleset.placement) {
-      return '${loc.winner}: ${widget.match.mvt.first.name}';
+    switch (ruleset) {
+      case Ruleset.singleWinner:
+        return '${loc.winner}: ${widget.match.mvt.first.name}';
+      case Ruleset.singleLoser:
+        return '${loc.loser}: ${widget.match.mvt.first.name}';
+      case Ruleset.highestScore:
+      case Ruleset.lowestScore:
+        final mvt = widget.match.mvt;
+        final mvtScore =
+            widget.match.teams!
+                .firstWhere((team) => team.id == mvt.first.id)
+                .score ??
+            0;
+        final mvtNames = mvt.map((team) => team.name).join(', ');
+        return '${loc.winner}: $mvtNames (${getPointLabel(loc, mvtScore)})';
+      case Ruleset.placement:
+        return '${loc.winner}: ${widget.match.mvt.first.name}';
+      case Ruleset.multipleWinners:
+        final mvtNames = widget.match.mvt.map((team) => team.name).join(', ');
+        return '${loc.winners}: $mvtNames';
     }
-    return '${loc.winner}: n.A.';
   }
 
   Icon getMvpIcon() {
@@ -372,6 +375,7 @@ class _MatchTileState extends State<MatchTile> {
 
     switch (widget.match.game.ruleset) {
       case Ruleset.singleWinner:
+      case Ruleset.multipleWinners:
         return Icon(icon, size: 20, color: Colors.amber);
       case Ruleset.singleLoser:
         return Icon(icon, size: 20, color: Colors.blue);
@@ -379,8 +383,6 @@ class _MatchTileState extends State<MatchTile> {
         return Icon(icon, size: 20, color: Colors.orange);
       case Ruleset.highestScore:
         return Icon(icon, size: 20, color: Colors.green);
-      case Ruleset.multipleWinners:
-        return Icon(icon, size: 20, color: Colors.amber);
       case Ruleset.placement:
         return Icon(icon, size: 20, color: Colors.deepOrangeAccent);
     }

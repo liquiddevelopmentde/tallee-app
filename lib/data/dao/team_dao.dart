@@ -268,6 +268,21 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     return await updateTeamScore(teamId: teamId, matchId: matchId, score: 1);
   }
 
+  Future<bool> setWinnerTeams({
+    required List<Team> winners,
+    required String matchId,
+  }) async {
+    List<bool?> success = List.generate(winners.length, (index) => null);
+    for (int i = 0; i < winners.length; i++) {
+      success[i] = await updateTeamScore(
+        teamId: winners[i].id,
+        matchId: matchId,
+        score: 1,
+      );
+    }
+    return success.every((result) => result == true);
+  }
+
   Future<bool> removeWinnerTeam({
     required String teamId,
     required String matchId,
