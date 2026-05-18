@@ -894,6 +894,15 @@ void main() {
             },
             'createdAt': testMatch.createdAt.toIso8601String(),
             'endedAt': null,
+            'isTeamMatch': true,
+            'teams': [
+              {
+                'id': testTeam.id,
+                'name': testTeam.name,
+                'memberIds': [testPlayer1.id, testPlayer2.id],
+                'createdAt': testTeam.createdAt.toIso8601String(),
+              },
+            ],
           },
         ],
       });
