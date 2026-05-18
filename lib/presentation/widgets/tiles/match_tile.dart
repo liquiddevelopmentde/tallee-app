@@ -18,13 +18,11 @@ class MatchTile extends StatefulWidget {
   /// - [match]: The match data to be displayed.
   /// - [onTap]: The callback invoked when the tile is tapped.
   /// - [width]: Optional width for the tile.
-  /// - [compact]: Whether to display the tile in a compact mode
   const MatchTile({
     super.key,
     required this.match,
     required this.onTap,
     this.width,
-    this.compact = false,
   });
 
   /// The match data to be displayed.
@@ -35,9 +33,6 @@ class MatchTile extends StatefulWidget {
 
   /// Optional width for the tile.
   final double? width;
-
-  /// Whether to display the tile in a compact mode
-  final bool compact;
 
   @override
   State<MatchTile> createState() => _MatchTileState();
@@ -101,40 +96,25 @@ class _MatchTileState extends State<MatchTile> {
                 ],
               ),
               const SizedBox(height: 4),
-            ] else if (widget.compact) ...[
-              Row(
-                children: [
-                  const Icon(Icons.person, size: 16, color: Colors.grey),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      '${match.players.length} ${loc.players}',
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
             ] else ...[
               const SizedBox(height: 8),
             ],
 
             // Game + Ruleset Badge
-            if (!widget.compact)
-              GameLabel(
-                title: match.game.name,
-                description: translateRulesetToString(
-                  match.game.ruleset,
-                  context,
-                ),
-                color: match.game.color,
+            GameLabel(
+              title: match.game.name,
+              description: translateRulesetToString(
+                match.game.ruleset,
+                context,
               ),
+              color: match.game.color,
+            ),
 
             const SizedBox(height: 12),
 
             // Winner / In Progress Info
             if (match.isTeamMatch && match.mvt.isNotEmpty) ...[
+              // MVT Display for team matches
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -168,6 +148,7 @@ class _MatchTileState extends State<MatchTile> {
               ),
               const SizedBox(height: 12),
             ] else if (match.mvp.isNotEmpty) ...[
+              // MVP Display for player matches
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -201,6 +182,7 @@ class _MatchTileState extends State<MatchTile> {
               ),
               const SizedBox(height: 12),
             ] else ...[
+              // Match in progress display
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -240,6 +222,7 @@ class _MatchTileState extends State<MatchTile> {
             ],
 
             if (match.teams != null && match.teams!.isNotEmpty) ...[
+              // Team display
               Text(
                 loc.teams,
                 style: const TextStyle(
@@ -274,7 +257,8 @@ class _MatchTileState extends State<MatchTile> {
                 },
               ),
               const SizedBox(height: 12),
-            ] else if (players.isNotEmpty && widget.compact == false) ...[
+            ] else if (players.isNotEmpty) ...[
+              // Player display
               Text(
                 loc.players,
                 style: const TextStyle(
@@ -320,6 +304,7 @@ class _MatchTileState extends State<MatchTile> {
     }
   }
 
+  // Returns the appropriate text based on the match's ruleset and MVP.
   String getMvpText(AppLocalizations loc) {
     if (widget.match.mvp.isEmpty) return '';
     final ruleset = widget.match.game.ruleset;
@@ -343,6 +328,7 @@ class _MatchTileState extends State<MatchTile> {
     return '${loc.winner}: n.A.';
   }
 
+  // Returns the appropriate text based on the match's ruleset and MVT.
   String getMvtText(AppLocalizations loc) {
     if (widget.match.mvt.isEmpty) return '';
     final ruleset = widget.match.game.ruleset;
@@ -370,6 +356,7 @@ class _MatchTileState extends State<MatchTile> {
     }
   }
 
+  // Returns the appropriate icon based on the match's ruleset.
   Icon getMvpIcon() {
     final icon = getRulesetIcon(widget.match.game.ruleset);
 
