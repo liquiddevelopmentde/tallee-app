@@ -235,7 +235,7 @@ class _MatchTileState extends State<MatchTile> {
               LayoutBuilder(
                 builder: (context, constraints) {
                   final useSingleColumn = match.teams!.any(
-                    (team) => team.name.length > 14,
+                    (team) => team.name.length > 10,
                   );
 
                   const spacing = 8.0;

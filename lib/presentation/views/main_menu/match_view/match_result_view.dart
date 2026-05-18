@@ -306,10 +306,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   Future<bool> _handleWinner() async {
     if (isTeamMatch) {
       if (_selectedTeam == null) {
-        return await db.teamDao.removeWinnerTeam(
-          matchId: widget.match.id,
-          teamId: _selectedTeam!.id,
-        );
+        return await db.teamDao.removeWinnerTeam(matchId: widget.match.id);
       } else {
         return await db.teamDao.setWinnerTeam(
           matchId: widget.match.id,
@@ -332,7 +329,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   Future<bool> _handleWinners() async {
     if (isTeamMatch) {
       if (_selectedTeams.isEmpty) {
-        return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
+        return await db.teamDao.removeWinnerTeam(matchId: widget.match.id);
       } else {
         return await db.teamDao.setWinnerTeams(
           matchId: widget.match.id,
