@@ -169,15 +169,18 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
             .map((row) => row.name)
             .getSingleOrNull() ??
         '';
-    final previousNameCount = await getNameCount(name: previousPlayerName);
+    final previousNameCount = (await getNameCount(name: previousPlayerName))!;
+    print('previousNameCount: $previousNameCount');
+
+    // Update name count for the new name
+    final count = await calculateNameCount(name: name);
+    print('count: $count');
 
     final rowsAffected =
         await (update(playerTable)..where((p) => p.id.equals(playerId))).write(
           PlayerTableCompanion(name: Value(name)),
         );
 
-    // Update name count for the new name
-    final count = await calculateNameCount(name: name);
     if (count > 0) {
       await (update(playerTable)..where((p) => p.name.equals(name))).write(
         PlayerTableCompanion(nameCount: Value(count)),
@@ -226,10 +229,10 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /* Name count management */
 
   /// Retrieves the count of players with the given [name].
-  Future<int> getNameCount({required String name}) async {
+  Future<int?> getNameCount({required String name}) async {
     final query = select(playerTable)..where((p) => p.name.equals(name));
     final result = await query.get();
-    return result.length;
+    return result.isEmpty ? null : result.length;
   }
 
   /// Updates the nameCount for the player with the given [playerId] to [nameCount].
@@ -269,20 +272,19 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     final count = await getNameCount(name: name);
     final int nameCount;
 
-    if (count == 1) {
+    if (count == null) {
+      // If no other players exist with the same name, set nameCount to 0
+      nameCount = 0;
+    } else if (count == 0) {
       // If one other player exists with the same name, initialize the nameCount
       await initializeNameCount(name: name);
       // And for the new player, set nameCount to 2
       nameCount = 2;
-    } else if (count > 1) {
+    } else {
       // If more than one player exists with the same name, just increment
       // the nameCount for the new player
       nameCount = count + 1;
-    } else {
-      // If no other players exist with the same name, set nameCount to 0
-      nameCount = 0;
     }
-
     return nameCount;
   }
 

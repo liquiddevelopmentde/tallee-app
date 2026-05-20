@@ -77,6 +77,7 @@ class _GroupViewState extends State<GroupView> {
                     );
                   }
                   return GroupTile(
+                    onPlayerChanged: loadGroups,
                     group: groups[index],
                     onTap: () async {
                       await Navigator.push(

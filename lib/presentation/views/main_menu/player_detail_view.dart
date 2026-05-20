@@ -16,6 +16,7 @@ import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
+import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -37,7 +38,8 @@ class PlayerDetailView extends StatefulWidget {
 
 class _PlayerDetailViewState extends State<PlayerDetailView> {
   late final AppDatabase db;
-
+  late Player _player;
+  late String playerNameCount;
   bool isLoading = true;
 
   /// Total matches played by this player
@@ -68,6 +70,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   @override
   void initState() {
     super.initState();
+    _player = widget.player;
     db = Provider.of<AppDatabase>(context, listen: false);
     _loadData();
   }
@@ -75,6 +78,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    playerNameCount = getNameCountText(_player);
 
     return Scaffold(
       appBar: AppBar(
@@ -132,18 +136,32 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  widget.player.name + getNameCountText(widget.player),
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: CustomTheme.textColor,
-                  ),
-                  textAlign: TextAlign.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _player.name,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: CustomTheme.textColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      playerNameCount,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: CustomTheme.textColor.withAlpha(120),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(widget.player.createdAt)}',
+                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(_player.createdAt)}',
                   style: const TextStyle(
                     fontSize: 12,
                     color: CustomTheme.textColor,
@@ -152,8 +170,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
                 const SizedBox(height: 20),
                 InfoTile(
-                  title: "Matches played in (${totalMatches})",
-                  icon: Icons.people,
+                  title: "Matches part of (${totalMatches})",
+                  icon: Icons.sports_esports,
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: Wrap(
                     alignment: WrapAlignment.start,
@@ -209,8 +227,48 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 text: "Edit player",
                 icon: Icons.edit,
                 onPressed: () async {
-                  //TODO: update player name in popup
-                  widget.callback();
+                  final controller = TextEditingController(text: _player.name);
+                  showDialog<bool>(
+                    context: context,
+                    builder: (context) => CustomAlertDialog(
+                      title: "Change Name",
+                      content: TextInputField(
+                        controller: controller,
+                        hintText: 'Set a player name',
+                      ),
+                      actions: [
+                        CustomDialogAction(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          text: "Confirm",
+                        ),
+                        CustomDialogAction(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          buttonType: ButtonType.secondary,
+                          text: loc.cancel,
+                        ),
+                      ],
+                    ),
+                  ).then((confirmed) async {
+                    if (confirmed! && context.mounted) {
+                      if (controller.text != _player.name) {
+                        await db.playerDao.updatePlayerName(
+                          playerId: _player.id,
+                          name: controller.text,
+                        );
+                        widget.callback.call();
+                        setState(() {
+                          _player = Player(
+                            name: controller.text,
+                            createdAt: _player.createdAt,
+                            id: _player.id,
+                            nameCount: _player.nameCount,
+                            description: _player.description,
+                          );
+                          playerNameCount = getNameCountText(_player);
+                        });
+                      }
+                    }
+                  });
                 },
               ),
             ),
@@ -224,17 +282,19 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   Future<void> _loadData() async {
     isLoading = true;
     final fetchedMatches = await db.matchDao.getMatchesByPlayer(
-      playerId: widget.player.id,
+      playerId: _player.id,
     );
     final fetchedGroups = await db.groupDao.getGroupsByPlayer(
-      playerId: widget.player.id,
+      playerId: _player.id,
     );
+
+    if (!mounted) return;
 
     setState(() {
       playerMatches = fetchedMatches;
       totalMatches = fetchedMatches.length;
       matchesWon = fetchedMatches
-          .where((match) => match.mvp.any((mvp) => mvp.id == widget.player.id))
+          .where((match) => match.mvp.any((mvp) => mvp.id == _player.id))
           .length;
       playerGroups = fetchedGroups;
       totalGroups = fetchedGroups.length;

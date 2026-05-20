@@ -26,6 +26,7 @@ class MatchTile extends StatefulWidget {
     required this.onTap,
     this.width,
     this.compact = false,
+    this.onPlayerEdited,
   });
 
   /// The match data to be displayed.
@@ -33,6 +34,9 @@ class MatchTile extends StatefulWidget {
 
   /// The callback invoked when the tile is tapped.
   final VoidCallback onTap;
+
+  /// The callback invoked when the players are edited
+  final VoidCallback? onPlayerEdited;
 
   /// Optional width for the tile.
   final double? width;
@@ -233,7 +237,7 @@ class _MatchTileState extends State<MatchTile> {
                           builder: (context) => PlayerDetailView(
                             player: player,
                             callback: () {
-                              //TODO: implement callback
+                              widget.onPlayerEdited?.call();
                             },
                           ),
                         ),

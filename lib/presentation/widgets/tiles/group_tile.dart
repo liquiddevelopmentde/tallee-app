@@ -17,6 +17,7 @@ class GroupTile extends StatefulWidget {
     required this.group,
     this.isHighlighted = false,
     this.onTap,
+    this.onPlayerChanged,
   });
 
   /// The group data to be displayed.
@@ -27,6 +28,9 @@ class GroupTile extends StatefulWidget {
 
   /// Callback function to be executed when the tile is tapped.
   final VoidCallback? onTap;
+
+  /// Callback function to be executed when the players in the group are changed.
+  final VoidCallback? onPlayerChanged;
 
   @override
   State<GroupTile> createState() => _GroupTileState();
@@ -101,7 +105,7 @@ class _GroupTileState extends State<GroupTile> {
                           builder: (context) => PlayerDetailView(
                             player: member,
                             callback: () {
-                              //TODO: implement callback
+                              widget.onPlayerChanged?.call();
                             },
                           ),
                         ),
