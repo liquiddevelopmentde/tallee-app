@@ -252,6 +252,9 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                   ),
                 )
                 .toList();
+            suggestedPlayers = suggestedPlayers
+                .where((p) => !selectedPlayers.any((sp) => sp.id == p.id))
+                .toList();
           }
         } else {
           // Otherwise, use the loaded players from the database.
