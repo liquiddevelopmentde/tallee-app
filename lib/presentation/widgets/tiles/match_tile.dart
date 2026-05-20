@@ -3,11 +3,13 @@ import 'dart:core' hide Match;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -224,6 +226,19 @@ class _MatchTileState extends State<MatchTile> {
                     text: player.name,
                     suffixText: getNameCountText(player),
                     iconEnabled: false,
+                    onTileTap: () {
+                      Navigator.push(
+                        context,
+                        adaptivePageRoute(
+                          builder: (context) => PlayerDetailView(
+                            player: player,
+                            callback: () {
+                              //TODO: implement callback
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   );
                 }).toList(),
               ),
