@@ -27,6 +27,7 @@
   "create_new_group": "Create new group",
   "created_on": "Created on",
   "create_new_match": "Create new match",
+  "create_teams": "Create teams",
   "data": "Data",
   "data_successfully_deleted": "Data successfully deleted",
   "data_successfully_exported": "Data successfully exported",
@@ -50,6 +51,7 @@
   "edit_game": "Edit Game",
   "edit_group": "Edit Group",
   "edit_match": "Edit Match",
+  "edit_members": "Edit Members",
   "enter_points": "Enter points",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
@@ -109,6 +111,7 @@
   "privacy_policy": "Privacy Policy",
   "quick_create": "Quick Create",
   "recent_matches": "Recent Matches",
+  "redistribute": "Redistribute",
   "results": "Results",
   "ruleset": "Ruleset",
   "ruleset_least_points": "Inverse scoring: the player with the fewest points wins.",
@@ -142,6 +145,7 @@
       }
     }
   },
+  "team": "Team",
   "teams": "Teams",
   "there_are_no_games_matching_your_search": "There are no games matching your search",
   "there_is_no_group_matching_your_search": "There is no group matching your search",

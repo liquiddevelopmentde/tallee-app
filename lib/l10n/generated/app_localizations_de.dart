@@ -89,6 +89,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get create_new_match => 'Neues Spiel erstellen';
 
   @override
+  String get create_teams => 'Teams erstellen';
+
+  @override
   String get data => 'Daten';
 
   @override
@@ -145,6 +148,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get edit_match => 'Gruppe bearbeiten';
+
+  @override
+  String get edit_members => 'Mitglieder bearbeiten';
 
   @override
   String get enter_points => 'Punkte eingeben';
@@ -329,6 +335,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get recent_matches => 'Letzte Spiele';
 
   @override
+  String get redistribute => 'Neu verteilen';
+
+  @override
   String get results => 'Ergebnisse';
 
   @override
@@ -406,6 +415,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String successfully_added_player(String playerName) {
     return 'Spieler:in $playerName erfolgreich hinzugefügt';
   }
+
+  @override
+  String get team => 'Team';
 
   @override
   String get teams => 'Teams';

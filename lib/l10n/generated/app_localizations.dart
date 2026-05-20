@@ -254,6 +254,12 @@ abstract class AppLocalizations {
   /// **'Create new match'**
   String get create_new_match;
 
+  /// No description provided for @create_teams.
+  ///
+  /// In en, this message translates to:
+  /// **'Create teams'**
+  String get create_teams;
+
   /// No description provided for @data.
   ///
   /// In en, this message translates to:
@@ -349,6 +355,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Match'**
   String get edit_match;
+
+  /// No description provided for @edit_members.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Members'**
+  String get edit_members;
 
   /// No description provided for @enter_points.
   ///
@@ -704,6 +716,12 @@ abstract class AppLocalizations {
   /// **'Recent Matches'**
   String get recent_matches;
 
+  /// No description provided for @redistribute.
+  ///
+  /// In en, this message translates to:
+  /// **'Redistribute'**
+  String get redistribute;
+
   /// No description provided for @results.
   ///
   /// In en, this message translates to:
@@ -847,6 +865,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Successfully added player {playerName}'**
   String successfully_added_player(String playerName);
+
+  /// No description provided for @team.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get team;
 
   /// No description provided for @teams.
   ///

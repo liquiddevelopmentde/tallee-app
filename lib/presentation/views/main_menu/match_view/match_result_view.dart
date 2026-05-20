@@ -333,6 +333,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       } else {
         return await db.teamDao.setWinnerTeams(
           matchId: widget.match.id,
+
           winners: _selectedTeams.toList(),
         );
       }

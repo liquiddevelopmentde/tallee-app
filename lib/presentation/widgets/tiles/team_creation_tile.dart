@@ -4,6 +4,8 @@ import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -14,9 +16,9 @@ class TeamCreationTile extends StatefulWidget {
     required this.controller,
     required this.players,
     required this.hintText,
+    this.onEdit,
     this.onDelete,
     this.onColorSelection,
-    this.onPlayerTap,
   });
 
   final GameColor color;
@@ -27,28 +29,34 @@ class TeamCreationTile extends StatefulWidget {
 
   final String hintText;
 
+  final VoidCallback? onEdit;
+
   final VoidCallback? onDelete;
 
   final ValueChanged<GameColor>? onColorSelection;
-
-  final void Function(Player player)? onPlayerTap;
 
   @override
   State<TeamCreationTile> createState() => _TeamCreationTileState();
 }
 
 class _TeamCreationTileState extends State<TeamCreationTile> {
+  final teamColors = List.generate(
+    GameColor.values.length,
+    (index) => getTeamColor(index),
+  );
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     return Container(
       margin: CustomTheme.standardMargin,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: CustomTheme.standardBoxDecoration,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: TextInputField(
@@ -57,17 +65,19 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                   maxLength: Constants.MAX_TEAM_NAME_LENGTH,
                 ),
               ),
-              const SizedBox(width: 8),
-              IconButton(
-                onPressed: () => widget.onDelete?.call(),
-                icon: const Icon(Icons.delete, size: 24),
+              const SizedBox(width: 12),
+              AnimatedDialogButton(
+                content: const Icon(Icons.delete),
+                isDescructive: true,
+                onPressed: widget.onDelete,
+                buttonText: '',
               ),
             ],
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Color',
-            style: TextStyle(
+          Text(
+            loc.color,
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
               color: CustomTheme.textColor,
@@ -77,7 +87,7 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: GameColor.values.map((color) {
+            children: teamColors.map((color) {
               final isSelected = widget.color == color;
               return GestureDetector(
                 onTap: () {
@@ -102,9 +112,9 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
             }).toList(),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Players',
-            style: TextStyle(
+          Text(
+            loc.players,
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
               color: CustomTheme.textColor,
@@ -112,9 +122,9 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
           ),
           const SizedBox(height: 8),
           if (widget.players.isEmpty)
-            const Text(
-              'Keine Spieler:innen zugewiesen',
-              style: TextStyle(color: CustomTheme.hintColor),
+            Text(
+              loc.no_players_selected,
+              style: const TextStyle(color: CustomTheme.hintColor),
             )
           else
             Wrap(
@@ -122,17 +132,24 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
               runSpacing: 8,
               children: widget.players
                   .map(
-                    (player) => GestureDetector(
-                      onTap: () => widget.onPlayerTap?.call(player),
-                      child: TextIconTile(
-                        text: player.name,
-                        suffixText: getNameCountText(player),
-                        iconEnabled: widget.onPlayerTap != null,
-                        onIconTap: () => widget.onPlayerTap?.call(player),
-                      ),
+                    (player) => TextIconTile(
+                      text: player.name,
+                      suffixText: getNameCountText(player),
+                      iconEnabled: false,
                     ),
                   )
                   .toList(),
+            ),
+          if (widget.onEdit != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: AnimatedDialogButton(
+                buttonConstraints: const BoxConstraints(
+                  minWidth: double.infinity,
+                ),
+                buttonText: loc.edit_members,
+                onPressed: widget.onEdit!,
+              ),
             ),
         ],
       ),

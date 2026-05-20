@@ -89,6 +89,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_new_match => 'Create new match';
 
   @override
+  String get create_teams => 'Create teams';
+
+  @override
   String get data => 'Data';
 
   @override
@@ -145,6 +148,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get edit_match => 'Edit Match';
+
+  @override
+  String get edit_members => 'Edit Members';
 
   @override
   String get enter_points => 'Enter points';
@@ -329,6 +335,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recent_matches => 'Recent Matches';
 
   @override
+  String get redistribute => 'Redistribute';
+
+  @override
   String get results => 'Results';
 
   @override
@@ -406,6 +415,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String successfully_added_player(String playerName) {
     return 'Successfully added player $playerName';
   }
+
+  @override
+  String get team => 'Team';
 
   @override
   String get teams => 'Teams';
