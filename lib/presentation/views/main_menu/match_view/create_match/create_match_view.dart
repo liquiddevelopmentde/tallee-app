@@ -300,7 +300,10 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           context,
           adaptivePageRoute(
             fullscreenDialog: !isTeamMatch,
-            builder: (context) => CreateTeamsView(match: match),
+            builder: (context) => CreateTeamsView(
+              match: match,
+              onWinnerChanged: widget.onWinnerChanged,
+            ),
           ),
         );
       }

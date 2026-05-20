@@ -16,9 +16,10 @@ import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/team_creation_tile.dart';
 
 class CreateTeamsView extends StatefulWidget {
-  const CreateTeamsView({super.key, required this.match});
+  const CreateTeamsView({super.key, required this.match, this.onWinnerChanged});
 
   final Match match;
+  final VoidCallback? onWinnerChanged;
 
   @override
   State<CreateTeamsView> createState() => _CreateTeamsViewState();
@@ -140,8 +141,10 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                               context,
                               adaptivePageRoute(
                                 fullscreenDialog: true,
-                                builder: (context) =>
-                                    MatchResultView(match: match),
+                                builder: (context) => MatchResultView(
+                                  match: match,
+                                  onWinnerChanged: widget.onWinnerChanged,
+                                ),
                               ),
                               (route) => route.isFirst,
                             );
