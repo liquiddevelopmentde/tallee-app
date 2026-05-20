@@ -151,7 +151,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
               if (!isEditMode())
                 ChooseTile(
-                  title: 'Team Match',
+                  title: loc.team_match,
                   trailing: Switch.adaptive(
                     activeTrackColor: CustomTheme.primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: -15),

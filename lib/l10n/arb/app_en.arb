@@ -146,6 +146,7 @@
     }
   },
   "team": "Team",
+  "team_match": "Team Match",
   "teams": "Teams",
   "there_are_no_games_matching_your_search": "There are no games matching your search",
   "there_is_no_group_matching_your_search": "There is no group matching your search",

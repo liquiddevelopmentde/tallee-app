@@ -142,7 +142,6 @@ class _MatchViewState extends State<MatchView> {
 
   /// Loads the matches from the database and sorts them by creation date.
   void loadMatches() {
-    print('Loading matches from database');
     isLoading = true;
     Future.wait([
       db.matchDao.getAllMatches(),

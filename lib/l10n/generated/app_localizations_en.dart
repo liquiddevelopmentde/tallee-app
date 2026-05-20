@@ -420,6 +420,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get team => 'Team';
 
   @override
+  String get team_match => 'Team Match';
+
+  @override
   String get teams => 'Teams';
 
   @override

@@ -872,6 +872,12 @@ abstract class AppLocalizations {
   /// **'Team'**
   String get team;
 
+  /// No description provided for @team_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Match'**
+  String get team_match;
+
   /// No description provided for @teams.
   ///
   /// In en, this message translates to:

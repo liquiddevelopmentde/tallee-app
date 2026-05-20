@@ -27,11 +27,11 @@ class CreateTeamsView extends StatefulWidget {
 
 class _CreateTeamsViewState extends State<CreateTeamsView> {
   final Random random = Random();
+  List<Player> get matchPlayers => widget.match.players;
+
   late List<Team> teams;
   late List<TextEditingController> nameController;
-
   final int initialTeamCount = 2;
-  List<Player> get matchPlayers => widget.match.players;
 
   @override
   void didChangeDependencies() {
@@ -101,9 +101,9 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                         );
                       });
                     },
-                    onDelete: teams.length >= 3
-                        ? () => _removeTeam(index)
-                        : null,
+                    onDelete: teams.length <= 2
+                        ? null
+                        : () => _removeTeam(index),
                     onColorSelection: (color) {
                       setState(() {
                         teams[index] = teams[index].copyWith(color: color);
@@ -113,9 +113,12 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                 },
               ),
             ),
+
+            // Button row
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Redistribute
                 MainMenuButton(
                   icon: Icons.cached,
                   text: loc.redistribute,
@@ -124,6 +127,8 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                   }),
                 ),
                 const SizedBox(width: 15),
+
+                // Add new team
                 MainMenuButton(
                   icon: Icons.add,
                   onPressed: teams.length >= widget.match.players.length
@@ -131,6 +136,8 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                       : addTeam,
                 ),
                 const SizedBox(width: 15),
+
+                // Confirm teams and start match
                 MainMenuButton(
                   icon: Icons.check,
                   onPressed: teams.every((team) => team.members.isNotEmpty)

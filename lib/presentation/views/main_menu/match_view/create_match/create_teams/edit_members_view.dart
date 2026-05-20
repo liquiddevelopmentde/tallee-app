@@ -21,7 +21,6 @@ class EditMembersView extends StatefulWidget {
 
 class _EditMembersViewState extends State<EditMembersView> {
   List<Player> selectedPlayers = [];
-  List<Player> matchPlayer = [];
 
   @override
   void initState() {
