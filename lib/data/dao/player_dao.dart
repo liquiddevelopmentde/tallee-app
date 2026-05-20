@@ -170,22 +170,18 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
             .getSingleOrNull() ??
         '';
     final previousNameCount = (await getNameCount(name: previousPlayerName))!;
-    print('previousNameCount: $previousNameCount');
 
     // Update name count for the new name
-    final count = await calculateNameCount(name: name);
-    print('count: $count');
-
+    final newNameCount = await calculateNameCount(name: name);
+    // Updating player name
     final rowsAffected =
         await (update(playerTable)..where((p) => p.id.equals(playerId))).write(
           PlayerTableCompanion(name: Value(name)),
         );
-
-    if (count > 0) {
-      await (update(playerTable)..where((p) => p.name.equals(name))).write(
-        PlayerTableCompanion(nameCount: Value(count)),
-      );
-    }
+    // Updating the name count for the new name
+    await (update(playerTable)..where((p) => p.name.equals(name))).write(
+      PlayerTableCompanion(nameCount: Value(newNameCount)),
+    );
 
     if (previousNameCount > 0) {
       // Get the player with that name and the hightest nameCount, and update their nameCount to previousNameCount
