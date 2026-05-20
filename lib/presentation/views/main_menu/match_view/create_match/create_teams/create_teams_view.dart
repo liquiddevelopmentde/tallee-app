@@ -10,21 +10,21 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/team_match/edit_members_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/edit_members_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/team_creation_tile.dart';
 
-class OrganizeTeamsView extends StatefulWidget {
-  const OrganizeTeamsView({super.key, required this.match});
+class CreateTeamsView extends StatefulWidget {
+  const CreateTeamsView({super.key, required this.match});
 
   final Match match;
 
   @override
-  State<OrganizeTeamsView> createState() => _OrganizeTeamsViewState();
+  State<CreateTeamsView> createState() => _CreateTeamsViewState();
 }
 
-class _OrganizeTeamsViewState extends State<OrganizeTeamsView> {
+class _CreateTeamsViewState extends State<CreateTeamsView> {
   final Random random = Random();
   late List<Team> teams;
   late List<TextEditingController> nameController;

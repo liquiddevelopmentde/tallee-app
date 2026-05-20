@@ -12,7 +12,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/team_match/organize_teams_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/create_teams_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
@@ -300,7 +300,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           context,
           adaptivePageRoute(
             fullscreenDialog: !isTeamMatch,
-            builder: (context) => OrganizeTeamsView(match: match),
+            builder: (context) => CreateTeamsView(match: match),
           ),
         );
       }
