@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -11,11 +12,11 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/match_result/live_edit_view.dart';
 import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/score_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
@@ -37,8 +38,6 @@ class MatchResultView extends StatefulWidget {
 
 class _MatchResultViewState extends State<MatchResultView> {
   late final AppDatabase db;
-
-  bool isLiveEditMode = false;
 
   late final Ruleset ruleset;
 
@@ -92,121 +91,116 @@ class _MatchResultViewState extends State<MatchResultView> {
       appBar: AppBar(
         automaticallyImplyLeading: true,
         leading: HapticIconButton(
-          icon: isLiveEditMode
-              ? const Icon(Icons.arrow_back_ios)
-              : const Icon(Icons.close),
-          onPressed: isLiveEditMode
-              ? () => setState(() {
-                  isLiveEditMode = false;
-                })
-              : () => {widget.onWinnerChanged?.call(), Navigator.pop(context)},
+          icon: const Icon(Icons.close),
+          onPressed: () => {
+            widget.onWinnerChanged?.call(),
+            Navigator.pop(context),
+          },
         ),
         title: Text(widget.match.name),
       ),
       body: Column(
         children: [
           Expanded(
-            child: isLiveEditMode
-                // Live Edit Mode
-                ? buildLiveEditWidet(isTeamMatch)
-                // Normal Container
-                : Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: CustomTheme.boxColor,
-                      border: Border.all(color: CustomTheme.boxBorderColor),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          getTitleForRuleset(loc),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-
-                        // Show player selection
-                        if (rulesetSupportsPlayerSelection())
-                          if (ruleset == Ruleset.multipleWinners)
-                            Expanded(
-                              child: buildMultipleWinnerSelectionWidget(
-                                isTeamMatch,
-                              ),
-                            )
-                          else
-                            Expanded(
-                              child: buildPlayerSelectionWidget(isTeamMatch),
-                            ),
-
-                        // Show score entry
-                        if (rulesetSupportsScoreEntry())
-                          Expanded(child: buildScoreEntryWidget(isTeamMatch)),
-
-                        // Show draggable placement list
-                        if (rulesetSupportsDragBehaviour())
-                          Expanded(child: buildPlacementWidget(isTeamMatch)),
-                      ],
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              decoration: BoxDecoration(
+                color: CustomTheme.boxColor,
+                border: Border.all(color: CustomTheme.boxBorderColor),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    getTitleForRuleset(loc),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 10),
+
+                  // Show player selection
+                  if (rulesetSupportsPlayerSelection())
+                    if (ruleset == Ruleset.multipleWinners)
+                      Expanded(
+                        child: buildMultipleWinnerSelectionWidget(isTeamMatch),
+                      )
+                    else
+                      Expanded(child: buildPlayerSelectionWidget(isTeamMatch)),
+
+                  // Show score entry
+                  if (rulesetSupportsScoreEntry())
+                    Expanded(child: buildScoreEntryWidget(isTeamMatch)),
+
+                  // Show draggable placement list
+                  if (rulesetSupportsDragBehaviour())
+                    Expanded(child: buildPlacementWidget(isTeamMatch)),
+                ],
+              ),
+            ),
           ),
 
-          if (!isLiveEditMode) ...[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (rulesetSupportsScoreEntry()) ...[
-                    // Button to switch to live edit mode
-                    AnimatedDialogButton(
-                      buttonConstraints: const BoxConstraints(
-                        minWidth: double.infinity,
-                        minHeight: 50,
-                      ),
-                      buttonText: loc.live_edit_mode,
-                      buttonType: ButtonType.secondary,
-                      onPressed: () => setState(() {
-                        isLiveEditMode = !isLiveEditMode;
-                      }),
-                    ),
-                  ],
-
-                  // Save Changes Button
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Live Edit Mode Button
+                if (rulesetSupportsScoreEntry()) ...[
                   AnimatedDialogButton(
                     buttonConstraints: const BoxConstraints(
                       minWidth: double.infinity,
                       minHeight: 50,
                     ),
-                    buttonText: loc.save_changes,
-                    onPressed: canSave
-                        ? () async {
-                            final ending = DateTime.now();
-                            await db.matchDao.updateMatchEndedAt(
-                              matchId: widget.match.id,
-                              endedAt: ending,
-                            );
-                            await _handleSaving();
-                            if (!context.mounted) return;
-                            Navigator.pop(context);
-                          }
-                        : null,
+                    buttonText: loc.live_edit_mode,
+                    buttonType: ButtonType.secondary,
+                    onPressed: () =>
+                        Navigator.push(
+                          context,
+                          adaptivePageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) =>
+                                LiveEditView(match: widget.match),
+                          ),
+                        ).then(
+                          (scores) => {
+                            if (scores != null)
+                              {
+                                for (int i = 0; i < scores.length; i++)
+                                  {controller[i].text = scores[i].toString()},
+                              },
+                          },
+                        ),
                   ),
                 ],
-              ),
+
+                // Save Changes Button
+                AnimatedDialogButton(
+                  buttonConstraints: const BoxConstraints(
+                    minWidth: double.infinity,
+                    minHeight: 50,
+                  ),
+                  buttonText: loc.save_changes,
+                  onPressed: canSave
+                      ? () async {
+                          final ending = DateTime.now();
+                          await db.matchDao.updateMatchEndedAt(
+                            matchId: widget.match.id,
+                            endedAt: ending,
+                          );
+                          await _handleSaving();
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
+                        }
+                      : null,
+                ),
+              ],
             ),
-          ],
+          ),
         ],
       ),
     );
@@ -842,40 +836,6 @@ class _MatchResultViewState extends State<MatchResultView> {
                 }
               });
             },
-          );
-        },
-      );
-    }
-  }
-
-  Widget buildLiveEditWidet(bool isTeamMatch) {
-    if (isTeamMatch) {
-      return ListView.builder(
-        itemCount: allTeams.length,
-        itemBuilder: (context, index) {
-          return LiveEditListTile(
-            title: allTeams[index].name,
-            onChanged: (value) {
-              setState(() {
-                controller[index].text = value.toString();
-              });
-            },
-            value: int.tryParse(controller[index].text) ?? 0,
-          );
-        },
-      );
-    } else {
-      return ListView.builder(
-        itemCount: allPlayers.length,
-        itemBuilder: (context, index) {
-          return LiveEditListTile(
-            title: allPlayers[index].name,
-            onChanged: (value) {
-              setState(() {
-                controller[index].text = value.toString();
-              });
-            },
-            value: int.tryParse(controller[index].text) ?? 0,
           );
         },
       );
