@@ -71,7 +71,11 @@ class Team {
     : id = json['id'],
       name = json['name'],
       createdAt = DateTime.parse(json['createdAt']),
-      color = AppColor.values.byName(json['color'] ?? AppColor.blue.name),
+      color = AppColor.values.firstWhere(
+        (value) =>
+            value.name == json['color'] || value.toString() == json['color'],
+        orElse: () => AppColor.blue,
+      ),
       score = json['score'] ?? 0,
       members = []; // Populated during import via DataTransferService
 

@@ -73,7 +73,11 @@ class Game {
         orElse: () => Ruleset.singleWinner,
       ),
       description = json['description'],
-      color = AppColor.values.firstWhere((e) => e.name == json['color']),
+      color = AppColor.values.firstWhere(
+        (value) =>
+            value.name == json['color'] || value.toString() == json['color'],
+        orElse: () => AppColor.blue,
+      ),
       icon = json['icon'];
 
   Map<String, dynamic> toJson() => {
