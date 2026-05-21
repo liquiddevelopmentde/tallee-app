@@ -203,6 +203,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   }
 
   /// Updates the score of the team with the given [teamId].
+  /// Updates the member scores correspondingly
   Future<bool> updateTeamScore({
     required String teamId,
     required String matchId,
@@ -220,7 +221,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
 
     final members = await _getTeamMembers(teamId: teamId);
     for (final member in members) {
-      await db.scoreEntryDao.updateScore(
+      await db.scoreEntryDao.addScore(
         playerId: member.id,
         matchId: matchId,
         entry: ScoreEntry(score: score),
@@ -241,12 +242,27 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     return true;
   }
 
+  /// Removes the scores for all teams in the match with the given [matchId] by setting their scores to null.
   Future<bool> removeAllTeamScores({required String matchId}) async {
-    await (update(
-      teamTable,
-    )).write(const TeamTableCompanion(score: Value(null)));
+    // collect all teamIds for the given matchId from playerMatchTable
+    final teamIds =
+        await (selectOnly(playerMatchTable)
+              ..addColumns([playerMatchTable.teamId])
+              ..where(playerMatchTable.matchId.equals(matchId)))
+            .map((row) => row.read(playerMatchTable.teamId))
+            .get();
+
+    // filter null or duplicates
+    final filteredTeamIds = teamIds.whereType<String>().toSet().toList();
+
+    var rowsAffected = 0;
+    if (filteredTeamIds.isNotEmpty) {
+      rowsAffected =
+          await (update(teamTable)..where((t) => t.id.isIn(filteredTeamIds)))
+              .write(const TeamTableCompanion(score: Value(null)));
+    }
     await db.scoreEntryDao.deleteAllScoresForMatch(matchId: matchId);
-    return true;
+    return rowsAffected > 0;
   }
 
   /* Delete */
@@ -285,6 +301,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required String matchId,
   }) async {
     List<bool?> success = List.generate(winners.length, (index) => null);
+
     for (int i = 0; i < winners.length; i++) {
       success[i] = await updateTeamScore(
         teamId: winners[i].id,
@@ -310,12 +327,9 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     return await updateTeamScore(teamId: teamId, matchId: matchId, score: 0);
   }
 
-  /// Removes the loser status from the team with the given [teamId] in the match with the given [matchId] by setting its score to null.
+  /// Removes the loser from the match with the given [matchId] by setting its score to null.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
-  Future<bool> removeLoserTeam({
-    required String teamId,
-    required String matchId,
-  }) async {
+  Future<bool> removeLoserTeam({required String matchId}) async {
     return await removeAllTeamScores(matchId: matchId);
   }
 
