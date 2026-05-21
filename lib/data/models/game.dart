@@ -74,9 +74,8 @@ class Game {
       ),
       description = json['description'],
       color = AppColor.values.firstWhere(
-        (value) =>
-            value.name == json['color'] || value.toString() == json['color'],
-        orElse: () => AppColor.blue,
+        (e) => e.name == json['color'],
+        orElse: () => AppColor.orange,
       ),
       icon = json['icon'];
 

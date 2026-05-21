@@ -671,7 +671,7 @@ void main() {
             'name': testTeam.name,
             'memberIds': [testPlayer1.id],
             'createdAt': testTeam.createdAt.toIso8601String(),
-            'color': testTeam.color.toString(),
+            'color': testTeam.color.name,
             'score': testTeam.score,
           },
         ];
