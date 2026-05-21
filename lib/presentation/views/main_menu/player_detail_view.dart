@@ -300,9 +300,12 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             nameCount: _player.nameCount,
                             description: _player.description,
                           );
-                          playerNameCount = fetchedPlayerNameCount != null
-                              ? ' #${fetchedPlayerNameCount + 1}'
-                              : '';
+
+                          // If there is already a player with the same name,
+                          // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
+                          playerNameCount = fetchedPlayerNameCount == 0
+                              ? ''
+                              : ' #${fetchedPlayerNameCount + 1}';
                         });
                       }
                     }
