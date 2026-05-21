@@ -572,6 +572,12 @@ abstract class AppLocalizations {
   /// **'Matches'**
   String get matches;
 
+  /// No description provided for @member.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get member;
+
   /// No description provided for @members.
   ///
   /// In en, this message translates to:

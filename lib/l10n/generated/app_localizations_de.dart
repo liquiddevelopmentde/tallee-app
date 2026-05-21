@@ -262,6 +262,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get matches => 'Spiele';
 
   @override
+  String get member => 'Mitglied';
+
+  @override
   String get members => 'Mitglieder';
 
   @override

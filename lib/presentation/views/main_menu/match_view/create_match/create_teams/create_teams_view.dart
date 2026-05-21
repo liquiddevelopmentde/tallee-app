@@ -1,11 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
@@ -97,23 +95,21 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                 ),
                 const SizedBox(width: 15),
 
-                // Confirm teams and start match
+                // Confirm teams and continue with member assignment
                 MainMenuButton(
                   icon: Icons.arrow_forward_sharp,
                   onPressed: teams.length >= 2
-                      ? () async {
-                          final match = await createMatchWithTeams();
-                          if (context.mounted) {
-                            Navigator.push(
-                              context,
-                              adaptivePageRoute(
-                                builder: (context) => ManageMembersView(
-                                  match: match,
-                                  onWinnerChanged: widget.onWinnerChanged,
-                                ),
+                      ? () {
+                          final match = widget.match.copyWith(teams: teams);
+                          Navigator.push(
+                            context,
+                            adaptivePageRoute(
+                              builder: (context) => ManageMembersView(
+                                match: match,
+                                onWinnerChanged: widget.onWinnerChanged,
                               ),
-                            );
-                          }
+                            ),
+                          );
                         }
                       : null,
                 ),
@@ -200,14 +196,6 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       }
       teams[targetIndex].members.add(player);
     }
-  }
-
-  /// Saves the teams to the database and returns the updated match with the teams.
-  Future<Match> createMatchWithTeams() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    final match = widget.match.copyWith(teams: teams);
-    await db.matchDao.addMatch(match: match);
-    return match;
   }
 
   @override

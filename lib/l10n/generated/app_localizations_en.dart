@@ -262,6 +262,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matches => 'Matches';
 
   @override
+  String get member => 'Member';
+
+  @override
   String get members => 'Members';
 
   @override
