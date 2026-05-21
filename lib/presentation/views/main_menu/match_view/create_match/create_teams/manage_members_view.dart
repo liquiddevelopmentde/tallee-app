@@ -2,6 +2,7 @@ import 'dart:core' hide Match;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
@@ -117,24 +118,58 @@ class _ManageMembersViewState extends State<ManageMembersView> {
     );
   }
 
-  void submitMatch() async {
-    await db.matchDao.addMatch(match: widget.match);
-    if (mounted) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (_) => MatchResultView(
-            match: widget.match,
-            onWinnerChanged: widget.onWinnerChanged,
-          ),
-        ),
-        (route) => route.isFirst,
-      );
-    }
-  }
+  Widget buildTeamTile({required Team team}) {
+    final color = getColorFromGameColor(team.color);
+    final loc = AppLocalizations.of(context);
+    final length = team.members.length;
+    final memberText = length == 1 ? loc.member : loc.members;
 
-  bool get allTeamsHaveMembers {
-    return teams.every((team) => team.members.isNotEmpty);
+    return Padding(
+      key: ValueKey(team.id),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: Row(
+        children: [
+          // Color circle
+          Container(
+            width: 14,
+            height: 14,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+
+          const SizedBox(width: 10),
+
+          // Team name
+          Expanded(
+            child: Text(
+              team.name,
+              style: const TextStyle(
+                color: CustomTheme.textColor,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          // Member length
+          SizedBox(
+            width: 150,
+            child: NumericText(
+              '$length $memberText',
+              duration: const Duration(milliseconds: 200),
+              maxLines: 1,
+              textAlign: TextAlign.end,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: CustomTheme.hintColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // Iterates through all teams and redistributes players randomly and
@@ -156,6 +191,63 @@ class _ManageMembersViewState extends State<ManageMembersView> {
       final teamIndex = i % teams.length;
       teams[teamIndex].members.add(shuffledPlayers[i]);
     }
+  }
+
+  /// Handles moving a member from one team to another
+  void onReorder(int oldIndex, int newIndex) {
+    final sourceTeamIndex = teamIndexForFlat(oldIndex);
+    final sourceMemberIndex = memberIndexForFlat(oldIndex, sourceTeamIndex);
+
+    // Headers themselves can't be reordered.
+    if (sourceMemberIndex == -1) return;
+
+    // When moving down, the target index is shifted by 1
+    // because the item is removed first.
+    var targetIndex = newIndex;
+    if (newIndex > oldIndex) targetIndex -= 1;
+    targetIndex = targetIndex.clamp(0, allItemsCount - 1);
+
+    // Resolve target location based on the item currently at targetIndex
+    // before the move.
+    int destTeamIndex;
+    int insertPositionInTeam;
+
+    if (targetIndex >= allItemsCount - 1 && newIndex >= allItemsCount) {
+      // Dropped at the very end, append to the last team.
+      destTeamIndex = teams.length - 1;
+      insertPositionInTeam = teams[destTeamIndex].members.length;
+    } else {
+      destTeamIndex = teamIndexForFlat(targetIndex);
+      final anchorMemberIndex = memberIndexForFlat(targetIndex, destTeamIndex);
+
+      if (anchorMemberIndex == -1) {
+        // Dropped right before a header, append to the previous team.
+        destTeamIndex = destTeamIndex - 1;
+        if (destTeamIndex < 0) {
+          // Dropped above the very first header, stay in team 0 at top.
+          destTeamIndex = 0;
+          insertPositionInTeam = 0;
+        } else {
+          insertPositionInTeam = teams[destTeamIndex].members.length;
+        }
+      } else {
+        insertPositionInTeam = anchorMemberIndex;
+      }
+    }
+
+    setState(() {
+      final sourceMembers = teams[sourceTeamIndex].members;
+      final player = sourceMembers.removeAt(sourceMemberIndex);
+
+      // Adjust insert index if removed from before the insert point in the
+      // same team.
+      if (sourceTeamIndex == destTeamIndex &&
+          insertPositionInTeam > sourceMembers.length) {
+        insertPositionInTeam = sourceMembers.length;
+      }
+
+      teams[destTeamIndex].members.insert(insertPositionInTeam, player);
+    });
   }
 
   /// Total players + teams length
@@ -191,96 +283,23 @@ class _ManageMembersViewState extends State<ManageMembersView> {
     return localIndex == 0 ? -1 : localIndex - 1;
   }
 
-  void onReorder(int oldIndex, int newIndex) {
-    final sourceTeamIndex = teamIndexForFlat(oldIndex);
-    final sourceMemberIndex = memberIndexForFlat(oldIndex, sourceTeamIndex);
+  bool get allTeamsHaveMembers =>
+      teams.every((team) => team.members.isNotEmpty);
 
-    // Headers themselves can't be reordered.
-    if (sourceMemberIndex == -1) return;
-
-    // Flutter convention: when moving down, the target index is shifted by 1
-    // because the item is removed first.
-    var targetIndex = newIndex;
-    if (newIndex > oldIndex) targetIndex -= 1;
-    targetIndex = targetIndex.clamp(0, allItemsCount - 1);
-
-    // Resolve target location based on the item currently at [targetIndex]
-    // *before* the move.
-    int destTeamIndex;
-    int insertPositionInTeam;
-
-    if (targetIndex >= allItemsCount - 1 && newIndex >= allItemsCount) {
-      // Dropped at the very end -> append to the last team.
-      destTeamIndex = teams.length - 1;
-      insertPositionInTeam = teams[destTeamIndex].members.length;
-    } else {
-      destTeamIndex = teamIndexForFlat(targetIndex);
-      final anchorMemberIndex = memberIndexForFlat(targetIndex, destTeamIndex);
-
-      if (anchorMemberIndex == -1) {
-        // Dropped right before a header -> append to the previous team.
-        destTeamIndex = destTeamIndex - 1;
-        if (destTeamIndex < 0) {
-          // Dropped above the very first header -> stay in team 0 at top.
-          destTeamIndex = 0;
-          insertPositionInTeam = 0;
-        } else {
-          insertPositionInTeam = teams[destTeamIndex].members.length;
-        }
-      } else {
-        insertPositionInTeam = anchorMemberIndex;
-      }
+  void submitMatch() async {
+    final match = widget.match.copyWith(teams: teams);
+    await db.matchDao.addMatch(match: match);
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MatchResultView(
+            match: match,
+            onWinnerChanged: widget.onWinnerChanged,
+          ),
+        ),
+        (route) => route.isFirst,
+      );
     }
-
-    setState(() {
-      final sourceMembers = teams[sourceTeamIndex].members;
-      final player = sourceMembers.removeAt(sourceMemberIndex);
-
-      // Adjust insert index if we removed from before the insert point in the
-      // same team.
-      if (sourceTeamIndex == destTeamIndex &&
-          insertPositionInTeam > sourceMembers.length) {
-        insertPositionInTeam = sourceMembers.length;
-      }
-
-      teams[destTeamIndex].members.insert(insertPositionInTeam, player);
-    });
-  }
-
-  Widget buildTeamTile({required Team team}) {
-    final color = getColorFromGameColor(team.color);
-    return Padding(
-      key: ValueKey('header_${team.id}'),
-      padding: const EdgeInsets.fromLTRB(12, 16, 12, 8),
-      child: Row(
-        children: [
-          Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              team.name,
-              style: const TextStyle(
-                color: CustomTheme.textColor,
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Text(
-            '${team.members.length}',
-            style: const TextStyle(
-              color: CustomTheme.hintColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
