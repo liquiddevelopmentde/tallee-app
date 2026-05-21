@@ -56,33 +56,33 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(title: Text(loc.create_teams)),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.only(top: 12, bottom: 12),
-                itemCount: teams.length,
-                itemBuilder: (context, index) {
-                  return TeamCreationTile(
-                    color: teams[index].color,
-                    controller: nameController[index],
-                    hintText: '${loc.team} ${index + 1}',
-                    onDelete: teams.length <= 2
-                        ? null
-                        : () => removeTeam(index),
-                    onColorSelection: (color) {
-                      setState(() {
-                        teams[index] = teams[index].copyWith(color: color);
-                      });
-                    },
-                  );
-                },
-              ),
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.only(top: 12, bottom: 12),
+              itemCount: teams.length,
+              itemBuilder: (context, index) {
+                return TeamCreationTile(
+                  color: teams[index].color,
+                  controller: nameController[index],
+                  hintText: '${loc.team} ${index + 1}',
+                  onDelete: teams.length <= 2 ? null : () => removeTeam(index),
+                  onColorSelection: (color) {
+                    setState(() {
+                      teams[index] = teams[index].copyWith(color: color);
+                    });
+                  },
+                );
+              },
             ),
+          ),
 
-            // Button row
-            Row(
+          // Button row
+          Positioned(
+            bottom: MediaQuery.paddingOf(context).bottom + 20,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Add new team
@@ -95,7 +95,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                 ),
                 const SizedBox(width: 15),
 
-                // Confirm teams and continue with member assignment
+                // Confirm teams
                 MainMenuButton(
                   icon: Icons.arrow_forward_sharp,
                   onPressed: teams.length >= 2
@@ -115,8 +115,8 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

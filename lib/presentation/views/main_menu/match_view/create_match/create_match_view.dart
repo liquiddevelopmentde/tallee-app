@@ -14,7 +14,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/create_teams_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
-import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
@@ -175,15 +175,21 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               ),
 
               // Create or save button.
-              CustomWidthButton(
-                text: buttonText,
-                sizeRelativeToWidth: 0.95,
-                buttonType: ButtonType.primary,
-                onPressed: isSubmitButtonEnabled()
-                    ? () {
-                        submitButtonNavigation(context);
-                      }
-                    : null,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: AnimatedDialogButton(
+                  buttonConstraints: const BoxConstraints(
+                    minWidth: double.infinity,
+                    minHeight: 50,
+                  ),
+                  buttonType: ButtonType.primary,
+                  onPressed: isSubmitButtonEnabled()
+                      ? () {
+                          submitButtonNavigation(context);
+                        }
+                      : null,
+                  buttonText: buttonText,
+                ),
               ),
             ],
           ),

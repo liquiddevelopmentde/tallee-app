@@ -52,67 +52,62 @@ class _ManageMembersViewState extends State<ManageMembersView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(title: Text(loc.manage_members)),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Expanded(
-              child: ReorderableListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                buildDefaultDragHandles: false,
-                itemCount: allItemsCount,
-                onReorder: onReorder,
-                proxyDecorator: (child, index, animation) =>
-                    Material(type: MaterialType.transparency, child: child),
-                itemBuilder: (context, index) {
-                  final teamIndex = teamIndexForFlat(index);
-                  final memberIndex = memberIndexForFlat(index, teamIndex);
-                  final team = teams[teamIndex];
+      body: Stack(
+        alignment: AlignmentDirectional.center,
+        children: [
+          Expanded(
+            child: ReorderableListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              buildDefaultDragHandles: false,
+              itemCount: allItemsCount,
+              onReorder: onReorder,
+              proxyDecorator: (child, index, animation) =>
+                  Material(type: MaterialType.transparency, child: child),
+              itemBuilder: (context, index) {
+                final teamIndex = teamIndexForFlat(index);
+                final memberIndex = memberIndexForFlat(index, teamIndex);
+                final team = teams[teamIndex];
 
-                  if (memberIndex == -1) {
-                    return buildTeamTile(team: team);
-                  }
+                if (memberIndex == -1) {
+                  return buildTeamTile(team: team);
+                }
 
-                  final player = team.members[memberIndex];
-                  return ReorderableDelayedDragStartListener(
-                    key: ValueKey('player_${player.id}'),
-                    index: index,
-                    child: TextIconListTile(
-                      text: player.name,
-                      suffixText: getNameCountText(player),
-                      icon: Icons.drag_handle,
-                    ),
-                  );
-                },
-              ),
+                final player = team.members[memberIndex];
+                return ReorderableDelayedDragStartListener(
+                  key: ValueKey('player_${player.id}'),
+                  index: index,
+                  child: TextIconListTile(
+                    text: player.name,
+                    suffixText: getNameCountText(player),
+                    icon: Icons.drag_handle,
+                  ),
+                );
+              },
             ),
-            Positioned(
-              bottom: MediaQuery.of(context).padding.bottom,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MainMenuButton(
-                      onPressed: () => setState(() {
-                        redistributePlayers();
-                      }),
-                      icon: Icons.cached,
-                    ),
-                    const SizedBox(width: 16),
-                    MainMenuButton(
-                      onPressed: allTeamsHaveMembers
-                          ? () async => submitMatch()
-                          : null,
-                      text: loc.create_match,
-                      icon: RpgAwesome.clovers_card,
-                    ),
-                  ],
+          ),
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MainMenuButton(
+                  onPressed: () => setState(() {
+                    redistributePlayers();
+                  }),
+                  icon: Icons.cached,
                 ),
-              ),
+                const SizedBox(width: 16),
+                MainMenuButton(
+                  onPressed: allTeamsHaveMembers
+                      ? () async => submitMatch()
+                      : null,
+                  text: loc.create_match,
+                  icon: RpgAwesome.clovers_card,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
