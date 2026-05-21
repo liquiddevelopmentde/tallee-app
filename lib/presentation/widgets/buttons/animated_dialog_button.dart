@@ -11,7 +11,7 @@ class AnimatedDialogButton extends StatefulWidget {
   const AnimatedDialogButton({
     super.key,
     required this.buttonText,
-    required this.onPressed,
+    this.onPressed,
     this.buttonConstraints,
     this.buttonType = ButtonType.primary,
     this.isDescructive = false,
@@ -19,7 +19,7 @@ class AnimatedDialogButton extends StatefulWidget {
 
   final String buttonText;
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   final BoxConstraints? buttonConstraints;
 
@@ -38,28 +38,38 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
   Widget build(BuildContext context) {
     final textStyling = _getTextStyling();
     final buttonDecoration = _getButtonDecoration();
+    bool _isDisabled = widget.onPressed == null;
 
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) => setState(() => _isPressed = false),
-      onTapCancel: () => setState(() => _isPressed = false),
-      onTap: widget.onPressed,
-      child: AnimatedScale(
-        scale: _isPressed ? 0.95 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        child: AnimatedOpacity(
-          opacity: _isPressed ? 0.6 : 1.0,
-          duration: const Duration(milliseconds: 100),
-          child: Center(
-            child: Container(
-              constraints: widget.buttonConstraints,
-              decoration: buttonDecoration,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(
-                widget.buttonText,
-                style: textStyling,
-                textAlign: TextAlign.center,
+    return IgnorePointer(
+      ignoring: _isDisabled,
+      child: Opacity(
+        opacity: _isDisabled ? 0.5 : 1.0,
+        child: GestureDetector(
+          onTapDown: (_) => setState(() => _isPressed = true),
+          onTapUp: (_) => setState(() => _isPressed = false),
+          onTapCancel: () => setState(() => _isPressed = false),
+          onTap: widget.onPressed,
+          child: AnimatedScale(
+            scale: _isPressed ? 0.95 : 1.0,
+            duration: const Duration(milliseconds: 100),
+            child: AnimatedOpacity(
+              opacity: _isPressed ? 0.6 : 1.0,
+              duration: const Duration(milliseconds: 100),
+              child: Center(
+                child: Container(
+                  constraints: widget.buttonConstraints,
+                  decoration: buttonDecoration,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    widget.buttonText,
+                    style: textStyling,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
           ),

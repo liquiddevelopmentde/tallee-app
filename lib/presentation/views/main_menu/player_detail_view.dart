@@ -67,18 +67,26 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
     ),
   );
 
+  TextEditingController nameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _player = widget.player;
     db = Provider.of<AppDatabase>(context, listen: false);
+    playerNameCount = getNameCountText(_player);
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    playerNameCount = getNameCountText(_player);
 
     return Scaffold(
       appBar: AppBar(
@@ -173,14 +181,22 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   title: "Matches part of (${totalMatches})",
                   icon: Icons.sports_esports,
                   horizontalAlignment: CrossAxisAlignment.start,
-                  content: Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
-                    spacing: 12,
-                    runSpacing: 8,
-                    children: playerMatches.map((match) {
-                      return TextIconTile(text: match.name, iconEnabled: false);
-                    }).toList(),
+                  content: AppSkeleton(
+                    enabled: isLoading,
+                    fixLayoutBuilder: true,
+                    alignment: Alignment.topLeft,
+                    child: Wrap(
+                      alignment: WrapAlignment.start,
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      spacing: 12,
+                      runSpacing: 8,
+                      children: playerMatches.map((match) {
+                        return TextIconTile(
+                          text: match.name,
+                          iconEnabled: false,
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -188,14 +204,22 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   title: "Groups part of (${totalGroups})",
                   icon: Icons.people,
                   horizontalAlignment: CrossAxisAlignment.start,
-                  content: Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
-                    spacing: 12,
-                    runSpacing: 8,
-                    children: playerGroups.map((group) {
-                      return TextIconTile(text: group.name, iconEnabled: false);
-                    }).toList(),
+                  content: AppSkeleton(
+                    enabled: isLoading,
+                    fixLayoutBuilder: true,
+                    alignment: Alignment.topLeft,
+                    child: Wrap(
+                      alignment: WrapAlignment.start,
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      spacing: 12,
+                      runSpacing: 8,
+                      children: playerGroups.map((group) {
+                        return TextIconTile(
+                          text: group.name,
+                          iconEnabled: false,
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -204,6 +228,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   icon: Icons.bar_chart,
                   content: AppSkeleton(
                     enabled: isLoading,
+                    fixLayoutBuilder: true,
                     child: Column(
                       children: [
                         _buildStatRow(
@@ -227,44 +252,57 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 text: "Edit player",
                 icon: Icons.edit,
                 onPressed: () async {
-                  final controller = TextEditingController(text: _player.name);
+                  nameController.text = _player.name;
                   showDialog<bool>(
                     context: context,
-                    builder: (context) => CustomAlertDialog(
-                      title: "Change Name",
-                      content: TextInputField(
-                        controller: controller,
-                        hintText: 'Set a player name',
-                      ),
-                      actions: [
-                        CustomDialogAction(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          text: "Confirm",
-                        ),
-                        CustomDialogAction(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          buttonType: ButtonType.secondary,
-                          text: loc.cancel,
-                        ),
-                      ],
+                    builder: (context) => StatefulBuilder(
+                      builder: (context, setDialogState) {
+                        return CustomAlertDialog(
+                          title: "Change Name",
+                          content: TextInputField(
+                            controller: nameController,
+                            hintText: 'Set a player name',
+                            onChanged: (_) => setDialogState(() {}),
+                          ),
+                          actions: [
+                            CustomDialogAction(
+                              onPressed: isConfirmButtonEnabled()
+                                  ? () => Navigator.of(context).pop(true)
+                                  : null,
+                              text: "Confirm",
+                            ),
+                            CustomDialogAction(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              buttonType: ButtonType.secondary,
+                              text: loc.cancel,
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ).then((confirmed) async {
                     if (confirmed! && context.mounted) {
-                      if (controller.text != _player.name) {
+                      final newName = nameController.text.trim();
+
+                      if (newName != _player.name) {
+                        final fetchedPlayerNameCount = await db.playerDao
+                            .getNameCount(name: newName);
                         await db.playerDao.updatePlayerName(
                           playerId: _player.id,
-                          name: controller.text,
+                          name: newName,
                         );
                         widget.callback.call();
                         setState(() {
                           _player = Player(
-                            name: controller.text,
+                            name: newName,
                             createdAt: _player.createdAt,
                             id: _player.id,
                             nameCount: _player.nameCount,
                             description: _player.description,
                           );
-                          playerNameCount = getNameCountText(_player);
+                          playerNameCount = fetchedPlayerNameCount != null
+                              ? ' #${fetchedPlayerNameCount + 1}'
+                              : '';
                         });
                       }
                     }
@@ -329,5 +367,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
         ],
       ),
     );
+  }
+
+  bool isConfirmButtonEnabled() {
+    return nameController.text.trim().isNotEmpty;
   }
 }
