@@ -200,15 +200,9 @@ class DataTransferService {
           .map((id) => playerById[id])
           .whereType<Player>()
           .toList();
+      final team = Team.fromJson(map);
 
-      return Team(
-        id: map['id'] as String,
-        name: map['name'] as String,
-        createdAt: DateTime.parse(map['createdAt'] as String),
-        color: AppColor.values.byName(map['color'] ?? AppColor.blue),
-        members: members,
-        score: map['score'] as int?,
-      );
+      return team.copyWith(members: members);
     }).toList();
   }
 

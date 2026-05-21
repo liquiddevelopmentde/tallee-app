@@ -55,7 +55,12 @@ void main() {
         members: [testPlayer1, testPlayer2],
       );
 
-      testTeam = Team(name: 'Test Team', members: [testPlayer1, testPlayer2]);
+      testTeam = Team(
+        name: 'Test Team',
+        color: AppColor.yellow,
+        score: 5,
+        members: [testPlayer1, testPlayer2],
+      );
 
       testMatch = Match(
         name: 'Test Match',
@@ -666,6 +671,8 @@ void main() {
             'name': testTeam.name,
             'memberIds': [testPlayer1.id],
             'createdAt': testTeam.createdAt.toIso8601String(),
+            'color': testTeam.color.toString(),
+            'score': testTeam.score,
           },
         ];
 
@@ -679,6 +686,8 @@ void main() {
         expect(teams[0].name, testTeam.name);
         expect(teams[0].members.length, 1);
         expect(teams[0].members[0].id, testPlayer1.id);
+        expect(teams[0].color, testTeam.color);
+        expect(teams[0].score, testTeam.score);
       });
 
       test('parseTeamsFromJson() empty list', () {
@@ -715,6 +724,9 @@ void main() {
               'gameId': testGame.id,
               'groupId': testGroup.id,
               'playerIds': [testPlayer1.id, testPlayer2.id],
+              'isTeamMatch': false,
+              'teams': null,
+              'scores': null,
               'notes': testMatch.notes,
               'createdAt': testMatch.createdAt.toIso8601String(),
             },
@@ -770,6 +782,9 @@ void main() {
               'name': testMatch.name,
               'gameId': 'non-existent-game-id',
               'playerIds': [testPlayer1.id],
+              'isTeamMatch': false,
+              'teams': null,
+              'scores': null,
               'notes': '',
               'createdAt': testMatch.createdAt.toIso8601String(),
             },
@@ -801,6 +816,9 @@ void main() {
               'gameId': testGame.id,
               'groupId': null,
               'playerIds': [testPlayer1.id],
+              'isTeamMatch': false,
+              'teams': null,
+              'scores': null,
               'notes': '',
               'createdAt': testMatch.createdAt.toIso8601String(),
             },
@@ -831,6 +849,9 @@ void main() {
               'name': testMatch.name,
               'gameId': testGame.id,
               'playerIds': [testPlayer1.id],
+              'isTeamMatch': false,
+              'teams': null,
+              'scores': null,
               'notes': '',
               'createdAt': testMatch.createdAt.toIso8601String(),
               'endedAt': endedDate.toIso8601String(),
