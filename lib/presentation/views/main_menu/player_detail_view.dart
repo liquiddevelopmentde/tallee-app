@@ -90,7 +90,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Player Profile'),
+        title: Text(loc.player_profile),
         actions: [
           HapticIconButton(
             icon: const Icon(Icons.delete),
@@ -98,7 +98,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
               showDialog<bool>(
                 context: context,
                 builder: (context) => CustomAlertDialog(
-                  title: 'Delete player?',
+                  title: loc.delete_player,
                   content: Text(loc.this_cannot_be_undone),
                   actions: [
                     CustomDialogAction(
@@ -178,7 +178,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
                 const SizedBox(height: 20),
                 InfoTile(
-                  title: "Matches part of (${totalMatches})",
+                  title: "${loc.matches_part_of} (${totalMatches})",
                   icon: Icons.sports_esports,
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: AppSkeleton(
@@ -201,7 +201,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
                 const SizedBox(height: 15),
                 InfoTile(
-                  title: "Groups part of (${totalGroups})",
+                  title: "${loc.groups_part_of} (${totalGroups})",
                   icon: Icons.people,
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: AppSkeleton(
@@ -232,12 +232,12 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     child: Column(
                       children: [
                         _buildStatRow(
-                          "Matches played",
+                          loc.matches_played,
                           totalMatches.toString(),
                         ),
-                        _buildStatRow("Matches won", matchesWon.toString()),
+                        _buildStatRow(loc.matches_won, matchesWon.toString()),
                         _buildStatRow(
-                          "Winrate",
+                          loc.winrate,
                           '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
                         ),
                       ],
@@ -249,7 +249,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom,
               child: MainMenuButton(
-                text: "Edit player",
+                text: loc.edit_player,
                 icon: Icons.edit,
                 onPressed: () async {
                   nameController.text = _player.name;
@@ -258,10 +258,10 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     builder: (context) => StatefulBuilder(
                       builder: (context, setDialogState) {
                         return CustomAlertDialog(
-                          title: "Change Name",
+                          title: loc.edit_name,
                           content: TextInputField(
                             controller: nameController,
-                            hintText: 'Set a player name',
+                            hintText: loc.set_name,
                             onChanged: (_) => setDialogState(() {}),
                           ),
                           actions: [
@@ -269,7 +269,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                               onPressed: isConfirmButtonEnabled()
                                   ? () => Navigator.of(context).pop(true)
                                   : null,
-                              text: "Confirm",
+                              text: loc.confirm,
                             ),
                             CustomDialogAction(
                               onPressed: () => Navigator.of(context).pop(false),

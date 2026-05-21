@@ -66,6 +66,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get color_yellow => 'Gelb';
 
   @override
+  String get confirm => 'Bestätigen';
+
+  @override
   String could_not_add_player(Object playerName) {
     return 'Spieler:in $playerName konnte nicht hinzugefügt werden';
   }
@@ -83,10 +86,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get create_new_group => 'Neue Gruppe erstellen';
 
   @override
-  String get created_on => 'Erstellt am';
+  String get create_new_match => 'Neues Spiel erstellen';
 
   @override
-  String get create_new_match => 'Neues Spiel erstellen';
+  String get created_on => 'Erstellt am';
 
   @override
   String get data => 'Daten';
@@ -132,10 +135,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_match => 'Spiel löschen';
 
   @override
-  String get drag_to_set_placement => 'Ziehen um Platzierung zu setzen';
+  String get delete_player => 'Spieler:in löschen';
 
   @override
   String get description => 'Beschreibung';
+
+  @override
+  String get drag_to_set_placement => 'Ziehen um Platzierung zu setzen';
 
   @override
   String get edit_game => 'Spielvorlage bearbeiten';
@@ -145,6 +151,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get edit_match => 'Gruppe bearbeiten';
+
+  @override
+  String get edit_name => 'Name ändern';
+
+  @override
+  String get edit_player => 'Spieler bearbeiten';
 
   @override
   String get enter_points => 'Punkte eingeben';
@@ -202,6 +214,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get groups => 'Gruppen';
 
   @override
+  String get groups_part_of => 'Gruppen Teil von';
+
+  @override
+  String get highest_score => 'Höchste Punkte';
+
+  @override
   String get home => 'Startseite';
 
   @override
@@ -232,6 +250,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get live_edit_mode => 'Live-Bearbeitungsmodus';
 
   @override
+  String get loser => 'Verlierer:in';
+
+  @override
+  String get lowest_score => 'Niedrigste Punkte';
+
+  @override
   String get match_in_progress => 'Spiel läuft...';
 
   @override
@@ -244,10 +268,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get matches => 'Spiele';
 
   @override
+  String get matches_part_of => 'Spiele Teil von';
+
+  @override
+  String get matches_played => 'Spiele gespielt';
+
+  @override
+  String get matches_won => 'Spiele gewonnen';
+
+  @override
   String get members => 'Mitglieder';
 
   @override
   String get most_points => 'Höchste Punkte';
+
+  @override
+  String get multiple_winners => 'Mehrere Gewinner:innen';
 
   @override
   String get no_data_available => 'Keine Daten verfügbar';
@@ -259,10 +295,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_groups_created_yet => 'Noch keine Gruppen erstellt';
 
   @override
-  String get no_licenses_found => 'Keine Lizenzen gefunden';
+  String get no_license_text_available => 'Kein Lizenztext verfügbar';
 
   @override
-  String get no_license_text_available => 'Kein Lizenztext verfügbar';
+  String get no_licenses_found => 'Keine Lizenzen gefunden';
 
   @override
   String get no_matches_created_yet => 'Noch keine Spiele erstellt';
@@ -299,16 +335,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get not_available => 'Nicht verfügbar';
 
   @override
-  String get placement => 'Platzierung';
+  String get place => 'Platz';
 
   @override
-  String get place => 'Platz';
+  String get placement => 'Platzierung';
 
   @override
   String get played_matches => 'Gespielte Spiele';
 
   @override
   String get player_name => 'Spieler:innenname';
+
+  @override
+  String get player_profile => 'Spieler:in-Profil';
 
   @override
   String get players => 'Spieler:innen';
@@ -364,16 +403,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get search_for_players => 'Nach Spieler:innen suchen';
 
   @override
+  String get select_loser => 'Verlierer:in wählen';
+
+  @override
   String get select_winner => 'Gewinner:in wählen';
 
   @override
   String get select_winners => 'Gewinner:innen wählen';
 
   @override
-  String get select_loser => 'Verlierer:in wählen';
+  String get selected_players => 'Ausgewählte Spieler:innen';
 
   @override
-  String get selected_players => 'Ausgewählte Spieler:innen';
+  String get set_name => 'Name setzen';
 
   @override
   String get settings => 'Einstellungen';
@@ -383,18 +425,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get single_winner => 'Ein:e Gewinner:in';
-
-  @override
-  String get highest_score => 'Höchste Punkte';
-
-  @override
-  String get loser => 'Verlierer:in';
-
-  @override
-  String get lowest_score => 'Niedrigste Punkte';
-
-  @override
-  String get multiple_winners => 'Mehrere Gewinner:innen';
 
   @override
   String get statistics => 'Statistiken';
