@@ -10,8 +10,7 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/edit_members_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/manage_members_view.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/team_creation_tile.dart';
 
@@ -50,7 +49,6 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
 
     // Init the controllers
     nameController = teams.map(getNewController).toList();
-    redistributePlayers();
   }
 
   @override
@@ -71,36 +69,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                   return TeamCreationTile(
                     color: teams[index].color,
                     controller: nameController[index],
-                    players: teams[index].members,
                     hintText: '${loc.team} ${index + 1}',
-                    onEdit: () async {
-                      final newPlayers = await Navigator.push(
-                        context,
-                        adaptivePageRoute(
-                          fullscreenDialog: true,
-                          builder: (context) => EditMembersView(
-                            matchPlayer: widget.match.players,
-                            teamMember: teams[index].members,
-                          ),
-                        ),
-                      );
-
-                      setState(() {
-                        // Remove the selected players from every team
-                        for (final player in newPlayers) {
-                          for (final team in teams) {
-                            if (team.members.contains(player)) {
-                              team.members.remove(player);
-                            }
-                          }
-                        }
-
-                        // Add the selected players to the current team
-                        teams[index] = teams[index].copyWith(
-                          members: newPlayers,
-                        );
-                      });
-                    },
                     onDelete: teams.length <= 2
                         ? null
                         : () => _removeTeam(index),
@@ -118,19 +87,10 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Redistribute
-                MainMenuButton(
-                  icon: Icons.cached,
-                  text: loc.redistribute,
-                  onPressed: () => setState(() {
-                    redistributePlayers();
-                  }),
-                ),
-                const SizedBox(width: 15),
-
                 // Add new team
                 MainMenuButton(
                   icon: Icons.add,
+                  text: loc.add_team,
                   onPressed: teams.length >= widget.match.players.length
                       ? null
                       : addTeam,
@@ -139,21 +99,19 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
 
                 // Confirm teams and start match
                 MainMenuButton(
-                  icon: Icons.check,
-                  onPressed: teams.every((team) => team.members.isNotEmpty)
+                  icon: Icons.arrow_forward_sharp,
+                  onPressed: teams.length >= 2
                       ? () async {
                           final match = await createMatchWithTeams();
                           if (context.mounted) {
-                            Navigator.pushAndRemoveUntil(
+                            Navigator.push(
                               context,
                               adaptivePageRoute(
-                                fullscreenDialog: true,
-                                builder: (context) => MatchResultView(
+                                builder: (context) => ManageMembersView(
                                   match: match,
                                   onWinnerChanged: widget.onWinnerChanged,
                                 ),
                               ),
-                              (route) => route.isFirst,
                             );
                           }
                         }
@@ -174,7 +132,6 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       final newTeam = getNewTeam();
       teams.add(newTeam);
       nameController.add(getNewController(newTeam));
-      redistributePlayers();
     });
   }
 
@@ -242,25 +199,6 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
         }
       }
       teams[targetIndex].members.add(player);
-    }
-  }
-
-  // Iterates through all teams and redistributes players randomly and
-  // as evenly as possible.
-  void redistributePlayers() {
-    for (final team in teams) {
-      team.members.clear();
-    }
-
-    if (matchPlayers.isEmpty || teams.isEmpty) {
-      return;
-    }
-
-    final shuffledPlayers = [...matchPlayers]..shuffle(random);
-
-    for (int i = 0; i < shuffledPlayers.length; i++) {
-      final teamIndex = i % teams.length;
-      teams[teamIndex].members.add(shuffledPlayers[i]);
     }
   }
 

@@ -1,5 +1,6 @@
 {
   "@@locale": "en",
+  "add_team": "Add Team",
   "all_players": "All players",
   "all_players_selected": "All players selected",
   "amount_of_matches": "Amount of Matches",
@@ -50,7 +51,6 @@
   "edit_game": "Edit Game",
   "edit_group": "Edit Group",
   "edit_match": "Edit Match",
-  "edit_members": "Edit Members",
   "enter_points": "Enter points",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
@@ -81,6 +81,7 @@
   "live_edit_mode": "Live Edit Mode",
   "loser": "Loser",
   "lowest_score": "Lowest Score",
+  "manage_members": "Manage Members",
   "match_in_progress": "Match in progress...",
   "match_name": "Match name",
   "match_profile": "Match Profile",

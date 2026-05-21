@@ -3,33 +3,25 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
 class TeamCreationTile extends StatefulWidget {
   const TeamCreationTile({
     super.key,
     required this.color,
     required this.controller,
-    required this.players,
     required this.hintText,
-    this.onEdit,
     this.onDelete,
     this.onColorSelection,
   });
 
   final GameColor color;
 
-  final List<Player> players;
-
   final TextEditingController controller;
 
   final String hintText;
-
-  final VoidCallback? onEdit;
 
   final VoidCallback? onDelete;
 
@@ -112,45 +104,6 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
             }).toList(),
           ),
           const SizedBox(height: 12),
-          Text(
-            loc.players,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: CustomTheme.textColor,
-            ),
-          ),
-          const SizedBox(height: 8),
-          if (widget.players.isEmpty)
-            Text(
-              loc.no_players_selected,
-              style: const TextStyle(color: CustomTheme.hintColor),
-            )
-          else
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: widget.players
-                  .map(
-                    (player) => TextIconTile(
-                      text: player.name,
-                      suffixText: getNameCountText(player),
-                      iconEnabled: false,
-                    ),
-                  )
-                  .toList(),
-            ),
-          if (widget.onEdit != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: AnimatedDialogButton(
-                buttonConstraints: const BoxConstraints(
-                  minWidth: double.infinity,
-                ),
-                buttonText: loc.edit_members,
-                onPressed: widget.onEdit!,
-              ),
-            ),
         ],
       ),
     );

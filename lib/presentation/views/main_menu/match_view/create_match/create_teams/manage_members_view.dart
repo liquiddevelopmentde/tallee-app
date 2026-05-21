@@ -1,0 +1,286 @@
+import 'dart:core' hide Match;
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:fluttericon/rpg_awesome_icons.dart';
+import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/team.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
+
+/// Displays the given [teams] as a flat reorderable list where every team is
+/// preceded by a header row and followed by its members. Members can be
+/// dragged across team boundaries to be reassigned to another team.
+class ManageMembersView extends StatefulWidget {
+  const ManageMembersView({
+    super.key,
+    required this.match,
+    required this.onWinnerChanged,
+  });
+
+  final Match match;
+
+  final VoidCallback? onWinnerChanged;
+
+  @override
+  State<ManageMembersView> createState() => _ManageMembersViewState();
+}
+
+class _ManageMembersViewState extends State<ManageMembersView> {
+  late AppDatabase db;
+
+  late List<Team> teams;
+
+  @override
+  void initState() {
+    super.initState();
+    db = Provider.of<AppDatabase>(context, listen: false);
+    teams = widget.match.teams!;
+    redistributePlayers();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
+    return Scaffold(
+      backgroundColor: CustomTheme.backgroundColor,
+      appBar: AppBar(title: Text(loc.manage_members)),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Expanded(
+              child: ReorderableListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                buildDefaultDragHandles: false,
+                itemCount: allItemsCount,
+                onReorder: onReorder,
+                proxyDecorator: (child, index, animation) =>
+                    Material(type: MaterialType.transparency, child: child),
+                itemBuilder: (context, index) {
+                  final teamIndex = teamIndexForFlat(index);
+                  final memberIndex = memberIndexForFlat(index, teamIndex);
+                  final team = teams[teamIndex];
+
+                  if (memberIndex == -1) {
+                    return buildTeamTile(team: team);
+                  }
+
+                  final player = team.members[memberIndex];
+                  return ReorderableDelayedDragStartListener(
+                    key: ValueKey('player_${player.id}'),
+                    index: index,
+                    child: TextIconListTile(
+                      text: player.name,
+                      suffixText: getNameCountText(player),
+                      icon: Icons.drag_handle,
+                    ),
+                  );
+                },
+              ),
+            ),
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MainMenuButton(
+                      onPressed: () => setState(() {
+                        redistributePlayers();
+                      }),
+                      icon: Icons.cached,
+                    ),
+                    const SizedBox(width: 16),
+                    MainMenuButton(
+                      onPressed: allTeamsHaveMembers
+                          ? () async => submitMatch()
+                          : null,
+                      text: loc.create_match,
+                      icon: RpgAwesome.clovers_card,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void submitMatch() async {
+    await db.matchDao.addMatch(match: widget.match);
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MatchResultView(
+            match: widget.match,
+            onWinnerChanged: widget.onWinnerChanged,
+          ),
+        ),
+        (route) => route.isFirst,
+      );
+    }
+  }
+
+  bool get allTeamsHaveMembers {
+    return teams.every((team) => team.members.isNotEmpty);
+  }
+
+  // Iterates through all teams and redistributes players randomly and
+  // as evenly as possible.
+  void redistributePlayers() {
+    for (final team in teams) {
+      team.members.clear();
+    }
+    var matchPlayers = widget.match.players;
+    Random random = Random();
+
+    if (matchPlayers.isEmpty || teams.isEmpty) {
+      return;
+    }
+
+    final shuffledPlayers = [...matchPlayers]..shuffle(random);
+
+    for (int i = 0; i < shuffledPlayers.length; i++) {
+      final teamIndex = i % teams.length;
+      teams[teamIndex].members.add(shuffledPlayers[i]);
+    }
+  }
+
+  /// Total players + teams length
+  int get allItemsCount {
+    var count = 0;
+    for (final team in teams) {
+      count += 1 + team.members.length;
+    }
+    return count;
+  }
+
+  /// Returns the index of the team that owns the flat-list item at [flatIndex].
+  int teamIndexForFlat(int flatIndex) {
+    var remaining = flatIndex;
+    for (var i = 0; i < teams.length; i++) {
+      final size = 1 + teams[i].members.length;
+      if (remaining < size) return i;
+      remaining -= size;
+    }
+    return teams.length - 1;
+  }
+
+  /// Returns the member index within its team, or `-1` if the item at
+  /// [flatIndex] is the team header.
+  int memberIndexForFlat(int flatIndex, int teamIndex) {
+    var offset = 0;
+    for (var i = 0; i < teamIndex; i++) {
+      offset += 1 + teams[i].members.length;
+    }
+    // offset now points to the header of [teamIndex]. Anything beyond is a
+    // member of that team.
+    final localIndex = flatIndex - offset;
+    return localIndex == 0 ? -1 : localIndex - 1;
+  }
+
+  void onReorder(int oldIndex, int newIndex) {
+    final sourceTeamIndex = teamIndexForFlat(oldIndex);
+    final sourceMemberIndex = memberIndexForFlat(oldIndex, sourceTeamIndex);
+
+    // Headers themselves can't be reordered.
+    if (sourceMemberIndex == -1) return;
+
+    // Flutter convention: when moving down, the target index is shifted by 1
+    // because the item is removed first.
+    var targetIndex = newIndex;
+    if (newIndex > oldIndex) targetIndex -= 1;
+    targetIndex = targetIndex.clamp(0, allItemsCount - 1);
+
+    // Resolve target location based on the item currently at [targetIndex]
+    // *before* the move.
+    int destTeamIndex;
+    int insertPositionInTeam;
+
+    if (targetIndex >= allItemsCount - 1 && newIndex >= allItemsCount) {
+      // Dropped at the very end -> append to the last team.
+      destTeamIndex = teams.length - 1;
+      insertPositionInTeam = teams[destTeamIndex].members.length;
+    } else {
+      destTeamIndex = teamIndexForFlat(targetIndex);
+      final anchorMemberIndex = memberIndexForFlat(targetIndex, destTeamIndex);
+
+      if (anchorMemberIndex == -1) {
+        // Dropped right before a header -> append to the previous team.
+        destTeamIndex = destTeamIndex - 1;
+        if (destTeamIndex < 0) {
+          // Dropped above the very first header -> stay in team 0 at top.
+          destTeamIndex = 0;
+          insertPositionInTeam = 0;
+        } else {
+          insertPositionInTeam = teams[destTeamIndex].members.length;
+        }
+      } else {
+        insertPositionInTeam = anchorMemberIndex;
+      }
+    }
+
+    setState(() {
+      final sourceMembers = teams[sourceTeamIndex].members;
+      final player = sourceMembers.removeAt(sourceMemberIndex);
+
+      // Adjust insert index if we removed from before the insert point in the
+      // same team.
+      if (sourceTeamIndex == destTeamIndex &&
+          insertPositionInTeam > sourceMembers.length) {
+        insertPositionInTeam = sourceMembers.length;
+      }
+
+      teams[destTeamIndex].members.insert(insertPositionInTeam, player);
+    });
+  }
+
+  Widget buildTeamTile({required Team team}) {
+    final color = getColorFromGameColor(team.color);
+    return Padding(
+      key: ValueKey('header_${team.id}'),
+      padding: const EdgeInsets.fromLTRB(12, 16, 12, 8),
+      child: Row(
+        children: [
+          Container(
+            width: 14,
+            height: 14,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              team.name,
+              style: const TextStyle(
+                color: CustomTheme.textColor,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Text(
+            '${team.members.length}',
+            style: const TextStyle(
+              color: CustomTheme.hintColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

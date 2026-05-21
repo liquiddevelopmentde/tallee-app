@@ -1,5 +1,6 @@
 {
   "@@locale": "de",
+  "add_team": "Team hinzufügen",
   "all_players": "Alle Spieler:innen",
   "all_players_selected": "Alle Spieler:innen ausgewählt",
   "amount_of_matches": "Anzahl der Spiele",
@@ -50,7 +51,6 @@
   "edit_game": "Spielvorlage bearbeiten",
   "edit_group": "Gruppe bearbeiten",
   "edit_match": "Gruppe bearbeiten",
-  "edit_members": "Mitglieder bearbeiten",
   "enter_points": "Punkte eingeben",
   "enter_results": "Ergebnisse eintragen",
   "error_creating_group": "Fehler beim Erstellen der Gruppe, bitte erneut versuchen",
@@ -81,6 +81,7 @@
   "live_edit_mode": "Live-Bearbeitungsmodus",
   "loser": "Verlierer:in",
   "lowest_score": "Niedrigste Punkte",
+  "manage_members": "Mitglieder bearbeiten",
   "match_in_progress": "Spiel läuft...",
   "match_name": "Spieltitel",
   "match_profile": "Spielprofil",
