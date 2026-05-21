@@ -153,49 +153,31 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     return textController;
   }
 
-  /// Removes the team with the given index and redistributes its players to the
-  /// remaining teams. If there are less than 2 teams the removed team gets
-  /// replaced with a new one
+  /// Removes the team with the given index. If there are less than 2 teams the
+  /// removed team gets replaced with a new one
   void _removeTeam(int index) {
     final loc = AppLocalizations.of(context);
 
     setState(() {
-      final removedTeam = teams.removeAt(index);
+      teams.removeAt(index);
       final removedController = nameController.removeAt(index);
       removedController.dispose();
-      if (teams.length < 2) {
-        final fallbackTeam = getNewTeam();
-        teams.add(fallbackTeam);
-        nameController.add(getNewController(fallbackTeam));
-      }
 
-      // Update index-based team names
+      // Update index-based team names and default colors
       for (int i = 0; i < nameController.length; i++) {
         if (nameController[i].text.contains(
           RegExp('^${RegExp.escape(loc.team)} \\d+\$'),
         )) {
           nameController[i].text = '${loc.team} ${i + 1}';
+
+          // Reset color to default if it was based on the index
+          final previousIndex = i < index ? i : i + 1;
+          if (teams[i].color == getTeamColor(previousIndex)) {
+            teams[i] = teams[i].copyWith(color: getTeamColor(i));
+          }
         }
       }
-
-      addToSmallestTeams(removedTeam.members);
     });
-  }
-
-  /// Adds the given players to the teams with the least amount of members
-  /// [orphanedPlayers] The players to be added to the teams.
-  void addToSmallestTeams(List<Player> orphanedPlayers) {
-    if (teams.isEmpty || orphanedPlayers.isEmpty) return;
-
-    for (final player in orphanedPlayers) {
-      var targetIndex = 0;
-      for (var i = 1; i < teams.length; i++) {
-        if (teams[i].members.length < teams[targetIndex].members.length) {
-          targetIndex = i;
-        }
-      }
-      teams[targetIndex].members.add(player);
-    }
   }
 
   @override
