@@ -107,13 +107,10 @@ class _GroupViewState extends State<GroupView> {
                   context,
                   adaptivePageRoute(
                     builder: (context) {
-                      return const CreateGroupView();
+                      return CreateGroupView(onMembersChanged: loadGroups);
                     },
                   ),
                 );
-                setState(() {
-                  loadGroups();
-                });
               },
             ),
           ),
