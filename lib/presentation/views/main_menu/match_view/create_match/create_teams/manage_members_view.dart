@@ -36,13 +36,12 @@ class ManageMembersView extends StatefulWidget {
 class _ManageMembersViewState extends State<ManageMembersView> {
   late AppDatabase db;
 
-  late List<Team> teams;
+  List<Team> get teams => widget.match.teams!;
 
   @override
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    teams = widget.match.teams!;
     redistributePlayers();
   }
 
@@ -287,7 +286,8 @@ class _ManageMembersViewState extends State<ManageMembersView> {
       teams.every((team) => team.members.isNotEmpty);
 
   void submitMatch() async {
-    final match = widget.match.copyWith(teams: teams);
+    final match = widget.match;
+    print('teams: ${match.teams}');
     await db.matchDao.addMatch(match: match);
     if (mounted) {
       Navigator.pushAndRemoveUntil(
