@@ -12,7 +12,7 @@ class GameLabel extends StatelessWidget {
 
   final String title;
   final String description;
-  final GameColor color;
+  final AppColor color;
 
   @override
   Widget build(BuildContext context) {

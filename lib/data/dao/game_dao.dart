@@ -92,7 +92,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
             name: row.name,
             ruleset: Ruleset.values.firstWhere((e) => e.name == row.ruleset),
             description: row.description,
-            color: GameColor.values.firstWhere((e) => e.name == row.color),
+            color: AppColor.values.firstWhere((e) => e.name == row.color),
             icon: row.icon,
             createdAt: row.createdAt,
           ),
@@ -109,7 +109,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
       name: result.name,
       ruleset: Ruleset.values.firstWhere((e) => e.name == result.ruleset),
       description: result.description,
-      color: GameColor.values.firstWhere((e) => e.name == result.color),
+      color: AppColor.values.firstWhere((e) => e.name == result.color),
       icon: result.icon,
       createdAt: result.createdAt,
     );
@@ -156,7 +156,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   /// Updates the color of the game with the given [gameId].
   Future<bool> updateGameColor({
     required String gameId,
-    required GameColor color,
+    required AppColor color,
   }) async {
     final rowsAffected =
         await (update(gameTable)..where((g) => g.id.equals(gameId))).write(

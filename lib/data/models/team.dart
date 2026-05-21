@@ -8,7 +8,7 @@ class Team {
   final String id;
   final String name;
   final DateTime createdAt;
-  final GameColor color;
+  final AppColor color;
   final int? score;
   final List<Player> members;
 
@@ -16,7 +16,7 @@ class Team {
     String? id,
     required this.name,
     DateTime? createdAt,
-    this.color = GameColor.blue,
+    this.color = AppColor.blue,
     this.score,
     required this.members,
   }) : id = id ?? const Uuid().v4(),
@@ -31,7 +31,7 @@ class Team {
     String? id,
     String? name,
     DateTime? createdAt,
-    GameColor? color,
+    AppColor? color,
     int? score,
     List<Player>? members,
   }) {
@@ -71,7 +71,7 @@ class Team {
     : id = json['id'],
       name = json['name'],
       createdAt = DateTime.parse(json['createdAt']),
-      color = GameColor.values.byName(json['color'] ?? GameColor.blue.name),
+      color = AppColor.values.byName(json['color'] ?? AppColor.blue.name),
       score = json['score'] ?? 0,
       members = []; // Populated during import via DataTransferService
 

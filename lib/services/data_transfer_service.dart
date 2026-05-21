@@ -278,7 +278,7 @@ class DataTransferService {
       name: 'Unknown',
       ruleset: Ruleset.singleWinner,
       description: '',
-      color: GameColor.blue,
+      color: AppColor.blue,
       icon: '',
     );
   }

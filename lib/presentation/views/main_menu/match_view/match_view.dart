@@ -39,7 +39,7 @@ class _MatchViewState extends State<MatchView> {
       game: Game(
         name: 'Game name',
         ruleset: Ruleset.singleWinner,
-        color: GameColor.blue,
+        color: AppColor.blue,
         icon: '',
       ),
       group: Group(

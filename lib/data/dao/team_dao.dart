@@ -116,7 +116,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
           id: row.id,
           name: row.name,
           createdAt: row.createdAt,
-          color: GameColor.values.byName(row.color),
+          color: AppColor.values.byName(row.color),
           score: row.score,
           members: members,
         );
@@ -151,7 +151,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
       id: result.id,
       name: result.name,
       createdAt: result.createdAt,
-      color: GameColor.values.byName(result.color),
+      color: AppColor.values.byName(result.color),
       score: result.score,
       members: members,
     );
@@ -193,7 +193,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   /// Updates the color of the team with the given [teamId].
   Future<bool> updateTeamColor({
     required String teamId,
-    required GameColor color,
+    required AppColor color,
   }) async {
     final rowsAffected =
         await (update(teamTable)..where((t) => t.id.equals(teamId))).write(

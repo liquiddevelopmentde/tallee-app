@@ -18,7 +18,7 @@ class TeamCreationTile extends StatefulWidget {
     this.onColorSelection,
   });
 
-  final GameColor color;
+  final AppColor color;
 
   final TextEditingController controller;
 
@@ -26,7 +26,7 @@ class TeamCreationTile extends StatefulWidget {
 
   final VoidCallback? onDelete;
 
-  final ValueChanged<GameColor>? onColorSelection;
+  final ValueChanged<AppColor>? onColorSelection;
 
   @override
   State<TeamCreationTile> createState() => _TeamCreationTileState();
@@ -34,7 +34,7 @@ class TeamCreationTile extends StatefulWidget {
 
 class _TeamCreationTileState extends State<TeamCreationTile> {
   final teamColors = List.generate(
-    GameColor.values.length,
+    AppColor.values.length,
     (index) => getTeamColor(index),
   );
 

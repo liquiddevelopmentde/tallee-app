@@ -24,62 +24,62 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
   }
 }
 
-// Returns a [GameColor] enum value based on the provided team [index].
-GameColor getTeamColor(int index) {
+// Returns a AppColor enum value based on the provided team [index].
+AppColor getTeamColor(int index) {
   final colors = [
-    GameColor.red,
-    GameColor.blue,
-    GameColor.green,
-    GameColor.yellow,
-    GameColor.purple,
-    GameColor.orange,
-    GameColor.pink,
-    GameColor.teal,
+    AppColor.red,
+    AppColor.blue,
+    AppColor.green,
+    AppColor.yellow,
+    AppColor.purple,
+    AppColor.orange,
+    AppColor.pink,
+    AppColor.teal,
   ];
   return colors[index % colors.length];
 }
 
-/// Translates a [GameColor] enum value to its corresponding localized string.
-String translateGameColorToString(GameColor color, BuildContext context) {
+/// Translates a [AppColor] enum value to its corresponding localized string.
+String translateGameColorToString(AppColor color, BuildContext context) {
   final loc = AppLocalizations.of(context);
   switch (color) {
-    case GameColor.red:
+    case AppColor.red:
       return loc.color_red;
-    case GameColor.blue:
+    case AppColor.blue:
       return loc.color_blue;
-    case GameColor.green:
+    case AppColor.green:
       return loc.color_green;
-    case GameColor.yellow:
+    case AppColor.yellow:
       return loc.color_yellow;
-    case GameColor.purple:
+    case AppColor.purple:
       return loc.color_purple;
-    case GameColor.orange:
+    case AppColor.orange:
       return loc.color_orange;
-    case GameColor.pink:
+    case AppColor.pink:
       return loc.color_pink;
-    case GameColor.teal:
+    case AppColor.teal:
       return loc.color_teal;
   }
 }
 
-/// Returns the [Color] object corresponding to a [GameColor] enum value.
-Color getColorFromGameColor(GameColor color) {
+/// Returns the [Color] object corresponding to a [AppColor] enum value.
+Color getColorFromGameColor(AppColor color) {
   switch (color) {
-    case GameColor.red:
+    case AppColor.red:
       return Colors.red;
-    case GameColor.blue:
+    case AppColor.blue:
       return Colors.blue;
-    case GameColor.green:
+    case AppColor.green:
       return Colors.green;
-    case GameColor.yellow:
+    case AppColor.yellow:
       return const Color(0xFFF7CA28);
-    case GameColor.purple:
+    case AppColor.purple:
       return Colors.purple;
-    case GameColor.orange:
+    case AppColor.orange:
       return const Color(0xFFef681f);
-    case GameColor.pink:
+    case AppColor.pink:
       return Colors.pink;
-    case GameColor.teal:
+    case AppColor.teal:
       return Colors.teal;
   }
 }
@@ -127,6 +127,7 @@ String getExtraPlayerCount(Match match) {
   return ' + ${count.toString()}';
 }
 
+/// Returns the player name count if greater 0 in the format " #2", otherwise an empty string
 String getNameCountText(Player player) {
   if (player.nameCount >= 1) {
     return ' #${player.nameCount}';
@@ -134,6 +135,7 @@ String getNameCountText(Player player) {
   return '';
 }
 
+/// Returns the correct singular or plural form of "point(s)" based on the [points] value.
 String getPointLabel(AppLocalizations loc, int points) {
   if (points == 1) {
     return '$points ${loc.point}';
