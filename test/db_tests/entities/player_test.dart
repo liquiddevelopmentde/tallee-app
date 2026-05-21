@@ -233,6 +233,42 @@ void main() {
         expect(allPlayers, isEmpty);
       });
 
+      test('updatePlayerName() updates the nameCount correctly', () async {
+        await database.playerDao.addPlayer(player: testPlayer1);
+        await database.playerDao.addPlayer(player: testPlayer2);
+
+        final newName = testPlayer1.name;
+        await database.playerDao.updatePlayerName(
+          playerId: testPlayer2.id,
+          name: newName,
+        );
+
+        var player = await database.playerDao.getPlayerById(
+          playerId: testPlayer1.id,
+        );
+        expect(player.nameCount, 1);
+
+        player = await database.playerDao.getPlayerById(
+          playerId: testPlayer2.id,
+        );
+        expect(player.nameCount, 2);
+
+        await database.playerDao.updatePlayerName(
+          playerId: testPlayer1.id,
+          name: 'different name',
+        );
+
+        player = await database.playerDao.getPlayerById(
+          playerId: testPlayer1.id,
+        );
+        expect(player.nameCount, 0);
+
+        player = await database.playerDao.getPlayerById(
+          playerId: testPlayer2.id,
+        );
+        expect(player.nameCount, 0);
+      });
+
       test('updatePlayerDescription() works correctly', () async {
         await database.playerDao.addPlayer(player: testPlayer1);
 
