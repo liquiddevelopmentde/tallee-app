@@ -11,7 +11,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
@@ -90,109 +90,124 @@ class _MatchResultViewState extends State<MatchResultView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: true,
         leading: HapticIconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () {
-            widget.onWinnerChanged?.call();
-            Navigator.pop(context);
-          },
+          icon: isLiveEditMode
+              ? const Icon(Icons.arrow_back_ios)
+              : const Icon(Icons.close),
+          onPressed: isLiveEditMode
+              ? () => setState(() {
+                  isLiveEditMode = false;
+                })
+              : () => {widget.onWinnerChanged?.call(), Navigator.pop(context)},
         ),
         title: Text(widget.match.name),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: isLiveEditMode
-                  // Live Edit Mode
-                  ? buildLiveEditWidet(isTeamMatch)
-                  // Normal Container
-                  : Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 10,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: CustomTheme.boxColor,
-                        border: Border.all(color: CustomTheme.boxBorderColor),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            getTitleForRuleset(loc),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-
-                          // Show player selection
-                          if (rulesetSupportsPlayerSelection())
-                            if (ruleset == Ruleset.multipleWinners)
-                              // TODO: Implement view for teams
-                              Expanded(
-                                child: buildMultipleWinnerSelectionWidget(
-                                  isTeamMatch,
-                                ),
-                              )
-                            else
-                              Expanded(
-                                child: buildPlayerSelectionWidget(isTeamMatch),
-                              ),
-
-                          // Show score entry
-                          if (rulesetSupportsScoreEntry())
-                            Expanded(child: buildScoreEntryWidget(isTeamMatch)),
-
-                          // Show draggable placement list
-                          if (rulesetSupportsDragBehaviour())
-                            Expanded(child: buildPlacementWidget(isTeamMatch)),
-                        ],
-                      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: isLiveEditMode
+                // Live Edit Mode
+                ? buildLiveEditWidet(isTeamMatch)
+                // Normal Container
+                : Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
                     ),
-            ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: CustomTheme.boxColor,
+                      border: Border.all(color: CustomTheme.boxBorderColor),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          getTitleForRuleset(loc),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
 
-            if (rulesetSupportsScoreEntry())
-            // Button to switch to live edit mode
-            ...[
-              CustomWidthButton(
-                text: isLiveEditMode ? loc.exit_view : loc.live_edit_mode,
-                sizeRelativeToWidth: 0.95,
-                buttonType: ButtonType.secondary,
-                onPressed: () => setState(() {
-                  isLiveEditMode = !isLiveEditMode;
-                }),
+                        // Show player selection
+                        if (rulesetSupportsPlayerSelection())
+                          if (ruleset == Ruleset.multipleWinners)
+                            Expanded(
+                              child: buildMultipleWinnerSelectionWidget(
+                                isTeamMatch,
+                              ),
+                            )
+                          else
+                            Expanded(
+                              child: buildPlayerSelectionWidget(isTeamMatch),
+                            ),
+
+                        // Show score entry
+                        if (rulesetSupportsScoreEntry())
+                          Expanded(child: buildScoreEntryWidget(isTeamMatch)),
+
+                        // Show draggable placement list
+                        if (rulesetSupportsDragBehaviour())
+                          Expanded(child: buildPlacementWidget(isTeamMatch)),
+                      ],
+                    ),
+                  ),
+          ),
+
+          if (!isLiveEditMode) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (rulesetSupportsScoreEntry()) ...[
+                    // Button to switch to live edit mode
+                    AnimatedDialogButton(
+                      buttonConstraints: const BoxConstraints(
+                        minWidth: double.infinity,
+                        minHeight: 50,
+                      ),
+                      buttonText: loc.live_edit_mode,
+                      buttonType: ButtonType.secondary,
+                      onPressed: () => setState(() {
+                        isLiveEditMode = !isLiveEditMode;
+                      }),
+                    ),
+                  ],
+
+                  // Save Changes Button
+                  AnimatedDialogButton(
+                    buttonConstraints: const BoxConstraints(
+                      minWidth: double.infinity,
+                      minHeight: 50,
+                    ),
+                    buttonText: loc.save_changes,
+                    onPressed: canSave
+                        ? () async {
+                            final ending = DateTime.now();
+                            await db.matchDao.updateMatchEndedAt(
+                              matchId: widget.match.id,
+                              endedAt: ending,
+                            );
+                            await _handleSaving();
+                            if (!context.mounted) return;
+                            Navigator.pop(context);
+                          }
+                        : null,
+                  ),
+                ],
               ),
-              const SizedBox(height: 10),
-            ],
-
-            // Save Changes Button
-            CustomWidthButton(
-              text: loc.save_changes,
-              sizeRelativeToWidth: 0.95,
-              onPressed: canSave
-                  ? () async {
-                      final ending = DateTime.now();
-                      await db.matchDao.updateMatchEndedAt(
-                        matchId: widget.match.id,
-                        endedAt: ending,
-                      );
-                      await _handleSaving();
-                      if (!context.mounted) return;
-                      Navigator.pop(context);
-                    }
-                  : null,
             ),
           ],
-        ),
+        ],
       ),
     );
   }
