@@ -507,34 +507,36 @@ void main() {
         deleted = await database.matchDao.deleteAllMatches();
         expect(deleted, isFalse);
       });
-    });
 
-    test('deleteMatchesByGame() deletes all matches for a game', () async {
-      await database.matchDao.addMatch(match: testMatch1);
-      await database.matchDao.addMatch(match: testMatch2);
+      test('deleteMatchesByGame() deletes all matches for a game', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+        await database.matchDao.addMatch(match: testMatch2);
 
-      var count = await database.matchDao.getMatchCountByGame(
-        gameId: testGame.id,
-      );
-      expect(count, 2);
+        var count = await database.matchDao.getMatchCountByGame(
+          gameId: testGame.id,
+        );
+        expect(count, 2);
 
-      final deletedCount = await database.matchDao.deleteMatchesByGame(
-        gameId: testGame.id,
-      );
-      expect(deletedCount, 2);
+        final deletedCount = await database.matchDao.deleteMatchesByGame(
+          gameId: testGame.id,
+        );
+        expect(deletedCount, 2);
 
-      count = await database.matchDao.getMatchCountByGame(gameId: testGame.id);
-      expect(count, 0);
+        count = await database.matchDao.getMatchCountByGame(
+          gameId: testGame.id,
+        );
+        expect(count, 0);
 
-      final allMatches = await database.matchDao.getAllMatches();
-      expect(allMatches, isEmpty);
-    });
+        final allMatches = await database.matchDao.getAllMatches();
+        expect(allMatches, isEmpty);
+      });
 
-    test('deleteMatchesByGame() returns 0 for non-existent game', () async {
-      final deletedCount = await database.matchDao.deleteMatchesByGame(
-        gameId: 'non-existent-game-id',
-      );
-      expect(deletedCount, 0);
+      test('deleteMatchesByGame() returns 0 for non-existent game', () async {
+        final deletedCount = await database.matchDao.deleteMatchesByGame(
+          gameId: 'non-existent-game-id',
+        );
+        expect(deletedCount, 0);
+      });
     });
   });
 }

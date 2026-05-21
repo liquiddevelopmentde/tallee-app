@@ -212,7 +212,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
       const TeamTableCompanion(score: Value(null)),
     );
-    await db.scoreEntryDao.deleteAllScoresForMatch(matchId: matchId);
+    await _deleteAllScoresForMembersOfTeam(teamId: teamId, matchId: matchId);
 
     final rowsAffected =
         await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
@@ -238,7 +238,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
       const TeamTableCompanion(score: Value(null)),
     );
-    await db.scoreEntryDao.deleteAllScoresForMatch(matchId: matchId);
+    await _deleteAllScoresForMembersOfTeam(teamId: teamId, matchId: matchId);
     return true;
   }
 
@@ -300,16 +300,17 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required List<Team> winners,
     required String matchId,
   }) async {
-    List<bool?> success = List.generate(winners.length, (index) => null);
-
-    for (int i = 0; i < winners.length; i++) {
-      success[i] = await updateTeamScore(
-        teamId: winners[i].id,
-        matchId: matchId,
-        score: 1,
-      );
+    // Reset all team scores .
+    await removeAllTeamScores(matchId: matchId);
+    // Reset all score entries
+    for (final team in winners) {
+      await _deleteAllScoresForMembersOfTeam(teamId: team.id, matchId: matchId);
     }
-    return success.every((result) => result == true);
+
+    for (final team in winners) {
+      await updateTeamScore(teamId: team.id, matchId: matchId, score: 1);
+    }
+    return true;
   }
 
   /// Removes the winner status from all Teams with the given [matchId] by setting its score to null.
@@ -348,5 +349,25 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
       );
     }
     return success.every((result) => result == true);
+  }
+
+  /// Helper method to delete all scores for members of a team in a specific match.
+  Future<bool> _deleteAllScoresForMembersOfTeam({
+    required String teamId,
+    required String matchId,
+  }) async {
+    final playerMatchQuery = select(db.playerMatchTable)
+      ..where((pm) => pm.teamId.equals(teamId) & pm.matchId.equals(matchId));
+    final playerMatches = await playerMatchQuery.get();
+
+    if (playerMatches.isEmpty) return false;
+
+    for (final pm in playerMatches) {
+      await db.scoreEntryDao.deleteAllScoresForPlayerInMatch(
+        playerId: pm.playerId,
+        matchId: matchId,
+      );
+    }
+    return true;
   }
 }

@@ -16,12 +16,12 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   /* Create */
 
   /// Adds a score entry to the database.
-  Future<void> addScore({
+  Future<bool> addScore({
     required String playerId,
     required String matchId,
     required ScoreEntry entry,
   }) async {
-    await into(scoreEntryTable).insert(
+    final rowsAffected = await into(scoreEntryTable).insert(
       ScoreEntryTableCompanion.insert(
         playerId: playerId,
         matchId: matchId,
@@ -31,6 +31,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       ),
       mode: InsertMode.insertOrReplace,
     );
+
+    return rowsAffected > 0;
   }
 
   Future<void> addScoresAsList({
