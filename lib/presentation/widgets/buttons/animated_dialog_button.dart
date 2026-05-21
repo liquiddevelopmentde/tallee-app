@@ -38,12 +38,12 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
   Widget build(BuildContext context) {
     final textStyling = _getTextStyling();
     final buttonDecoration = _getButtonDecoration();
-    bool _isDisabled = widget.onPressed == null;
+    bool isDisabled = widget.onPressed == null;
 
     return IgnorePointer(
-      ignoring: _isDisabled,
+      ignoring: isDisabled,
       child: Opacity(
-        opacity: _isDisabled ? 0.5 : 1.0,
+        opacity: isDisabled ? 0.5 : 1.0,
         child: GestureDetector(
           onTapDown: (_) => setState(() => _isPressed = true),
           onTapUp: (_) => setState(() => _isPressed = false),

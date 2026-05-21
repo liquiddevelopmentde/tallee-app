@@ -54,7 +54,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   /// Full list of groups this player belongs to
   List<Group> playerGroups = List.filled(
     4,
-    Group(name: "Skeleton group", members: []),
+    Group(name: 'Skeleton group', members: []),
   );
 
   /// Full list of matches this player played in
@@ -178,7 +178,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
                 const SizedBox(height: 20),
                 InfoTile(
-                  title: "${loc.matches_part_of} (${totalMatches})",
+                  title: '${loc.matches_part_of} ($totalMatches)',
                   icon: Icons.sports_esports,
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: AppSkeleton(
@@ -201,7 +201,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
                 const SizedBox(height: 15),
                 InfoTile(
-                  title: "${loc.groups_part_of} (${totalGroups})",
+                  title: '${loc.groups_part_of} ($totalGroups)',
                   icon: Icons.people,
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: AppSkeleton(
