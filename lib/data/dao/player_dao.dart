@@ -17,7 +17,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// the new one.
   Future<bool> addPlayer({required Player player}) async {
     if (!await playerExists(playerId: player.id)) {
-      final int nameCount = await processNameCount(name: player.name);
+      final int nameCount = await _processNameCount(name: player.name);
 
       await into(playerTable).insert(
         PlayerTableCompanion.insert(
@@ -64,7 +64,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
       final playersWithName = entry.value;
 
       // Get the current nameCount
-      var nameCount = await processNameCount(name: name);
+      var nameCount = await _processNameCount(name: name);
 
       // One player with the same name
       if (playersWithName.length == 1) {
@@ -172,7 +172,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     final previousNameCount = await getNameCount(name: previousPlayerName);
 
     // Update name count for the new name
-    final newNameCount = await processNameCount(name: name);
+    final newNameCount = await _processNameCount(name: name);
 
     // Update name and nameCount
     final rowsAffected =
@@ -265,12 +265,11 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return null;
   }
 
-  @visibleForTesting
   /// Processes the name count for a new player with the given [name].
   ///- 0 Player: returning 0
   ///- 1 Player: returning 2, and initializes the nameCount for the existing player to 1
   ///- Other: returning the existing count + 1
-  Future<int> processNameCount({required String name}) async {
+  Future<int> _processNameCount({required String name}) async {
     final nameCount = await calculateNameCount(name: name);
     if (nameCount == 2) {
       // If one other player exists with the same name, initialize the nameCount

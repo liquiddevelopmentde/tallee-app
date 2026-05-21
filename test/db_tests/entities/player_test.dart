@@ -372,14 +372,22 @@ void main() {
           final player1 = Player(name: testPlayer1.name, description: '');
           await database.playerDao.addPlayer(player: player1);
 
+          final player2 = Player(name: testPlayer1.name, description: '');
+          await database.playerDao.addPlayer(player: player2);
+
           var players = await database.playerDao.getAllPlayers();
 
-          expect(players.length, 2);
+          expect(players.length, 3);
           players.sort((a, b) => a.nameCount.compareTo(b.nameCount));
 
           for (int i = 0; i < players.length - 1; i++) {
             expect(players[i].nameCount, i + 1);
           }
+
+          // ids are correct in the right order
+          expect(players[0].id, testPlayer1.id);
+          expect(players[1].id, player1.id);
+          expect(players[2].id, player2.id);
         },
       );
 
@@ -404,22 +412,60 @@ void main() {
           for (int i = 0; i < players.length - 1; i++) {
             expect(players[i].nameCount, i + 1);
           }
+
+          // ids are correct in the right order
+          expect(players[0].id, testPlayer1.id);
+          expect(players[1].id, player1.id);
+          expect(players[2].id, player2.id);
+          expect(players[3].id, player3.id);
         },
       );
 
-      test('getNameCount works  correctly', () async {
+      test('getNameCount works correctly', () async {
+        final player1 = Player(name: testPlayer1.name);
         final player2 = Player(name: testPlayer1.name);
-        final player3 = Player(name: testPlayer1.name);
 
-        await database.playerDao.addPlayersAsList(
-          players: [testPlayer1, player2, player3],
+        await database.playerDao.addPlayer(player: testPlayer1);
+
+        var nameCount = await database.playerDao.getNameCount(
+          name: testPlayer1.name,
         );
 
-        final nameCount = await database.playerDao.getNameCount(
+        expect(nameCount, 1);
+
+        await database.playerDao.addPlayersAsList(players: [player1, player2]);
+
+        nameCount = await database.playerDao.getNameCount(
           name: testPlayer1.name,
         );
 
         expect(nameCount, 3);
+      });
+
+      test('calculateNameCount works correctly', () async {
+        final player1 = Player(name: testPlayer1.name);
+        final player2 = Player(name: testPlayer1.name);
+
+        // Case 1: No existing players with the name
+        var nameCount = await database.playerDao.calculateNameCount(
+          name: testPlayer1.name,
+        );
+        expect(nameCount, 0);
+
+        // Case 2: One existing player with the name. Should  return 2 for
+        // the new player
+        await database.playerDao.addPlayer(player: testPlayer1);
+        nameCount = await database.playerDao.calculateNameCount(
+          name: testPlayer1.name,
+        );
+        expect(nameCount, 2);
+
+        // Case 3: Multiple existing players with the name. Should return count + 1
+        await database.playerDao.addPlayersAsList(players: [player1, player2]);
+        nameCount = await database.playerDao.calculateNameCount(
+          name: testPlayer1.name,
+        );
+        expect(nameCount, 4);
       });
 
       test('updateNameCount works correctly', () async {
@@ -441,14 +487,24 @@ void main() {
         final player2 = Player(name: testPlayer1.name, description: '');
         final player3 = Player(name: testPlayer1.name, description: '');
 
-        await database.playerDao.addPlayersAsList(
-          players: [testPlayer1, player2, player3],
-        );
-
-        final player = await database.playerDao.getPlayerWithHighestNameCount(
+        await database.playerDao.addPlayer(player: testPlayer1);
+        var player = await database.playerDao.getPlayerWithHighestNameCount(
           name: testPlayer1.name,
         );
+        expect(player, isNotNull);
+        expect(player!.nameCount, 0);
 
+        await database.playerDao.addPlayer(player: player2);
+        player = await database.playerDao.getPlayerWithHighestNameCount(
+          name: testPlayer1.name,
+        );
+        expect(player, isNotNull);
+        expect(player!.nameCount, 2);
+
+        await database.playerDao.addPlayer(player: player3);
+        player = await database.playerDao.getPlayerWithHighestNameCount(
+          name: testPlayer1.name,
+        );
         expect(player, isNotNull);
         expect(player!.nameCount, 3);
       });
@@ -458,32 +514,6 @@ void main() {
           name: 'non-existing-name',
         );
         expect(player, isNull);
-      });
-
-      test('calculateNameCount works correctly', () async {
-        // Case 1: No existing players with the name
-        var count = await database.playerDao.calculateNameCount(
-          name: testPlayer1.name,
-        );
-        expect(count, 0);
-
-        // Case 2: One existing player with the name. Should update that
-        // player's nameCount to 1 and return 2 for the new player
-        await database.playerDao.addPlayer(player: testPlayer1);
-
-        count = await database.playerDao.calculateNameCount(
-          name: testPlayer1.name,
-        );
-        expect(count, 2);
-
-        // Case 3: Multiple existing players with the name.
-        final player2 = Player(name: testPlayer1.name, nameCount: count);
-        await database.playerDao.addPlayer(player: player2);
-
-        count = await database.playerDao.calculateNameCount(
-          name: testPlayer1.name,
-        );
-        expect(count, 3);
       });
 
       test('getPlayerWithHighestNameCount with non existing player', () async {
