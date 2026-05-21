@@ -70,7 +70,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                     hintText: '${loc.team} ${index + 1}',
                     onDelete: teams.length <= 2
                         ? null
-                        : () => _removeTeam(index),
+                        : () => removeTeam(index),
                     onColorSelection: (color) {
                       setState(() {
                         teams[index] = teams[index].copyWith(color: color);
@@ -121,16 +121,6 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     );
   }
 
-  /// Adds a new team to the list of teams, creates a corresponding controller,
-  /// and redistributes the players among all teams.
-  void addTeam() {
-    setState(() {
-      final newTeam = getNewTeam();
-      teams.add(newTeam);
-      nameController.add(getNewController(newTeam));
-    });
-  }
-
   /// Creates a new team with a default name and color based on the current number
   Team getNewTeam() {
     final loc = AppLocalizations.of(context);
@@ -153,9 +143,19 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     return textController;
   }
 
+  /// Adds a new team to the list of teams, creates a corresponding controller,
+  /// and redistributes the players among all teams.
+  void addTeam() {
+    setState(() {
+      final newTeam = getNewTeam();
+      teams.add(newTeam);
+      nameController.add(getNewController(newTeam));
+    });
+  }
+
   /// Removes the team with the given index. If there are less than 2 teams the
   /// removed team gets replaced with a new one
-  void _removeTeam(int index) {
+  void removeTeam(int index) {
     final loc = AppLocalizations.of(context);
 
     setState(() {
