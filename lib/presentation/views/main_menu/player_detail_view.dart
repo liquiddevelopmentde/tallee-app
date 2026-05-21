@@ -185,18 +185,26 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     enabled: isLoading,
                     fixLayoutBuilder: true,
                     alignment: Alignment.topLeft,
-                    child: Wrap(
-                      alignment: WrapAlignment.start,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      spacing: 12,
-                      runSpacing: 8,
-                      children: playerMatches.map((match) {
-                        return TextIconTile(
-                          text: match.name,
-                          iconEnabled: false,
-                        );
-                      }).toList(),
-                    ),
+                    child: playerMatches.isNotEmpty
+                        ? Wrap(
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            spacing: 12,
+                            runSpacing: 8,
+                            children: playerMatches.map((match) {
+                              return TextIconTile(
+                                text: match.name,
+                                iconEnabled: false,
+                              );
+                            }).toList(),
+                          )
+                        : Text(
+                            loc.no_matches_played_yet,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -208,18 +216,26 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     enabled: isLoading,
                     fixLayoutBuilder: true,
                     alignment: Alignment.topLeft,
-                    child: Wrap(
-                      alignment: WrapAlignment.start,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      spacing: 12,
-                      runSpacing: 8,
-                      children: playerGroups.map((group) {
-                        return TextIconTile(
-                          text: group.name,
-                          iconEnabled: false,
-                        );
-                      }).toList(),
-                    ),
+                    child: playerGroups.isNotEmpty
+                        ? Wrap(
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            spacing: 12,
+                            runSpacing: 8,
+                            children: playerGroups.map((group) {
+                              return TextIconTile(
+                                text: group.name,
+                                iconEnabled: false,
+                              );
+                            }).toList(),
+                          )
+                        : Text(
+                            loc.not_part_of_any_group,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 15),

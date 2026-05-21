@@ -656,6 +656,12 @@ abstract class AppLocalizations {
   /// **'No matches created yet'**
   String get no_matches_created_yet;
 
+  /// No description provided for @no_matches_played_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No games played yet'**
+  String get no_matches_played_yet;
+
   /// No description provided for @no_players_created_yet.
   ///
   /// In en, this message translates to:
@@ -715,6 +721,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not available'**
   String get not_available;
+
+  /// No description provided for @not_part_of_any_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Not part of any group yet'**
+  String get not_part_of_any_group;
 
   /// No description provided for @place.
   ///

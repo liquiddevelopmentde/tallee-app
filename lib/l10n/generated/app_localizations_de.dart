@@ -304,6 +304,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_matches_created_yet => 'Noch keine Spiele erstellt';
 
   @override
+  String get no_matches_played_yet => 'Noch kein Spiel gespielt';
+
+  @override
   String get no_players_created_yet => 'Noch keine Spieler:in erstellt';
 
   @override
@@ -333,6 +336,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get not_available => 'Nicht verfügbar';
+
+  @override
+  String get not_part_of_any_group => 'Noch keiner Gruppe hinzugefügt';
 
   @override
   String get place => 'Platz';
