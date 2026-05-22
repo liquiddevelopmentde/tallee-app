@@ -161,10 +161,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                     return GameTile(
                       title: game.name,
                       description: game.description,
-                      badgeText: translateRulesetToString(
-                        game.ruleset,
-                        context,
-                      ),
+                      subtitle: translateRulesetToString(game.ruleset, context),
                       badgeColor: getColorFromGameColor(game.color),
                       isHighlighted: selectedGameId == game.id,
                       onTap: () async {
