@@ -242,17 +242,17 @@ abstract class AppLocalizations {
   /// **'Create new group'**
   String get create_new_group;
 
-  /// No description provided for @created_on.
-  ///
-  /// In en, this message translates to:
-  /// **'Created on'**
-  String get created_on;
-
   /// No description provided for @create_new_match.
   ///
   /// In en, this message translates to:
   /// **'Create new match'**
   String get create_new_match;
+
+  /// No description provided for @created_on.
+  ///
+  /// In en, this message translates to:
+  /// **'Created on'**
+  String get created_on;
 
   /// No description provided for @data.
   ///
@@ -320,17 +320,17 @@ abstract class AppLocalizations {
   /// **'Delete Match'**
   String get delete_match;
 
-  /// No description provided for @drag_to_set_placement.
-  ///
-  /// In en, this message translates to:
-  /// **'Drag to set placement'**
-  String get drag_to_set_placement;
-
   /// No description provided for @description.
   ///
   /// In en, this message translates to:
   /// **'Description'**
   String get description;
+
+  /// No description provided for @drag_to_set_placement.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to set placement'**
+  String get drag_to_set_placement;
 
   /// No description provided for @edit_game.
   ///
@@ -452,6 +452,12 @@ abstract class AppLocalizations {
   /// **'Groups'**
   String get groups;
 
+  /// No description provided for @highest_score.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest Score'**
+  String get highest_score;
+
   /// No description provided for @home.
   ///
   /// In en, this message translates to:
@@ -512,6 +518,18 @@ abstract class AppLocalizations {
   /// **'Live Edit Mode'**
   String get live_edit_mode;
 
+  /// No description provided for @loser.
+  ///
+  /// In en, this message translates to:
+  /// **'Loser'**
+  String get loser;
+
+  /// No description provided for @lowest_score.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest Score'**
+  String get lowest_score;
+
   /// No description provided for @match_in_progress.
   ///
   /// In en, this message translates to:
@@ -548,6 +566,12 @@ abstract class AppLocalizations {
   /// **'Most Points'**
   String get most_points;
 
+  /// No description provided for @multiple_winners.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple Winners'**
+  String get multiple_winners;
+
   /// No description provided for @no_data_available.
   ///
   /// In en, this message translates to:
@@ -566,17 +590,17 @@ abstract class AppLocalizations {
   /// **'No groups created yet'**
   String get no_groups_created_yet;
 
-  /// No description provided for @no_licenses_found.
-  ///
-  /// In en, this message translates to:
-  /// **'No licenses found'**
-  String get no_licenses_found;
-
   /// No description provided for @no_license_text_available.
   ///
   /// In en, this message translates to:
   /// **'No license text available'**
   String get no_license_text_available;
+
+  /// No description provided for @no_licenses_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No licenses found'**
+  String get no_licenses_found;
 
   /// No description provided for @no_matches_created_yet.
   ///
@@ -644,17 +668,17 @@ abstract class AppLocalizations {
   /// **'Not available'**
   String get not_available;
 
-  /// No description provided for @placement.
-  ///
-  /// In en, this message translates to:
-  /// **'Placement'**
-  String get placement;
-
   /// No description provided for @place.
   ///
   /// In en, this message translates to:
   /// **'place'**
   String get place;
+
+  /// No description provided for @placement.
+  ///
+  /// In en, this message translates to:
+  /// **'Placement'**
+  String get placement;
 
   /// No description provided for @played_matches.
   ///
@@ -764,6 +788,12 @@ abstract class AppLocalizations {
   /// **'Search for players'**
   String get search_for_players;
 
+  /// No description provided for @select_loser.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Loser'**
+  String get select_loser;
+
   /// No description provided for @select_winner.
   ///
   /// In en, this message translates to:
@@ -775,12 +805,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Winners'**
   String get select_winners;
-
-  /// No description provided for @select_loser.
-  ///
-  /// In en, this message translates to:
-  /// **'Select Loser'**
-  String get select_loser;
 
   /// No description provided for @selected_players.
   ///
@@ -805,30 +829,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Single Winner'**
   String get single_winner;
-
-  /// No description provided for @highest_score.
-  ///
-  /// In en, this message translates to:
-  /// **'Highest Score'**
-  String get highest_score;
-
-  /// No description provided for @loser.
-  ///
-  /// In en, this message translates to:
-  /// **'Loser'**
-  String get loser;
-
-  /// No description provided for @lowest_score.
-  ///
-  /// In en, this message translates to:
-  /// **'Lowest Score'**
-  String get lowest_score;
-
-  /// No description provided for @multiple_winners.
-  ///
-  /// In en, this message translates to:
-  /// **'Multiple Winners'**
-  String get multiple_winners;
 
   /// No description provided for @statistics.
   ///

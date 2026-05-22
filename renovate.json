@@ -1,0 +1,32 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "onboarding": false,
+  "requireConfig": "optional",
+  "baseBranches": ["development"],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "enabledManagers": ["pub"],
+  "pub": {
+    "enabled": true,
+    "fileMatch": ["(^|/)pubspec\\.yaml$"]
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["pub"],
+      "rangeStrategy": "bump"
+    },
+    {
+      "matchManagers": ["pub"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "dart dependencies (non-major)",
+      "groupSlug": "dart-non-major"
+    },
+    {
+      "matchManagers": ["pub"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "dart dependencies (major)",
+      "groupSlug": "dart-major"
+    }
+  ]
+}
