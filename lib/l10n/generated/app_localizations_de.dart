@@ -241,13 +241,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get live_edit_mode => 'Live-Bearbeitungsmodus';
 
   @override
-  String get manage_members => 'Mitglieder bearbeiten';
-
-  @override
   String get loser => 'Verlierer:in';
 
   @override
   String get lowest_score => 'Niedrigste Punkte';
+
+  @override
+  String get manage_members => 'Mitglieder bearbeiten';
 
   @override
   String get match_in_progress => 'Spiel läuft...';

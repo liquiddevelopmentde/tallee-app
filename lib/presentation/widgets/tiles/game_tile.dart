@@ -67,13 +67,14 @@ class GameTile extends StatelessWidget {
         }
       },
       child: AnimatedContainer(
-        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
         decoration: !isHighlighted
             ? CustomTheme.standardBoxDecoration
             : CustomTheme.highlightedBoxDecoration.copyWith(
                 border: Border.all(
                   color: gameColor.withValues(alpha: 0.9),
                   width: 2,
+                  strokeAlign: BorderSide.strokeAlignCenter,
                 ),
               ),
         duration: const Duration(milliseconds: 200),
