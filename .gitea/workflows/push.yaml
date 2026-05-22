@@ -286,6 +286,7 @@ jobs:
         run: flutter analyze lib test
 
   build:
+    needs: format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
