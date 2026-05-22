@@ -23,11 +23,10 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.41.0
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.41.0-x64
+          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
           flutter pub get
 
       - name: Run tests
@@ -88,11 +87,10 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.41.0
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.41.0-x64
+          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
           flutter pub get
 
       - name: Generate oss_licenses.dart
@@ -128,11 +126,10 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.41.0
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.41.0-x64
+          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
           flutter pub get
 
       - name: Generate localizations
@@ -184,11 +181,10 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.41.0
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.41.0-x64
+          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
           flutter pub get
 
       - name: Sort .arb-Files
@@ -246,11 +242,10 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.41.0
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.41.0-x64
+          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
           flutter pub get
 
       - name: Check code format
@@ -311,11 +306,10 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.41.0
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.41.0-x64
+          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
           flutter pub get
 
       - name: Build APK
