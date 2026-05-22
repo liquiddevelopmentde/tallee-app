@@ -34,6 +34,23 @@ body:
         - Modul X für bessere Leistung refactored
         - Dependencies aktualisiert
 
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: PR-Checkliste
+      description: Stelle sicher, dass alle Punkte erfüllt sind, bevor du den Pull Request zum Review freigibst.
+      options:
+        - label: Ich habe für Navigationen den AdaptiveNavigator` verwendet
+          required: false
+        - label: Ich habe alle Strings lokalisiert (de/en)
+          required: false
+        - label: Ich habe die Testdaten aktualisiert oder erweitert
+          required: false
+        - label: Ich habe das JSON-Schema angepasst
+          required: false
+        - label: Ich habe Tests für neue Datenbank/DAO-Funktionen hinzugefügt
+          required: false
+
   - type: textarea
     id: additional_notes
     attributes:

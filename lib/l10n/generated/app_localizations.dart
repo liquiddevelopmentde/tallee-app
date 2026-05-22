@@ -530,6 +530,12 @@ abstract class AppLocalizations {
   /// **'Live Edit Mode'**
   String get live_edit_mode;
 
+  /// No description provided for @manage_members.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Members'**
+  String get manage_members;
+
   /// No description provided for @loser.
   ///
   /// In en, this message translates to:
@@ -541,12 +547,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Lowest Score'**
   String get lowest_score;
-
-  /// No description provided for @manage_members.
-  ///
-  /// In en, this message translates to:
-  /// **'Manage Members'**
-  String get manage_members;
 
   /// No description provided for @match_in_progress.
   ///
