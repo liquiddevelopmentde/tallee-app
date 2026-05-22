@@ -59,9 +59,9 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          Expanded(
+          Positioned.fill(
             child: ListView.builder(
-              padding: const EdgeInsets.only(top: 12, bottom: 12),
+              padding: const EdgeInsets.only(top: 12, bottom: 96),
               itemCount: teams.length,
               itemBuilder: (context, index) {
                 return TeamCreationTile(

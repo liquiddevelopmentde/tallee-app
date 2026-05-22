@@ -55,9 +55,9 @@ class _ManageMembersViewState extends State<ManageMembersView> {
       body: Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          Expanded(
+          Positioned.fill(
             child: ReorderableListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.fromLTRB(0, 12, 0, 96),
               buildDefaultDragHandles: false,
               itemCount: allItemsCount,
               onReorder: onReorder,
@@ -282,7 +282,6 @@ class _ManageMembersViewState extends State<ManageMembersView> {
 
   void submitMatch() async {
     final match = widget.match;
-    print('teams: ${match.teams}');
     await db.matchDao.addMatch(match: match);
     if (mounted) {
       Navigator.pushAndRemoveUntil(
