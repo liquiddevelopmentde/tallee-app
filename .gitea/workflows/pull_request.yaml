@@ -23,7 +23,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
+          git config --global --add safe.directory '*'
           flutter pub get
 
       - name: Analyze Formatting
@@ -48,7 +48,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
+          git config --global --add safe.directory '*'
           flutter pub get
 
       - name: Run tests
@@ -73,7 +73,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
+          git config --global --add safe.directory '*'
           flutter pub get
 
       - name: Check for untranslated messages

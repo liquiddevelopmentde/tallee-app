@@ -26,7 +26,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
+          git config --global --add safe.directory '*'
           flutter pub get
 
       - name: Run tests
@@ -90,7 +90,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
+          git config --global --add safe.directory '*'
           flutter pub get
 
       - name: Generate oss_licenses.dart
@@ -129,7 +129,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
+          git config --global --add safe.directory '*'
           flutter pub get
 
       - name: Generate localizations
@@ -184,7 +184,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
+          git config --global --add safe.directory '*'
           flutter pub get
 
       - name: Sort .arb-Files
@@ -245,7 +245,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
+          git config --global --add safe.directory '*'
           flutter pub get
 
       - name: Check code format
@@ -309,7 +309,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-x64
+          git config --global --add safe.directory '*'
           flutter pub get
 
       - name: Build APK
