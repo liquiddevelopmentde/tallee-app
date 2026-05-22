@@ -715,7 +715,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                   },
                 );
               },
-              onReorder: (int oldIndex, int newIndex) {
+              onReorderItem: (int oldIndex, int newIndex) {
                 setState(() {
                   if (newIndex > oldIndex) {
                     newIndex -= 1;
@@ -767,7 +767,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                   },
                 );
               },
-              onReorder: (int oldIndex, int newIndex) {
+              onReorderItem: (int oldIndex, int newIndex) {
                 setState(() {
                   if (newIndex > oldIndex) {
                     newIndex -= 1;

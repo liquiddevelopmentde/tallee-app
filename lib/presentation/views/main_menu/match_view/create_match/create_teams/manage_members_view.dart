@@ -60,7 +60,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               padding: const EdgeInsets.fromLTRB(0, 12, 0, 96),
               buildDefaultDragHandles: false,
               itemCount: allItemsCount,
-              onReorder: onReorder,
+              onReorderItem: onReorderItem,
               proxyDecorator: (child, index, animation) =>
                   Material(type: MaterialType.transparency, child: child),
               itemBuilder: (context, index) {
@@ -188,7 +188,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
   }
 
   /// Handles moving a member from one team to another
-  void onReorder(int oldIndex, int newIndex) {
+  void onReorderItem(int oldIndex, int newIndex) {
     final sourceTeamIndex = teamIndexForFlat(oldIndex);
     final sourceMemberIndex = memberIndexForFlat(oldIndex, sourceTeamIndex);
 
