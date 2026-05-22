@@ -74,7 +74,8 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
       (row) => db.playerDao.getPlayerById(playerId: row.playerId),
     );
     final players = await Future.wait(futures);
-    return players;
+    return players
+      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
   }
 
   /// Retrieves a list of [Player]s associated with a specific team in a match.

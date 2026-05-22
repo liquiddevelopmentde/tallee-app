@@ -173,7 +173,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     final players = await Future.wait(
       playerIds.map((id) => db.playerDao.getPlayerById(playerId: id)),
     );
-    return players;
+    return players
+      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
   }
 
   /* Update */

@@ -208,7 +208,6 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   void initializeAsTeamMatch() {
     allTeams = [...(widget.match.teams ?? [])];
-    allTeams.sort((a, b) => a.name.compareTo(b.name));
 
     controller = List.generate(
       allTeams.length,
@@ -508,7 +507,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                     ),
                   ),
                 ),
-              if (team.members.length > 4)
+              if (team.members.length > showingPlayerAmount)
                 Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 4,
