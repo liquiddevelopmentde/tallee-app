@@ -159,49 +159,63 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /* Update */
 
   /// Updates the name of the player with the given [playerId] to [name].
+  ///
+  /// Keeps the `nameCount` values of the affected name groups consistent:
+  /// - The renamed player gets a fresh `nameCount` for the new name group.
+  /// - All players in the previous name group whose `nameCount` was greater
+  ///   than the removed one get decremented by 1, so the numbering stays
+  ///   contiguous (1..N) in `createdAt` order.
+  /// - If only one player remains in the previous name group, their
+  ///   `nameCount` is reset to 0.
   Future<bool> updatePlayerName({
     required String playerId,
     required String name,
   }) async {
-    // Get previous name and name count for the player before updating
-    final previousPlayerName =
-        await (select(playerTable)..where((p) => p.id.equals(playerId)))
-            .map((row) => row.name)
-            .getSingleOrNull() ??
-        '';
+    return transaction(() async {
+      final previousPlayer = await (select(
+        playerTable,
+      )..where((p) => p.id.equals(playerId))).getSingleOrNull();
+      if (previousPlayer == null) return false;
 
-    // Update name count for the new name
-    final newNameCount = await _processNameCount(name: name);
+      final previousName = previousPlayer.name;
+      final previousCount = previousPlayer.nameCount;
 
-    // Update name and nameCount
-    final rowsAffected =
-        await (update(playerTable)..where((p) => p.id.equals(playerId))).write(
-          PlayerTableCompanion(
-            name: Value(name),
-            nameCount: Value(newNameCount),
-          ),
-        );
+      // Determine the nameCount for the renamed player in the new group.
+      final newNameCount = await _processNameCount(name: name);
 
-    // Updating name count for the previous name
-    final previousNameCount = await getNameCount(name: previousPlayerName);
-    if (previousNameCount > 0) {
-      // At least one more player with the previous name
+      final rowsAffected =
+          await (update(
+            playerTable,
+          )..where((p) => p.id.equals(playerId))).write(
+            PlayerTableCompanion(
+              name: Value(name),
+              nameCount: Value(newNameCount),
+            ),
+          );
 
-      // Get the player with the highest count
-      final player = await getPlayerWithHighestNameCount(
-        name: previousPlayerName,
-      );
+      // Consolidate the previous name group.
+      final remainingCount = await getNameCount(name: previousName);
 
-      if (previousNameCount > 1) {
-        // Multiple players
-        final nameCount = await getNameCount(name: previousPlayerName);
-        await updateNameCount(playerId: player!.id, nameCount: nameCount);
-      } else {
-        // Only one player
-        await updateNameCount(playerId: player!.id, nameCount: 0);
+      if (remainingCount == 1) {
+        // Only one player left
+        await (update(playerTable)..where((p) => p.name.equals(previousName)))
+            .write(const PlayerTableCompanion(nameCount: Value(0)));
+      } else if (remainingCount > 1 && previousCount > 0) {
+        // Shift every player above the gap down by one to keep numbering in order.
+        await (update(playerTable)..where(
+              (p) =>
+                  p.name.equals(previousName) &
+                  p.nameCount.isBiggerThanValue(previousCount),
+            ))
+            .write(
+              PlayerTableCompanion.custom(
+                nameCount: playerTable.nameCount - const Constant(1),
+              ),
+            );
       }
-    }
-    return rowsAffected > 0;
+
+      return rowsAffected > 0;
+    });
   }
 
   /// Updates the description of the player with the given [playerId] to
