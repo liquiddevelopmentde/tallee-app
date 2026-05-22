@@ -201,13 +201,13 @@ class _ManageMembersViewState extends State<ManageMembersView> {
     if (newIndex > oldIndex) targetIndex -= 1;
     targetIndex = targetIndex.clamp(0, allItemsCount - 1);
 
-    // Resolve target location based on the item currently at targetIndex
-    // before the move.
+    // Resolve target location based on the item currently
+    // at targetIndex before the move.
     int destTeamIndex;
     int insertPositionInTeam;
 
     if (targetIndex >= allItemsCount - 1 && newIndex >= allItemsCount) {
-      // Dropped at the very end, append to the last team.
+      // dropped at the very end, append to the last team.
       destTeamIndex = teams.length - 1;
       insertPositionInTeam = teams[destTeamIndex].members.length;
     } else {
@@ -215,14 +215,21 @@ class _ManageMembersViewState extends State<ManageMembersView> {
       final anchorMemberIndex = memberIndexForFlat(targetIndex, destTeamIndex);
 
       if (anchorMemberIndex == -1) {
-        // Dropped right before a header, append to the previous team.
-        destTeamIndex = destTeamIndex - 1;
-        if (destTeamIndex < 0) {
-          // Dropped above the very first header, stay in team 0 at top.
-          destTeamIndex = 0;
+        // dropped on a header, direction decides which team the player gets added
+        // if moving down, insert as first member of that team.
+        // if moving UP, append to the previous team.
+        final isMovingDown = newIndex > oldIndex;
+        if (isMovingDown) {
           insertPositionInTeam = 0;
         } else {
-          insertPositionInTeam = teams[destTeamIndex].members.length;
+          final previousTeamIndex = destTeamIndex - 1;
+          if (previousTeamIndex < 0) {
+            // above the very first header, stay at top of team 0.
+            insertPositionInTeam = 0;
+          } else {
+            destTeamIndex = previousTeamIndex;
+            insertPositionInTeam = teams[destTeamIndex].members.length;
+          }
         }
       } else {
         insertPositionInTeam = anchorMemberIndex;
