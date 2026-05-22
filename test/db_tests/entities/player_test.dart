@@ -233,7 +233,7 @@ void main() {
         expect(allPlayers, isEmpty);
       });
 
-      test('updatePlayerName() updates the nameCount correctly', () async {
+      test('updatePlayerName() sets correct nameCount with 2 player', () async {
         await database.playerDao.addPlayer(player: testPlayer1);
         await database.playerDao.addPlayer(player: testPlayer2);
 
@@ -267,6 +267,59 @@ void main() {
           playerId: testPlayer2.id,
         );
         expect(player.nameCount, 0);
+      });
+
+      test('updatePlayerName() sets correct nameCount with 3 player', () async {
+        await database.playerDao.addPlayersAsList(
+          players: [testPlayer1, testPlayer2, testPlayer3],
+        );
+
+        // Changing both names to player 1's name
+        final newName = testPlayer1.name;
+        await database.playerDao.updatePlayerName(
+          playerId: testPlayer2.id,
+          name: newName,
+        );
+        await database.playerDao.updatePlayerName(
+          playerId: testPlayer3.id,
+          name: newName,
+        );
+
+        var player = await database.playerDao.getPlayerById(
+          playerId: testPlayer1.id,
+        );
+        expect(player.nameCount, 1);
+
+        player = await database.playerDao.getPlayerById(
+          playerId: testPlayer2.id,
+        );
+        expect(player.nameCount, 2);
+
+        player = await database.playerDao.getPlayerById(
+          playerId: testPlayer3.id,
+        );
+        expect(player.nameCount, 3);
+
+        // Changing the middle players name
+        await database.playerDao.updatePlayerName(
+          playerId: testPlayer2.id,
+          name: 'different name',
+        );
+
+        player = await database.playerDao.getPlayerById(
+          playerId: testPlayer1.id,
+        );
+        expect(player.nameCount, 1);
+
+        player = await database.playerDao.getPlayerById(
+          playerId: testPlayer2.id,
+        );
+        expect(player.nameCount, 0);
+
+        player = await database.playerDao.getPlayerById(
+          playerId: testPlayer3.id,
+        );
+        expect(player.nameCount, 2);
       });
 
       test('updatePlayerDescription() works correctly', () async {

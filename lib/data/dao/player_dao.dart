@@ -195,7 +195,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
       if (previousNameCount > 1) {
         // Multiple players
         final nameCount = await getNameCount(name: previousPlayerName);
-        await updateNameCount(playerId: player!.id, nameCount: nameCount - 1);
+        await updateNameCount(playerId: player!.id, nameCount: nameCount);
       } else {
         // Only one player
         await updateNameCount(playerId: player!.id, nameCount: 0);
