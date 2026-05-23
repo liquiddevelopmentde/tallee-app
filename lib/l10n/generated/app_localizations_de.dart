@@ -66,6 +66,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get color_yellow => 'Gelb';
 
   @override
+  String get confirm => 'Bestätigen';
+
+  @override
   String could_not_add_player(Object playerName) {
     return 'Spieler:in $playerName konnte nicht hinzugefügt werden';
   }
@@ -132,6 +135,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_match => 'Spiel löschen';
 
   @override
+  String get delete_player => 'Spieler:in löschen';
+
+  @override
   String get description => 'Beschreibung';
 
   @override
@@ -145,6 +151,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get edit_match => 'Gruppe bearbeiten';
+
+  @override
+  String get edit_name => 'Name ändern';
+
+  @override
+  String get edit_player => 'Spieler bearbeiten';
 
   @override
   String get enter_points => 'Punkte eingeben';
@@ -202,6 +214,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get groups => 'Gruppen';
 
   @override
+  String get groups_part_of => 'Gruppen Teil von';
+
+  @override
   String get highest_score => 'Höchste Punkte';
 
   @override
@@ -253,6 +268,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get matches => 'Spiele';
 
   @override
+  String get matches_part_of => 'Spiele Teil von';
+
+  @override
+  String get matches_played => 'Spiele gespielt';
+
+  @override
+  String get matches_won => 'Spiele gewonnen';
+
+  @override
   String get members => 'Mitglieder';
 
   @override
@@ -278,6 +302,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_matches_created_yet => 'Noch keine Spiele erstellt';
+
+  @override
+  String get no_matches_played_yet => 'Noch kein Spiel gespielt';
 
   @override
   String get no_players_created_yet => 'Noch keine Spieler:in erstellt';
@@ -311,6 +338,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get not_available => 'Nicht verfügbar';
 
   @override
+  String get not_part_of_any_group => 'Noch keiner Gruppe hinzugefügt';
+
+  @override
   String get place => 'Platz';
 
   @override
@@ -321,6 +351,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get player_name => 'Spieler:innenname';
+
+  @override
+  String get player_profile => 'Spieler:in-Profil';
 
   @override
   String get players => 'Spieler:innen';
@@ -386,6 +419,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get selected_players => 'Ausgewählte Spieler:innen';
+
+  @override
+  String get set_name => 'Name setzen';
 
   @override
   String get settings => 'Einstellungen';

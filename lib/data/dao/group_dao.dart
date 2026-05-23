@@ -185,6 +185,38 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     return count ?? 0;
   }
 
+  /// Retrieves all groups a specific player belongs to.
+  /// Returns an empty list if the player is not part of any group.
+  Future<List<Group>> getGroupsByPlayer({required String playerId}) async {
+    final playerGroups = await (select(
+      playerGroupTable,
+    )..where((pg) => pg.playerId.equals(playerId))).get();
+
+    if (playerGroups.isEmpty) return [];
+
+    final groupIds = playerGroups.map((pg) => pg.groupId).toSet().toList();
+    final rows =
+        await (select(groupTable)
+              ..where((g) => g.id.isIn(groupIds))
+              ..orderBy([(g) => OrderingTerm.desc(g.createdAt)]))
+            .get();
+
+    return Future.wait(
+      rows.map((groupData) async {
+        final members = await db.playerGroupDao.getPlayersOfGroup(
+          groupId: groupData.id,
+        );
+        return Group(
+          id: groupData.id,
+          name: groupData.name,
+          description: groupData.description,
+          members: members,
+          createdAt: groupData.createdAt,
+        );
+      }),
+    );
+  }
+
   /// Checks if a group with the given [groupId] exists in the database.
   /// Returns `true` if the group exists, `false` otherwise.
   Future<bool> groupExists({required String groupId}) async {

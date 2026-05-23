@@ -352,6 +352,53 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     return count ?? 0;
   }
 
+  Future<List<Match>> getMatchesByPlayer({required String playerId}) async {
+    final playerMatches = await (select(
+      playerMatchTable,
+    )..where((pm) => pm.playerId.equals(playerId))).get();
+
+    if (playerMatches.isEmpty) return [];
+
+    final matchIds = playerMatches.map((pm) => pm.matchId).toSet().toList();
+    final rows =
+        await (select(matchTable)
+              ..where((m) => m.id.isIn(matchIds))
+              ..orderBy([(m) => OrderingTerm.desc(m.createdAt)]))
+            .get();
+
+    return Future.wait(
+      rows.map((row) async {
+        final game = await db.gameDao.getGameById(gameId: row.gameId);
+
+        Group? group;
+        if (row.groupId != null) {
+          group = await db.groupDao.getGroupById(groupId: row.groupId!);
+        }
+
+        final players = await db.playerMatchDao.getPlayersOfMatch(
+          matchId: row.id,
+        );
+        final scores = await db.scoreEntryDao.getAllMatchScores(
+          matchId: row.id,
+        );
+        final teams = await _getMatchTeams(matchId: row.id);
+
+        return Match(
+          id: row.id,
+          name: row.name,
+          game: game,
+          group: group,
+          players: players,
+          teams: teams.isEmpty ? null : teams,
+          notes: row.notes,
+          createdAt: row.createdAt,
+          endedAt: row.endedAt,
+          scores: scores,
+        );
+      }),
+    );
+  }
+
   /// Retrieves all matches associated with the given [groupId].
   /// Queries the database directly, filtering by [groupId].
   Future<List<Match>> getMatchesByGroup({required String groupId}) async {

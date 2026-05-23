@@ -66,6 +66,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get color_yellow => 'Yellow';
 
   @override
+  String get confirm => 'Confirm';
+
+  @override
   String could_not_add_player(Object playerName) {
     return 'Could not add player';
   }
@@ -132,6 +135,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_match => 'Delete Match';
 
   @override
+  String get delete_player => 'Delete player?';
+
+  @override
   String get description => 'Description';
 
   @override
@@ -145,6 +151,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get edit_match => 'Edit Match';
+
+  @override
+  String get edit_name => 'Edit name';
+
+  @override
+  String get edit_player => 'Edit player';
 
   @override
   String get enter_points => 'Enter points';
@@ -202,6 +214,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groups => 'Groups';
 
   @override
+  String get groups_part_of => 'Groups part of';
+
+  @override
   String get highest_score => 'Highest Score';
 
   @override
@@ -253,6 +268,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matches => 'Matches';
 
   @override
+  String get matches_part_of => 'Matches part of';
+
+  @override
+  String get matches_played => 'Matches played';
+
+  @override
+  String get matches_won => 'Matches won';
+
+  @override
   String get members => 'Members';
 
   @override
@@ -278,6 +302,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_matches_created_yet => 'No matches created yet';
+
+  @override
+  String get no_matches_played_yet => 'No games played yet';
 
   @override
   String get no_players_created_yet => 'No players created yet';
@@ -311,6 +338,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get not_available => 'Not available';
 
   @override
+  String get not_part_of_any_group => 'Not part of any group yet';
+
+  @override
   String get place => 'place';
 
   @override
@@ -321,6 +351,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get player_name => 'Player name';
+
+  @override
+  String get player_profile => 'Player Profile';
 
   @override
   String get players => 'Players';
@@ -386,6 +419,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selected_players => 'Selected players';
+
+  @override
+  String get set_name => 'Set name';
 
   @override
   String get settings => 'Settings';
