@@ -117,7 +117,6 @@ class _CreateGameViewState extends State<CreateGameView> {
 
     return ScaffoldMessenger(
       child: Scaffold(
-        backgroundColor: CustomTheme.backgroundColor,
         appBar: AppBar(
           title: Text(isEditing ? loc.edit_game : loc.create_game),
           actions: [
