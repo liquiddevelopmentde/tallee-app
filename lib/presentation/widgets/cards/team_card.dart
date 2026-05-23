@@ -92,7 +92,6 @@ class TeamCard extends StatelessWidget {
                 return TextIconTile(
                   text: player.name,
                   suffixText: getNameCountText(player),
-                  iconEnabled: false,
                 );
               }).toList(),
             ),

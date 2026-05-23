@@ -4,14 +4,12 @@ import 'package:tallee/core/custom_theme.dart';
 class TextIconTile extends StatelessWidget {
   /// A tile widget that displays text with an optional icon that can be tapped.
   /// - [text]: The text to display in the tile.
-  /// - [iconEnabled]: A boolean to determine if the icon should be displayed.
   /// - [onIconTap]: The callback to be invoked when the icon is tapped.
   /// - [icon]: Optional custom icon. Defaults to [Icons.close].
   const TextIconTile({
     super.key,
     required this.text,
     this.suffixText = '',
-    this.iconEnabled = true,
     this.onIconTap,
     this.icon = Icons.close,
   });
@@ -21,9 +19,6 @@ class TextIconTile extends StatelessWidget {
 
   final String suffixText;
 
-  /// A boolean to determine if the icon should be displayed.
-  final bool iconEnabled;
-
   /// The callback to be invoked when the icon is tapped.
   final VoidCallback? onIconTap;
 
@@ -32,6 +27,8 @@ class TextIconTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final iconEnabled = onIconTap != null;
+
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(

@@ -150,7 +150,6 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                       return TextIconTile(
                         text: member.name,
                         suffixText: getNameCountText(member),
-                        iconEnabled: false,
                       );
                     }).toList(),
                   ),
