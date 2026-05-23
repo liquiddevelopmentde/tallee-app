@@ -89,6 +89,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_new_match => 'Create new match';
 
   @override
+  String get create_statistic => 'Create statistic';
+
+  @override
+  String get create_statistic_classifier_subtitle =>
+      'Select which key metric you want to display';
+
+  @override
+  String get create_statistic_classifier_title => 'Classifier';
+
+  @override
+  String get create_statistic_games_subtitle => 'Select the filtered games';
+
+  @override
+  String get create_statistic_games_title => 'Games';
+
+  @override
+  String get create_statistic_groups_subtitle => 'Select the filtered groups';
+
+  @override
+  String get create_statistic_groups_title => 'Groups';
+
+  @override
+  String get create_statistic_scope_subtitle =>
+      'Select the main filter for your statistic. This will determine which data is used to calculate the selected classifier.';
+
+  @override
+  String get create_statistic_scope_title => 'Scope';
+
+  @override
+  String get create_statistic_timeframe_subtitle =>
+      'Select a timeframe for which the data will be filtered. Only matches that ended within the selected timeframe will be included in the statistic.';
+
+  @override
+  String get create_statistic_timeframe_title => 'Timeframe';
+
+  @override
   String get created_on => 'Created on';
 
   @override
@@ -248,6 +284,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get live_edit_mode => 'Live Edit Mode';
+
+  @override
+  String get loading => 'Loading...';
 
   @override
   String get loser => 'Loser';
@@ -427,6 +466,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
+  String get select_a_classifier => 'Select a classifier';
+
+  @override
+  String get select_a_game => 'Select a game';
+
+  @override
+  String get select_a_group => 'Select a group';
+
+  @override
+  String get select_a_scope => 'Select a scope';
+
+  @override
+  String get select_a_timeframe => 'Select a timeframe';
+
+  @override
   String get single_loser => 'Single Loser';
 
   @override
@@ -437,6 +491,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stats => 'Stats';
+
+  @override
+  String get statistic_scope_all_players => 'All players';
+
+  @override
+  String get statistic_scope_selected_games => 'Selected games';
+
+  @override
+  String get statistic_scope_selected_groups => 'Selected groups';
+
+  @override
+  String get statistic_scope_timeframe => 'Timeframe';
+
+  @override
+  String get statistic_type_average_score => 'Average score';
+
+  @override
+  String get statistic_type_best_score => 'Best score';
+
+  @override
+  String get statistic_type_total_losses => 'Total losses';
+
+  @override
+  String get statistic_type_total_matches => 'Total matches';
+
+  @override
+  String get statistic_type_total_score => 'Total score';
+
+  @override
+  String get statistic_type_total_wins => 'Total wins';
+
+  @override
+  String get statistic_type_winrate => 'Winrate';
+
+  @override
+  String get statistic_type_worst_score => 'Worst score';
 
   @override
   String successfully_added_player(String playerName) {
@@ -456,6 +546,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tie => 'Tie';
+
+  @override
+  String get timeframe_all_time => 'All time';
+
+  @override
+  String get timeframe_last_180_days => 'Last 180 days';
+
+  @override
+  String get timeframe_last_30_days => 'Last 30 days';
+
+  @override
+  String get timeframe_last_7_days => 'Last 7 days';
+
+  @override
+  String get timeframe_last_90_days => 'Last 90 days';
+
+  @override
+  String get timeframe_last_year => 'Last year';
 
   @override
   String get today_at => 'Today at';

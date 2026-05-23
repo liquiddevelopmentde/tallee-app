@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/statistics_view/create_statistic_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/quick_info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -47,85 +50,107 @@ class _StatisticsViewState extends State<StatisticsView> {
     final loc = AppLocalizations.of(context);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        return SingleChildScrollView(
-          child: AppSkeleton(
-            enabled: isLoading,
-            fixLayoutBuilder: true,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: constraints.maxWidth),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        return Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            SingleChildScrollView(
+              child: AppSkeleton(
+                enabled: isLoading,
+                fixLayoutBuilder: true,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      QuickInfoTile(
-                        width: constraints.maxWidth * 0.45,
-                        height: constraints.maxHeight * 0.13,
-                        title: loc.matches,
-                        icon: Icons.groups_rounded,
-                        value: matchCount,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          QuickInfoTile(
+                            width: constraints.maxWidth * 0.45,
+                            height: constraints.maxHeight * 0.13,
+                            title: loc.matches,
+                            icon: Icons.groups_rounded,
+                            value: matchCount,
+                          ),
+                          SizedBox(width: constraints.maxWidth * 0.05),
+                          QuickInfoTile(
+                            width: constraints.maxWidth * 0.45,
+                            height: constraints.maxHeight * 0.13,
+                            title: loc.groups,
+                            icon: Icons.groups_rounded,
+                            value: groupCount,
+                          ),
+                        ],
                       ),
-                      SizedBox(width: constraints.maxWidth * 0.05),
-                      QuickInfoTile(
-                        width: constraints.maxWidth * 0.45,
-                        height: constraints.maxHeight * 0.13,
-                        title: loc.groups,
-                        icon: Icons.groups_rounded,
-                        value: groupCount,
+                      SizedBox(height: constraints.maxHeight * 0.02),
+                      Visibility(
+                        visible:
+                            winCounts.isEmpty &&
+                            matchCounts.isEmpty &&
+                            winRates.isEmpty,
+                        replacement: Column(
+                          children: [
+                            StatisticsTile(
+                              icon: Icons.sports_score,
+                              title: loc.wins,
+                              width: constraints.maxWidth * 0.95,
+                              values: winCounts,
+                              itemCount: 3,
+                              barColor: Colors.green,
+                            ),
+                            SizedBox(height: constraints.maxHeight * 0.02),
+                            StatisticsTile(
+                              icon: Icons.percent,
+                              title: loc.winrate,
+                              width: constraints.maxWidth * 0.95,
+                              values: winRates,
+                              itemCount: 5,
+                              barColor: Colors.orange[700]!,
+                            ),
+                            SizedBox(height: constraints.maxHeight * 0.02),
+                            StatisticsTile(
+                              icon: Icons.casino,
+                              title: loc.amount_of_matches,
+                              width: constraints.maxWidth * 0.95,
+                              values: matchCounts,
+                              itemCount: 10,
+                              barColor: Colors.blue,
+                            ),
+                          ],
+                        ),
+                        child: TopCenteredMessage(
+                          icon: Icons.info,
+                          title: loc.info,
+                          message: AppLocalizations.of(
+                            context,
+                          ).no_statistics_available,
+                        ),
                       ),
+                      SizedBox(height: MediaQuery.paddingOf(context).bottom),
                     ],
                   ),
-                  SizedBox(height: constraints.maxHeight * 0.02),
-                  Visibility(
-                    visible:
-                        winCounts.isEmpty &&
-                        matchCounts.isEmpty &&
-                        winRates.isEmpty,
-                    replacement: Column(
-                      children: [
-                        StatisticsTile(
-                          icon: Icons.sports_score,
-                          title: loc.wins,
-                          width: constraints.maxWidth * 0.95,
-                          values: winCounts,
-                          itemCount: 3,
-                          barColor: Colors.green,
-                        ),
-                        SizedBox(height: constraints.maxHeight * 0.02),
-                        StatisticsTile(
-                          icon: Icons.percent,
-                          title: loc.winrate,
-                          width: constraints.maxWidth * 0.95,
-                          values: winRates,
-                          itemCount: 5,
-                          barColor: Colors.orange[700]!,
-                        ),
-                        SizedBox(height: constraints.maxHeight * 0.02),
-                        StatisticsTile(
-                          icon: Icons.casino,
-                          title: loc.amount_of_matches,
-                          width: constraints.maxWidth * 0.95,
-                          values: matchCounts,
-                          itemCount: 10,
-                          barColor: Colors.blue,
-                        ),
-                      ],
-                    ),
-                    child: TopCenteredMessage(
-                      icon: Icons.info,
-                      title: loc.info,
-                      message: AppLocalizations.of(
-                        context,
-                      ).no_statistics_available,
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.paddingOf(context).bottom),
-                ],
+                ),
               ),
             ),
-          ),
+            Positioned(
+              bottom: MediaQuery.paddingOf(context).bottom + 20,
+              child: MainMenuButton(
+                text: loc.create_statistic,
+                icon: Icons.bar_chart,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    adaptivePageRoute(
+                      builder: (context) => CreateStatisticView(
+                        onStatisticCreated: loadStatisticData,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
     );

@@ -89,6 +89,44 @@ class AppLocalizationsDe extends AppLocalizations {
   String get create_new_match => 'Neues Spiel erstellen';
 
   @override
+  String get create_statistic => 'Statistik erstellen';
+
+  @override
+  String get create_statistic_classifier_subtitle =>
+      'Wähle die anzuzeigende Hauptmetrik aus';
+
+  @override
+  String get create_statistic_classifier_title => 'Klassifikator';
+
+  @override
+  String get create_statistic_games_subtitle =>
+      'Wähle die gefilterten Spielvorlagen';
+
+  @override
+  String get create_statistic_games_title => 'Spielvorlagen';
+
+  @override
+  String get create_statistic_groups_subtitle =>
+      'Wähle die gefilterten Gruppen';
+
+  @override
+  String get create_statistic_groups_title => 'Gruppen';
+
+  @override
+  String get create_statistic_scope_subtitle =>
+      'Wähle den Hauptfilter für deine Statistik. Er bestimmt, welche Daten zur Berechnung des Klassifikators verwendet werden.';
+
+  @override
+  String get create_statistic_scope_title => 'Bereich';
+
+  @override
+  String get create_statistic_timeframe_subtitle =>
+      'Wähle einen Zeitraum, nach dem die Daten gefiltert werden. Nur Spiele, die innerhalb des Zeitraums beendet wurden, fließen in die Statistik ein.';
+
+  @override
+  String get create_statistic_timeframe_title => 'Zeitraum';
+
+  @override
   String get created_on => 'Erstellt am';
 
   @override
@@ -248,6 +286,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get live_edit_mode => 'Live-Bearbeitungsmodus';
+
+  @override
+  String get loading => 'Lädt...';
 
   @override
   String get loser => 'Verlierer:in';
@@ -427,6 +468,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings => 'Einstellungen';
 
   @override
+  String get select_a_classifier => 'Klassifikator auswählen';
+
+  @override
+  String get select_a_game => 'Spielvorlage auswählen';
+
+  @override
+  String get select_a_group => 'Gruppe auswählen';
+
+  @override
+  String get select_a_scope => 'Bereich auswählen';
+
+  @override
+  String get select_a_timeframe => 'Zeitraum auswählen';
+
+  @override
   String get single_loser => 'Ein:e Verlierer:in';
 
   @override
@@ -437,6 +493,42 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get stats => 'Statistiken';
+
+  @override
+  String get statistic_scope_all_players => 'Alle Spieler:innen';
+
+  @override
+  String get statistic_scope_selected_games => 'Ausgewählte Spielvorlagen';
+
+  @override
+  String get statistic_scope_selected_groups => 'Ausgewählte Gruppen';
+
+  @override
+  String get statistic_scope_timeframe => 'Zeitraum';
+
+  @override
+  String get statistic_type_average_score => 'Durchschnittliche Punktzahl';
+
+  @override
+  String get statistic_type_best_score => 'Beste Punktzahl';
+
+  @override
+  String get statistic_type_total_losses => 'Niederlagen insgesamt';
+
+  @override
+  String get statistic_type_total_matches => 'Spiele insgesamt';
+
+  @override
+  String get statistic_type_total_score => 'Punktzahl insgesamt';
+
+  @override
+  String get statistic_type_total_wins => 'Siege insgesamt';
+
+  @override
+  String get statistic_type_winrate => 'Siegquote';
+
+  @override
+  String get statistic_type_worst_score => 'Schlechteste Punktzahl';
 
   @override
   String successfully_added_player(String playerName) {
@@ -457,6 +549,24 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tie => 'Unentschieden';
+
+  @override
+  String get timeframe_all_time => 'Gesamter Zeitraum';
+
+  @override
+  String get timeframe_last_180_days => 'Letzte 180 Tage';
+
+  @override
+  String get timeframe_last_30_days => 'Letzte 30 Tage';
+
+  @override
+  String get timeframe_last_7_days => 'Letzte 7 Tage';
+
+  @override
+  String get timeframe_last_90_days => 'Letzte 90 Tage';
+
+  @override
+  String get timeframe_last_year => 'Letztes Jahr';
 
   @override
   String get today_at => 'Heute um';
