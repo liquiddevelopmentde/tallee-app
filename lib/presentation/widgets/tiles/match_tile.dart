@@ -221,7 +221,9 @@ class _MatchTileState extends State<MatchTile> {
               const SizedBox(height: 12),
             ],
 
-            if (match.teams != null && match.teams!.isNotEmpty) ...[
+            if (match.teams != null &&
+                match.teams!.isNotEmpty &&
+                match.isTeamMatch) ...[
               // Team display
               Text(
                 loc.teams,
@@ -275,9 +277,16 @@ class _MatchTileState extends State<MatchTile> {
                   return TextIconTile(
                     text: player.name,
                     suffixText: getNameCountText(player),
-                    iconEnabled: false,
                   );
                 }).toList(),
+              ),
+            ] else ...[
+              Text(
+                loc.no_players_available,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: CustomTheme.hintColor,
+                ),
               ),
             ],
           ],

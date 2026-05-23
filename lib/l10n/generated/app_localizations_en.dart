@@ -292,6 +292,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_matches_created_yet => 'No matches created yet';
 
   @override
+  String get no_players_available => 'No players available';
+
+  @override
   String get no_players_created_yet => 'No players created yet';
 
   @override
@@ -312,6 +315,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_statistics_available => 'No statistics available';
+
+  @override
+  String get no_teams_available => 'No teams available';
 
   @override
   String get none => 'None';

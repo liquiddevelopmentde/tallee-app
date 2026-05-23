@@ -162,15 +162,24 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                     title: loc.teams,
                     icon: Icons.scoreboard,
                     horizontalAlignment: CrossAxisAlignment.start,
-                    content: Wrap(
-                      alignment: WrapAlignment.start,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      spacing: 12,
-                      runSpacing: 8,
-                      children: (localMatch.teams ?? []).map((team) {
-                        return TeamCard(team: team);
-                      }).toList(),
-                    ),
+                    content:
+                        localMatch.teams != null && localMatch.teams!.isNotEmpty
+                        ? Wrap(
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            spacing: 12,
+                            runSpacing: 8,
+                            children: (localMatch.teams ?? []).map((team) {
+                              return TeamCard(team: team);
+                            }).toList(),
+                          )
+                        : Text(
+                            loc.no_teams_available,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
                   ),
                 ] else ...[
                   // Players
@@ -178,19 +187,26 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                     title: loc.players,
                     icon: Icons.people,
                     horizontalAlignment: CrossAxisAlignment.start,
-                    content: Wrap(
-                      alignment: WrapAlignment.start,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      spacing: 12,
-                      runSpacing: 8,
-                      children: localMatch.players.map((player) {
-                        return TextIconTile(
-                          text: player.name,
-                          suffixText: getNameCountText(player),
-                          iconEnabled: false,
-                        );
-                      }).toList(),
-                    ),
+                    content: localMatch.players.isNotEmpty
+                        ? Wrap(
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            spacing: 12,
+                            runSpacing: 8,
+                            children: localMatch.players.map((player) {
+                              return TextIconTile(
+                                text: player.name,
+                                suffixText: getNameCountText(player),
+                              );
+                            }).toList(),
+                          )
+                        : Text(
+                            loc.no_players_available,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
                   ),
                 ],
                 const SizedBox(height: 15),

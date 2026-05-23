@@ -292,6 +292,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_matches_created_yet => 'Noch keine Spiele erstellt';
 
   @override
+  String get no_players_available => 'Keine Spieler:innen verfügbar';
+
+  @override
   String get no_players_created_yet => 'Noch keine Spieler:in erstellt';
 
   @override
@@ -312,6 +315,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_statistics_available => 'Keine Statistiken verfügbar';
+
+  @override
+  String get no_teams_available => 'Keine Teams verfügbar';
 
   @override
   String get none => 'Kein';
