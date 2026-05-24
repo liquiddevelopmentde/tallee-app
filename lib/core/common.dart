@@ -63,9 +63,9 @@ Color getColorFromGameColor(GameColor color) {
     case GameColor.orange:
       return const Color(0xFFef681f);
     case GameColor.pink:
-      return Colors.pink;
+      return const Color(0xFFE91E63);
     case GameColor.teal:
-      return Colors.teal;
+      return const Color(0xFF00BCD4);
   }
 }
 
