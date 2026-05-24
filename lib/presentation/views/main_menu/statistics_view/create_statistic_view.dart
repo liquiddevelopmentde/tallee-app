@@ -571,8 +571,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       selectedGroups: selectedGroups,
       selectedGames: selectedGames,
     );
-    // final db = Provider.of<AppDatabase>(context, listen: false);
-    // db.statisticDao.addStatistic(newStatistic);
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    db.statisticDao.addStatistic(statistic: newStatistic);
     Navigator.of(context).pop(newStatistic);
   }
 }

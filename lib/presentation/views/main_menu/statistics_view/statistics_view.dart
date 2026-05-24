@@ -5,13 +5,12 @@ import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view/create_statistic_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
-import 'package:tallee/presentation/widgets/tiles/quick_info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 
 class StatisticsView extends StatefulWidget {
   /// A view that displays player statistics
@@ -38,11 +37,20 @@ class _StatisticsViewState extends State<StatisticsView> {
     1,
   ));
   bool isLoading = true;
+  List<Widget> statisticTiles = List.generate(
+    4,
+    (_) => const InfoTile(
+      icon: Icons.sports_score,
+      title: 'Skeleton Statistic',
+      width: double.infinity,
+      content: Text('Skeleton content'),
+    ),
+  );
 
   @override
   void initState() {
     super.initState();
-    loadStatisticData();
+    getStatisticTiles(context);
   }
 
   @override
@@ -51,7 +59,8 @@ class _StatisticsViewState extends State<StatisticsView> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Stack(
-          alignment: AlignmentDirectional.center,
+          alignment: AlignmentDirectional.bottomCenter,
+          fit: StackFit.expand,
           children: [
             SingleChildScrollView(
               child: AppSkeleton(
@@ -62,73 +71,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          QuickInfoTile(
-                            width: constraints.maxWidth * 0.45,
-                            height: constraints.maxHeight * 0.13,
-                            title: loc.matches,
-                            icon: Icons.groups_rounded,
-                            value: matchCount,
-                          ),
-                          SizedBox(width: constraints.maxWidth * 0.05),
-                          QuickInfoTile(
-                            width: constraints.maxWidth * 0.45,
-                            height: constraints.maxHeight * 0.13,
-                            title: loc.groups,
-                            icon: Icons.groups_rounded,
-                            value: groupCount,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: constraints.maxHeight * 0.02),
-                      Visibility(
-                        visible:
-                            winCounts.isEmpty &&
-                            matchCounts.isEmpty &&
-                            winRates.isEmpty,
-                        replacement: Column(
-                          children: [
-                            StatisticsTile(
-                              icon: Icons.sports_score,
-                              title: loc.wins,
-                              width: constraints.maxWidth * 0.95,
-                              values: winCounts,
-                              itemCount: 3,
-                              barColor: Colors.green,
-                            ),
-                            SizedBox(height: constraints.maxHeight * 0.02),
-                            StatisticsTile(
-                              icon: Icons.percent,
-                              title: loc.winrate,
-                              width: constraints.maxWidth * 0.95,
-                              values: winRates,
-                              itemCount: 5,
-                              barColor: Colors.orange[700]!,
-                            ),
-                            SizedBox(height: constraints.maxHeight * 0.02),
-                            StatisticsTile(
-                              icon: Icons.casino,
-                              title: loc.amount_of_matches,
-                              width: constraints.maxWidth * 0.95,
-                              values: matchCounts,
-                              itemCount: 10,
-                              barColor: Colors.blue,
-                            ),
-                          ],
-                        ),
-                        child: TopCenteredMessage(
-                          icon: Icons.info,
-                          title: loc.info,
-                          message: AppLocalizations.of(
-                            context,
-                          ).no_statistics_available,
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.paddingOf(context).bottom),
-                    ],
+                    children: [...statisticTiles],
                   ),
                 ),
               ),
@@ -138,8 +81,8 @@ class _StatisticsViewState extends State<StatisticsView> {
               child: MainMenuButton(
                 text: loc.create_statistic,
                 icon: Icons.bar_chart,
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  Statistic newStatistic = await Navigator.push(
                     context,
                     adaptivePageRoute(
                       builder: (context) => CreateStatisticView(
@@ -147,6 +90,18 @@ class _StatisticsViewState extends State<StatisticsView> {
                       ),
                     ),
                   );
+                  final newTile = InfoTile(
+                    icon: Icons.sports_score,
+                    title: newStatistic.type.name,
+                    width: MediaQuery.sizeOf(context).width * 0.95,
+                    content: Text(
+                      '${newStatistic.id}\n${newStatistic.scopes}\n${newStatistic.type}\n${newStatistic.timeframe}\n${newStatistic.selectedGroups}\n${newStatistic.selectedGames}\n',
+                    ),
+                  );
+
+                  setState(() {
+                    statisticTiles.add(newTile);
+                  });
                 },
               ),
             ),
@@ -194,6 +149,30 @@ class _StatisticsViewState extends State<StatisticsView> {
         isLoading = false;
       });
     });
+  }
+
+  Future<void> getStatisticTiles(BuildContext context) async {
+    isLoading = true;
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final statistics = await db.statisticDao.getAllStatistics();
+
+    setState(() {
+      statisticTiles = [];
+      for (var statistic in statistics) {
+        statisticTiles.add(
+          InfoTile(
+            icon: Icons.sports_score,
+            title: statistic.type.name,
+            width: MediaQuery.sizeOf(context).width * 0.95,
+            content: Text(statistic.toString()),
+          ),
+        );
+        statisticTiles.add(
+          SizedBox(height: MediaQuery.sizeOf(context).height * 0.02),
+        );
+      }
+    });
+    isLoading = false;
   }
 
   /// Calculates the number of wins for each player
