@@ -196,11 +196,10 @@ class StatisticsTile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           // Game
-                          if (statistic.selectedGames != null &&
-                              statistic.selectedGames!.isNotEmpty)
+                          if (hasGroup)
                             Row(
                               spacing: 8,
                               children: [
@@ -220,10 +219,10 @@ class StatisticsTile extends StatelessWidget {
                                 ),
                               ],
                             ),
+                          if (hasGroup && hasGame) const SizedBox(width: 20),
 
                           // Group
-                          if (statistic.selectedGroups != null &&
-                              statistic.selectedGroups!.isNotEmpty)
+                          if (hasGroup)
                             Row(
                               spacing: 8,
                               children: [
@@ -269,4 +268,10 @@ class StatisticsTile extends StatelessWidget {
     }
     return text;
   }
+
+  bool get hasGroup =>
+      statistic.selectedGroups != null && statistic.selectedGroups!.isNotEmpty;
+
+  bool get hasGame =>
+      statistic.selectedGames != null && statistic.selectedGames!.isNotEmpty;
 }
