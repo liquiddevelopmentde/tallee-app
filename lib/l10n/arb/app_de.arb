@@ -21,6 +21,13 @@
   "color_yellow": "Gelb",
   "confirm": "Bestätigen",
   "could_not_add_player": "Spieler:in {playerName} konnte nicht hinzugefügt werden",
+  "@could_not_add_player": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
   "create_game": "Spielvorlage erstellen",
   "create_group": "Gruppe erstellen",
   "create_match": "Spiel erstellen",

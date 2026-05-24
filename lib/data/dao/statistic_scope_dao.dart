@@ -15,8 +15,8 @@ class StatisticScopeDao extends DatabaseAccessor<AppDatabase>
     final query = select(statisticScopeTable)
       ..where((tbl) => tbl.statisticId.equals(statisticId));
 
-    final results = await query.get();
-    return results
+    final result = await query.get();
+    return result
         .map(
           (row) => StatisticScope.values.firstWhere(
             (e) => e.name == row.scope,

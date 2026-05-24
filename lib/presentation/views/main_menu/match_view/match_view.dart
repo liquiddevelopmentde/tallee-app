@@ -79,7 +79,7 @@ class _MatchViewState extends State<MatchView> {
               visible: matches.isNotEmpty,
               replacement: Center(
                 child: TopCenteredMessage(
-                  icon: Icons.report,
+                  icon: Icons.info,
                   title: loc.info,
                   message: loc.no_matches_created_yet,
                 ),

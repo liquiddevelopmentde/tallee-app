@@ -69,7 +69,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get confirm => 'Bestätigen';
 
   @override
-  String could_not_add_player(Object playerName) {
+  String could_not_add_player(String playerName) {
     return 'Spieler:in $playerName konnte nicht hinzugefügt werden';
   }
 
@@ -92,39 +92,33 @@ class AppLocalizationsDe extends AppLocalizations {
   String get create_statistic => 'Statistik erstellen';
 
   @override
-  String get create_statistic_classifier_subtitle =>
-      'Wähle die anzuzeigende Hauptmetrik aus';
+  String get which_key_metric => 'Select which key metric you want to display';
 
   @override
-  String get create_statistic_classifier_title => 'Klassifikator';
+  String get classifier => 'Classifier';
 
   @override
-  String get create_statistic_games_subtitle =>
-      'Wähle die gefilterten Spielvorlagen';
+  String get select_the_filtered_games => 'Select the filtered games';
 
   @override
-  String get create_statistic_games_title => 'Spielvorlagen';
+  String get games => 'Games';
 
   @override
-  String get create_statistic_groups_subtitle =>
-      'Wähle die gefilterten Gruppen';
+  String get select_the_filtered_groups => 'Select the filtered groups';
 
   @override
-  String get create_statistic_groups_title => 'Gruppen';
+  String get select_main_filter =>
+      'Select the main filter for your statistic. This will determine which data is used to calculate the selected classifier.';
 
   @override
-  String get create_statistic_scope_subtitle =>
-      'Wähle den Hauptfilter für deine Statistik. Er bestimmt, welche Daten zur Berechnung des Klassifikators verwendet werden.';
+  String get scope => 'Scope';
 
   @override
-  String get create_statistic_scope_title => 'Bereich';
+  String get select_a_timeframe_for_which_data_will_be_filtered =>
+      'Select a timeframe for which the data will be filtered. Only matches that ended within the selected timeframe will be included in the statistic.';
 
   @override
-  String get create_statistic_timeframe_subtitle =>
-      'Wähle einen Zeitraum, nach dem die Daten gefiltert werden. Nur Spiele, die innerhalb des Zeitraums beendet wurden, fließen in die Statistik ein.';
-
-  @override
-  String get create_statistic_timeframe_title => 'Zeitraum';
+  String get timeframe => 'Timeframe';
 
   @override
   String get created_on => 'Erstellt am';
@@ -165,6 +159,9 @@ class AppLocalizationsDe extends AppLocalizations {
     );
     return 'Wenn du diese Spielvorlage löschst, $_temp0 mit dieser Spielvorlage ebenfalls gelöscht.';
   }
+
+  @override
+  String get filter => 'Filter';
 
   @override
   String get delete_group => 'Gruppe löschen';
@@ -368,6 +365,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_statistics_available => 'Keine Statistiken verfügbar';
+
+  @override
+  String get no_statistics_created_yet => 'No statistics created yet';
 
   @override
   String get none => 'Kein';

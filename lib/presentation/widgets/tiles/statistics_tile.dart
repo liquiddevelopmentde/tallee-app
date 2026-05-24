@@ -8,7 +8,6 @@ import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 
@@ -27,7 +26,9 @@ class StatisticsTile extends StatelessWidget {
     required this.width,
     required this.values,
     required this.barColor,
-    required this.statistic,
+    this.displayCount,
+    this.selectedGroups,
+    this.selectedGames,
   });
 
   /// The icon displayed next to the title.
@@ -45,7 +46,10 @@ class StatisticsTile extends StatelessWidget {
   /// The color of the bars representing the values.
   final Color barColor;
 
-  final Statistic statistic;
+  final int? displayCount;
+
+  final List<Group>? selectedGroups;
+  final List<Game>? selectedGames;
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +74,12 @@ class StatisticsTile extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final maxBarWidth = constraints.maxWidth * 0.8;
-              final displayCount = min(values.length, statistic.displayCount);
-              final displayValues = values.take(displayCount).toList();
+
+              // If displayCount wasnt provided, take all values
+              final valuesShown = displayCount == null
+                  ? values.length
+                  : min(values.length, displayCount!);
+              final displayValues = values.take(valuesShown).toList();
               final maxVal = displayValues.isNotEmpty
                   ? displayValues.fold<num>(
                       0,
@@ -83,7 +91,7 @@ class StatisticsTile extends StatelessWidget {
               return Column(
                 children: [
                   // Bars
-                  ...List.generate(displayCount, (index) {
+                  ...List.generate(valuesShown, (index) {
                     /// Fraction of wins
                     final double fraction = (maxVal > 0)
                         ? (displayValues[index].$2 / maxVal)
@@ -187,12 +195,14 @@ class StatisticsTile extends StatelessWidget {
                   }),
 
                   // Group & Game info
-                  if (statistic.selectedGames != null ||
-                      statistic.selectedGroups != null)
+                  if (hasGame || hasGroup)
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      child: Wrap(
+                        alignment: WrapAlignment.start,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 4,
+                        runSpacing: 4,
                         children: [
                           // Game
                           if (hasGroup)
@@ -205,7 +215,7 @@ class StatisticsTile extends StatelessWidget {
                                   size: 20,
                                 ),
                                 Text(
-                                  getGameText(statistic.selectedGames!),
+                                  getGameText(selectedGames!),
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -227,7 +237,7 @@ class StatisticsTile extends StatelessWidget {
                                   color: CustomTheme.hintColor,
                                 ),
                                 Text(
-                                  getGroupText(statistic.selectedGroups!),
+                                  getGroupText(selectedGroups!),
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -265,9 +275,7 @@ class StatisticsTile extends StatelessWidget {
     return text;
   }
 
-  bool get hasGroup =>
-      statistic.selectedGroups != null && statistic.selectedGroups!.isNotEmpty;
+  bool get hasGroup => selectedGroups != null && selectedGroups!.isNotEmpty;
 
-  bool get hasGame =>
-      statistic.selectedGames != null && statistic.selectedGames!.isNotEmpty;
+  bool get hasGame => selectedGames != null && selectedGames!.isNotEmpty;
 }

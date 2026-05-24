@@ -8,9 +8,11 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view/create_statistic_view.dart';
+import 'package:tallee/presentation/views/main_menu/statistics_view/statistic_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view/statistic_tile_factory.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class StatisticsView extends StatefulWidget {
   /// A view that displays player statistics
@@ -45,18 +47,30 @@ class _StatisticsViewState extends State<StatisticsView> {
           alignment: AlignmentDirectional.bottomCenter,
           fit: StackFit.expand,
           children: [
-            SingleChildScrollView(
-              child: AppSkeleton(
-                enabled: isLoading,
-                fixLayoutBuilder: true,
-                child: Column(
-                  spacing: 12,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ...statisticTiles,
-                    SizedBox(height: MediaQuery.paddingOf(context).bottom + 80),
-                  ],
+            Visibility(
+              visible: statisticTiles.isNotEmpty,
+              replacement: Center(
+                child: TopCenteredMessage(
+                  icon: Icons.info,
+                  title: loc.info,
+                  message: loc.no_statistics_created_yet,
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: AppSkeleton(
+                  enabled: isLoading,
+                  fixLayoutBuilder: true,
+                  child: Column(
+                    spacing: 12,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ...statisticTiles,
+                      SizedBox(
+                        height: MediaQuery.paddingOf(context).bottom + 80,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -75,12 +89,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                     ),
                   );
                   if (!context.mounted) return;
-                  final newTile = buildStatisticTile(
-                    statistic: newStatistic,
-                    matches: _allMatches,
-                    players: _allPlayers,
-                    context: context,
-                  );
+                  final newTile = _buildStatisticTile(context, newStatistic);
 
                   setState(() {
                     statisticTiles.add(newTile);
@@ -126,15 +135,40 @@ class _StatisticsViewState extends State<StatisticsView> {
     setState(() {
       statisticTiles = [
         for (final statistic in statistics) ...[
-          buildStatisticTile(
-            statistic: statistic,
-            matches: _allMatches,
-            players: _allPlayers,
-            context: context,
-          ),
+          _buildStatisticTile(context, statistic),
         ],
       ];
       isLoading = false;
     });
+  }
+
+  Widget _buildStatisticTile(BuildContext context, Statistic statistic) {
+    return GestureDetector(
+      onTap: () {
+        final values = computeStatisticValues(
+          statistic: statistic,
+          matches: _allMatches,
+          players: _allPlayers,
+        );
+
+        Navigator.push(
+          context,
+          adaptivePageRoute(
+            builder: (context) => StatisticDetailView(
+              statistic: statistic,
+              values: values,
+              icon: getStatisticIconForType(statistic.type),
+              barColor: getStatisticColorForStatistic(statistic),
+            ),
+          ),
+        );
+      },
+      child: buildStatisticTile(
+        statistic: statistic,
+        matches: _allMatches,
+        players: _allPlayers,
+        context: context,
+      ),
+    );
   }
 }

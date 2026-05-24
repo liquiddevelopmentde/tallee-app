@@ -68,7 +68,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          loc.create_statistic_classifier_title,
+                          loc.classifier,
                           textAlign: TextAlign.start,
                           style: const TextStyle(
                             color: CustomTheme.textColor,
@@ -77,7 +77,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                           ),
                         ),
                         Text(
-                          loc.create_statistic_classifier_subtitle,
+                          loc.select_a_classifier,
                           textAlign: TextAlign.start,
                           style: const TextStyle(
                             color: CustomTheme.textColor,
@@ -139,7 +139,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          loc.create_statistic_scope_title,
+                          loc.scope,
                           textAlign: TextAlign.start,
                           style: const TextStyle(
                             color: CustomTheme.textColor,
@@ -148,7 +148,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                           ),
                         ),
                         Text(
-                          loc.create_statistic_scope_subtitle,
+                          loc.select_a_scope,
                           textAlign: TextAlign.start,
                           style: const TextStyle(
                             color: CustomTheme.textColor,
@@ -214,7 +214,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            loc.create_statistic_games_title,
+                            loc.games,
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: CustomTheme.textColor,
@@ -223,7 +223,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                             ),
                           ),
                           Text(
-                            loc.create_statistic_games_subtitle,
+                            loc.select_the_filtered_games,
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: CustomTheme.textColor,
@@ -310,7 +310,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            loc.create_statistic_groups_title,
+                            loc.groups,
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: CustomTheme.textColor,
@@ -319,7 +319,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                             ),
                           ),
                           Text(
-                            loc.create_statistic_groups_subtitle,
+                            loc.select_the_filtered_groups,
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: CustomTheme.textColor,
@@ -396,7 +396,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            loc.create_statistic_timeframe_title,
+                            loc.timeframe,
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: CustomTheme.textColor,
@@ -405,7 +405,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                             ),
                           ),
                           Text(
-                            loc.create_statistic_timeframe_subtitle,
+                            loc.select_a_timeframe_for_which_data_will_be_filtered,
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: CustomTheme.textColor,

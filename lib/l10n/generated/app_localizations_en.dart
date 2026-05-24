@@ -69,8 +69,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm => 'Confirm';
 
   @override
-  String could_not_add_player(Object playerName) {
-    return 'Could not add player';
+  String could_not_add_player(String playerName) {
+    return 'Could not add player $playerName';
   }
 
   @override
@@ -92,37 +92,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_statistic => 'Create statistic';
 
   @override
-  String get create_statistic_classifier_subtitle =>
-      'Select which key metric you want to display';
+  String get which_key_metric => 'Select which key metric you want to display';
 
   @override
-  String get create_statistic_classifier_title => 'Classifier';
+  String get classifier => 'Classifier';
 
   @override
-  String get create_statistic_games_subtitle => 'Select the filtered games';
+  String get select_the_filtered_games => 'Select the filtered games';
 
   @override
-  String get create_statistic_games_title => 'Games';
+  String get games => 'Games';
 
   @override
-  String get create_statistic_groups_subtitle => 'Select the filtered groups';
+  String get select_the_filtered_groups => 'Select the filtered groups';
 
   @override
-  String get create_statistic_groups_title => 'Groups';
-
-  @override
-  String get create_statistic_scope_subtitle =>
+  String get select_main_filter =>
       'Select the main filter for your statistic. This will determine which data is used to calculate the selected classifier.';
 
   @override
-  String get create_statistic_scope_title => 'Scope';
+  String get scope => 'Scope';
 
   @override
-  String get create_statistic_timeframe_subtitle =>
+  String get select_a_timeframe_for_which_data_will_be_filtered =>
       'Select a timeframe for which the data will be filtered. Only matches that ended within the selected timeframe will be included in the statistic.';
 
   @override
-  String get create_statistic_timeframe_title => 'Timeframe';
+  String get timeframe => 'Timeframe';
 
   @override
   String get created_on => 'Created on';
@@ -163,6 +159,9 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return 'If you delete this game template, $_temp0 using this game template will also be deleted.';
   }
+
+  @override
+  String get filter => 'Filter';
 
   @override
   String get delete_group => 'Delete Group';
@@ -366,6 +365,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_statistics_available => 'No statistics available';
+
+  @override
+  String get no_statistics_created_yet => 'No statistics created yet';
 
   @override
   String get none => 'None';

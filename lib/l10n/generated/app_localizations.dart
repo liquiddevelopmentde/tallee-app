@@ -221,8 +221,8 @@ abstract class AppLocalizations {
   /// No description provided for @could_not_add_player.
   ///
   /// In en, this message translates to:
-  /// **'Could not add player'**
-  String could_not_add_player(Object playerName);
+  /// **'Could not add player {playerName}'**
+  String could_not_add_player(String playerName);
 
   /// No description provided for @create_game.
   ///
@@ -260,65 +260,59 @@ abstract class AppLocalizations {
   /// **'Create statistic'**
   String get create_statistic;
 
-  /// No description provided for @create_statistic_classifier_subtitle.
+  /// No description provided for @which_key_metric.
   ///
   /// In en, this message translates to:
   /// **'Select which key metric you want to display'**
-  String get create_statistic_classifier_subtitle;
+  String get which_key_metric;
 
-  /// No description provided for @create_statistic_classifier_title.
+  /// No description provided for @classifier.
   ///
   /// In en, this message translates to:
   /// **'Classifier'**
-  String get create_statistic_classifier_title;
+  String get classifier;
 
-  /// No description provided for @create_statistic_games_subtitle.
+  /// No description provided for @select_the_filtered_games.
   ///
   /// In en, this message translates to:
   /// **'Select the filtered games'**
-  String get create_statistic_games_subtitle;
+  String get select_the_filtered_games;
 
-  /// No description provided for @create_statistic_games_title.
+  /// No description provided for @games.
   ///
   /// In en, this message translates to:
   /// **'Games'**
-  String get create_statistic_games_title;
+  String get games;
 
-  /// No description provided for @create_statistic_groups_subtitle.
+  /// No description provided for @select_the_filtered_groups.
   ///
   /// In en, this message translates to:
   /// **'Select the filtered groups'**
-  String get create_statistic_groups_subtitle;
+  String get select_the_filtered_groups;
 
-  /// No description provided for @create_statistic_groups_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Groups'**
-  String get create_statistic_groups_title;
-
-  /// No description provided for @create_statistic_scope_subtitle.
+  /// No description provided for @select_main_filter.
   ///
   /// In en, this message translates to:
   /// **'Select the main filter for your statistic. This will determine which data is used to calculate the selected classifier.'**
-  String get create_statistic_scope_subtitle;
+  String get select_main_filter;
 
-  /// No description provided for @create_statistic_scope_title.
+  /// No description provided for @scope.
   ///
   /// In en, this message translates to:
   /// **'Scope'**
-  String get create_statistic_scope_title;
+  String get scope;
 
-  /// No description provided for @create_statistic_timeframe_subtitle.
+  /// No description provided for @select_a_timeframe_for_which_data_will_be_filtered.
   ///
   /// In en, this message translates to:
   /// **'Select a timeframe for which the data will be filtered. Only matches that ended within the selected timeframe will be included in the statistic.'**
-  String get create_statistic_timeframe_subtitle;
+  String get select_a_timeframe_for_which_data_will_be_filtered;
 
-  /// No description provided for @create_statistic_timeframe_title.
+  /// No description provided for @timeframe.
   ///
   /// In en, this message translates to:
   /// **'Timeframe'**
-  String get create_statistic_timeframe_title;
+  String get timeframe;
 
   /// No description provided for @created_on.
   ///
@@ -379,6 +373,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.'**
   String delete_game_with_matches_warning(int count);
+
+  /// No description provided for @filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter;
 
   /// No description provided for @delete_group.
   ///
@@ -775,6 +775,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No statistics available'**
   String get no_statistics_available;
+
+  /// No description provided for @no_statistics_created_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No statistics created yet'**
+  String get no_statistics_created_yet;
 
   /// No description provided for @none.
   ///

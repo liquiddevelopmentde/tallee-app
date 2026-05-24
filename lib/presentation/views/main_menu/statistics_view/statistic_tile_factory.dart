@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
@@ -14,13 +16,18 @@ List<Color> _colorPalette = AppColor.values
     .map((c) => getColorFromAppColor(c))
     .toList();
 
-/// Build the [StatisticsTile] for a given [Statistic].
-Widget buildStatisticTile({
+/// Returns the icon for the given statistic type.
+IconData getStatisticIconForType(StatisticType type) =>
+    _getStatisticIcon(type: type);
+
+/// Returns a color from the palette based on the statistic's ID.
+Color getStatisticColorForStatistic(Statistic stat) => _getStatisticColor(stat);
+
+/// Computes the statistic values for a given [Statistic].
+List<(Player, num)> computeStatisticValues({
   required Statistic statistic,
   required List<Match> matches,
   required List<Player> players,
-  required BuildContext context,
-  double? width,
 }) {
   final filteredMatches = _getFilterMatches(statistic, matches);
   final filteredPlayers = _getFilteredPlayers(
@@ -29,16 +36,26 @@ Widget buildStatisticTile({
     filteredMatches,
   );
 
-  print('Building tile for statistic: $statistic');
-  print('Filtered matches count: ${filteredMatches.length}');
-  print('Filtered players count: ${filteredPlayers.length}');
-
-  final values = _computeValuesForType(
+  return _computeValuesForType(
     type: statistic.type,
     matches: filteredMatches,
     players: filteredPlayers,
   );
-  print(values);
+}
+
+/// Build the [StatisticsTile] for a given [Statistic].
+Widget buildStatisticTile({
+  required Statistic statistic,
+  required List<Match> matches,
+  required List<Player> players,
+  required BuildContext context,
+  double? width,
+}) {
+  final values = computeStatisticValues(
+    statistic: statistic,
+    matches: matches,
+    players: players,
+  );
 
   return StatisticsTile(
     icon: _getStatisticIcon(type: statistic.type),
@@ -46,7 +63,9 @@ Widget buildStatisticTile({
     width: width ?? MediaQuery.sizeOf(context).width * 0.95,
     values: values,
     barColor: _getStatisticColor(statistic),
-    statistic: statistic,
+    displayCount: statistic.displayCount,
+    selectedGroups: statistic.selectedGroups,
+    selectedGames: statistic.selectedGames,
   );
 }
 
@@ -296,10 +315,8 @@ Widget buildSkeletonStatisticTile({required BuildContext context}) {
     width: MediaQuery.sizeOf(context).width * 0.95,
     values: values,
     barColor: _colorPalette[Random().nextInt(_colorPalette.length)],
-    statistic: Statistic(
-      type: StatisticType.totalMatches,
-      scopes: [StatisticScope.allPlayers],
-      timeframe: Timeframe.last7Days,
-    ),
+    selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
+    selectedGroups: [Group(name: 'Group 1', members: [])],
+    displayCount: 5,
   );
 }

@@ -12,12 +12,13 @@ class StatisticGameDao extends DatabaseAccessor<AppDatabase>
   StatisticGameDao(super.db);
 
   /// Retrieves a list of games associated with a specific statistic.
-  Future<List<Game>> getGamesForStatistic(String statisticId) async {
+  Future<List<Game>?> getGamesForStatistic(String statisticId) async {
     final query = select(statisticGameTable).join([
       innerJoin(gameTable, gameTable.id.equalsExp(statisticGameTable.gameId)),
     ])..where(statisticGameTable.statisticId.equals(statisticId));
 
     final results = await query.map((row) => row.readTable(gameTable)).get();
+    if (results.isEmpty) return null;
     return results
         .map(
           (row) => Game(

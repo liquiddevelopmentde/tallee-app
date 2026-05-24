@@ -12,7 +12,7 @@ class StatisticGroupDao extends DatabaseAccessor<AppDatabase>
   StatisticGroupDao(super.db);
 
   /// Retrieves a list of groups associated with a specific statistic.
-  Future<List<Group>> getGroupsForStatistic(String statisticId) async {
+  Future<List<Group>?> getGroupsForStatistic(String statisticId) async {
     final query = select(statisticGroupTable).join([
       innerJoin(
         groupTable,
@@ -21,6 +21,7 @@ class StatisticGroupDao extends DatabaseAccessor<AppDatabase>
     ])..where(statisticGroupTable.statisticId.equals(statisticId));
 
     final results = await query.map((row) => row.readTable(groupTable)).get();
+    if (results.isEmpty) return null;
     final groups = await Future.wait(
       results.map((result) async {
         final groupMembers = await db.playerGroupDao.getPlayersOfGroup(

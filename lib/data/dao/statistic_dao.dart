@@ -80,12 +80,13 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
       result.map((row) async {
         final groups = await db.statisticGroupDao.getGroupsForStatistic(row.id);
         final games = await db.statisticGameDao.getGamesForStatistic(row.id);
+        final scopes = await db.statisticScopeDao.getScopeForStatistic(row.id);
 
         return Statistic(
           type: StatisticType.values.firstWhere(
             (type) => type.name == row.type,
           ),
-          scopes: [],
+          scopes: scopes,
           timeframe: Timeframe.values.firstWhereOrNull(
             (t) => t.name == row.timeframe,
           ),

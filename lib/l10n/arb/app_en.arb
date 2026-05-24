@@ -20,23 +20,29 @@
   "color_teal": "Teal",
   "color_yellow": "Yellow",
   "confirm": "Confirm",
-  "could_not_add_player": "Could not add player",
+  "could_not_add_player": "Could not add player {playerName}",
+  "@could_not_add_player": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
   "create_game": "Create Game",
   "create_group": "Create Group",
   "create_match": "Create match",
   "create_new_group": "Create new group",
   "create_new_match": "Create new match",
   "create_statistic": "Create statistic",
-  "create_statistic_classifier_subtitle": "Select which key metric you want to display",
-  "create_statistic_classifier_title": "Classifier",
-  "create_statistic_games_subtitle": "Select the filtered games",
-  "create_statistic_games_title": "Games",
-  "create_statistic_groups_subtitle": "Select the filtered groups",
-  "create_statistic_groups_title": "Groups",
-  "create_statistic_scope_subtitle": "Select the main filter for your statistic. This will determine which data is used to calculate the selected classifier.",
-  "create_statistic_scope_title": "Scope",
-  "create_statistic_timeframe_subtitle": "Select a timeframe for which the data will be filtered. Only matches that ended within the selected timeframe will be included in the statistic.",
-  "create_statistic_timeframe_title": "Timeframe",
+  "which_key_metric": "Select which key metric you want to display",
+  "classifier": "Classifier",
+  "select_the_filtered_games": "Select the filtered games",
+  "games": "Games",
+  "select_the_filtered_groups": "Select the filtered groups",
+  "select_main_filter": "Select the main filter for your statistic. This will determine which data is used to calculate the selected classifier.",
+  "scope": "Scope",
+  "select_a_timeframe_for_which_data_will_be_filtered": "Select a timeframe for which the data will be filtered. Only matches that ended within the selected timeframe will be included in the statistic.",
+  "timeframe": "Timeframe",
   "created_on": "Created on",
   "data": "Data",
   "data_successfully_deleted": "Data successfully deleted",
@@ -54,6 +60,7 @@
       }
     }
   },
+  "filter": "Filter",
   "delete_group": "Delete Group",
   "delete_match": "Delete Match",
   "delete_player": "Delete player?",
@@ -120,6 +127,7 @@
   "no_results_entered_yet": "No results entered yet",
   "no_second_match_available": "No second match available",
   "no_statistics_available": "No statistics available",
+  "no_statistics_created_yet": "No statistics created yet",
   "none": "None",
   "none_group": "None",
   "not_available": "Not available",
