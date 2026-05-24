@@ -18,10 +18,10 @@ class StatisticScopeDao extends DatabaseAccessor<AppDatabase>
     final results = await query.get();
     return results
         .map(
-          (result) => StatisticScope.values.firstWhere(
-            (e) => e.name == result.scope,
+          (row) => StatisticScope.values.firstWhere(
+            (e) => e.name == row.scope,
             orElse: () => throw Exception(
-              'Invalid scope value: ${result.scope} for statistic ID: $statisticId',
+              'Invalid scope value: ${row.scope} for statistic ID: $statisticId',
             ),
           ),
         )

@@ -143,16 +143,16 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     final query = select(groupTable);
     final result = await query.get();
     return Future.wait(
-      result.map((groupData) async {
+      result.map((row) async {
         final members = await db.playerGroupDao.getPlayersOfGroup(
-          groupId: groupData.id,
+          groupId: row.id,
         );
         return Group(
-          id: groupData.id,
-          name: groupData.name,
-          description: groupData.description,
+          id: row.id,
+          name: row.name,
+          description: row.description,
           members: members,
-          createdAt: groupData.createdAt,
+          createdAt: row.createdAt,
         );
       }),
     );
@@ -161,18 +161,18 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
   /// Retrieves a [Group] by its [groupId], including its members.
   Future<Group> getGroupById({required String groupId}) async {
     final query = select(groupTable)..where((g) => g.id.equals(groupId));
-    final result = await query.getSingle();
+    final row = await query.getSingle();
 
     List<Player> members = await db.playerGroupDao.getPlayersOfGroup(
       groupId: groupId,
     );
 
     return Group(
-      id: result.id,
-      name: result.name,
-      description: result.description,
+      id: row.id,
+      name: row.name,
+      description: row.description,
       members: members,
-      createdAt: result.createdAt,
+      createdAt: row.createdAt,
     );
   }
 
@@ -180,7 +180,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
   Future<int> getGroupCount() async {
     final count =
         await (selectOnly(groupTable)..addColumns([groupTable.id.count()]))
-            .map((row) => row.read(groupTable.id.count()))
+            .map((tbl) => tbl.read(groupTable.id.count()))
             .getSingle();
     return count ?? 0;
   }
@@ -190,28 +190,28 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
   Future<List<Group>> getGroupsByPlayer({required String playerId}) async {
     final playerGroups = await (select(
       playerGroupTable,
-    )..where((pg) => pg.playerId.equals(playerId))).get();
+    )..where((tbl) => tbl.playerId.equals(playerId))).get();
 
     if (playerGroups.isEmpty) return [];
 
     final groupIds = playerGroups.map((pg) => pg.groupId).toSet().toList();
-    final rows =
+    final result =
         await (select(groupTable)
-              ..where((g) => g.id.isIn(groupIds))
-              ..orderBy([(g) => OrderingTerm.desc(g.createdAt)]))
+              ..where((tbl) => tbl.id.isIn(groupIds))
+              ..orderBy([(tbl) => OrderingTerm.desc(tbl.createdAt)]))
             .get();
 
     return Future.wait(
-      rows.map((groupData) async {
+      result.map((row) async {
         final members = await db.playerGroupDao.getPlayersOfGroup(
-          groupId: groupData.id,
+          groupId: row.id,
         );
         return Group(
-          id: groupData.id,
-          name: groupData.name,
-          description: groupData.description,
+          id: row.id,
+          name: row.name,
+          description: row.description,
           members: members,
-          createdAt: groupData.createdAt,
+          createdAt: row.createdAt,
         );
       }),
     );
@@ -221,8 +221,8 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
   /// Returns `true` if the group exists, `false` otherwise.
   Future<bool> groupExists({required String groupId}) async {
     final query = select(groupTable)..where((g) => g.id.equals(groupId));
-    final result = await query.getSingleOrNull();
-    return result != null;
+    final row = await query.getSingleOrNull();
+    return row != null;
   }
 
   /* Delete */
@@ -252,9 +252,8 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     required String name,
   }) async {
     final rowsAffected =
-        await (update(groupTable)..where((g) => g.id.equals(groupId))).write(
-          GroupTableCompanion(name: Value(name)),
-        );
+        await (update(groupTable)..where((tbl) => tbl.id.equals(groupId)))
+            .write(GroupTableCompanion(name: Value(name)));
     return rowsAffected > 0;
   }
 
@@ -265,9 +264,8 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     required String description,
   }) async {
     final rowsAffected =
-        await (update(groupTable)..where((g) => g.id.equals(groupId))).write(
-          GroupTableCompanion(description: Value(description)),
-        );
+        await (update(groupTable)..where((tbl) => tbl.id.equals(groupId)))
+            .write(GroupTableCompanion(description: Value(description)));
     return rowsAffected > 0;
   }
 }

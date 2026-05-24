@@ -20,14 +20,14 @@ class StatisticGameDao extends DatabaseAccessor<AppDatabase>
     final results = await query.map((row) => row.readTable(gameTable)).get();
     return results
         .map(
-          (result) => Game(
-            id: result.id,
-            name: result.name,
-            ruleset: Ruleset.values.firstWhere((e) => e.name == result.ruleset),
-            description: result.description,
-            color: AppColor.values.firstWhere((e) => e.name == result.color),
-            icon: result.icon,
-            createdAt: result.createdAt,
+          (row) => Game(
+            id: row.id,
+            name: row.name,
+            ruleset: Ruleset.values.firstWhere((e) => e.name == row.ruleset),
+            description: row.description,
+            color: AppColor.values.firstWhere((e) => e.name == row.color),
+            icon: row.icon,
+            createdAt: row.createdAt,
           ),
         )
         .toList();
