@@ -24,47 +24,47 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
   }
 }
 
-/// Translates a [GameColor] enum value to its corresponding localized string.
-String translateGameColorToString(GameColor color, BuildContext context) {
+/// Translates a [AppColor] enum value to its corresponding localized string.
+String translateGameColorToString(AppColor color, BuildContext context) {
   final loc = AppLocalizations.of(context);
   switch (color) {
-    case GameColor.red:
+    case AppColor.red:
       return loc.color_red;
-    case GameColor.blue:
+    case AppColor.blue:
       return loc.color_blue;
-    case GameColor.green:
+    case AppColor.green:
       return loc.color_green;
-    case GameColor.yellow:
+    case AppColor.yellow:
       return loc.color_yellow;
-    case GameColor.purple:
+    case AppColor.purple:
       return loc.color_purple;
-    case GameColor.orange:
+    case AppColor.orange:
       return loc.color_orange;
-    case GameColor.pink:
+    case AppColor.pink:
       return loc.color_pink;
-    case GameColor.teal:
+    case AppColor.teal:
       return loc.color_teal;
   }
 }
 
-/// Returns the [Color] object corresponding to a [GameColor] enum value.
-Color getColorFromGameColor(GameColor color) {
+/// Returns the [Color] object corresponding to a [AppColor] enum value.
+Color getColorFromGameColor(AppColor color) {
   switch (color) {
-    case GameColor.red:
+    case AppColor.red:
       return Colors.red;
-    case GameColor.blue:
+    case AppColor.blue:
       return Colors.blue;
-    case GameColor.green:
+    case AppColor.green:
       return Colors.green;
-    case GameColor.yellow:
+    case AppColor.yellow:
       return const Color(0xFFF7CA28);
-    case GameColor.purple:
+    case AppColor.purple:
       return Colors.purple;
-    case GameColor.orange:
+    case AppColor.orange:
       return const Color(0xFFef681f);
-    case GameColor.pink:
+    case AppColor.pink:
       return const Color(0xFFE91E63);
-    case GameColor.teal:
+    case AppColor.teal:
       return const Color(0xFF00BCD4);
   }
 }

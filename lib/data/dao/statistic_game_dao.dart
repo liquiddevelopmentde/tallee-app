@@ -25,7 +25,7 @@ class StatisticGameDao extends DatabaseAccessor<AppDatabase>
             name: result.name,
             ruleset: Ruleset.values.firstWhere((e) => e.name == result.ruleset),
             description: result.description,
-            color: GameColor.values.firstWhere((e) => e.name == result.color),
+            color: AppColor.values.firstWhere((e) => e.name == result.color),
             icon: result.icon,
             createdAt: result.createdAt,
           ),

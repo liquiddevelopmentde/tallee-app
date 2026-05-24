@@ -43,7 +43,7 @@ enum Ruleset {
 }
 
 /// Different colors for highlighting games
-enum GameColor { red, orange, yellow, green, teal, blue, purple, pink }
+enum AppColor { red, orange, yellow, green, teal, blue, purple, pink }
 
 enum StatisticType {
   totalMatches,

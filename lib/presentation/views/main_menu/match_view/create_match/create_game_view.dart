@@ -49,10 +49,10 @@ class _CreateGameViewState extends State<CreateGameView> {
   late final AppDatabase db;
 
   late List<(Ruleset, String)> _rulesets;
-  late List<(GameColor, String)> _colors;
+  late List<(AppColor, String)> _colors;
 
   Ruleset? selectedRuleset = Ruleset.singleWinner;
-  GameColor? selectedColor = GameColor.orange;
+  AppColor? selectedColor = AppColor.orange;
 
   /// Controller for the game name input field.
   final _gameNameController = TextEditingController();
@@ -87,10 +87,10 @@ class _CreateGameViewState extends State<CreateGameView> {
       ),
     );
     _colors = List.generate(
-      GameColor.values.length,
+      AppColor.values.length,
       (index) => (
-        GameColor.values[index],
-        translateGameColorToString(GameColor.values[index], context),
+        AppColor.values[index],
+        translateGameColorToString(AppColor.values[index], context),
       ),
     );
 
