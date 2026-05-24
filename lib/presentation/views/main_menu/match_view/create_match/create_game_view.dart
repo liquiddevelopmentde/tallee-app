@@ -90,7 +90,7 @@ class _CreateGameViewState extends State<CreateGameView> {
       AppColor.values.length,
       (index) => (
         AppColor.values[index],
-        translateGameColorToString(AppColor.values[index], context),
+        translateAppColorToString(AppColor.values[index], context),
       ),
     );
 
@@ -507,7 +507,7 @@ class _CreateGameViewState extends State<CreateGameView> {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 5),
-            child: Text(translateGameColorToString(selectedColor!, context)),
+            child: Text(translateAppColorToString(selectedColor!, context)),
           ),
           Transform.rotate(
             angle: pi / 2,

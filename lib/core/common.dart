@@ -25,7 +25,7 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
 }
 
 /// Translates a [AppColor] enum value to its corresponding localized string.
-String translateGameColorToString(AppColor color, BuildContext context) {
+String translateAppColorToString(AppColor color, BuildContext context) {
   final loc = AppLocalizations.of(context);
   switch (color) {
     case AppColor.red:
