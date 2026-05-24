@@ -26,7 +26,6 @@ class StatisticsTile extends StatelessWidget {
     required this.title,
     required this.width,
     required this.values,
-    required this.itemCount,
     required this.barColor,
     required this.statistic,
   });
@@ -42,9 +41,6 @@ class StatisticsTile extends StatelessWidget {
 
   /// A list of tuples containing labels and their corresponding numeric values.
   final List<(Player, num)> values;
-
-  /// The maximum number of items to display.
-  final int itemCount;
 
   /// The color of the bars representing the values.
   final Color barColor;
@@ -74,7 +70,7 @@ class StatisticsTile extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final maxBarWidth = constraints.maxWidth * 0.8;
-              final displayCount = min(values.length, itemCount);
+              final displayCount = min(values.length, statistic.displayCount);
               final displayValues = values.take(displayCount).toList();
               final maxVal = displayValues.isNotEmpty
                   ? displayValues.fold<num>(

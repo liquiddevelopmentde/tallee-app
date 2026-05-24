@@ -21,7 +21,6 @@ Widget buildStatisticTile({
   required List<Player> players,
   required BuildContext context,
   double? width,
-  int itemCount = 5,
 }) {
   final filteredMatches = _getFilterMatches(statistic, matches);
   final filteredPlayers = _getFilteredPlayers(
@@ -46,7 +45,6 @@ Widget buildStatisticTile({
     title: translateStatisticTypeToString(statistic.type, context),
     width: width ?? MediaQuery.sizeOf(context).width * 0.95,
     values: values,
-    itemCount: itemCount,
     barColor: _getStatisticColor(statistic),
     statistic: statistic,
   );
@@ -297,7 +295,6 @@ Widget buildSkeletonStatisticTile({required BuildContext context}) {
     title: 'Skeleton title',
     width: MediaQuery.sizeOf(context).width * 0.95,
     values: values,
-    itemCount: count,
     barColor: _colorPalette[Random().nextInt(_colorPalette.length)],
     statistic: Statistic(
       type: StatisticType.totalMatches,

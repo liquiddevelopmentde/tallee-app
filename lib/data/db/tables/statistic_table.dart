@@ -4,6 +4,7 @@ class StatisticTable extends Table {
   TextColumn get id => text()();
   TextColumn get type => text()();
   TextColumn get timeframe => text().nullable()();
+  IntColumn get displayCount => integer().withDefault(const Constant(5))();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

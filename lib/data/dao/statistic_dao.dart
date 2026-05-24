@@ -20,6 +20,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         id: statistic.id,
         type: statistic.type.name,
         timeframe: Value(statistic.timeframe?.name),
+        displayCount: Value(statistic.displayCount),
       ),
       mode: InsertMode.insertOrReplace,
     );
@@ -59,12 +60,13 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
       return Statistic(
         type: StatisticType.values.firstWhere((type) => type.name == row.type),
         scopes: scopes,
-        id: row.id,
         timeframe: Timeframe.values.firstWhereOrNull(
           (t) => t.name == row.timeframe,
         ),
         selectedGroups: groups,
         selectedGames: games,
+        displayCount: row.displayCount,
+        id: row.id,
       );
     }
     return null;
@@ -73,9 +75,9 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
   /// Retrieves all statistics from the database, including their associated groups and games.
   Future<List<Statistic>> getAllStatistics() async {
     final query = select(statisticTable);
-    final rows = await query.get();
+    final result = await query.get();
     return Future.wait(
-      rows.map((row) async {
+      result.map((row) async {
         final groups = await db.statisticGroupDao.getGroupsForStatistic(row.id);
         final games = await db.statisticGameDao.getGamesForStatistic(row.id);
 
@@ -84,15 +86,27 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
             (type) => type.name == row.type,
           ),
           scopes: [],
-          id: row.id,
           timeframe: Timeframe.values.firstWhereOrNull(
             (t) => t.name == row.timeframe,
           ),
           selectedGroups: groups,
           selectedGames: games,
+          displayCount: row.displayCount,
+          id: row.id,
         );
       }),
     );
+  }
+
+  /* Update */
+
+  Future<bool> updateDisplayCount(String statisticId, int displayCount) async {
+    final rowsUpdated =
+        await (update(statisticTable)
+              ..where((tbl) => tbl.id.equals(statisticId)))
+            .write(StatisticTableCompanion(displayCount: Value(displayCount)));
+
+    return rowsUpdated > 0;
   }
 
   /* Delete */

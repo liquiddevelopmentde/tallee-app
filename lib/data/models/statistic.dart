@@ -10,14 +10,16 @@ class Statistic {
   final Timeframe? timeframe;
   final List<Group>? selectedGroups;
   final List<Game>? selectedGames;
+  final int displayCount;
 
   Statistic({
     required this.type,
     required this.scopes,
-    String? id,
     this.timeframe,
     this.selectedGroups,
     this.selectedGames,
+    this.displayCount = 5,
+    String? id,
   }) : id = id ?? const Uuid().v4();
 
   @override
