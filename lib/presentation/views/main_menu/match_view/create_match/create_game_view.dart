@@ -467,7 +467,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                                     height: 16,
                                     margin: const EdgeInsets.only(left: 12),
                                     decoration: BoxDecoration(
-                                      color: getColorFromGameColor(
+                                      color: getColorFromAppColor(
                                         _colors[index].$1,
                                       ),
                                       shape: BoxShape.circle,
@@ -501,7 +501,7 @@ class _CreateGameViewState extends State<CreateGameView> {
             width: 16,
             height: 16,
             decoration: BoxDecoration(
-              color: getColorFromGameColor(selectedColor!),
+              color: getColorFromAppColor(selectedColor!),
               shape: BoxShape.circle,
             ),
           ),

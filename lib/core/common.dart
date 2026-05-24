@@ -48,7 +48,7 @@ String translateAppColorToString(AppColor color, BuildContext context) {
 }
 
 /// Returns the [Color] object corresponding to a [AppColor] enum value.
-Color getColorFromGameColor(AppColor color) {
+Color getColorFromAppColor(AppColor color) {
   switch (color) {
     case AppColor.red:
       return Colors.red;

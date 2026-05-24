@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
@@ -9,8 +10,11 @@ import 'package:tallee/presentation/views/main_menu/statistics_view/create_stati
     show translateStatisticTypeToString;
 import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
 
-/// Build the [StatisticsTile] for a given [Statistic].
+List<Color> _colorPalette = AppColor.values
+    .map((c) => getColorFromAppColor(c))
+    .toList();
 
+/// Build the [StatisticsTile] for a given [Statistic].
 Widget buildStatisticTile({
   required Statistic statistic,
   required List<Match> matches,
@@ -272,24 +276,10 @@ IconData _getStatisticIcon({required StatisticType type}) {
   }
 }
 
-/// The bar colors for the statistic tiles
-const List<Color> _palette = <Color>[
-  Color(0xFF4CAF50), // green
-  Color(0xFF2196F3), // blue
-  Color(0xFFFF9800), // orange
-  Color(0xFFE91E63), // pink
-  Color(0xFF9C27B0), // purple
-  Color(0xFF00BCD4), // cyan
-  Color(0xFFFFC107), // amber
-  Color(0xFF3F51B5), // indigo
-  Color(0xFF8BC34A), // light green
-  Color(0xFFFF5722), // deep orange
-];
-
 /// Returns a color from the palette based on the statistic's ID as random seed.
 Color _getStatisticColor(Statistic stat) {
   final seed = stat.id.hashCode;
-  return _palette[seed.abs() % _palette.length];
+  return _colorPalette[seed.abs() % _colorPalette.length];
 }
 
 /* Skeleton data */
@@ -308,7 +298,7 @@ Widget buildSkeletonStatisticTile({required BuildContext context}) {
     width: MediaQuery.sizeOf(context).width * 0.95,
     values: values,
     itemCount: count,
-    barColor: _palette[Random().nextInt(_palette.length)],
+    barColor: _colorPalette[Random().nextInt(_colorPalette.length)],
     statistic: Statistic(
       type: StatisticType.totalMatches,
       scopes: [StatisticScope.allPlayers],
