@@ -39,18 +39,25 @@ class PlayerGroupDao extends DatabaseAccessor<AppDatabase>
 
   /// Retrieves all players belonging to a specific group by [groupId].
   Future<List<Player>> getPlayersOfGroup({required String groupId}) async {
-    final query = select(playerGroupTable)
-      ..where((pG) => pG.groupId.equals(groupId));
-    final result = await query.get();
+    final query = select(playerGroupTable).join([
+      innerJoin(
+        playerTable,
+        playerTable.id.equalsExp(playerGroupTable.playerId),
+      ),
+    ])..where(playerGroupTable.groupId.equals(groupId));
 
-    List<Player> groupMembers = List.empty(growable: true);
-
-    for (var entry in result) {
-      final player = await db.playerDao.getPlayerById(playerId: entry.playerId);
-      groupMembers.add(player);
-    }
-
-    return groupMembers;
+    final results = await query.map((row) => row.readTable(playerTable)).get();
+    return results
+        .map(
+          (result) => Player(
+            id: result.id,
+            createdAt: result.createdAt,
+            name: result.name,
+            nameCount: result.nameCount,
+            description: result.description,
+          ),
+        )
+        .toList();
   }
 
   /// Checks if a player with [playerId] is in the group with [groupId].
