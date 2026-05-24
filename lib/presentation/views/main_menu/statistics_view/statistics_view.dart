@@ -8,9 +8,9 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view/create_statistic_view.dart';
+import 'package:tallee/presentation/views/main_menu/statistics_view/statistic_tile_factory.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
-import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 
 class StatisticsView extends StatefulWidget {
   /// A view that displays player statistics
@@ -21,36 +21,19 @@ class StatisticsView extends StatefulWidget {
 }
 
 class _StatisticsViewState extends State<StatisticsView> {
-  int matchCount = 0;
-  int groupCount = 0;
-
-  List<(Player, int)> winCounts = List.filled(6, (
-    Player(name: 'Skeleton Player'),
-    1,
-  ));
-  List<(Player, int)> matchCounts = List.filled(6, (
-    Player(name: 'Skeleton Player'),
-    1,
-  ));
-  List<(Player, double)> winRates = List.filled(6, (
-    Player(name: 'Skeleton Player'),
-    1,
-  ));
   bool isLoading = true;
-  List<Widget> statisticTiles = List.generate(
-    4,
-    (_) => const InfoTile(
-      icon: Icons.sports_score,
-      title: 'Skeleton Statistic',
-      width: double.infinity,
-      content: Text('Skeleton content'),
-    ),
-  );
+  List<Match> _allMatches = const [];
+  List<Player> _allPlayers = const [];
+  List<Widget> statisticTiles = [];
 
   @override
   void initState() {
     super.initState();
-    getStatisticTiles(context);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      getStatisticTiles(context);
+    });
   }
 
   @override
@@ -66,13 +49,14 @@ class _StatisticsViewState extends State<StatisticsView> {
               child: AppSkeleton(
                 enabled: isLoading,
                 fixLayoutBuilder: true,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [...statisticTiles],
-                  ),
+                child: Column(
+                  spacing: 12,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ...statisticTiles,
+                    SizedBox(height: MediaQuery.paddingOf(context).bottom + 80),
+                  ],
                 ),
               ),
             ),
@@ -86,17 +70,16 @@ class _StatisticsViewState extends State<StatisticsView> {
                     context,
                     adaptivePageRoute(
                       builder: (context) => CreateStatisticView(
-                        onStatisticCreated: loadStatisticData,
+                        onStatisticCreated: () => getStatisticTiles(context),
                       ),
                     ),
                   );
-                  final newTile = InfoTile(
-                    icon: Icons.sports_score,
-                    title: newStatistic.type.name,
-                    width: MediaQuery.sizeOf(context).width * 0.95,
-                    content: Text(
-                      '${newStatistic.id}\n${newStatistic.scopes}\n${newStatistic.type}\n${newStatistic.timeframe}\n${newStatistic.selectedGroups}\n${newStatistic.selectedGames}\n',
-                    ),
+                  if (!context.mounted) return;
+                  final newTile = buildStatisticTile(
+                    statistic: newStatistic,
+                    matches: _allMatches,
+                    players: _allPlayers,
+                    context: context,
                   );
 
                   setState(() {
@@ -111,205 +94,47 @@ class _StatisticsViewState extends State<StatisticsView> {
     );
   }
 
-  /// Loads matches and players from the database
-  /// and calculates statistics for each player
-  void loadStatisticData() {
+  Future<void> getStatisticTiles(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+      statisticTiles = List.generate(
+        4,
+        (index) => Column(
+          children: [
+            buildSkeletonStatisticTile(context: context),
+            const SizedBox(height: 12),
+          ],
+        ),
+      );
+    });
+
     final db = Provider.of<AppDatabase>(context, listen: false);
 
-    Future.wait([
+    final results = await Future.wait([
+      db.statisticDao.getAllStatistics(),
       db.matchDao.getAllMatches(),
       db.playerDao.getAllPlayers(),
-      db.matchDao.getMatchCount(),
-      db.groupDao.getGroupCount(),
       Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
-    ]).then((results) async {
-      if (!mounted) return;
+    ]);
 
-      final matches = results[0] as List<Match>;
-      final players = results[1] as List<Player>;
-      matchCount = results[2] as int;
-      groupCount = results[3] as int;
+    if (!mounted) return;
 
-      winCounts = _calculateWinsForAllPlayers(
-        matches: matches,
-        players: players,
-        context: context,
-      );
-      matchCounts = _calculateMatchAmountsForAllPlayers(
-        matches: matches,
-        players: players,
-        context: context,
-      );
-      winRates = computeWinRatePercent(
-        winCounts: winCounts,
-        matchCounts: matchCounts,
-      );
-
-      setState(() {
-        isLoading = false;
-      });
-    });
-  }
-
-  Future<void> getStatisticTiles(BuildContext context) async {
-    isLoading = true;
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    final statistics = await db.statisticDao.getAllStatistics();
+    final statistics = results[0] as List<Statistic>;
+    _allMatches = results[1] as List<Match>;
+    _allPlayers = results[2] as List<Player>;
 
     setState(() {
-      statisticTiles = [];
-      for (var statistic in statistics) {
-        statisticTiles.add(
-          InfoTile(
-            icon: Icons.sports_score,
-            title: statistic.type.name,
-            width: MediaQuery.sizeOf(context).width * 0.95,
-            content: Text(statistic.toString()),
+      statisticTiles = [
+        for (final statistic in statistics) ...[
+          buildStatisticTile(
+            statistic: statistic,
+            matches: _allMatches,
+            players: _allPlayers,
+            context: context,
           ),
-        );
-        statisticTiles.add(
-          SizedBox(height: MediaQuery.sizeOf(context).height * 0.02),
-        );
-      }
+        ],
+      ];
+      isLoading = false;
     });
-    isLoading = false;
-  }
-
-  /// Calculates the number of wins for each player
-  /// and returns a sorted list of tuples (playerName, winCount)
-  List<(Player, int)> _calculateWinsForAllPlayers({
-    required List<Match> matches,
-    required List<Player> players,
-    required BuildContext context,
-  }) {
-    List<(Player, int)> winCounts = [];
-    final loc = AppLocalizations.of(context);
-
-    // Getting the winners
-    for (var match in matches) {
-      final mvps = match.mvp;
-      for (var winner in mvps) {
-        final index = winCounts.indexWhere((entry) => entry.$1.id == winner.id);
-        // -1 means winner not found in winCounts
-        if (index != -1) {
-          final current = winCounts[index].$2;
-          winCounts[index] = (winner, current + 1);
-        } else {
-          winCounts.add((winner, 1));
-        }
-      }
-    }
-
-    // Adding all players with zero wins
-    for (var player in players) {
-      final index = winCounts.indexWhere((entry) => entry.$1.id == player.id);
-      // -1 means player not found in winCounts
-      if (index == -1) {
-        winCounts.add((player, 0));
-      }
-    }
-
-    // Replace player IDs with names
-    for (int i = 0; i < winCounts.length; i++) {
-      final playerId = winCounts[i].$1.id;
-      final player = players.firstWhere(
-        (p) => p.id == playerId,
-        orElse: () => Player(id: playerId, name: loc.not_available),
-      );
-      winCounts[i] = (player, winCounts[i].$2);
-    }
-
-    winCounts.sort((a, b) => b.$2.compareTo(a.$2));
-
-    return winCounts;
-  }
-
-  /// Calculates the number of matches played for each player
-  /// and returns a sorted list of tuples (playerName, matchCount)
-  List<(Player, int)> _calculateMatchAmountsForAllPlayers({
-    required List<Match> matches,
-    required List<Player> players,
-    required BuildContext context,
-  }) {
-    List<(Player, int)> matchCounts = [];
-    final loc = AppLocalizations.of(context);
-
-    // Counting matches for each player
-    for (var match in matches) {
-      for (Player player in match.players) {
-        // Check if the player is already in matchCounts
-        final index = matchCounts.indexWhere(
-          (entry) => entry.$1.id == player.id,
-        );
-
-        // -1 -> not found
-        if (index == -1) {
-          // Add new entry
-          matchCounts.add((player, 1));
-        } else {
-          // Update existing entry
-          final currentMatchAmount = matchCounts[index].$2;
-          matchCounts[index] = (player, currentMatchAmount + 1);
-        }
-      }
-    }
-
-    // Adding all players with zero matches
-    for (var player in players) {
-      final index = matchCounts.indexWhere((entry) => entry.$1.id == player.id);
-      // -1 means player not found in matchCounts
-      if (index == -1) {
-        matchCounts.add((player, 0));
-      }
-    }
-
-    // Replace player IDs with names
-    for (int i = 0; i < matchCounts.length; i++) {
-      final playerId = matchCounts[i].$1.id;
-      final player = players.firstWhere(
-        (p) => p.id == playerId,
-        orElse: () => Player(id: playerId, name: loc.not_available),
-      );
-      matchCounts[i] = (player, matchCounts[i].$2);
-    }
-
-    matchCounts.sort((a, b) => b.$2.compareTo(a.$2));
-
-    return matchCounts;
-  }
-
-  List<(Player, double)> computeWinRatePercent({
-    required List<(Player, int)> winCounts,
-    required List<(Player, int)> matchCounts,
-  }) {
-    final Map<Player, int> winsMap = {for (var e in winCounts) e.$1: e.$2};
-    final Map<Player, int> matchesMap = {for (var e in matchCounts) e.$1: e.$2};
-
-    // Get all unique player names
-    final player = {...matchesMap.keys};
-
-    // Calculate win rates
-    final result = player.map((name) {
-      final int w = winsMap[name] ?? 0;
-      final int m = matchesMap[name] ?? 0;
-      // Calculate percentage and round to 2 decimal places
-      // Avoid division by zero
-      final double percent = (m > 0)
-          ? double.parse(((w / m)).toStringAsFixed(2))
-          : 0;
-      return (name, percent);
-    }).toList();
-
-    // Sort the result: first by winrate descending,
-    // then by wins descending in case of a tie
-    result.sort((a, b) {
-      final cmp = b.$2.compareTo(a.$2);
-      if (cmp != 0) return cmp;
-      final wa = winsMap[a.$1] ?? 0;
-      final wb = winsMap[b.$1] ?? 0;
-      return wb.compareTo(wa);
-    });
-
-    return result;
   }
 }
