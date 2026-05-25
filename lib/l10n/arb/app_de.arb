@@ -172,6 +172,7 @@
   "select_a_group": "Gruppe auswählen",
   "select_a_scope": "Bereich auswählen",
   "select_a_timeframe": "Zeitraum auswählen",
+  "select_a_timeframe_for_which_data_will_be_filtered": "Wähle einen Zeitraum, für den die Daten gefiltert werden sollen",
   "select_loser": "Verlierer:in wählen",
   "select_the_filtered_games": "Wähle Spiele, nach denen gefiltert werden soll.",
   "select_the_filtered_groups": "Wähle Gruppen, nach denen gefiltert werden soll.",
