@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
-import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
 class GroupTile extends StatefulWidget {
@@ -17,7 +15,6 @@ class GroupTile extends StatefulWidget {
     required this.group,
     this.isHighlighted = false,
     this.onTap,
-    this.onPlayerChanged,
   });
 
   /// The group data to be displayed.
@@ -28,9 +25,6 @@ class GroupTile extends StatefulWidget {
 
   /// Callback function to be executed when the tile is tapped.
   final VoidCallback? onTap;
-
-  /// Callback function to be executed when the players in the group are changed.
-  final VoidCallback? onPlayerChanged;
 
   @override
   State<GroupTile> createState() => _GroupTileState();
@@ -98,19 +92,6 @@ class _GroupTileState extends State<GroupTile> {
                     text: member.name,
                     suffixText: getNameCountText(member),
                     iconEnabled: false,
-                    onTileTap: () {
-                      Navigator.push(
-                        context,
-                        adaptivePageRoute(
-                          builder: (context) => PlayerDetailView(
-                            player: member,
-                            callback: () {
-                              widget.onPlayerChanged?.call();
-                            },
-                          ),
-                        ),
-                      );
-                    },
                   ),
               ],
             ),

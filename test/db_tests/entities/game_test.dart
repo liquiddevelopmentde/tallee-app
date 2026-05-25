@@ -28,7 +28,7 @@ void main() {
         name: 'Chess',
         ruleset: Ruleset.singleWinner,
         description: 'A classic strategy game',
-        color: AppColor.blue,
+        color: GameColor.blue,
         icon: 'chess_icon',
       );
       testGame2 = Game(
@@ -36,7 +36,7 @@ void main() {
         name: 'Poker',
         ruleset: Ruleset.multipleWinners,
         description: 'Card game with multiple winners',
-        color: AppColor.red,
+        color: GameColor.red,
         icon: 'poker_icon',
       );
       testGame3 = Game(
@@ -44,7 +44,7 @@ void main() {
         name: 'Monopoly',
         ruleset: Ruleset.highestScore,
         description: 'A board game about real estate',
-        color: AppColor.orange,
+        color: GameColor.orange,
         icon: '',
       );
     });
@@ -124,7 +124,7 @@ void main() {
             name: 'Game\'s & "Special" <Name>',
             ruleset: Ruleset.multipleWinners,
             description: 'Description with émojis 🎮🎲',
-            color: AppColor.purple,
+            color: GameColor.purple,
             icon: '',
           );
           await database.gameDao.addGame(game: specialGame);
@@ -280,19 +280,19 @@ void main() {
 
         await database.gameDao.updateGameColor(
           gameId: testGame1.id,
-          color: AppColor.green,
+          color: GameColor.green,
         );
 
         final updatedGame = await database.gameDao.getGameById(
           gameId: testGame1.id,
         );
-        expect(updatedGame.color, AppColor.green);
+        expect(updatedGame.color, GameColor.green);
       });
 
       test('updateGameColor() does nothing for non-existent game', () async {
         final updated = await database.gameDao.updateGameColor(
           gameId: 'non-existent-id',
-          color: AppColor.green,
+          color: GameColor.green,
         );
         expect(updated, isFalse);
 
@@ -336,7 +336,7 @@ void main() {
           name: newName,
         );
 
-        const newGameColor = AppColor.teal;
+        const newGameColor = GameColor.teal;
         await database.gameDao.updateGameColor(
           gameId: testGame1.id,
           color: newGameColor,

@@ -6,13 +6,11 @@ class AppSkeleton extends StatefulWidget {
   /// - [child]: The widget tree to apply the skeleton effect to.
   /// - [enabled]: A boolean to enable or disable the skeleton effect.
   /// - [fixLayoutBuilder]: A boolean to fix the layout builder for AnimatedSwitcher.
-  /// - [alignment]: The alignment used for the custom layout builder and optional Align wrapper. Defaults to [Alignment.center].
   const AppSkeleton({
     super.key,
     required this.child,
     this.enabled = true,
     this.fixLayoutBuilder = false,
-    this.alignment = Alignment.center,
   });
 
   /// The widget tree to apply the skeleton effect to.
@@ -23,9 +21,6 @@ class AppSkeleton extends StatefulWidget {
 
   /// A boolean to fix the layout builder for AnimatedSwitcher.
   final bool fixLayoutBuilder;
-
-  /// The alignment used for the custom layout builder and optional Align wrapper
-  final Alignment alignment;
 
   @override
   State<AppSkeleton> createState() => _AppSkeletonState();
@@ -50,14 +45,13 @@ class _AppSkeletonState extends State<AppSkeleton> {
         layoutBuilder: !widget.fixLayoutBuilder
             ? AnimatedSwitcher.defaultLayoutBuilder
             : (Widget? currentChild, List<Widget> previousChildren) {
-                final children = <Widget>[...previousChildren];
-                if (currentChild != null) children.add(currentChild);
-                return Stack(alignment: widget.alignment, children: children);
+                return Stack(
+                  alignment: Alignment.topCenter,
+                  children: [...previousChildren, ?currentChild],
+                );
               },
       ),
-      child: widget.fixLayoutBuilder
-          ? Align(alignment: widget.alignment, child: widget.child)
-          : widget.child,
+      child: widget.child,
     );
   }
 }

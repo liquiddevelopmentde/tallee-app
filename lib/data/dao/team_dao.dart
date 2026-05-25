@@ -86,7 +86,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<int> getTeamCount() async {
     final count =
         await (selectOnly(teamTable)..addColumns([teamTable.id.count()]))
-            .map((tbl) => tbl.read(teamTable.id.count()))
+            .map((row) => row.read(teamTable.id.count()))
             .getSingle();
     return count ?? 0;
   }
@@ -95,8 +95,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   /// Returns `true` if the team exists, `false` otherwise.
   Future<bool> teamExists({required String teamId}) async {
     final query = select(teamTable)..where((t) => t.id.equals(teamId));
-    final row = await query.getSingleOrNull();
-    return row != null;
+    final result = await query.getSingleOrNull();
+    return result != null;
   }
 
   /// Retrieves all teams from the database.
@@ -119,12 +119,12 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   /// Retrieves a [Team] by its [teamId], including its members.
   Future<Team> getTeamById({required String teamId}) async {
     final query = select(teamTable)..where((t) => t.id.equals(teamId));
-    final row = await query.getSingle();
+    final result = await query.getSingle();
     final members = await _getTeamMembers(teamId: teamId);
     return Team(
-      id: row.id,
-      name: row.name,
-      createdAt: row.createdAt,
+      id: result.id,
+      name: result.name,
+      createdAt: result.createdAt,
       members: members,
     );
   }
@@ -133,13 +133,13 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<List<Player>> _getTeamMembers({required String teamId}) async {
     // Get all player_match entries with this teamId
     final playerMatchQuery = select(db.playerMatchTable)
-      ..where((tbl) => tbl.teamId.equals(teamId));
+      ..where((pm) => pm.teamId.equals(teamId));
     final playerMatches = await playerMatchQuery.get();
 
     if (playerMatches.isEmpty) return [];
 
     // Get unique player IDs
-    final playerIds = playerMatches.map((tbl) => tbl.playerId).toSet();
+    final playerIds = playerMatches.map((pm) => pm.playerId).toSet();
 
     // Fetch all players
     final players = await Future.wait(
@@ -156,7 +156,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required String name,
   }) async {
     final rowsAffected =
-        await (update(teamTable)..where((tbl) => tbl.id.equals(teamId))).write(
+        await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
           TeamTableCompanion(name: Value(name)),
         );
     return rowsAffected > 0;
@@ -175,7 +175,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   /// Deletes the team with the given [teamId] from the database.
   /// Returns `true` if the team was deleted, `false` otherwise.
   Future<bool> deleteTeam({required String teamId}) async {
-    final query = delete(teamTable)..where((tbl) => tbl.id.equals(teamId));
+    final query = delete(teamTable)..where((t) => t.id.equals(teamId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }

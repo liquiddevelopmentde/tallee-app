@@ -8,10 +8,6 @@ import 'package:tallee/data/dao/player_dao.dart';
 import 'package:tallee/data/dao/player_group_dao.dart';
 import 'package:tallee/data/dao/player_match_dao.dart';
 import 'package:tallee/data/dao/score_entry_dao.dart';
-import 'package:tallee/data/dao/statistic_dao.dart';
-import 'package:tallee/data/dao/statistic_game_dao.dart';
-import 'package:tallee/data/dao/statistic_group_dao.dart';
-import 'package:tallee/data/dao/statistic_scope_dao.dart';
 import 'package:tallee/data/dao/team_dao.dart';
 import 'package:tallee/data/db/tables/game_table.dart';
 import 'package:tallee/data/db/tables/group_table.dart';
@@ -20,10 +16,6 @@ import 'package:tallee/data/db/tables/player_group_table.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
 import 'package:tallee/data/db/tables/player_table.dart';
 import 'package:tallee/data/db/tables/score_entry_table.dart';
-import 'package:tallee/data/db/tables/statistic_game_table.dart';
-import 'package:tallee/data/db/tables/statistic_group_table.dart';
-import 'package:tallee/data/db/tables/statistic_scope_table.dart';
-import 'package:tallee/data/db/tables/statistic_table.dart';
 import 'package:tallee/data/db/tables/team_table.dart';
 
 part 'database.g.dart';
@@ -38,10 +30,6 @@ part 'database.g.dart';
     GameTable,
     TeamTable,
     ScoreEntryTable,
-    StatisticTable,
-    StatisticScopeTable,
-    StatisticGameTable,
-    StatisticGroupTable,
   ],
   daos: [
     PlayerDao,
@@ -52,10 +40,6 @@ part 'database.g.dart';
     GameDao,
     ScoreEntryDao,
     TeamDao,
-    StatisticDao,
-    StatisticScopeDao,
-    StatisticGameDao,
-    StatisticGroupDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {

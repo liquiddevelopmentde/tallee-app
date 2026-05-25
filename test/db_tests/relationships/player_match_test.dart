@@ -42,7 +42,7 @@ void main() {
         name: 'Test Game',
         ruleset: Ruleset.singleWinner,
         description: 'A test game',
-        color: AppColor.blue,
+        color: GameColor.blue,
         icon: '',
       );
       testMatch1 = Match(

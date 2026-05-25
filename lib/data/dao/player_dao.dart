@@ -17,7 +17,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// the new one.
   Future<bool> addPlayer({required Player player}) async {
     if (!await playerExists(playerId: player.id)) {
-      final int nameCount = await _processNameCount(name: player.name);
+      final int nameCount = await calculateNameCount(name: player.name);
 
       await into(playerTable).insert(
         PlayerTableCompanion.insert(
@@ -64,7 +64,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
       final playersWithName = entry.value;
 
       // Get the current nameCount
-      var nameCount = await _processNameCount(name: name);
+      var nameCount = await calculateNameCount(name: name);
 
       // One player with the same name
       if (playersWithName.length == 1) {
@@ -113,7 +113,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   Future<int> getPlayerCount() async {
     final count =
         await (selectOnly(playerTable)..addColumns([playerTable.id.count()]))
-            .map((tbl) => tbl.read(playerTable.id.count()))
+            .map((row) => row.read(playerTable.id.count()))
             .getSingle();
     return count ?? 0;
   }
@@ -122,8 +122,8 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// Returns `true` if the player exists, `false` otherwise.
   Future<bool> playerExists({required String playerId}) async {
     final query = select(playerTable)..where((p) => p.id.equals(playerId));
-    final row = await query.getSingleOrNull();
-    return row != null;
+    final result = await query.getSingleOrNull();
+    return result != null;
   }
 
   /// Retrieves all players from the database.
@@ -146,76 +146,57 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// Retrieves a [Player] by their [id].
   Future<Player> getPlayerById({required String playerId}) async {
     final query = select(playerTable)..where((p) => p.id.equals(playerId));
-    final row = await query.getSingle();
+    final result = await query.getSingle();
     return Player(
-      id: row.id,
-      name: row.name,
-      description: row.description,
-      createdAt: row.createdAt,
-      nameCount: row.nameCount,
+      id: result.id,
+      name: result.name,
+      description: result.description,
+      createdAt: result.createdAt,
+      nameCount: result.nameCount,
     );
   }
 
   /* Update */
 
   /// Updates the name of the player with the given [playerId] to [name].
-  ///
-  /// Keeps the `nameCount` values of the affected name groups consistent:
-  /// - The renamed player gets a fresh `nameCount` for the new name group.
-  /// - All players in the previous name group whose `nameCount` was greater
-  ///   than the removed one get decremented by 1, so the numbering stays
-  ///   contiguous (1..N) in `createdAt` order.
-  /// - If only one player remains in the previous name group, their
-  ///   `nameCount` is reset to 0.
   Future<bool> updatePlayerName({
     required String playerId,
     required String name,
   }) async {
-    return transaction(() async {
-      final previousPlayer = await (select(
-        playerTable,
-      )..where((tbl) => tbl.id.equals(playerId))).getSingleOrNull();
-      if (previousPlayer == null) return false;
+    // Get previous name and name count for the player before updating
+    final previousPlayerName =
+        await (select(playerTable)..where((p) => p.id.equals(playerId)))
+            .map((row) => row.name)
+            .getSingleOrNull() ??
+        '';
+    final previousNameCount = await getNameCount(name: previousPlayerName);
 
-      final previousName = previousPlayer.name;
-      final previousCount = previousPlayer.nameCount;
+    final rowsAffected =
+        await (update(playerTable)..where((p) => p.id.equals(playerId))).write(
+          PlayerTableCompanion(name: Value(name)),
+        );
 
-      // Determine the nameCount for the renamed player in the new group.
-      final newNameCount = await _processNameCount(name: name);
+    // Update name count for the new name
+    final count = await calculateNameCount(name: name);
+    if (count > 0) {
+      await (update(playerTable)..where((p) => p.name.equals(name))).write(
+        PlayerTableCompanion(nameCount: Value(count)),
+      );
+    }
 
-      final rowsAffected =
-          await (update(
-            playerTable,
-          )..where((tbl) => tbl.id.equals(playerId))).write(
-            PlayerTableCompanion(
-              name: Value(name),
-              nameCount: Value(newNameCount),
-            ),
-          );
-
-      // Consolidate the previous name group.
-      final remainingCount = await getNameCount(name: previousName);
-
-      if (remainingCount == 1) {
-        // Only one player left
-        await (update(playerTable)..where((p) => p.name.equals(previousName)))
-            .write(const PlayerTableCompanion(nameCount: Value(0)));
-      } else if (remainingCount > 1 && previousCount > 0) {
-        // Shift every player above the gap down by one to keep numbering in order.
-        await (update(playerTable)..where(
-              (tbl) =>
-                  tbl.name.equals(previousName) &
-                  tbl.nameCount.isBiggerThanValue(previousCount),
-            ))
-            .write(
-              PlayerTableCompanion.custom(
-                nameCount: playerTable.nameCount - const Constant(1),
-              ),
-            );
+    if (previousNameCount > 0) {
+      // Get the player with that name and the hightest nameCount, and update their nameCount to previousNameCount
+      final player = await getPlayerWithHighestNameCount(
+        name: previousPlayerName,
+      );
+      if (player != null) {
+        await updateNameCount(
+          playerId: player.id,
+          nameCount: previousNameCount,
+        );
       }
-
-      return rowsAffected > 0;
-    });
+    }
+    return rowsAffected > 0;
   }
 
   /// Updates the description of the player with the given [playerId] to
@@ -226,8 +207,9 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     required String description,
   }) async {
     final rowsAffected =
-        await (update(playerTable)..where((tbl) => tbl.id.equals(playerId)))
-            .write(PlayerTableCompanion(description: Value(description)));
+        await (update(playerTable)..where((g) => g.id.equals(playerId))).write(
+          PlayerTableCompanion(description: Value(description)),
+        );
     return rowsAffected > 0;
   }
 
@@ -236,7 +218,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// Deletes the player with the given [id] from the database.
   /// Returns `true` if the player was deleted, `false` if the player did not exist.
   Future<bool> deletePlayer({required String playerId}) async {
-    final query = delete(playerTable)..where((tbl) => tbl.id.equals(playerId));
+    final query = delete(playerTable)..where((p) => p.id.equals(playerId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
@@ -244,10 +226,8 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /* Name count management */
 
   /// Retrieves the count of players with the given [name].
-  /// Returns the highest name count if players with the same name exist,
-  /// otherwise `null`.
   Future<int> getNameCount({required String name}) async {
-    final query = select(playerTable)..where((tbl) => tbl.name.equals(name));
+    final query = select(playerTable)..where((p) => p.name.equals(name));
     final result = await query.get();
     return result.length;
   }
@@ -258,7 +238,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     required String playerId,
     required int nameCount,
   }) async {
-    final query = update(playerTable)..where((tbl) => tbl.id.equals(playerId));
+    final query = update(playerTable)..where((p) => p.id.equals(playerId));
     final rowsAffected = await query.write(
       PlayerTableCompanion(nameCount: Value(nameCount)),
     );
@@ -268,8 +248,8 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   @visibleForTesting
   Future<Player?> getPlayerWithHighestNameCount({required String name}) async {
     final query = select(playerTable)
-      ..where((tbl) => tbl.name.equals(name))
-      ..orderBy([(tbl) => OrderingTerm.desc(tbl.nameCount)])
+      ..where((p) => p.name.equals(name))
+      ..orderBy([(p) => OrderingTerm.desc(p.nameCount)])
       ..limit(1);
     final result = await query.getSingleOrNull();
     if (result != null) {
@@ -284,47 +264,34 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return null;
   }
 
-  /// Processes the name count for a new player with the given [name].
-  ///- 0 Player: returning 0
-  ///- 1 Player: returning 2, and initializes the nameCount for the existing player to 1
-  ///- Other: returning the existing count + 1
-  Future<int> _processNameCount({required String name}) async {
-    final nameCount = await calculateNameCount(name: name);
-    if (nameCount == 2) {
-      // If one other player exists with the same name, initialize the nameCount
-      await initializeNameCount(name: name);
-    }
-    return nameCount;
-  }
-
   @visibleForTesting
-  /// Calculates the name count for a new player with the given [name].
-  /// - 0 Players: Name count is 0
-  /// - 1 Player: Name count is 2 (since the existing player will be 1)
-  /// - Other: Name count is the existing count + 1
   Future<int> calculateNameCount({required String name}) async {
     final count = await getNameCount(name: name);
     final int nameCount;
 
-    if (count == 0) {
-      // If no other players exist with the same name, the returned nameCount is 0
-      nameCount = 0;
-    } else if (count == 1) {
-      // If one other player with the name count exists, the returned name count is 2
+    if (count == 1) {
+      // If one other player exists with the same name, initialize the nameCount
+      await initializeNameCount(name: name);
+      // And for the new player, set nameCount to 2
       nameCount = 2;
-    } else {
+    } else if (count > 1) {
       // If more than one player exists with the same name, just increment
       // the nameCount for the new player
       nameCount = count + 1;
+    } else {
+      // If no other players exist with the same name, set nameCount to 0
+      nameCount = 0;
     }
+
     return nameCount;
   }
 
   @visibleForTesting
   Future<bool> initializeNameCount({required String name}) async {
     final rowsAffected =
-        await (update(playerTable)..where((tbl) => tbl.name.equals(name)))
-            .write(const PlayerTableCompanion(nameCount: Value(1)));
+        await (update(playerTable)..where((p) => p.name.equals(name))).write(
+          const PlayerTableCompanion(nameCount: Value(1)),
+        );
     return rowsAffected > 0;
   }
 

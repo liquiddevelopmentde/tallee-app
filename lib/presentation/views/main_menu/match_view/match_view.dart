@@ -39,7 +39,7 @@ class _MatchViewState extends State<MatchView> {
       game: Game(
         name: 'Game name',
         ruleset: Ruleset.singleWinner,
-        color: AppColor.blue,
+        color: GameColor.blue,
         icon: '',
       ),
       group: Group(
@@ -79,7 +79,7 @@ class _MatchViewState extends State<MatchView> {
               visible: matches.isNotEmpty,
               replacement: Center(
                 child: TopCenteredMessage(
-                  icon: Icons.info,
+                  icon: Icons.report,
                   title: loc.info,
                   message: loc.no_matches_created_yet,
                 ),
@@ -97,7 +97,6 @@ class _MatchViewState extends State<MatchView> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 12.0),
                       child: MatchTile(
-                        onPlayerEdited: loadMatches,
                         width: MediaQuery.sizeOf(context).width * 0.95,
                         onTap: () async {
                           Navigator.push(

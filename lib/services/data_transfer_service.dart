@@ -20,7 +20,6 @@ class DataTransferService {
   static Future<void> deleteAllData(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
 
-    await db.statisticDao.deleteAllStatistics();
     await db.matchDao.deleteAllMatches();
     await db.teamDao.deleteAllTeams();
     await db.groupDao.deleteAllGroups();
@@ -279,7 +278,7 @@ class DataTransferService {
       name: 'Unknown',
       ruleset: Ruleset.singleWinner,
       description: '',
-      color: AppColor.blue,
+      color: GameColor.blue,
       icon: '',
     );
   }

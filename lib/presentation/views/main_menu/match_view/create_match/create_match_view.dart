@@ -196,7 +196,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 child: PlayerSelection(
                   key: ValueKey(selectedGroup?.id ?? 'no_group'),
                   initialSelectedPlayers: selectedPlayers,
-                  onPlayerCreated: () => widget.onMatchesUpdated?.call(),
                   onChanged: (value) {
                     setState(() {
                       selectedPlayers = value;

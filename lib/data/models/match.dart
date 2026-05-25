@@ -107,7 +107,7 @@ class Match {
         name: '',
         ruleset: Ruleset.singleWinner,
         description: '',
-        color: AppColor.blue,
+        color: GameColor.blue,
         icon: '',
       ),
       group = null,

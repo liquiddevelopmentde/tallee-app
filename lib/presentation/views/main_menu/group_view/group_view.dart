@@ -77,7 +77,6 @@ class _GroupViewState extends State<GroupView> {
                     );
                   }
                   return GroupTile(
-                    onPlayerChanged: loadGroups,
                     group: groups[index],
                     onTap: () async {
                       await Navigator.push(
@@ -107,10 +106,13 @@ class _GroupViewState extends State<GroupView> {
                   context,
                   adaptivePageRoute(
                     builder: (context) {
-                      return CreateGroupView(onMembersChanged: loadGroups);
+                      return const CreateGroupView();
                     },
                   ),
                 );
+                setState(() {
+                  loadGroups();
+                });
               },
             ),
           ),

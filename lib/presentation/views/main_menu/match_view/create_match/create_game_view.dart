@@ -49,10 +49,10 @@ class _CreateGameViewState extends State<CreateGameView> {
   late final AppDatabase db;
 
   late List<(Ruleset, String)> _rulesets;
-  late List<(AppColor, String)> _colors;
+  late List<(GameColor, String)> _colors;
 
   Ruleset? selectedRuleset = Ruleset.singleWinner;
-  AppColor? selectedColor = AppColor.orange;
+  GameColor? selectedColor = GameColor.orange;
 
   /// Controller for the game name input field.
   final _gameNameController = TextEditingController();
@@ -87,10 +87,10 @@ class _CreateGameViewState extends State<CreateGameView> {
       ),
     );
     _colors = List.generate(
-      AppColor.values.length,
+      GameColor.values.length,
       (index) => (
-        AppColor.values[index],
-        translateAppColorToString(AppColor.values[index], context),
+        GameColor.values[index],
+        translateGameColorToString(GameColor.values[index], context),
       ),
     );
 
@@ -117,6 +117,7 @@ class _CreateGameViewState extends State<CreateGameView> {
 
     return ScaffoldMessenger(
       child: Scaffold(
+        backgroundColor: CustomTheme.backgroundColor,
         appBar: AppBar(
           title: Text(isEditing ? loc.edit_game : loc.create_game),
           actions: [
@@ -467,7 +468,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                                     height: 16,
                                     margin: const EdgeInsets.only(left: 12),
                                     decoration: BoxDecoration(
-                                      color: getColorFromAppColor(
+                                      color: getColorFromGameColor(
                                         _colors[index].$1,
                                       ),
                                       shape: BoxShape.circle,
@@ -501,13 +502,13 @@ class _CreateGameViewState extends State<CreateGameView> {
             width: 16,
             height: 16,
             decoration: BoxDecoration(
-              color: getColorFromAppColor(selectedColor!),
+              color: getColorFromGameColor(selectedColor!),
               shape: BoxShape.circle,
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 5),
-            child: Text(translateAppColorToString(selectedColor!, context)),
+            child: Text(translateGameColorToString(selectedColor!, context)),
           ),
           Transform.rotate(
             angle: pi / 2,

@@ -51,7 +51,7 @@ class GameTile extends StatelessWidget {
         ? (badgeColor!.computeLuminance() > 0.5 ? Colors.black : Colors.white)
         : Colors.white;
 
-    final gameColor = badgeColor ?? getColorFromAppColor(AppColor.orange);
+    final gameColor = badgeColor ?? getColorFromGameColor(GameColor.orange);
 
     return GestureDetector(
       onTap: () async {

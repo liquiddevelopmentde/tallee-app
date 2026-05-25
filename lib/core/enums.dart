@@ -43,32 +43,4 @@ enum Ruleset {
 }
 
 /// Different colors for highlighting games
-enum AppColor { red, orange, yellow, green, teal, blue, purple, pink }
-
-enum StatisticType {
-  totalMatches,
-  totalWins,
-  totalScore,
-  totalLosses,
-  averageScore,
-  bestScore,
-  worstScore,
-  winrate,
-}
-
-enum StatisticScope {
-  allPlayers,
-  //selectedPlayer,
-  selectedGroups,
-  selectedGames,
-  timeframe,
-}
-
-enum Timeframe {
-  last7Days,
-  last30Days,
-  last90Days,
-  last180Days,
-  lastYear,
-  allTime,
-}
+enum GameColor { red, orange, yellow, green, teal, blue, purple, pink }

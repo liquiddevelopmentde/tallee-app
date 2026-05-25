@@ -49,7 +49,7 @@ void main() {
       testGame = Game(
         name: 'Test Game',
         ruleset: Ruleset.highestScore,
-        color: AppColor.blue,
+        color: GameColor.blue,
         icon: '',
       );
       testMatch1 = Match(

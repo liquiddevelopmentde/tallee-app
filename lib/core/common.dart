@@ -24,48 +24,48 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
   }
 }
 
-/// Translates a [AppColor] enum value to its corresponding localized string.
-String translateAppColorToString(AppColor color, BuildContext context) {
+/// Translates a [GameColor] enum value to its corresponding localized string.
+String translateGameColorToString(GameColor color, BuildContext context) {
   final loc = AppLocalizations.of(context);
   switch (color) {
-    case AppColor.red:
+    case GameColor.red:
       return loc.color_red;
-    case AppColor.blue:
+    case GameColor.blue:
       return loc.color_blue;
-    case AppColor.green:
+    case GameColor.green:
       return loc.color_green;
-    case AppColor.yellow:
+    case GameColor.yellow:
       return loc.color_yellow;
-    case AppColor.purple:
+    case GameColor.purple:
       return loc.color_purple;
-    case AppColor.orange:
+    case GameColor.orange:
       return loc.color_orange;
-    case AppColor.pink:
+    case GameColor.pink:
       return loc.color_pink;
-    case AppColor.teal:
+    case GameColor.teal:
       return loc.color_teal;
   }
 }
 
-/// Returns the [Color] object corresponding to a [AppColor] enum value.
-Color getColorFromAppColor(AppColor color) {
+/// Returns the [Color] object corresponding to a [GameColor] enum value.
+Color getColorFromGameColor(GameColor color) {
   switch (color) {
-    case AppColor.red:
+    case GameColor.red:
       return Colors.red;
-    case AppColor.blue:
+    case GameColor.blue:
       return Colors.blue;
-    case AppColor.green:
+    case GameColor.green:
       return Colors.green;
-    case AppColor.yellow:
+    case GameColor.yellow:
       return const Color(0xFFF7CA28);
-    case AppColor.purple:
+    case GameColor.purple:
       return Colors.purple;
-    case AppColor.orange:
+    case GameColor.orange:
       return const Color(0xFFef681f);
-    case AppColor.pink:
-      return const Color(0xFFE91E63);
-    case AppColor.teal:
-      return const Color(0xFF00BCD4);
+    case GameColor.pink:
+      return Colors.pink;
+    case GameColor.teal:
+      return Colors.teal;
   }
 }
 

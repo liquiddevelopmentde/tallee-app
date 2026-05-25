@@ -39,25 +39,18 @@ class PlayerGroupDao extends DatabaseAccessor<AppDatabase>
 
   /// Retrieves all players belonging to a specific group by [groupId].
   Future<List<Player>> getPlayersOfGroup({required String groupId}) async {
-    final query = select(playerGroupTable).join([
-      innerJoin(
-        playerTable,
-        playerTable.id.equalsExp(playerGroupTable.playerId),
-      ),
-    ])..where(playerGroupTable.groupId.equals(groupId));
+    final query = select(playerGroupTable)
+      ..where((pG) => pG.groupId.equals(groupId));
+    final result = await query.get();
 
-    final result = await query.map((row) => row.readTable(playerTable)).get();
-    return result
-        .map(
-          (row) => Player(
-            id: row.id,
-            createdAt: row.createdAt,
-            name: row.name,
-            nameCount: row.nameCount,
-            description: row.description,
-          ),
-        )
-        .toList();
+    List<Player> groupMembers = List.empty(growable: true);
+
+    for (var entry in result) {
+      final player = await db.playerDao.getPlayerById(playerId: entry.playerId);
+      groupMembers.add(player);
+    }
+
+    return groupMembers;
   }
 
   /// Checks if a player with [playerId] is in the group with [groupId].
@@ -67,9 +60,7 @@ class PlayerGroupDao extends DatabaseAccessor<AppDatabase>
     required String groupId,
   }) async {
     final query = select(playerGroupTable)
-      ..where(
-        (tbl) => tbl.playerId.equals(playerId) & tbl.groupId.equals(groupId),
-      );
+      ..where((p) => p.playerId.equals(playerId) & p.groupId.equals(groupId));
     final result = await query.getSingleOrNull();
     return result != null;
   }
@@ -90,7 +81,7 @@ class PlayerGroupDao extends DatabaseAccessor<AppDatabase>
     await db.transaction(() async {
       // Remove all existing players from the group
       final deleteQuery = delete(db.playerGroupTable)
-        ..where((tbl) => tbl.groupId.equals(groupId));
+        ..where((p) => p.groupId.equals(groupId));
       await deleteQuery.go();
 
       // Add new players to the player table if they don't exist
@@ -130,9 +121,7 @@ class PlayerGroupDao extends DatabaseAccessor<AppDatabase>
     required String groupId,
   }) async {
     final query = delete(playerGroupTable)
-      ..where(
-        (tbl) => tbl.playerId.equals(playerId) & tbl.groupId.equals(groupId),
-      );
+      ..where((p) => p.playerId.equals(playerId) & p.groupId.equals(groupId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }

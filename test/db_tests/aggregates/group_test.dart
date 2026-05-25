@@ -194,31 +194,6 @@ void main() {
         expect(allGroups, isEmpty);
       });
 
-      test('getGroupsByPlayer() works correctly', () async {
-        await database.groupDao.addGroupsAsList(
-          groups: [testGroup1, testGroup2],
-        );
-
-        final groups = await database.groupDao.getGroupsByPlayer(
-          playerId: testPlayer2.id,
-        );
-
-        expect(groups, hasLength(2));
-        expect(groups.any((group) => group.id == testGroup1.id), isTrue);
-        expect(groups.any((group) => group.id == testGroup2.id), isTrue);
-      });
-
-      test(
-        'getGroupsByPlayer() returns empty list for non-existent player',
-        () async {
-          final groups = await database.groupDao.getGroupsByPlayer(
-            playerId: 'non-existent-player-id',
-          );
-
-          expect(groups, isEmpty);
-        },
-      );
-
       test('addGroupsAsList() with duplicate groups only adds once', () async {
         await database.groupDao.addGroupsAsList(
           groups: [testGroup1, testGroup1, testGroup1],
