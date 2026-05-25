@@ -65,6 +65,8 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
               barColor: widget.barColor,
               selectedGroups: widget.statistic.selectedGroups,
               selectedGames: widget.statistic.selectedGames,
+              displayCount: displayCount,
+              showAllValues: true,
             ),
             const SizedBox(height: 12),
 

@@ -8,9 +8,7 @@ import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/statistic.dart';
 
 void main() {
@@ -23,10 +21,10 @@ void main() {
   late Group testGroup1;
   late Group testGroup2;
   late Game testGame;
-  late Match testMatch1;
+  /*late Match testMatch1;
   late Match testMatch2;
   late Match testMatchOnlyPlayers;
-  late Match testMatchOnlyGroup;
+  late Match testMatchOnlyGroup;*/
   final fixedDate = DateTime(2025, 19, 11, 00, 11, 23);
   final fakeClock = Clock(() => fixedDate);
 
@@ -62,7 +60,7 @@ void main() {
         color: AppColor.blue,
         icon: '',
       );
-      testMatch1 = Match(
+      /*testMatch1 = Match(
         name: 'First Test Match',
         game: testGame,
         group: testGroup1,
@@ -85,7 +83,7 @@ void main() {
         game: testGame,
         group: testGroup2,
         players: testGroup2.members,
-      );
+      );*/
     });
     await database.playerDao.addPlayersAsList(
       players: [

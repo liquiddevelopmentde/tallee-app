@@ -26,9 +26,10 @@ class StatisticsTile extends StatelessWidget {
     required this.width,
     required this.values,
     required this.barColor,
-    this.displayCount,
+    required this.displayCount,
     this.selectedGroups,
     this.selectedGames,
+    this.showAllValues = false,
   });
 
   /// The icon displayed next to the title.
@@ -46,10 +47,12 @@ class StatisticsTile extends StatelessWidget {
   /// The color of the bars representing the values.
   final Color barColor;
 
-  final int? displayCount;
-
+  // statistic data
+  final int displayCount;
   final List<Group>? selectedGroups;
   final List<Game>? selectedGames;
+
+  final bool showAllValues;
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +79,9 @@ class StatisticsTile extends StatelessWidget {
               final maxBarWidth = constraints.maxWidth * 0.8;
 
               // If displayCount wasnt provided, take all values
-              final valuesShown = displayCount == null
+              final valuesShown = showAllValues
                   ? values.length
-                  : min(values.length, displayCount!);
+                  : min(values.length, displayCount);
               final displayValues = values.take(valuesShown).toList();
               final maxVal = displayValues.isNotEmpty
                   ? displayValues.fold<num>(
@@ -103,6 +106,17 @@ class StatisticsTile extends StatelessWidget {
                       maxBarWidth,
                     );
 
+                    final barClr = index >= displayCount
+                        ? barColor.withAlpha(150)
+                        : barColor;
+
+                    var textClr = barColor.computeLuminance() > 0.5
+                        ? const Color(0xFF101010)
+                        : CustomTheme.textColor;
+                    textClr = textClr.withAlpha(
+                      index >= displayCount ? 220 : 255,
+                    );
+
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2.0),
                       child: Row(
@@ -119,7 +133,7 @@ class StatisticsTile extends StatelessWidget {
                                   width: barWidth,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(4),
-                                    color: barColor,
+                                    color: barClr,
                                   ),
                                 ),
 
@@ -138,13 +152,7 @@ class StatisticsTile extends StatelessWidget {
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
-                                            color:
-                                                barColor ==
-                                                    getColorFromAppColor(
-                                                      AppColor.yellow,
-                                                    )
-                                                ? const Color(0xFF101010)
-                                                : CustomTheme.textColor,
+                                            color: textClr,
                                           ),
                                         ),
                                         TextSpan(
