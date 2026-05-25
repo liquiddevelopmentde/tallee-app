@@ -7,22 +7,19 @@ on:
       - "main"
 
 jobs:
+
   test:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/cirruslabs/flutter:stable
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # Required for Flutter action
-      - name: Install jq
+      - name: Install Node
         run: |
           apt-get update
-          apt-get install -y jq 
+          apt-get install -y nodejs npm
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Get dependencies
         run: |
