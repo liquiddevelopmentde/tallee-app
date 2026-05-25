@@ -266,22 +266,22 @@ abstract class AppLocalizations {
   /// **'Create statistic'**
   String get create_statistic;
 
-  /// No description provided for @which_key_metric.
-  ///
-  /// In en, this message translates to:
-  /// **'Select which key metric you want to display'**
-  String get which_key_metric;
-
   /// No description provided for @classifier.
   ///
   /// In en, this message translates to:
   /// **'Classifier'**
   String get classifier;
 
+  /// No description provided for @select_the_filtered_timeframe.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the timeframe you want to filter by.'**
+  String get select_the_filtered_timeframe;
+
   /// No description provided for @select_the_filtered_games.
   ///
   /// In en, this message translates to:
-  /// **'Select the filtered games'**
+  /// **'Select the games you want to filter by.'**
   String get select_the_filtered_games;
 
   /// No description provided for @games.
@@ -293,26 +293,14 @@ abstract class AppLocalizations {
   /// No description provided for @select_the_filtered_groups.
   ///
   /// In en, this message translates to:
-  /// **'Select the filtered groups'**
+  /// **'Select the groups you want to filter by.'**
   String get select_the_filtered_groups;
-
-  /// No description provided for @select_main_filter.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the main filter for your statistic. This will determine which data is used to calculate the selected classifier.'**
-  String get select_main_filter;
 
   /// No description provided for @scope.
   ///
   /// In en, this message translates to:
   /// **'Scope'**
   String get scope;
-
-  /// No description provided for @select_a_timeframe_for_which_data_will_be_filtered.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a timeframe for which the data will be filtered. Only matches that ended within the selected timeframe will be included in the statistic.'**
-  String get select_a_timeframe_for_which_data_will_be_filtered;
 
   /// No description provided for @timeframe.
   ///
@@ -1028,77 +1016,59 @@ abstract class AppLocalizations {
   /// **'Stats'**
   String get stats;
 
-  /// No description provided for @statistic_scope_all_players.
-  ///
-  /// In en, this message translates to:
-  /// **'All players'**
-  String get statistic_scope_all_players;
-
-  /// No description provided for @statistic_scope_selected_games.
+  /// No description provided for @selected_games.
   ///
   /// In en, this message translates to:
   /// **'Selected games'**
-  String get statistic_scope_selected_games;
+  String get selected_games;
 
-  /// No description provided for @statistic_scope_selected_groups.
+  /// No description provided for @selected_groups.
   ///
   /// In en, this message translates to:
   /// **'Selected groups'**
-  String get statistic_scope_selected_groups;
+  String get selected_groups;
 
-  /// No description provided for @statistic_scope_timeframe.
-  ///
-  /// In en, this message translates to:
-  /// **'Timeframe'**
-  String get statistic_scope_timeframe;
-
-  /// No description provided for @statistic_type_average_score.
+  /// No description provided for @average_score.
   ///
   /// In en, this message translates to:
   /// **'Average score'**
-  String get statistic_type_average_score;
+  String get average_score;
 
-  /// No description provided for @statistic_type_best_score.
+  /// No description provided for @best_score.
   ///
   /// In en, this message translates to:
   /// **'Best score'**
-  String get statistic_type_best_score;
+  String get best_score;
 
-  /// No description provided for @statistic_type_total_losses.
+  /// No description provided for @total_losses.
   ///
   /// In en, this message translates to:
   /// **'Total losses'**
-  String get statistic_type_total_losses;
+  String get total_losses;
 
-  /// No description provided for @statistic_type_total_matches.
+  /// No description provided for @total_matches.
   ///
   /// In en, this message translates to:
   /// **'Total matches'**
-  String get statistic_type_total_matches;
+  String get total_matches;
 
-  /// No description provided for @statistic_type_total_score.
+  /// No description provided for @total_score.
   ///
   /// In en, this message translates to:
   /// **'Total score'**
-  String get statistic_type_total_score;
+  String get total_score;
 
-  /// No description provided for @statistic_type_total_wins.
+  /// No description provided for @total_wins.
   ///
   /// In en, this message translates to:
   /// **'Total wins'**
-  String get statistic_type_total_wins;
+  String get total_wins;
 
-  /// No description provided for @statistic_type_winrate.
-  ///
-  /// In en, this message translates to:
-  /// **'Winrate'**
-  String get statistic_type_winrate;
-
-  /// No description provided for @statistic_type_worst_score.
+  /// No description provided for @worst_score.
   ///
   /// In en, this message translates to:
   /// **'Worst score'**
-  String get statistic_type_worst_score;
+  String get worst_score;
 
   /// Success message when adding a player
   ///
@@ -1130,41 +1100,41 @@ abstract class AppLocalizations {
   /// **'Tie'**
   String get tie;
 
-  /// No description provided for @timeframe_all_time.
+  /// No description provided for @all_time.
   ///
   /// In en, this message translates to:
   /// **'All time'**
-  String get timeframe_all_time;
+  String get all_time;
 
-  /// No description provided for @timeframe_last_180_days.
+  /// No description provided for @last_180_days.
   ///
   /// In en, this message translates to:
   /// **'Last 180 days'**
-  String get timeframe_last_180_days;
+  String get last_180_days;
 
-  /// No description provided for @timeframe_last_30_days.
+  /// No description provided for @last_30_days.
   ///
   /// In en, this message translates to:
   /// **'Last 30 days'**
-  String get timeframe_last_30_days;
+  String get last_30_days;
 
-  /// No description provided for @timeframe_last_7_days.
+  /// No description provided for @last_7_days.
   ///
   /// In en, this message translates to:
   /// **'Last 7 days'**
-  String get timeframe_last_7_days;
+  String get last_7_days;
 
-  /// No description provided for @timeframe_last_90_days.
+  /// No description provided for @last_90_days.
   ///
   /// In en, this message translates to:
   /// **'Last 90 days'**
-  String get timeframe_last_90_days;
+  String get last_90_days;
 
-  /// No description provided for @timeframe_last_year.
+  /// No description provided for @last_year.
   ///
   /// In en, this message translates to:
   /// **'Last year'**
-  String get timeframe_last_year;
+  String get last_year;
 
   /// No description provided for @today_at.
   ///

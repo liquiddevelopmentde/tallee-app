@@ -76,10 +76,10 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                          loc.select_a_classifier,
+                        const Text(
+                          'description',
                           textAlign: TextAlign.start,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: CustomTheme.textColor,
                             fontSize: 12,
                           ),
@@ -147,10 +147,10 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                          loc.select_a_scope,
+                        const Text(
+                          'description',
                           textAlign: TextAlign.start,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: CustomTheme.textColor,
                             fontSize: 12,
                           ),
@@ -405,7 +405,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                             ),
                           ),
                           Text(
-                            loc.select_a_timeframe_for_which_data_will_be_filtered,
+                            loc.select_the_filtered_timeframe,
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: CustomTheme.textColor,
@@ -581,17 +581,17 @@ String translateTimeframeToString(Timeframe timeframe, BuildContext context) {
   final loc = AppLocalizations.of(context);
   switch (timeframe) {
     case Timeframe.last7Days:
-      return loc.timeframe_last_7_days;
+      return loc.last_7_days;
     case Timeframe.last30Days:
-      return loc.timeframe_last_30_days;
+      return loc.last_30_days;
     case Timeframe.last90Days:
-      return loc.timeframe_last_90_days;
+      return loc.last_90_days;
     case Timeframe.last180Days:
-      return loc.timeframe_last_180_days;
+      return loc.last_180_days;
     case Timeframe.lastYear:
-      return loc.timeframe_last_year;
+      return loc.last_year;
     case Timeframe.allTime:
-      return loc.timeframe_all_time;
+      return loc.all_time;
   }
 }
 
@@ -599,13 +599,13 @@ String translateScopeToString(StatisticScope scope, BuildContext context) {
   final loc = AppLocalizations.of(context);
   switch (scope) {
     case StatisticScope.allPlayers:
-      return loc.statistic_scope_all_players;
+      return loc.all_players;
     case StatisticScope.selectedGroups:
-      return loc.statistic_scope_selected_groups;
+      return loc.selected_groups;
     case StatisticScope.selectedGames:
-      return loc.statistic_scope_selected_games;
+      return loc.selected_games;
     case StatisticScope.timeframe:
-      return loc.statistic_scope_timeframe;
+      return loc.timeframe;
   }
 }
 
@@ -616,20 +616,20 @@ String translateStatisticTypeToString(
   final loc = AppLocalizations.of(context);
   switch (type) {
     case StatisticType.totalMatches:
-      return loc.statistic_type_total_matches;
+      return loc.total_matches;
     case StatisticType.totalWins:
-      return loc.statistic_type_total_wins;
+      return loc.total_wins;
     case StatisticType.totalScore:
-      return loc.statistic_type_total_score;
+      return loc.total_score;
     case StatisticType.totalLosses:
-      return loc.statistic_type_total_losses;
+      return loc.total_losses;
     case StatisticType.averageScore:
-      return loc.statistic_type_average_score;
+      return loc.average_score;
     case StatisticType.bestScore:
-      return loc.statistic_type_best_score;
+      return loc.best_score;
     case StatisticType.worstScore:
-      return loc.statistic_type_worst_score;
+      return loc.worst_score;
     case StatisticType.winrate:
-      return loc.statistic_type_winrate;
+      return loc.winrate;
   }
 }
