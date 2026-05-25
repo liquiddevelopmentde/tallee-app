@@ -95,33 +95,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String get create_statistic => 'Statistik erstellen';
 
   @override
-  String get which_key_metric => 'Select which key metric you want to display';
+  String get classifier => 'Klassifikator';
 
   @override
-  String get classifier => 'Classifier';
+  String get select_the_filtered_games => 'Wähle die gefilterten Spielvorlagen';
 
   @override
-  String get select_the_filtered_games => 'Select the filtered games';
+  String get games => 'Spielvorlagen';
 
   @override
-  String get games => 'Games';
+  String get select_the_filtered_groups => 'Wähle die gefilterten Gruppen';
 
   @override
-  String get select_the_filtered_groups => 'Select the filtered groups';
-
-  @override
-  String get select_main_filter =>
-      'Select the main filter for your statistic. This will determine which data is used to calculate the selected classifier.';
-
-  @override
-  String get scope => 'Scope';
+  String get scope => 'Bereich';
 
   @override
   String get select_a_timeframe_for_which_data_will_be_filtered =>
-      'Select a timeframe for which the data will be filtered. Only matches that ended within the selected timeframe will be included in the statistic.';
+      'Wähle einen Zeitraum, für den die Daten gefiltert werden sollen';
 
   @override
-  String get timeframe => 'Timeframe';
+  String get timeframe => 'Zeitraum';
 
   @override
   String get created_on => 'Erstellt am';
@@ -370,7 +363,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_statistics_available => 'Keine Statistiken verfügbar';
 
   @override
-  String get no_statistics_created_yet => 'No statistics created yet';
+  String get no_statistics_created_yet => 'Noch keine Statistiken erstellt';
 
   @override
   String get none => 'Kein';
@@ -498,40 +491,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get stats => 'Statistiken';
 
   @override
-  String get statistic_scope_all_players => 'Alle Spieler:innen';
+  String get selected_games => 'Ausgewählte Spielvorlagen';
 
   @override
-  String get statistic_scope_selected_games => 'Ausgewählte Spielvorlagen';
+  String get selected_groups => 'Ausgewählte Gruppen';
 
   @override
-  String get statistic_scope_selected_groups => 'Ausgewählte Gruppen';
+  String get average_score => 'Durchschnittliche Punktzahl';
 
   @override
-  String get statistic_scope_timeframe => 'Zeitraum';
+  String get best_score => 'Beste Punktzahl';
 
   @override
-  String get statistic_type_average_score => 'Durchschnittliche Punktzahl';
+  String get total_losses => 'Niederlagen insgesamt';
 
   @override
-  String get statistic_type_best_score => 'Beste Punktzahl';
+  String get total_matches => 'Spiele insgesamt';
 
   @override
-  String get statistic_type_total_losses => 'Niederlagen insgesamt';
+  String get total_score => 'Punktzahl insgesamt';
 
   @override
-  String get statistic_type_total_matches => 'Spiele insgesamt';
+  String get total_wins => 'Siege insgesamt';
 
   @override
-  String get statistic_type_total_score => 'Punktzahl insgesamt';
-
-  @override
-  String get statistic_type_total_wins => 'Siege insgesamt';
-
-  @override
-  String get statistic_type_winrate => 'Siegquote';
-
-  @override
-  String get statistic_type_worst_score => 'Schlechteste Punktzahl';
+  String get worst_score => 'Schlechteste Punktzahl';
 
   @override
   String successfully_added_player(String playerName) {
@@ -554,22 +538,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tie => 'Unentschieden';
 
   @override
-  String get timeframe_all_time => 'Gesamter Zeitraum';
+  String get all_time => 'Gesamter Zeitraum';
 
   @override
-  String get timeframe_last_180_days => 'Letzte 180 Tage';
+  String get last_180_days => 'Letzte 180 Tage';
 
   @override
-  String get timeframe_last_30_days => 'Letzte 30 Tage';
+  String get last_30_days => 'Letzte 30 Tage';
 
   @override
-  String get timeframe_last_7_days => 'Letzte 7 Tage';
+  String get last_7_days => 'Letzte 7 Tage';
 
   @override
-  String get timeframe_last_90_days => 'Letzte 90 Tage';
+  String get last_90_days => 'Letzte 90 Tage';
 
   @override
-  String get timeframe_last_year => 'Letztes Jahr';
+  String get last_year => 'Letztes Jahr';
 
   @override
   String get today_at => 'Heute um';

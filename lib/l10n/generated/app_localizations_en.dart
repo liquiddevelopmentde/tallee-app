@@ -95,9 +95,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_statistic => 'Create statistic';
 
   @override
-  String get which_key_metric => 'Select which key metric you want to display';
-
-  @override
   String get classifier => 'Classifier';
 
   @override
@@ -108,10 +105,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get select_the_filtered_groups => 'Select the filtered groups';
-
-  @override
-  String get select_main_filter =>
-      'Select the main filter for your statistic. This will determine which data is used to calculate the selected classifier.';
 
   @override
   String get scope => 'Scope';
@@ -498,40 +491,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stats => 'Stats';
 
   @override
-  String get statistic_scope_all_players => 'All players';
+  String get selected_games => 'Selected games';
 
   @override
-  String get statistic_scope_selected_games => 'Selected games';
+  String get selected_groups => 'Selected groups';
 
   @override
-  String get statistic_scope_selected_groups => 'Selected groups';
+  String get average_score => 'Average score';
 
   @override
-  String get statistic_scope_timeframe => 'Timeframe';
+  String get best_score => 'Best score';
 
   @override
-  String get statistic_type_average_score => 'Average score';
+  String get total_losses => 'Total losses';
 
   @override
-  String get statistic_type_best_score => 'Best score';
+  String get total_matches => 'Total matches';
 
   @override
-  String get statistic_type_total_losses => 'Total losses';
+  String get total_score => 'Total score';
 
   @override
-  String get statistic_type_total_matches => 'Total matches';
+  String get total_wins => 'Total wins';
 
   @override
-  String get statistic_type_total_score => 'Total score';
-
-  @override
-  String get statistic_type_total_wins => 'Total wins';
-
-  @override
-  String get statistic_type_winrate => 'Winrate';
-
-  @override
-  String get statistic_type_worst_score => 'Worst score';
+  String get worst_score => 'Worst score';
 
   @override
   String successfully_added_player(String playerName) {
@@ -553,22 +537,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tie => 'Tie';
 
   @override
-  String get timeframe_all_time => 'All time';
+  String get all_time => 'All time';
 
   @override
-  String get timeframe_last_180_days => 'Last 180 days';
+  String get last_180_days => 'Last 180 days';
 
   @override
-  String get timeframe_last_30_days => 'Last 30 days';
+  String get last_30_days => 'Last 30 days';
 
   @override
-  String get timeframe_last_7_days => 'Last 7 days';
+  String get last_7_days => 'Last 7 days';
 
   @override
-  String get timeframe_last_90_days => 'Last 90 days';
+  String get last_90_days => 'Last 90 days';
 
   @override
-  String get timeframe_last_year => 'Last year';
+  String get last_year => 'Last year';
 
   @override
   String get today_at => 'Today at';
