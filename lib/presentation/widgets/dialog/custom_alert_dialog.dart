@@ -19,7 +19,6 @@ class CustomAlertDialog extends StatelessWidget {
   final String title;
   final Widget content;
   final List<CustomDialogAction> actions;
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

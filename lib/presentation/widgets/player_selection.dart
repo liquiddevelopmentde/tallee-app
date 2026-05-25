@@ -26,6 +26,7 @@ class PlayerSelection extends StatefulWidget {
     this.availablePlayers,
     this.initialSelectedPlayers,
     required this.onChanged,
+    this.onPlayerCreated,
   });
 
   /// An optional list of players to choose from. If null, all players from the database are used.
@@ -36,6 +37,9 @@ class PlayerSelection extends StatefulWidget {
 
   /// A callback function that is invoked whenever the selection changes,
   final Function(List<Player> value) onChanged;
+
+  /// A callback function that is invoked when a player was created in this widget
+  final VoidCallback? onPlayerCreated;
 
   @override
   State<PlayerSelection> createState() => _PlayerSelectionState();
@@ -323,6 +327,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
 
   /// Updates the state after successfully adding a new player.
   void _handleSuccessfulPlayerCreation(Player player) {
+    widget.onPlayerCreated?.call();
     selectedPlayers.insert(0, player);
     widget.onChanged([...selectedPlayers]);
     allPlayers.add(player);

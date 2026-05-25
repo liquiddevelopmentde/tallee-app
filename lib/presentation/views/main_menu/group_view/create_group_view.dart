@@ -89,6 +89,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
               Expanded(
                 child: PlayerSelection(
                   initialSelectedPlayers: initialSelectedPlayers,
+                  onPlayerCreated: () => widget.onMembersChanged?.call(),
                   onChanged: (value) {
                     setState(() {
                       selectedPlayers = [...value];
@@ -134,6 +135,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     if (!mounted) return;
 
     if (success) {
+      widget.onMembersChanged?.call();
       await HapticFeedback.successNotification();
       if (mounted) {
         Navigator.pop(context, updatedGroup);
@@ -157,7 +159,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     final success = await db.groupDao.addGroup(
       group: Group(name: groupName, members: selectedPlayers),
     );
-
     return success;
   }
 
