@@ -63,6 +63,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get color_teal => 'Teal';
 
   @override
+  String get displayed_entries => 'Displayed entries';
+
+  @override
   String get color_yellow => 'Yellow';
 
   @override

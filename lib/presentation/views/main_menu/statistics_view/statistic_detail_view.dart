@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/views/main_menu/statistics_view/create_statistic_view.dart'
-    show
-        translateScopeToString,
-        translateStatisticTypeToString,
-        translateTimeframeToString;
+import 'package:tallee/presentation/views/main_menu/statistics_view/create_statistic_view.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
@@ -30,7 +28,7 @@ class StatisticDetailView extends StatefulWidget {
 }
 
 class _StatisticDetailViewState extends State<StatisticDetailView> {
-  int displayCount = 0;
+  late int displayCount;
 
   @override
   void initState() {
@@ -48,7 +46,13 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
     const style = TextStyle(fontWeight: FontWeight.bold);
 
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        title: Text(title),
+        leading: HapticIconButton(
+          icon: const Icon(Icons.arrow_back_ios_new),
+          onPressed: () => handleBack(context),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -141,7 +145,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Display count', style: style),
+                        Text(loc.displayed_entries, style: style),
                         Row(
                           children: [
                             HapticIconButton(
@@ -174,5 +178,12 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
         ),
       ),
     );
+  }
+
+  // Handles saving the display count and giving it to statistics view
+  Future<void> handleBack(BuildContext context) async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    await db.statisticDao.updateDisplayCount(widget.statistic.id, displayCount);
+    if (context.mounted) Navigator.of(context).pop(displayCount);
   }
 }

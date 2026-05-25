@@ -26,4 +26,23 @@ class Statistic {
   String toString() {
     return 'Statistic(id: $id, type: $type, scopes: $scopes, timeframe: $timeframe, selectedGroups: $selectedGroups, selectedGames: $selectedGames)';
   }
+
+  Statistic copyWith({
+    StatisticType? type,
+    List<StatisticScope>? scopes,
+    Timeframe? timeframe,
+    List<Group>? selectedGroups,
+    List<Game>? selectedGames,
+    int? displayCount,
+  }) {
+    return Statistic(
+      id: id,
+      type: type ?? this.type,
+      scopes: scopes ?? this.scopes,
+      timeframe: timeframe ?? this.timeframe,
+      selectedGroups: selectedGroups ?? this.selectedGroups,
+      selectedGames: selectedGames ?? this.selectedGames,
+      displayCount: displayCount ?? this.displayCount,
+    );
+  }
 }

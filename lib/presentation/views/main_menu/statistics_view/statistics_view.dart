@@ -26,6 +26,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   bool isLoading = true;
   List<Match> _allMatches = const [];
   List<Player> _allPlayers = const [];
+  List<Statistic> _statistics = const [];
   List<Widget> statisticTiles = [];
 
   @override
@@ -34,7 +35,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      getStatisticTiles(context);
+      loadStatistics(context);
     });
   }
 
@@ -84,15 +85,16 @@ class _StatisticsViewState extends State<StatisticsView> {
                     context,
                     adaptivePageRoute(
                       builder: (context) => CreateStatisticView(
-                        onStatisticCreated: () => getStatisticTiles(context),
+                        onStatisticCreated: () => loadStatistics(context),
                       ),
                     ),
                   );
                   if (!context.mounted) return;
-                  final newTile = _buildStatisticTile(context, newStatistic);
-
                   setState(() {
-                    statisticTiles.add(newTile);
+                    _statistics = [..._statistics, newStatistic];
+                    statisticTiles = _statistics
+                        .map((stat) => _buildStatisticTile(context, stat))
+                        .toList();
                   });
                 },
               ),
@@ -103,7 +105,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     );
   }
 
-  Future<void> getStatisticTiles(BuildContext context) async {
+  Future<void> loadStatistics(BuildContext context) async {
     setState(() {
       isLoading = true;
       statisticTiles = List.generate(
@@ -131,27 +133,26 @@ class _StatisticsViewState extends State<StatisticsView> {
     final statistics = results[0] as List<Statistic>;
     _allMatches = results[1] as List<Match>;
     _allPlayers = results[2] as List<Player>;
+    _statistics = statistics;
 
     setState(() {
-      statisticTiles = [
-        for (final statistic in statistics) ...[
-          _buildStatisticTile(context, statistic),
-        ],
-      ];
+      statisticTiles = _statistics
+          .map((stat) => _buildStatisticTile(context, stat))
+          .toList();
       isLoading = false;
     });
   }
 
   Widget _buildStatisticTile(BuildContext context, Statistic statistic) {
-    return GestureDetector(
-      onTap: () {
-        final values = computeStatisticValues(
-          statistic: statistic,
-          matches: _allMatches,
-          players: _allPlayers,
-        );
+    final values = computeStatisticValues(
+      statistic: statistic,
+      matches: _allMatches,
+      players: _allPlayers,
+    );
 
-        Navigator.push(
+    return GestureDetector(
+      onTap: () async {
+        final newDisplayCount = await Navigator.push(
           context,
           adaptivePageRoute(
             builder: (context) => StatisticDetailView(
@@ -162,6 +163,21 @@ class _StatisticsViewState extends State<StatisticsView> {
             ),
           ),
         );
+        if (newDisplayCount != null &&
+            newDisplayCount != statistic.displayCount) {
+          setState(() {
+            _statistics = _statistics
+                .map(
+                  (stat) => stat.id == statistic.id
+                      ? stat.copyWith(displayCount: newDisplayCount)
+                      : stat,
+                )
+                .toList();
+            statisticTiles = _statistics
+                .map((stat) => _buildStatisticTile(context, stat))
+                .toList();
+          });
+        }
       },
       child: buildStatisticTile(
         statistic: statistic,

@@ -18,6 +18,7 @@
   "color_purple": "Purple",
   "color_red": "Red",
   "color_teal": "Teal",
+  "displayed_entries": "Displayed entries",
   "color_yellow": "Yellow",
   "confirm": "Confirm",
   "could_not_add_player": "Could not add player {playerName}",

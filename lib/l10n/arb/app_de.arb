@@ -19,6 +19,7 @@
   "color_red": "Rot",
   "color_teal": "Türkis",
   "color_yellow": "Gelb",
+  "displayed_entries": "Angezeigte Einträge",
   "confirm": "Bestätigen",
   "could_not_add_player": "Spieler:in {playerName} konnte nicht hinzugefügt werden",
   "@could_not_add_player": {

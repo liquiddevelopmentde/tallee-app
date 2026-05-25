@@ -206,6 +206,12 @@ abstract class AppLocalizations {
   /// **'Teal'**
   String get color_teal;
 
+  /// No description provided for @displayed_entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Displayed entries'**
+  String get displayed_entries;
+
   /// No description provided for @color_yellow.
   ///
   /// In en, this message translates to:
