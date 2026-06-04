@@ -3,11 +3,13 @@ import 'dart:core' hide Match;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -24,6 +26,7 @@ class MatchTile extends StatefulWidget {
     required this.onTap,
     this.width,
     this.compact = false,
+    this.onPlayerEdited,
   });
 
   /// The match data to be displayed.
@@ -31,6 +34,9 @@ class MatchTile extends StatefulWidget {
 
   /// The callback invoked when the tile is tapped.
   final VoidCallback onTap;
+
+  /// The callback invoked when the players are edited
+  final VoidCallback? onPlayerEdited;
 
   /// Optional width for the tile.
   final double? width;
@@ -224,6 +230,19 @@ class _MatchTileState extends State<MatchTile> {
                     text: player.name,
                     suffixText: getNameCountText(player),
                     iconEnabled: false,
+                    onTileTap: () {
+                      Navigator.push(
+                        context,
+                        adaptivePageRoute(
+                          builder: (context) => PlayerDetailView(
+                            player: player,
+                            callback: () {
+                              widget.onPlayerEdited?.call();
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   );
                 }).toList(),
               ),
