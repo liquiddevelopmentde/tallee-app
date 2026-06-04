@@ -113,7 +113,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   Future<int> getPlayerCount() async {
     final count =
         await (selectOnly(playerTable)..addColumns([playerTable.id.count()]))
-            .map((row) => row.read(playerTable.id.count()))
+            .map((tbl) => tbl.read(playerTable.id.count()))
             .getSingle();
     return count ?? 0;
   }
@@ -122,8 +122,8 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// Returns `true` if the player exists, `false` otherwise.
   Future<bool> playerExists({required String playerId}) async {
     final query = select(playerTable)..where((p) => p.id.equals(playerId));
-    final result = await query.getSingleOrNull();
-    return result != null;
+    final row = await query.getSingleOrNull();
+    return row != null;
   }
 
   /// Retrieves all players from the database.
@@ -146,13 +146,13 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// Retrieves a [Player] by their [id].
   Future<Player> getPlayerById({required String playerId}) async {
     final query = select(playerTable)..where((p) => p.id.equals(playerId));
-    final result = await query.getSingle();
+    final row = await query.getSingle();
     return Player(
-      id: result.id,
-      name: result.name,
-      description: result.description,
-      createdAt: result.createdAt,
-      nameCount: result.nameCount,
+      id: row.id,
+      name: row.name,
+      description: row.description,
+      createdAt: row.createdAt,
+      nameCount: row.nameCount,
     );
   }
 
@@ -174,7 +174,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return transaction(() async {
       final previousPlayer = await (select(
         playerTable,
-      )..where((p) => p.id.equals(playerId))).getSingleOrNull();
+      )..where((tbl) => tbl.id.equals(playerId))).getSingleOrNull();
       if (previousPlayer == null) return false;
 
       final previousName = previousPlayer.name;
@@ -186,7 +186,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
       final rowsAffected =
           await (update(
             playerTable,
-          )..where((p) => p.id.equals(playerId))).write(
+          )..where((tbl) => tbl.id.equals(playerId))).write(
             PlayerTableCompanion(
               name: Value(name),
               nameCount: Value(newNameCount),
@@ -203,9 +203,9 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
       } else if (remainingCount > 1 && previousCount > 0) {
         // Shift every player above the gap down by one to keep numbering in order.
         await (update(playerTable)..where(
-              (p) =>
-                  p.name.equals(previousName) &
-                  p.nameCount.isBiggerThanValue(previousCount),
+              (tbl) =>
+                  tbl.name.equals(previousName) &
+                  tbl.nameCount.isBiggerThanValue(previousCount),
             ))
             .write(
               PlayerTableCompanion.custom(
@@ -226,9 +226,8 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     required String description,
   }) async {
     final rowsAffected =
-        await (update(playerTable)..where((g) => g.id.equals(playerId))).write(
-          PlayerTableCompanion(description: Value(description)),
-        );
+        await (update(playerTable)..where((tbl) => tbl.id.equals(playerId)))
+            .write(PlayerTableCompanion(description: Value(description)));
     return rowsAffected > 0;
   }
 
@@ -237,7 +236,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// Deletes the player with the given [id] from the database.
   /// Returns `true` if the player was deleted, `false` if the player did not exist.
   Future<bool> deletePlayer({required String playerId}) async {
-    final query = delete(playerTable)..where((p) => p.id.equals(playerId));
+    final query = delete(playerTable)..where((tbl) => tbl.id.equals(playerId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
@@ -248,7 +247,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// Returns the highest name count if players with the same name exist,
   /// otherwise `null`.
   Future<int> getNameCount({required String name}) async {
-    final query = select(playerTable)..where((p) => p.name.equals(name));
+    final query = select(playerTable)..where((tbl) => tbl.name.equals(name));
     final result = await query.get();
     return result.length;
   }
@@ -259,7 +258,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     required String playerId,
     required int nameCount,
   }) async {
-    final query = update(playerTable)..where((p) => p.id.equals(playerId));
+    final query = update(playerTable)..where((tbl) => tbl.id.equals(playerId));
     final rowsAffected = await query.write(
       PlayerTableCompanion(nameCount: Value(nameCount)),
     );
@@ -269,8 +268,8 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   @visibleForTesting
   Future<Player?> getPlayerWithHighestNameCount({required String name}) async {
     final query = select(playerTable)
-      ..where((p) => p.name.equals(name))
-      ..orderBy([(p) => OrderingTerm.desc(p.nameCount)])
+      ..where((tbl) => tbl.name.equals(name))
+      ..orderBy([(tbl) => OrderingTerm.desc(tbl.nameCount)])
       ..limit(1);
     final result = await query.getSingleOrNull();
     if (result != null) {
@@ -324,9 +323,8 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   @visibleForTesting
   Future<bool> initializeNameCount({required String name}) async {
     final rowsAffected =
-        await (update(playerTable)..where((p) => p.name.equals(name))).write(
-          const PlayerTableCompanion(nameCount: Value(1)),
-        );
+        await (update(playerTable)..where((tbl) => tbl.name.equals(name)))
+            .write(const PlayerTableCompanion(nameCount: Value(1)));
     return rowsAffected > 0;
   }
 

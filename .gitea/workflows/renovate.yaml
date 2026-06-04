@@ -1,0 +1,35 @@
+name: Renovate
+on:
+  schedule:
+    - cron: '0 10 1-6 * 5'
+  push:
+    branches:
+      - setup/222-actions-&-pr-template-verbessern
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    container:
+      image: node:20-bookworm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Upgrade git
+        run: |
+          apt-get update
+          apt-get install -y git
+          git --version
+
+      - name: Run Renovate
+        env:
+          RENOVATE_TOKEN: ${{ secrets.BOT_TOKEN }}
+          RENOVATE_PLATFORM: gitea
+          RENOVATE_ENDPOINT: https://git.yannick-weigert.de
+          RENOVATE_REPOSITORIES: liquid-development/game-tracker
+          RENOVATE_GIT_AUTHOR: "Gitea Actions <actions@yannick-weigert.de>"
+          RENOVATE_CONFIG_FILE: renovate.json
+          LOG_LEVEL: info
+        run: |
+          npm install -g renovate
+          renovate

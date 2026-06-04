@@ -45,7 +45,7 @@ void main() {
         name: 'Chess',
         ruleset: Ruleset.singleWinner,
         description: 'Strategic board game',
-        color: GameColor.blue,
+        color: AppColor.blue,
         icon: 'chess_icon',
       );
 
@@ -448,19 +448,19 @@ void main() {
             Game(
               name: 'Red Game',
               ruleset: Ruleset.singleWinner,
-              color: GameColor.red,
+              color: AppColor.red,
               icon: 'icon',
             ),
             Game(
               name: 'Blue Game',
               ruleset: Ruleset.singleWinner,
-              color: GameColor.blue,
+              color: AppColor.blue,
               icon: 'icon',
             ),
             Game(
               name: 'Green Game',
               ruleset: Ruleset.singleWinner,
-              color: GameColor.green,
+              color: AppColor.green,
               icon: 'icon',
             ),
           ];
@@ -484,19 +484,19 @@ void main() {
             Game(
               name: 'Highest Score Game',
               ruleset: Ruleset.highestScore,
-              color: GameColor.blue,
+              color: AppColor.blue,
               icon: 'icon',
             ),
             Game(
               name: 'Lowest Score Game',
               ruleset: Ruleset.lowestScore,
-              color: GameColor.blue,
+              color: AppColor.blue,
               icon: 'icon',
             ),
             Game(
               name: 'Single Winner',
               ruleset: Ruleset.singleWinner,
-              color: GameColor.blue,
+              color: AppColor.blue,
               icon: 'icon',
             ),
           ];

@@ -39,7 +39,7 @@ class _MatchViewState extends State<MatchView> {
       game: Game(
         name: 'Game name',
         ruleset: Ruleset.singleWinner,
-        color: GameColor.blue,
+        color: AppColor.blue,
         icon: '',
       ),
       group: Group(
@@ -79,7 +79,7 @@ class _MatchViewState extends State<MatchView> {
               visible: matches.isNotEmpty,
               replacement: Center(
                 child: TopCenteredMessage(
-                  icon: Icons.report,
+                  icon: Icons.info,
                   title: loc.info,
                   message: loc.no_matches_created_yet,
                 ),

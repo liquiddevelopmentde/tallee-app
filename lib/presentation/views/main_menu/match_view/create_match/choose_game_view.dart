@@ -164,7 +164,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                         game.ruleset,
                         context,
                       ),
-                      badgeColor: getColorFromGameColor(game.color),
+                      badgeColor: getColorFromAppColor(game.color),
                       isHighlighted: selectedGameId == game.id,
                       onTap: () async {
                         setState(() {
