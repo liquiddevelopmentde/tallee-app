@@ -60,7 +60,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               padding: const EdgeInsets.fromLTRB(0, 12, 0, 96),
               buildDefaultDragHandles: false,
               itemCount: allItemsCount,
-              onReorderItem: onReorderItem,
+              onReorder: onReorderItem,
               proxyDecorator: (child, index, animation) =>
                   Material(type: MaterialType.transparency, child: child),
               itemBuilder: (context, index) {
