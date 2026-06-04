@@ -11,7 +11,7 @@ class AnimatedDialogButton extends StatefulWidget {
   const AnimatedDialogButton({
     super.key,
     required this.buttonText,
-    required this.onPressed,
+    this.onPressed,
     this.buttonConstraints,
     this.buttonType = ButtonType.primary,
     this.isDescructive = false,

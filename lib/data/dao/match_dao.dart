@@ -260,15 +260,15 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Returns `true` if the match exists, otherwise `false`.
   Future<bool> matchExists({required String matchId}) async {
     final query = select(matchTable)..where((g) => g.id.equals(matchId));
-    final result = await query.getSingleOrNull();
-    return result != null;
+    final row = await query.getSingleOrNull();
+    return row != null;
   }
 
   /// Retrieves the number of matches in the database.
   Future<int> getMatchCount() async {
     final count =
         await (selectOnly(matchTable)..addColumns([matchTable.id.count()]))
-            .map((row) => row.read(matchTable.id.count()))
+            .map((tbl) => tbl.read(matchTable.id.count()))
             .getSingle();
     return count ?? 0;
   }
@@ -281,10 +281,12 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     return Future.wait(
       result.map((row) async {
         final game = await db.gameDao.getGameById(gameId: row.gameId);
+
         Group? group;
         if (row.groupId != null) {
           group = await db.groupDao.getGroupById(groupId: row.groupId!);
         }
+
         final players = await db.playerMatchDao.getPlayersOfMatch(
           matchId: row.id,
         );
@@ -315,13 +317,13 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Retrieves a [Match] by its [matchId].
   Future<Match> getMatchById({required String matchId}) async {
     final query = select(matchTable)..where((g) => g.id.equals(matchId));
-    final result = await query.getSingle();
+    final row = await query.getSingle();
 
-    final game = await db.gameDao.getGameById(gameId: result.gameId);
+    final game = await db.gameDao.getGameById(gameId: row.gameId);
 
     Group? group;
-    if (result.groupId != null) {
-      group = await db.groupDao.getGroupById(groupId: result.groupId!);
+    if (row.groupId != null) {
+      group = await db.groupDao.getGroupById(groupId: row.groupId!);
     }
 
     final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId);
@@ -331,16 +333,15 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final teams = await _getMatchTeams(matchId: matchId);
 
     return Match(
-      id: result.id,
-      name: result.name,
+      id: row.id,
+      name: row.name,
       game: game,
       group: group,
       players: players,
       teams: teams.isEmpty ? null : teams,
-      isTeamMatch: result.isTeamMatch,
-      notes: result.notes,
-      createdAt: result.createdAt,
-      endedAt: result.endedAt,
+      notes: row.notes,
+      createdAt: row.createdAt,
+      endedAt: row.endedAt,
       scores: scores,
     );
   }
@@ -351,25 +352,73 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         await (selectOnly(matchTable)
               ..where(matchTable.gameId.equals(gameId))
               ..addColumns([matchTable.id.count()]))
-            .map((row) => row.read(matchTable.id.count()))
+            .map((tbl) => tbl.read(matchTable.id.count()))
             .getSingle();
     return count ?? 0;
+  }
+
+  Future<List<Match>> getMatchesByPlayer({required String playerId}) async {
+    final playerMatches = await (select(
+      playerMatchTable,
+    )..where((tbl) => tbl.playerId.equals(playerId))).get();
+
+    if (playerMatches.isEmpty) return [];
+
+    final matchIds = playerMatches.map((tbl) => tbl.matchId).toSet().toList();
+    final result =
+        await (select(matchTable)
+              ..where((tbl) => tbl.id.isIn(matchIds))
+              ..orderBy([(tbl) => OrderingTerm.desc(tbl.createdAt)]))
+            .get();
+
+    return Future.wait(
+      result.map((row) async {
+        final game = await db.gameDao.getGameById(gameId: row.gameId);
+
+        Group? group;
+        if (row.groupId != null) {
+          group = await db.groupDao.getGroupById(groupId: row.groupId!);
+        }
+
+        final players = await db.playerMatchDao.getPlayersOfMatch(
+          matchId: row.id,
+        );
+        final scores = await db.scoreEntryDao.getAllMatchScores(
+          matchId: row.id,
+        );
+        final teams = await _getMatchTeams(matchId: row.id);
+
+        return Match(
+          id: row.id,
+          name: row.name,
+          game: game,
+          group: group,
+          players: players,
+          teams: teams.isEmpty ? null : teams,
+          notes: row.notes,
+          createdAt: row.createdAt,
+          endedAt: row.endedAt,
+          scores: scores,
+        );
+      }),
+    );
   }
 
   /// Retrieves all matches associated with the given [groupId].
   /// Queries the database directly, filtering by [groupId].
   Future<List<Match>> getMatchesByGroup({required String groupId}) async {
     final query = select(matchTable)..where((m) => m.groupId.equals(groupId));
-    final rows = await query.get();
+    final result = await query.get();
 
     return Future.wait(
-      rows.map((row) async {
+      result.map((row) async {
         final game = await db.gameDao.getGameById(gameId: row.gameId);
         final group = await db.groupDao.getGroupById(groupId: groupId);
         final players = await db.playerMatchDao.getPlayersOfMatch(
           matchId: row.id,
         );
         final teams = await _getMatchTeams(matchId: row.id);
+
         return Match(
           id: row.id,
           name: row.name,
@@ -390,7 +439,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   Future<List<Team>> _getMatchTeams({required String matchId}) async {
     // Get all unique team IDs from PlayerMatchTable for this match
     final playerMatchQuery = select(db.playerMatchTable)
-      ..where((pm) => pm.matchId.equals(matchId) & pm.teamId.isNotNull());
+      ..where((tbl) => tbl.matchId.equals(matchId) & tbl.teamId.isNotNull());
     final playerMatches = await playerMatchQuery.get();
 
     if (playerMatches.isEmpty) return [];
@@ -418,7 +467,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     required String matchId,
     required String name,
   }) async {
-    final query = update(matchTable)..where((g) => g.id.equals(matchId));
+    final query = update(matchTable)..where((tbl) => tbl.id.equals(matchId));
     final rowsAffected = await query.write(
       MatchTableCompanion(name: Value(name)),
     );
@@ -433,7 +482,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     required String matchId,
     required String? groupId,
   }) async {
-    final query = update(matchTable)..where((g) => g.id.equals(matchId));
+    final query = update(matchTable)..where((tbl) => tbl.id.equals(matchId));
     final rowsAffected = await query.write(
       MatchTableCompanion(groupId: Value(groupId)),
     );
@@ -446,7 +495,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     required String matchId,
     required String notes,
   }) async {
-    final query = update(matchTable)..where((g) => g.id.equals(matchId));
+    final query = update(matchTable)..where((tbl) => tbl.id.equals(matchId));
     final rowsAffected = await query.write(
       MatchTableCompanion(notes: Value(notes)),
     );
@@ -457,7 +506,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Sets the groupId to null.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> removeMatchGroup({required String matchId}) async {
-    final query = update(matchTable)..where((g) => g.id.equals(matchId));
+    final query = update(matchTable)..where((tbl) => tbl.id.equals(matchId));
     final rowsAffected = await query.write(
       const MatchTableCompanion(groupId: Value(null)),
     );
@@ -471,7 +520,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     required String matchId,
     required DateTime endedAt,
   }) async {
-    final query = update(matchTable)..where((g) => g.id.equals(matchId));
+    final query = update(matchTable)..where((tbl) => tbl.id.equals(matchId));
     final rowsAffected = await query.write(
       MatchTableCompanion(endedAt: Value(endedAt)),
     );
@@ -483,7 +532,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Deletes the match with the given [matchId] from the database.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> deleteMatch({required String matchId}) async {
-    final query = delete(matchTable)..where((g) => g.id.equals(matchId));
+    final query = delete(matchTable)..where((tbl) => tbl.id.equals(matchId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
@@ -499,7 +548,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Deletes all matches associated with a specific game.
   /// Returns the number of matches deleted.
   Future<int> deleteMatchesByGame({required String gameId}) async {
-    final query = delete(matchTable)..where((m) => m.gameId.equals(gameId));
+    final query = delete(matchTable)..where((tbl) => tbl.gameId.equals(gameId));
     final rowsAffected = await query.go();
     return rowsAffected;
   }

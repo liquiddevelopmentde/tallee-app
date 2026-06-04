@@ -260,6 +260,34 @@ void main() {
         expect(match.group!.id, testGroup1.id);
       });
 
+      test('getMatchesByPlayer() works correctly', () async {
+        await database.matchDao.addMatchesAsList(
+          matches: [testMatch1, testMatch2],
+        );
+
+        final matches = await database.matchDao.getMatchesByPlayer(
+          playerId: testPlayer1.id,
+        );
+
+        expect(matches, hasLength(1));
+        expect(matches.first.id, testMatch2.id);
+        expect(
+          matches.first.players.any((p) => p.id == testPlayer1.id),
+          isTrue,
+        );
+      });
+
+      test(
+        'getMatchesByPlayer() returns empty list for non-existent player',
+        () async {
+          final matches = await database.matchDao.getMatchesByPlayer(
+            playerId: 'non-existing-player-id',
+          );
+
+          expect(matches, isEmpty);
+        },
+      );
+
       test('getMatchCount() works correctly', () async {
         var count = await database.matchDao.getMatchCount();
         expect(count, 0);

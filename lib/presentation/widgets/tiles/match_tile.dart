@@ -23,6 +23,7 @@ class MatchTile extends StatefulWidget {
     required this.match,
     required this.onTap,
     this.width,
+    this.onPlayerEdited,
   });
 
   /// The match data to be displayed.
@@ -30,6 +31,9 @@ class MatchTile extends StatefulWidget {
 
   /// The callback invoked when the tile is tapped.
   final VoidCallback onTap;
+
+  /// The callback invoked when the players are edited
+  final VoidCallback? onPlayerEdited;
 
   /// Optional width for the tile.
   final double? width;
@@ -277,6 +281,20 @@ class _MatchTileState extends State<MatchTile> {
                   return TextIconTile(
                     text: player.name,
                     suffixText: getNameCountText(player),
+                    iconEnabled: false,
+                    onTileTap: () {
+                      Navigator.push(
+                        context,
+                        adaptivePageRoute(
+                          builder: (context) => PlayerDetailView(
+                            player: player,
+                            callback: () {
+                              widget.onPlayerEdited?.call();
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   );
                 }).toList(),
               ),

@@ -77,8 +77,8 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   /// Returns `true` if the game exists, `false` otherwise.
   Future<bool> gameExists({required String gameId}) async {
     final query = select(gameTable)..where((g) => g.id.equals(gameId));
-    final result = await query.getSingleOrNull();
-    return result != null;
+    final row = await query.getSingleOrNull();
+    return row != null;
   }
 
   /// Retrieves all games from the database.
@@ -103,15 +103,15 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   /// Retrieves a [Game] by its [gameId].
   Future<Game> getGameById({required String gameId}) async {
     final query = select(gameTable)..where((g) => g.id.equals(gameId));
-    final result = await query.getSingle();
+    final row = await query.getSingle();
     return Game(
-      id: result.id,
-      name: result.name,
-      ruleset: Ruleset.values.firstWhere((e) => e.name == result.ruleset),
-      description: result.description,
-      color: AppColor.values.firstWhere((e) => e.name == result.color),
-      icon: result.icon,
-      createdAt: result.createdAt,
+      id: row.id,
+      name: row.name,
+      ruleset: Ruleset.values.firstWhere((e) => e.name == row.ruleset),
+      description: row.description,
+      color: AppColor.values.firstWhere((e) => e.name == row.color),
+      icon: row.icon,
+      createdAt: row.createdAt,
     );
   }
 
@@ -123,7 +123,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     required String name,
   }) async {
     final rowsAffected =
-        await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
+        await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
           GameTableCompanion(name: Value(name)),
         );
     return rowsAffected > 0;
@@ -135,7 +135,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     required Ruleset ruleset,
   }) async {
     final rowsAffected =
-        await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
+        await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
           GameTableCompanion(ruleset: Value(ruleset.name)),
         );
     return rowsAffected > 0;
@@ -147,7 +147,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     required String description,
   }) async {
     final rowsAffected =
-        await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
+        await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
           GameTableCompanion(description: Value(description)),
         );
     return rowsAffected > 0;
@@ -159,7 +159,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     required AppColor color,
   }) async {
     final rowsAffected =
-        await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
+        await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
           GameTableCompanion(color: Value(color.name)),
         );
     return rowsAffected > 0;
@@ -171,7 +171,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     required String icon,
   }) async {
     final rowsAffected =
-        await (update(gameTable)..where((g) => g.id.equals(gameId))).write(
+        await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
           GameTableCompanion(icon: Value(icon)),
         );
     return rowsAffected > 0;
@@ -182,7 +182,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   /// Deletes the game with the given [gameId] from the database.
   /// Returns `true` if the game was deleted, `false` if the game did not exist.
   Future<bool> deleteGame({required String gameId}) async {
-    final query = delete(gameTable)..where((g) => g.id.equals(gameId));
+    final query = delete(gameTable)..where((tbl) => tbl.id.equals(gameId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }

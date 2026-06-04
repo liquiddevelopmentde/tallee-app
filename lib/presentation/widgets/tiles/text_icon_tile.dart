@@ -12,6 +12,7 @@ class TextIconTile extends StatelessWidget {
     this.suffixText = '',
     this.onIconTap,
     this.icon = Icons.close,
+    this.onTileTap,
   });
 
   /// The text to display in the tile.
@@ -25,51 +26,60 @@ class TextIconTile extends StatelessWidget {
   /// The icon to display. Defaults to [Icons.close].
   final IconData icon;
 
+  /// The callback to be invoked when the tile is tapped.
+  final VoidCallback? onTileTap;
+
   @override
   Widget build(BuildContext context) {
     final iconEnabled = onIconTap != null;
 
-    return Container(
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: CustomTheme.onBoxColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (iconEnabled) const SizedBox(width: 3),
-          Flexible(
-            child: RichText(
-              overflow: TextOverflow.ellipsis,
-              text: TextSpan(
-                style: DefaultTextStyle.of(context).style,
-                children: [
-                  TextSpan(
-                    text: text,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+    return GestureDetector(
+      onTap: onTileTap,
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: CustomTheme.onBoxColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (iconEnabled) const SizedBox(width: 3),
+            Flexible(
+              child: RichText(
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(
+                  style: DefaultTextStyle.of(context).style,
+                  children: [
+                    TextSpan(
+                      text: text,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  TextSpan(
-                    text: suffixText,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: CustomTheme.textColor.withAlpha(120),
+                    TextSpan(
+                      text: suffixText,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: CustomTheme.textColor.withAlpha(120),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          if (iconEnabled) ...<Widget>[
-            const SizedBox(width: 3),
-            GestureDetector(onTap: onIconTap, child: Icon(icon, size: 20)),
+            if (iconEnabled) ...<Widget>[
+              const SizedBox(width: 3),
+              GestureDetector(
+                onTap: onIconTap,
+                child: const Icon(Icons.close, size: 20),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

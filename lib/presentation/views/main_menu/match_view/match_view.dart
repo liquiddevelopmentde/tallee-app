@@ -79,7 +79,7 @@ class _MatchViewState extends State<MatchView> {
               visible: matches.isNotEmpty,
               replacement: Center(
                 child: TopCenteredMessage(
-                  icon: Icons.report,
+                  icon: Icons.info,
                   title: loc.info,
                   message: loc.no_matches_created_yet,
                 ),
@@ -97,6 +97,7 @@ class _MatchViewState extends State<MatchView> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 12.0),
                       child: MatchTile(
+                        onPlayerEdited: loadMatches,
                         width: MediaQuery.sizeOf(context).width * 0.95,
                         onTap: () async {
                           Navigator.push(

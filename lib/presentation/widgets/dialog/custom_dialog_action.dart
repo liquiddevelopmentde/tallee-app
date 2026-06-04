@@ -10,7 +10,7 @@ class CustomDialogAction extends StatelessWidget {
   /// - [onPressed]: Callback function that is triggered when the button is pressed.
   const CustomDialogAction({
     super.key,
-    required this.onPressed,
+    this.onPressed,
     required this.text,
     this.buttonType = ButtonType.primary,
     this.isDestructive = false,
@@ -20,17 +20,18 @@ class CustomDialogAction extends StatelessWidget {
 
   final ButtonType buttonType;
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   final bool isDestructive;
-
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogButton(
-      onPressed: () async {
-        await HapticFeedback.selectionClick();
-        onPressed.call();
-      },
+      onPressed: onPressed != null
+          ? () async {
+              await HapticFeedback.selectionClick();
+              onPressed?.call();
+            }
+          : null,
       buttonText: text,
       buttonType: buttonType,
       isDescructive: isDestructive,
