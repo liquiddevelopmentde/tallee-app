@@ -20,7 +20,7 @@ class TeamCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final teamColor = getColorFromGameColor(team.color);
+    final teamColor = getColorFromAppColor(team.color);
 
     if (compact) {
       return Container(

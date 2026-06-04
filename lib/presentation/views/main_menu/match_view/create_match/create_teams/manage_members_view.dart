@@ -60,7 +60,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               padding: const EdgeInsets.fromLTRB(0, 12, 0, 96),
               buildDefaultDragHandles: false,
               itemCount: allItemsCount,
-              onReorder: onReorderItem,
+              onReorderItem: onReorderItem,
               proxyDecorator: (child, index, animation) =>
                   Material(type: MaterialType.transparency, child: child),
               itemBuilder: (context, index) {
@@ -113,7 +113,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
   }
 
   Widget buildTeamTile({required Team team}) {
-    final color = getColorFromGameColor(team.color);
+    final color = getColorFromAppColor(team.color);
     final loc = AppLocalizations.of(context);
     final length = team.members.length;
     final memberText = length == 1 ? loc.member : loc.members;

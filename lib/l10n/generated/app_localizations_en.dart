@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get add_team => 'Add Team';
+
+  @override
   String get all_players => 'All players';
 
   @override
@@ -90,6 +93,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get create_new_match => 'Create new match';
+
+  @override
+  String get create_teams => 'Create teams';
 
   @override
   String get create_statistic => 'Create statistic';
@@ -292,6 +298,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lowest_score => 'Lowest Score';
 
   @override
+  String get manage_members => 'Manage Members';
+
+  @override
   String get match_in_progress => 'Match in progress...';
 
   @override
@@ -302,6 +311,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get matches => 'Matches';
+
+  @override
+  String get member => 'Member';
 
   @override
   String get matches_part_of => 'Matches part of';
@@ -340,6 +352,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_matches_created_yet => 'No matches created yet';
 
   @override
+  String get no_players_available => 'No players available';
+
+  @override
   String get no_matches_played_yet => 'No games played yet';
 
   @override
@@ -363,6 +378,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_statistics_available => 'No statistics available';
+
+  @override
+  String get no_teams_available => 'No teams available';
 
   @override
   String get no_statistics_created_yet => 'No statistics created yet';
@@ -411,6 +429,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recent_matches => 'Recent Matches';
+
+  @override
+  String get redistribute => 'Redistribute';
 
   @override
   String get results => 'Results';
@@ -523,6 +544,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String successfully_added_player(String playerName) {
     return 'Successfully added player $playerName';
   }
+
+  @override
+  String get team => 'Team';
+
+  @override
+  String get team_match => 'Team Match';
+
+  @override
+  String get teams => 'Teams';
 
   @override
   String get there_are_no_games_matching_your_search =>

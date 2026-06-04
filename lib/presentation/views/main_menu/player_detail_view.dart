@@ -192,10 +192,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             spacing: 12,
                             runSpacing: 8,
                             children: playerMatches.map((match) {
-                              return TextIconTile(
-                                text: match.name,
-                                iconEnabled: false,
-                              );
+                              return TextIconTile(text: match.name);
                             }).toList(),
                           )
                         : Text(
@@ -223,10 +220,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             spacing: 12,
                             runSpacing: 8,
                             children: playerGroups.map((group) {
-                              return TextIconTile(
-                                text: group.name,
-                                iconEnabled: false,
-                              );
+                              return TextIconTile(text: group.name);
                             }).toList(),
                           )
                         : Text(

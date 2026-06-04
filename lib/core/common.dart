@@ -24,6 +24,28 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
   }
 }
 
+/// Returns the [Color] object corresponding to a [AppColor] enum value.
+Color getColorFromAppColor(AppColor color) {
+  switch (color) {
+    case AppColor.red:
+      return Colors.red;
+    case AppColor.blue:
+      return Colors.blue;
+    case AppColor.green:
+      return Colors.green;
+    case AppColor.yellow:
+      return const Color(0xFFF7CA28);
+    case AppColor.purple:
+      return Colors.purple;
+    case AppColor.orange:
+      return const Color(0xFFef681f);
+    case AppColor.pink:
+      return const Color(0xFFE91E63);
+    case AppColor.teal:
+      return const Color(0xFF00BCD4);
+  }
+}
+
 // Returns a AppColor enum value based on the provided team [index].
 AppColor getTeamColor(int index) {
   final colors = [
@@ -40,8 +62,6 @@ AppColor getTeamColor(int index) {
 }
 
 /// Translates a [AppColor] enum value to its corresponding localized string.
-String translateGameColorToString(AppColor color, BuildContext context) {
-/// Translates a [AppColor] enum value to its corresponding localized string.
 String translateAppColorToString(AppColor color, BuildContext context) {
   final loc = AppLocalizations.of(context);
   switch (color) {
@@ -52,15 +72,16 @@ String translateAppColorToString(AppColor color, BuildContext context) {
     case AppColor.green:
       return loc.color_green;
     case AppColor.yellow:
-      return const Color(0xFFF7CA28);
+      return loc.color_yellow;
+    //return const Color(0xFFF7CA28);
     case AppColor.purple:
       return loc.color_purple;
     case AppColor.orange:
       return loc.color_orange;
     case AppColor.pink:
-      return const Color(0xFFE91E63);
+      return loc.color_pink;
     case AppColor.teal:
-      return const Color(0xFF00BCD4);
+      return loc.color_teal;
   }
 }
 

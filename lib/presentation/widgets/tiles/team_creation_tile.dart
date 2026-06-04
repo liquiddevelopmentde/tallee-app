@@ -111,7 +111,7 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                               width: 34,
                               height: 34,
                               decoration: BoxDecoration(
-                                color: getColorFromGameColor(color),
+                                color: getColorFromAppColor(color),
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: isSelected

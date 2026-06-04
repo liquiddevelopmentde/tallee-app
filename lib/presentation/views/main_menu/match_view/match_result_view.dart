@@ -465,8 +465,8 @@ class _MatchResultViewState extends State<MatchResultView> {
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: getColorFromGameColor(team.color).withAlpha(30),
-        border: Border.all(color: getColorFromGameColor(team.color), width: 2),
+        color: getColorFromAppColor(team.color).withAlpha(30),
+        border: Border.all(color: getColorFromAppColor(team.color), width: 2),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -715,7 +715,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                   },
                 );
               },
-              onReorder: (int oldIndex, int newIndex) {
+              onReorderItem: (int oldIndex, int newIndex) {
                 setState(() {
                   if (newIndex > oldIndex) {
                     newIndex -= 1;
@@ -730,7 +730,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                   key: ValueKey(allTeams[index].id),
                   text: allTeams[index].name,
                   icon: Icons.drag_handle,
-                  color: getColorFromGameColor(allTeams[index].color),
+                  color: getColorFromAppColor(allTeams[index].color),
                 );
               },
             ),
@@ -767,7 +767,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                   },
                 );
               },
-              onReorder: (int oldIndex, int newIndex) {
+              onReorderItem: (int oldIndex, int newIndex) {
                 setState(() {
                   if (newIndex > oldIndex) {
                     newIndex -= 1;
