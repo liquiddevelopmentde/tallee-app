@@ -306,7 +306,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         Navigator.push(
           context,
           adaptivePageRoute(
-            fullscreenDialog: !isTeamMatch,
             builder: (context) => CreateTeamsView(
               match: match,
               onWinnerChanged: widget.onWinnerChanged,
@@ -319,7 +318,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         Navigator.pushReplacement(
           context,
           adaptivePageRoute(
-            fullscreenDialog: !isTeamMatch,
+            fullscreenDialog: true,
             builder: (context) => MatchResultView(
               match: match,
               onWinnerChanged: widget.onWinnerChanged,
