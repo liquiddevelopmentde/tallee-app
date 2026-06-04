@@ -164,11 +164,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                     horizontalAlignment: CrossAxisAlignment.start,
                     content:
                         localMatch.teams != null && localMatch.teams!.isNotEmpty
-                        ? Wrap(
-                            alignment: WrapAlignment.start,
-                            crossAxisAlignment: WrapCrossAlignment.start,
-                            spacing: 12,
-                            runSpacing: 8,
+                        ? Column(
+                            spacing: 8,
                             children: (localMatch.teams ?? []).map((team) {
                               return TeamCard(team: team);
                             }).toList(),

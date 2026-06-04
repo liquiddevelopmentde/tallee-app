@@ -75,7 +75,7 @@ class TeamCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 6,
+          spacing: 3,
           children: [
             Text(
               team.name,
