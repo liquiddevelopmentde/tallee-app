@@ -4,10 +4,11 @@ import 'package:tallee/core/enums.dart';
 class AnimatedDialogButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
   /// when pressed.
-  /// - [onPressed]: Callback function that is triggered when the button is pressed.
   /// - [buttonText]: The text to be displayed on the button.
-  /// - [buttonType]: The type of the button, which determines its styling.
+  /// - [onPressed]: Callback function that is triggered when the button is pressed.
   /// - [buttonConstraints]: Optional constraints to control the button's size.
+  /// - [buttonType]: The type of the button, which determines its styling.
+  /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
   const AnimatedDialogButton({
     super.key,
     required this.buttonText,
@@ -15,7 +16,6 @@ class AnimatedDialogButton extends StatefulWidget {
     this.buttonConstraints,
     this.buttonType = ButtonType.primary,
     this.isDescructive = false,
-    this.content,
   });
 
   final String buttonText;
@@ -27,8 +27,6 @@ class AnimatedDialogButton extends StatefulWidget {
   final ButtonType buttonType;
 
   final bool isDescructive;
-
-  final Widget? content;
 
   @override
   State<AnimatedDialogButton> createState() => _AnimatedDialogButtonState();
@@ -67,13 +65,11 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
                     vertical: 12,
                   ),
                   margin: const EdgeInsets.symmetric(vertical: 8),
-                  child: widget.buttonText == ''
-                      ? widget.content!
-                      : Text(
-                          widget.buttonText,
-                          style: textStyling,
-                          textAlign: TextAlign.center,
-                        ),
+                  child: Text(
+                    widget.buttonText,
+                    style: textStyling,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),
