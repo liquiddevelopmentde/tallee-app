@@ -9,6 +9,7 @@ class LiveEditListTile extends StatefulWidget {
     required this.title,
     required this.value,
     this.onChanged,
+    this.color,
   });
 
   final String title;
@@ -16,6 +17,8 @@ class LiveEditListTile extends StatefulWidget {
   final int value;
 
   final void Function(int newValue)? onChanged;
+
+  final Color? color;
 
   @override
   State<LiveEditListTile> createState() => _LiveEditListTileState();
@@ -68,13 +71,33 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
           Expanded(
             child: Column(
               children: [
-                Text(
-                  widget.title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                if (widget.color != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: widget.color?.withAlpha(30),
+                      border: Border.all(color: widget.color!, width: 2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      widget.title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                else
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
                 SizedBox(
                   width: 150,
                   child: NumericText(

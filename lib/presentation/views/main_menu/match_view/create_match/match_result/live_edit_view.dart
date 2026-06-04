@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
@@ -66,6 +67,7 @@ class _LiveEditViewState extends State<LiveEditView> {
               scores[index] = value;
             },
             value: scores[index],
+            color: getColorFromAppColor(allTeams[index].color),
           );
         },
       );
