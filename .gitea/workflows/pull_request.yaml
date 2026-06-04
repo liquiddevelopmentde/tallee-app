@@ -34,11 +34,13 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      DART_SQLITE3_LIB_PATH: /usr/lib/x86_64-linux-gnu/libsqlite3.so.0
     steps:
       - name: Install Node
         run: |
           apt-get update
-          apt-get install -y nodejs npm
+          apt-get install -y nodejs npm libsqlite3-0 libsqlite3-dev
 
       # Required for Flutter action
       - name: Install jq
@@ -60,7 +62,9 @@ jobs:
           flutter pub get
 
       - name: Run tests
-        run: flutter test
+        run: |
+          rm -rf build/native_assets
+          flutter test
 
   localizations:
     runs-on: ubuntu-latest
