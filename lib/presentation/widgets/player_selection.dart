@@ -352,10 +352,6 @@ class _PlayerSelectionState extends State<PlayerSelection> {
         .toList();
   }
 
-  //shape:
-  //animation:
-  //clipBehavior:
-
   /// Displays a snackbar message at the bottom of the screen.
   /// [message] - The message to display in the snackbar.
   void showSnackBarMessage(String message) {
