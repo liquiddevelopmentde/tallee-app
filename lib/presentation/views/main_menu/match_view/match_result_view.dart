@@ -348,17 +348,16 @@ class _MatchResultViewState extends State<MatchResultView> {
                                       onReorderEnd: (int n) async {
                                         await HapticFeedback.selectionClick();
                                       },
-                                      onReorderItem:
-                                          (int oldIndex, int newIndex) {
-                                            setState(() {
-                                              if (newIndex > oldIndex) {
-                                                newIndex -= 1;
-                                              }
-                                              final Player item = allPlayers
-                                                  .removeAt(oldIndex);
-                                              allPlayers.insert(newIndex, item);
-                                            });
-                                          },
+                                      onReorder: (int oldIndex, int newIndex) {
+                                        setState(() {
+                                          if (newIndex > oldIndex) {
+                                            newIndex -= 1;
+                                          }
+                                          final Player item = allPlayers
+                                              .removeAt(oldIndex);
+                                          allPlayers.insert(newIndex, item);
+                                        });
+                                      },
                                       itemCount: allPlayers.length,
                                       itemBuilder: (context, index) {
                                         return TextIconListTile(

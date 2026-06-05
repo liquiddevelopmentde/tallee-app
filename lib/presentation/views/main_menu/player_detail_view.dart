@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -10,6 +11,8 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/group_view/group_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
@@ -18,7 +21,7 @@ import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/player_profile_list_tile.dart';
 
 class PlayerDetailView extends StatefulWidget {
   const PlayerDetailView({
@@ -178,38 +181,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
                 const SizedBox(height: 20),
                 InfoTile(
-                  title: '${loc.matches_part_of} ($totalMatches)',
-                  icon: Icons.sports_esports,
-                  horizontalAlignment: CrossAxisAlignment.start,
-                  content: AppSkeleton(
-                    enabled: isLoading,
-                    fixLayoutBuilder: true,
-                    alignment: Alignment.topLeft,
-                    child: playerMatches.isNotEmpty
-                        ? Wrap(
-                            alignment: WrapAlignment.start,
-                            crossAxisAlignment: WrapCrossAlignment.start,
-                            spacing: 12,
-                            runSpacing: 8,
-                            children: playerMatches.map((match) {
-                              return TextIconTile(
-                                text: match.name,
-                                iconEnabled: false,
-                              );
-                            }).toList(),
-                          )
-                        : Text(
-                            loc.no_matches_played_yet,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: CustomTheme.textColor,
-                            ),
-                          ),
-                  ),
-                ),
-                const SizedBox(height: 15),
-                InfoTile(
-                  title: '${loc.groups_part_of} ($totalGroups)',
+                  title: '${loc.groups} ($totalGroups)',
                   icon: Icons.people,
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: AppSkeleton(
@@ -223,14 +195,65 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             spacing: 12,
                             runSpacing: 8,
                             children: playerGroups.map((group) {
-                              return TextIconTile(
-                                text: group.name,
-                                iconEnabled: false,
+                              return PlayerProfileListTile(
+                                title: group.name,
+                                count: group.members.length,
+                                onTap: () {
+                                  Navigator.of(context).pushReplacement(
+                                    adaptivePageRoute(
+                                      builder: (context) => GroupDetailView(
+                                        group: group,
+                                        callback: widget.callback,
+                                      ),
+                                    ),
+                                  );
+                                },
                               );
                             }).toList(),
                           )
                         : Text(
                             loc.not_part_of_any_group,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                InfoTile(
+                  title: '${loc.matches} ($totalMatches)',
+                  icon: Icons.sports_esports,
+                  horizontalAlignment: CrossAxisAlignment.start,
+                  content: AppSkeleton(
+                    enabled: isLoading,
+                    fixLayoutBuilder: true,
+                    alignment: Alignment.topLeft,
+                    child: playerMatches.isNotEmpty
+                        ? Wrap(
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            spacing: 12,
+                            runSpacing: 8,
+                            children: playerMatches.map((match) {
+                              return PlayerProfileListTile(
+                                title: match.name,
+                                count: match.players.length,
+                                onTap: () {
+                                  Navigator.of(context).pushReplacement(
+                                    adaptivePageRoute(
+                                      builder: (context) => MatchDetailView(
+                                        match: match,
+                                        onMatchUpdate: widget.callback,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          )
+                        : Text(
+                            loc.no_matches_played_yet,
                             style: const TextStyle(
                               fontSize: 14,
                               color: CustomTheme.textColor,
