@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -15,6 +12,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/match_result/live_edit_view.dart';
 import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/score_list_tile.dart';
@@ -455,81 +453,6 @@ class _MatchResultViewState extends State<MatchResultView> {
     return ruleset == Ruleset.placement;
   }
 
-  Widget buildTeamTile({
-    required Team team,
-    double? width,
-    int showingPlayerAmount = 3,
-  }) {
-    return Container(
-      width: width,
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: getColorFromAppColor(team.color).withAlpha(30),
-        border: Border.all(color: getColorFromAppColor(team.color), width: 2),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            team.name,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.start,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-          Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            children: [
-              for (
-                int i = 0;
-                i < min(team.members.length, showingPlayerAmount);
-                i++
-              )
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                    horizontal: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: CustomTheme.onBoxColor,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    team.members[i].name,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: CustomTheme.textColor.withAlpha(180),
-                    ),
-                  ),
-                ),
-              if (team.members.length > showingPlayerAmount)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                    horizontal: 4,
-                  ),
-                  child: Text(
-                    '+${team.members.length - showingPlayerAmount}',
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: CustomTheme.textColor.withAlpha(180),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget buildPlayerSelectionWidget(bool isTeamMatch) {
     if (isTeamMatch) {
       return RadioGroup<Team>(
@@ -544,7 +467,7 @@ class _MatchResultViewState extends State<MatchResultView> {
           itemCount: allTeams.length,
           itemBuilder: (context, index) {
             return CustomRadioListTile(
-              content: buildTeamTile(team: allTeams[index]),
+              content: TeamCard(team: allTeams[index], maxChars: 24),
               value: allTeams[index],
               onContainerTap: (team) async {
                 setState(() {
@@ -609,11 +532,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return ScoreListTile(
-            content: buildTeamTile(
-              team: allTeams[index],
-              width: 220,
-              showingPlayerAmount: 2,
-            ),
+            content: TeamCard(team: allTeams[index], width: 220, maxChars: 16),
             horizontalPadding: 0,
             controller: controller[index],
           );
@@ -726,11 +645,14 @@ class _MatchResultViewState extends State<MatchResultView> {
               },
               itemCount: allTeams.length,
               itemBuilder: (context, index) {
-                return TextIconListTile(
+                return Padding(
                   key: ValueKey(allTeams[index].id),
-                  text: allTeams[index].name,
-                  icon: Icons.drag_handle,
-                  color: getColorFromAppColor(allTeams[index].color),
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: TeamCard(
+                    showDragHandle: true,
+                    team: allTeams[index],
+                    maxChars: 23,
+                  ),
                 );
               },
             ),
@@ -797,7 +719,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return CustomCheckboxListTile(
-            content: buildTeamTile(team: allTeams[index]),
+            content: TeamCard(team: allTeams[index], maxChars: 24),
             value: _selectedTeams.contains(allTeams[index]),
             onChanged: (bool value) {
               setState(() {
