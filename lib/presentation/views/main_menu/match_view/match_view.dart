@@ -108,7 +108,7 @@ class _MatchViewState extends State<MatchView> {
                     },
                   ),
                 ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
