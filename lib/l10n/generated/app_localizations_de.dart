@@ -527,6 +527,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Es gibt keine Gruppe, die deiner Suche entspricht';
 
   @override
+  String get there_is_no_match_matching_your_search =>
+      'Es gibt kein Spiel, das deiner Suche entspricht';
+
+  @override
   String get this_cannot_be_undone =>
       'Dies kann nicht rückgängig gemacht werden.';
 

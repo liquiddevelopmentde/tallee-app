@@ -4,14 +4,20 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/provider/match_search_provider.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
 
 void main() {
   runApp(
-    Provider<AppDatabase>(
-      create: (context) => AppDatabase(),
+    MultiProvider(
+      providers: [
+        Provider<AppDatabase>(
+          create: (context) => AppDatabase(),
+          dispose: (context, db) => db.close(),
+        ),
+        ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
+      ],
       child: const GameTracker(),
-      dispose: (context, db) => db.close(),
     ),
   );
 }
