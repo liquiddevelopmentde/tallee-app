@@ -10,6 +10,8 @@ class TeamCard extends StatelessWidget {
     required this.team,
     this.compact = false,
     this.width = double.infinity,
+    this.showDragHandle = false,
+    this.maxChars,
   });
 
   final Team team;
@@ -18,9 +20,30 @@ class TeamCard extends StatelessWidget {
 
   final double width;
 
+  final bool showDragHandle;
+
+  final int? maxChars;
+
   @override
   Widget build(BuildContext context) {
     final teamColor = getColorFromAppColor(team.color);
+    final playerAmount = maxChars == null
+        ? team.members.length
+        : () {
+            var combinedLength = 0;
+            var count = 0;
+
+            for (final player in team.members) {
+              final nextLength = player.name.length + (count > 0 ? 1 : 0);
+              if (combinedLength + nextLength > maxChars!) {
+                break;
+              }
+              combinedLength += nextLength;
+              count++;
+            }
+
+            return count;
+          }();
 
     if (compact) {
       return Container(
@@ -73,28 +96,46 @@ class TeamCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: teamColor, width: 2),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 3,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              team.name,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: CustomTheme.textColor,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 3,
+              children: [
+                Text(
+                  team.name,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: CustomTheme.textColor,
+                  ),
+                ),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    ...team.members.take(playerAmount).map((player) {
+                      return TextIconTile(
+                        text: player.name,
+                        suffixText: getNameCountText(player),
+                      );
+                    }),
+                    if (team.members.length > playerAmount)
+                      Text(
+                        '+ ${team.members.length - playerAmount}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: CustomTheme.textColor,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
             ),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: team.members.map((player) {
-                return TextIconTile(
-                  text: player.name,
-                  suffixText: getNameCountText(player),
-                );
-              }).toList(),
-            ),
+            const Icon(Icons.drag_handle),
           ],
         ),
       );
