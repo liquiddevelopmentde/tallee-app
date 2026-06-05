@@ -214,11 +214,7 @@ class _MatchViewState extends State<MatchView> {
   }
 
   void _handleSearchChanges() {
-    final searchProvider = Provider.of<MatchSearchProvider>(
-      context,
-      listen: false,
-    );
-    if (!searchProvider.isSearching) {
+    if (!searchProvider!.isSearching) {
       searchBarController.clear();
       setState(() {
         filteredMatches = [...matches];
