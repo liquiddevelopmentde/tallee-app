@@ -201,13 +201,9 @@ class DataTransferService {
           .map((id) => playerById[id])
           .whereType<Player>()
           .toList();
+      final team = Team.fromJson(map);
 
-      return Team(
-        id: map['id'] as String,
-        name: map['name'] as String,
-        members: members,
-        createdAt: DateTime.parse(map['createdAt'] as String),
-      );
+      return team.copyWith(members: members);
     }).toList();
   }
 
@@ -232,6 +228,7 @@ class DataTransferService {
       final endedAt = map['endedAt'] != null
           ? DateTime.parse(map['endedAt'] as String)
           : null;
+      final isTeamMatch = map['isTeamMatch'] as bool;
       final notes = map['notes'] as String? ?? '';
       final scoresJson = map['scores'] as Map<String, dynamic>? ?? {};
       final scores = scoresJson.map(
@@ -263,6 +260,7 @@ class DataTransferService {
         game: game,
         group: group,
         players: players,
+        isTeamMatch: isTeamMatch,
         teams: teams.isEmpty ? null : teams,
         createdAt: createdAt,
         endedAt: endedAt,

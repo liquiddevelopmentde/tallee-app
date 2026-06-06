@@ -12,6 +12,7 @@ class MatchTable extends Table {
       .references(GroupTable, #id, onDelete: KeyAction.setNull)
       .nullable()();
   TextColumn get name => text()();
+  BoolColumn get isTeamMatch => boolean().withDefault(const Constant(false))();
   TextColumn get notes => text()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get endedAt => dateTime().nullable()();

@@ -42,7 +42,7 @@ enum Ruleset {
   singleLoser,
 }
 
-/// Different colors for highlighting games
+/// Different colors for highlighting content
 enum AppColor { red, orange, yellow, green, teal, blue, purple, pink }
 
 enum StatisticType {
