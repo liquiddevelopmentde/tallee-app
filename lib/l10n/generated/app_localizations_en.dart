@@ -244,9 +244,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groups => 'Groups';
 
   @override
-  String get groups_part_of => 'Groups part of';
-
-  @override
   String get highest_score => 'Highest Score';
 
   @override
@@ -317,9 +314,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get matches => 'Matches';
-
-  @override
-  String get matches_part_of => 'Matches part of';
 
   @override
   String get matches_played => 'Matches played';

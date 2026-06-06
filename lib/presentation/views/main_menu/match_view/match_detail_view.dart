@@ -194,15 +194,16 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                               return TextIconTile(
                                 text: player.name,
                                 suffixText: getNameCountText(player),
-onTileTap: () {
-Navigator.of(context).pushReplacement(
-adaptivePageRoute(
-builder: (context) => PlayerDetailView(
-player: player,
-callback: widget.onMatchUpdate,
-),
-),
-);
+                                onTileTap: () {
+                                  Navigator.of(context).pushReplacement(
+                                    adaptivePageRoute(
+                                      builder: (context) => PlayerDetailView(
+                                        player: player,
+                                        callback: widget.onMatchUpdate,
+                                      ),
+                                    ),
+                                  );
+                                },
                               );
                             }).toList(),
                           )

@@ -536,12 +536,6 @@ abstract class AppLocalizations {
   /// **'Groups'**
   String get groups;
 
-  /// No description provided for @groups_part_of.
-  ///
-  /// In en, this message translates to:
-  /// **'Groups part of'**
-  String get groups_part_of;
-
   /// No description provided for @highest_score.
   ///
   /// In en, this message translates to:
@@ -685,12 +679,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Matches'**
   String get matches;
-
-  /// No description provided for @matches_part_of.
-  ///
-  /// In en, this message translates to:
-  /// **'Matches part of'**
-  String get matches_part_of;
 
   /// No description provided for @matches_played.
   ///
