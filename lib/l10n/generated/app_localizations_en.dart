@@ -195,9 +195,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_reading_file => 'Error reading file';
 
   @override
-  String get exit_view => 'Exit View';
-
-  @override
   String get export_canceled => 'Export canceled';
 
   @override
@@ -386,15 +383,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacy_policy => 'Privacy Policy';
-
-  @override
-  String get quick_create => 'Quick Create';
-
-  @override
-  String get recent_matches => 'Recent Matches';
-
-  @override
-  String get redistribute => 'Redistribute';
 
   @override
   String get results => 'Results';

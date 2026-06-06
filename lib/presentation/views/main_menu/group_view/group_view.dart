@@ -68,14 +68,10 @@ class _GroupViewState extends State<GroupView> {
                 ),
               ),
               child: ListView.builder(
-                padding: const EdgeInsets.only(bottom: 85),
-                itemCount: groups.length + 1,
+                padding: CustomTheme.listViewPadding(context),
+
+                itemCount: groups.length,
                 itemBuilder: (BuildContext context, int index) {
-                  if (index == groups.length) {
-                    return SizedBox(
-                      height: MediaQuery.paddingOf(context).bottom - 20,
-                    );
-                  }
                   return GroupTile(
                     onPlayerChanged: loadGroups,
                     group: groups[index],

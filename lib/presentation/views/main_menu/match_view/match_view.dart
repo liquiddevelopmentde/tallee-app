@@ -85,14 +85,9 @@ class _MatchViewState extends State<MatchView> {
                 ),
               ),
               child: ListView.builder(
-                padding: const EdgeInsets.only(bottom: 85),
-                itemCount: matches.length + 1,
+                padding: CustomTheme.listViewPadding(context),
+                itemCount: matches.length,
                 itemBuilder: (BuildContext context, int index) {
-                  if (index == matches.length) {
-                    return SizedBox(
-                      height: MediaQuery.paddingOf(context).bottom - 20,
-                    );
-                  }
                   return MatchTile(
                     onPlayerEdited: loadMatches,
                     width: MediaQuery.sizeOf(context).width * 0.95,

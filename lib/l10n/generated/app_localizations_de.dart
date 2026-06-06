@@ -195,9 +195,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get error_reading_file => 'Fehler beim Lesen der Datei';
 
   @override
-  String get exit_view => 'Ansicht verlassen';
-
-  @override
   String get export_canceled => 'Export abgebrochen';
 
   @override
@@ -386,15 +383,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get privacy_policy => 'Datenschutzerklärung';
-
-  @override
-  String get quick_create => 'Schnellzugriff';
-
-  @override
-  String get recent_matches => 'Letzte Spiele';
-
-  @override
-  String get redistribute => 'Neu verteilen';
 
   @override
   String get results => 'Ergebnisse';

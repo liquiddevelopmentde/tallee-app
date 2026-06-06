@@ -57,6 +57,9 @@ class CustomTheme {
     bottom: 10,
   );
 
+  static EdgeInsets listViewPadding(BuildContext context) =>
+      EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom + 70);
+
   // ==================== Decorations ====================
   static BoxDecoration standardBoxDecoration = BoxDecoration(
     color: boxColor,

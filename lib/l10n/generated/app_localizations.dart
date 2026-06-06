@@ -440,12 +440,6 @@ abstract class AppLocalizations {
   /// **'Error reading file'**
   String get error_reading_file;
 
-  /// No description provided for @exit_view.
-  ///
-  /// In en, this message translates to:
-  /// **'Exit View'**
-  String get exit_view;
-
   /// No description provided for @export_canceled.
   ///
   /// In en, this message translates to:
@@ -823,24 +817,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy Policy'**
   String get privacy_policy;
-
-  /// No description provided for @quick_create.
-  ///
-  /// In en, this message translates to:
-  /// **'Quick Create'**
-  String get quick_create;
-
-  /// No description provided for @recent_matches.
-  ///
-  /// In en, this message translates to:
-  /// **'Recent Matches'**
-  String get recent_matches;
-
-  /// No description provided for @redistribute.
-  ///
-  /// In en, this message translates to:
-  /// **'Redistribute'**
-  String get redistribute;
 
   /// No description provided for @results.
   ///

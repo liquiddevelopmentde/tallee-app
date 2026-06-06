@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
@@ -50,7 +51,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Stack(
-          alignment: AlignmentDirectional.bottomCenter,
+          alignment: AlignmentDirectional.center,
           fit: StackFit.expand,
           children: [
             AppSkeleton(
@@ -68,7 +69,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                   ),
                 ),
                 child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 85),
+                  padding: CustomTheme.listViewPadding(context),
                   itemCount: statisticTiles.length,
                   itemBuilder: (BuildContext context, int index) {
                     return statisticTiles[index];
