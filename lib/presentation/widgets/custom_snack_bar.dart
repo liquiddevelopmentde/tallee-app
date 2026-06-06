@@ -61,9 +61,9 @@ class _AnimatedContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.02),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 12.5,
-                  spreadRadius: 2.5,
+                  spreadRadius: 5,
                   offset: Offset.zero,
                 ),
               ],
