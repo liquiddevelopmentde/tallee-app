@@ -51,7 +51,7 @@ class _AnimatedContent extends StatelessWidget {
     return FadeTransition(
       opacity: curvedAnimation,
       child: ScaleTransition(
-        scale: curvedAnimation.drive(Tween<double>(begin: 0.9, end: 1.0)),
+        scale: curvedAnimation.drive(Tween<double>(begin: 0.8, end: 1.0)),
         child: Center(
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -74,7 +74,7 @@ class _AnimatedContent extends StatelessWidget {
               textWidthBasis: TextWidthBasis.longestLine,
               style: const TextStyle(
                 color: CustomTheme.textColor,
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
             ),
