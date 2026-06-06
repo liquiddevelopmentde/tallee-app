@@ -297,34 +297,34 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       if (context.mounted) {
         Navigator.pop(context);
       }
-    }
-
-    final match = await createMatch();
-
-    if (isTeamMatch) {
-      if (context.mounted) {
-        Navigator.push(
-          context,
-          adaptivePageRoute(
-            builder: (context) => CreateTeamsView(
-              match: match,
-              onWinnerChanged: widget.onWinnerChanged,
-            ),
-          ),
-        );
-      }
     } else {
-      if (context.mounted) {
-        Navigator.pushReplacement(
-          context,
-          adaptivePageRoute(
-            fullscreenDialog: true,
-            builder: (context) => MatchResultView(
-              match: match,
-              onWinnerChanged: widget.onWinnerChanged,
+      final match = await createMatch();
+
+      if (isTeamMatch) {
+        if (context.mounted) {
+          Navigator.push(
+            context,
+            adaptivePageRoute(
+              builder: (context) => CreateTeamsView(
+                match: match,
+                onWinnerChanged: widget.onWinnerChanged,
+              ),
             ),
-          ),
-        );
+          );
+        }
+      } else {
+        if (context.mounted) {
+          Navigator.pushReplacement(
+            context,
+            adaptivePageRoute(
+              fullscreenDialog: true,
+              builder: (context) => MatchResultView(
+                match: match,
+                onWinnerChanged: widget.onWinnerChanged,
+              ),
+            ),
+          );
+        }
       }
     }
   }
