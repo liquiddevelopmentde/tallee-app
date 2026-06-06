@@ -29,6 +29,7 @@ class StatisticsTile extends StatelessWidget {
     this.selectedGroups,
     this.selectedGames,
     this.showAllValues = false,
+    this.showDisplayCountHighlighting = false,
   });
 
   /// The icon displayed next to the title.
@@ -52,6 +53,7 @@ class StatisticsTile extends StatelessWidget {
   final List<Game>? selectedGames;
 
   final bool showAllValues;
+  final bool showDisplayCountHighlighting;
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +107,10 @@ class StatisticsTile extends StatelessWidget {
                       maxBarWidth,
                     );
 
-                    final barClr = index >= displayCount
+                    final isOverflowEntry = index >= displayCount;
+                    final isHighlightedOverflow =
+                        isOverflowEntry && showDisplayCountHighlighting;
+                    final barClr = isHighlightedOverflow
                         ? barColor.withAlpha(150)
                         : barColor;
 
@@ -113,7 +118,7 @@ class StatisticsTile extends StatelessWidget {
                         ? const Color(0xFF101010)
                         : CustomTheme.textColor;
                     textClr = textClr.withAlpha(
-                      index >= displayCount ? 220 : 255,
+                      isHighlightedOverflow ? 220 : 255,
                     );
 
                     return Padding(
@@ -127,7 +132,9 @@ class StatisticsTile extends StatelessWidget {
                               clipBehavior: Clip.hardEdge,
                               children: [
                                 // Bar
-                                Container(
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 150),
+                                  curve: Curves.easeInOut,
                                   height: 24,
                                   width: barWidth,
                                   decoration: BoxDecoration(

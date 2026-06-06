@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/data/db/database.dart';
@@ -29,6 +31,8 @@ class StatisticDetailView extends StatefulWidget {
 
 class _StatisticDetailViewState extends State<StatisticDetailView> {
   late int displayCount;
+  Timer? timer;
+  bool showHighlighting = false;
 
   @override
   void initState() {
@@ -67,6 +71,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
               selectedGames: widget.statistic.selectedGames,
               displayCount: displayCount,
               showAllValues: true,
+              showDisplayCountHighlighting: showHighlighting,
             ),
             const SizedBox(height: 12),
 
@@ -154,7 +159,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                               icon: const Icon(Icons.remove),
                               onPressed: displayCount <= 1
                                   ? null
-                                  : () => setState(() => displayCount -= 1),
+                                  : () => updateDisplayCount(-1),
                             ),
                             SizedBox(
                               width: 30,
@@ -167,7 +172,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                               icon: const Icon(Icons.add),
                               onPressed: displayCount >= widget.values.length
                                   ? null
-                                  : () => setState(() => displayCount += 1),
+                                  : () => updateDisplayCount(1),
                             ),
                           ],
                         ),
@@ -182,10 +187,41 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
     );
   }
 
+  /// Handles updating the display count and starting the timer
+  void updateDisplayCount(int delta) {
+    final newValue = (displayCount + delta).clamp(1, widget.values.length);
+    if (newValue == displayCount) return;
+
+    setState(() {
+      displayCount = newValue;
+      showHighlighting = true;
+    });
+
+    restartDisplayCountTimer();
+  }
+
+  /// Restarts the timer
+  void restartDisplayCountTimer() {
+    timer?.cancel();
+
+    timer = Timer(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      setState(() {
+        showHighlighting = false;
+      });
+    });
+  }
+
   // Handles saving the display count and giving it to statistics view
   Future<void> handleBack(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     await db.statisticDao.updateDisplayCount(widget.statistic.id, displayCount);
     if (context.mounted) Navigator.of(context).pop(displayCount);
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 }
