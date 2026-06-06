@@ -7,10 +7,12 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/provider/group_search_provider.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/group_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
@@ -24,12 +26,15 @@ class GroupView extends StatefulWidget {
 
 class _GroupViewState extends State<GroupView> {
   late final AppDatabase db;
+  GroupSearchProvider? searchProvider;
 
   /// Loaded groups from the database
   late List<Group> loadedGroups;
 
   /// Loading state
   bool isLoading = true;
+
+  TextEditingController searchBarController = TextEditingController();
 
   List<Group> groups = List.filled(
     7,
@@ -40,62 +45,105 @@ class _GroupViewState extends State<GroupView> {
     ),
   );
 
+  late List<Group> filteredGroups = [...groups];
+
   @override
   void initState() {
     super.initState();
-
     db = Provider.of<AppDatabase>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      searchProvider = Provider.of<GroupSearchProvider>(context, listen: false);
+      searchProvider?.addListener(_handleSearchChanges);
+    });
     loadGroups();
+  }
+
+  @override
+  void dispose() {
+    searchProvider?.removeListener(_handleSearchChanges);
+    searchBarController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final searchProvider = Provider.of<GroupSearchProvider>(context);
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       body: Stack(
         alignment: Alignment.center,
         children: [
-          AppSkeleton(
-            enabled: isLoading,
-            child: Visibility(
-              visible: groups.isNotEmpty,
-              replacement: Center(
-                child: TopCenteredMessage(
-                  icon: Icons.info,
-                  title: loc.info,
-                  message: loc.no_groups_created_yet,
+          Column(
+            children: [
+              if (searchProvider.isSearching)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: CustomSearchBar(
+                    controller: searchBarController,
+                    hintText: '',
+                    onChanged: (value) {
+                      setState(() {
+                        filterGroups(value);
+                      });
+                    },
+                  ),
+                ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: AppSkeleton(
+                  enabled: isLoading,
+                  child: Visibility(
+                    visible: groups.isNotEmpty,
+                    replacement: Center(
+                      child: TopCenteredMessage(
+                        icon: Icons.info,
+                        title: loc.info,
+                        message: loc.no_groups_created_yet,
+                      ),
+                    ),
+                    child: Visibility(
+                      visible: filteredGroups.isNotEmpty,
+                      replacement: Center(
+                        child: TopCenteredMessage(
+                          icon: Icons.info,
+                          title: loc.info,
+                          message: loc.there_is_no_group_matching_your_search,
+                        ),
+                      ),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 85),
+                        itemCount: filteredGroups.length + 1,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (index == filteredGroups.length) {
+                            return SizedBox(
+                              height: MediaQuery.paddingOf(context).bottom - 20,
+                            );
+                          }
+                          return GroupTile(
+                            onPlayerChanged: loadGroups,
+                            group: filteredGroups[index],
+                            onTap: () async {
+                              await Navigator.push(
+                                context,
+                                adaptivePageRoute(
+                                  builder: (context) {
+                                    return GroupDetailView(
+                                      group: filteredGroups[index],
+                                      callback: loadGroups,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              child: ListView.builder(
-                padding: const EdgeInsets.only(bottom: 85),
-                itemCount: groups.length + 1,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == groups.length) {
-                    return SizedBox(
-                      height: MediaQuery.paddingOf(context).bottom - 20,
-                    );
-                  }
-                  return GroupTile(
-                    onPlayerChanged: loadGroups,
-                    group: groups[index],
-                    onTap: () async {
-                      await Navigator.push(
-                        context,
-                        adaptivePageRoute(
-                          builder: (context) {
-                            return GroupDetailView(
-                              group: groups[index],
-                              callback: loadGroups,
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
+            ],
           ),
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
@@ -119,6 +167,37 @@ class _GroupViewState extends State<GroupView> {
     );
   }
 
+  /// Filters the groups based on the search [query].
+  void filterGroups(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filteredGroups.clear();
+        filteredGroups.addAll(groups);
+      } else {
+        filteredGroups.clear();
+        filteredGroups.addAll(
+          groups.where(
+            (group) =>
+                group.name.toLowerCase().contains(query.toLowerCase()) ||
+                group.members.any(
+                  (player) =>
+                      player.name.toLowerCase().contains(query.toLowerCase()),
+                ),
+          ),
+        );
+      }
+    });
+  }
+
+  void _handleSearchChanges() {
+    if (!searchProvider!.isSearching) {
+      searchBarController.clear();
+      setState(() {
+        filteredGroups = [...groups];
+      });
+    }
+  }
+
   void loadGroups() {
     setState(() {
       isLoading = true;
@@ -131,6 +210,7 @@ class _GroupViewState extends State<GroupView> {
       setState(() {
         groups = loadedGroups
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        filteredGroups = [...loadedGroups];
       });
       if (mounted) {
         setState(() {

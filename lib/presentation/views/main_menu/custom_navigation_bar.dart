@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/provider/group_search_provider.dart';
 import 'package:tallee/presentation/provider/match_search_provider.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
@@ -32,7 +33,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final searchProvider = Provider.of<MatchSearchProvider>(context);
+    final matchSearchProvider = Provider.of<MatchSearchProvider>(context);
+    final groupSearchProvider = Provider.of<GroupSearchProvider>(context);
     // Pretty ugly but works
     final List<Widget> tabs = [
       KeyedSubtree(
@@ -61,9 +63,16 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           if (currentIndex == 0) // Nur im Matches-Tab
             HapticIconButton(
               icon: Icon(
-                searchProvider.isSearching ? Icons.close : Icons.search,
+                matchSearchProvider.isSearching ? Icons.close : Icons.search,
               ),
-              onPressed: () => searchProvider.toggleSearch(),
+              onPressed: () => matchSearchProvider.toggleSearch(),
+            ),
+          if (currentIndex == 1)
+            HapticIconButton(
+              icon: Icon(
+                groupSearchProvider.isSearching ? Icons.close : Icons.search,
+              ),
+              onPressed: () => groupSearchProvider.toggleSearch(),
             ),
           HapticIconButton(
             onPressed: () async {
