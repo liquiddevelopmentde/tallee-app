@@ -177,19 +177,19 @@ class _GroupViewState extends State<GroupView> {
 
   /// Filters the groups based on the search [query].
   void filterGroups(String query) {
+    final lowercaseQuery = query.toLowerCase();
     setState(() {
       if (query.isEmpty) {
-        filteredGroups.clear();
-        filteredGroups.addAll(groups);
+        filteredGroups = [...groups];
       } else {
         filteredGroups.clear();
         filteredGroups.addAll(
           groups.where(
             (group) =>
-                group.name.toLowerCase().contains(query.toLowerCase()) ||
+                group.name.toLowerCase().contains(lowercaseQuery) ||
                 group.members.any(
                   (player) =>
-                      player.name.toLowerCase().contains(query.toLowerCase()),
+                      player.name.toLowerCase().contains(lowercaseQuery),
                 ),
           ),
         );

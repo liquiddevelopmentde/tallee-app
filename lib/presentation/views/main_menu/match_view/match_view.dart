@@ -198,24 +198,38 @@ class _MatchViewState extends State<MatchView> {
     );
   }
 
-  /// Filters the matches based on the search [query].
   void filterMatches(String query) {
     setState(() {
+      final lowercaseQuery = query.toLowerCase();
       if (query.isEmpty) {
-        filteredMatches.clear();
-        filteredMatches.addAll(matches);
+        filteredMatches = [...matches];
       } else {
-        filteredMatches.clear();
-        filteredMatches.addAll(
-          matches.where(
-            (match) =>
-                match.name.toLowerCase().contains(query.toLowerCase()) ||
-                match.players.any(
-                  (player) =>
-                      player.name.toLowerCase().contains(query.toLowerCase()),
-                ),
-          ),
-        );
+        filteredMatches = matches.where((match) {
+          final matchNameMatch = match.name.toLowerCase().contains(
+            lowercaseQuery,
+          );
+          final gameNameMatch = match.game.name.toLowerCase().contains(
+            lowercaseQuery,
+          );
+          final groupNameMatch =
+              match.group?.name.toLowerCase().contains(lowercaseQuery) ?? false;
+          final playerNameMatch = match.players.any(
+            (player) =>
+                (player.name.toLowerCase() + '#' + player.nameCount.toString())
+                    .contains(lowercaseQuery),
+          );
+          final teamNameMatch =
+              match.teams?.any(
+                (team) => team.name.toLowerCase().contains(lowercaseQuery),
+              ) ??
+              false;
+
+          return matchNameMatch ||
+              gameNameMatch ||
+              groupNameMatch ||
+              playerNameMatch ||
+              teamNameMatch;
+        }).toList();
       }
     });
   }
