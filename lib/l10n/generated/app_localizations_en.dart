@@ -15,13 +15,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all_players_selected => 'All players selected';
 
   @override
+  String get all_time => 'All time';
+
+  @override
   String get amount_of_matches => 'Amount of Matches';
 
   @override
   String get app_name => 'Tallee';
 
   @override
+  String get average_score => 'Average score';
+
+  @override
   String get best_player => 'Best Player';
+
+  @override
+  String get best_score => 'Best score';
 
   @override
   String get cancel => 'Cancel';
@@ -37,6 +46,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get choose_ruleset => 'Choose Ruleset';
+
+  @override
+  String get classifier => 'Classifier';
 
   @override
   String get color => 'Color';
@@ -61,9 +73,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get color_teal => 'Teal';
-
-  @override
-  String get displayed_entries => 'Displayed entries';
 
   @override
   String get color_yellow => 'Yellow';
@@ -93,30 +102,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get create_statistic => 'Create statistic';
-
-  @override
-  String get classifier => 'Classifier';
-
-  @override
-  String get select_the_filtered_timeframe =>
-      'Select the timeframe you want to filter by.';
-
-  @override
-  String get select_the_filtered_games =>
-      'Select the games you want to filter by.';
-
-  @override
-  String get games => 'Games';
-
-  @override
-  String get select_the_filtered_groups =>
-      'Select the groups you want to filter by.';
-
-  @override
-  String get scope => 'Scope';
-
-  @override
-  String get timeframe => 'Timeframe';
 
   @override
   String get created_on => 'Created on';
@@ -159,9 +144,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get filter => 'Filter';
-
-  @override
   String get delete_group => 'Delete Group';
 
   @override
@@ -172,6 +154,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get description => 'Description';
+
+  @override
+  String get displayed_entries => 'Displayed entries';
 
   @override
   String get drag_to_set_placement => 'Drag to set placement';
@@ -226,6 +211,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get export_data => 'Export data';
 
   @override
+  String get filter => 'Filter';
+
+  @override
   String get format_exception => 'Format Exception (see console)';
 
   @override
@@ -233,6 +221,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get game_name => 'Game Name';
+
+  @override
+  String get games => 'Games';
 
   @override
   String get group => 'Group';
@@ -266,6 +257,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalid_schema => 'Invalid Schema';
+
+  @override
+  String get last_180_days => 'Last 180 days';
+
+  @override
+  String get last_30_days => 'Last 30 days';
+
+  @override
+  String get last_7_days => 'Last 7 days';
+
+  @override
+  String get last_90_days => 'Last 90 days';
+
+  @override
+  String get last_year => 'Last year';
 
   @override
   String get least_points => 'Least Points';
@@ -442,28 +448,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save_changes => 'Save Changes';
 
   @override
+  String get scope => 'Scope';
+
+  @override
   String get search_for_groups => 'Search for groups';
 
   @override
   String get search_for_players => 'Search for players';
-
-  @override
-  String get select_loser => 'Select Loser';
-
-  @override
-  String get select_winner => 'Select Winner';
-
-  @override
-  String get select_winners => 'Select Winners';
-
-  @override
-  String get selected_players => 'Selected players';
-
-  @override
-  String get set_name => 'Set name';
-
-  @override
-  String get settings => 'Settings';
 
   @override
   String get select_a_classifier => 'Select a classifier';
@@ -481,6 +472,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_a_timeframe => 'Select a timeframe';
 
   @override
+  String get select_loser => 'Select Loser';
+
+  @override
+  String get select_the_filtered_games =>
+      'Select the games you want to filter by.';
+
+  @override
+  String get select_the_filtered_groups =>
+      'Select the groups you want to filter by.';
+
+  @override
+  String get select_the_filtered_timeframe =>
+      'Select the timeframe you want to filter by.';
+
+  @override
+  String get select_winner => 'Select Winner';
+
+  @override
+  String get select_winners => 'Select Winners';
+
+  @override
+  String get selected_games => 'Selected games';
+
+  @override
+  String get selected_groups => 'Selected groups';
+
+  @override
+  String get selected_players => 'Selected players';
+
+  @override
+  String get set_name => 'Set name';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
   String get single_loser => 'Single Loser';
 
   @override
@@ -491,33 +518,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stats => 'Stats';
-
-  @override
-  String get selected_games => 'Selected games';
-
-  @override
-  String get selected_groups => 'Selected groups';
-
-  @override
-  String get average_score => 'Average score';
-
-  @override
-  String get best_score => 'Best score';
-
-  @override
-  String get total_losses => 'Total losses';
-
-  @override
-  String get total_matches => 'Total matches';
-
-  @override
-  String get total_score => 'Total score';
-
-  @override
-  String get total_wins => 'Total wins';
-
-  @override
-  String get worst_score => 'Worst score';
 
   @override
   String successfully_added_player(String playerName) {
@@ -539,25 +539,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tie => 'Tie';
 
   @override
-  String get all_time => 'All time';
-
-  @override
-  String get last_180_days => 'Last 180 days';
-
-  @override
-  String get last_30_days => 'Last 30 days';
-
-  @override
-  String get last_7_days => 'Last 7 days';
-
-  @override
-  String get last_90_days => 'Last 90 days';
-
-  @override
-  String get last_year => 'Last year';
+  String get timeframe => 'Timeframe';
 
   @override
   String get today_at => 'Today at';
+
+  @override
+  String get total_losses => 'Total losses';
+
+  @override
+  String get total_matches => 'Total matches';
+
+  @override
+  String get total_score => 'Total score';
+
+  @override
+  String get total_wins => 'Total wins';
 
   @override
   String get undo => 'Undo';
@@ -576,6 +573,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wins => 'Wins';
+
+  @override
+  String get worst_score => 'Worst score';
 
   @override
   String get yesterday_at => 'Yesterday at';
