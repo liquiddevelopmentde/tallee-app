@@ -45,13 +45,13 @@ class MatchDetailView extends StatefulWidget {
 class _MatchDetailViewState extends State<MatchDetailView> {
   late final AppDatabase db;
 
-  late Match localMatch;
+  late Match match;
 
   @override
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    localMatch = widget.match;
+    match = widget.match;
   }
 
   @override
@@ -85,7 +85,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 ),
               ).then((confirmed) async {
                 if (confirmed! && context.mounted) {
-                  await db.matchDao.deleteMatch(matchId: localMatch.id);
+                  await db.matchDao.deleteMatch(matchId: match.id);
                   if (!context.mounted) return;
                   Navigator.pop(context);
                   widget.onMatchUpdate.call();
@@ -119,7 +119,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
                 // Match Name
                 Text(
-                  localMatch.name,
+                  match.name,
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -131,7 +131,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
                 // Creation Date
                 Text(
-                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(localMatch.createdAt)}',
+                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(match.createdAt)}',
                   style: const TextStyle(
                     fontSize: 12,
                     color: CustomTheme.textColor,
@@ -141,14 +141,14 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 const SizedBox(height: 10),
 
                 // Group Name
-                if (localMatch.group != null) ...[
+                if (match.group != null) ...[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.group),
                       const SizedBox(width: 8),
                       Text(
-                        '${localMatch.group!.name}${getExtraPlayerCount(localMatch)}',
+                        '${match.group!.name}${getExtraPlayerCount(match)}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -157,16 +157,15 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 ],
 
                 // Teams or Players
-                if (localMatch.isTeamMatch) ...[
+                if (match.isTeamMatch) ...[
                   // Teams
                   InfoTile(
                     title: loc.teams,
                     icon: Icons.scoreboard,
                     horizontalAlignment: CrossAxisAlignment.start,
-                    content:
-                        localMatch.teams != null && localMatch.teams!.isNotEmpty
+                    content: match.teams != null && match.teams!.isNotEmpty
                         ? Column(
-                            children: (localMatch.teams ?? []).map((team) {
+                            children: (match.teams ?? []).map((team) {
                               return TeamCard(team: team);
                             }).toList(),
                           )
@@ -184,13 +183,13 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                     title: loc.players,
                     icon: Icons.people,
                     horizontalAlignment: CrossAxisAlignment.start,
-                    content: localMatch.players.isNotEmpty
+                    content: match.players.isNotEmpty
                         ? Wrap(
                             alignment: WrapAlignment.start,
                             crossAxisAlignment: WrapCrossAlignment.start,
                             spacing: 12,
                             runSpacing: 8,
-                            children: localMatch.players.map((player) {
+                            children: match.players.map((player) {
                               return TextIconTile(
                                 text: player.name,
                                 suffixText: getNameCountText(player),
@@ -229,12 +228,12 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       horizontal: 8,
                     ),
                     child: GameLabel(
-                      title: localMatch.game.name,
+                      title: match.game.name,
                       description: translateRulesetToString(
-                        localMatch.game.ruleset,
+                        match.game.ruleset,
                         context,
                       ),
-                      color: localMatch.game.color,
+                      color: match.game.color,
                     ),
                   ),
                 ),
@@ -265,7 +264,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       adaptivePageRoute(
                         fullscreenDialog: true,
                         builder: (context) => CreateMatchView(
-                          matchToEdit: localMatch,
+                          matchToEdit: match,
                           onMatchUpdated: onMatchUpdated,
                         ),
                       ),
@@ -281,7 +280,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                         adaptivePageRoute(
                           fullscreenDialog: true,
                           builder: (context) => MatchResultView(
-                            match: localMatch,
+                            match: match,
                             onWinnerChanged: () async {
                               widget.onMatchUpdate.call();
                               await updateScoresForCurrentMatch();
@@ -304,7 +303,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   /// updates the match in this view
   void onMatchUpdated(Match editedMatch) {
     setState(() {
-      localMatch = editedMatch;
+      match = editedMatch;
     });
     widget.onMatchUpdate.call();
   }
@@ -325,13 +324,13 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   /// Returns the result row for single winner/loser rulesets or a placeholder
   /// if no result is entered yet
   List<Widget> getSingleResultRow(AppLocalizations loc) {
-    final ruleset = localMatch.game.ruleset;
+    final ruleset = match.game.ruleset;
 
-    if (localMatch.mvp.isNotEmpty || localMatch.mvt.isNotEmpty) {
+    if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
       // Single winner/loser, multiple winner
-      final names = localMatch.isTeamMatch
-          ? localMatch.mvt.map((t) => t.name).toList()
-          : localMatch.mvp.map((p) => p.name).toList();
+      final names = match.isTeamMatch
+          ? match.mvt.map((t) => t.name).toList()
+          : match.mvp.map((p) => p.name).toList();
       final mvpNames = names.length == 1 ? names.first : names.join(', ');
 
       final label = ruleset == Ruleset.singleWinner
@@ -397,14 +396,14 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   List<(String, int)> getSortedScores() {
     List<(String, int)> namedScores = [];
 
-    if (localMatch.isTeamMatch) {
-      final teams = localMatch.teams ?? [];
+    if (match.isTeamMatch) {
+      final teams = match.teams ?? [];
       for (var team in teams) {
         int score = team.score ?? 0;
         namedScores.add((team.name, score));
       }
 
-      final ruleset = localMatch.game.ruleset;
+      final ruleset = match.game.ruleset;
 
       if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
         namedScores.sort((a, b) => b.$2.compareTo(a.$2));
@@ -412,13 +411,13 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         namedScores.sort((a, b) => a.$2.compareTo(b.$2));
       }
     } else {
-      final scores = localMatch.scores;
-      for (var player in localMatch.players) {
+      final scores = match.scores;
+      for (var player in match.players) {
         int score = scores[player.id]?.score ?? 0;
         namedScores.add((player.name, score));
       }
 
-      final ruleset = localMatch.game.ruleset;
+      final ruleset = match.game.ruleset;
 
       if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
         namedScores.sort((a, b) => b.$2.compareTo(a.$2));
@@ -431,7 +430,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   /// Returns the text widget for the score or placement value, styled according to the ruleset
   Widget getResultValueText(AppLocalizations loc, int index, int score) {
-    final ruleset = localMatch.game.ruleset;
+    final ruleset = match.game.ruleset;
 
     if (ruleset == Ruleset.placement) {
       return Text(
@@ -469,9 +468,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   // Returns if the result can be displayed in a single row
   bool isSingleRowResult() {
-    return localMatch.game.ruleset == Ruleset.singleWinner ||
-        localMatch.game.ruleset == Ruleset.singleLoser ||
-        localMatch.game.ruleset == Ruleset.multipleWinners;
+    return match.game.ruleset == Ruleset.singleWinner ||
+        match.game.ruleset == Ruleset.singleLoser ||
+        match.game.ruleset == Ruleset.multipleWinners;
   }
 
   String getPlacementText(BuildContext context, int rank) {
@@ -503,17 +502,17 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   }
 
   Future<void> updateScoresForCurrentMatch() async {
-    if (localMatch.isTeamMatch) {
-      final teams = await db.teamDao.getTeamsByMatchId(matchId: localMatch.id);
+    if (match.isTeamMatch) {
+      final teams = await db.teamDao.getTeamsByMatchId(matchId: match.id);
       setState(() {
-        localMatch = localMatch.copyWith(teams: teams);
+        match = match.copyWith(teams: teams);
       });
     } else {
       final scores = await db.scoreEntryDao.getAllMatchScores(
-        matchId: localMatch.id,
+        matchId: match.id,
       );
       setState(() {
-        localMatch = localMatch.copyWith(scores: scores);
+        match = match.copyWith(scores: scores);
       });
     }
   }
