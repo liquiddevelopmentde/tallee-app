@@ -2,9 +2,6 @@ name: Renovate
 on:
   schedule:
     - cron: '0 10 1-6 * 5'
-  push:
-    branches:
-      - setup/222-actions-&-pr-template-verbessern
 
 jobs:
   renovate:
