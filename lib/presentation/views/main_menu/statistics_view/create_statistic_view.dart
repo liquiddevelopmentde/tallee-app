@@ -198,7 +198,23 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                           ),
                       onListChanged: (List<StatisticScope> values) {
                         setState(() {
-                          selectedScope = values;
+                          // Deselect "All players" or "selected groups" if both are
+                          // selected at the same time
+                          if (values.contains(StatisticScope.selectedGroups) &&
+                              selectedScope.contains(
+                                StatisticScope.allPlayers,
+                              )) {
+                            values.remove(StatisticScope.allPlayers);
+                            selectedScope = values;
+                          } else if (selectedScope.contains(
+                                StatisticScope.selectedGroups,
+                              ) &&
+                              values.contains(StatisticScope.allPlayers)) {
+                            values.remove(StatisticScope.selectedGroups);
+                            selectedScope = values;
+                          } else {
+                            selectedScope = values;
+                          }
                         });
                       },
                     ),
