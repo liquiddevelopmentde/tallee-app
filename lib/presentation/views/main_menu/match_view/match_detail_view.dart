@@ -11,6 +11,7 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -169,6 +170,16 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                         text: player.name,
                         suffixText: getNameCountText(player),
                         iconEnabled: false,
+                        onTileTap: () {
+                          Navigator.of(context).pushReplacement(
+                            adaptivePageRoute(
+                              builder: (context) => PlayerDetailView(
+                                player: player,
+                                callback: widget.onMatchUpdate,
+                              ),
+                            ),
+                          );
+                        },
                       );
                     }).toList(),
                   ),

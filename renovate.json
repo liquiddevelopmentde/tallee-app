@@ -4,8 +4,8 @@
   "onboarding": false,
   "requireConfig": "optional",
   "baseBranches": ["development"],
-  "prHourlyLimit": 0,
-  "prConcurrentLimit": 0,
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 3,
   "enabledManagers": ["pub"],
   "pub": {
     "enabled": true,
@@ -19,8 +19,8 @@
     {
       "matchManagers": ["pub"],
       "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "dart dependencies (non-major)",
-      "groupSlug": "dart-non-major"
+      "groupName": "dart dependencies (minor-major)",
+      "groupSlug": "dart-minor"
     },
     {
       "matchManagers": ["pub"],

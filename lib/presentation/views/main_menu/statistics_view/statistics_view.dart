@@ -61,6 +61,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                 child: AppSkeleton(
                   enabled: isLoading,
                   fixLayoutBuilder: true,
+                  alignment: Alignment.topCenter,
                   child: Column(
                     spacing: 12,
                     mainAxisAlignment: MainAxisAlignment.start,

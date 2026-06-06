@@ -351,9 +351,6 @@ class _MatchResultViewState extends State<MatchResultView> {
                                       onReorderItem:
                                           (int oldIndex, int newIndex) {
                                             setState(() {
-                                              if (newIndex > oldIndex) {
-                                                newIndex -= 1;
-                                              }
                                               final Player item = allPlayers
                                                   .removeAt(oldIndex);
                                               allPlayers.insert(newIndex, item);
