@@ -164,8 +164,9 @@ class _MatchResultViewState extends State<MatchResultView> {
                           context,
                           adaptivePageRoute(
                             fullscreenDialog: true,
-                            builder: (context) =>
-                                LiveEditView(match: widget.match),
+                            builder: (context) => LiveEditView(
+                              match: getMatchWithUnsavedScores(),
+                            ),
                           ),
                         ).then(
                           (scores) => {
@@ -781,6 +782,27 @@ class _MatchResultViewState extends State<MatchResultView> {
               });
             },
           );
+        },
+      );
+    }
+  }
+
+  // Returns a copy of the current match with updated scores based on the text entered in the score entry fields.
+  Match getMatchWithUnsavedScores() {
+    if (isTeamMatch) {
+      return widget.match.copyWith(
+        teams: List.generate(
+          allTeams.length,
+          (index) => allTeams[index].copyWith(
+            score: int.parse(controller[index].text),
+          ),
+        ),
+      );
+    } else {
+      return widget.match.copyWith(
+        scores: {
+          for (int i = 0; i < allPlayers.length; i++)
+            allPlayers[i].id: ScoreEntry(score: int.parse(controller[i].text)),
         },
       );
     }
