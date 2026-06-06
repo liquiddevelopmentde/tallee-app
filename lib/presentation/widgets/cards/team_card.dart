@@ -10,6 +10,7 @@ class TeamCard extends StatelessWidget {
     required this.team,
     this.compact = false,
     this.width = double.infinity,
+    this.margin,
     this.showDragHandle = false,
     this.maxChars,
   });
@@ -20,6 +21,8 @@ class TeamCard extends StatelessWidget {
 
   final double width;
 
+  final EdgeInsetsGeometry? margin;
+
   final bool showDragHandle;
 
   final int? maxChars;
@@ -27,23 +30,7 @@ class TeamCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final teamColor = getColorFromAppColor(team.color);
-    final playerAmount = maxChars == null
-        ? team.members.length
-        : () {
-            var combinedLength = 0;
-            var count = 0;
-
-            for (final player in team.members) {
-              final nextLength = player.name.length + (count > 0 ? 1 : 0);
-              if (combinedLength + nextLength > maxChars!) {
-                break;
-              }
-              combinedLength += nextLength;
-              count++;
-            }
-
-            return count;
-          }();
+    int shownPlayerAmount = getShownPlayerAmount();
 
     if (compact) {
       return Container(
@@ -90,6 +77,8 @@ class TeamCard extends StatelessWidget {
     } else {
       return Container(
         width: width,
+        margin:
+            margin ?? const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: BoxDecoration(
           color: teamColor.withAlpha(50),
@@ -97,48 +86,76 @@ class TeamCard extends StatelessWidget {
           border: Border.all(color: teamColor, width: 2),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 3,
-              children: [
-                Text(
-                  team.name,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: CustomTheme.textColor,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 3,
+                children: [
+                  Text(
+                    team.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: CustomTheme.textColor,
+                    ),
                   ),
-                ),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    ...team.members.take(playerAmount).map((player) {
-                      return TextIconTile(
-                        text: player.name,
-                        suffixText: getNameCountText(player),
-                      );
-                    }),
-                    if (team.members.length > playerAmount)
-                      Text(
-                        '+ ${team.members.length - playerAmount}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: CustomTheme.textColor,
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      ...team.members.take(shownPlayerAmount).map((player) {
+                        return TextIconTile(
+                          text: player.name,
+                          suffixText: getNameCountText(player),
+                        );
+                      }),
+                      if (team.members.length > shownPlayerAmount)
+                        Text(
+                          '+ ${team.members.length - shownPlayerAmount}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: CustomTheme.textColor,
+                          ),
                         ),
-                      ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-            const Icon(Icons.drag_handle),
+            if (showDragHandle) ...[
+              const SizedBox(width: 8),
+              const Icon(Icons.drag_handle),
+            ],
           ],
         ),
       );
+    }
+  }
+
+  /// Returns how many player names will get displayed depending on [maxChars]
+  /// and the lengths of the player names.
+  int getShownPlayerAmount() {
+    if (maxChars == null) {
+      return team.members.length;
+    } else {
+      var combinedLength = 0;
+      var amount = 0;
+
+      for (final player in team.members) {
+        final nextLength = player.name.length + (amount > 0 ? 1 : 0);
+        if (combinedLength + nextLength > maxChars!) {
+          break;
+        }
+        combinedLength += nextLength;
+        amount++;
+      }
+
+      return amount;
     }
   }
 }
