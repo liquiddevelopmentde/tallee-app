@@ -214,9 +214,8 @@ class _MatchViewState extends State<MatchView> {
           final groupNameMatch =
               match.group?.name.toLowerCase().contains(lowercaseQuery) ?? false;
           final playerNameMatch = match.players.any(
-            (player) =>
-                (player.name.toLowerCase() + '#' + player.nameCount.toString())
-                    .contains(lowercaseQuery),
+            (player) => ('${player.name.toLowerCase()}#${player.nameCount}')
+                .contains(lowercaseQuery),
           );
           final teamNameMatch =
               match.teams?.any(
