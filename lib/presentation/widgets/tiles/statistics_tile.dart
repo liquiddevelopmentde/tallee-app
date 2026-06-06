@@ -17,7 +17,6 @@ class StatisticsTile extends StatelessWidget {
   /// - [title]: The title text displayed on the tile.
   /// - [width]: The width of the tile.
   /// - [values]: A list of tuples containing labels and their corresponding numeric values.
-  /// - [itemCount]: The maximum number of items to display.
   /// - [barColor]: The color of the bars representing the values.
   const StatisticsTile({
     super.key,
