@@ -49,11 +49,12 @@ class CustomTheme {
   // ==================== Padding & Margins ====================
   static const EdgeInsets standardMargin = EdgeInsets.symmetric(
     horizontal: 12,
-    vertical: 10,
+    vertical: 6,
   );
-  static const EdgeInsets tileMargin = EdgeInsets.symmetric(
-    horizontal: 12,
-    vertical: 5,
+  static const EdgeInsets tileMargin = EdgeInsets.only(
+    left: 12,
+    right: 12,
+    bottom: 10,
   );
 
   // ==================== Decorations ====================

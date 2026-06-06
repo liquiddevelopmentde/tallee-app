@@ -109,7 +109,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                   ),
                 ),
                 child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 85),
+                  padding: const EdgeInsets.only(bottom: 85, top: 10),
                   itemCount: filteredGroups.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GroupTile(

@@ -63,6 +63,7 @@ class StatisticsTile extends StatelessWidget {
       width: width ?? MediaQuery.sizeOf(context).width * 0.95,
       title: title,
       icon: icon,
+      margin: CustomTheme.tileMargin,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Visibility(
@@ -219,7 +220,7 @@ class StatisticsTile extends StatelessWidget {
                         runSpacing: 4,
                         children: [
                           // Game
-                          if (hasGroup)
+                          if (hasGame)
                             Row(
                               spacing: 8,
                               children: [

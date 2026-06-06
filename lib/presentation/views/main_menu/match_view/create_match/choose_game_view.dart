@@ -133,7 +133,6 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 },
               ),
             ),
-            const SizedBox(height: 5),
 
             // Game list
             Expanded(
@@ -155,6 +154,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                   ),
                 ),
                 child: ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 85, top: 10),
                   itemCount: filteredGames.length,
                   itemBuilder: (BuildContext context, int index) {
                     final game = filteredGames[index];

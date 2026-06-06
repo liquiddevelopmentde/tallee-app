@@ -53,31 +53,26 @@ class _StatisticsViewState extends State<StatisticsView> {
           alignment: AlignmentDirectional.bottomCenter,
           fit: StackFit.expand,
           children: [
-            Visibility(
-              visible: statisticTiles.isNotEmpty,
-              replacement: Center(
-                child: TopCenteredMessage(
-                  icon: Icons.info,
-                  title: loc.info,
-                  message: loc.no_statistics_created_yet,
-                ),
-              ),
-              child: SingleChildScrollView(
-                child: AppSkeleton(
-                  enabled: isLoading,
-                  fixLayoutBuilder: true,
-                  alignment: Alignment.topCenter,
-                  child: Column(
-                    spacing: 12,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ...statisticTiles,
-                      SizedBox(
-                        height: MediaQuery.paddingOf(context).bottom + 80,
-                      ),
-                    ],
+            AppSkeleton(
+              enabled: isLoading,
+
+              fixLayoutBuilder: true,
+              alignment: Alignment.topCenter,
+              child: Visibility(
+                visible: statisticTiles.isNotEmpty,
+                replacement: Center(
+                  child: TopCenteredMessage(
+                    icon: Icons.info,
+                    title: loc.info,
+                    message: loc.no_statistics_created_yet,
                   ),
+                ),
+                child: ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 85),
+                  itemCount: statisticTiles.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return statisticTiles[index];
+                  },
                 ),
               ),
             ),
