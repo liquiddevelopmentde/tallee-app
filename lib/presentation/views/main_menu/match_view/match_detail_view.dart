@@ -165,7 +165,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                     content:
                         localMatch.teams != null && localMatch.teams!.isNotEmpty
                         ? Column(
-                            spacing: 8,
                             children: (localMatch.teams ?? []).map((team) {
                               return TeamCard(team: team);
                             }).toList(),
