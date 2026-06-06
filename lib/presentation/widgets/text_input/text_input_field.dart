@@ -57,7 +57,6 @@ class TextInputField extends StatelessWidget {
         filled: true,
         fillColor: CustomTheme.boxColor,
         hintText: hintText,
-        hintStyle: const TextStyle(fontSize: 18),
         counterText: showCounterText ? null : '',
         enabledBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),

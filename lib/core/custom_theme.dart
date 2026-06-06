@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_back_button.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_close_button.dart';
 
 /// Theme class that defines colors, border radius, padding, and decorations
 class CustomTheme {
@@ -63,7 +65,11 @@ class CustomTheme {
 
   static BoxDecoration highlightedBoxDecoration = BoxDecoration(
     color: boxColor,
-    border: Border.all(color: textColor, width: 2),
+    border: Border.all(
+      color: textColor,
+      width: 2,
+      strokeAlign: BorderSide.strokeAlignCenter,
+    ),
     borderRadius: standardBorderRadiusAll,
   );
 
@@ -81,6 +87,11 @@ class CustomTheme {
       overflow: TextOverflow.ellipsis,
     ),
     iconTheme: IconThemeData(color: textColor),
+  );
+
+  static final ActionIconThemeData actionIconTheme = ActionIconThemeData(
+    backButtonIconBuilder: (context) => const HapticBackButton(),
+    closeButtonIconBuilder: (context) => const HapticCloseButton(),
   );
 
   static const SearchBarThemeData searchBarTheme = SearchBarThemeData(

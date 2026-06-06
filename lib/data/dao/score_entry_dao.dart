@@ -16,12 +16,12 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   /* Create */
 
   /// Adds a score entry to the database.
-  Future<void> addScore({
+  Future<bool> addScore({
     required String playerId,
     required String matchId,
     required ScoreEntry entry,
   }) async {
-    await into(scoreEntryTable).insert(
+    final rowsAffected = await into(scoreEntryTable).insert(
       ScoreEntryTableCompanion.insert(
         playerId: playerId,
         matchId: matchId,
@@ -31,6 +31,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       ),
       mode: InsertMode.insertOrReplace,
     );
+
+    return rowsAffected > 0;
   }
 
   Future<void> addScoresAsList({
@@ -70,10 +72,10 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }) async {
     final query = select(scoreEntryTable)
       ..where(
-        (s) =>
-            s.playerId.equals(playerId) &
-            s.matchId.equals(matchId) &
-            s.roundNumber.equals(roundNumber),
+        (tbl) =>
+            tbl.playerId.equals(playerId) &
+            tbl.matchId.equals(matchId) &
+            tbl.roundNumber.equals(roundNumber),
       );
 
     final result = await query.getSingleOrNull();
@@ -91,7 +93,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String matchId,
   }) async {
     final query = select(scoreEntryTable)
-      ..where((s) => s.matchId.equals(matchId));
+      ..where((tbl) => tbl.matchId.equals(matchId));
     final result = await query.get();
 
     final Map<String, ScoreEntry?> scoresByPlayer = {};
@@ -113,8 +115,10 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String matchId,
   }) async {
     final query = select(scoreEntryTable)
-      ..where((s) => s.playerId.equals(playerId) & s.matchId.equals(matchId))
-      ..orderBy([(s) => OrderingTerm.asc(s.roundNumber)]);
+      ..where(
+        (tbl) => tbl.playerId.equals(playerId) & tbl.matchId.equals(matchId),
+      )
+      ..orderBy([(tbl) => OrderingTerm.asc(tbl.roundNumber)]);
     final result = await query.get();
     return result
         .map(
@@ -136,8 +140,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     final query = selectOnly(scoreEntryTable)
       ..where(scoreEntryTable.matchId.equals(matchId))
       ..addColumns([scoreEntryTable.roundNumber.max()]);
-    final result = await query.getSingle();
-    return result.read(scoreEntryTable.roundNumber.max());
+    final row = await query.getSingle();
+    return row.read(scoreEntryTable.roundNumber.max());
   }
 
   /// Aggregates the total score for a player in a match by summing all their
@@ -166,10 +170,10 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }) async {
     final rowsAffected =
         await (update(scoreEntryTable)..where(
-              (s) =>
-                  s.playerId.equals(playerId) &
-                  s.matchId.equals(matchId) &
-                  s.roundNumber.equals(entry.roundNumber),
+              (tbl) =>
+                  tbl.playerId.equals(playerId) &
+                  tbl.matchId.equals(matchId) &
+                  tbl.roundNumber.equals(entry.roundNumber),
             ))
             .write(
               ScoreEntryTableCompanion(
@@ -190,10 +194,10 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }) async {
     final query = delete(scoreEntryTable)
       ..where(
-        (s) =>
-            s.playerId.equals(playerId) &
-            s.matchId.equals(matchId) &
-            s.roundNumber.equals(roundNumber),
+        (tbl) =>
+            tbl.playerId.equals(playerId) &
+            tbl.matchId.equals(matchId) &
+            tbl.roundNumber.equals(roundNumber),
       );
     final rowsAffected = await query.go();
     return rowsAffected > 0;
@@ -201,7 +205,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   Future<bool> deleteAllScoresForMatch({required String matchId}) async {
     final query = delete(scoreEntryTable)
-      ..where((s) => s.matchId.equals(matchId));
+      ..where((tbl) => tbl.matchId.equals(matchId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
@@ -211,7 +215,9 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String playerId,
   }) async {
     final query = delete(scoreEntryTable)
-      ..where((s) => s.playerId.equals(playerId) & s.matchId.equals(matchId));
+      ..where(
+        (tbl) => tbl.playerId.equals(playerId) & tbl.matchId.equals(matchId),
+      );
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }

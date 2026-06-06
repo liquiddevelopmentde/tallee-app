@@ -1,12 +1,16 @@
 import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -16,13 +20,12 @@ class MatchTile extends StatefulWidget {
   /// - [match]: The match data to be displayed.
   /// - [onTap]: The callback invoked when the tile is tapped.
   /// - [width]: Optional width for the tile.
-  /// - [compact]: Whether to display the tile in a compact mode
   const MatchTile({
     super.key,
     required this.match,
     required this.onTap,
     this.width,
-    this.compact = false,
+    this.onPlayerEdited,
   });
 
   /// The match data to be displayed.
@@ -31,11 +34,11 @@ class MatchTile extends StatefulWidget {
   /// The callback invoked when the tile is tapped.
   final VoidCallback onTap;
 
+  /// The callback invoked when the players are edited
+  final VoidCallback? onPlayerEdited;
+
   /// Optional width for the tile.
   final double? width;
-
-  /// Whether to display the tile in a compact mode
-  final bool compact;
 
   @override
   State<MatchTile> createState() => _MatchTileState();
@@ -51,7 +54,10 @@ class _MatchTileState extends State<MatchTile> {
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: () async {
+        await HapticFeedback.selectionClick();
+        widget.onTap.call();
+      },
       child: Container(
         margin: EdgeInsets.zero,
         width: widget.width,
@@ -96,40 +102,59 @@ class _MatchTileState extends State<MatchTile> {
                 ],
               ),
               const SizedBox(height: 4),
-            ] else if (widget.compact) ...[
-              Row(
-                children: [
-                  const Icon(Icons.person, size: 16, color: Colors.grey),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      '${match.players.length} ${loc.players}',
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
             ] else ...[
               const SizedBox(height: 8),
             ],
 
             // Game + Ruleset Badge
-            if (!widget.compact)
-              GameLabel(
-                title: match.game.name,
-                description: translateRulesetToString(
-                  match.game.ruleset,
-                  context,
-                ),
-                color: match.game.color,
+            GameLabel(
+              title: match.game.name,
+              description: translateRulesetToString(
+                match.game.ruleset,
+                context,
               ),
+              color: match.game.color,
+            ),
 
             const SizedBox(height: 12),
 
             // Winner / In Progress Info
-            if (match.mvp.isNotEmpty) ...[
+            if (match.isTeamMatch && match.mvt.isNotEmpty) ...[
+              // MVT Display for team matches
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.green.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Colors.green.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    getMvpIcon(),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        getMvtText(loc),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: CustomTheme.textColor,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+            ] else if (match.mvp.isNotEmpty) ...[
+              // MVP Display for player matches
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -163,6 +188,7 @@ class _MatchTileState extends State<MatchTile> {
               ),
               const SizedBox(height: 12),
             ] else ...[
+              // Match in progress display
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -201,8 +227,46 @@ class _MatchTileState extends State<MatchTile> {
               const SizedBox(height: 12),
             ],
 
-            // Players List
-            if (players.isNotEmpty && widget.compact == false) ...[
+            if (match.teams != null &&
+                match.teams!.isNotEmpty &&
+                match.isTeamMatch) ...[
+              // Team display
+              Text(
+                loc.teams,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final useSingleColumn = match.teams!.any(
+                    (team) => team.name.length > 10,
+                  );
+
+                  const spacing = 8.0;
+                  final itemWidth = useSingleColumn
+                      ? constraints.maxWidth
+                      : (constraints.maxWidth - spacing) / 2;
+
+                  return Wrap(
+                    spacing: spacing,
+                    runSpacing: spacing,
+                    children: match.teams!.map((team) {
+                      return TeamCard(
+                        team: team,
+                        compact: true,
+                        width: itemWidth,
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+            ] else if (players.isNotEmpty) ...[
+              // Player display
               Text(
                 loc.players,
                 style: const TextStyle(
@@ -219,9 +283,29 @@ class _MatchTileState extends State<MatchTile> {
                   return TextIconTile(
                     text: player.name,
                     suffixText: getNameCountText(player),
-                    iconEnabled: false,
+                    onTileTap: () {
+                      Navigator.push(
+                        context,
+                        adaptivePageRoute(
+                          builder: (context) => PlayerDetailView(
+                            player: player,
+                            callback: () {
+                              widget.onPlayerEdited?.call();
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   );
                 }).toList(),
+              ),
+            ] else ...[
+              Text(
+                loc.no_players_available,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: CustomTheme.hintColor,
+                ),
               ),
             ],
           ],
@@ -248,6 +332,7 @@ class _MatchTileState extends State<MatchTile> {
     }
   }
 
+  // Returns the appropriate text based on the match's ruleset and MVP.
   String getMvpText(AppLocalizations loc) {
     if (widget.match.mvp.isEmpty) return '';
     final ruleset = widget.match.game.ruleset;
@@ -271,11 +356,41 @@ class _MatchTileState extends State<MatchTile> {
     return '${loc.winner}: n.A.';
   }
 
+  // Returns the appropriate text based on the match's ruleset and MVT.
+  String getMvtText(AppLocalizations loc) {
+    if (widget.match.mvt.isEmpty) return '';
+    final ruleset = widget.match.game.ruleset;
+
+    switch (ruleset) {
+      case Ruleset.singleWinner:
+        return '${loc.winner}: ${widget.match.mvt.first.name}';
+      case Ruleset.singleLoser:
+        return '${loc.loser}: ${widget.match.mvt.first.name}';
+      case Ruleset.highestScore:
+      case Ruleset.lowestScore:
+        final mvt = widget.match.mvt;
+        final mvtScore =
+            widget.match.teams!
+                .firstWhere((team) => team.id == mvt.first.id)
+                .score ??
+            0;
+        final mvtNames = mvt.map((team) => team.name).join(', ');
+        return '${loc.winner}: $mvtNames (${getPointLabel(loc, mvtScore)})';
+      case Ruleset.placement:
+        return '${loc.winner}: ${widget.match.mvt.first.name}';
+      case Ruleset.multipleWinners:
+        final mvtNames = widget.match.mvt.map((team) => team.name).join(', ');
+        return '${loc.winners}: $mvtNames';
+    }
+  }
+
+  // Returns the appropriate icon based on the match's ruleset.
   Icon getMvpIcon() {
     final icon = getRulesetIcon(widget.match.game.ruleset);
 
     switch (widget.match.game.ruleset) {
       case Ruleset.singleWinner:
+      case Ruleset.multipleWinners:
         return Icon(icon, size: 20, color: Colors.amber);
       case Ruleset.singleLoser:
         return Icon(icon, size: 20, color: Colors.blue);
@@ -283,8 +398,6 @@ class _MatchTileState extends State<MatchTile> {
         return Icon(icon, size: 20, color: Colors.orange);
       case Ruleset.highestScore:
         return Icon(icon, size: 20, color: Colors.green);
-      case Ruleset.multipleWinners:
-        return Icon(icon, size: 20, color: Colors.amber);
       case Ruleset.placement:
         return Icon(icon, size: 20, color: Colors.deepOrangeAccent);
     }

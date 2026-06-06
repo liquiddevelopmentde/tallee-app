@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 
@@ -9,7 +10,7 @@ class CustomDialogAction extends StatelessWidget {
   /// - [onPressed]: Callback function that is triggered when the button is pressed.
   const CustomDialogAction({
     super.key,
-    required this.onPressed,
+    this.onPressed,
     required this.text,
     this.buttonType = ButtonType.primary,
     this.isDestructive = false,
@@ -19,14 +20,18 @@ class CustomDialogAction extends StatelessWidget {
 
   final ButtonType buttonType;
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   final bool isDestructive;
-
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogButton(
-      onPressed: onPressed,
+      onPressed: onPressed != null
+          ? () async {
+              await HapticFeedback.selectionClick();
+              onPressed?.call();
+            }
+          : null,
       buttonText: text,
       buttonType: buttonType,
       isDescructive: isDestructive,

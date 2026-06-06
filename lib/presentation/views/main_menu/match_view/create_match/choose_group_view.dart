@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/group_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -45,7 +46,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
       backgroundColor: CustomTheme.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: IconButton(
+        leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.of(context).pop(
@@ -111,7 +112,10 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                   padding: const EdgeInsets.only(bottom: 85),
                   itemCount: filteredGroups.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
+                    return GroupTile(
+                      group: filteredGroups[index],
+                      isHighlighted:
+                          selectedGroupId == filteredGroups[index].id,
                       onTap: () {
                         setState(() {
                           if (selectedGroupId != filteredGroups[index].id) {
@@ -121,11 +125,6 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                           }
                         });
                       },
-                      child: GroupTile(
-                        group: filteredGroups[index],
-                        isHighlighted:
-                            selectedGroupId == filteredGroups[index].id,
-                      ),
                     );
                   },
                 ),

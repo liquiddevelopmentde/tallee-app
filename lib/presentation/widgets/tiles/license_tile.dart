@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/license_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
@@ -15,8 +16,10 @@ class LicenseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
+      onTap: () async {
+        final navigator = Navigator.of(context);
+        await HapticFeedback.selectionClick();
+        navigator.push(
           MaterialPageRoute(
             builder: (context) => LicenseDetailView(package: package),
           ),

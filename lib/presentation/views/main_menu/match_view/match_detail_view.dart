@@ -11,8 +11,11 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share_view.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
@@ -61,7 +64,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       appBar: AppBar(
         title: Text(loc.match_profile),
         actions: [
-          IconButton(
+          HapticIconButton(
             onPressed: () {
               Navigator.of(context).push(
                 adaptivePageRoute(
@@ -165,25 +168,65 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   const SizedBox(height: 20),
                 ],
 
-                // Players
-                InfoTile(
-                  title: loc.players,
-                  icon: Icons.people,
-                  horizontalAlignment: CrossAxisAlignment.start,
-                  content: Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
-                    spacing: 12,
-                    runSpacing: 8,
-                    children: match.players.map((player) {
-                      return TextIconTile(
-                        text: player.name,
-                        suffixText: getNameCountText(player),
-                        iconEnabled: false,
-                      );
-                    }).toList(),
+                // Teams or Players
+                if (match.isTeamMatch) ...[
+                  // Teams
+                  InfoTile(
+                    title: loc.teams,
+                    icon: Icons.scoreboard,
+                    horizontalAlignment: CrossAxisAlignment.start,
+                    content: match.teams != null && match.teams!.isNotEmpty
+                        ? Column(
+                            children: (match.teams ?? []).map((team) {
+                              return TeamCard(team: team);
+                            }).toList(),
+                          )
+                        : Text(
+                            loc.no_teams_available,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
                   ),
-                ),
+                ] else ...[
+                  // Players
+                  InfoTile(
+                    title: loc.players,
+                    icon: Icons.people,
+                    horizontalAlignment: CrossAxisAlignment.start,
+                    content: match.players.isNotEmpty
+                        ? Wrap(
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            spacing: 12,
+                            runSpacing: 8,
+                            children: match.players.map((player) {
+                              return TextIconTile(
+                                text: player.name,
+                                suffixText: getNameCountText(player),
+                                onTileTap: () {
+                                  Navigator.of(context).pushReplacement(
+                                    adaptivePageRoute(
+                                      builder: (context) => PlayerDetailView(
+                                        player: player,
+                                        callback: widget.onMatchUpdate,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          )
+                        : Text(
+                            loc.no_players_available,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
+                  ),
+                ],
                 const SizedBox(height: 15),
 
                 // Game
@@ -250,11 +293,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                           fullscreenDialog: true,
                           builder: (context) => MatchResultView(
                             match: match,
-                            onWinnerChanged: () {
+                            onWinnerChanged: () async {
                               widget.onMatchUpdate.call();
-                              setState(() {
-                                updateScoresForCurrentMatch();
-                              });
+                              await updateScoresForCurrentMatch();
                             },
                           ),
                         ),
@@ -295,93 +336,111 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   /// Returns the result row for single winner/loser rulesets or a placeholder
   /// if no result is entered yet
   List<Widget> getSingleResultRow(AppLocalizations loc) {
-    if (match.mvp.isNotEmpty) {
-      final ruleset = match.game.ruleset;
+    final ruleset = match.game.ruleset;
 
-      if (ruleset == Ruleset.singleWinner || ruleset == Ruleset.singleLoser) {
-        return [
-          Text(
-            ruleset == Ruleset.singleWinner ? loc.winner : loc.loser,
-            style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
-          ),
-          Text(
-            match.mvp.first.name,
+    if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
+      // Single winner/loser, multiple winner
+      final names = match.isTeamMatch
+          ? match.mvt.map((t) => t.name).toList()
+          : match.mvp.map((p) => p.name).toList();
+      final mvpNames = names.length == 1 ? names.first : names.join(', ');
+
+      final label = ruleset == Ruleset.singleWinner
+          ? loc.winner
+          : ruleset == Ruleset.singleLoser
+          ? loc.loser
+          : loc.winners;
+
+      return [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
+        ),
+        SizedBox(
+          width: 200,
+          child: Text(
+            mvpNames,
+            textAlign: TextAlign.end,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: CustomTheme.primaryColor,
             ),
           ),
-        ];
-      } else if (match.game.ruleset == Ruleset.multipleWinners) {
-        return [
-          Text(
-            loc.winners,
-            style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
-          ),
-          Flexible(
-            child: Container(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                match.mvp.map((player) => player.name).join(', '),
-                textAlign: TextAlign.end,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: CustomTheme.primaryColor,
-                ),
-              ),
-            ),
-          ),
-        ];
-      }
+        ),
+      ];
+    } else {
+      // No result yet
+      return [
+        Text(
+          loc.no_results_entered_yet,
+          style: const TextStyle(fontSize: 14, color: CustomTheme.textColor),
+        ),
+      ];
     }
-
-    // No results yet
-    return [
-      Text(
-        loc.no_results_entered_yet,
-        style: const TextStyle(fontSize: 14, color: CustomTheme.textColor),
-      ),
-    ];
   }
 
   /// Returns the result widget for scores or placement
   Widget getMultiResultRows(AppLocalizations loc) {
-    List<(String, int)> playerScores = [];
-    for (var player in match.players) {
-      int score = match.scores[player.id]?.score ?? 0;
-      playerScores.add((player.name, score));
-    }
-
-    final ruleset = match.game.ruleset;
-
-    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
-      playerScores.sort((a, b) => b.$2.compareTo(a.$2));
-    } else if (ruleset == Ruleset.lowestScore) {
-      playerScores.sort((a, b) => a.$2.compareTo(b.$2));
-    }
+    List<(String, int)> scores = getSortedScores();
 
     return Column(
       children: [
-        for (var i = 0; i < playerScores.length; i++)
+        for (var i = 0; i < scores.length; i++)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                playerScores[i].$1,
+                scores[i].$1,
                 style: const TextStyle(
                   fontSize: 16,
                   color: CustomTheme.textColor,
                 ),
               ),
-              getResultValueText(loc, i, playerScores[i].$2),
+              getResultValueText(loc, i, scores[i].$2),
             ],
           ),
       ],
     );
   }
 
+  /// Returns a list of player/team names and their corresponding scores, sorted by score according to the ruleset
+  List<(String, int)> getSortedScores() {
+    List<(String, int)> namedScores = [];
+
+    if (match.isTeamMatch) {
+      final teams = match.teams ?? [];
+      for (var team in teams) {
+        int score = team.score ?? 0;
+        namedScores.add((team.name, score));
+      }
+
+      final ruleset = match.game.ruleset;
+
+      if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
+        namedScores.sort((a, b) => b.$2.compareTo(a.$2));
+      } else if (ruleset == Ruleset.lowestScore) {
+        namedScores.sort((a, b) => a.$2.compareTo(b.$2));
+      }
+    } else {
+      final scores = match.scores;
+      for (var player in match.players) {
+        int score = scores[player.id]?.score ?? 0;
+        namedScores.add((player.name, score));
+      }
+
+      final ruleset = match.game.ruleset;
+
+      if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
+        namedScores.sort((a, b) => b.$2.compareTo(a.$2));
+      } else if (ruleset == Ruleset.lowestScore) {
+        namedScores.sort((a, b) => a.$2.compareTo(b.$2));
+      }
+    }
+    return namedScores;
+  }
+
+  /// Returns the text widget for the score or placement value, styled according to the ruleset
   Widget getResultValueText(AppLocalizations loc, int index, int score) {
     final ruleset = match.game.ruleset;
 
@@ -454,9 +513,19 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     }
   }
 
-  void updateScoresForCurrentMatch() {
-    db.scoreEntryDao
-        .getAllMatchScores(matchId: match.id)
-        .then((scores) => match.scores = scores);
+  Future<void> updateScoresForCurrentMatch() async {
+    if (match.isTeamMatch) {
+      final teams = await db.teamDao.getTeamsByMatchId(matchId: match.id);
+      setState(() {
+        match = match.copyWith(teams: teams);
+      });
+    } else {
+      final scores = await db.scoreEntryDao.getAllMatchScores(
+        matchId: match.id,
+      );
+      setState(() {
+        match = match.copyWith(scores: scores);
+      });
+    }
   }
 }

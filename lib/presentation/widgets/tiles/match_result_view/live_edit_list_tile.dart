@@ -9,6 +9,7 @@ class LiveEditListTile extends StatefulWidget {
     required this.title,
     required this.value,
     this.onChanged,
+    this.color,
   });
 
   final String title;
@@ -16,6 +17,8 @@ class LiveEditListTile extends StatefulWidget {
   final int value;
 
   final void Function(int newValue)? onChanged;
+
+  final Color? color;
 
   @override
   State<LiveEditListTile> createState() => _LiveEditListTileState();
@@ -36,87 +39,99 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       decoration: CustomTheme.standardBoxDecoration,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Column(
         children: [
-          MainMenuButton(
-            onPressed: () => _score > minScore
-                ? {
-                    setState(() {
-                      _score--;
-                      if (widget.onChanged != null) {
-                        widget.onChanged!(_score);
-                      }
-                    }),
-                  }
-                : null,
-            onLongPressed: () => _score > minScore
-                ? {
-                    setState(() {
-                      _score -= 10;
-                      if (widget.onChanged != null) {
-                        widget.onChanged!(_score);
-                      }
-                    }),
-                  }
-                : null,
-            icon: Icons.remove_rounded,
-          ),
-          Expanded(
-            child: Column(
-              children: [
-                Text(
-                  widget.title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
+          if (widget.color != null)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              decoration: BoxDecoration(
+                color: widget.color?.withAlpha(30),
+                border: Border.all(color: widget.color!, width: 2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                widget.title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(
-                  width: 150,
-                  child: NumericText(
-                    _score.toString(),
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                    textWidthBasis: TextWidthBasis.longestLine,
-                    textHeightBehavior: const TextHeightBehavior(
-                      applyHeightToFirstAscent: false,
-                      applyHeightToLastDescent: false,
-                    ),
-                    style: const TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
+              ),
+            )
+          else
+            Text(
+              widget.title,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
-          ),
-          MainMenuButton(
-            onPressed: () => _score < maxScore
-                ? {
-                    setState(() {
-                      _score++;
-                      if (widget.onChanged != null) {
-                        widget.onChanged!(_score);
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              MainMenuButton(
+                onPressed: () => _score > minScore
+                    ? {
+                        setState(() {
+                          _score--;
+                          if (widget.onChanged != null) {
+                            widget.onChanged!(_score);
+                          }
+                        }),
                       }
-                    }),
-                  }
-                : null,
-            onLongPressed: () => _score > minScore
-                ? {
-                    setState(() {
-                      _score += 10;
-                      if (widget.onChanged != null) {
-                        widget.onChanged!(_score);
+                    : null,
+                onLongPressed: () => _score > minScore
+                    ? {
+                        setState(() {
+                          _score -= 10;
+                          if (widget.onChanged != null) {
+                            widget.onChanged!(_score);
+                          }
+                        }),
                       }
-                    }),
-                  }
-                : null,
-            icon: Icons.add_rounded,
+                    : null,
+                icon: Icons.remove_rounded,
+              ),
+              SizedBox(
+                width: 150,
+                child: NumericText(
+                  _score.toString(),
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  textWidthBasis: TextWidthBasis.longestLine,
+                  textHeightBehavior: const TextHeightBehavior(
+                    applyHeightToFirstAscent: false,
+                    applyHeightToLastDescent: false,
+                  ),
+                  style: const TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              MainMenuButton(
+                onPressed: () => _score < maxScore
+                    ? {
+                        setState(() {
+                          _score++;
+                          if (widget.onChanged != null) {
+                            widget.onChanged!(_score);
+                          }
+                        }),
+                      }
+                    : null,
+                onLongPressed: () => _score > minScore
+                    ? {
+                        setState(() {
+                          _score += 10;
+                          if (widget.onChanged != null) {
+                            widget.onChanged!(_score);
+                          }
+                        }),
+                      }
+                    : null,
+                icon: Icons.add_rounded,
+              ),
+            ],
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -9,6 +10,8 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses_view.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
@@ -197,19 +200,23 @@ class _SettingsViewState extends State<SettingsView> {
                             padding: const EdgeInsets.only(bottom: 12),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: 40,
+                              spacing: 10,
                               children: [
-                                GestureDetector(
-                                  child: const Icon(Icons.language),
-                                  onTap: () => {
+                                HapticIconButton(
+                                  color: CustomTheme.textColor,
+                                  icon: const Icon(Icons.language),
+                                  onPressed: () async => {
+                                    await HapticFeedback.lightImpact(),
                                     launchUrl(
                                       Uri.parse('https://liquid-dev.de'),
                                     ),
                                   },
                                 ),
-                                GestureDetector(
-                                  child: const FaIcon(FontAwesomeIcons.github),
-                                  onTap: () => {
+                                HapticIconButton(
+                                  color: CustomTheme.textColor,
+                                  icon: const FaIcon(FontAwesomeIcons.github),
+                                  onPressed: () async => {
+                                    await HapticFeedback.lightImpact(),
                                     launchUrl(
                                       Uri.parse(
                                         'https://github.com/liquiddevelopmentde',
@@ -217,15 +224,19 @@ class _SettingsViewState extends State<SettingsView> {
                                     ),
                                   },
                                 ),
-                                GestureDetector(
-                                  child: Icon(
+                                HapticIconButton(
+                                  color: CustomTheme.textColor,
+                                  icon: Icon(
                                     Platform.isIOS
                                         ? CupertinoIcons.mail_solid
                                         : Icons.email,
                                   ),
-                                  onTap: () => launchUrl(
-                                    Uri.parse('mailto:hi@liquid-dev.de'),
-                                  ),
+                                  onPressed: () async => {
+                                    await HapticFeedback.lightImpact(),
+                                    launchUrl(
+                                      Uri.parse('mailto:hi@liquid-dev.de'),
+                                    ),
+                                  },
                                 ),
                               ],
                             ),
@@ -266,21 +277,42 @@ class _SettingsViewState extends State<SettingsView> {
   void showImportSnackBar({
     required BuildContext context,
     required ImportResult result,
-  }) {
+  }) async {
     final loc = AppLocalizations.of(context);
     switch (result) {
       case ImportResult.success:
-        showSnackbar(context: context, message: loc.data_successfully_imported);
+        await HapticFeedback.successNotification();
+        if (context.mounted) {
+          showSnackbar(
+            context: context,
+            message: loc.data_successfully_imported,
+          );
+        }
       case ImportResult.invalidSchema:
-        showSnackbar(context: context, message: loc.invalid_schema);
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(context: context, message: loc.invalid_schema);
+        }
       case ImportResult.fileReadError:
-        showSnackbar(context: context, message: loc.error_reading_file);
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(context: context, message: loc.error_reading_file);
+        }
       case ImportResult.canceled:
-        showSnackbar(context: context, message: loc.import_canceled);
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(context: context, message: loc.import_canceled);
+        }
       case ImportResult.formatException:
-        showSnackbar(context: context, message: loc.format_exception);
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(context: context, message: loc.format_exception);
+        }
       case ImportResult.unknownException:
-        showSnackbar(context: context, message: loc.unknown_exception);
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(context: context, message: loc.unknown_exception);
+        }
     }
   }
 
@@ -291,15 +323,27 @@ class _SettingsViewState extends State<SettingsView> {
   void showExportSnackBar({
     required BuildContext context,
     required ExportResult result,
-  }) {
+  }) async {
     final loc = AppLocalizations.of(context);
     switch (result) {
       case ExportResult.success:
-        showSnackbar(context: context, message: loc.data_successfully_exported);
+        await HapticFeedback.successNotification();
+        if (context.mounted) {
+          showSnackbar(
+            context: context,
+            message: loc.data_successfully_exported,
+          );
+        }
       case ExportResult.canceled:
-        showSnackbar(context: context, message: loc.export_canceled);
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(context: context, message: loc.export_canceled);
+        }
       case ExportResult.unknownException:
-        showSnackbar(context: context, message: loc.unknown_exception);
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(context: context, message: loc.unknown_exception);
+        }
     }
   }
 
@@ -307,28 +351,13 @@ class _SettingsViewState extends State<SettingsView> {
   ///
   /// [context] The BuildContext to show the snackbar in.
   /// [message] The message to display in the snackbar.
-  /// [duration] The duration for which the snackbar is displayed.
-  /// [action] An optional callback function to execute when the action button is pressed.
-  void showSnackbar({
-    required BuildContext context,
-    required String message,
-    Duration duration = const Duration(seconds: 3),
-    VoidCallback? action,
-  }) {
+  void showSnackbar({required BuildContext context, required String message}) {
     if (!context.mounted) return;
 
-    final loc = AppLocalizations.of(context);
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, style: const TextStyle(color: Colors.white)),
-        backgroundColor: CustomTheme.onBoxColor,
-        duration: duration,
-        action: action != null
-            ? SnackBarAction(label: loc.undo, onPressed: action)
-            : null,
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(CustomSnackBar(message: message));
   }
 
   /// Initializes the package information.

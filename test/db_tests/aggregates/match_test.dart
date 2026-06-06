@@ -56,7 +56,7 @@ void main() {
         name: 'Test Game',
         ruleset: Ruleset.singleWinner,
         description: 'A test game',
-        color: GameColor.blue,
+        color: AppColor.blue,
         icon: '',
       );
       testMatch1 = Match(
@@ -259,6 +259,34 @@ void main() {
         expect(match.group, isNotNull);
         expect(match.group!.id, testGroup1.id);
       });
+
+      test('getMatchesByPlayer() works correctly', () async {
+        await database.matchDao.addMatchesAsList(
+          matches: [testMatch1, testMatch2],
+        );
+
+        final matches = await database.matchDao.getMatchesByPlayer(
+          playerId: testPlayer1.id,
+        );
+
+        expect(matches, hasLength(1));
+        expect(matches.first.id, testMatch2.id);
+        expect(
+          matches.first.players.any((p) => p.id == testPlayer1.id),
+          isTrue,
+        );
+      });
+
+      test(
+        'getMatchesByPlayer() returns empty list for non-existent player',
+        () async {
+          final matches = await database.matchDao.getMatchesByPlayer(
+            playerId: 'non-existing-player-id',
+          );
+
+          expect(matches, isEmpty);
+        },
+      );
 
       test('getMatchCount() works correctly', () async {
         var count = await database.matchDao.getMatchCount();
@@ -507,34 +535,36 @@ void main() {
         deleted = await database.matchDao.deleteAllMatches();
         expect(deleted, isFalse);
       });
-    });
 
-    test('deleteMatchesByGame() deletes all matches for a game', () async {
-      await database.matchDao.addMatch(match: testMatch1);
-      await database.matchDao.addMatch(match: testMatch2);
+      test('deleteMatchesByGame() deletes all matches for a game', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+        await database.matchDao.addMatch(match: testMatch2);
 
-      var count = await database.matchDao.getMatchCountByGame(
-        gameId: testGame.id,
-      );
-      expect(count, 2);
+        var count = await database.matchDao.getMatchCountByGame(
+          gameId: testGame.id,
+        );
+        expect(count, 2);
 
-      final deletedCount = await database.matchDao.deleteMatchesByGame(
-        gameId: testGame.id,
-      );
-      expect(deletedCount, 2);
+        final deletedCount = await database.matchDao.deleteMatchesByGame(
+          gameId: testGame.id,
+        );
+        expect(deletedCount, 2);
 
-      count = await database.matchDao.getMatchCountByGame(gameId: testGame.id);
-      expect(count, 0);
+        count = await database.matchDao.getMatchCountByGame(
+          gameId: testGame.id,
+        );
+        expect(count, 0);
 
-      final allMatches = await database.matchDao.getAllMatches();
-      expect(allMatches, isEmpty);
-    });
+        final allMatches = await database.matchDao.getAllMatches();
+        expect(allMatches, isEmpty);
+      });
 
-    test('deleteMatchesByGame() returns 0 for non-existent game', () async {
-      final deletedCount = await database.matchDao.deleteMatchesByGame(
-        gameId: 'non-existent-game-id',
-      );
-      expect(deletedCount, 0);
+      test('deleteMatchesByGame() returns 0 for non-existent game', () async {
+        final deletedCount = await database.matchDao.deleteMatchesByGame(
+          gameId: 'non-existent-game-id',
+        );
+        expect(deletedCount, 0);
+      });
     });
   });
 }

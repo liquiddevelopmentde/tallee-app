@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -6,7 +7,8 @@ import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_scan_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
-import 'package:tallee/presentation/views/main_menu/statistics_view.dart';
+import 'package:tallee/presentation/views/main_menu/statistics_view/statistics_view.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 
 class CustomNavigationBar extends StatefulWidget {
@@ -65,10 +67,10 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               )
             : null,
         actions: [
-          IconButton(
+          HapticIconButton(
             onPressed: () async {
-              await Navigator.push(
-                context,
+              final navigator = Navigator.of(context);
+              await navigator.push(
                 adaptivePageRoute(builder: (_) => const SettingsView()),
               );
               setState(() {
@@ -137,7 +139,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   }
 
   /// Handles tab tap events. Updates the current [index] state.
-  void onTabTapped(int index) {
+  void onTabTapped(int index) async {
+    await HapticFeedback.selectionClick();
     setState(() {
       currentIndex = index;
     });

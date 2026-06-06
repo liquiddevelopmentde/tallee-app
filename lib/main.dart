@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -42,6 +43,7 @@ class GameTracker extends StatelessWidget {
         scaffoldBackgroundColor: CustomTheme.backgroundColor,
         // themes
         appBarTheme: CustomTheme.appBarTheme,
+        actionIconTheme: CustomTheme.actionIconTheme,
         inputDecorationTheme: CustomTheme.inputDecorationTheme,
         searchBarTheme: CustomTheme.searchBarTheme,
         radioTheme: CustomTheme.radioTheme,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
@@ -7,6 +8,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
@@ -25,6 +27,7 @@ class PlayerSelection extends StatefulWidget {
     this.availablePlayers,
     this.initialSelectedPlayers,
     required this.onChanged,
+    this.onPlayerCreated,
   });
 
   /// An optional list of players to choose from. If null, all players from the database are used.
@@ -35,6 +38,9 @@ class PlayerSelection extends StatefulWidget {
 
   /// A callback function that is invoked whenever the selection changes,
   final Function(List<Player> value) onChanged;
+
+  /// A callback function that is invoked when a player was created in this widget
+  final VoidCallback? onPlayerCreated;
 
   @override
   State<PlayerSelection> createState() => _PlayerSelectionState();
@@ -65,6 +71,12 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     7,
     Player(name: 'Player 0'),
   );
+
+  @override
+  void dispose() {
+    _searchBarController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -142,7 +154,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                               child: TextIconTile(
                                 text: player.name,
                                 suffixText: getNameCountText(player),
-                                onIconTap: () {
+                                onIconTap: () async {
+                                  await HapticFeedback.selectionClick();
                                   setState(() {
                                     // Removes the player from the selection and notifies the parent.
                                     selectedPlayers.remove(player);
@@ -197,7 +210,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                       text: suggestedPlayers[index].name,
                       suffixText: getNameCountText(suggestedPlayers[index]),
                       icon: Icons.add,
-                      onPressed: () {
+                      onPressed: () async {
+                        await HapticFeedback.selectionClick();
                         setState(() {
                           // If the player is not already selected
                           if (!selectedPlayers.contains(
@@ -249,6 +263,9 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                   ),
                 )
                 .toList();
+            suggestedPlayers = suggestedPlayers
+                .where((p) => !selectedPlayers.any((sp) => sp.id == p.id))
+                .toList();
           }
         } else {
           // Otherwise, use the loaded players from the database.
@@ -294,8 +311,10 @@ class _PlayerSelectionState extends State<PlayerSelection> {
 
     if (success) {
       _handleSuccessfulPlayerCreation(createdPlayer);
+      await HapticFeedback.successNotification();
       showSnackBarMessage(loc.successfully_added_player(playerName));
     } else {
+      await HapticFeedback.errorNotification();
       showSnackBarMessage(loc.could_not_add_player(playerName));
     }
   }
@@ -318,6 +337,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
 
   /// Updates the state after successfully adding a new player.
   void _handleSuccessfulPlayerCreation(Player player) {
+    widget.onPlayerCreated?.call();
     selectedPlayers.insert(0, player);
     widget.onChanged([...selectedPlayers]);
     allPlayers.add(player);
@@ -340,14 +360,9 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   void showSnackBarMessage(String message) {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: CustomTheme.boxColor,
-        content: Center(
-          child: Text(message, style: const TextStyle(color: Colors.white)),
-        ),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(CustomSnackBar(message: message));
   }
 
   /// Determines the appropriate info text to display when no players

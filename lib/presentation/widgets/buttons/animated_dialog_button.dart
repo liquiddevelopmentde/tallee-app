@@ -4,14 +4,15 @@ import 'package:tallee/core/enums.dart';
 class AnimatedDialogButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
   /// when pressed.
-  /// - [onPressed]: Callback function that is triggered when the button is pressed.
   /// - [buttonText]: The text to be displayed on the button.
-  /// - [buttonType]: The type of the button, which determines its styling.
+  /// - [onPressed]: Callback function that is triggered when the button is pressed.
   /// - [buttonConstraints]: Optional constraints to control the button's size.
+  /// - [buttonType]: The type of the button, which determines its styling.
+  /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
   const AnimatedDialogButton({
     super.key,
     required this.buttonText,
-    required this.onPressed,
+    this.onPressed,
     this.buttonConstraints,
     this.buttonType = ButtonType.primary,
     this.isDescructive = false,
@@ -19,7 +20,7 @@ class AnimatedDialogButton extends StatefulWidget {
 
   final String buttonText;
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   final BoxConstraints? buttonConstraints;
 
@@ -38,28 +39,38 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
   Widget build(BuildContext context) {
     final textStyling = _getTextStyling();
     final buttonDecoration = _getButtonDecoration();
+    final isDisabled = widget.onPressed == null;
 
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) => setState(() => _isPressed = false),
-      onTapCancel: () => setState(() => _isPressed = false),
-      onTap: widget.onPressed,
-      child: AnimatedScale(
-        scale: _isPressed ? 0.95 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        child: AnimatedOpacity(
-          opacity: _isPressed ? 0.6 : 1.0,
-          duration: const Duration(milliseconds: 100),
-          child: Center(
-            child: Container(
-              constraints: widget.buttonConstraints,
-              decoration: buttonDecoration,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(
-                widget.buttonText,
-                style: textStyling,
-                textAlign: TextAlign.center,
+    return IgnorePointer(
+      ignoring: isDisabled,
+      child: Opacity(
+        opacity: isDisabled ? 0.4 : 1.0,
+        child: GestureDetector(
+          onTapDown: (_) => setState(() => _isPressed = true),
+          onTapUp: (_) => setState(() => _isPressed = false),
+          onTapCancel: () => setState(() => _isPressed = false),
+          onTap: widget.onPressed,
+          child: AnimatedScale(
+            scale: _isPressed ? 0.95 : 1.0,
+            duration: const Duration(milliseconds: 100),
+            child: AnimatedOpacity(
+              opacity: _isPressed ? 0.6 : 1.0,
+              duration: const Duration(milliseconds: 100),
+              child: Center(
+                child: Container(
+                  constraints: widget.buttonConstraints,
+                  decoration: buttonDecoration,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    widget.buttonText,
+                    style: textStyling,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
           ),

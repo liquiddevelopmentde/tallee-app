@@ -16,9 +16,10 @@ class Match {
   final Game game;
   final Group? group;
   final List<Player> players;
+  final bool isTeamMatch;
   final List<Team>? teams;
   final String notes;
-  Map<String, ScoreEntry?> scores;
+  final Map<String, ScoreEntry?> scores;
 
   Match({
     required this.name,
@@ -26,6 +27,7 @@ class Match {
     required this.players,
     this.endedAt,
     this.group,
+    this.isTeamMatch = false,
     this.teams,
     this.notes = '',
     String? id,
@@ -37,7 +39,7 @@ class Match {
 
   @override
   String toString() {
-    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, notes: $notes, scores: $scores, mvp: $mvp}';
+    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scores: $scores, mvp: $mvp}';
   }
 
   Match copyWith({
@@ -48,6 +50,7 @@ class Match {
     Game? game,
     Group? group,
     List<Player>? players,
+    bool? isTeamMatch,
     List<Team>? teams,
     String? notes,
     Map<String, ScoreEntry?>? scores,
@@ -60,6 +63,7 @@ class Match {
       game: game ?? this.game,
       group: group ?? this.group,
       players: players ?? this.players,
+      isTeamMatch: isTeamMatch ?? this.isTeamMatch,
       teams: teams ?? this.teams,
       notes: notes ?? this.notes,
       scores: scores ?? this.scores,
@@ -78,6 +82,7 @@ class Match {
           game == other.game &&
           group == other.group &&
           const DeepCollectionEquality().equals(players, other.players) &&
+          isTeamMatch == other.isTeamMatch &&
           const DeepCollectionEquality().equals(teams, other.teams) &&
           notes == other.notes &&
           const DeepCollectionEquality().equals(scores, other.scores);
@@ -91,6 +96,7 @@ class Match {
     game,
     group,
     const DeepCollectionEquality().hash(players),
+    isTeamMatch,
     const DeepCollectionEquality().hash(teams),
     notes,
     const DeepCollectionEquality().hash(scores),
@@ -107,11 +113,12 @@ class Match {
         name: '',
         ruleset: Ruleset.singleWinner,
         description: '',
-        color: GameColor.blue,
+        color: AppColor.blue,
         icon: '',
       ),
       group = null,
       players = [],
+      isTeamMatch = json['isTeamMatch'],
       teams = [],
       scores = json['scores'] != null
           ? (json['scores'] as Map<String, dynamic>).map(
@@ -133,11 +140,13 @@ class Match {
     'gameId': game.id,
     'groupId': group?.id,
     'playerIds': players.map((player) => player.id).toList(),
+    'isTeamMatch': isTeamMatch,
     'teams': teams?.map((team) => team.toJson()).toList(),
     'scores': scores.map((key, value) => MapEntry(key, value?.toJson())),
     'notes': notes,
   };
 
+  // Most Valuable Player(s) based on the match's ruleset
   List<Player> get mvp {
     if (players.isEmpty || scores.isEmpty) return [];
 
@@ -193,6 +202,61 @@ class Match {
       final playerScore = scores[player.id];
       if (playerScore == null) return false;
       return playerScore.score == lowestScore;
+    }).toList();
+  }
+
+  // MVP for team-based matches (Most Valuable Team)
+  List<Team> get mvt {
+    if (teams == null || teams!.isEmpty) return [];
+
+    switch (game.ruleset) {
+      case Ruleset.highestScore:
+        return _getHighestScoreTeam();
+
+      case Ruleset.lowestScore:
+        return _getLowestScoreTeam();
+
+      case Ruleset.singleWinner:
+        return _getHighestScoreTeam().take(1).toList();
+
+      case Ruleset.singleLoser:
+        return _getLowestScoreTeam().take(1).toList();
+
+      case Ruleset.multipleWinners:
+        return _getHighestScoreTeam();
+
+      case Ruleset.placement:
+        return _getHighestScoreTeam().take(1).toList();
+    }
+  }
+
+  List<Team> _getHighestScoreTeam() {
+    if (teams!.every((team) => team.score == null)) {
+      return [];
+    }
+
+    final int highestScore = teams!
+        .map((team) => team.score)
+        .whereType<int>()
+        .reduce((max, score) => score > max ? score : max);
+
+    return teams!.where((team) {
+      return team.score == highestScore;
+    }).toList();
+  }
+
+  List<Team> _getLowestScoreTeam() {
+    if (teams!.every((team) => team.score == null)) {
+      return [];
+    }
+
+    final int lowestScore = teams!
+        .map((team) => team.score)
+        .whereType<int>()
+        .reduce((min, score) => score < min ? score : min);
+
+    return teams!.where((team) {
+      return team.score == lowestScore;
     }).toList();
   }
 }

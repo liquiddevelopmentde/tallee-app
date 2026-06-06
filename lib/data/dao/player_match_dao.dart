@@ -40,7 +40,7 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
         await (selectOnly(playerMatchTable)
               ..where(playerMatchTable.matchId.equals(matchId))
               ..addColumns([playerMatchTable.playerId.count()]))
-            .map((row) => row.read(playerMatchTable.playerId.count()))
+            .map((tbl) => tbl.read(playerMatchTable.playerId.count()))
             .getSingle();
     return (count ?? 0) > 0;
   }
@@ -56,7 +56,7 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
               ..where(playerMatchTable.matchId.equals(matchId))
               ..where(playerMatchTable.playerId.equals(playerId))
               ..addColumns([playerMatchTable.playerId.count()]))
-            .map((row) => row.read(playerMatchTable.playerId.count()))
+            .map((tbl) => tbl.read(playerMatchTable.playerId.count()))
             .getSingle();
     return (count ?? 0) > 0;
   }
@@ -66,7 +66,7 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
   Future<List<Player>> getPlayersOfMatch({required String matchId}) async {
     final result = await (select(
       playerMatchTable,
-    )..where((p) => p.matchId.equals(matchId))).get();
+    )..where((tbl) => tbl.matchId.equals(matchId))).get();
 
     if (result.isEmpty) return [];
 
@@ -74,7 +74,8 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
       (row) => db.playerDao.getPlayerById(playerId: row.playerId),
     );
     final players = await Future.wait(futures);
-    return players;
+    return players
+      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
   }
 
   /// Retrieves a list of [Player]s associated with a specific team in a match.
@@ -85,8 +86,8 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
   }) async {
     final result =
         await (select(playerMatchTable)
-              ..where((p) => p.matchId.equals(matchId))
-              ..where((p) => p.teamId.equals(teamId)))
+              ..where((tbl) => tbl.matchId.equals(matchId))
+              ..where((tbl) => tbl.teamId.equals(teamId)))
             .get();
 
     if (result.isEmpty) return [];
@@ -109,7 +110,8 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
   }) async {
     final rowsAffected =
         await (update(playerMatchTable)..where(
-              (p) => p.matchId.equals(matchId) & p.playerId.equals(playerId),
+              (tbl) =>
+                  tbl.matchId.equals(matchId) & tbl.playerId.equals(playerId),
             ))
             .write(PlayerMatchTableCompanion(teamId: Value(teamId)));
     return rowsAffected > 0;
@@ -143,9 +145,9 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
       // Remove old players
       if (playersToRemove.isNotEmpty) {
         await (delete(playerMatchTable)..where(
-              (pg) =>
-                  pg.matchId.equals(matchId) &
-                  pg.playerId.isIn(playersToRemove.toList()),
+              (tbl) =>
+                  tbl.matchId.equals(matchId) &
+                  tbl.playerId.isIn(playersToRemove.toList()),
             ))
             .go();
       }
@@ -182,8 +184,8 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     required String playerId,
   }) async {
     final query = delete(playerMatchTable)
-      ..where((pg) => pg.matchId.equals(matchId))
-      ..where((pg) => pg.playerId.equals(playerId));
+      ..where((tbl) => tbl.matchId.equals(matchId))
+      ..where((tbl) => tbl.playerId.equals(playerId));
     final rowsAffected = await query.go();
     return rowsAffected > 0;
   }

@@ -7,6 +7,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/game_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -50,6 +51,9 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   /// Games filtered according to the current search query
   late List<Game> filteredGames;
 
+  List<Game> get games =>
+      widget.games..sort((a, b) => a.name.compareTo(b.name));
+
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
@@ -58,7 +62,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     selectedGameId = widget.initialGameId;
 
     // Start with all games visible
-    filteredGames = List<Game>.from(widget.games);
+    filteredGames = List<Game>.from(games);
 
     super.initState();
   }
@@ -70,20 +74,18 @@ class _ChooseGameViewState extends State<ChooseGameView> {
       backgroundColor: CustomTheme.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: IconButton(
+        leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.of(context).pop(
               selectedGameId == ''
                   ? null
-                  : widget.games.firstWhere(
-                      (game) => game.id == selectedGameId,
-                    ),
+                  : games.firstWhere((game) => game.id == selectedGameId),
             );
           },
         ),
         actions: [
-          IconButton(
+          HapticIconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
               final result = await Navigator.push(
@@ -98,7 +100,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
               );
               if (result != null && result.game != null) {
                 setState(() {
-                  widget.games.insert(0, result.game);
+                  games.insert(0, result.game);
                 });
                 _refreshFromSource();
               }
@@ -138,7 +140,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
               child: Visibility(
                 visible: filteredGames.isNotEmpty,
                 replacement: Visibility(
-                  visible: widget.games.isNotEmpty,
+                  visible: games.isNotEmpty,
                   replacement: TopCenteredMessage(
                     icon: Icons.info,
                     title: loc.info,
@@ -159,11 +161,8 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                     return GameTile(
                       title: game.name,
                       description: game.description,
-                      badgeText: translateRulesetToString(
-                        game.ruleset,
-                        context,
-                      ),
-                      badgeColor: getColorFromGameColor(game.color),
+                      subtitle: translateRulesetToString(game.ruleset, context),
+                      badgeColor: getColorFromAppColor(game.color),
                       isHighlighted: selectedGameId == game.id,
                       onTap: () async {
                         setState(() {
@@ -189,7 +188,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                         );
                         if (result != null && result.game != null) {
                           // Find the index in the original list to mutate
-                          final originalIndex = widget.games.indexWhere(
+                          final originalIndex = games.indexWhere(
                             (g) => g.id == game.id,
                           );
                           if (originalIndex == -1) {
@@ -201,12 +200,12 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                               if (selectedGameId == game.id) {
                                 selectedGameId = '';
                               }
-                              widget.games.removeAt(originalIndex);
+                              games.removeAt(originalIndex);
                               widget.onGamesUpdated?.call();
                             });
                           } else {
                             setState(() {
-                              widget.games[originalIndex] = result.game;
+                              games[originalIndex] = result.game;
                             });
                           }
                           _refreshFromSource();
@@ -228,13 +227,13 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     final q = query.toLowerCase().trim();
     if (q.isEmpty) {
       setState(() {
-        filteredGames = List<Game>.from(widget.games);
+        filteredGames = List<Game>.from(games);
       });
       return;
     }
 
     setState(() {
-      filteredGames = widget.games.where((game) {
+      filteredGames = games.where((game) {
         final name = game.name.toLowerCase();
         final description = game.description.toLowerCase();
         return name.contains(q) || description.contains(q);
