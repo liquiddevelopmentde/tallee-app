@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/edge_blocked_bouncing_scroll_physics.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
@@ -45,6 +46,11 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// List of text controllers for score entry, one for each player
   late final List<TextEditingController> controller;
 
+  /// Controller for scroll synchronizing in placements
+  late final ScrollController placementController;
+  late final ScrollController valueController;
+  bool isSyncingScroll = false;
+
   /// Flag to indicate if the save button should be enabled
   late bool canSave;
 
@@ -63,6 +69,11 @@ class _MatchResultViewState extends State<MatchResultView> {
     canSave = !rulesetSupportsScoreEntry();
     isTeamMatch = widget.match.isTeamMatch;
 
+    placementController = ScrollController();
+    valueController = ScrollController();
+    placementController.addListener(onPlacementScroll);
+    valueController.addListener(onValueScroll);
+
     if (isTeamMatch) {
       initializeAsTeamMatch();
     } else {
@@ -70,14 +81,6 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
 
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    for (final c in controller) {
-      c.dispose();
-    }
-    super.dispose();
   }
 
   @override
@@ -568,72 +571,87 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   Widget buildPlacementWidget(bool isTeamMatch) {
-    final placementCol = Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: Column(
-        children: [
-          for (
-            int i = 0;
-            i < (isTeamMatch ? allTeams.length : allPlayers.length);
-            i++
-          )
-            Container(
-              alignment: Alignment.center,
-              height: 60,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: CustomTheme.boxBorderColor,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
-                ),
-                alignment: Alignment.center,
-                height: 50,
-                width: 50,
-                child: Text(
-                  ' #${i + 1} ',
-                  style: const TextStyle(
-                    color: CustomTheme.textColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+    final double rowHeight = isTeamMatch ? 80 : 60;
+    final double badgeSize = isTeamMatch ? 65 : 50;
+
+    Widget buildPlacementBadge(int index) {
+      return Container(
+        alignment: Alignment.center,
+        height: badgeSize,
+        width: badgeSize,
+        decoration: BoxDecoration(
+          color: CustomTheme.boxBorderColor,
+          borderRadius: CustomTheme.standardBorderRadiusAll,
+        ),
+        child: Text(
+          ' #${index + 1} ',
+          style: const TextStyle(
+            color: CustomTheme.textColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+      );
+    }
+
+    Widget buildProxyDecorator(
+      Widget child,
+      int index,
+      Animation<double> animation,
+    ) {
+      return AnimatedBuilder(
+        animation: animation,
+        child: child,
+        builder: (context, child) {
+          final alpha = (Curves.easeInOut.transform(animation.value) * 40)
+              .toInt();
+          return Stack(
+            children: [
+              child!,
+              Positioned.fill(
+                left: 4,
+                top: 4,
+                right: 4,
+                bottom: 4,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withAlpha(alpha),
+                    borderRadius: CustomTheme.standardBorderRadiusAll,
                   ),
                 ),
               ),
-            ),
-        ],
+            ],
+          );
+        },
+      );
+    }
+
+    final int itemCount = isTeamMatch ? allTeams.length : allPlayers.length;
+    final fixedPlacementCol = SizedBox(
+      width: 58,
+      child: ListView.builder(
+        controller: placementController,
+        physics: const NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.zero,
+        itemCount: itemCount,
+        itemBuilder: (context, index) {
+          return SizedBox(
+            height: rowHeight,
+            child: Center(child: buildPlacementBadge(index)),
+          );
+        },
       ),
     );
+
     final valueCol = isTeamMatch
         ? Expanded(
             child: ReorderableListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
+              scrollController: valueController,
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: EdgeBlockedBouncingScrollPhysics(),
+              ),
               padding: EdgeInsets.zero,
-              proxyDecorator: (child, index, animation) {
-                return AnimatedBuilder(
-                  animation: animation,
-                  child: child,
-                  builder: (context, child) {
-                    final alpha =
-                        (Curves.easeInOut.transform(animation.value) * 40)
-                            .toInt();
-                    return Stack(
-                      children: [
-                        child!,
-                        Positioned.fill(
-                          left: 4,
-                          top: 4,
-                          right: 4,
-                          bottom: 4,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withAlpha(alpha),
-                              borderRadius: CustomTheme.standardBorderRadiusAll,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+              proxyDecorator: buildProxyDecorator,
               onReorderItem: (int oldIndex, int newIndex) {
                 setState(() {
                   if (newIndex > oldIndex) {
@@ -643,12 +661,13 @@ class _MatchResultViewState extends State<MatchResultView> {
                   allTeams.insert(newIndex, team);
                 });
               },
-              itemCount: allTeams.length,
+              itemCount: itemCount,
               itemBuilder: (context, index) {
-                return Padding(
+                return SizedBox(
                   key: ValueKey(allTeams[index].id),
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  height: rowHeight,
                   child: TeamCard(
+                    margin: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
                     showDragHandle: true,
                     team: allTeams[index],
                     maxChars: 23,
@@ -659,36 +678,12 @@ class _MatchResultViewState extends State<MatchResultView> {
           )
         : Expanded(
             child: ReorderableListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
+              scrollController: valueController,
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: EdgeBlockedBouncingScrollPhysics(),
+              ),
               padding: EdgeInsets.zero,
-              proxyDecorator: (child, index, animation) {
-                return AnimatedBuilder(
-                  animation: animation,
-                  child: child,
-                  builder: (context, child) {
-                    final alpha =
-                        (Curves.easeInOut.transform(animation.value) * 40)
-                            .toInt();
-                    return Stack(
-                      children: [
-                        child!,
-                        Positioned.fill(
-                          left: 4,
-                          top: 4,
-                          right: 4,
-                          bottom: 4,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withAlpha(alpha),
-                              borderRadius: CustomTheme.standardBorderRadiusAll,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+              proxyDecorator: buildProxyDecorator,
               onReorderItem: (int oldIndex, int newIndex) {
                 setState(() {
                   if (newIndex > oldIndex) {
@@ -698,18 +693,49 @@ class _MatchResultViewState extends State<MatchResultView> {
                   allPlayers.insert(newIndex, item);
                 });
               },
-              itemCount: allPlayers.length,
+              itemCount: itemCount,
               itemBuilder: (context, index) {
-                return TextIconListTile(
+                return SizedBox(
                   key: ValueKey(allPlayers[index].id),
-                  text: allPlayers[index].name,
-                  icon: Icons.drag_handle,
+                  height: rowHeight,
+                  child: TextIconListTile(
+                    text: allPlayers[index].name,
+                    icon: Icons.drag_handle,
+                  ),
                 );
               },
             ),
           );
 
-    return Row(children: [placementCol, valueCol]);
+    return Row(children: [fixedPlacementCol, valueCol]);
+  }
+
+  /// Handler for placement scrolling
+  void onPlacementScroll() {
+    syncScroll(placementController, valueController);
+  }
+
+  /// Handler for value scrolling
+  void onValueScroll() {
+    syncScroll(valueController, placementController);
+  }
+
+  /// Synchronizes the scroll position of the target controller to match the source controller.
+  void syncScroll(ScrollController source, ScrollController target) {
+    if (isSyncingScroll || !source.hasClients || !target.hasClients) {
+      return;
+    }
+
+    isSyncingScroll = true;
+    final minExtent = target.position.minScrollExtent;
+    final maxExtent = target.position.maxScrollExtent;
+    final targetOffset = source.offset.clamp(minExtent, maxExtent).toDouble();
+
+    if ((target.offset - targetOffset).abs() > 0.5) {
+      target.jumpTo(targetOffset);
+    }
+
+    isSyncingScroll = false;
   }
 
   Widget buildMultipleWinnerSelectionWidget(bool isTeamMatch) {
@@ -758,5 +784,17 @@ class _MatchResultViewState extends State<MatchResultView> {
         },
       );
     }
+  }
+
+  @override
+  void dispose() {
+    for (final c in controller) {
+      c.dispose();
+    }
+    placementController.removeListener(onPlacementScroll);
+    valueController.removeListener(onValueScroll);
+    placementController.dispose();
+    valueController.dispose();
+    super.dispose();
   }
 }
