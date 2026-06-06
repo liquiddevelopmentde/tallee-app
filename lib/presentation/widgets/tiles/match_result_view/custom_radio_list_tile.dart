@@ -8,13 +8,13 @@ class CustomRadioListTile<T> extends StatelessWidget {
   /// - [onContainerTap]: The callback invoked when the container is tapped.
   const CustomRadioListTile({
     super.key,
-    required this.text,
+    required this.content,
     required this.value,
     required this.onContainerTap,
   });
 
   /// The text to display next to the radio button.
-  final String text;
+  final Widget content;
 
   /// The value associated with the radio button.
   final T value;
@@ -37,16 +37,7 @@ class CustomRadioListTile<T> extends StatelessWidget {
         child: Row(
           children: [
             Radio<T>(value: value, toggleable: true),
-            Expanded(
-              child: Text(
-                text,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
+            Expanded(child: content),
           ],
         ),
       ),

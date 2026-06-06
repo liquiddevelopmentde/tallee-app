@@ -7,6 +7,7 @@ import 'package:tallee/core/enums.dart';
 class GameTile extends StatelessWidget {
   /// A list tile widget that displays a title and description, with optional highlighting and badge.
   /// - [title]: The title text displayed on the tile.
+  /// - [subtitle]: An optional subtitle displayed under the title.
   /// - [description]: The description text displayed below the title.
   /// - [onTap]: The callback invoked when the tile is tapped.
   /// - [onLongPress]: The callback invoked when the tile is tapped.
@@ -17,6 +18,7 @@ class GameTile extends StatelessWidget {
     super.key,
     required this.title,
     required this.description,
+    this.subtitle,
     this.onTap,
     this.onLongPress,
     this.isHighlighted = false,
@@ -24,25 +26,20 @@ class GameTile extends StatelessWidget {
     this.badgeColor,
   });
 
-  /// The title text displayed on the tile.
   final String title;
 
-  /// The description text displayed below the title.
+  final String? subtitle;
+
   final String description;
 
-  /// The callback invoked when the tile is tapped.
   final VoidCallback? onTap;
 
-  /// The callback invoked when the tile is long-pressed.
   final VoidCallback? onLongPress;
 
-  /// A boolean to determine if the tile should be highlighted.
   final bool isHighlighted;
 
-  /// Optional text to display in a badge on the right side of the title.
   final String? badgeText;
 
-  /// Optional color for the badge background.
   final Color? badgeColor;
 
   @override
@@ -67,46 +64,36 @@ class GameTile extends StatelessWidget {
         }
       },
       child: AnimatedContainer(
-        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
         decoration: !isHighlighted
             ? CustomTheme.standardBoxDecoration
             : CustomTheme.highlightedBoxDecoration.copyWith(
                 border: Border.all(
                   color: gameColor.withValues(alpha: 0.9),
                   width: 2,
+                  strokeAlign: BorderSide.strokeAlignCenter,
                 ),
               ),
         duration: const Duration(milliseconds: 200),
-        child: Stack(
-          children: [
-            // Gradient overlay
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      gameColor.withValues(alpha: 0.08),
-                      gameColor.withValues(alpha: 0.02),
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.5, 1.0],
-                  ),
-                ),
-              ),
-            ),
-
-            // Content
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Title
+              Row(
+                spacing: 8,
                 children: [
-                  // Title
+                  Container(
+                    width: 15,
+                    height: 15,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: gameColor,
+                    ),
+                  ),
                   Text(
                     title,
                     overflow: TextOverflow.ellipsis,
@@ -117,44 +104,59 @@ class GameTile extends StatelessWidget {
                       fontSize: 18,
                     ),
                   ),
-
-                  // Badge
-                  if (badgeText != null) ...[
-                    const SizedBox(height: 5),
-                    Container(
-                      constraints: const BoxConstraints(maxWidth: 250),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 2,
-                        horizontal: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: gameColor,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        badgeText!,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: TextStyle(
-                          color: badgeTextColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-
-                  // Description
-                  if (description.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    Text(description, style: const TextStyle(fontSize: 14)),
-                    const SizedBox(height: 2.5),
-                  ],
                 ],
               ),
-            ),
-          ],
+
+              // Title
+              if (subtitle != null && subtitle!.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  subtitle!,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: CustomTheme.hintColor,
+                  ),
+                ),
+              ],
+
+              // Badge
+              if (badgeText != null) ...[
+                const SizedBox(height: 5),
+                Container(
+                  constraints: const BoxConstraints(maxWidth: 250),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2,
+                    horizontal: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: gameColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    badgeText!,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: TextStyle(
+                      color: badgeTextColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+
+              // Description
+              if (description.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(description, style: const TextStyle(fontSize: 14)),
+                const SizedBox(height: 2.5),
+              ],
+            ],
+          ),
         ),
       ),
     );

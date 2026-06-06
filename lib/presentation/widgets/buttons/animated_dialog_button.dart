@@ -4,10 +4,11 @@ import 'package:tallee/core/enums.dart';
 class AnimatedDialogButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
   /// when pressed.
-  /// - [onPressed]: Callback function that is triggered when the button is pressed.
   /// - [buttonText]: The text to be displayed on the button.
-  /// - [buttonType]: The type of the button, which determines its styling.
+  /// - [onPressed]: Callback function that is triggered when the button is pressed.
   /// - [buttonConstraints]: Optional constraints to control the button's size.
+  /// - [buttonType]: The type of the button, which determines its styling.
+  /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
   const AnimatedDialogButton({
     super.key,
     required this.buttonText,
@@ -38,12 +39,12 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
   Widget build(BuildContext context) {
     final textStyling = _getTextStyling();
     final buttonDecoration = _getButtonDecoration();
-    bool isDisabled = widget.onPressed == null;
+    final isDisabled = widget.onPressed == null;
 
     return IgnorePointer(
       ignoring: isDisabled,
       child: Opacity(
-        opacity: isDisabled ? 0.5 : 1.0,
+        opacity: isDisabled ? 0.4 : 1.0,
         child: GestureDetector(
           onTapDown: (_) => setState(() => _isPressed = true),
           onTapUp: (_) => setState(() => _isPressed = false),

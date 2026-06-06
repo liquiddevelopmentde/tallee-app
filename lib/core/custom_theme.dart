@@ -65,7 +65,11 @@ class CustomTheme {
 
   static BoxDecoration highlightedBoxDecoration = BoxDecoration(
     color: boxColor,
-    border: Border.all(color: textColor, width: 2),
+    border: Border.all(
+      color: textColor,
+      width: 2,
+      strokeAlign: BorderSide.strokeAlignCenter,
+    ),
     borderRadius: standardBorderRadiusAll,
   );
 

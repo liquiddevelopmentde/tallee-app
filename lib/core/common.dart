@@ -24,29 +24,6 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
   }
 }
 
-/// Translates a [AppColor] enum value to its corresponding localized string.
-String translateAppColorToString(AppColor color, BuildContext context) {
-  final loc = AppLocalizations.of(context);
-  switch (color) {
-    case AppColor.red:
-      return loc.color_red;
-    case AppColor.blue:
-      return loc.color_blue;
-    case AppColor.green:
-      return loc.color_green;
-    case AppColor.yellow:
-      return loc.color_yellow;
-    case AppColor.purple:
-      return loc.color_purple;
-    case AppColor.orange:
-      return loc.color_orange;
-    case AppColor.pink:
-      return loc.color_pink;
-    case AppColor.teal:
-      return loc.color_teal;
-  }
-}
-
 /// Returns the [Color] object corresponding to a [AppColor] enum value.
 Color getColorFromAppColor(AppColor color) {
   switch (color) {
@@ -69,6 +46,45 @@ Color getColorFromAppColor(AppColor color) {
   }
 }
 
+// Returns a AppColor enum value based on the provided team [index].
+AppColor getTeamColor(int index) {
+  final colors = [
+    AppColor.red,
+    AppColor.blue,
+    AppColor.green,
+    AppColor.yellow,
+    AppColor.purple,
+    AppColor.orange,
+    AppColor.pink,
+    AppColor.teal,
+  ];
+  return colors[index % colors.length];
+}
+
+/// Translates a [AppColor] enum value to its corresponding localized string.
+String translateAppColorToString(AppColor color, BuildContext context) {
+  final loc = AppLocalizations.of(context);
+  switch (color) {
+    case AppColor.red:
+      return loc.color_red;
+    case AppColor.blue:
+      return loc.color_blue;
+    case AppColor.green:
+      return loc.color_green;
+    case AppColor.yellow:
+      return loc.color_yellow;
+    //return const Color(0xFFF7CA28);
+    case AppColor.purple:
+      return loc.color_purple;
+    case AppColor.orange:
+      return loc.color_orange;
+    case AppColor.pink:
+      return loc.color_pink;
+    case AppColor.teal:
+      return loc.color_teal;
+  }
+}
+
 /// Returns [IconData] corresponding to a [Ruleset] enum value.
 IconData getRulesetIcon(Ruleset ruleset) {
   switch (ruleset) {
@@ -77,11 +93,10 @@ IconData getRulesetIcon(Ruleset ruleset) {
     case Ruleset.lowestScore:
       return Icons.arrow_downward;
     case Ruleset.singleWinner:
+    case Ruleset.multipleWinners:
       return Icons.emoji_events;
     case Ruleset.singleLoser:
       return Icons.sentiment_dissatisfied;
-    case Ruleset.multipleWinners:
-      return Icons.group;
     case Ruleset.placement:
       return RpgAwesome.podium;
   }
@@ -113,6 +128,7 @@ String getExtraPlayerCount(Match match) {
   return ' + ${count.toString()}';
 }
 
+/// Returns the player name count if greater 0 in the format " #2", otherwise an empty string
 String getNameCountText(Player player) {
   if (player.nameCount >= 1) {
     return ' #${player.nameCount}';
@@ -120,6 +136,7 @@ String getNameCountText(Player player) {
   return '';
 }
 
+/// Returns the correct singular or plural form of "point(s)" based on the [points] value.
 String getPointLabel(AppLocalizations loc, int points) {
   if (points == 1) {
     return '$points ${loc.point}';
