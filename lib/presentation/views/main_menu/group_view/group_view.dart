@@ -26,7 +26,6 @@ class GroupView extends StatefulWidget {
 
 class _GroupViewState extends State<GroupView> {
   late final AppDatabase db;
-  GroupSearchProvider? searchProvider;
 
   /// Loaded groups from the database
   late List<Group> loadedGroups;
@@ -51,16 +50,19 @@ class _GroupViewState extends State<GroupView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      searchProvider = Provider.of<GroupSearchProvider>(context, listen: false);
-      searchProvider?.addListener(_handleSearchChanges);
-    });
+    Provider.of<GroupSearchProvider>(
+      context,
+      listen: false,
+    ).addListener(_handleSearchToggle);
     loadGroups();
   }
 
   @override
   void dispose() {
-    searchProvider?.removeListener(_handleSearchChanges);
+    Provider.of<GroupSearchProvider>(
+      context,
+      listen: false,
+    ).removeListener(_handleSearchToggle);
     searchBarController.dispose();
     super.dispose();
   }
@@ -69,6 +71,12 @@ class _GroupViewState extends State<GroupView> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     final searchProvider = Provider.of<GroupSearchProvider>(context);
+
+    // Reset filtered groups when search is disabled
+    if (!searchProvider.isSearching) {
+      filteredGroups = [...groups];
+    }
+
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       body: Stack(
@@ -189,12 +197,13 @@ class _GroupViewState extends State<GroupView> {
     });
   }
 
-  void _handleSearchChanges() {
-    if (!searchProvider!.isSearching) {
+  void _handleSearchToggle() {
+    final searchProvider = Provider.of<GroupSearchProvider>(
+      context,
+      listen: false,
+    );
+    if (!searchProvider.isSearching) {
       searchBarController.clear();
-      setState(() {
-        filteredGroups = [...groups];
-      });
     }
   }
 

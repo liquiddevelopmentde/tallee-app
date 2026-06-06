@@ -32,7 +32,6 @@ class MatchView extends StatefulWidget {
 class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
   bool isLoading = true;
-  MatchSearchProvider? searchProvider;
 
   TextEditingController searchBarController = TextEditingController();
 
@@ -69,16 +68,19 @@ class _MatchViewState extends State<MatchView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
-      searchProvider?.addListener(_handleSearchChanges);
-    });
+    Provider.of<MatchSearchProvider>(
+      context,
+      listen: false,
+    ).addListener(_handleSearchToggle);
     loadMatches();
   }
 
   @override
   void dispose() {
-    searchProvider?.removeListener(_handleSearchChanges);
+    Provider.of<MatchSearchProvider>(
+      context,
+      listen: false,
+    ).removeListener(_handleSearchToggle);
     searchBarController.dispose();
     super.dispose();
   }
@@ -87,6 +89,11 @@ class _MatchViewState extends State<MatchView> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     final searchProvider = Provider.of<MatchSearchProvider>(context);
+
+    // Reset filtered matches when search is disabled
+    if (!searchProvider.isSearching) {
+      filteredMatches = [...matches];
+    }
 
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
@@ -213,12 +220,13 @@ class _MatchViewState extends State<MatchView> {
     });
   }
 
-  void _handleSearchChanges() {
-    if (!searchProvider!.isSearching) {
+  void _handleSearchToggle() {
+    final searchProvider = Provider.of<MatchSearchProvider>(
+      context,
+      listen: false,
+    );
+    if (!searchProvider.isSearching) {
       searchBarController.clear();
-      setState(() {
-        filteredMatches = [...matches];
-      });
     }
   }
 
