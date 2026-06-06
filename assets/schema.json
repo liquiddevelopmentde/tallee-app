@@ -212,7 +212,6 @@
                 "name",
                 "createdAt",
                 "color",
-                "score",
                 "memberIds"
               ]
             }
