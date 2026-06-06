@@ -927,6 +927,13 @@ void main() {
           },
         ],
       });
+
+      final isValidRoot = await DataTransferService.validateJsonSchema(
+        validJson,
+      );
+      expect(isValidRoot, true);
+    });
+
     group('Schema Validation', () {
       test('validateJsonSchema() returns true for valid data', () async {
         final validJson = json.encode({
@@ -1076,9 +1083,6 @@ void main() {
 
       expect(jsonString, isNotEmpty);
 
-      // Schema validation requires real async operations (rootBundle,
-      // HttpClient within json_schema). These must run via
-      // tester.runAsync, otherwise the test hangs due to a pending timer.
       final isValid = await tester.runAsync(
         () => DataTransferService.validateJsonSchema(jsonString),
       );
