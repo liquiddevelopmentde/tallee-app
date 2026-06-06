@@ -853,56 +853,139 @@ void main() {
       });
     });
 
-    test('validateJsonSchema()', () async {
-      final validJson = json.encode({
-        'players': [
-          {
-            'id': testPlayer1.id,
-            'name': testPlayer1.name,
-            'description': testPlayer1.description,
-            'createdAt': testPlayer1.createdAt.toIso8601String(),
-          },
-        ],
-        'games': [
-          {
-            'id': testGame.id,
-            'name': testGame.name,
-            'ruleset': testGame.ruleset.name,
-            'description': testGame.description,
-            'color': testGame.color.name,
-            'icon': testGame.icon,
-            'createdAt': testGame.createdAt.toIso8601String(),
-          },
-        ],
-        'groups': [
-          {
-            'id': testGroup.id,
-            'name': testGroup.name,
-            'description': testGroup.description,
-            'memberIds': [testPlayer1.id, testPlayer2.id],
-            'createdAt': testGroup.createdAt.toIso8601String(),
-          },
-        ],
-        'matches': [
-          {
-            'id': testMatch.id,
-            'name': testMatch.name,
-            'gameId': testGame.id,
-            'groupId': testGroup.id,
-            'playerIds': [testPlayer1.id, testPlayer2.id],
-            'notes': testMatch.notes,
-            'scores': {
-              testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
-              testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
+    group('Schema Validation', () {
+      test('validateJsonSchema() returns true for valid data', () async {
+        final validJson = json.encode({
+          'players': [
+            {
+              'id': testPlayer1.id,
+              'name': testPlayer1.name,
+              'description': testPlayer1.description,
+              'createdAt': testPlayer1.createdAt.toIso8601String(),
             },
-            'createdAt': testMatch.createdAt.toIso8601String(),
-            'endedAt': null,
-          },
-        ],
+            {
+              'id': testPlayer2.id,
+              'name': testPlayer2.name,
+              'description': testPlayer2.description,
+              'createdAt': testPlayer2.createdAt.toIso8601String(),
+            },
+          ],
+          'games': [
+            {
+              'id': testGame.id,
+              'name': testGame.name,
+              'ruleset': testGame.ruleset.name,
+              'description': testGame.description,
+              'color': testGame.color.name,
+              'icon': testGame.icon,
+              'createdAt': testGame.createdAt.toIso8601String(),
+            },
+          ],
+          'groups': [
+            {
+              'id': testGroup.id,
+              'name': testGroup.name,
+              'description': testGroup.description,
+              'memberIds': [testPlayer1.id, testPlayer2.id],
+              'createdAt': testGroup.createdAt.toIso8601String(),
+            },
+          ],
+          'matches': [
+            {
+              'id': testMatch.id,
+              'name': testMatch.name,
+              'gameId': testGame.id,
+              'groupId': testGroup.id,
+              'playerIds': [testPlayer1.id, testPlayer2.id],
+              'notes': testMatch.notes,
+              'scores': {
+                testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
+                testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
+              },
+              'createdAt': testMatch.createdAt.toIso8601String(),
+              'endedAt': null,
+            },
+          ],
+        });
+
+        final isValid = await DataTransferService.validateJsonSchema(validJson);
+        expect(isValid, true);
       });
 
-      final isValid = await DataTransferService.validateJsonSchema(validJson);
-      expect(isValid, true);
+      test(
+        'validateJsonSchema() returns false for group with only 1 member',
+        () async {
+          final invalidJson = json.encode({
+            'players': [
+              {
+                'id': testPlayer1.id,
+                'name': testPlayer1.name,
+                'description': testPlayer1.description,
+                'createdAt': testPlayer1.createdAt.toIso8601String(),
+              },
+            ],
+            'games': [],
+            'groups': [
+              {
+                'id': 'group-1',
+                'name': 'Invalid Group',
+                'description': '',
+                'memberIds': [testPlayer1.id],
+                'createdAt': fixedDate.toIso8601String(),
+              },
+            ],
+            'matches': [],
+          });
+
+          final isValid = await DataTransferService.validateJsonSchema(
+            invalidJson,
+          );
+          expect(isValid, false);
+        },
+      );
+
+      test(
+        'validateJsonSchema() returns false for match with only 1 player',
+        () async {
+          final invalidJson = json.encode({
+            'players': [
+              {
+                'id': testPlayer1.id,
+                'name': testPlayer1.name,
+                'description': testPlayer1.description,
+                'createdAt': testPlayer1.createdAt.toIso8601String(),
+              },
+            ],
+            'games': [
+              {
+                'id': testGame.id,
+                'name': testGame.name,
+                'ruleset': testGame.ruleset.name,
+                'description': testGame.description,
+                'color': testGame.color.name,
+                'icon': testGame.icon,
+                'createdAt': testGame.createdAt.toIso8601String(),
+              },
+            ],
+            'groups': [],
+            'matches': [
+              {
+                'id': 'match-1',
+                'name': 'Invalid Match',
+                'gameId': testGame.id,
+                'playerIds': [testPlayer1.id],
+                'notes': '',
+                'createdAt': fixedDate.toIso8601String(),
+              },
+            ],
+          });
+
+          final isValid = await DataTransferService.validateJsonSchema(
+            invalidJson,
+          );
+          expect(isValid, false);
+        },
+      );
     });
   });
 }
