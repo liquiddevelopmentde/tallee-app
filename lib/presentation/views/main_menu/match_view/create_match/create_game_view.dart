@@ -14,6 +14,7 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
@@ -310,12 +311,7 @@ class _CreateGameViewState extends State<CreateGameView> {
     final messenger = _scaffoldMessengerKey.currentState;
     if (messenger != null) {
       messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(message, style: const TextStyle(color: Colors.white)),
-          backgroundColor: CustomTheme.boxColor,
-        ),
-      );
+      messenger.showSnackBar(CustomSnackBar(message: message));
     }
   }
 

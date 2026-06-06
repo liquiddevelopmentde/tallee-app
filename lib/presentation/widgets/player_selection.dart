@@ -8,6 +8,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
@@ -70,6 +71,12 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     7,
     Player(name: 'Player 0'),
   );
+
+  @override
+  void dispose() {
+    _searchBarController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -353,14 +360,9 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   void showSnackBarMessage(String message) {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: CustomTheme.boxColor,
-        content: Center(
-          child: Text(message, style: const TextStyle(color: Colors.white)),
-        ),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(CustomSnackBar(message: message));
   }
 
   /// Determines the appropriate info text to display when no players
