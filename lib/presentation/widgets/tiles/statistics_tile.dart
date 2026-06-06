@@ -22,10 +22,10 @@ class StatisticsTile extends StatelessWidget {
     super.key,
     required this.icon,
     required this.title,
-    required this.width,
     required this.values,
     required this.barColor,
     required this.displayCount,
+    this.width,
     this.selectedGroups,
     this.selectedGames,
     this.showAllValues = false,
@@ -38,7 +38,7 @@ class StatisticsTile extends StatelessWidget {
   final String title;
 
   /// The width of the tile.
-  final double width;
+  final double? width;
 
   /// A list of tuples containing labels and their corresponding numeric values.
   final List<(Player, num)> values;
@@ -58,7 +58,7 @@ class StatisticsTile extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     return InfoTile(
-      width: width,
+      width: width ?? MediaQuery.sizeOf(context).width * 0.95,
       title: title,
       icon: icon,
       content: Padding(

@@ -27,7 +27,12 @@ class _StatisticsViewState extends State<StatisticsView> {
   List<Match> _allMatches = const [];
   List<Player> _allPlayers = const [];
   List<Statistic> _statistics = const [];
-  List<Widget> statisticTiles = [];
+  List<Widget> statisticTiles = List.generate(
+    4,
+    (index) => Column(
+      children: [buildSkeletonStatisticTile(), const SizedBox(height: 12)],
+    ),
+  );
 
   @override
   void initState() {
@@ -109,15 +114,6 @@ class _StatisticsViewState extends State<StatisticsView> {
   Future<void> loadStatistics(BuildContext context) async {
     setState(() {
       isLoading = true;
-      statisticTiles = List.generate(
-        4,
-        (index) => Column(
-          children: [
-            buildSkeletonStatisticTile(context: context),
-            const SizedBox(height: 12),
-          ],
-        ),
-      );
     });
 
     final db = Provider.of<AppDatabase>(context, listen: false);
@@ -181,10 +177,10 @@ class _StatisticsViewState extends State<StatisticsView> {
         }
       },
       child: buildStatisticTile(
+        context: context,
         statistic: statistic,
         matches: _allMatches,
         players: _allPlayers,
-        context: context,
       ),
     );
   }

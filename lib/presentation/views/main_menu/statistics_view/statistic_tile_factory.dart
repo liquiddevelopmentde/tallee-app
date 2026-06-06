@@ -60,7 +60,6 @@ Widget buildStatisticTile({
   return StatisticsTile(
     icon: _getStatisticIcon(type: statistic.type),
     title: translateStatisticTypeToString(statistic.type, context),
-    width: width ?? MediaQuery.sizeOf(context).width * 0.95,
     values: values,
     barColor: _getStatisticColor(statistic),
     displayCount: statistic.displayCount,
@@ -302,7 +301,7 @@ Color _getStatisticColor(Statistic stat) {
 /* Skeleton data */
 
 /// A placeholder tile with mock data for the loading state.
-Widget buildSkeletonStatisticTile({required BuildContext context}) {
+Widget buildSkeletonStatisticTile() {
   final count = 4 + Random().nextInt(5); // 4..8
   final values = <(Player, num)>[
     for (var i = 0; i < count; i++)
@@ -312,7 +311,6 @@ Widget buildSkeletonStatisticTile({required BuildContext context}) {
   return StatisticsTile(
     icon: Icons.bar_chart,
     title: 'Skeleton title',
-    width: MediaQuery.sizeOf(context).width * 0.95,
     values: values,
     barColor: _colorPalette[Random().nextInt(_colorPalette.length)],
     selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
