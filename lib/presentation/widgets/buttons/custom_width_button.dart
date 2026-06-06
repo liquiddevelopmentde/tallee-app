@@ -56,6 +56,7 @@ class CustomWidthButton extends StatelessWidget {
                 onPressed!.call();
               },
         style: ElevatedButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
           foregroundColor: textcolor,
           disabledForegroundColor: disabledTextColor,
           backgroundColor: buttonBackgroundColor,
@@ -91,6 +92,7 @@ class CustomWidthButton extends StatelessWidget {
                 onPressed!.call();
               },
         style: OutlinedButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
           foregroundColor: textcolor,
           disabledForegroundColor: disabledTextColor,
           backgroundColor: buttonBackgroundColor,
@@ -128,6 +130,7 @@ class CustomWidthButton extends StatelessWidget {
                 onPressed!.call();
               },
         style: TextButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
           foregroundColor: textcolor,
           disabledForegroundColor: disabledTextColor,
           backgroundColor: buttonBackgroundColor,

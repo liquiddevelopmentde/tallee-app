@@ -1,7 +1,7 @@
 import 'dart:core' hide Match;
 
 import 'package:clock/clock.dart';
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/core/enums.dart';
@@ -325,6 +325,201 @@ void main() {
       test('deleteAllTeams() with empty list returns false', () async {
         final deleted = await database.teamDao.deleteAllTeams();
         expect(deleted, isFalse);
+      });
+    });
+
+    group('SCORE', () {
+      test('updateTeamScore() works correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        final updated = await database.teamDao.updateTeamScore(
+          teamId: testTeam1.id,
+          matchId: testMatch1.id,
+          score: 5,
+        );
+        expect(updated, isTrue);
+        final team = await database.teamDao.getTeamById(teamId: testTeam1.id);
+        expect(team.score, 5);
+
+        for (final member in testTeam1.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNotNull);
+          expect(entry!.score, 5);
+        }
+      });
+
+      test('set-/removeWinnerTeam() works correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        final set = await database.teamDao.setWinnerTeam(
+          teamId: testTeam1.id,
+          matchId: testMatch1.id,
+        );
+        expect(set, isTrue);
+
+        var team = await database.teamDao.getTeamById(teamId: testTeam1.id);
+        expect(team.score, 1);
+
+        for (final member in testTeam1.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNotNull);
+          expect(entry!.score, 1);
+        }
+
+        final removed = await database.teamDao.removeWinnerTeam(
+          matchId: testMatch1.id,
+        );
+        expect(removed, isTrue);
+
+        team = await database.teamDao.getTeamById(teamId: testTeam1.id);
+        expect(team.score, isNull);
+
+        for (final member in testTeam1.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNull);
+        }
+      });
+
+      test('set-/removeLoserTeam() works correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        final set = await database.teamDao.setLoserTeam(
+          teamId: testTeam1.id,
+          matchId: testMatch1.id,
+        );
+        expect(set, isTrue);
+
+        var team = await database.teamDao.getTeamById(teamId: testTeam1.id);
+        expect(team.score, 0);
+
+        for (final member in testTeam1.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNotNull);
+          expect(entry!.score, 0);
+        }
+
+        final removed = await database.teamDao.removeLoserTeam(
+          matchId: testMatch1.id,
+        );
+        expect(removed, isTrue);
+
+        team = await database.teamDao.getTeamById(teamId: testTeam1.id);
+        expect(team.score, isNull);
+
+        for (final member in testTeam1.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNull);
+        }
+      });
+
+      test('set-/removeWinnerTeams() works correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        final set = await database.teamDao.setWinnerTeams(
+          winners: [testTeam1, testTeam2],
+          matchId: testMatch1.id,
+        );
+        expect(set, isTrue);
+
+        // check both teams got the winner score
+        var team = await database.teamDao.getTeamById(teamId: testTeam1.id);
+        expect(team.score, 1);
+        team = await database.teamDao.getTeamById(teamId: testTeam2.id);
+        expect(team.score, 1);
+
+        // check all members of both teams got the winner score
+        for (final member in testTeam1.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNotNull);
+          expect(entry!.score, 1);
+        }
+
+        for (final member in testTeam2.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNotNull);
+          expect(entry!.score, 1);
+        }
+
+        final removed = await database.teamDao.removeWinnerTeam(
+          matchId: testMatch1.id,
+        );
+        expect(removed, isTrue);
+
+        team = await database.teamDao.getTeamById(teamId: testTeam1.id);
+        expect(team.score, isNull);
+
+        team = await database.teamDao.getTeamById(teamId: testTeam2.id);
+        expect(team.score, isNull);
+
+        for (final member in testTeam1.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNull);
+        }
+
+        for (final member in testTeam2.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNull);
+        }
+      });
+
+      test('setTeamPlacements() works correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        final set = await database.teamDao.setTeamPlacements(
+          teams: [testTeam1, testTeam2],
+          matchId: testMatch1.id,
+        );
+        expect(set, isTrue);
+
+        var team = await database.teamDao.getTeamById(teamId: testTeam1.id);
+        expect(team.score, 2);
+        team = await database.teamDao.getTeamById(teamId: testTeam2.id);
+        expect(team.score, 1);
+
+        for (final member in testTeam1.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNotNull);
+          expect(entry!.score, 2);
+        }
+
+        for (final member in testTeam2.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
+            matchId: testMatch1.id,
+          );
+          expect(entry, isNotNull);
+          expect(entry!.score, 1);
+        }
       });
     });
   });

@@ -55,7 +55,12 @@ void main() {
         members: [testPlayer1, testPlayer2],
       );
 
-      testTeam = Team(name: 'Test Team', members: [testPlayer1, testPlayer2]);
+      testTeam = Team(
+        name: 'Test Team',
+        color: AppColor.yellow,
+        score: 5,
+        members: [testPlayer1, testPlayer2],
+      );
 
       testMatch = Match(
         name: 'Test Match',
@@ -137,9 +142,6 @@ void main() {
           await database.playerDao.addPlayer(player: testPlayer2);
           await database.gameDao.addGame(game: testGame);
           await database.groupDao.addGroup(group: testGroup);
-          /*
-          await database.teamDao.addTeam(team: testTeam);
-*/
           await database.matchDao.addMatch(match: testMatch);
 
           final ctx = await getContext(tester);
@@ -669,6 +671,8 @@ void main() {
             'name': testTeam.name,
             'memberIds': [testPlayer1.id],
             'createdAt': testTeam.createdAt.toIso8601String(),
+            'color': testTeam.color.name,
+            'score': testTeam.score,
           },
         ];
 
@@ -682,6 +686,8 @@ void main() {
         expect(teams[0].name, testTeam.name);
         expect(teams[0].members.length, 1);
         expect(teams[0].members[0].id, testPlayer1.id);
+        expect(teams[0].color, testTeam.color);
+        expect(teams[0].score, testTeam.score);
       });
 
       test('parseTeamsFromJson() empty list', () {
@@ -718,6 +724,9 @@ void main() {
               'gameId': testGame.id,
               'groupId': testGroup.id,
               'playerIds': [testPlayer1.id, testPlayer2.id],
+              'isTeamMatch': false,
+              'teams': null,
+              'scores': null,
               'notes': testMatch.notes,
               'createdAt': testMatch.createdAt.toIso8601String(),
             },
@@ -773,6 +782,9 @@ void main() {
               'name': testMatch.name,
               'gameId': 'non-existent-game-id',
               'playerIds': [testPlayer1.id],
+              'isTeamMatch': false,
+              'teams': null,
+              'scores': null,
               'notes': '',
               'createdAt': testMatch.createdAt.toIso8601String(),
             },
@@ -804,6 +816,9 @@ void main() {
               'gameId': testGame.id,
               'groupId': null,
               'playerIds': [testPlayer1.id],
+              'isTeamMatch': false,
+              'teams': null,
+              'scores': null,
               'notes': '',
               'createdAt': testMatch.createdAt.toIso8601String(),
             },
@@ -834,6 +849,9 @@ void main() {
               'name': testMatch.name,
               'gameId': testGame.id,
               'playerIds': [testPlayer1.id],
+              'isTeamMatch': false,
+              'teams': null,
+              'scores': null,
               'notes': '',
               'createdAt': testMatch.createdAt.toIso8601String(),
               'endedAt': endedDate.toIso8601String(),
@@ -853,6 +871,62 @@ void main() {
       });
     });
 
+    test('validateJsonSchema() works correctly', () async {
+      final validJson = json.encode({
+        'players': [
+          {
+            'id': testPlayer1.id,
+            'name': testPlayer1.name,
+            'description': testPlayer1.description,
+            'createdAt': testPlayer1.createdAt.toIso8601String(),
+          },
+        ],
+        'games': [
+          {
+            'id': testGame.id,
+            'name': testGame.name,
+            'ruleset': testGame.ruleset.name,
+            'description': testGame.description,
+            'color': testGame.color.name,
+            'icon': testGame.icon,
+            'createdAt': testGame.createdAt.toIso8601String(),
+          },
+        ],
+        'groups': [
+          {
+            'id': testGroup.id,
+            'name': testGroup.name,
+            'description': testGroup.description,
+            'memberIds': [testPlayer1.id, testPlayer2.id],
+            'createdAt': testGroup.createdAt.toIso8601String(),
+          },
+        ],
+        'matches': [
+          {
+            'id': testMatch.id,
+            'name': testMatch.name,
+            'gameId': testGame.id,
+            'groupId': testGroup.id,
+            'playerIds': [testPlayer1.id, testPlayer2.id],
+            'notes': testMatch.notes,
+            'scores': {
+              testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
+              testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
+            },
+            'createdAt': testMatch.createdAt.toIso8601String(),
+            'endedAt': null,
+            'isTeamMatch': true,
+            'teams': [
+              {
+                'id': testTeam.id,
+                'name': testTeam.name,
+                'memberIds': [testPlayer1.id, testPlayer2.id],
+                'createdAt': testTeam.createdAt.toIso8601String(),
+              },
+            ],
+          },
+        ],
+      });
     group('Schema Validation', () {
       test('validateJsonSchema() returns true for valid data', () async {
         final validJson = json.encode({
@@ -986,6 +1060,29 @@ void main() {
           expect(isValid, false);
         },
       );
+    });
+
+    testWidgets('validateJsonSchema() validates exported json file', (
+      tester,
+    ) async {
+      await database.playerDao.addPlayer(player: testPlayer1);
+      await database.playerDao.addPlayer(player: testPlayer2);
+      await database.gameDao.addGame(game: testGame);
+      await database.groupDao.addGroup(group: testGroup);
+      await database.matchDao.addMatch(match: testMatch);
+
+      final ctx = await getContext(tester);
+      final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+
+      expect(jsonString, isNotEmpty);
+
+      // Schema validation requires real async operations (rootBundle,
+      // HttpClient within json_schema). These must run via
+      // tester.runAsync, otherwise the test hangs due to a pending timer.
+      final isValid = await tester.runAsync(
+        () => DataTransferService.validateJsonSchema(jsonString),
+      );
+      expect(isValid, true);
     });
   });
 }

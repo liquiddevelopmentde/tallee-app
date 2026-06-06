@@ -168,6 +168,9 @@
           "notes": {
             "type": "string"
           },
+          "isTeamMatch": {
+            "type": "boolean"
+          },
           "teams": {
             "type": ["array", "null"]
           }
@@ -179,7 +182,8 @@
           "createdAt",
           "gameId",
           "playerIds",
-          "notes"
+          "notes",
+          "isTeamMatch"
         ]
       }
     }

@@ -17,7 +17,7 @@ class MainMenuButton extends StatefulWidget {
   });
 
   /// The callback to be invoked when the button is pressed.
-  final void Function() onPressed;
+  final void Function()? onPressed;
 
   /// The icon of the button.
   final IconData icon;
@@ -32,9 +32,11 @@ class MainMenuButton extends StatefulWidget {
 }
 
 class _MainMenuButtonState extends State<MainMenuButton>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
+  late AnimationController _disabledAnimationController;
   late Animation<double> _scaleAnimation;
+  late Animation<double> _disabledScaleAnimation;
 
   /// How long the button needs to be pressed to register it as long press
   Timer? _longPressTimer;
@@ -53,45 +55,67 @@ class _MainMenuButtonState extends State<MainMenuButton>
       vsync: this,
     );
 
+    _disabledAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 100),
+      vsync: this,
+    );
+
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    _disabledScaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+      CurvedAnimation(
+        parent: _disabledAnimationController,
+        curve: Curves.easeInOut,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return ScaleTransition(
-      scale: _scaleAnimation,
+      scale: widget.onPressed == null
+          ? _disabledScaleAnimation
+          : _scaleAnimation,
       child: GestureDetector(
         onTapDown: (_) {
-          _animationController.forward();
-          if (widget.onLongPressed != null) {
-            _longPressTimer = Timer(
-              const Duration(milliseconds: 400),
-              () async {
-                _isLongPressing = true;
-                widget.onLongPressed?.call();
-                await HapticFeedback.heavyImpact();
-                _repeatTimer = Timer.periodic(
-                  const Duration(milliseconds: 250),
-                  (_) async {
-                    widget.onLongPressed?.call();
-                    await HapticFeedback.heavyImpact();
-                  },
-                );
-              },
-            );
+          if (widget.onPressed == null) {
+            _disabledAnimationController.forward();
+          } else {
+            _animationController.forward();
+            if (widget.onLongPressed != null) {
+              _longPressTimer = Timer(
+                const Duration(milliseconds: 400),
+                () async {
+                  _isLongPressing = true;
+                  widget.onLongPressed?.call();
+                  await HapticFeedback.heavyImpact();
+                  _repeatTimer = Timer.periodic(
+                    const Duration(milliseconds: 250),
+                    (_) async {
+                      widget.onLongPressed?.call();
+                      await HapticFeedback.heavyImpact();
+                    },
+                  );
+                },
+              );
+            }
           }
         },
         onTapUp: (_) async {
-          _cancelTimers();
-          if (mounted && !_isLongPressing) {
-            await HapticFeedback.selectionClick();
-            widget.onPressed();
+          if (widget.onPressed == null) {
+            _disabledAnimationController.reverse();
+          } else {
+            _cancelTimers();
+            if (mounted && !_isLongPressing) {
+              await HapticFeedback.selectionClick();
+              widget.onPressed?.call();
+            }
+            _isLongPressing = false;
+            await Future.delayed(const Duration(milliseconds: 100));
+            await _animationController.reverse();
           }
-          _isLongPressing = false;
-          await Future.delayed(const Duration(milliseconds: 100));
-          await _animationController.reverse();
         },
         onTapCancel: () {
           _isLongPressing = false;
@@ -100,7 +124,7 @@ class _MainMenuButtonState extends State<MainMenuButton>
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: widget.onPressed == null ? Colors.grey : Colors.white,
             borderRadius: BorderRadius.circular(30),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -131,6 +155,7 @@ class _MainMenuButtonState extends State<MainMenuButton>
   void dispose() {
     _cancelTimers();
     _animationController.dispose();
+    _disabledAnimationController.dispose();
     super.dispose();
   }
 

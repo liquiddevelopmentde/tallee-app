@@ -97,7 +97,6 @@ class _GroupTileState extends State<GroupTile> {
                   TextIconTile(
                     text: member.name,
                     suffixText: getNameCountText(member),
-                    iconEnabled: false,
                     onTileTap: () {
                       Navigator.push(
                         context,
