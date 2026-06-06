@@ -172,7 +172,50 @@
             "type": "boolean"
           },
           "teams": {
-            "type": ["array", "null"]
+            "type": [
+              "array",
+              "null"
+            ],
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                },
+                "score": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "memberIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "name",
+                "createdAt",
+                "color",
+                "score",
+                "memberIds"
+              ]
+            }
           }
         },
         "additionalProperties": false,
