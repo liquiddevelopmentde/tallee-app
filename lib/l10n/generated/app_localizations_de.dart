@@ -9,6 +9,9 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get add_team => 'Team hinzufügen';
+
+  @override
   String get all_players => 'Alle Spieler:innen';
 
   @override
@@ -93,6 +96,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get create_statistic => 'Statistik erstellen';
+
+  @override
+  String get create_teams => 'Teams erstellen';
 
   @override
   String get created_on => 'Erstellt am';
@@ -279,6 +285,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get lowest_score => 'Niedrigste Punkte';
 
   @override
+  String get manage_members => 'Mitglieder bearbeiten';
+
+  @override
   String get match_in_progress => 'Spiel läuft...';
 
   @override
@@ -295,6 +304,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get matches_won => 'Spiele gewonnen';
+
+  @override
+  String get member => 'Mitglied';
 
   @override
   String get members => 'Mitglieder';
@@ -321,6 +333,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_matches_played_yet => 'Noch kein Spiel gespielt';
 
   @override
+  String get no_players_available => 'Keine Spieler:innen verfügbar';
+
+  @override
   String get no_players_created_yet => 'Noch keine Spieler:in erstellt';
 
   @override
@@ -335,6 +350,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_statistics_created_yet => 'Noch keine Statistiken erstellt';
+
+  @override
+  String get no_teams_available => 'Keine Teams verfügbar';
 
   @override
   String get none => 'Kein';
@@ -368,6 +386,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get privacy_policy => 'Datenschutzerklärung';
+
+  @override
+  String get quick_create => 'Schnellzugriff';
+
+  @override
+  String get recent_matches => 'Letzte Spiele';
+
+  @override
+  String get redistribute => 'Neu verteilen';
 
   @override
   String get results => 'Ergebnisse';
@@ -451,6 +478,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String successfully_added_player(String playerName) {
     return 'Spieler:in $playerName erfolgreich hinzugefügt';
   }
+
+  @override
+  String get team => 'Team';
+
+  @override
+  String get team_match => 'Teamspiel';
+
+  @override
+  String get teams => 'Teams';
 
   @override
   String get there_are_no_games_matching_your_search =>

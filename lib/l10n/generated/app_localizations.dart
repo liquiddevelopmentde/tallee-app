@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// No description provided for @add_team.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Team'**
+  String get add_team;
+
   /// No description provided for @all_players.
   ///
   /// In en, this message translates to:
@@ -265,6 +271,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create statistic'**
   String get create_statistic;
+
+  /// No description provided for @create_teams.
+  ///
+  /// In en, this message translates to:
+  /// **'Create teams'**
+  String get create_teams;
 
   /// No description provided for @created_on.
   ///
@@ -608,6 +620,12 @@ abstract class AppLocalizations {
   /// **'Lowest Score'**
   String get lowest_score;
 
+  /// No description provided for @manage_members.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Members'**
+  String get manage_members;
+
   /// No description provided for @match_in_progress.
   ///
   /// In en, this message translates to:
@@ -643,6 +661,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Matches won'**
   String get matches_won;
+
+  /// No description provided for @member.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get member;
 
   /// No description provided for @members.
   ///
@@ -692,6 +716,12 @@ abstract class AppLocalizations {
   /// **'No games played yet'**
   String get no_matches_played_yet;
 
+  /// No description provided for @no_players_available.
+  ///
+  /// In en, this message translates to:
+  /// **'No players available'**
+  String get no_players_available;
+
   /// No description provided for @no_players_created_yet.
   ///
   /// In en, this message translates to:
@@ -721,6 +751,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No statistics created yet'**
   String get no_statistics_created_yet;
+
+  /// No description provided for @no_teams_available.
+  ///
+  /// In en, this message translates to:
+  /// **'No teams available'**
+  String get no_teams_available;
 
   /// No description provided for @none.
   ///
@@ -787,6 +823,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy Policy'**
   String get privacy_policy;
+
+  /// No description provided for @quick_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Create'**
+  String get quick_create;
+
+  /// No description provided for @recent_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Matches'**
+  String get recent_matches;
+
+  /// No description provided for @redistribute.
+  ///
+  /// In en, this message translates to:
+  /// **'Redistribute'**
+  String get redistribute;
 
   /// No description provided for @results.
   ///
@@ -943,6 +997,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Successfully added player {playerName}'**
   String successfully_added_player(String playerName);
+
+  /// No description provided for @team.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get team;
+
+  /// No description provided for @team_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Match'**
+  String get team_match;
+
+  /// No description provided for @teams.
+  ///
+  /// In en, this message translates to:
+  /// **'Teams'**
+  String get teams;
 
   /// No description provided for @there_are_no_games_matching_your_search.
   ///
