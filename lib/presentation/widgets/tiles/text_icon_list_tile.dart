@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/models/team.dart';
 
 class TextIconListTile extends StatelessWidget {
   /// A list tile widget that displays text with an optional icon button.
@@ -10,6 +12,7 @@ class TextIconListTile extends StatelessWidget {
     super.key,
     required this.text,
     this.suffixText = '',
+    this.pair,
     this.icon,
     this.color,
     this.onPressed,
@@ -20,6 +23,9 @@ class TextIconListTile extends StatelessWidget {
 
   /// An optional suffix text to display after the main text.
   final String suffixText;
+
+  /// An optional parameter to show 2 players (a pair) in one tile
+  final Team? pair;
 
   /// The icon to display in the tile.
   final IconData? icon;
@@ -49,11 +55,10 @@ class TextIconListTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Flexible(
-            child: Container(
+          if (pair == null) ...[
+            Container(
               padding: const EdgeInsets.symmetric(vertical: 12.5),
               child: RichText(
-                overflow: TextOverflow.ellipsis,
                 text: TextSpan(
                   style: DefaultTextStyle.of(context).style,
                   children: [
@@ -67,7 +72,7 @@ class TextIconListTile extends StatelessWidget {
                     TextSpan(
                       text: suffixText,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
                         color: CustomTheme.textColor.withAlpha(100),
                       ),
@@ -76,7 +81,61 @@ class TextIconListTile extends StatelessWidget {
                 ),
               ),
             ),
-          ),
+          ] else ...[
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12.5),
+              child: Row(
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: [
+                        TextSpan(
+                          text: pair!.members[0].name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        TextSpan(
+                          text: getNameCountText(pair!.members[0]),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: CustomTheme.textColor.withAlpha(100),
+                          ),
+                        ),
+                        const TextSpan(
+                          text: ' & ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        TextSpan(
+                          text: pair!.members[1].name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        TextSpan(
+                          text: getNameCountText(pair!.members[1]),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: CustomTheme.textColor.withAlpha(100),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  const Icon(Icons.link),
+                ],
+              ),
+            ),
+          ],
           if (icon != null)
             GestureDetector(onTap: onPressed, child: Icon(icon, size: 20)),
         ],

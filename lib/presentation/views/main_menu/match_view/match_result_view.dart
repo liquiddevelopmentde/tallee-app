@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/edge_blocked_bouncing_scroll_physics.dart';
 import 'package:tallee/core/enums.dart';
@@ -508,17 +509,83 @@ class _MatchResultViewState extends State<MatchResultView> {
             return CustomRadioListTile(
               content: Row(
                 children: [
-                  Text(
-                    allTeams[index].displayName,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                  if (allTeams[index].members.length > 1) ...[
+                    RichText(
+                      text: TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: [
+                          TextSpan(
+                            text: allTeams[index].members[0].name,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          TextSpan(
+                            text: getNameCountText(
+                              allTeams[index].members.first,
+                            ),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: CustomTheme.textColor.withAlpha(100),
+                            ),
+                          ),
+                          const TextSpan(
+                            text: ' & ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          TextSpan(
+                            text: allTeams[index].members[1].name,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          TextSpan(
+                            text: getNameCountText(
+                              allTeams[index].members.first,
+                            ),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: CustomTheme.textColor.withAlpha(100),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 5),
-                  if (allTeams[index].members.length > 1)
+                    const SizedBox(width: 5),
                     const Icon(Icons.link),
+                  ] else ...[
+                    RichText(
+                      text: TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: [
+                          TextSpan(
+                            text: allTeams[index].members.first.name,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          TextSpan(
+                            text: getNameCountText(
+                              allTeams[index].members.first,
+                            ),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: CustomTheme.textColor.withAlpha(100),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
               value: allTeams[index],
@@ -604,6 +671,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return ScoreListTile(
+            //TODO: Implement correct formatting with nameCount & names of players
             content: Row(
               children: [
                 Text(
@@ -784,9 +852,11 @@ class _MatchResultViewState extends State<MatchResultView> {
             return SizedBox(
               key: ValueKey(allTeams[index].id),
               height: rowHeight,
-              //TODO: Pair Icon implementieren, am besten über TextIconListTile und da dann team übergeben und darauf based entscheiden wie angezeigt
               child: TextIconListTile(
                 text: allTeams[index].displayName,
+                pair: allTeams[index].members.length > 1
+                    ? allTeams[index]
+                    : null,
                 icon: Icons.drag_handle,
               ),
             );
@@ -882,6 +952,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return CustomCheckboxListTile(
+            //TODO: Implement show names with correct namecount formatting
             content: Row(
               children: [
                 Text(
