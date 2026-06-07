@@ -48,6 +48,51 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
     return true;
   }
 
+  Future<bool> addStatisticsAsList({
+    required List<Statistic> statistics,
+  }) async {
+    await batch((b) {
+      b.insertAllOnConflictUpdate(
+        statisticTable,
+        statistics
+            .map(
+              (s) => StatisticTableCompanion.insert(
+                id: s.id,
+                createdAt: s.createdAt,
+                type: s.type.name,
+                timeframe: s.timeframe.name,
+                color: s.color.name,
+                displayCount: Value(s.displayCount),
+              ),
+            )
+            .toList(),
+      );
+    });
+
+    for (final statistic in statistics) {
+      await db.statisticScopeDao.addStatisticScopes(
+        statisticId: statistic.id,
+        scopes: statistic.scopes,
+      );
+
+      if (statistic.selectedGroups != null) {
+        await db.statisticGroupDao.addStatisticGroups(
+          statisticId: statistic.id,
+          groups: statistic.selectedGroups!,
+        );
+      }
+
+      if (statistic.selectedGames != null) {
+        await db.statisticGameDao.addStatisticGames(
+          statisticId: statistic.id,
+          games: statistic.selectedGames!,
+        );
+      }
+    }
+
+    return true;
+  }
+
   /* Read */
 
   Future<Statistic?> getStatisticById(String statisticId) async {
