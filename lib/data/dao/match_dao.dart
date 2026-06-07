@@ -30,6 +30,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           gameId: match.game.id,
           groupId: Value(match.group?.id),
           name: match.name,
+          isTeamMatch: Value(match.isTeamMatch),
           notes: match.notes,
           createdAt: match.createdAt,
           endedAt: Value(match.endedAt),
@@ -142,6 +143,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                   gameId: match.game.id,
                   groupId: Value(match.group?.id),
                   name: match.name,
+                  isTeamMatch: Value(match.isTeamMatch),
                   notes: match.notes,
                   createdAt: match.createdAt,
                   endedAt: Value(match.endedAt),
@@ -302,6 +304,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           group: group,
           players: players,
           teams: teams.isEmpty ? null : teams,
+          isTeamMatch: row.isTeamMatch,
           notes: row.notes,
           createdAt: row.createdAt,
           endedAt: row.endedAt,
@@ -423,6 +426,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
           group: group,
           players: players,
           teams: teams.isEmpty ? null : teams,
+          isTeamMatch: row.isTeamMatch,
           notes: row.notes,
           createdAt: row.createdAt,
           endedAt: row.endedAt,
@@ -451,7 +455,8 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       teamIds.map((teamId) => db.teamDao.getTeamById(teamId: teamId)),
     );
 
-    return teams;
+    return teams
+      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
   }
 
   /* Update */

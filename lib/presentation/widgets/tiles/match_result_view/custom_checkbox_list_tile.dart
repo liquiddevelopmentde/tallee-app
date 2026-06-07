@@ -5,12 +5,12 @@ import 'package:tallee/core/custom_theme.dart';
 class CustomCheckboxListTile extends StatelessWidget {
   const CustomCheckboxListTile({
     super.key,
-    required this.text,
+    required this.content,
     required this.value,
     required this.onChanged,
   });
 
-  final String text;
+  final Widget content;
   final bool value;
   final ValueChanged<bool> onChanged;
 
@@ -39,16 +39,7 @@ class CustomCheckboxListTile extends StatelessWidget {
                 onChanged(v);
               },
             ),
-            Expanded(
-              child: Text(
-                text,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
+            Expanded(child: content),
           ],
         ),
       ),

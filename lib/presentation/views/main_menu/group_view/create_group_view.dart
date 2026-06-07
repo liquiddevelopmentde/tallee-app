@@ -8,7 +8,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
@@ -98,19 +98,24 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                   },
                 ),
               ),
-              CustomWidthButton(
-                text: widget.groupToEdit == null
-                    ? loc.create_group
-                    : loc.edit_group,
-                sizeRelativeToWidth: 0.95,
-                buttonType: ButtonType.primary,
-                onPressed:
-                    (_groupNameController.text.isEmpty ||
-                        (selectedPlayers.length < 2))
-                    ? null
-                    : _saveGroup,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: AnimatedDialogButton(
+                  buttonConstraints: const BoxConstraints(
+                    minWidth: double.infinity,
+                    minHeight: 50,
+                  ),
+                  buttonText: widget.groupToEdit == null
+                      ? loc.create_group
+                      : loc.edit_group,
+                  buttonType: ButtonType.primary,
+                  onPressed:
+                      (_groupNameController.text.isEmpty ||
+                          (selectedPlayers.length < 2))
+                      ? null
+                      : _saveGroup,
+                ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),

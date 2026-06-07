@@ -5,18 +5,20 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 
 class ScoreListTile extends StatelessWidget {
   /// A custom list tile widget that has a text field for inputting a score.
-  /// - [text]: The leading text to be displayed.
+  /// - [content]: The leading Widget to be displayed.
   /// - [controller]: The controller for the text field to input the score.
   const ScoreListTile({
     super.key,
-    required this.text,
+    required this.content,
     required this.controller,
+    this.horizontalPadding = 20,
   });
 
-  /// The text to display next to the radio button.
-  final String text;
+  final Widget content;
 
   final TextEditingController controller;
+
+  final double horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +26,13 @@ class ScoreListTile extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       decoration: const BoxDecoration(color: CustomTheme.boxColor),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            text,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-          ),
+          content,
           SizedBox(
             width: 100,
             height: 40,
