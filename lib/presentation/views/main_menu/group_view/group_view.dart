@@ -69,7 +69,6 @@ class _GroupViewState extends State<GroupView> {
               ),
               child: ListView.builder(
                 padding: CustomTheme.listViewPadding(context),
-
                 itemCount: groups.length,
                 itemBuilder: (BuildContext context, int index) {
                   return GroupTile(

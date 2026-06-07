@@ -51,12 +51,10 @@ class _StatisticsViewState extends State<StatisticsView> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Stack(
-          alignment: AlignmentDirectional.center,
-          fit: StackFit.expand,
+          alignment: Alignment.center,
           children: [
             AppSkeleton(
               enabled: isLoading,
-
               fixLayoutBuilder: true,
               alignment: Alignment.topCenter,
               child: Visibility(
@@ -107,6 +105,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     );
   }
 
+  /// Loads all statistics, matches, and players from the database
   Future<void> loadStatistics(BuildContext context) async {
     setState(() {
       isLoading = true;
@@ -136,6 +135,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     });
   }
 
+  /// Builds a tile widget for a given statistic, which navigates to the detail view on tap
   Widget _buildStatisticTile(BuildContext context, Statistic statistic) {
     final values = computeStatisticValues(
       statistic: statistic,
