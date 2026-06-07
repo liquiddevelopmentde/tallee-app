@@ -19,7 +19,7 @@ import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart'
 class CreateStatisticView extends StatefulWidget {
   const CreateStatisticView({super.key, required this.onStatisticCreated});
 
-  final void Function() onStatisticCreated;
+  final void Function(Statistic) onStatisticCreated;
 
   @override
   State<CreateStatisticView> createState() => _CreateStatisticViewState();
@@ -662,7 +662,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       );
       if (!mounted) return;
       if (createdStatistic != null) {
-        widget.onStatisticCreated();
+        widget.onStatisticCreated(createdStatistic);
         Navigator.of(context).pop(createdStatistic);
       }
     } else if (scopes.contains(StatisticScope.selectedGames)) {
@@ -675,7 +675,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       );
       if (!mounted) return;
       if (createdStatistic != null) {
-        widget.onStatisticCreated();
+        widget.onStatisticCreated(createdStatistic);
         Navigator.of(context).pop(createdStatistic);
       }
     } else {
@@ -683,7 +683,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       final db = Provider.of<AppDatabase>(context, listen: false);
       await db.statisticDao.addStatistic(statistic: statistic);
       if (!mounted) return;
-      widget.onStatisticCreated();
+      widget.onStatisticCreated(statistic);
       Navigator.of(context).pop(statistic);
     }
   }

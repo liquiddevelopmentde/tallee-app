@@ -84,20 +84,23 @@ class _StatisticsViewState extends State<StatisticsView> {
                 onPressed: () async {
                   if (!mounted) return;
                   final navigator = Navigator.of(this.context);
-                  Statistic? newStatistic = await navigator.push(
+                  await navigator.push<Statistic>(
                     adaptivePageRoute(
                       builder: (context) => CreateStatisticView(
-                        onStatisticCreated: () => loadStatistics(this.context),
+                        onStatisticCreated: (newStat) {
+                          if (!mounted) return;
+                          setState(() {
+                            statistics = [newStat, ...statistics];
+                            statisticTiles = statistics
+                                .map(
+                                  (stat) => buildStatisticTile(context, stat),
+                                )
+                                .toList();
+                          });
+                        },
                       ),
                     ),
                   );
-                  if (!mounted) return;
-                  setState(() {
-                    statistics = [...statistics, ?newStatistic];
-                    statisticTiles = statistics
-                        .map((stat) => buildStatisticTile(context, stat))
-                        .toList();
-                  });
                 },
               ),
             ),
