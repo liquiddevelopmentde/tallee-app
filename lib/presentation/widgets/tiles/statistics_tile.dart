@@ -70,7 +70,7 @@ class StatisticsTile extends StatelessWidget {
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Visibility(
-          visible: values.isNotEmpty,
+          visible: values.isNotEmpty && values.any((entry) => entry.$2 != 0),
 
           // No data avaiable message
           replacement: Center(
