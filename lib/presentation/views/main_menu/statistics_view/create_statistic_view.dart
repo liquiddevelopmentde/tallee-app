@@ -533,15 +533,13 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                     ),
                                   )
                                   .toList(),
-                              onChanged: isLoading
-                                  ? null
-                                  : (color) {
-                                      if (color == null) return;
-                                      selectedColorNotifier.value = color;
-                                      setState(() {
-                                        selectedColor = color;
-                                      });
-                                    },
+                              onChanged: (color) {
+                                if (color == null) return;
+                                selectedColorNotifier.value = color;
+                                setState(() {
+                                  selectedColor = color;
+                                });
+                              },
                               buttonStyleData: buttonStyle,
                               iconStyleData: const IconStyleData(
                                 iconEnabledColor: CustomTheme.textColor,
