@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
@@ -18,6 +19,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view/create_statistic_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view/statistic_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -70,7 +72,17 @@ class _StatisticsViewState extends State<StatisticsView> {
                   child: TopCenteredMessage(
                     icon: Icons.info,
                     title: loc.info,
-                    message: loc.no_statistics_created_yet,
+                    content: Skeleton.unite(
+                      child: Column(
+                        children: [
+                          Text(loc.no_statistics_created_yet),
+                          AnimatedDialogButton(
+                            buttonText: loc.create_example_statistics,
+                            onPressed: () => createExampleStatistics(),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 child: ListView.builder(
@@ -117,6 +129,42 @@ class _StatisticsViewState extends State<StatisticsView> {
         );
       },
     );
+  }
+
+  /// Creates example statistics
+  void createExampleStatistics() async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final stat1 = Statistic(
+      type: StatisticType.totalWins,
+      color: AppColor.blue,
+      displayCount: 5,
+      createdAt: DateTime.now(),
+      scopes: [StatisticScope.selectedGroups],
+    );
+    final stat2 = Statistic(
+      type: StatisticType.averageScore,
+      color: AppColor.pink,
+      displayCount: 5,
+      createdAt: DateTime.now(),
+      scopes: [StatisticScope.selectedGroups],
+    );
+    final stat3 = Statistic(
+      type: StatisticType.averageScore,
+      color: AppColor.green,
+      displayCount: 5,
+      createdAt: DateTime.now(),
+      scopes: [StatisticScope.selectedGroups],
+    );
+    await db.statisticDao.addStatisticsAsList(
+      statistics: [stat1, stat2, stat3],
+    );
+
+    statistics = [stat1, stat2, stat3];
+    setState(() {
+      statisticTiles = statistics
+          .map((stat) => buildStatisticTile(context: context, statistic: stat))
+          .toList();
+    });
   }
 
   /// Loads all statistics, matches, and players from the database

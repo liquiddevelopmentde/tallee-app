@@ -84,6 +84,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get create_example_statistics => 'Create example statistics';
+
+  @override
   String get create_game => 'Create Game';
 
   @override

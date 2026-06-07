@@ -31,6 +31,7 @@
       }
     }
   },
+  "create_example_statistics": "Beispielstatistiken erstellen",
   "create_game": "Spielvorlage erstellen",
   "create_group": "Gruppe erstellen",
   "create_match": "Spiel erstellen",

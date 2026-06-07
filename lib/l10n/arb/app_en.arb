@@ -31,6 +31,7 @@
       }
     }
   },
+  "create_example_statistics": "Create example statistics",
   "create_game": "Create Game",
   "create_group": "Create Group",
   "create_match": "Create match",

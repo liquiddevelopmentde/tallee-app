@@ -242,6 +242,12 @@ abstract class AppLocalizations {
   /// **'Could not add player {playerName}'**
   String could_not_add_player(String playerName);
 
+  /// No description provided for @create_example_statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Create example statistics'**
+  String get create_example_statistics;
+
   /// No description provided for @create_game.
   ///
   /// In en, this message translates to:
