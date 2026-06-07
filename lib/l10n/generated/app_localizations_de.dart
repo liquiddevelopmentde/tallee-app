@@ -45,6 +45,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get classifier => 'Klassifikator';
 
   @override
+  String get classifier_description =>
+      'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
+
+  @override
   String get color => 'Farbe';
 
   @override
@@ -397,6 +401,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scope => 'Bereich';
 
   @override
+  String get scope_description =>
+      'Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.';
+
+  @override
   String get search_for_groups => 'Nach Gruppen suchen';
 
   @override
@@ -404,6 +412,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get select_a_classifier => 'Klassifikator auswählen';
+
+  @override
+  String get select_a_display_color => 'Wähle eine Anzeigefarbe aus';
 
   @override
   String get select_a_game => 'Spielvorlage auswählen';

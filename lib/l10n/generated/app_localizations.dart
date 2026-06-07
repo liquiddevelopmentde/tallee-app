@@ -170,6 +170,12 @@ abstract class AppLocalizations {
   /// **'Classifier'**
   String get classifier;
 
+  /// No description provided for @classifier_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which metric is calculated and shown in this statistic.'**
+  String get classifier_description;
+
   /// No description provided for @color.
   ///
   /// In en, this message translates to:
@@ -842,6 +848,12 @@ abstract class AppLocalizations {
   /// **'Scope'**
   String get scope;
 
+  /// No description provided for @scope_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which games or players are included in the calculation.'**
+  String get scope_description;
+
   /// No description provided for @search_for_groups.
   ///
   /// In en, this message translates to:
@@ -859,6 +871,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select a classifier'**
   String get select_a_classifier;
+
+  /// No description provided for @select_a_display_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a display color'**
+  String get select_a_display_color;
 
   /// No description provided for @select_a_game.
   ///

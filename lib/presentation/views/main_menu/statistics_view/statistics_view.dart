@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -27,7 +28,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   bool isLoading = true;
   List<Match> _allMatches = const [];
   List<Player> _allPlayers = const [];
-  List<Statistic> _statistics = const [];
+  List<Statistic> statistics = const [];
   List<Widget> statisticTiles = List.generate(
     4,
     (index) => Column(
@@ -81,7 +82,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                 text: loc.create_statistic,
                 icon: Icons.bar_chart,
                 onPressed: () async {
-                  Statistic newStatistic = await Navigator.push(
+                  Statistic? newStatistic = await Navigator.push(
                     context,
                     adaptivePageRoute(
                       builder: (context) => CreateStatisticView(
@@ -91,9 +92,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                   );
                   if (!context.mounted) return;
                   setState(() {
-                    _statistics = [..._statistics, newStatistic];
-                    statisticTiles = _statistics
-                        .map((stat) => _buildStatisticTile(context, stat))
+                    statistics = [...statistics, ?newStatistic];
+                    statisticTiles = statistics
+                        .map((stat) => buildStatisticTile(context, stat))
                         .toList();
                   });
                 },
@@ -125,18 +126,18 @@ class _StatisticsViewState extends State<StatisticsView> {
     final statistics = results[0] as List<Statistic>;
     _allMatches = results[1] as List<Match>;
     _allPlayers = results[2] as List<Player>;
-    _statistics = statistics;
+    this.statistics = statistics;
 
     setState(() {
-      statisticTiles = _statistics
-          .map((stat) => _buildStatisticTile(context, stat))
+      statisticTiles = this.statistics
+          .map((stat) => buildStatisticTile(context, stat))
           .toList();
       isLoading = false;
     });
   }
 
   /// Builds a tile widget for a given statistic, which navigates to the detail view on tap
-  Widget _buildStatisticTile(BuildContext context, Statistic statistic) {
+  Widget buildStatisticTile(BuildContext context, Statistic statistic) {
     final values = computeStatisticValues(
       statistic: statistic,
       matches: _allMatches,
@@ -151,28 +152,28 @@ class _StatisticsViewState extends State<StatisticsView> {
             builder: (context) => StatisticDetailView(
               statistic: statistic,
               values: values,
-              icon: getStatisticIconForType(statistic.type),
-              barColor: getStatisticColorForStatistic(statistic),
+              icon: getStatisticIcon(type: statistic.type),
+              barColor: getStatisticColor(statistic),
             ),
           ),
         );
         if (newDisplayCount != null &&
             newDisplayCount != statistic.displayCount) {
           setState(() {
-            _statistics = _statistics
+            statistics = statistics
                 .map(
                   (stat) => stat.id == statistic.id
                       ? stat.copyWith(displayCount: newDisplayCount)
                       : stat,
                 )
                 .toList();
-            statisticTiles = _statistics
-                .map((stat) => _buildStatisticTile(context, stat))
+            statisticTiles = statistics
+                .map((stat) => buildStatisticTile(context, stat))
                 .toList();
           });
         }
       },
-      child: buildStatisticTile(
+      child: buildTile(
         context: context,
         statistic: statistic,
         matches: _allMatches,

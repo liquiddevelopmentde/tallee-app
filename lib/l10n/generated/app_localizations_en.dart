@@ -45,6 +45,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get classifier => 'Classifier';
 
   @override
+  String get classifier_description =>
+      'Choose which metric is calculated and shown in this statistic.';
+
+  @override
   String get color => 'Color';
 
   @override
@@ -397,6 +401,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scope => 'Scope';
 
   @override
+  String get scope_description =>
+      'Choose which games or players are included in the calculation.';
+
+  @override
   String get search_for_groups => 'Search for groups';
 
   @override
@@ -404,6 +412,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get select_a_classifier => 'Select a classifier';
+
+  @override
+  String get select_a_display_color => 'Select a display color';
 
   @override
   String get select_a_game => 'Select a game';

@@ -10,17 +10,6 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
 
-List<Color> _colorPalette = AppColor.values
-    .map((c) => getColorFromAppColor(c))
-    .toList();
-
-/// Returns the icon for the given statistic type.
-IconData getStatisticIconForType(StatisticType type) =>
-    _getStatisticIcon(type: type);
-
-/// Returns a color from the palette based on the statistic's ID.
-Color getStatisticColorForStatistic(Statistic stat) => _getStatisticColor(stat);
-
 /// Computes the statistic values for a given [Statistic].
 List<(Player, num)> computeStatisticValues({
   required Statistic statistic,
@@ -42,7 +31,7 @@ List<(Player, num)> computeStatisticValues({
 }
 
 /// Build the [StatisticsTile] for a given [Statistic].
-Widget buildStatisticTile({
+Widget buildTile({
   required Statistic statistic,
   required List<Match> matches,
   required List<Player> players,
@@ -56,10 +45,10 @@ Widget buildStatisticTile({
   );
 
   return StatisticsTile(
-    icon: _getStatisticIcon(type: statistic.type),
+    icon: getStatisticIcon(type: statistic.type),
     title: translateStatisticTypeToString(statistic.type, context),
     values: values,
-    barColor: _getStatisticColor(statistic),
+    barColor: getColorFromAppColor(statistic.color),
     displayCount: statistic.displayCount,
     selectedGroups: statistic.selectedGroups,
     selectedGames: statistic.selectedGames,
@@ -262,36 +251,6 @@ List<(Player, num)> _sortDesc(List<(Player, num)> entries) {
   return entries;
 }
 
-/* Icon and color */
-
-/// Returns the icon for the given statistic type.
-IconData _getStatisticIcon({required StatisticType type}) {
-  switch (type) {
-    case StatisticType.totalMatches:
-      return Icons.casino;
-    case StatisticType.totalWins:
-      return Icons.emoji_events;
-    case StatisticType.totalLosses:
-      return Icons.sentiment_dissatisfied;
-    case StatisticType.totalScore:
-      return Icons.scoreboard;
-    case StatisticType.averageScore:
-      return Icons.show_chart;
-    case StatisticType.bestScore:
-      return Icons.trending_up;
-    case StatisticType.worstScore:
-      return Icons.trending_down;
-    case StatisticType.winrate:
-      return Icons.percent;
-  }
-}
-
-/// Returns a color from the palette based on the statistic's ID as random seed.
-Color _getStatisticColor(Statistic stat) {
-  final seed = stat.id.hashCode;
-  return _colorPalette[seed.abs() % _colorPalette.length];
-}
-
 /* Skeleton data */
 
 /// A placeholder tile with mock data for the loading state.
@@ -306,7 +265,7 @@ Widget buildSkeletonStatisticTile() {
     icon: Icons.bar_chart,
     title: 'Skeleton title',
     values: values,
-    barColor: _colorPalette[Random().nextInt(_colorPalette.length)],
+    barColor: getRandomAppColorValue(),
     selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
     selectedGroups: [Group(name: 'Group 1', members: [])],
     displayCount: 5,

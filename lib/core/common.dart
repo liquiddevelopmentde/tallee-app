@@ -1,28 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-
-/// Translates a [Ruleset] enum value to its corresponding localized string.
-String translateRulesetToString(Ruleset ruleset, BuildContext context) {
-  final loc = AppLocalizations.of(context);
-  switch (ruleset) {
-    case Ruleset.highestScore:
-      return loc.highest_score;
-    case Ruleset.lowestScore:
-      return loc.lowest_score;
-    case Ruleset.singleWinner:
-      return loc.single_winner;
-    case Ruleset.singleLoser:
-      return loc.single_loser;
-    case Ruleset.multipleWinners:
-      return loc.multiple_winners;
-    case Ruleset.placement:
-      return loc.placement;
-  }
-}
 
 /// Returns the [Color] object corresponding to a [AppColor] enum value.
 Color getColorFromAppColor(AppColor color) {
@@ -46,6 +30,17 @@ Color getColorFromAppColor(AppColor color) {
   }
 }
 
+/// Returns a random color from the app colors.
+AppColor getRandomAppColor() {
+  const appColors = AppColor.values;
+  return appColors[Random().nextInt(appColors.length)];
+}
+
+/// Returns a random color from the app colors.
+Color getRandomAppColorValue() {
+  return getColorFromAppColor(getRandomAppColor());
+}
+
 // Returns a AppColor enum value based on the provided team [index].
 AppColor getTeamColor(int index) {
   final colors = [
@@ -61,28 +56,13 @@ AppColor getTeamColor(int index) {
   return colors[index % colors.length];
 }
 
-/// Translates a [AppColor] enum value to its corresponding localized string.
-String translateAppColorToString(AppColor color, BuildContext context) {
-  final loc = AppLocalizations.of(context);
-  switch (color) {
-    case AppColor.red:
-      return loc.color_red;
-    case AppColor.blue:
-      return loc.color_blue;
-    case AppColor.green:
-      return loc.color_green;
-    case AppColor.yellow:
-      return loc.color_yellow;
-    //return const Color(0xFFF7CA28);
-    case AppColor.purple:
-      return loc.color_purple;
-    case AppColor.orange:
-      return loc.color_orange;
-    case AppColor.pink:
-      return loc.color_pink;
-    case AppColor.teal:
-      return loc.color_teal;
-  }
+/// Returns a color from the palette based on the statistic's ID as random seed.
+Color getStatisticColor(Statistic stat) {
+  final seed = stat.id.hashCode;
+  final appColors = AppColor.values
+      .map((c) => getColorFromAppColor(c))
+      .toList();
+  return appColors[seed.abs() % appColors.length];
 }
 
 /// Returns [IconData] corresponding to a [Ruleset] enum value.
@@ -99,6 +79,28 @@ IconData getRulesetIcon(Ruleset ruleset) {
       return Icons.sentiment_dissatisfied;
     case Ruleset.placement:
       return RpgAwesome.podium;
+  }
+}
+
+/// Returns the icon for the given statistic type.
+IconData getStatisticIcon({required StatisticType type}) {
+  switch (type) {
+    case StatisticType.totalMatches:
+      return Icons.casino;
+    case StatisticType.totalWins:
+      return Icons.emoji_events;
+    case StatisticType.totalLosses:
+      return Icons.sentiment_dissatisfied;
+    case StatisticType.totalScore:
+      return Icons.scoreboard;
+    case StatisticType.averageScore:
+      return Icons.show_chart;
+    case StatisticType.bestScore:
+      return Icons.trending_up;
+    case StatisticType.worstScore:
+      return Icons.trending_down;
+    case StatisticType.winrate:
+      return Icons.percent;
   }
 }
 
@@ -142,6 +144,49 @@ String getPointLabel(AppLocalizations loc, int points) {
     return '$points ${loc.point}';
   } else {
     return '$points ${loc.points}';
+  }
+}
+
+/// Translates a [Ruleset] enum value to its corresponding localized string.
+String translateRulesetToString(Ruleset ruleset, BuildContext context) {
+  final loc = AppLocalizations.of(context);
+  switch (ruleset) {
+    case Ruleset.highestScore:
+      return loc.highest_score;
+    case Ruleset.lowestScore:
+      return loc.lowest_score;
+    case Ruleset.singleWinner:
+      return loc.single_winner;
+    case Ruleset.singleLoser:
+      return loc.single_loser;
+    case Ruleset.multipleWinners:
+      return loc.multiple_winners;
+    case Ruleset.placement:
+      return loc.placement;
+  }
+}
+
+/// Translates a [AppColor] enum value to its corresponding localized string.
+String translateAppColorToString(AppColor color, BuildContext context) {
+  final loc = AppLocalizations.of(context);
+  switch (color) {
+    case AppColor.red:
+      return loc.color_red;
+    case AppColor.blue:
+      return loc.color_blue;
+    case AppColor.green:
+      return loc.color_green;
+    case AppColor.yellow:
+      return loc.color_yellow;
+    //return const Color(0xFFF7CA28);
+    case AppColor.purple:
+      return loc.color_purple;
+    case AppColor.orange:
+      return loc.color_orange;
+    case AppColor.pink:
+      return loc.color_pink;
+    case AppColor.teal:
+      return loc.color_teal;
   }
 }
 

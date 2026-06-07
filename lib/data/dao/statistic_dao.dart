@@ -18,7 +18,8 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
       StatisticTableCompanion.insert(
         id: statistic.id,
         type: statistic.type.name,
-        timeframe: Value(statistic.timeframe.name),
+        timeframe: statistic.timeframe.name,
+        color: statistic.color.name,
         displayCount: Value(statistic.displayCount),
       ),
       mode: InsertMode.insertOrReplace,
@@ -60,6 +61,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         type: StatisticType.values.firstWhere((type) => type.name == row.type),
         scopes: scopes,
         timeframe: Timeframe.values.firstWhere((t) => t.name == row.timeframe),
+        color: AppColor.values.firstWhere((c) => c.name == row.color),
         selectedGroups: groups,
         selectedGames: games,
         displayCount: row.displayCount,
@@ -87,6 +89,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
           timeframe: Timeframe.values.firstWhere(
             (t) => t.name == row.timeframe,
           ),
+          color: AppColor.values.firstWhere((c) => c.name == row.color),
           selectedGroups: groups,
           selectedGames: games,
           displayCount: row.displayCount,
