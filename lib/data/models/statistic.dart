@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 
 class Statistic {
   final String id;
+  final DateTime createdAt;
   final StatisticType type;
   final List<StatisticScope> scopes;
   final Timeframe timeframe;
@@ -22,15 +23,15 @@ class Statistic {
     this.selectedGames,
     this.displayCount = 5,
     String? id,
+    DateTime? createdAt,
     AppColor? color,
   }) : id = id ?? const Uuid().v4(),
+       createdAt = createdAt ?? DateTime.now(),
        color = color ?? getRandomAppColor();
 
   @override
   String toString() {
-    return 'Statistic(id: $id, type: $type, scopes: $scopes, '
-        'timeframe: $timeframe, color: $color, selectedGroups: $selectedGroups, '
-        'selectedGames: $selectedGames)';
+    return 'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames)';
   }
 
   Statistic copyWith({

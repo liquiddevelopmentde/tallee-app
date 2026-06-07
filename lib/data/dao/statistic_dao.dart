@@ -17,6 +17,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
     await into(statisticTable).insert(
       StatisticTableCompanion.insert(
         id: statistic.id,
+        createdAt: statistic.createdAt,
         type: statistic.type.name,
         timeframe: statistic.timeframe.name,
         color: statistic.color.name,
@@ -62,11 +63,12 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         type: StatisticType.values.firstWhere((type) => type.name == row.type),
         scopes: scopes,
         timeframe: Timeframe.values.firstWhere((t) => t.name == row.timeframe),
-        color: AppColor.values.firstWhere((c) => c.name == row.color),
         selectedGroups: groups,
         selectedGames: games,
         displayCount: row.displayCount,
         id: row.id,
+        createdAt: row.createdAt,
+        color: AppColor.values.firstWhere((c) => c.name == row.color),
       );
     }
     return null;
@@ -90,11 +92,12 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
           timeframe: Timeframe.values.firstWhere(
             (t) => t.name == row.timeframe,
           ),
-          color: AppColor.values.firstWhere((c) => c.name == row.color),
           selectedGroups: groups,
           selectedGames: games,
           displayCount: row.displayCount,
           id: row.id,
+          createdAt: row.createdAt,
+          color: AppColor.values.firstWhere((c) => c.name == row.color),
         );
       }),
     );

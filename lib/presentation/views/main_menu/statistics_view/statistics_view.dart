@@ -130,7 +130,8 @@ class _StatisticsViewState extends State<StatisticsView> {
     final statistics = results[0] as List<Statistic>;
     _allMatches = results[1] as List<Match>;
     _allPlayers = results[2] as List<Player>;
-    this.statistics = statistics;
+    this.statistics = statistics
+      ..sort((stat1, stat2) => stat2.createdAt.compareTo(stat1.createdAt));
 
     setState(() {
       statisticTiles = this.statistics
@@ -140,7 +141,8 @@ class _StatisticsViewState extends State<StatisticsView> {
     });
   }
 
-  /// Builds a tile widget for a given statistic, which navigates to the detail view on tap
+  /// Builds a tile widget for a given statistic.
+  /// Navigates to the [StatisticDetailView] on tap
   Widget buildStatisticTile(BuildContext context, Statistic statistic) {
     final values = computeStatisticValues(
       statistic: statistic,

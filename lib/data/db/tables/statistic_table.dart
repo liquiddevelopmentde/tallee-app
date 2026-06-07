@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 
 class StatisticTable extends Table {
   TextColumn get id => text()();
+  DateTimeColumn get createdAt => dateTime()();
   TextColumn get type => text()();
   TextColumn get timeframe => text()();
   TextColumn get color => text()();
