@@ -3,7 +3,7 @@ import 'package:drift/drift.dart';
 class StatisticTable extends Table {
   TextColumn get id => text()();
   TextColumn get type => text()();
-  TextColumn get timeframe => text().nullable()();
+  TextColumn get timeframe => text()();
   IntColumn get displayCount => integer().withDefault(const Constant(5))();
 
   @override

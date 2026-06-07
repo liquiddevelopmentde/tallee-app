@@ -7,7 +7,7 @@ class Statistic {
   final String id;
   final StatisticType type;
   final List<StatisticScope> scopes;
-  final Timeframe? timeframe;
+  final Timeframe timeframe;
   final List<Group>? selectedGroups;
   final List<Game>? selectedGames;
   final int displayCount;
@@ -15,7 +15,7 @@ class Statistic {
   Statistic({
     required this.type,
     required this.scopes,
-    this.timeframe,
+    this.timeframe = Timeframe.allTime,
     this.selectedGroups,
     this.selectedGames,
     this.displayCount = 5,

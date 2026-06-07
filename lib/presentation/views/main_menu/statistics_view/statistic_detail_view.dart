@@ -100,21 +100,20 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                   ),
 
                   // Timeframe
-                  if (widget.statistic.timeframe != null)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(loc.timeframe, style: style),
-                        Text(
-                          translateTimeframeToString(
-                            widget.statistic.timeframe!,
-                            context,
-                          ),
-                          textAlign: TextAlign.end,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(loc.timeframe, style: style),
+                      Text(
+                        translateTimeframeToString(
+                          widget.statistic.timeframe,
+                          context,
                         ),
-                      ],
-                    ),
+                        textAlign: TextAlign.end,
+                      ),
+                    ],
+                  ),
 
                   // Groups
                   if (widget.statistic.selectedGroups != null)

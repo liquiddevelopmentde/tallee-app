@@ -70,12 +70,8 @@ List<Match> _getFilterMatches(Statistic statistic, List<Match> matches) {
   List<Match> filteredMatches = matches;
 
   // Filter timeframe
-  if (statistic.scopes.contains(StatisticScope.timeframe) &&
-      statistic.timeframe != null) {
-    final minDate = _getMinimumDate(timeframe: statistic.timeframe!);
-    print(
-      'Filtering matches by timeframe: ${statistic.timeframe}, minDate: $minDate',
-    );
+  if (statistic.scopes.contains(StatisticScope.timeframe)) {
+    final minDate = _getMinimumDate(timeframe: statistic.timeframe);
     if (minDate != null) {
       filteredMatches = matches
           .where((m) => m.endedAt != null && m.endedAt!.isAfter(minDate))

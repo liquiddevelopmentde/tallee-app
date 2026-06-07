@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -19,7 +18,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
       StatisticTableCompanion.insert(
         id: statistic.id,
         type: statistic.type.name,
-        timeframe: Value(statistic.timeframe?.name),
+        timeframe: Value(statistic.timeframe.name),
         displayCount: Value(statistic.displayCount),
       ),
       mode: InsertMode.insertOrReplace,
@@ -60,9 +59,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
       return Statistic(
         type: StatisticType.values.firstWhere((type) => type.name == row.type),
         scopes: scopes,
-        timeframe: Timeframe.values.firstWhereOrNull(
-          (t) => t.name == row.timeframe,
-        ),
+        timeframe: Timeframe.values.firstWhere((t) => t.name == row.timeframe),
         selectedGroups: groups,
         selectedGames: games,
         displayCount: row.displayCount,
@@ -87,7 +84,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
             (type) => type.name == row.type,
           ),
           scopes: scopes,
-          timeframe: Timeframe.values.firstWhereOrNull(
+          timeframe: Timeframe.values.firstWhere(
             (t) => t.name == row.timeframe,
           ),
           selectedGroups: groups,
