@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -11,6 +12,8 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 
 class CreateStatisticView extends StatefulWidget {
@@ -24,6 +27,8 @@ class CreateStatisticView extends StatefulWidget {
 
 class _CreateStatisticViewState extends State<CreateStatisticView> {
   bool isLoading = false;
+
+  /* Controllers for user selections */
   final ValueNotifier<StatisticType?> _selectedTypeNotifier =
       ValueNotifier<StatisticType?>(null);
   final ValueNotifier<List<StatisticScope>> _selectedScopeNotifier =
@@ -33,7 +38,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   final ValueNotifier<List<Group>> _selectedGroupsNotifier =
       ValueNotifier<List<Group>>([]);
   final ValueNotifier<Timeframe?> _selectedTimeframeNotifier =
-      ValueNotifier<Timeframe?>(null);
+      ValueNotifier<Timeframe?>(Timeframe.allTime);
 
   /* Data loaded from the database */
   List<Player> players = [];
@@ -46,13 +51,19 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   List<Game> selectedGames = [];
   List<Player> selectedPlayers = [];
   List<Group> selectedGroups = [];
-  Timeframe? selectedTimeframe;
+  Timeframe selectedTimeframe = Timeframe.allTime;
 
   @override
   void initState() {
+    _selectedTimeframeNotifier.value = Timeframe.allTime;
     loadAllData();
     super.initState();
   }
+
+  // Exclude timeframe bc its required for all statistics.
+  List<StatisticScope> get selectableScopes => StatisticScope.values
+      .where((scope) => scope != StatisticScope.timeframe)
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -61,411 +72,103 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     return ScaffoldMessenger(
       child: Scaffold(
         appBar: AppBar(title: Text(loc.create_statistic)),
-        body: Stack(
-          alignment: AlignmentDirectional.center,
+        body: Column(
           children: [
-            SingleChildScrollView(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).padding.bottom + 80,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Classifier title
-                  Padding(
-                    padding: const EdgeInsetsGeometry.only(left: 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          loc.classifier,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                            color: CustomTheme.textColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Text(
-                          'description',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: CustomTheme.textColor,
-                            fontSize: 12,
-                          ),
-                          softWrap: true,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Classifier selection
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 16,
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<StatisticType>(
-                        isExpanded: true,
-                        hint: Text(loc.select_a_classifier, style: hintStyle),
-                        valueListenable: _selectedTypeNotifier,
-                        items: StatisticType.values
-                            .map(
-                              (item) => DropdownItem<StatisticType>(
-                                value: item,
-                                height: 44,
-                                child: Text(
-                                  translateStatisticTypeToString(item, context),
-                                  style: itemStyle,
-                                ),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: isLoading
-                            ? null
-                            : (value) {
-                                if (value == null) return;
-                                _selectedTypeNotifier.value = value;
-                                setState(() {
-                                  selectedType = value;
-                                });
-                              },
-                        selectedItemBuilder: (context) {
-                          return StatisticType.values
-                              .map(
-                                (_) => ValueListenableBuilder<StatisticType?>(
-                                  valueListenable: _selectedTypeNotifier,
-                                  builder: (context, current, _) {
-                                    if (current == null) {
-                                      return Text(
-                                        loc.select_a_classifier,
-                                        style: hintStyle,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                      );
-                                    }
-                                    return Text(
-                                      translateStatisticTypeToString(
-                                        current,
-                                        context,
-                                      ),
-                                      style: headerStyle,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    );
-                                  },
-                                ),
-                              )
-                              .toList();
-                        },
-                        buttonStyleData: ButtonStyleData(
-                          height: 54,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: CustomTheme.boxColor,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: CustomTheme.boxBorderColor,
-                              width: 1,
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: CustomTheme.boxColor,
+                  border: Border.all(color: CustomTheme.boxBorderColor),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Classifier title
+                    Padding(
+                      padding: const EdgeInsetsGeometry.only(left: 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            loc.classifier,
+                            textAlign: TextAlign.start,
+                            style: const TextStyle(
+                              color: CustomTheme.textColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                        iconStyleData: const IconStyleData(
-                          iconEnabledColor: CustomTheme.textColor,
-                          iconDisabledColor: CustomTheme.hintColor,
-                        ),
-                        dropdownStyleData: DropdownStyleData(
-                          decoration: BoxDecoration(
-                            color: CustomTheme.boxColor,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: CustomTheme.boxBorderColor,
-                              width: 1,
+                          const Text(
+                            'description',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: CustomTheme.textColor,
+                              fontSize: 12,
                             ),
+                            softWrap: true,
                           ),
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                        ),
+                        ],
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 10),
-
-                  // Scope title
-                  Padding(
-                    padding: const EdgeInsetsGeometry.only(left: 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          loc.scope,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                            color: CustomTheme.textColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Text(
-                          'description',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: CustomTheme.textColor,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Scope selection
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 16,
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<StatisticScope>(
-                        isExpanded: true,
-                        hint: Text(loc.select_a_scope, style: hintStyle),
-                        multiValueListenable: _selectedScopeNotifier,
-                        items: StatisticScope.values
-                            .map(
-                              (scope) => DropdownItem<StatisticScope>(
-                                value: scope,
-                                height: 44,
-                                closeOnTap: false,
-                                child:
-                                    ValueListenableBuilder<
-                                      List<StatisticScope>
-                                    >(
-                                      valueListenable: _selectedScopeNotifier,
-                                      builder: (context, values, _) {
-                                        final isSelected = values.contains(
-                                          scope,
-                                        );
-                                        return Row(
-                                          children: [
-                                            Icon(
-                                              isSelected
-                                                  ? Icons.check_box_outlined
-                                                  : Icons
-                                                        .check_box_outline_blank,
-                                              color: CustomTheme.textColor,
-                                            ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: Text(
-                                                translateScopeToString(
-                                                  scope,
-                                                  context,
-                                                ),
-                                                style: itemStyle,
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          final current = [..._selectedScopeNotifier.value];
-                          final isSelected = current.contains(value);
-
-                          if (isSelected) {
-                            current.remove(value);
-                          } else {
-                            current.add(value);
-                          }
-
-                          // Keep selectedGroups and allPlayers mutually exclusive.
-                          if (current.contains(StatisticScope.selectedGroups) &&
-                              current.contains(StatisticScope.allPlayers)) {
-                            if (value == StatisticScope.selectedGroups) {
-                              current.remove(StatisticScope.allPlayers);
-                            } else if (value == StatisticScope.allPlayers) {
-                              current.remove(StatisticScope.selectedGroups);
-                            }
-                          }
-
-                          _selectedScopeNotifier.value = current;
-                          setState(() {
-                            selectedScope = current;
-                          });
-                        },
-                        selectedItemBuilder: (context) {
-                          return StatisticScope.values
+                    // Classifier selection
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 16,
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<StatisticType>(
+                          isExpanded: true,
+                          hint: Text(loc.select_a_classifier, style: hintStyle),
+                          valueListenable: _selectedTypeNotifier,
+                          items: StatisticType.values
                               .map(
-                                (_) =>
-                                    ValueListenableBuilder<
-                                      List<StatisticScope>
-                                    >(
-                                      valueListenable: _selectedScopeNotifier,
-                                      builder: (context, values, _) {
+                                (item) => DropdownItem<StatisticType>(
+                                  value: item,
+                                  height: 44,
+                                  child: Text(
+                                    translateStatisticTypeToString(
+                                      item,
+                                      context,
+                                    ),
+                                    style: itemStyle,
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: isLoading
+                              ? null
+                              : (value) {
+                                  if (value == null) return;
+                                  _selectedTypeNotifier.value = value;
+                                  setState(() {
+                                    selectedType = value;
+                                  });
+                                },
+                          selectedItemBuilder: (context) {
+                            return StatisticType.values
+                                .map(
+                                  (_) => ValueListenableBuilder<StatisticType?>(
+                                    valueListenable: _selectedTypeNotifier,
+                                    builder: (context, current, _) {
+                                      if (current == null) {
                                         return Text(
-                                          values
-                                              .map(
-                                                (s) => translateScopeToString(
-                                                  s,
-                                                  context,
-                                                ),
-                                              )
-                                              .join(', '),
-                                          style: values.isEmpty
-                                              ? hintStyle
-                                              : headerStyle,
+                                          loc.select_a_classifier,
+                                          style: hintStyle,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                         );
-                                      },
-                                    ),
-                              )
-                              .toList();
-                        },
-                        buttonStyleData: ButtonStyleData(
-                          height: 54,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: CustomTheme.boxColor,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: CustomTheme.boxBorderColor,
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        iconStyleData: const IconStyleData(
-                          iconEnabledColor: CustomTheme.textColor,
-                        ),
-                        dropdownStyleData: DropdownStyleData(
-                          decoration: BoxDecoration(
-                            color: CustomTheme.boxColor,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: CustomTheme.boxBorderColor,
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  if (selectedScope.contains(StatisticScope.selectedGames)) ...[
-                    const SizedBox(height: 10),
-
-                    // games title
-                    Padding(
-                      padding: const EdgeInsetsGeometry.only(left: 24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loc.games,
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                              color: CustomTheme.textColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            loc.select_the_filtered_games,
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                              color: CustomTheme.textColor,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // game selection
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 16,
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton2<Game>(
-                          isExpanded: true,
-                          hint: Text(
-                            isLoading ? loc.loading : loc.select_a_game,
-                            style: hintStyle,
-                          ),
-                          multiValueListenable: _selectedGamesNotifier,
-                          items: games
-                              .map(
-                                (item) => DropdownItem<Game>(
-                                  value: item,
-                                  height: 44,
-                                  closeOnTap: false,
-                                  child: ValueListenableBuilder<List<Game>>(
-                                    valueListenable: _selectedGamesNotifier,
-                                    builder: (context, values, _) {
-                                      final isSelected = values.contains(item);
-                                      return Row(
-                                        children: [
-                                          Icon(
-                                            isSelected
-                                                ? Icons.check_box_outlined
-                                                : Icons.check_box_outline_blank,
-                                            color: CustomTheme.textColor,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Text(
-                                              '${item.name} - ${translateRulesetToString(item.ruleset, context)}',
-                                              style: itemStyle,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: isLoading
-                              ? null
-                              : (value) {
-                                  if (value == null) return;
-                                  final current = [
-                                    ..._selectedGamesNotifier.value,
-                                  ];
-                                  final isSelected = current.contains(value);
-                                  if (isSelected) {
-                                    current.remove(value);
-                                  } else {
-                                    current.add(value);
-                                  }
-                                  _selectedGamesNotifier.value = current;
-                                  setState(() {
-                                    selectedGames = current;
-                                  });
-                                },
-                          selectedItemBuilder: (context) {
-                            return games
-                                .map(
-                                  (_) => ValueListenableBuilder<List<Game>>(
-                                    valueListenable: _selectedGamesNotifier,
-                                    builder: (context, values, _) {
+                                      }
                                       return Text(
-                                        values.map((g) => g.name).join(', '),
-                                        style: values.isEmpty
-                                            ? hintStyle
-                                            : headerStyle,
+                                        translateStatisticTypeToString(
+                                          current,
+                                          context,
+                                        ),
+                                        style: headerStyle,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                       );
@@ -506,21 +209,17 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                         ),
                       ),
                     ),
-                  ],
 
-                  if (selectedScope.contains(
-                    StatisticScope.selectedGroups,
-                  )) ...[
                     const SizedBox(height: 10),
 
-                    // groups title
+                    // Scope title
                     Padding(
                       padding: const EdgeInsetsGeometry.only(left: 24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            loc.groups,
+                            loc.scope,
                             textAlign: TextAlign.start,
                             style: const TextStyle(
                               color: CustomTheme.textColor,
@@ -528,10 +227,10 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text(
-                            loc.select_the_filtered_groups,
+                          const Text(
+                            'description',
                             textAlign: TextAlign.start,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: CustomTheme.textColor,
                               fontSize: 12,
                             ),
@@ -540,87 +239,112 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                       ),
                     ),
 
-                    // groups selection
+                    // Scope selection
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
                         horizontal: 16,
                       ),
                       child: DropdownButtonHideUnderline(
-                        child: DropdownButton2<Group>(
+                        child: DropdownButton2<StatisticScope>(
                           isExpanded: true,
-                          hint: Text(
-                            isLoading ? loc.loading : loc.select_a_group,
-                            style: hintStyle,
-                          ),
-                          multiValueListenable: _selectedGroupsNotifier,
-                          items: groups
+                          hint: Text(loc.select_a_scope, style: hintStyle),
+                          multiValueListenable: _selectedScopeNotifier,
+                          items: selectableScopes
                               .map(
-                                (item) => DropdownItem<Group>(
-                                  value: item,
+                                (scope) => DropdownItem<StatisticScope>(
+                                  value: scope,
                                   height: 44,
                                   closeOnTap: false,
-                                  child: ValueListenableBuilder<List<Group>>(
-                                    valueListenable: _selectedGroupsNotifier,
-                                    builder: (context, values, _) {
-                                      final isSelected = values.contains(item);
-                                      return Row(
-                                        children: [
-                                          Icon(
-                                            isSelected
-                                                ? Icons.check_box_outlined
-                                                : Icons.check_box_outline_blank,
-                                            color: CustomTheme.textColor,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Text(
-                                              '${item.name} - ${item.members.length} ${loc.members}',
-                                              style: itemStyle,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
+                                  child:
+                                      ValueListenableBuilder<
+                                        List<StatisticScope>
+                                      >(
+                                        valueListenable: _selectedScopeNotifier,
+                                        builder: (context, values, _) {
+                                          final isSelected = values.contains(
+                                            scope,
+                                          );
+                                          return Row(
+                                            children: [
+                                              Icon(
+                                                isSelected
+                                                    ? Icons.check_box_outlined
+                                                    : Icons
+                                                          .check_box_outline_blank,
+                                                color: CustomTheme.textColor,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  translateScopeToString(
+                                                    scope,
+                                                    context,
+                                                  ),
+                                                  style: itemStyle,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
                                 ),
                               )
                               .toList(),
-                          onChanged: isLoading
-                              ? null
-                              : (value) {
-                                  if (value == null) return;
-                                  final current = [
-                                    ..._selectedGroupsNotifier.value,
-                                  ];
-                                  final isSelected = current.contains(value);
-                                  if (isSelected) {
-                                    current.remove(value);
-                                  } else {
-                                    current.add(value);
-                                  }
-                                  _selectedGroupsNotifier.value = current;
-                                  setState(() {
-                                    selectedGroups = current;
-                                  });
-                                },
+                          onChanged: (value) {
+                            if (value == null) return;
+                            final current = [..._selectedScopeNotifier.value];
+                            final isSelected = current.contains(value);
+
+                            if (isSelected) {
+                              current.remove(value);
+                            } else {
+                              current.add(value);
+                            }
+
+                            // Keep selectedGroups and allPlayers mutually exclusive.
+                            if (current.contains(
+                                  StatisticScope.selectedGroups,
+                                ) &&
+                                current.contains(StatisticScope.allPlayers)) {
+                              if (value == StatisticScope.selectedGroups) {
+                                current.remove(StatisticScope.allPlayers);
+                              } else if (value == StatisticScope.allPlayers) {
+                                current.remove(StatisticScope.selectedGroups);
+                              }
+                            }
+
+                            _selectedScopeNotifier.value = current;
+                            setState(() {
+                              selectedScope = current;
+                            });
+                          },
                           selectedItemBuilder: (context) {
-                            return groups
+                            return selectableScopes
                                 .map(
-                                  (_) => ValueListenableBuilder<List<Group>>(
-                                    valueListenable: _selectedGroupsNotifier,
-                                    builder: (context, values, _) {
-                                      return Text(
-                                        values.map((g) => g.name).join(', '),
-                                        style: values.isEmpty
-                                            ? hintStyle
-                                            : headerStyle,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                      );
-                                    },
-                                  ),
+                                  (_) =>
+                                      ValueListenableBuilder<
+                                        List<StatisticScope>
+                                      >(
+                                        valueListenable: _selectedScopeNotifier,
+                                        builder: (context, values, _) {
+                                          return Text(
+                                            values
+                                                .map(
+                                                  (s) => translateScopeToString(
+                                                    s,
+                                                    context,
+                                                  ),
+                                                )
+                                                .join(', '),
+                                            style: values.isEmpty
+                                                ? hintStyle
+                                                : headerStyle,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                          );
+                                        },
+                                      ),
                                 )
                                 .toList();
                           },
@@ -638,7 +362,6 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                           ),
                           iconStyleData: const IconStyleData(
                             iconEnabledColor: CustomTheme.textColor,
-                            iconDisabledColor: CustomTheme.hintColor,
                           ),
                           dropdownStyleData: DropdownStyleData(
                             decoration: BoxDecoration(
@@ -656,9 +379,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                         ),
                       ),
                     ),
-                  ],
 
-                  if (selectedScope.contains(StatisticScope.timeframe)) ...[
                     const SizedBox(height: 10),
 
                     // timeframe title
@@ -720,6 +441,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                           onChanged: isLoading
                               ? null
                               : (timeframe) {
+                                  if (timeframe == null) return;
                                   _selectedTimeframeNotifier.value = timeframe;
                                   setState(() {
                                     selectedTimeframe = timeframe;
@@ -758,15 +480,15 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                       ),
                     ),
                   ],
-                ],
+                ),
               ),
             ),
 
             // Create statistic button
-            Positioned(
-              bottom: MediaQuery.of(context).padding.bottom,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
               child: AnimatedDialogButton(
-                buttonConstraints: const BoxConstraints(minWidth: 350),
+                buttonConstraints: const BoxConstraints(minWidth: 390),
                 buttonText: loc.create_statistic,
                 onPressed: selectedType != null && selectedScope.isNotEmpty
                     ? () => submitStatistic()
@@ -821,17 +543,42 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         });
   }
 
+  /// Creates the statistic based on the user selections. If the statistic
+  /// requires selecting specific groups or games, navigates to the respective
+  /// selection view. Otherwise, saves the statistic to the database and returns
+  /// to the previous screen.
   void submitStatistic() {
-    final newStatistic = Statistic(
+    final scopes = [...selectedScope, StatisticScope.timeframe];
+    final statistic = Statistic(
       type: selectedType!,
-      scopes: selectedScope,
+      scopes: scopes,
       timeframe: selectedTimeframe,
-      selectedGroups: selectedGroups,
-      selectedGames: selectedGames,
     );
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    db.statisticDao.addStatistic(statistic: newStatistic);
-    Navigator.of(context).pop(newStatistic);
+
+    if (scopes.contains(StatisticScope.selectedGroups)) {
+      // Navigating to the group selection
+
+      Navigator.of(context).push(
+        adaptivePageRoute(
+          builder: (context) =>
+              ChooseGroupView(groups: groups, statistic: statistic),
+        ),
+      );
+    } else if (scopes.contains(StatisticScope.selectedGames)) {
+      // Navigating to the game selection
+      Navigator.of(context).push(
+        adaptivePageRoute(
+          builder: (context) =>
+              ChooseGameView(games: games, statistic: statistic),
+        ),
+      );
+    } else {
+      // Create statistic
+      final db = Provider.of<AppDatabase>(context, listen: false);
+      db.statisticDao.addStatistic(statistic: statistic);
+      widget.onStatisticCreated();
+      Navigator.of(context).pop(statistic);
+    }
   }
 
   @override

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
+import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/group_tile.dart';
@@ -10,32 +17,40 @@ import 'package:tallee/presentation/widgets/top_centered_message.dart';
 class ChooseGroupView extends StatefulWidget {
   /// A view that allows the user to choose a group from a list of groups.
   /// - [groups]: A list of available groups to choose from
-  /// - [initialGroupId]: The ID of the initially selected group
+  /// - [initialGroup]: The initially selected group
   const ChooseGroupView({
     super.key,
     required this.groups,
-    required this.initialGroupId,
+    this.initialGroup,
+    this.statistic,
   });
 
   /// A list of available groups to choose from
   final List<Group> groups;
 
   /// The ID of the initially selected group
-  final String initialGroupId;
+  final Group? initialGroup;
+
+  /// Optional statistic payload for choosing groups for a statistic
+  final Statistic? statistic;
 
   @override
   State<ChooseGroupView> createState() => _ChooseGroupViewState();
 }
 
 class _ChooseGroupViewState extends State<ChooseGroupView> {
-  late String selectedGroupId;
   final TextEditingController controller = TextEditingController();
+
+  List<Group> selectedGroups = [];
   late final List<Group> filteredGroups;
+
+  // If selecting multiple is possible
+  bool enableMultiSelection = false;
 
   @override
   void initState() {
-    selectedGroupId = widget.initialGroupId;
     filteredGroups = [...widget.groups];
+    enableMultiSelection = widget.statistic != null;
     super.initState();
   }
 
@@ -49,13 +64,9 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
         leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context).pop(
-              selectedGroupId == ''
-                  ? null
-                  : widget.groups.firstWhere(
-                      (group) => group.id == selectedGroupId,
-                    ),
-            );
+            Navigator.of(
+              context,
+            ).pop(selectedGroups.isEmpty ? null : selectedGroups.first);
           },
         ),
         title: Text(loc.choose_group),
@@ -68,13 +79,9 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
           if (didPop) {
             return;
           }
-          Navigator.of(context).pop(
-            selectedGroupId == ''
-                ? null
-                : widget.groups.firstWhere(
-                    (group) => group.id == selectedGroupId,
-                  ),
-          );
+          Navigator.of(
+            context,
+          ).pop(selectedGroups.isEmpty ? null : selectedGroups.first);
         },
         child: Column(
           children: [
@@ -114,14 +121,21 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                   itemBuilder: (BuildContext context, int index) {
                     return GroupTile(
                       group: filteredGroups[index],
-                      isHighlighted:
-                          selectedGroupId == filteredGroups[index].id,
+                      isHighlighted: selectedGroups.any(
+                        (group) => group.id == filteredGroups[index].id,
+                      ),
                       onTap: () {
                         setState(() {
-                          if (selectedGroupId != filteredGroups[index].id) {
-                            selectedGroupId = filteredGroups[index].id;
+                          if (selectedGroups.contains(filteredGroups[index])) {
+                            selectedGroups.removeWhere(
+                              (group) => group.id == filteredGroups[index].id,
+                            );
                           } else {
-                            selectedGroupId = '';
+                            // In single select mode only allow one group
+                            if (!enableMultiSelection) {
+                              selectedGroups.clear();
+                            }
+                            selectedGroups.add(filteredGroups[index]);
                           }
                         });
                       },
@@ -130,10 +144,45 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                 ),
               ),
             ),
+            // Create statistic button
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+              child: AnimatedDialogButton(
+                buttonConstraints: const BoxConstraints(minWidth: 390),
+                buttonText: loc.create_statistic,
+                onPressed: selectedGroups.isNotEmpty
+                    ? () => submitStatistic()
+                    : null,
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> submitStatistic() async {
+    final statistic = widget.statistic!.copyWith(
+      selectedGroups: selectedGroups,
+    );
+    final db = Provider.of<AppDatabase>(context, listen: false);
+
+    if (widget.statistic!.scopes.contains(StatisticScope.selectedGames)) {
+      // Choose a game
+      final games = await db.gameDao.getAllGames();
+      if (mounted) {
+        Navigator.of(context).push(
+          adaptivePageRoute(
+            builder: (context) =>
+                ChooseGameView(statistic: statistic, games: games),
+          ),
+        );
+      }
+    } else {
+      // Create statistic
+      db.statisticDao.addStatistic(statistic: statistic);
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 
   /// Filters the groups based on the search [query].

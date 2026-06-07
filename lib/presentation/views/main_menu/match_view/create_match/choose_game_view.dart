@@ -5,8 +5,10 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
+import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/game_tile.dart';
@@ -15,23 +17,25 @@ import 'package:tallee/presentation/widgets/top_centered_message.dart';
 class ChooseGameView extends StatefulWidget {
   /// A view that allows the user to choose a game from a list of available games
   /// - [games]: The list of available games
-  /// - [initialGameId]: The id of the initially selected game
+  /// - [initialGame]: The initially selected game
   /// - [onGamesUpdated]: Optional callback invoked when the games are updated
+  /// - [statistic]: Optional statistic payload for choosing groups for a statistic
   const ChooseGameView({
     super.key,
     required this.games,
-    required this.initialGameId,
+    this.initialGame,
     this.onGamesUpdated,
+    this.statistic,
   });
 
-  /// A list of tuples containing the game name, description and ruleset
   final List<Game> games;
 
   /// The id of the initially selected game
-  final String initialGameId;
+  final Game? initialGame;
 
-  /// Optional callback invoked when the games are updated
   final VoidCallback? onGamesUpdated;
+
+  final Statistic? statistic;
 
   @override
   State<ChooseGameView> createState() => _ChooseGameViewState();
@@ -45,24 +49,27 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   /// Controller for the search bar
   final TextEditingController searchBarController = TextEditingController();
 
-  /// Currently selected game index
-  late String selectedGameId;
+  /// Currently selected game(s)
+  List<Game> selectedGames = [];
 
   /// Games filtered according to the current search query
   late List<Game> filteredGames;
-
   List<Game> get games =>
       widget.games..sort((a, b) => a.name.compareTo(b.name));
+
+  // If selecting multiple is possible
+  bool enableMultiSelection = false;
 
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
     fetchGameCounts();
 
-    selectedGameId = widget.initialGameId;
-
+    selectedGames = widget.initialGame != null ? [widget.initialGame!] : [];
     // Start with all games visible
     filteredGames = List<Game>.from(games);
+
+    enableMultiSelection = widget.statistic != null;
 
     super.initState();
   }
@@ -77,11 +84,9 @@ class _ChooseGameViewState extends State<ChooseGameView> {
         leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context).pop(
-              selectedGameId == ''
-                  ? null
-                  : games.firstWhere((game) => game.id == selectedGameId),
-            );
+            Navigator.of(
+              context,
+            ).pop(selectedGames.isEmpty ? null : selectedGames.first);
           },
         ),
         actions: [
@@ -102,7 +107,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 setState(() {
                   games.insert(0, result.game);
                 });
-                _refreshFromSource();
+                refreshFromSource();
               }
             },
           ),
@@ -118,7 +123,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
           if (didPop) {
             return;
           }
-          Navigator.of(context).pop(widget.initialGameId);
+          Navigator.of(context).pop(widget.initialGame);
         },
         child: Column(
           children: [
@@ -129,7 +134,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 controller: searchBarController,
                 hintText: loc.game_name,
                 onChanged: (value) {
-                  _applySearchFilter(value);
+                  applySearchFilter(value);
                 },
               ),
             ),
@@ -163,13 +168,21 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                       description: game.description,
                       subtitle: translateRulesetToString(game.ruleset, context),
                       badgeColor: getColorFromAppColor(game.color),
-                      isHighlighted: selectedGameId == game.id,
+                      isHighlighted: selectedGames.any(
+                        (selected) => selected.id == game.id,
+                      ),
                       onTap: () async {
                         setState(() {
-                          if (selectedGameId == game.id) {
-                            selectedGameId = '';
+                          if (selectedGames.contains(filteredGames[index])) {
+                            selectedGames.removeWhere(
+                              (group) => group.id == filteredGames[index].id,
+                            );
                           } else {
-                            selectedGameId = game.id;
+                            // In single select mode only allow one group
+                            if (!enableMultiSelection) {
+                              selectedGames.clear();
+                            }
+                            selectedGames.add(filteredGames[index]);
                           }
                         });
                       },
@@ -197,8 +210,10 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                           if (result.delete) {
                             setState(() {
                               // deselect the game
-                              if (selectedGameId == game.id) {
-                                selectedGameId = '';
+                              if (selectedGames.any(
+                                (selected) => selected.id == game.id,
+                              )) {
+                                selectedGames.clear();
                               }
                               games.removeAt(originalIndex);
                               widget.onGamesUpdated?.call();
@@ -208,12 +223,24 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                               games[originalIndex] = result.game;
                             });
                           }
-                          _refreshFromSource();
+                          refreshFromSource();
                         }
                       },
                     );
                   },
                 ),
+              ),
+            ),
+
+            // Create statistic button
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+              child: AnimatedDialogButton(
+                buttonConstraints: const BoxConstraints(minWidth: 390),
+                buttonText: loc.create_statistic,
+                onPressed: selectedGames.isNotEmpty
+                    ? () => submitStatistic()
+                    : null,
               ),
             ),
           ],
@@ -222,8 +249,17 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     );
   }
 
+  /// Fetches the usage count for all games and stores it in [gameCounts].
+  Future<void> fetchGameCounts() async =>
+      gameCounts = await db.gameDao.getGameUsage();
+
+  /// Returns the number of matches that use the given [game].
+  int getMatchCount(Game game) => gameCounts
+      .firstWhere((gc) => gc.$1.id == game.id, orElse: () => (game, 0))
+      .$2;
+
   /// Applies the search filter to the games list based on [query].
-  void _applySearchFilter(String query) {
+  void applySearchFilter(String query) {
     final q = query.toLowerCase().trim();
     if (q.isEmpty) {
       setState(() {
@@ -242,18 +278,16 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   }
 
   /// Re-applies the current filter after the underlying games list changed.
-  void _refreshFromSource() {
-    _applySearchFilter(searchBarController.text);
+  void refreshFromSource() {
+    applySearchFilter(searchBarController.text);
   }
 
-  Future<void> fetchGameCounts() async {
-    gameCounts = await db.gameDao.getGameUsage();
-  }
-
-  // Returns the number of matches that use the given [game].
-  int getMatchCount(Game game) {
-    return gameCounts
-        .firstWhere((gc) => gc.$1.id == game.id, orElse: () => (game, 0))
-        .$2;
+  /// Updated the statistic with the selected games, adds it to the database
+  /// and pops until the first route to update the statistic overview.
+  Future<void> submitStatistic() async {
+    final statistic = widget.statistic!.copyWith(selectedGames: selectedGames);
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    db.statisticDao.addStatistic(statistic: statistic);
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 }
