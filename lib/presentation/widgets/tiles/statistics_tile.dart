@@ -69,209 +69,223 @@ class StatisticsTile extends StatelessWidget {
       margin: margin ?? CustomTheme.tileMargin,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Visibility(
-          visible: values.isNotEmpty && values.any((entry) => entry.$2 != 0),
+        child: Column(
+          children: [
+            Visibility(
+              visible:
+                  values.isNotEmpty && values.any((entry) => entry.$2 != 0),
 
-          // No data avaiable message
-          replacement: Center(
-            heightFactor: 4,
-            child: Text(loc.no_data_available),
-          ),
+              // No data avaiable message
+              replacement: Center(
+                heightFactor: 4,
+                child: Text(loc.no_data_available),
+              ),
 
-          // Bar chart
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final maxBarWidth = constraints.maxWidth * 0.8;
+              // Bar chart
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final maxBarWidth = constraints.maxWidth * 0.8;
 
-              // If displayCount wasnt provided, take all values
-              final valuesShown = showAllValues
-                  ? values.length
-                  : min(values.length, displayCount);
-              final displayValues = values.take(valuesShown).toList();
-              final maxVal = displayValues.isNotEmpty
-                  ? displayValues.fold<num>(
-                      0,
-                      (currentMax, entry) =>
-                          entry.$2 > currentMax ? entry.$2 : currentMax,
-                    )
-                  : 0;
+                  // If displayCount wasnt provided, take all values
+                  final valuesShown = showAllValues
+                      ? values.length
+                      : min(values.length, displayCount);
+                  final displayValues = values.take(valuesShown).toList();
+                  final maxVal = displayValues.isNotEmpty
+                      ? displayValues.fold<num>(
+                          0,
+                          (currentMax, entry) =>
+                              entry.$2 > currentMax ? entry.$2 : currentMax,
+                        )
+                      : 0;
 
-              return Column(
-                children: [
-                  // Bars
-                  ...List.generate(valuesShown, (index) {
-                    /// Fraction of wins
-                    final double fraction = (maxVal > 0)
-                        ? (displayValues[index].$2 / maxVal)
-                        : 0.0;
+                  return Column(
+                    children: [
+                      // Bars
+                      ...List.generate(valuesShown, (index) {
+                        /// Fraction of wins
+                        final double fraction = (maxVal > 0)
+                            ? (displayValues[index].$2 / maxVal)
+                            : 0.0;
 
-                    /// Calculated width for current the bar
-                    final double barWidth = (maxBarWidth * fraction).clamp(
-                      0.0,
-                      maxBarWidth,
-                    );
+                        /// Calculated width for current the bar
+                        final double barWidth = (maxBarWidth * fraction).clamp(
+                          0.0,
+                          maxBarWidth,
+                        );
 
-                    final isOverflowEntry = index >= displayCount;
-                    final isHighlightedOverflow =
-                        isOverflowEntry && showDisplayCountHighlighting;
-                    final barClr = isHighlightedOverflow
-                        ? barColor.withAlpha(150)
-                        : barColor;
+                        final isOverflowEntry = index >= displayCount;
+                        final isHighlightedOverflow =
+                            isOverflowEntry && showDisplayCountHighlighting;
+                        final barClr = isHighlightedOverflow
+                            ? barColor.withAlpha(150)
+                            : barColor;
 
-                    var textClr = barColor.computeLuminance() > 0.5
-                        ? const Color(0xFF101010)
-                        : CustomTheme.textColor;
-                    textClr = textClr.withAlpha(
-                      isHighlightedOverflow ? 220 : 255,
-                    );
+                        var textClr = barColor.computeLuminance() > 0.5
+                            ? const Color(0xFF101010)
+                            : CustomTheme.textColor;
+                        textClr = textClr.withAlpha(
+                          isHighlightedOverflow ? 220 : 255,
+                        );
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: maxBarWidth,
-                            child: Stack(
-                              clipBehavior: Clip.hardEdge,
-                              children: [
-                                // Bar
-                                AnimatedContainer(
-                                  duration: const Duration(milliseconds: 150),
-                                  curve: Curves.easeInOut,
-                                  height: 24,
-                                  width: barWidth,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: barClr,
-                                  ),
-                                ),
-
-                                // Player
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4.0),
-                                  child: RichText(
-                                    maxLines: 1,
-                                    softWrap: false,
-                                    overflow: TextOverflow.ellipsis,
-                                    text: TextSpan(
-                                      style: DefaultTextStyle.of(context).style,
-                                      children: [
-                                        TextSpan(
-                                          text: displayValues[index].$1.name,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: textClr,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: getNameCountText(
-                                            displayValues[index].$1,
-                                          ),
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                (barColor ==
-                                                            getColorFromAppColor(
-                                                              AppColor.yellow,
-                                                            )
-                                                        ? const Color(
-                                                            0xFF101010,
-                                                          )
-                                                        : CustomTheme.textColor)
-                                                    .withAlpha(150),
-                                          ),
-                                        ),
-                                      ],
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: maxBarWidth,
+                                child: Stack(
+                                  clipBehavior: Clip.hardEdge,
+                                  children: [
+                                    // Bar
+                                    AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 150,
+                                      ),
+                                      curve: Curves.easeInOut,
+                                      height: 24,
+                                      width: barWidth,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        color: barClr,
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Spacer(),
 
-                          // Value
-                          Center(
-                            child: Text(
-                              displayValues[index].$2 <= 1 &&
-                                      displayValues[index].$2 is double
-                                  ? displayValues[index].$2.toStringAsFixed(2)
-                                  : displayValues[index].$2.toString(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                    // Player
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4.0),
+                                      child: RichText(
+                                        maxLines: 1,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
+                                        text: TextSpan(
+                                          style: DefaultTextStyle.of(
+                                            context,
+                                          ).style,
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  displayValues[index].$1.name,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: textClr,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: getNameCountText(
+                                                displayValues[index].$1,
+                                              ),
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color:
+                                                    (barColor ==
+                                                                getColorFromAppColor(
+                                                                  AppColor
+                                                                      .yellow,
+                                                                )
+                                                            ? const Color(
+                                                                0xFF101010,
+                                                              )
+                                                            : CustomTheme
+                                                                  .textColor)
+                                                        .withAlpha(150),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
+                              const Spacer(),
+
+                              // Value
+                              Center(
+                                child: Text(
+                                  displayValues[index].$2 <= 1 &&
+                                          displayValues[index].$2 is double
+                                      ? displayValues[index].$2.toStringAsFixed(
+                                          2,
+                                        )
+                                      : displayValues[index].$2.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
+                  );
+                },
+              ),
+            ),
+
+            // Group & Game info
+            if (hasGame || hasGroup)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Wrap(
+                  alignment: WrapAlignment.start,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: [
+                    // Game
+                    if (hasGame)
+                      Row(
+                        spacing: 8,
+                        children: [
+                          const Icon(
+                            RpgAwesome.clovers_card,
+                            color: CustomTheme.hintColor,
+                            size: 20,
+                          ),
+                          Text(
+                            getGameText(selectedGames!),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: CustomTheme.hintColor,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
-                    );
-                  }),
+                    if (hasGroup && hasGame) const SizedBox(width: 20),
 
-                  // Group & Game info
-                  if (hasGame || hasGroup)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Wrap(
-                        alignment: WrapAlignment.start,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 4,
-                        runSpacing: 4,
+                    // Group
+                    if (hasGroup)
+                      Row(
+                        spacing: 8,
                         children: [
-                          // Game
-                          if (hasGame)
-                            Row(
-                              spacing: 8,
-                              children: [
-                                const Icon(
-                                  RpgAwesome.clovers_card,
-                                  color: CustomTheme.hintColor,
-                                  size: 20,
-                                ),
-                                Text(
-                                  getGameText(selectedGames!),
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: CustomTheme.hintColor,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+                          const Icon(
+                            Icons.groups,
+                            color: CustomTheme.hintColor,
+                          ),
+                          Text(
+                            getGroupText(selectedGroups!),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: CustomTheme.hintColor,
                             ),
-                          if (hasGroup && hasGame) const SizedBox(width: 20),
-
-                          // Group
-                          if (hasGroup)
-                            Row(
-                              spacing: 8,
-                              children: [
-                                const Icon(
-                                  Icons.groups,
-                                  color: CustomTheme.hintColor,
-                                ),
-                                Text(
-                                  getGroupText(selectedGroups!),
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: CustomTheme.hintColor,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
-                    ),
-                ],
-              );
-            },
-          ),
+                  ],
+                ),
+              ),
+          ],
         ),
       ),
     );
