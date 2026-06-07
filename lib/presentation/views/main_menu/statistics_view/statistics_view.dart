@@ -82,15 +82,16 @@ class _StatisticsViewState extends State<StatisticsView> {
                 text: loc.create_statistic,
                 icon: Icons.bar_chart,
                 onPressed: () async {
-                  Statistic? newStatistic = await Navigator.push(
-                    context,
+                  if (!mounted) return;
+                  final navigator = Navigator.of(this.context);
+                  Statistic? newStatistic = await navigator.push(
                     adaptivePageRoute(
                       builder: (context) => CreateStatisticView(
-                        onStatisticCreated: () => loadStatistics(context),
+                        onStatisticCreated: () => loadStatistics(this.context),
                       ),
                     ),
                   );
-                  if (!context.mounted) return;
+                  if (!mounted) return;
                   setState(() {
                     statistics = [...statistics, ?newStatistic];
                     statisticTiles = statistics
@@ -146,8 +147,9 @@ class _StatisticsViewState extends State<StatisticsView> {
 
     return GestureDetector(
       onTap: () async {
-        final newDisplayCount = await Navigator.push(
-          context,
+        if (!mounted) return;
+        final navigator = Navigator.of(this.context);
+        await navigator.push(
           adaptivePageRoute(
             builder: (context) => StatisticDetailView(
               statistic: statistic,
@@ -158,21 +160,6 @@ class _StatisticsViewState extends State<StatisticsView> {
             ),
           ),
         );
-        if (newDisplayCount != null &&
-            newDisplayCount != statistic.displayCount) {
-          setState(() {
-            statistics = statistics
-                .map(
-                  (stat) => stat.id == statistic.id
-                      ? stat.copyWith(displayCount: newDisplayCount)
-                      : stat,
-                )
-                .toList();
-            statisticTiles = statistics
-                .map((stat) => buildStatisticTile(context, stat))
-                .toList();
-          });
-        }
       },
       child: buildTile(
         context: context,
