@@ -59,7 +59,7 @@ List<Match> _getFilterMatches(Statistic statistic, List<Match> matches) {
   List<Match> filteredMatches = matches;
 
   // Filter timeframe
-  if (statistic.scopes.contains(StatisticScope.timeframe)) {
+  if (statistic.timeframe != Timeframe.allTime) {
     final minDate = _getMinimumDate(timeframe: statistic.timeframe);
     if (minDate != null) {
       filteredMatches = matches

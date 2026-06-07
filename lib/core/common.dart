@@ -219,8 +219,6 @@ String translateScopeToString(StatisticScope scope, BuildContext context) {
       return loc.selected_groups;
     case StatisticScope.selectedGames:
       return loc.selected_games;
-    case StatisticScope.timeframe:
-      return loc.timeframe;
   }
 }
 

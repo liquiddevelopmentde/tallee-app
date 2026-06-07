@@ -25,7 +25,7 @@ class StatisticDetailView extends StatefulWidget {
   final List<(Player, num)> values;
   final IconData icon;
   final Color barColor;
-  final void Function(String) refreshStatistic;
+  final Future<void> Function(String) refreshStatistic;
 
   @override
   State<StatisticDetailView> createState() => _StatisticDetailViewState();
@@ -65,130 +65,138 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            StatisticsTile(
-              margin: EdgeInsets.zero,
-              icon: widget.icon,
-              title: title,
-              width: MediaQuery.sizeOf(context).width * 0.95,
-              values: widget.values,
-              barColor: widget.barColor,
-              selectedGroups: widget.statistic.selectedGroups,
-              selectedGames: widget.statistic.selectedGames,
-              displayCount: displayCount,
-              showAllValues: true,
-              showDisplayCountHighlighting: showHighlighting,
-            ),
-            const SizedBox(height: 12),
-
-            InfoTile(
-              icon: Icons.filter_alt,
-              title: loc.filter,
-              content: Column(
-                spacing: 12,
-                children: [
-                  // Scopes
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(loc.scope, style: style),
-                      Text(
-                        widget.statistic.scopes
-                            .map(
-                              (scope) => translateScopeToString(scope, context),
-                            )
-                            .join('\n'),
-                        textAlign: TextAlign.end,
-                      ),
-                    ],
-                  ),
-
-                  // Timeframe
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(loc.timeframe, style: style),
-                      Text(
-                        translateTimeframeToString(
-                          widget.statistic.timeframe,
-                          context,
-                        ),
-                        textAlign: TextAlign.end,
-                      ),
-                    ],
-                  ),
-
-                  // Groups
-                  if (widget.statistic.selectedGroups != null)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(loc.groups, style: style),
-                        Text(
-                          widget.statistic.selectedGroups!
-                              .map((group) => group.name)
-                              .join('\n'),
-                          textAlign: TextAlign.end,
-                        ),
-                      ],
-                    ),
-
-                  // Games
-                  if (widget.statistic.selectedGames != null)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(loc.games, style: style),
-                        Text(
-                          widget.statistic.selectedGames!
-                              .map((game) => game.name)
-                              .join('\n'),
-                          textAlign: TextAlign.end,
-                        ),
-                      ],
-                    ),
-
-                  if (widget.values.isNotEmpty)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(loc.displayed_entries, style: style),
-                        Row(
-                          children: [
-                            HapticIconButton(
-                              icon: const Icon(Icons.remove),
-                              onPressed: displayCount <= 1
-                                  ? null
-                                  : () => updateDisplayCount(-1),
-                            ),
-                            SizedBox(
-                              width: 30,
-                              child: Text(
-                                '$displayCount',
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            HapticIconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: displayCount >= widget.values.length
-                                  ? null
-                                  : () => updateDisplayCount(1),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                ],
+      body: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+          await updateCount();
+        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              StatisticsTile(
+                margin: EdgeInsets.zero,
+                icon: widget.icon,
+                title: title,
+                width: MediaQuery.sizeOf(context).width * 0.95,
+                values: widget.values,
+                barColor: widget.barColor,
+                selectedGroups: widget.statistic.selectedGroups,
+                selectedGames: widget.statistic.selectedGames,
+                displayCount: displayCount,
+                showAllValues: true,
+                showDisplayCountHighlighting: showHighlighting,
               ),
-            ),
-          ],
+              const SizedBox(height: 12),
+
+              InfoTile(
+                icon: Icons.filter_alt,
+                title: loc.filter,
+                content: Column(
+                  spacing: 12,
+                  children: [
+                    // Scopes
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(loc.scope, style: style),
+                        Text(
+                          widget.statistic.scopes
+                              .map(
+                                (scope) =>
+                                    translateScopeToString(scope, context),
+                              )
+                              .join('\n'),
+                          textAlign: TextAlign.end,
+                        ),
+                      ],
+                    ),
+
+                    // Timeframe
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(loc.timeframe, style: style),
+                        Text(
+                          translateTimeframeToString(
+                            widget.statistic.timeframe,
+                            context,
+                          ),
+                          textAlign: TextAlign.end,
+                        ),
+                      ],
+                    ),
+
+                    // Groups
+                    if (widget.statistic.selectedGroups != null)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(loc.groups, style: style),
+                          Text(
+                            widget.statistic.selectedGroups!
+                                .map((group) => group.name)
+                                .join('\n'),
+                            textAlign: TextAlign.end,
+                          ),
+                        ],
+                      ),
+
+                    // Games
+                    if (widget.statistic.selectedGames != null)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(loc.games, style: style),
+                          Text(
+                            widget.statistic.selectedGames!
+                                .map((game) => game.name)
+                                .join('\n'),
+                            textAlign: TextAlign.end,
+                          ),
+                        ],
+                      ),
+
+                    if (widget.values.isNotEmpty)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(loc.displayed_entries, style: style),
+                          Row(
+                            children: [
+                              HapticIconButton(
+                                icon: const Icon(Icons.remove),
+                                onPressed: displayCount <= 1
+                                    ? null
+                                    : () => updateDisplayCount(-1),
+                              ),
+                              SizedBox(
+                                width: 30,
+                                child: Text(
+                                  '$displayCount',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              HapticIconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: displayCount >= widget.values.length
+                                    ? null
+                                    : () => updateDisplayCount(1),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -223,8 +231,8 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   Future<void> updateCount() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     await db.statisticDao.updateDisplayCount(widget.statistic.id, displayCount);
-    widget.refreshStatistic(widget.statistic.id);
-    if (mounted) Navigator.of(context).pop();
+    await widget.refreshStatistic(widget.statistic.id);
+    if (mounted) Navigator.of(context).pop(displayCount);
   }
 
   void deleteStatistic() async {

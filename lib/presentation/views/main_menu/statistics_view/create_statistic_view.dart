@@ -243,7 +243,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                               isExpanded: true,
                               hint: Text(loc.select_a_scope, style: hintStyle),
                               multiValueListenable: selectedScopeNotifier,
-                              items: selectableScopes
+                              items: StatisticScope.values
                                   .map(
                                     (scope) => DropdownItem<StatisticScope>(
                                       value: scope,
@@ -322,7 +322,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                 });
                               },
                               selectedItemBuilder: (context) {
-                                return selectableScopes
+                                return StatisticScope.values
                                     .map(
                                       (_) =>
                                           ValueListenableBuilder<
@@ -577,11 +577,6 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     );
   }
 
-  // Exclude timeframe bc its required for all statistics.
-  List<StatisticScope> get selectableScopes => StatisticScope.values
-      .where((scope) => scope != StatisticScope.timeframe)
-      .toList();
-
   TextStyle get headerStyle => const TextStyle(
     color: CustomTheme.textColor,
     fontSize: 14,
@@ -649,7 +644,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   /// selection view. Otherwise, saves the statistic to the database and returns
   /// to the previous screen.
   void submitStatistic() {
-    final scopes = [...selectedScope, StatisticScope.timeframe];
+    final scopes = [...selectedScope];
     final statistic = Statistic(
       type: selectedType!,
       scopes: scopes,
