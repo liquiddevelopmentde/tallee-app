@@ -4,14 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/provider/group_search_provider.dart';
-import 'package:tallee/presentation/provider/match_search_provider.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view/statistics_view.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
+import 'package:tallee/state/group_search_provider.dart';
+import 'package:tallee/state/match_search_provider.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   /// A custom navigation bar widget that provides tabbed navigation

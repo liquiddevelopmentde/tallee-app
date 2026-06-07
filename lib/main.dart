@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/provider/group_search_provider.dart';
-import 'package:tallee/presentation/provider/match_search_provider.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
+import 'package:tallee/state/group_search_provider.dart';
+import 'package:tallee/state/match_search_provider.dart';
 
 void main() {
   runApp(
