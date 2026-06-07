@@ -171,17 +171,22 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
       // Choose a game
       final games = await db.gameDao.getAllGames();
       if (mounted) {
-        Navigator.of(context).push(
+        final createdStatistic = await Navigator.of(context).push<Statistic>(
           adaptivePageRoute(
             builder: (context) =>
                 ChooseGameView(statistic: statistic, games: games),
           ),
         );
+        if (!mounted) return;
+        if (createdStatistic != null) {
+          Navigator.of(context).pop(createdStatistic);
+        }
       }
     } else {
       // Create statistic
-      db.statisticDao.addStatistic(statistic: statistic);
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      await db.statisticDao.addStatistic(statistic: statistic);
+      if (!mounted) return;
+      Navigator.of(context).pop(statistic);
     }
   }
 

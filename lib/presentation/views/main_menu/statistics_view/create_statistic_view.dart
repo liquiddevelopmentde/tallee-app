@@ -643,7 +643,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   /// requires selecting specific groups or games, navigates to the respective
   /// selection view. Otherwise, saves the statistic to the database and returns
   /// to the previous screen.
-  void submitStatistic() {
+  Future<void> submitStatistic() async {
     final scopes = [...selectedScope];
     final statistic = Statistic(
       type: selectedType!,
@@ -654,24 +654,35 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
     if (scopes.contains(StatisticScope.selectedGroups)) {
       // Navigating to the group selection
-      Navigator.of(context).push(
+      final createdStatistic = await Navigator.of(context).push<Statistic>(
         adaptivePageRoute(
           builder: (context) =>
               ChooseGroupView(groups: groups, statistic: statistic),
         ),
       );
+      if (!mounted) return;
+      if (createdStatistic != null) {
+        widget.onStatisticCreated();
+        Navigator.of(context).pop(createdStatistic);
+      }
     } else if (scopes.contains(StatisticScope.selectedGames)) {
       // Navigating to the game selection
-      Navigator.of(context).push(
+      final createdStatistic = await Navigator.of(context).push<Statistic>(
         adaptivePageRoute(
           builder: (context) =>
               ChooseGameView(games: games, statistic: statistic),
         ),
       );
+      if (!mounted) return;
+      if (createdStatistic != null) {
+        widget.onStatisticCreated();
+        Navigator.of(context).pop(createdStatistic);
+      }
     } else {
       // Create statistic and pop
       final db = Provider.of<AppDatabase>(context, listen: false);
-      db.statisticDao.addStatistic(statistic: statistic);
+      await db.statisticDao.addStatistic(statistic: statistic);
+      if (!mounted) return;
       widget.onStatisticCreated();
       Navigator.of(context).pop(statistic);
     }

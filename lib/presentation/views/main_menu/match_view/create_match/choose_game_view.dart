@@ -287,7 +287,8 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   Future<void> submitStatistic() async {
     final statistic = widget.statistic!.copyWith(selectedGames: selectedGames);
     final db = Provider.of<AppDatabase>(context, listen: false);
-    db.statisticDao.addStatistic(statistic: statistic);
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    await db.statisticDao.addStatistic(statistic: statistic);
+    if (!mounted) return;
+    Navigator.of(context).pop(statistic);
   }
 }
