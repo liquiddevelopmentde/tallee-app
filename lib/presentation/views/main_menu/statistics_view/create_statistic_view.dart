@@ -29,15 +29,11 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   bool isLoading = false;
 
   /* Controllers for user selections */
-  final ValueNotifier<StatisticType?> _selectedTypeNotifier =
+  final ValueNotifier<StatisticType?> selectedTypeNotifier =
       ValueNotifier<StatisticType?>(null);
-  final ValueNotifier<List<StatisticScope>> _selectedScopeNotifier =
+  final ValueNotifier<List<StatisticScope>> selectedScopeNotifier =
       ValueNotifier<List<StatisticScope>>([]);
-  final ValueNotifier<List<Game>> _selectedGamesNotifier =
-      ValueNotifier<List<Game>>([]);
-  final ValueNotifier<List<Group>> _selectedGroupsNotifier =
-      ValueNotifier<List<Group>>([]);
-  final ValueNotifier<Timeframe?> _selectedTimeframeNotifier =
+  final ValueNotifier<Timeframe?> selectedTimeframeNotifier =
       ValueNotifier<Timeframe?>(Timeframe.allTime);
 
   /* Data loaded from the database */
@@ -55,15 +51,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   @override
   void initState() {
-    _selectedTimeframeNotifier.value = Timeframe.allTime;
     loadAllData();
     super.initState();
   }
-
-  // Exclude timeframe bc its required for all statistics.
-  List<StatisticScope> get selectableScopes => StatisticScope.values
-      .where((scope) => scope != StatisticScope.timeframe)
-      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +114,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                         child: DropdownButton2<StatisticType>(
                           isExpanded: true,
                           hint: Text(loc.select_a_classifier, style: hintStyle),
-                          valueListenable: _selectedTypeNotifier,
+                          valueListenable: selectedTypeNotifier,
                           items: StatisticType.values
                               .map(
                                 (item) => DropdownItem<StatisticType>(
@@ -144,7 +134,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                               ? null
                               : (value) {
                                   if (value == null) return;
-                                  _selectedTypeNotifier.value = value;
+                                  selectedTypeNotifier.value = value;
                                   setState(() {
                                     selectedType = value;
                                   });
@@ -153,7 +143,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                             return StatisticType.values
                                 .map(
                                   (_) => ValueListenableBuilder<StatisticType?>(
-                                    valueListenable: _selectedTypeNotifier,
+                                    valueListenable: selectedTypeNotifier,
                                     builder: (context, current, _) {
                                       if (current == null) {
                                         return Text(
@@ -177,35 +167,13 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                 )
                                 .toList();
                           },
-                          buttonStyleData: ButtonStyleData(
-                            height: 54,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: CustomTheme.boxColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: CustomTheme.boxBorderColor,
-                                width: 1,
-                              ),
-                            ),
-                          ),
+                          buttonStyleData: buttonStyle,
                           iconStyleData: const IconStyleData(
                             iconEnabledColor: CustomTheme.textColor,
                             iconDisabledColor: CustomTheme.hintColor,
                           ),
-                          dropdownStyleData: DropdownStyleData(
-                            decoration: BoxDecoration(
-                              color: CustomTheme.boxColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: CustomTheme.boxBorderColor,
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          menuItemStyleData: const MenuItemStyleData(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                          ),
+                          dropdownStyleData: dropdownStyle,
+                          menuItemStyleData: menuStyle,
                         ),
                       ),
                     ),
@@ -249,7 +217,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                         child: DropdownButton2<StatisticScope>(
                           isExpanded: true,
                           hint: Text(loc.select_a_scope, style: hintStyle),
-                          multiValueListenable: _selectedScopeNotifier,
+                          multiValueListenable: selectedScopeNotifier,
                           items: selectableScopes
                               .map(
                                 (scope) => DropdownItem<StatisticScope>(
@@ -260,7 +228,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                       ValueListenableBuilder<
                                         List<StatisticScope>
                                       >(
-                                        valueListenable: _selectedScopeNotifier,
+                                        valueListenable: selectedScopeNotifier,
                                         builder: (context, values, _) {
                                           final isSelected = values.contains(
                                             scope,
@@ -293,7 +261,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                               .toList(),
                           onChanged: (value) {
                             if (value == null) return;
-                            final current = [..._selectedScopeNotifier.value];
+                            final current = [...selectedScopeNotifier.value];
                             final isSelected = current.contains(value);
 
                             if (isSelected) {
@@ -314,7 +282,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                               }
                             }
 
-                            _selectedScopeNotifier.value = current;
+                            selectedScopeNotifier.value = current;
                             setState(() {
                               selectedScope = current;
                             });
@@ -326,7 +294,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                       ValueListenableBuilder<
                                         List<StatisticScope>
                                       >(
-                                        valueListenable: _selectedScopeNotifier,
+                                        valueListenable: selectedScopeNotifier,
                                         builder: (context, values, _) {
                                           return Text(
                                             values
@@ -348,34 +316,12 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                 )
                                 .toList();
                           },
-                          buttonStyleData: ButtonStyleData(
-                            height: 54,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: CustomTheme.boxColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: CustomTheme.boxBorderColor,
-                                width: 1,
-                              ),
-                            ),
-                          ),
+                          buttonStyleData: buttonStyle,
                           iconStyleData: const IconStyleData(
                             iconEnabledColor: CustomTheme.textColor,
                           ),
-                          dropdownStyleData: DropdownStyleData(
-                            decoration: BoxDecoration(
-                              color: CustomTheme.boxColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: CustomTheme.boxBorderColor,
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          menuItemStyleData: const MenuItemStyleData(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                          ),
+                          dropdownStyleData: dropdownStyle,
+                          menuItemStyleData: menuStyle,
                         ),
                       ),
                     ),
@@ -418,11 +364,14 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton2<Timeframe>(
                           isExpanded: true,
-                          hint: Text(
-                            isLoading ? loc.loading : loc.select_a_timeframe,
-                            style: hintStyle,
+                          hint: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              isLoading ? loc.loading : loc.select_a_timeframe,
+                              style: hintStyle,
+                            ),
                           ),
-                          valueListenable: _selectedTimeframeNotifier,
+                          valueListenable: selectedTimeframeNotifier,
                           items: Timeframe.values
                               .map(
                                 (timeframe) => DropdownItem<Timeframe>(
@@ -442,40 +391,18 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                               ? null
                               : (timeframe) {
                                   if (timeframe == null) return;
-                                  _selectedTimeframeNotifier.value = timeframe;
+                                  selectedTimeframeNotifier.value = timeframe;
                                   setState(() {
                                     selectedTimeframe = timeframe;
                                   });
                                 },
-                          buttonStyleData: ButtonStyleData(
-                            height: 54,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: CustomTheme.boxColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: CustomTheme.boxBorderColor,
-                                width: 1,
-                              ),
-                            ),
-                          ),
+                          buttonStyleData: buttonStyle,
                           iconStyleData: const IconStyleData(
                             iconEnabledColor: CustomTheme.textColor,
                             iconDisabledColor: CustomTheme.hintColor,
                           ),
-                          dropdownStyleData: DropdownStyleData(
-                            decoration: BoxDecoration(
-                              color: CustomTheme.boxColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: CustomTheme.boxBorderColor,
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          menuItemStyleData: const MenuItemStyleData(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                          ),
+                          dropdownStyleData: dropdownStyle,
+                          menuItemStyleData: menuStyle,
                         ),
                       ),
                     ),
@@ -501,6 +428,11 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     );
   }
 
+  // Exclude timeframe bc its required for all statistics.
+  List<StatisticScope> get selectableScopes => StatisticScope.values
+      .where((scope) => scope != StatisticScope.timeframe)
+      .toList();
+
   TextStyle get headerStyle => const TextStyle(
     color: CustomTheme.textColor,
     fontSize: 14,
@@ -512,6 +444,26 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   TextStyle get hintStyle =>
       const TextStyle(color: CustomTheme.hintColor, fontSize: 14);
+
+  ButtonStyleData get buttonStyle => ButtonStyleData(
+    height: 54,
+    decoration: BoxDecoration(
+      color: CustomTheme.onBoxColor,
+      borderRadius: BorderRadius.circular(12),
+    ),
+  );
+
+  MenuItemStyleData get menuStyle =>
+      const MenuItemStyleData(padding: EdgeInsets.zero);
+
+  DropdownStyleData get dropdownStyle => DropdownStyleData(
+    padding: const EdgeInsets.symmetric(horizontal: 12),
+    decoration: BoxDecoration(
+      color: CustomTheme.boxColor,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: CustomTheme.boxBorderColor, width: 1),
+    ),
+  );
 
   Future<void> loadAllData() async {
     setState(() {
@@ -557,7 +509,6 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
     if (scopes.contains(StatisticScope.selectedGroups)) {
       // Navigating to the group selection
-
       Navigator.of(context).push(
         adaptivePageRoute(
           builder: (context) =>
@@ -573,7 +524,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         ),
       );
     } else {
-      // Create statistic
+      // Create statistic and pop
       final db = Provider.of<AppDatabase>(context, listen: false);
       db.statisticDao.addStatistic(statistic: statistic);
       widget.onStatisticCreated();
@@ -583,11 +534,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   @override
   void dispose() {
-    _selectedTypeNotifier.dispose();
-    _selectedScopeNotifier.dispose();
-    _selectedGamesNotifier.dispose();
-    _selectedGroupsNotifier.dispose();
-    _selectedTimeframeNotifier.dispose();
+    selectedTypeNotifier.dispose();
+    selectedScopeNotifier.dispose();
+    selectedTimeframeNotifier.dispose();
     super.dispose();
   }
 }
