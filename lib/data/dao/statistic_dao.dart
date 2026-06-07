@@ -50,7 +50,8 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
   /* Read */
 
   Future<Statistic?> getStatisticById(String statisticId) async {
-    final query = select(statisticTable);
+    final query = select(statisticTable)
+      ..where((tbl) => tbl.id.equals(statisticId));
     final row = await query.getSingleOrNull();
     if (row != null) {
       final groups = await db.statisticGroupDao.getGroupsForStatistic(row.id);
