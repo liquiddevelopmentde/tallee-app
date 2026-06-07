@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   @override
   void initState() {
     super.initState();
-    displayCount = widget.statistic.displayCount;
+    displayCount = min(widget.statistic.displayCount, widget.values.length);
   }
 
   @override
