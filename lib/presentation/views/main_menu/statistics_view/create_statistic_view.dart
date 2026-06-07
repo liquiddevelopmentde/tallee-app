@@ -35,9 +35,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       ValueNotifier<List<StatisticScope>>([]);
   final ValueNotifier<Timeframe> selectedTimeframeNotifier =
       ValueNotifier<Timeframe>(Timeframe.allTime);
-  final ValueNotifier<AppColor> selectedColorNotifier = ValueNotifier<AppColor>(
-    getRandomAppColor(),
-  );
+  late final ValueNotifier<AppColor> selectedColorNotifier;
 
   /* Data loaded from the database */
   List<Player> players = [];
@@ -51,11 +49,16 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   List<Player> selectedPlayers = [];
   List<Group> selectedGroups = [];
   Timeframe selectedTimeframe = Timeframe.allTime;
-  AppColor selectedColor = getRandomAppColor();
+  late AppColor selectedColor;
 
   @override
   void initState() {
     loadAllData();
+
+    final initialColor = getRandomAppColor();
+    selectedColorNotifier = ValueNotifier<AppColor>(initialColor);
+    selectedColor = initialColor;
+
     super.initState();
   }
 
