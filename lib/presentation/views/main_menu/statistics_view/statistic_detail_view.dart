@@ -62,6 +62,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
         child: Column(
           children: [
             StatisticsTile(
+              margin: EdgeInsets.zero,
               icon: widget.icon,
               title: title,
               width: MediaQuery.sizeOf(context).width * 0.95,
@@ -80,7 +81,6 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
               title: loc.filter,
               content: Column(
                 spacing: 12,
-
                 children: [
                   // Scopes
                   Row(

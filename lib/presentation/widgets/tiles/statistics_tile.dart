@@ -25,6 +25,7 @@ class StatisticsTile extends StatelessWidget {
     required this.values,
     required this.barColor,
     required this.displayCount,
+    this.margin,
     this.width,
     this.selectedGroups,
     this.selectedGames,
@@ -37,6 +38,8 @@ class StatisticsTile extends StatelessWidget {
 
   /// The title text displayed on the tile.
   final String title;
+
+  final EdgeInsets? margin;
 
   /// The width of the tile.
   final double? width;
@@ -63,7 +66,7 @@ class StatisticsTile extends StatelessWidget {
       width: width ?? MediaQuery.sizeOf(context).width * 0.95,
       title: title,
       icon: icon,
-      margin: CustomTheme.tileMargin,
+      margin: margin ?? CustomTheme.tileMargin,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Visibility(
