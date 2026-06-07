@@ -1,19 +1,25 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/statistics/statistic_calculator.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view/create_statistic_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view/statistic_detail_view.dart';
-import 'package:tallee/presentation/views/main_menu/statistics_view/statistic_tile_factory.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class StatisticsView extends StatefulWidget {
@@ -26,8 +32,8 @@ class StatisticsView extends StatefulWidget {
 
 class _StatisticsViewState extends State<StatisticsView> {
   bool isLoading = true;
-  List<Match> _allMatches = const [];
-  List<Player> _allPlayers = const [];
+  List<Match> matches = const [];
+  List<Player> players = const [];
   List<Statistic> statistics = const [];
   List<Widget> statisticTiles = List.generate(
     4,
@@ -93,7 +99,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                             statistics = [newStat, ...statistics];
                             statisticTiles = statistics
                                 .map(
-                                  (stat) => buildStatisticTile(context, stat),
+                                  (stat) => buildStatisticTile(
+                                    context: context,
+                                    statistic: stat,
+                                  ),
                                 )
                                 .toList();
                           });
@@ -127,52 +136,17 @@ class _StatisticsViewState extends State<StatisticsView> {
 
     if (!mounted) return;
 
-    final statistics = results[0] as List<Statistic>;
-    _allMatches = results[1] as List<Match>;
-    _allPlayers = results[2] as List<Player>;
-    this.statistics = statistics
+    statistics = results[0] as List<Statistic>
       ..sort((stat1, stat2) => stat2.createdAt.compareTo(stat1.createdAt));
+    matches = results[1] as List<Match>;
+    players = results[2] as List<Player>;
 
     setState(() {
-      statisticTiles = this.statistics
-          .map((stat) => buildStatisticTile(context, stat))
+      statisticTiles = statistics
+          .map((stat) => buildStatisticTile(context: context, statistic: stat))
           .toList();
       isLoading = false;
     });
-  }
-
-  /// Builds a tile widget for a given statistic.
-  /// Navigates to the [StatisticDetailView] on tap
-  Widget buildStatisticTile(BuildContext context, Statistic statistic) {
-    final values = computeStatisticValues(
-      statistic: statistic,
-      matches: _allMatches,
-      players: _allPlayers,
-    );
-
-    return GestureDetector(
-      onTap: () async {
-        if (!mounted) return;
-        final navigator = Navigator.of(this.context);
-        await navigator.push(
-          adaptivePageRoute(
-            builder: (context) => StatisticDetailView(
-              statistic: statistic,
-              values: values,
-              icon: getStatisticIcon(type: statistic.type),
-              barColor: getColorFromAppColor(statistic.color),
-              refreshStatistic: refreshStatistic,
-            ),
-          ),
-        );
-      },
-      child: buildTile(
-        context: context,
-        statistic: statistic,
-        matches: _allMatches,
-        players: _allPlayers,
-      ),
-    );
   }
 
   /// Refreshes a statistic by its ID, either updating it or removing it if
@@ -194,8 +168,67 @@ class _StatisticsViewState extends State<StatisticsView> {
     }
     setState(() {
       statisticTiles = statistics
-          .map((stat) => buildStatisticTile(context, stat))
+          .map((stat) => buildStatisticTile(context: context, statistic: stat))
           .toList();
     });
+  }
+
+  /// Builds a [StatisticTile] for a given statistic.
+  Widget buildStatisticTile({
+    required BuildContext context,
+    required Statistic statistic,
+    double? width,
+  }) {
+    final values = StatisticCalculator.computeStatisticValues(
+      statistic: statistic,
+      matches: matches,
+      players: players,
+    );
+
+    return GestureDetector(
+      onTap: () async {
+        if (!mounted) return;
+        final navigator = Navigator.of(this.context);
+        await navigator.push(
+          adaptivePageRoute(
+            builder: (context) => StatisticDetailView(
+              statistic: statistic,
+              values: values,
+              icon: getStatisticIcon(type: statistic.type),
+              barColor: getColorFromAppColor(statistic.color),
+              refreshStatistic: refreshStatistic,
+            ),
+          ),
+        );
+      },
+      child: StatisticsTile(
+        icon: getStatisticIcon(type: statistic.type),
+        title: translateStatisticTypeToString(statistic.type, context),
+        values: values,
+        barColor: getColorFromAppColor(statistic.color),
+        displayCount: statistic.displayCount,
+        selectedGroups: statistic.selectedGroups,
+        selectedGames: statistic.selectedGames,
+      ),
+    );
+  }
+
+  /// A placeholder tile with mock data for the loading state.
+  static Widget buildSkeletonStatisticTile() {
+    final count = 4 + Random().nextInt(5); // 4..8
+    final values = <(Player, num)>[
+      for (var i = 0; i < count; i++)
+        (Player(name: 'Player ${i + 1}'), count - i),
+    ];
+
+    return StatisticsTile(
+      icon: Icons.bar_chart,
+      title: 'Skeleton title',
+      values: values,
+      barColor: getRandomAppColorValue(),
+      selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
+      selectedGroups: [Group(name: 'Group 1', members: [])],
+      displayCount: 5,
+    );
   }
 }
