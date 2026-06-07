@@ -267,6 +267,29 @@ class _MatchTileState extends State<MatchTile> {
                 },
               ),
               const SizedBox(height: 12),
+            ] else if (!match.isTeamMatch &&
+                (widget.match.teams?.isNotEmpty ?? false)) ...[
+              // Player with Pairs display
+              Text(
+                loc.players,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: match.teams!.map((team) {
+                  return TextIconTile(
+                    text: team.members.first.name,
+                    suffixText: getNameCountText(team.members.first),
+                    pair: team.members.length > 1 ? team : null,
+                  );
+                }).toList(),
+              ),
             ] else if (players.isNotEmpty) ...[
               // Player display
               Text(

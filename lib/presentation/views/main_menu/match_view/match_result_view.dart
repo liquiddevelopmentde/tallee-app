@@ -133,7 +133,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                     if (ruleset == Ruleset.multipleWinners)
                       Expanded(child: buildMultipleWinnerSelectionWidget())
                     else
-                      Expanded(child: buildPlayerSelectionWidget()),
+                      Expanded(child: buildSinglePlayerSelectionWidget()),
 
                   // Show score entry
                   if (rulesetSupportsScoreEntry())
@@ -459,7 +459,7 @@ class _MatchResultViewState extends State<MatchResultView> {
     return ruleset == Ruleset.placement;
   }
 
-  Widget buildPlayerSelectionWidget() {
+  Widget buildSinglePlayerSelectionWidget() {
     if (widget.match.isTeamMatch) {
       return RadioGroup<Team>(
         groupValue: _selectedTeam,

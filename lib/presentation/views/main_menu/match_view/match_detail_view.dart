@@ -177,7 +177,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             ),
                           ),
                   ),
-                ] else if (!match.isTeamMatch && match.teams!.isNotEmpty) ...[
+                ] else if (!match.isTeamMatch &&
+                    (match.teams?.isNotEmpty ?? false)) ...[
                   // Players with pairs
                   InfoTile(
                     title: loc.players,
@@ -191,8 +192,11 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             runSpacing: 8,
                             children: match.teams!.map((team) {
                               return TextIconTile(
-                                text: team.displayName,
-                                //suffixText: getNameCountText(team),
+                                text: team.members.first.name,
+                                suffixText: getNameCountText(
+                                  team.members.first,
+                                ),
+                                pair: team.members.length > 1 ? team : null,
                                 onTileTap: team.members.length > 1
                                     ? null
                                     : () {
@@ -370,7 +374,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
       // Single winner/loser, multiple winner
       final names =
-          match.isTeamMatch || !match.isTeamMatch && match.teams!.isNotEmpty
+          match.isTeamMatch ||
+              !match.isTeamMatch && (match.teams?.isNotEmpty ?? false)
           ? match.mvt.map((t) => t.displayName).toList()
           : match.mvp.map((p) => p.name).toList();
       final mvpNames = names.length == 1 ? names.first : names.join(', ');
@@ -438,7 +443,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   List<(String, int)> getSortedScores() {
     List<(String, int)> namedScores = [];
 
-    if (match.isTeamMatch || !match.isTeamMatch && match.teams!.isNotEmpty) {
+    if (match.isTeamMatch ||
+        !match.isTeamMatch && (match.teams?.isNotEmpty ?? false)) {
       final teams = match.teams ?? [];
       for (var team in teams) {
         int score = team.score ?? 0;
