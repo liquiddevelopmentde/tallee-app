@@ -8,8 +8,6 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
-import 'package:tallee/presentation/views/main_menu/statistics_view/create_statistic_view.dart'
-    show translateStatisticTypeToString;
 import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
 
 List<Color> _colorPalette = AppColor.values
