@@ -70,7 +70,7 @@ void main() {
     await database.close();
   });
 
-  group('Statistic Group Tests', () {
+  group('Statistic-Group Tests', () {
     group('READ', () {
       test(
         'getGroupsForStatistic() returns null for non-existing 9d ',

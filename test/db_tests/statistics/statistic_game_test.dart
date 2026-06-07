@@ -67,7 +67,7 @@ void main() {
     await database.close();
   });
 
-  group('Statistic Game Tests', () {
+  group('Statistic-Game Tests', () {
     group('READ', () {
       test(
         'getGamesForStatistic() returns null for non-existing 9d ',

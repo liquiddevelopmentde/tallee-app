@@ -36,7 +36,7 @@ void main() {
     await database.close();
   });
 
-  group('Statistic Scope Tests', () {
+  group('Statistic-Scope Tests', () {
     group('READ', () {
       test(
         'getScopeForStatistic() returns empty for non-existing id',
