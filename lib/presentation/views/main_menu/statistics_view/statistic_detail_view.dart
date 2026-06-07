@@ -18,12 +18,14 @@ class StatisticDetailView extends StatefulWidget {
     required this.values,
     required this.icon,
     required this.barColor,
+    required this.refreshStatistic,
   });
 
   final Statistic statistic;
   final List<(Player, num)> values;
   final IconData icon;
   final Color barColor;
+  final void Function(String) refreshStatistic;
 
   @override
   State<StatisticDetailView> createState() => _StatisticDetailViewState();
@@ -54,8 +56,14 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
         title: Text(title),
         leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => handleBack(context),
+          onPressed: () => updateCount(),
         ),
+        actions: [
+          HapticIconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () => deleteStatistic(),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12.0),
@@ -212,10 +220,18 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   }
 
   // Handles saving the display count and giving it to statistics view
-  Future<void> handleBack(BuildContext context) async {
+  Future<void> updateCount() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     await db.statisticDao.updateDisplayCount(widget.statistic.id, displayCount);
-    if (context.mounted) Navigator.of(context).pop(displayCount);
+    widget.refreshStatistic(widget.statistic.id);
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  void deleteStatistic() async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    await db.statisticDao.deleteStatistic(widget.statistic.id);
+    widget.refreshStatistic(widget.statistic.id);
+    if (mounted) Navigator.of(context).pop();
   }
 
   @override

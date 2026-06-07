@@ -153,7 +153,8 @@ class _StatisticsViewState extends State<StatisticsView> {
               statistic: statistic,
               values: values,
               icon: getStatisticIcon(type: statistic.type),
-              barColor: getStatisticColor(statistic),
+              barColor: getColorFromAppColor(statistic.color),
+              refreshStatistic: refreshStatistic,
             ),
           ),
         );
@@ -180,5 +181,29 @@ class _StatisticsViewState extends State<StatisticsView> {
         players: _allPlayers,
       ),
     );
+  }
+
+  /// Refreshes a statistic by its ID, either updating it or removing it if
+  /// it was deleted
+  Future<void> refreshStatistic(String statId) async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final newStat = await db.statisticDao.getStatisticById(statId);
+    if (newStat == null) {
+      // If the statistic was deleted, remove it from the list
+      statistics = statistics.where((stat) => stat.id != statId).toList();
+    } else {
+      // else update it
+      final index = statistics.indexWhere((stat) => stat.id == statId);
+      if (index == -1) {
+        return;
+      } else {
+        statistics[index] = newStat;
+      }
+    }
+    setState(() {
+      statisticTiles = statistics
+          .map((stat) => buildStatisticTile(context, stat))
+          .toList();
+    });
   }
 }
