@@ -26,6 +26,7 @@ class GroupView extends StatefulWidget {
 
 class _GroupViewState extends State<GroupView> {
   late final AppDatabase db;
+  late final GroupSearchProvider _searchProvider;
 
   /// Loaded groups from the database
   late List<Group> loadedGroups;
@@ -50,19 +51,14 @@ class _GroupViewState extends State<GroupView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    Provider.of<GroupSearchProvider>(
-      context,
-      listen: false,
-    ).addListener(_handleSearchToggle);
+    _searchProvider = Provider.of<GroupSearchProvider>(context, listen: false);
+    _searchProvider.addListener(_handleSearchToggle);
     loadGroups();
   }
 
   @override
   void dispose() {
-    Provider.of<GroupSearchProvider>(
-      context,
-      listen: false,
-    ).removeListener(_handleSearchToggle);
+    _searchProvider.removeListener(_handleSearchToggle);
     searchBarController.dispose();
     super.dispose();
   }
@@ -84,20 +80,46 @@ class _GroupViewState extends State<GroupView> {
         children: [
           Column(
             children: [
-              if (searchProvider.isSearching)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: CustomSearchBar(
-                    controller: searchBarController,
-                    hintText: '',
-                    onChanged: (value) {
-                      setState(() {
-                        filterGroups(value);
-                      });
-                    },
-                  ),
-                ),
-              const SizedBox(height: 10),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (child, animation) {
+                  final curvedAnimation = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                    reverseCurve: Curves.easeInCubic,
+                  );
+
+                  return ClipRect(
+                    child: SizeTransition(
+                      sizeFactor: curvedAnimation,
+                      alignment: Alignment.topCenter,
+                      child: FadeTransition(
+                        opacity: curvedAnimation,
+                        child: child,
+                      ),
+                    ),
+                  );
+                },
+                child: searchProvider.isSearching
+                    ? Padding(
+                        key: const ValueKey('group-searchbar-visible'),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: CustomSearchBar(
+                          controller: searchBarController,
+                          hintText: '',
+                          onChanged: (value) {
+                            setState(() {
+                              filterGroups(value);
+                            });
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(
+                        key: ValueKey('group-searchbar-hidden'),
+                      ),
+              ),
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
@@ -198,11 +220,11 @@ class _GroupViewState extends State<GroupView> {
   }
 
   void _handleSearchToggle() {
-    final searchProvider = Provider.of<GroupSearchProvider>(
-      context,
-      listen: false,
-    );
-    if (!searchProvider.isSearching) {
+    if (!mounted) {
+      return;
+    }
+
+    if (!_searchProvider.isSearching) {
       searchBarController.clear();
     }
   }

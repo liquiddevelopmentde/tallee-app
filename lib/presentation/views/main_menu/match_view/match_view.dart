@@ -31,6 +31,7 @@ class MatchView extends StatefulWidget {
 
 class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
+  late final MatchSearchProvider _searchProvider;
   bool isLoading = true;
 
   TextEditingController searchBarController = TextEditingController();
@@ -68,19 +69,14 @@ class _MatchViewState extends State<MatchView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    Provider.of<MatchSearchProvider>(
-      context,
-      listen: false,
-    ).addListener(_handleSearchToggle);
+    _searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
+    _searchProvider.addListener(_handleSearchToggle);
     loadMatches();
   }
 
   @override
   void dispose() {
-    Provider.of<MatchSearchProvider>(
-      context,
-      listen: false,
-    ).removeListener(_handleSearchToggle);
+    _searchProvider.removeListener(_handleSearchToggle);
     searchBarController.dispose();
     super.dispose();
   }
@@ -102,19 +98,46 @@ class _MatchViewState extends State<MatchView> {
         children: [
           Column(
             children: [
-              if (searchProvider.isSearching)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: CustomSearchBar(
-                    controller: searchBarController,
-                    hintText: '',
-                    onChanged: (value) {
-                      setState(() {
-                        filterMatches(value);
-                      });
-                    },
-                  ),
-                ),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (child, animation) {
+                  final curvedAnimation = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                    reverseCurve: Curves.easeInCubic,
+                  );
+
+                  return ClipRect(
+                    child: SizeTransition(
+                      sizeFactor: curvedAnimation,
+                      alignment: Alignment.topCenter,
+                      child: FadeTransition(
+                        opacity: curvedAnimation,
+                        child: child,
+                      ),
+                    ),
+                  );
+                },
+                child: searchProvider.isSearching
+                    ? Padding(
+                        key: const ValueKey('match-searchbar-visible'),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: CustomSearchBar(
+                          controller: searchBarController,
+                          hintText: '',
+                          onChanged: (value) {
+                            setState(() {
+                              filterMatches(value);
+                            });
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(
+                        key: ValueKey('match-searchbar-hidden'),
+                      ),
+              ),
               const SizedBox(height: 10),
               Expanded(
                 child: AppSkeleton(
@@ -234,11 +257,11 @@ class _MatchViewState extends State<MatchView> {
   }
 
   void _handleSearchToggle() {
-    final searchProvider = Provider.of<MatchSearchProvider>(
-      context,
-      listen: false,
-    );
-    if (!searchProvider.isSearching) {
+    if (!mounted) {
+      return;
+    }
+
+    if (!_searchProvider.isSearching) {
       searchBarController.clear();
     }
   }
