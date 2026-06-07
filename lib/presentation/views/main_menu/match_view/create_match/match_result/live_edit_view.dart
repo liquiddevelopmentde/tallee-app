@@ -48,16 +48,12 @@ class _LiveEditViewState extends State<LiveEditView> {
           icon: const Icon(Icons.close),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(child: buildLiveEditWidget(widget.match.isTeamMatch)),
-        ],
-      ),
+      body: Column(children: [Expanded(child: buildLiveEditWidget())]),
     );
   }
 
-  Widget buildLiveEditWidget(bool isTeamMatch) {
-    if (isTeamMatch) {
+  Widget buildLiveEditWidget() {
+    if (widget.match.isTeamMatch) {
       return ListView.builder(
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
@@ -68,6 +64,20 @@ class _LiveEditViewState extends State<LiveEditView> {
             },
             value: scores[index],
             color: getColorFromAppColor(allTeams[index].color),
+          );
+        },
+      );
+    } else if (!widget.match.isTeamMatch &&
+        (widget.match.teams?.isNotEmpty ?? false)) {
+      return ListView.builder(
+        itemCount: allTeams.length,
+        itemBuilder: (context, index) {
+          return LiveEditListTile(
+            title: allTeams[index].displayName,
+            onChanged: (value) {
+              scores[index] = value;
+            },
+            value: scores[index],
           );
         },
       );

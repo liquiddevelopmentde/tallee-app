@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/models/team.dart';
 
 class TextIconTile extends StatelessWidget {
   /// A tile widget that displays text with an optional icon that can be tapped.
@@ -10,6 +12,7 @@ class TextIconTile extends StatelessWidget {
     super.key,
     required this.text,
     this.suffixText = '',
+    this.pair,
     this.onIconTap,
     this.icon = Icons.close,
     this.onTileTap,
@@ -19,6 +22,8 @@ class TextIconTile extends StatelessWidget {
   final String text;
 
   final String suffixText;
+
+  final Team? pair;
 
   /// The callback to be invoked when the icon is tapped.
   final VoidCallback? onIconTap;
@@ -52,21 +57,61 @@ class TextIconTile extends StatelessWidget {
                 text: TextSpan(
                   style: DefaultTextStyle.of(context).style,
                   children: [
-                    TextSpan(
-                      text: text,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                    if (pair == null) ...[
+                      TextSpan(
+                        text: text,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    TextSpan(
-                      text: suffixText,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: CustomTheme.textColor.withAlpha(120),
+                      TextSpan(
+                        text: suffixText,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: CustomTheme.textColor.withAlpha(100),
+                        ),
                       ),
-                    ),
+                    ] else ...[
+                      TextSpan(
+                        text: pair!.members[0].name,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      TextSpan(
+                        text: getNameCountText(pair!.members[0]),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: CustomTheme.textColor.withAlpha(100),
+                        ),
+                      ),
+                      const TextSpan(
+                        text: ' & ',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      TextSpan(
+                        text: pair!.members[1].name,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      TextSpan(
+                        text: getNameCountText(pair!.members[1]),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: CustomTheme.textColor.withAlpha(100),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),

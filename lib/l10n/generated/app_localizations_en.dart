@@ -54,6 +54,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get classifier => 'Classifier';
 
   @override
+  String get click_another_player_to_create_a_pair =>
+      'Click another player to create a pair';
+
+  @override
   String get color => 'Color';
 
   @override

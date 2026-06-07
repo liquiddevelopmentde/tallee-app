@@ -119,7 +119,9 @@ class _MatchTileState extends State<MatchTile> {
             const SizedBox(height: 12),
 
             // Winner / In Progress Info
-            if (match.isTeamMatch && match.mvt.isNotEmpty) ...[
+            if ((match.isTeamMatch ||
+                    (widget.match.teams?.isNotEmpty ?? false)) &&
+                match.mvt.isNotEmpty) ...[
               // MVT Display for team matches
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -363,9 +365,9 @@ class _MatchTileState extends State<MatchTile> {
 
     switch (ruleset) {
       case Ruleset.singleWinner:
-        return '${loc.winner}: ${widget.match.mvt.first.name}';
+        return '${loc.winner}: ${widget.match.mvt.first.displayName}';
       case Ruleset.singleLoser:
-        return '${loc.loser}: ${widget.match.mvt.first.name}';
+        return '${loc.loser}: ${widget.match.mvt.first.displayName}';
       case Ruleset.highestScore:
       case Ruleset.lowestScore:
         final mvt = widget.match.mvt;
@@ -374,12 +376,14 @@ class _MatchTileState extends State<MatchTile> {
                 .firstWhere((team) => team.id == mvt.first.id)
                 .score ??
             0;
-        final mvtNames = mvt.map((team) => team.name).join(', ');
+        final mvtNames = mvt.map((team) => team.displayName).join(', ');
         return '${loc.winner}: $mvtNames (${getPointLabel(loc, mvtScore)})';
       case Ruleset.placement:
-        return '${loc.winner}: ${widget.match.mvt.first.name}';
+        return '${loc.winner}: ${widget.match.mvt.first.displayName}';
       case Ruleset.multipleWinners:
-        final mvtNames = widget.match.mvt.map((team) => team.name).join(', ');
+        final mvtNames = widget.match.mvt
+            .map((team) => team.displayName)
+            .join(', ');
         return '${loc.winners}: $mvtNames';
     }
   }

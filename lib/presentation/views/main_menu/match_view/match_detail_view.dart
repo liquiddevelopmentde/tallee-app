@@ -177,6 +177,47 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             ),
                           ),
                   ),
+                ] else if (!match.isTeamMatch && match.teams!.isNotEmpty) ...[
+                  // Players with pairs
+                  InfoTile(
+                    title: loc.players,
+                    icon: Icons.people,
+                    horizontalAlignment: CrossAxisAlignment.start,
+                    content: match.teams!.isNotEmpty
+                        ? Wrap(
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            spacing: 12,
+                            runSpacing: 8,
+                            children: match.teams!.map((team) {
+                              return TextIconTile(
+                                text: team.displayName,
+                                //suffixText: getNameCountText(team),
+                                onTileTap: team.members.length > 1
+                                    ? null
+                                    : () {
+                                        Navigator.of(context).pushReplacement(
+                                          adaptivePageRoute(
+                                            builder: (context) =>
+                                                PlayerDetailView(
+                                                  player: team.members.first,
+                                                  callback:
+                                                      widget.onMatchUpdate,
+                                                ),
+                                          ),
+                                        );
+                                      },
+                              );
+                            }).toList(),
+                          )
+                        : Text(
+                            loc.no_players_available,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
+                  ),
                 ] else ...[
                   // Players
                   InfoTile(
@@ -328,8 +369,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
     if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
       // Single winner/loser, multiple winner
-      final names = match.isTeamMatch
-          ? match.mvt.map((t) => t.name).toList()
+      final names =
+          match.isTeamMatch || !match.isTeamMatch && match.teams!.isNotEmpty
+          ? match.mvt.map((t) => t.displayName).toList()
           : match.mvp.map((p) => p.name).toList();
       final mvpNames = names.length == 1 ? names.first : names.join(', ');
 
@@ -396,11 +438,11 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   List<(String, int)> getSortedScores() {
     List<(String, int)> namedScores = [];
 
-    if (match.isTeamMatch) {
+    if (match.isTeamMatch || !match.isTeamMatch && match.teams!.isNotEmpty) {
       final teams = match.teams ?? [];
       for (var team in teams) {
         int score = team.score ?? 0;
-        namedScores.add((team.name, score));
+        namedScores.add((team.displayName, score));
       }
 
       final ruleset = match.game.ruleset;
