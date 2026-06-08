@@ -91,6 +91,7 @@ class StatisticsTile extends StatelessWidget {
                       ? values.length
                       : min(values.length, displayCount);
                   final displayValues = values.take(valuesShown).toList();
+                  // Maximum to scale bars
                   final maxVal = displayValues.isNotEmpty
                       ? displayValues.fold<num>(
                           0,
@@ -114,19 +115,19 @@ class StatisticsTile extends StatelessWidget {
                           maxBarWidth,
                         );
 
+                        /// Whether this entry is part of the "overflow" that exceeds the display count
                         final isOverflowEntry = index >= displayCount;
+
+                        /// Whether to apply highlighting for entries that exceed the display count
                         final isHighlightedOverflow =
                             isOverflowEntry && showDisplayCountHighlighting;
+
+                        /// Adjust bar color for highlighted overflow entries
                         final barClr = isHighlightedOverflow
                             ? barColor.withAlpha(150)
                             : barColor;
 
-                        var textClr = barColor.computeLuminance() > 0.5
-                            ? const Color(0xFF101010)
-                            : CustomTheme.textColor;
-                        textClr = textClr.withAlpha(
-                          isHighlightedOverflow ? 220 : 255,
-                        );
+                        const textLeftPadding = 4.0;
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -154,48 +155,17 @@ class StatisticsTile extends StatelessWidget {
 
                                     // Player
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 4.0),
-                                      child: RichText(
-                                        maxLines: 1,
-                                        softWrap: false,
-                                        overflow: TextOverflow.ellipsis,
-                                        text: TextSpan(
-                                          style: DefaultTextStyle.of(
-                                            context,
-                                          ).style,
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  displayValues[index].$1.name,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: textClr,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: getNameCountText(
-                                                displayValues[index].$1,
-                                              ),
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color:
-                                                    (barColor ==
-                                                                getColorFromAppColor(
-                                                                  AppColor
-                                                                      .yellow,
-                                                                )
-                                                            ? const Color(
-                                                                0xFF101010,
-                                                              )
-                                                            : CustomTheme
-                                                                  .textColor)
-                                                        .withAlpha(150),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                      padding: const EdgeInsets.only(
+                                        left: textLeftPadding,
+                                      ),
+                                      child: playerText(
+                                        context: context,
+                                        player: displayValues[index].$1,
+                                        barColor: barColor,
+                                        barWidth: barWidth,
+                                        textLeftPadding: textLeftPadding,
+                                        isHighlightedOverflow:
+                                            isHighlightedOverflow,
                                       ),
                                     ),
                                   ],
@@ -285,6 +255,103 @@ class StatisticsTile extends StatelessWidget {
                   ],
                 ),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget playerText({
+    required BuildContext context,
+    required Player player,
+    required Color barColor,
+    required double barWidth,
+    required double textLeftPadding,
+    required bool isHighlightedOverflow,
+  }) {
+    final nameCountText = getNameCountText(player);
+    final textAlpha = isHighlightedOverflow ? 220 : 255;
+
+    if (barColor != getColorFromAppColor(AppColor.yellow)) {
+      return RichText(
+        maxLines: 1,
+        softWrap: false,
+        overflow: TextOverflow.ellipsis,
+        text: TextSpan(
+          style: DefaultTextStyle.of(context).style,
+          children: [
+            TextSpan(
+              text: player.name,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: CustomTheme.textColor.withAlpha(textAlpha),
+              ),
+            ),
+            TextSpan(
+              text: nameCountText,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: CustomTheme.textColor.withAlpha(
+                  isHighlightedOverflow ? 170 : 150,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final insideTextColor = const Color(0xFF101010).withAlpha(textAlpha);
+    final outsideTextColor = CustomTheme.textColor.withAlpha(textAlpha);
+
+    return ShaderMask(
+      blendMode: BlendMode.srcIn,
+      shaderCallback: (rect) {
+        final coveredTextWidth = (barWidth - textLeftPadding).clamp(
+          0.0,
+          rect.width,
+        );
+        final splitStop = rect.width > 0
+            ? (coveredTextWidth / rect.width).clamp(0.0, 1.0)
+            : 0.0;
+
+        return LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            insideTextColor,
+            insideTextColor,
+            outsideTextColor,
+            outsideTextColor,
+          ],
+          stops: [0.0, splitStop, splitStop, 1.0],
+        ).createShader(rect);
+      },
+      child: RichText(
+        maxLines: 1,
+        softWrap: false,
+        overflow: TextOverflow.ellipsis,
+        text: TextSpan(
+          style: DefaultTextStyle.of(context).style,
+          children: [
+            TextSpan(
+              text: player.name,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            TextSpan(
+              text: nameCountText,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
           ],
         ),
       ),
