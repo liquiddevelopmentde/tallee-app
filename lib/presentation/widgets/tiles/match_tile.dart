@@ -344,13 +344,13 @@ class _MatchTileState extends State<MatchTile> {
     final ruleset = widget.match.game.ruleset;
     final players = widget.match.mvp;
 
-    final labelStyle = const TextStyle(
+    const labelStyle = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w600,
       color: CustomTheme.textColor,
     );
 
-    final nameStyle = const TextStyle(
+    const nameStyle = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w500,
       color: CustomTheme.textColor,
@@ -381,7 +381,7 @@ class _MatchTileState extends State<MatchTile> {
       );
 
       if (i < namesToRender.length - 1) {
-        children.add(TextSpan(text: ', ', style: labelStyle));
+        children.add(const TextSpan(text: ', ', style: labelStyle));
       }
     }
 
@@ -407,7 +407,7 @@ class _MatchTileState extends State<MatchTile> {
     final ruleset = widget.match.game.ruleset;
     final mvt = widget.match.mvt;
 
-    final mainStyle = const TextStyle(
+    const mainStyle = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w500,
       color: CustomTheme.textColor,
@@ -446,7 +446,7 @@ class _MatchTileState extends State<MatchTile> {
         children: [
           TextSpan(text: team.members[0].name, style: mainStyle),
           TextSpan(text: getNameCountText(team.members[0]), style: countStyle),
-          TextSpan(text: ' & ', style: mainStyle),
+          const TextSpan(text: ' & ', style: mainStyle),
           TextSpan(text: team.members[1].name, style: mainStyle),
           TextSpan(text: getNameCountText(team.members[1]), style: countStyle),
         ],
@@ -458,7 +458,7 @@ class _MatchTileState extends State<MatchTile> {
         style: const TextStyle(color: CustomTheme.textColor),
         children: [
           for (var i = 0; i < mvt.length; i++) ...[
-            if (i > 0) TextSpan(text: ', ', style: mainStyle),
+            if (i > 0) const TextSpan(text: ', ', style: mainStyle),
             buildMvtSpan(mvt[i]),
           ],
           if (score != null)

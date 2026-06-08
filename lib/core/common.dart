@@ -197,7 +197,7 @@ Widget buildPairgameNameWidget(
   Team team, {
   MainAxisAlignment rowAlignment = MainAxisAlignment.start,
 }) {
-  final mainStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+  const mainStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
 
   final countStyle = TextStyle(
     fontSize: 14,
@@ -217,7 +217,7 @@ Widget buildPairgameNameWidget(
                 text: getNameCountText(team.members[0]),
                 style: countStyle,
               ),
-              TextSpan(text: ' & ', style: mainStyle),
+              const TextSpan(text: ' & ', style: mainStyle),
               TextSpan(text: team.members[1].name, style: mainStyle),
               TextSpan(
                 text: getNameCountText(team.members[1]),

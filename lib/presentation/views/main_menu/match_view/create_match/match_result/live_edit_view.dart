@@ -94,7 +94,7 @@ class _LiveEditViewState extends State<LiveEditView> {
           return LiveEditListTile(
             title: Text(
               allPlayers[index].name,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             onChanged: (value) {
               setState(() {
