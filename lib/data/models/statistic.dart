@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/game.dart';
@@ -26,7 +27,7 @@ class Statistic {
     DateTime? createdAt,
     AppColor? color,
   }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? DateTime.now(),
+       createdAt = createdAt ?? clock.now(),
        color = color ?? getRandomAppColor();
 
   @override

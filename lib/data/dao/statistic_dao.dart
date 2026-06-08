@@ -51,6 +51,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
   Future<bool> addStatisticsAsList({
     required List<Statistic> statistics,
   }) async {
+    if (statistics.isEmpty) return false;
     await batch((b) {
       b.insertAllOnConflictUpdate(
         statisticTable,
@@ -95,7 +96,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
 
   /* Read */
 
-  Future<Statistic?> getStatisticById(String statisticId) async {
+  Future<Statistic?> getStatisticById({required String statisticId}) async {
     final query = select(statisticTable)
       ..where((tbl) => tbl.id.equals(statisticId));
     final row = await query.getSingleOrNull();

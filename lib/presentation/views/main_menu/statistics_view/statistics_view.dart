@@ -201,7 +201,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   /// it was deleted
   Future<void> refreshStatistic(String statId) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final newStat = await db.statisticDao.getStatisticById(statId);
+    final newStat = await db.statisticDao.getStatisticById(statisticId: statId);
     if (newStat == null) {
       // If the statistic was deleted, remove it from the list
       statistics = statistics.where((stat) => stat.id != statId).toList();
