@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +37,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       ValueNotifier<List<StatisticScope>>([]);
   final ValueNotifier<Timeframe> selectedTimeframeNotifier =
       ValueNotifier<Timeframe>(Timeframe.allTime);
-  late final ValueNotifier<AppColor> selectedColorNotifier;
+  late final ValueNotifier<AppColor?> selectedColorNotifier =
+      ValueNotifier<AppColor?>(null);
 
   /* Data loaded from the database */
   List<Player> players = [];
@@ -49,15 +52,12 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   List<Player> selectedPlayers = [];
   List<Group> selectedGroups = [];
   Timeframe selectedTimeframe = Timeframe.allTime;
-  late AppColor selectedColor;
+  // null -> random color
+  AppColor? selectedColor;
 
   @override
   void initState() {
     loadAllData();
-
-    final initialColor = getRandomAppColor();
-    selectedColorNotifier = ValueNotifier<AppColor>(initialColor);
-    selectedColor = initialColor;
 
     super.initState();
   }
@@ -521,7 +521,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                             horizontal: 16,
                           ),
                           child: DropdownButtonHideUnderline(
-                            child: DropdownButton2<AppColor>(
+                            child: DropdownButton2<AppColor?>(
                               isExpanded: true,
                               hint: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -535,38 +535,46 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                 ),
                               ),
                               valueListenable: selectedColorNotifier,
-                              items: AppColor.values
-                                  .map(
-                                    (color) => DropdownItem<AppColor>(
-                                      value: color,
-                                      height: 44,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 16,
-                                            height: 16,
-                                            decoration: BoxDecoration(
-                                              color: getColorFromAppColor(
-                                                color,
-                                              ),
-                                              shape: BoxShape.circle,
-                                            ),
+                              items: [
+                                DropdownItem<AppColor?>(
+                                  value: null,
+                                  height: 44,
+                                  child: Row(
+                                    children: [
+                                      buildRandomColorCircle(),
+                                      const SizedBox(width: 12),
+                                      Text(loc.random_color, style: itemStyle),
+                                    ],
+                                  ),
+                                ),
+                                ...AppColor.values.map(
+                                  (color) => DropdownItem<AppColor?>(
+                                    value: color,
+                                    height: 44,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 16,
+                                          height: 16,
+                                          decoration: BoxDecoration(
+                                            color: getColorFromAppColor(color),
+                                            shape: BoxShape.circle,
                                           ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            translateAppColorToString(
-                                              color,
-                                              context,
-                                            ),
-                                            style: itemStyle,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          translateAppColorToString(
+                                            color,
+                                            context,
                                           ),
-                                        ],
-                                      ),
+                                          style: itemStyle,
+                                        ),
+                                      ],
                                     ),
-                                  )
-                                  .toList(),
+                                  ),
+                                ),
+                              ],
                               onChanged: (color) {
-                                if (color == null) return;
                                 selectedColorNotifier.value = color;
                                 setState(() {
                                   selectedColor = color;
@@ -727,14 +735,47 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     type: type,
     scopes: selectedScope,
     timeframe: selectedTimeframe,
-    color: selectedColor,
+    color: selectedColor ?? getRandomAppColor(),
   );
+
+  Widget buildRandomColorCircle() {
+    final segmentColors = [
+      AppColor.red,
+      AppColor.purple,
+      AppColor.blue,
+      AppColor.green,
+      AppColor.yellow,
+      AppColor.orange,
+    ].map((c) => getColorFromAppColor(c)).toList();
+
+    // Repeat first color at the end so the seam does not swallow red.
+    final colors = [...segmentColors, segmentColors.first];
+    final stops = List<double>.generate(
+      colors.length,
+      (i) => i / (colors.length - 1),
+    );
+
+    return Container(
+      width: 16,
+      height: 16,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: SweepGradient(
+          startAngle: -math.pi / 2,
+          endAngle: 3 * math.pi / 2,
+          colors: colors,
+          stops: stops,
+        ),
+      ),
+    );
+  }
 
   @override
   void dispose() {
     selectedTypeNotifier.dispose();
     selectedScopeNotifier.dispose();
     selectedTimeframeNotifier.dispose();
+    selectedColorNotifier.dispose();
     super.dispose();
   }
 }

@@ -830,6 +830,12 @@ abstract class AppLocalizations {
   /// **'Privacy Policy'**
   String get privacy_policy;
 
+  /// No description provided for @random_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Random color'**
+  String get random_color;
+
   /// No description provided for @results.
   ///
   /// In en, this message translates to:

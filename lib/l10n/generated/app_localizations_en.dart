@@ -392,6 +392,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacy_policy => 'Privacy Policy';
 
   @override
+  String get random_color => 'Random color';
+
+  @override
   String get results => 'Results';
 
   @override
