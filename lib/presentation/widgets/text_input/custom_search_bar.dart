@@ -63,46 +63,37 @@ class CustomSearchBar extends StatelessWidget {
       }
     }
 
-    return Theme(
-      data: Theme.of(context).copyWith(
-        splashFactory: NoSplash.splashFactory,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        focusColor: Colors.transparent,
-      ),
-      child: SearchBar(
-        controller: controller,
-        constraints:
-            constraints ?? const BoxConstraints(maxHeight: 45, minHeight: 45),
-        hintText: hintText,
-        onChanged: onChanged,
-        leading: const Icon(Icons.search),
-        trailing: [
-          Visibility(
-            visible: trailingButtonShown,
-            child: GestureDetector(
-              onTap: trailingButtonEnabled ? onTrailingButtonPressed : null,
-              child: Icon(
-                trailingButtonicon,
-                color: trailingButtonEnabled
-                    ? null
-                    : Colors.grey.withValues(alpha: 0.2),
-              ),
+    return SearchBar(
+      controller: controller,
+      constraints:
+          constraints ?? const BoxConstraints(maxHeight: 45, minHeight: 45),
+      hintText: hintText,
+      onChanged: onChanged,
+      leading: const Icon(Icons.search),
+      trailing: [
+        Visibility(
+          visible: trailingButtonShown,
+          child: GestureDetector(
+            onTap: trailingButtonEnabled ? onTrailingButtonPressed : null,
+            child: Icon(
+              trailingButtonicon,
+              color: trailingButtonEnabled
+                  ? null
+                  : Colors.grey.withValues(alpha: 0.2),
             ),
           ),
-          const SizedBox(width: 5),
-        ],
-        backgroundColor: WidgetStateProperty.all(CustomTheme.boxColor),
-        overlayColor: WidgetStateProperty.all(Colors.transparent),
-        side: WidgetStateProperty.all(
-          const BorderSide(color: CustomTheme.boxBorderColor),
         ),
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        elevation: WidgetStateProperty.all(0),
+        const SizedBox(width: 5),
+      ],
+      backgroundColor: WidgetStateProperty.all(CustomTheme.boxColor),
+      overlayColor: WidgetStateProperty.all(Colors.transparent),
+      side: WidgetStateProperty.all(
+        const BorderSide(color: CustomTheme.boxBorderColor),
       ),
+      shape: WidgetStateProperty.all(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      elevation: WidgetStateProperty.all(0),
     );
   }
 }

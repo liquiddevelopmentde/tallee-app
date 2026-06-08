@@ -55,6 +55,12 @@ class GameTracker extends StatelessWidget {
         inputDecorationTheme: CustomTheme.inputDecorationTheme,
         searchBarTheme: CustomTheme.searchBarTheme,
         radioTheme: CustomTheme.radioTheme,
+        // deactivate splash effects
+        splashFactory: NoSplash.splashFactory,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        focusColor: Colors.transparent,
         // color scheme
         colorScheme: ColorScheme.fromSeed(
           seedColor: CustomTheme.textColor,
