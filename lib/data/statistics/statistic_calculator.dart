@@ -168,14 +168,7 @@ class StatisticCalculator {
 
       case StatisticType.totalLosses:
         return _sortDesc(
-          players
-              .map(
-                (p) => (
-                  p,
-                  (_matchesPlayed(p, matches) - _wins(p, matches)) as num,
-                ),
-              )
-              .toList(),
+          players.map((p) => (p, _losses(p, matches) as num)).toList(),
         );
 
       case StatisticType.totalScore:
@@ -234,13 +227,19 @@ class StatisticCalculator {
 
   /* Helper functions for different statistic types */
 
-  /// Detemerines how many matches the player has played in the given list of matches.
+  /// Detemerines how many matches contain the given player.
   static int _matchesPlayed(Player p, List<Match> matches) =>
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).length;
 
-  /// Determines how many matches the player has won in the given list of matches.
+  /// Determines how many matches the player is mvp in the given matches.
   static int _wins(Player p, List<Match> matches) =>
       matches.where((m) => m.mvp.any((mp) => mp.id == p.id)).length;
+
+  /// Determines how many times a player is the loser in single-loser matches.
+  static int _losses(Player p, List<Match> matches) => matches
+      .where((m) => m.game.ruleset == Ruleset.singleLoser)
+      .where((m) => m.mvp.any((mp) => mp.id == p.id))
+      .length;
 
   /// Determines the total score of the player in the given list of matches.
   static int _totalScore(Player p, List<Match> matches) {

@@ -342,5 +342,52 @@ void main() {
       );
       expect(dianaValue.$2, 0.0);
     });
+
+    test('Counts total losses only for single loser ruleset', () {
+      final singleLoserGame = Game(
+        name: 'Single Loser',
+        ruleset: Ruleset.singleLoser,
+        color: AppColor.red,
+        icon: '',
+      );
+
+      final matches = [
+        buildMatch(
+          name: 'l1',
+          game: singleLoserGame,
+          players: [testPlayer1, testPlayer2, testPlayer3],
+          scores: {testPlayer1: 10, testPlayer2: 5, testPlayer3: 3},
+        ),
+        buildMatch(
+          name: 'l2',
+          game: singleLoserGame,
+          players: [testPlayer1, testPlayer2, testPlayer3],
+          scores: {testPlayer1: 8, testPlayer2: 2, testPlayer3: 7},
+        ),
+        // Not a single-loser match; must not affect totalLosses.
+        buildMatch(
+          name: 'winner-game',
+          game: testGame2,
+          players: [testPlayer1, testPlayer2],
+          scores: {testPlayer1: 1, testPlayer2: 9},
+        ),
+      ];
+
+      final statistic = Statistic(
+        type: StatisticType.totalLosses,
+        scopes: [StatisticScope.allPlayers],
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: matches,
+        players: [testPlayer1, testPlayer2, testPlayer3],
+      );
+
+      final byId = {for (final entry in values) entry.$1.id: entry.$2};
+      expect(byId[testPlayer2.id], 1);
+      expect(byId[testPlayer3.id], 1);
+      expect(byId[testPlayer1.id], 0);
+    });
   });
 }
