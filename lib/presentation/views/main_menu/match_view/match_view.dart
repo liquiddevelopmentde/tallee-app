@@ -16,8 +16,10 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/crea
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/match_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
+import 'package:tallee/state/match_search_provider.dart';
 
 class MatchView extends StatefulWidget {
   /// A view that displays a list of matches
@@ -29,7 +31,10 @@ class MatchView extends StatefulWidget {
 
 class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
+  late final MatchSearchProvider _searchProvider;
   bool isLoading = true;
+
+  TextEditingController searchBarController = TextEditingController();
 
   /// Loaded matches from the database, initially filled with skeleton matches
   List<Match> matches = List.filled(
@@ -58,55 +63,133 @@ class _MatchViewState extends State<MatchView> {
     ),
   );
 
+  late List<Match> filteredMatches = [...matches];
+
   @override
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
+    _searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
+    _searchProvider.addListener(_handleSearchToggle);
     loadMatches();
+  }
+
+  @override
+  void dispose() {
+    _searchProvider.removeListener(_handleSearchToggle);
+    searchBarController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final searchProvider = Provider.of<MatchSearchProvider>(context);
+
+    // Reset filtered matches when search is disabled
+    if (!searchProvider.isSearching) {
+      filteredMatches = [...matches];
+    }
+
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       body: Stack(
         alignment: Alignment.center,
         children: [
-          AppSkeleton(
-            enabled: isLoading,
-            child: Visibility(
-              visible: matches.isNotEmpty,
-              replacement: Center(
-                child: TopCenteredMessage(
-                  icon: Icons.info,
-                  title: loc.info,
-                  message: loc.no_matches_created_yet,
-                ),
-              ),
-              child: ListView.builder(
-                padding: CustomTheme.listViewPadding(context),
-                itemCount: matches.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return MatchTile(
-                    onPlayerEdited: loadMatches,
-                    width: MediaQuery.sizeOf(context).width * 0.95,
-                    onTap: () async {
-                      Navigator.push(
-                        context,
-                        adaptivePageRoute(
-                          builder: (context) => MatchDetailView(
-                            match: matches[index],
-                            onMatchUpdate: loadMatches,
-                          ),
-                        ),
-                      );
-                    },
-                    match: matches[index],
+          Column(
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (child, animation) {
+                  final curvedAnimation = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                    reverseCurve: Curves.easeInCubic,
+                  );
+
+                  return ClipRect(
+                    child: SizeTransition(
+                      sizeFactor: curvedAnimation,
+                      alignment: Alignment.topCenter,
+                      child: FadeTransition(
+                        opacity: curvedAnimation,
+                        child: child,
+                      ),
+                    ),
                   );
                 },
+                child: searchProvider.isSearching
+                    ? Padding(
+                        key: const ValueKey('match-searchbar-visible'),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: CustomSearchBar(
+                          controller: searchBarController,
+                          hintText: '',
+                          onChanged: (value) {
+                            setState(() {
+                              filterMatches(value);
+                            });
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(
+                        key: ValueKey('match-searchbar-hidden'),
+                      ),
               ),
-            ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: AppSkeleton(
+                  enabled: isLoading,
+                  child: Visibility(
+                    visible: matches.isNotEmpty,
+                    replacement: Center(
+                      child: TopCenteredMessage(
+                        icon: Icons.info,
+                        title: loc.info,
+                        message: loc.no_matches_created_yet,
+                      ),
+                    ),
+                    child: Visibility(
+                      visible: filteredMatches.isNotEmpty,
+                      replacement: Center(
+                        child: TopCenteredMessage(
+                          icon: Icons.info,
+                          title: loc.info,
+                          message: loc.there_is_no_match_matching_your_search,
+                        ),
+                      ),
+                      child: ListView.builder(
+                        padding: CustomTheme.listViewPadding(context),
+                        itemCount: filteredMatches.length,
+
+                        itemBuilder: (BuildContext context, int index) {
+
+                          return MatchTile(
+                                onPlayerEdited: loadMatches,
+                                width: MediaQuery.sizeOf(context).width * 0.95,
+                                onTap: () async {
+                                  Navigator.push(
+                                    context,
+                                    adaptivePageRoute(
+                                      builder: (context) => MatchDetailView(
+                                        match: filteredMatches[index],
+                                        onMatchUpdate: loadMatches,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                match: filteredMatches[index],
+
+                          );
+                        },
+
+                    ),
+                  ),
+                ),
+                    ,]),),
+            ],
           ),
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
@@ -131,6 +214,51 @@ class _MatchViewState extends State<MatchView> {
     );
   }
 
+  void filterMatches(String query) {
+    setState(() {
+      final lowercaseQuery = query.toLowerCase();
+      if (query.isEmpty) {
+        filteredMatches = [...matches];
+      } else {
+        filteredMatches = matches.where((match) {
+          final matchNameMatch = match.name.toLowerCase().contains(
+            lowercaseQuery,
+          );
+          final gameNameMatch = match.game.name.toLowerCase().contains(
+            lowercaseQuery,
+          );
+          final groupNameMatch =
+              match.group?.name.toLowerCase().contains(lowercaseQuery) ?? false;
+          final playerNameMatch = match.players.any(
+            (player) => ('${player.name.toLowerCase()}#${player.nameCount}')
+                .contains(lowercaseQuery),
+          );
+          final teamNameMatch =
+              match.teams?.any(
+                (team) => team.name.toLowerCase().contains(lowercaseQuery),
+              ) ??
+              false;
+
+          return matchNameMatch ||
+              gameNameMatch ||
+              groupNameMatch ||
+              playerNameMatch ||
+              teamNameMatch;
+        }).toList();
+      }
+    });
+  }
+
+  void _handleSearchToggle() {
+    if (!mounted) {
+      return;
+    }
+
+    if (!_searchProvider.isSearching) {
+      searchBarController.clear();
+    }
+  }
+
   /// Loads the matches from the database and sorts them by creation date.
   void loadMatches() {
     isLoading = true;
@@ -143,6 +271,11 @@ class _MatchViewState extends State<MatchView> {
           final loadedMatches = results[0] as List<Match>;
           matches = [...loadedMatches]
             ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          if (searchBarController.text.isEmpty) {
+            filteredMatches = [...matches];
+          } else {
+            filterMatches(searchBarController.text);
+          }
           isLoading = false;
         });
       }

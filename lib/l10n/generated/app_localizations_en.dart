@@ -499,6 +499,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'There is no group matching your search';
 
   @override
+  String get there_is_no_match_matching_your_search =>
+      'There is no match matching your search';
+
+  @override
   String get this_cannot_be_undone => 'This can\'t be undone.';
 
   @override
