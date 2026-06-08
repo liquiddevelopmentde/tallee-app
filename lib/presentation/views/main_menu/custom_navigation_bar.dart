@@ -67,6 +67,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               ),
               onPressed: () => matchSearchProvider.toggleSearch(),
             ),
+
           if (currentIndex == 1)
             HapticIconButton(
               icon: Icon(
@@ -74,6 +75,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               ),
               onPressed: () => groupSearchProvider.toggleSearch(),
             ),
+
           HapticIconButton(
             onPressed: () async {
               final navigator = Navigator.of(context);
