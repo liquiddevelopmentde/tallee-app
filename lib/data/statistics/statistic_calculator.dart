@@ -60,6 +60,13 @@ class StatisticCalculator {
           .toList();
     }
 
+    // Score-based stats only make sense for rulesets with numeric points.
+    if (_isScoreBasedStatistic(statistic.type)) {
+      filteredMatches = filteredMatches
+          .where((m) => _isScoreBasedRuleset(m.game.ruleset))
+          .toList();
+    }
+
     return filteredMatches;
   }
 
@@ -108,6 +115,36 @@ class StatisticCalculator {
         return now.subtract(const Duration(days: 365));
       case Timeframe.allTime:
         return null;
+    }
+  }
+
+  /// Determines if the statistic type is based on scores.
+  static bool _isScoreBasedStatistic(StatisticType type) {
+    switch (type) {
+      case StatisticType.totalScore:
+      case StatisticType.averageScore:
+      case StatisticType.bestScore:
+      case StatisticType.worstScore:
+        return true;
+      case StatisticType.totalMatches:
+      case StatisticType.totalWins:
+      case StatisticType.totalLosses:
+      case StatisticType.winrate:
+        return false;
+    }
+  }
+
+  /// Determines if the ruleset is based on scores.
+  static bool _isScoreBasedRuleset(Ruleset ruleset) {
+    switch (ruleset) {
+      case Ruleset.highestScore:
+      case Ruleset.lowestScore:
+        return true;
+      case Ruleset.singleWinner:
+      case Ruleset.multipleWinners:
+      case Ruleset.placement:
+      case Ruleset.singleLoser:
+        return false;
     }
   }
 
