@@ -123,7 +123,11 @@ class _MatchViewState extends State<MatchView> {
                 child: searchProvider.isSearching
                     ? Padding(
                         key: const ValueKey('match-searchbar-visible'),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          bottom: 10,
+                        ),
                         child: CustomSearchBar(
                           controller: searchBarController,
                           hintText: '',
@@ -138,7 +142,6 @@ class _MatchViewState extends State<MatchView> {
                         key: ValueKey('match-searchbar-hidden'),
                       ),
               ),
-              const SizedBox(height: 10),
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
@@ -165,30 +168,28 @@ class _MatchViewState extends State<MatchView> {
                         itemCount: filteredMatches.length,
 
                         itemBuilder: (BuildContext context, int index) {
-
                           return MatchTile(
-                                onPlayerEdited: loadMatches,
-                                width: MediaQuery.sizeOf(context).width * 0.95,
-                                onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    adaptivePageRoute(
-                                      builder: (context) => MatchDetailView(
-                                        match: filteredMatches[index],
-                                        onMatchUpdate: loadMatches,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                match: filteredMatches[index],
-
+                            onPlayerEdited: loadMatches,
+                            width: MediaQuery.sizeOf(context).width * 0.95,
+                            onTap: () async {
+                              Navigator.push(
+                                context,
+                                adaptivePageRoute(
+                                  builder: (context) => MatchDetailView(
+                                    match: filteredMatches[index],
+                                    onMatchUpdate: loadMatches,
+                                  ),
+                                ),
+                              );
+                            },
+                            match: filteredMatches[index],
                           );
                         },
-
+                      ),
                     ),
                   ),
                 ),
-                    ,]),),
+              ),
             ],
           ),
           Positioned(
