@@ -39,9 +39,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   List<Statistic> statistics = const [];
   List<Widget> statisticTiles = List.generate(
     4,
-    (index) => Column(
-      children: [buildSkeletonStatisticTile(), const SizedBox(height: 12)],
-    ),
+    (index) => buildSkeletonStatisticTile(),
   );
 
   @override
@@ -85,8 +83,67 @@ class _StatisticsViewState extends State<StatisticsView> {
                     ),
                   ),
                 ),
-                child: ListView.builder(
+                child: ReorderableListView.builder(
                   padding: CustomTheme.listViewPadding(context),
+                  proxyDecorator: (child, index, animation) {
+                    return AnimatedBuilder(
+                      animation: animation,
+                      child: child,
+                      builder: (context, child) {
+                        final t = Curves.easeOut.transform(animation.value);
+                        const tileMargin = CustomTheme.tileMargin;
+                        return Transform.scale(
+                          scale: 1.0 + (0.02 * t),
+                          child: Material(
+                            color: Colors.transparent,
+                            elevation: 8 * t,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Stack(
+                              children: [
+                                ?child,
+                                Positioned(
+                                  left: tileMargin.left,
+                                  right: tileMargin.right,
+                                  top: tileMargin.top,
+                                  bottom: tileMargin.bottom,
+                                  child: IgnorePointer(
+                                    child: AnimatedOpacity(
+                                      duration: const Duration(
+                                        milliseconds: 100,
+                                      ),
+                                      opacity: 1 * t,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withAlpha(15),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  onReorderItem: (oldIndex, newIndex) {
+                    setState(() {
+                      final stat = statistics.removeAt(oldIndex);
+                      statistics.insert(newIndex, stat);
+                      statisticTiles = statistics
+                          .map(
+                            (stat) => buildStatisticTile(
+                              context: context,
+                              statistic: stat,
+                            ),
+                          )
+                          .toList();
+                    });
+                  },
                   itemCount: statisticTiles.length,
                   itemBuilder: (BuildContext context, int index) {
                     return statisticTiles[index];
@@ -234,6 +291,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     );
 
     return GestureDetector(
+      key: ValueKey(statistic.id),
       onTap: () async {
         if (!mounted) return;
         final navigator = Navigator.of(this.context);
@@ -270,6 +328,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     ];
 
     return StatisticsTile(
+      key: ValueKey('statistic_skeleton_${Random().nextInt(10000)}'),
       icon: Icons.bar_chart,
       title: 'Skeleton title',
       values: values,
