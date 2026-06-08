@@ -76,27 +76,35 @@ class StatisticCalculator {
     List<Player> allPlayers,
     List<Match> filteredMatches,
   ) {
+    List<Player> scopedPlayers;
+
     // allPlayers
     if (statistic.scopes.contains(StatisticScope.allPlayers)) {
-      return allPlayers;
-    }
-
-    // selectedGroups -> only members
-    if (statistic.scopes.contains(StatisticScope.selectedGroups) &&
+      scopedPlayers = allPlayers;
+    } else if (statistic.scopes.contains(StatisticScope.selectedGroups) &&
         (statistic.selectedGroups?.isNotEmpty ?? false)) {
+      // selectedGroups -> only members
       final Set<String> ids = {
         for (final g in statistic.selectedGroups!)
           for (final p in g.members) p.id,
       };
-      return allPlayers.where((p) => ids.contains(p.id)).toList();
+      scopedPlayers = allPlayers.where((p) => ids.contains(p.id)).toList();
+    } else {
+      // Else -> all players from filtered matches
+      final Set<String> ids = {
+        for (final m in filteredMatches)
+          for (final p in m.players) p.id,
+      };
+      scopedPlayers = allPlayers.where((p) => ids.contains(p.id)).toList();
     }
 
-    // Else -> all players from filtered matches
-    final Set<String> ids = {
-      for (final m in filteredMatches)
-        for (final p in m.players) p.id,
-    };
-    return allPlayers.where((p) => ids.contains(p.id)).toList();
+    if (_isScoreBasedStatistic(statistic.type)) {
+      return scopedPlayers
+          .where((p) => _hasAnyScore(p, filteredMatches))
+          .toList();
+    }
+
+    return scopedPlayers;
   }
 
   /// Returns a [DateTime] with the minimum time and date the [timeframe] allows
@@ -256,6 +264,10 @@ class StatisticCalculator {
     for (final m in matches)
       if (m.scores[p.id] != null) m.scores[p.id]!.score,
   ];
+
+  /// Returns true if player has at least one score in the given matches.
+  static bool _hasAnyScore(Player p, List<Match> matches) =>
+      matches.any((m) => m.scores[p.id] != null);
 
   /// Returns the list of entries sorted descending by the statistic value.
   static List<(Player, num)> _sortDesc(List<(Player, num)> entries) {

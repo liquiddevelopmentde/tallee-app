@@ -131,6 +131,32 @@ void main() {
       expect(values.single.$2, 10.5);
     });
 
+    test('Excludes players without score for score-based statistics', () {
+      final matches = [
+        Match(
+          name: 'm1',
+          game: testGame1,
+          players: [testPlayer1, testPlayer2],
+          scores: {testPlayer1.id: ScoreEntry(score: 10), testPlayer2.id: null},
+        ),
+      ];
+
+      final statistic = Statistic(
+        type: StatisticType.totalScore,
+        scopes: [StatisticScope.allPlayers],
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: matches,
+        players: [testPlayer1, testPlayer2],
+      );
+
+      expect(values.length, 1);
+      expect(values.single.$1.id, testPlayer1.id);
+      expect(values.single.$2, 10);
+    });
+
     test('Filters out non score-based rulesets for score statistics', () {
       final scoreGame = Game(
         name: 'Score Game',
