@@ -228,6 +228,66 @@
           "isTeamMatch"
         ]
       }
+    },
+    "statistics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timeframe": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "selectedGroups": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "selectedGames": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "displayCount": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "createdAt",
+          "type",
+          "scopes",
+          "timeframe",
+          "color",
+          "displayCount"
+        ]
+      }
     }
   },
   "additionalProperties": false,

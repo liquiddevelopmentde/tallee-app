@@ -55,4 +55,40 @@ class Statistic {
       displayCount: displayCount ?? this.displayCount,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'type': type.name,
+    'scopes': scopes.map((s) => s.toString()).toList(),
+    'timeframe': timeframe.name,
+    'color': color.name,
+    'selectedGroups': selectedGroups?.map((g) => g.id).toList(),
+    'selectedGames': selectedGames?.map((g) => g.id).toList(),
+    'displayCount': displayCount,
+  };
+
+  Statistic.fromJson(Map<String, dynamic> json)
+    : id = json['id'],
+      createdAt = DateTime.parse(json['createdAt']),
+      type = StatisticType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => StatisticType.totalWins,
+      ),
+      scopes = (json['scopes'] as List)
+          .map(
+            (scope) => StatisticScope.values.firstWhere((e) => e.name == scope),
+          )
+          .toList(),
+      timeframe = Timeframe.values.firstWhere(
+        (e) => e.name == json['timeframe'],
+        orElse: () => Timeframe.allTime,
+      ),
+      color = AppColor.values.firstWhere(
+        (e) => e.name == json['color'],
+        orElse: () => AppColor.orange,
+      ),
+      selectedGroups = null,
+      selectedGames = null,
+      displayCount = json['displayCount'];
 }
