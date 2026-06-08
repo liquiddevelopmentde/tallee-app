@@ -507,87 +507,7 @@ class _MatchResultViewState extends State<MatchResultView> {
           itemCount: allTeams.length,
           itemBuilder: (context, index) {
             return CustomRadioListTile(
-              content: Row(
-                children: [
-                  if (allTeams[index].members.length > 1) ...[
-                    RichText(
-                      text: TextSpan(
-                        style: DefaultTextStyle.of(context).style,
-                        children: [
-                          TextSpan(
-                            text: allTeams[index].members[0].name,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          TextSpan(
-                            text: getNameCountText(
-                              allTeams[index].members.first,
-                            ),
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: CustomTheme.textColor.withAlpha(100),
-                            ),
-                          ),
-                          const TextSpan(
-                            text: ' & ',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          TextSpan(
-                            text: allTeams[index].members[1].name,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          TextSpan(
-                            text: getNameCountText(
-                              allTeams[index].members.first,
-                            ),
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: CustomTheme.textColor.withAlpha(100),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    const Icon(Icons.link),
-                  ] else ...[
-                    RichText(
-                      text: TextSpan(
-                        style: DefaultTextStyle.of(context).style,
-                        children: [
-                          TextSpan(
-                            text: allTeams[index].members.first.name,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          TextSpan(
-                            text: getNameCountText(
-                              allTeams[index].members.first,
-                            ),
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: CustomTheme.textColor.withAlpha(100),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+              content: buildPairgameNameWidget(allTeams[index]),
               value: allTeams[index],
               onContainerTap: (team) async {
                 setState(() {
@@ -671,21 +591,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return ScoreListTile(
-            //TODO: Implement correct formatting with nameCount & names of players
-            content: Row(
-              children: [
-                Text(
-                  allTeams[index].displayName,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(width: 5),
-                if (allTeams[index].members.length > 1) const Icon(Icons.link),
-              ],
-            ),
+            content: buildPairgameNameWidget(allTeams[index]),
             horizontalPadding: 0,
             controller: controller[index],
           );
@@ -952,21 +858,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return CustomCheckboxListTile(
-            //TODO: Implement show names with correct namecount formatting
-            content: Row(
-              children: [
-                Text(
-                  allTeams[index].displayName,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(width: 5),
-                if (allTeams[index].members.length > 1) const Icon(Icons.link),
-              ],
-            ),
+            content: buildPairgameNameWidget(allTeams[index]),
             value: _selectedTeams.contains(allTeams[index]),
             onChanged: (bool value) {
               setState(() {
@@ -1006,6 +898,8 @@ class _MatchResultViewState extends State<MatchResultView> {
       );
     }
   }
+
+  // buildPairgameNameWidget moved to `lib/core/common.dart` as a shared helper.
 
   // Returns a copy of the current match with updated scores based on the text entered in the score entry fields.
   Match getMatchWithUnsavedScores() {

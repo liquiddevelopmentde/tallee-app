@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
+import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 /// Translates a [Ruleset] enum value to its corresponding localized string.
@@ -136,6 +138,48 @@ String getNameCountText(Player player) {
   return '';
 }
 
+/// Builds a text span that renders a player's name together with the
+/// `#nameCount` suffix.
+InlineSpan buildPlayerNameCountSpan(
+  Player player, {
+  TextStyle? mainStyle,
+  TextStyle? countStyle,
+}) {
+  final resolvedMainStyle =
+      mainStyle ?? const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+  final resolvedCountStyle =
+      countStyle ??
+      TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: CustomTheme.textColor.withAlpha(100),
+      );
+
+  return TextSpan(
+    style: const TextStyle(color: CustomTheme.textColor),
+    children: [
+      TextSpan(text: player.name, style: resolvedMainStyle),
+      TextSpan(text: getNameCountText(player), style: resolvedCountStyle),
+    ],
+  );
+}
+
+/// Builds a text widget that renders a player's name together with the
+/// `#nameCount` suffix.
+Widget buildPlayerNameCountWidget(
+  Player player, {
+  TextStyle? mainStyle,
+  TextStyle? countStyle,
+}) {
+  return Text.rich(
+    buildPlayerNameCountSpan(
+      player,
+      mainStyle: mainStyle,
+      countStyle: countStyle,
+    ),
+  );
+}
+
 /// Returns the correct singular or plural form of "point(s)" based on the [points] value.
 String getPointLabel(AppLocalizations loc, int points) {
   if (points == 1) {
@@ -143,4 +187,61 @@ String getPointLabel(AppLocalizations loc, int points) {
   } else {
     return '$points ${loc.points}';
   }
+}
+
+/// Builds the name display used in several tiles when a pair is part of a match.
+///
+/// Shows either "PlayerA (count) & PlayerB (count)" with a link icon for pairs
+/// or a single player's name with the count for single players.
+Widget buildPairgameNameWidget(
+  Team team, {
+  MainAxisAlignment rowAlignment = MainAxisAlignment.start,
+}) {
+  final mainStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+
+  final countStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: CustomTheme.textColor.withAlpha(100),
+  );
+  return Row(
+    mainAxisAlignment: rowAlignment,
+    children: [
+      if (team.members.length > 1) ...[
+        RichText(
+          text: TextSpan(
+            style: const TextStyle(color: CustomTheme.textColor),
+            children: [
+              TextSpan(text: team.members[0].name, style: mainStyle),
+              TextSpan(
+                text: getNameCountText(team.members[0]),
+                style: countStyle,
+              ),
+              TextSpan(text: ' & ', style: mainStyle),
+              TextSpan(text: team.members[1].name, style: mainStyle),
+              TextSpan(
+                text: getNameCountText(team.members[1]),
+                style: countStyle,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 5),
+        const Icon(Icons.link),
+      ] else ...[
+        RichText(
+          text: TextSpan(
+            style: const TextStyle(color: CustomTheme.textColor),
+            children: [
+              TextSpan(text: team.members.first.name, style: mainStyle),
+              TextSpan(
+                text: getNameCountText(team.members.first),
+                style: countStyle,
+              ),
+            ],
+          ),
+        ),
+      ],
+    ],
+  );
 }

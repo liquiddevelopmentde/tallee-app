@@ -58,7 +58,10 @@ class _LiveEditViewState extends State<LiveEditView> {
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return LiveEditListTile(
-            title: allTeams[index].name,
+            title: Text(
+              allTeams[index].name,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
             onChanged: (value) {
               scores[index] = value;
             },
@@ -73,7 +76,10 @@ class _LiveEditViewState extends State<LiveEditView> {
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return LiveEditListTile(
-            title: allTeams[index].displayName,
+            title: buildPairgameNameWidget(
+              allTeams[index],
+              rowAlignment: MainAxisAlignment.center,
+            ),
             onChanged: (value) {
               scores[index] = value;
             },
@@ -86,7 +92,10 @@ class _LiveEditViewState extends State<LiveEditView> {
         itemCount: allPlayers.length,
         itemBuilder: (context, index) {
           return LiveEditListTile(
-            title: allPlayers[index].name,
+            title: Text(
+              allPlayers[index].name,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
             onChanged: (value) {
               setState(() {
                 scores[index] = value;

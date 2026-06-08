@@ -12,7 +12,7 @@ class LiveEditListTile extends StatefulWidget {
     this.color,
   });
 
-  final String title;
+  final Widget title;
 
   final int value;
 
@@ -51,19 +51,10 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                 border: Border.all(color: widget.color!, width: 2),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Text(
-                widget.title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              child: widget.title,
             )
           else
-            Text(
-              widget.title,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
+            widget.title,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,

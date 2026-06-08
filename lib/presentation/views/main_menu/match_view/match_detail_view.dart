@@ -372,14 +372,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     final ruleset = match.game.ruleset;
 
     if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
-      // Single winner/loser, multiple winner
-      final names =
-          match.isTeamMatch ||
-              !match.isTeamMatch && (match.teams?.isNotEmpty ?? false)
-          ? match.mvt.map((t) => t.displayName).toList()
-          : match.mvp.map((p) => p.name).toList();
-      final mvpNames = names.length == 1 ? names.first : names.join(', ');
-
       final label = ruleset == Ruleset.singleWinner
           ? loc.winner
           : ruleset == Ruleset.singleLoser
@@ -391,18 +383,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           label,
           style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
         ),
-        SizedBox(
-          width: 200,
-          child: Text(
-            mvpNames,
-            textAlign: TextAlign.end,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: CustomTheme.primaryColor,
-            ),
-          ),
-        ),
+        Expanded(child: _buildWinnerNameWidget()),
       ];
     } else {
       // No result yet
@@ -415,9 +396,136 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     }
   }
 
+  /// Builds the widget that displays the winner(s) or loser(s) name(s)
+  Widget _buildWinnerNameWidget() {
+    final isTeamOrPairMatch = match.teams?.isNotEmpty ?? false;
+    final mvtTeams = match.mvt;
+    final mvpPlayers = match.mvp;
+
+    if (isTeamOrPairMatch) {
+      final winners = <InlineSpan>[];
+
+      for (var i = 0; i < mvtTeams.length; i++) {
+        if (i > 0) {
+          winners.add(
+            const TextSpan(
+              text: ', ',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: CustomTheme.primaryColor,
+              ),
+            ),
+          );
+        }
+
+        final team = mvtTeams[i];
+
+        if (match.isTeamMatch) {
+          winners.add(
+            TextSpan(
+              text: team.name,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: CustomTheme.primaryColor,
+              ),
+            ),
+          );
+        } else if (team.members.length > 1) {
+          winners.addAll([
+            TextSpan(
+              text: team.members[0].name,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: CustomTheme.primaryColor,
+              ),
+            ),
+            TextSpan(
+              text: getNameCountText(team.members[0]),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: CustomTheme.textColor.withAlpha(100),
+              ),
+            ),
+            const TextSpan(
+              text: ' & ',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: CustomTheme.primaryColor,
+              ),
+            ),
+            TextSpan(
+              text: team.members[1].name,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: CustomTheme.primaryColor,
+              ),
+            ),
+            TextSpan(
+              text: getNameCountText(team.members[1]),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: CustomTheme.textColor.withAlpha(100),
+              ),
+            ),
+          ]);
+        } else {
+          final member = team.members.first;
+          winners.addAll([
+            TextSpan(
+              text: member.name,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: CustomTheme.primaryColor,
+              ),
+            ),
+            TextSpan(
+              text: getNameCountText(member),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: CustomTheme.textColor.withAlpha(100),
+              ),
+            ),
+          ]);
+        }
+      }
+
+      return Text.rich(
+        TextSpan(
+          style: const TextStyle(color: CustomTheme.textColor),
+          children: winners,
+        ),
+        textAlign: TextAlign.end,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+
+    final names = mvpPlayers.map((p) => p.name).toList();
+    final mvpNames = names.length == 1 ? names.first : names.join(', ');
+
+    return Text(
+      mvpNames,
+      textAlign: TextAlign.end,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: CustomTheme.primaryColor,
+      ),
+    );
+  }
+
   /// Returns the result widget for scores or placement
   Widget getMultiResultRows(AppLocalizations loc) {
-    List<(String, int)> scores = getSortedScores();
+    List<(Widget, int)> scores = getSortedScores();
 
     return Column(
       children: [
@@ -425,13 +533,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                scores[i].$1,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: CustomTheme.textColor,
-                ),
-              ),
+              Expanded(child: scores[i].$1),
               getResultValueText(loc, i, scores[i].$2),
             ],
           ),
@@ -439,40 +541,120 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     );
   }
 
-  /// Returns a list of player/team names and their corresponding scores, sorted by score according to the ruleset
-  List<(String, int)> getSortedScores() {
-    List<(String, int)> namedScores = [];
+  /// Returns a list of player/team widgets and their corresponding scores, sorted by score according to the ruleset
+  List<(Widget, int)> getSortedScores() {
+    List<(Widget, int)> namedScores = [];
 
-    if (match.isTeamMatch ||
-        !match.isTeamMatch && (match.teams?.isNotEmpty ?? false)) {
+    final isTeamOrPairMatch = match.teams?.isNotEmpty ?? false;
+
+    if (isTeamOrPairMatch) {
       final teams = match.teams ?? [];
       for (var team in teams) {
         int score = team.score ?? 0;
-        namedScores.add((team.displayName, score));
-      }
 
-      final ruleset = match.game.ruleset;
+        Widget nameWidget;
+        if (match.isTeamMatch) {
+          nameWidget = Text(
+            team.name,
+            style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
+          );
+        } else if (team.members.length > 1) {
+          nameWidget = Text.rich(
+            TextSpan(
+              style: const TextStyle(
+                fontSize: 16,
+                color: CustomTheme.textColor,
+              ),
+              children: [
+                TextSpan(text: team.members[0].name),
+                TextSpan(
+                  text: getNameCountText(team.members[0]),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: CustomTheme.textColor.withAlpha(100),
+                  ),
+                ),
+                const TextSpan(text: ' & '),
+                TextSpan(text: team.members[1].name),
+                TextSpan(
+                  text: getNameCountText(team.members[1]),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: CustomTheme.textColor.withAlpha(100),
+                  ),
+                ),
+              ],
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          );
+        } else {
+          final member = team.members.first;
+          nameWidget = Text.rich(
+            TextSpan(
+              style: const TextStyle(
+                fontSize: 16,
+                color: CustomTheme.textColor,
+              ),
+              children: [
+                TextSpan(text: member.name),
+                TextSpan(
+                  text: getNameCountText(member),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: CustomTheme.textColor.withAlpha(100),
+                  ),
+                ),
+              ],
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          );
+        }
 
-      if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
-        namedScores.sort((a, b) => b.$2.compareTo(a.$2));
-      } else if (ruleset == Ruleset.lowestScore) {
-        namedScores.sort((a, b) => a.$2.compareTo(b.$2));
+        namedScores.add((nameWidget, score));
       }
     } else {
       final scores = match.scores;
       for (var player in match.players) {
         int score = scores[player.id]?.score ?? 0;
-        namedScores.add((player.name, score));
-      }
-
-      final ruleset = match.game.ruleset;
-
-      if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
-        namedScores.sort((a, b) => b.$2.compareTo(a.$2));
-      } else if (ruleset == Ruleset.lowestScore) {
-        namedScores.sort((a, b) => a.$2.compareTo(b.$2));
+        namedScores.add((
+          Text.rich(
+            TextSpan(
+              style: const TextStyle(
+                fontSize: 16,
+                color: CustomTheme.textColor,
+              ),
+              children: [
+                TextSpan(text: player.name),
+                TextSpan(
+                  text: getNameCountText(player),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: CustomTheme.textColor.withAlpha(100),
+                  ),
+                ),
+              ],
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          score,
+        ));
       }
     }
+
+    final ruleset = match.game.ruleset;
+    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
+      namedScores.sort((a, b) => b.$2.compareTo(a.$2));
+    } else if (ruleset == Ruleset.lowestScore) {
+      namedScores.sort((a, b) => a.$2.compareTo(b.$2));
+    }
+
     return namedScores;
   }
 

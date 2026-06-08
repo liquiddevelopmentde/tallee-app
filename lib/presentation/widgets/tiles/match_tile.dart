@@ -8,6 +8,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
@@ -140,17 +141,7 @@ class _MatchTileState extends State<MatchTile> {
                   children: [
                     getMvpIcon(),
                     const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        getMvtText(loc),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+                    Expanded(child: getMvtTextWidget(loc)),
                   ],
                 ),
               ),
@@ -174,17 +165,7 @@ class _MatchTileState extends State<MatchTile> {
                   children: [
                     getMvpIcon(),
                     const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        getMvpText(loc),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+                    Expanded(child: getMvpTextWidget(loc)),
                   ],
                 ),
               ),
@@ -357,58 +338,136 @@ class _MatchTileState extends State<MatchTile> {
     }
   }
 
-  // Returns the appropriate text based on the match's ruleset and MVP.
-  String getMvpText(AppLocalizations loc) {
-    if (widget.match.mvp.isEmpty) return '';
+  // Returns the appropriate text widget based on the match's ruleset and MVP.
+  Widget getMvpTextWidget(AppLocalizations loc) {
+    if (widget.match.mvp.isEmpty) return const SizedBox.shrink();
     final ruleset = widget.match.game.ruleset;
+    final players = widget.match.mvp;
 
-    if (ruleset == Ruleset.singleWinner) {
-      return '${loc.winner}: ${widget.match.mvp.first.name}';
-    } else if (ruleset == Ruleset.singleLoser) {
-      return '${loc.loser}: ${widget.match.mvp.first.name}';
-    } else if (ruleset == Ruleset.highestScore ||
-        ruleset == Ruleset.lowestScore) {
-      final mvp = widget.match.mvp;
-      final mvpScore = widget.match.scores[mvp.first.id]?.score ?? 0;
-      final mvpNames = mvp.map((player) => player.name).join(', ');
-      return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
-    } else if (ruleset == Ruleset.placement) {
-      return '${loc.winner}: ${widget.match.mvp.first.name}';
-    } else if (ruleset == Ruleset.multipleWinners) {
-      final mvpNames = widget.match.mvp.map((player) => player.name).join(', ');
-      return '${loc.winners}: $mvpNames';
+    final labelStyle = const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: CustomTheme.textColor,
+    );
+
+    final nameStyle = const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor,
+    );
+
+    final countStyle = TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor.withAlpha(100),
+    );
+
+    final namesToRender =
+        ruleset == Ruleset.multipleWinners ||
+            ruleset == Ruleset.highestScore ||
+            ruleset == Ruleset.lowestScore
+        ? players
+        : [players.first];
+
+    final children = <InlineSpan>[];
+
+    for (var i = 0; i < namesToRender.length; i++) {
+      children.add(
+        buildPlayerNameCountSpan(
+          namesToRender[i],
+          mainStyle: nameStyle,
+          countStyle: countStyle,
+        ),
+      );
+
+      if (i < namesToRender.length - 1) {
+        children.add(TextSpan(text: ', ', style: labelStyle));
+      }
     }
-    return '${loc.winner}: n.A.';
+
+    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.lowestScore) {
+      final mvpScore = widget.match.scores[players.first.id]?.score ?? 0;
+      children.add(
+        TextSpan(text: ' (${getPointLabel(loc, mvpScore)})', style: labelStyle),
+      );
+    }
+
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(color: CustomTheme.textColor),
+        children: children,
+      ),
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
-  // Returns the appropriate text based on the match's ruleset and MVT.
-  String getMvtText(AppLocalizations loc) {
-    if (widget.match.mvt.isEmpty) return '';
+  // Returns the appropriate text widget based on the match's ruleset and MVT.
+  Widget getMvtTextWidget(AppLocalizations loc) {
+    if (widget.match.mvt.isEmpty) return const SizedBox.shrink();
     final ruleset = widget.match.game.ruleset;
+    final mvt = widget.match.mvt;
 
-    switch (ruleset) {
-      case Ruleset.singleWinner:
-        return '${loc.winner}: ${widget.match.mvt.first.displayName}';
-      case Ruleset.singleLoser:
-        return '${loc.loser}: ${widget.match.mvt.first.displayName}';
-      case Ruleset.highestScore:
-      case Ruleset.lowestScore:
-        final mvt = widget.match.mvt;
-        final mvtScore =
-            widget.match.teams!
-                .firstWhere((team) => team.id == mvt.first.id)
-                .score ??
-            0;
-        final mvtNames = mvt.map((team) => team.displayName).join(', ');
-        return '${loc.winner}: $mvtNames (${getPointLabel(loc, mvtScore)})';
-      case Ruleset.placement:
-        return '${loc.winner}: ${widget.match.mvt.first.displayName}';
-      case Ruleset.multipleWinners:
-        final mvtNames = widget.match.mvt
-            .map((team) => team.displayName)
-            .join(', ');
-        return '${loc.winners}: $mvtNames';
+    final mainStyle = const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor,
+    );
+
+    final countStyle = TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor.withAlpha(100),
+    );
+
+    final score =
+        (ruleset == Ruleset.highestScore || ruleset == Ruleset.lowestScore)
+        ? widget.match.teams!
+                  .firstWhere((team) => team.id == mvt.first.id)
+                  .score ??
+              0
+        : null;
+
+    InlineSpan buildMvtSpan(Team team) {
+      if (widget.match.isTeamMatch) {
+        return TextSpan(text: team.name, style: mainStyle);
+      }
+
+      if (team.members.length <= 1) {
+        final member = team.members.first;
+        return TextSpan(
+          children: [
+            TextSpan(text: member.name, style: mainStyle),
+            TextSpan(text: getNameCountText(member), style: countStyle),
+          ],
+        );
+      }
+
+      return TextSpan(
+        children: [
+          TextSpan(text: team.members[0].name, style: mainStyle),
+          TextSpan(text: getNameCountText(team.members[0]), style: countStyle),
+          TextSpan(text: ' & ', style: mainStyle),
+          TextSpan(text: team.members[1].name, style: mainStyle),
+          TextSpan(text: getNameCountText(team.members[1]), style: countStyle),
+        ],
+      );
     }
+
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(color: CustomTheme.textColor),
+        children: [
+          for (var i = 0; i < mvt.length; i++) ...[
+            if (i > 0) TextSpan(text: ', ', style: mainStyle),
+            buildMvtSpan(mvt[i]),
+          ],
+          if (score != null)
+            TextSpan(text: ' (${getPointLabel(loc, score)})', style: mainStyle),
+        ],
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
   // Returns the appropriate icon based on the match's ruleset.
