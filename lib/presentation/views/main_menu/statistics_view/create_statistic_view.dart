@@ -19,7 +19,7 @@ import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart'
 class CreateStatisticView extends StatefulWidget {
   const CreateStatisticView({super.key, required this.onStatisticCreated});
 
-  final void Function(Statistic) onStatisticCreated;
+  final void Function(List<Statistic>) onStatisticCreated;
 
   @override
   State<CreateStatisticView> createState() => _CreateStatisticViewState();
@@ -29,8 +29,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   bool isLoading = false;
 
   /* Controllers for user selections */
-  final ValueNotifier<StatisticType?> selectedTypeNotifier =
-      ValueNotifier<StatisticType?>(null);
+  final ValueNotifier<List<StatisticType>> selectedTypeNotifier =
+      ValueNotifier<List<StatisticType>>([]);
   final ValueNotifier<List<StatisticScope>> selectedScopeNotifier =
       ValueNotifier<List<StatisticScope>>([]);
   final ValueNotifier<Timeframe> selectedTimeframeNotifier =
@@ -43,7 +43,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   List<Group> groups = [];
 
   /* User selections */
-  StatisticType? selectedType;
+  List<StatisticType> selectedType = [];
   List<StatisticScope> selectedScope = [];
   List<Game> selectedGames = [];
   List<Player> selectedPlayers = [];
@@ -130,18 +130,41 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                 loc.select_a_classifier,
                                 style: hintStyle,
                               ),
-                              valueListenable: selectedTypeNotifier,
+                              multiValueListenable: selectedTypeNotifier,
                               items: StatisticType.values
                                   .map(
                                     (item) => DropdownItem<StatisticType>(
                                       value: item,
                                       height: 44,
-                                      child: Text(
-                                        translateStatisticTypeToString(
-                                          item,
-                                          context,
-                                        ),
-                                        style: itemStyle,
+                                      closeOnTap: false,
+                                      child: ValueListenableBuilder<List<StatisticType>>(
+                                        valueListenable: selectedTypeNotifier,
+                                        builder: (context, values, _) {
+                                          final isSelected = values.contains(
+                                            item,
+                                          );
+                                          return Row(
+                                            children: [
+                                              Icon(
+                                                isSelected
+                                                    ? Icons.check_box_outlined
+                                                    : Icons
+                                                          .check_box_outline_blank,
+                                                color: CustomTheme.textColor,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  translateStatisticTypeToString(
+                                                    item,
+                                                    context,
+                                                  ),
+                                                  style: itemStyle,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
                                       ),
                                     ),
                                   )
@@ -150,9 +173,17 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                   ? null
                                   : (value) {
                                       if (value == null) return;
-                                      selectedTypeNotifier.value = value;
+                                      final current = [
+                                        ...selectedTypeNotifier.value,
+                                      ];
+                                      if (current.contains(value)) {
+                                        current.remove(value);
+                                      } else {
+                                        current.add(value);
+                                      }
+                                      selectedTypeNotifier.value = current;
                                       setState(() {
-                                        selectedType = value;
+                                        selectedType = current;
                                       });
                                     },
                               selectedItemBuilder: (context) {
@@ -160,26 +191,24 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                     .map(
                                       (_) =>
                                           ValueListenableBuilder<
-                                            StatisticType?
+                                            List<StatisticType>
                                           >(
                                             valueListenable:
                                                 selectedTypeNotifier,
-                                            builder: (context, current, _) {
-                                              if (current == null) {
-                                                return Text(
-                                                  loc.select_a_classifier,
-                                                  style: hintStyle,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                );
-                                              }
+                                            builder: (context, values, _) {
                                               return Text(
-                                                translateStatisticTypeToString(
-                                                  current,
-                                                  context,
-                                                ),
-                                                style: headerStyle,
+                                                values
+                                                    .map(
+                                                      (t) =>
+                                                          translateStatisticTypeToString(
+                                                            t,
+                                                            context,
+                                                          ),
+                                                    )
+                                                    .join(', '),
+                                                style: values.isEmpty
+                                                    ? hintStyle
+                                                    : headerStyle,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                               );
@@ -566,7 +595,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               child: AnimatedDialogButton(
                 buttonConstraints: const BoxConstraints(minWidth: 390),
                 buttonText: loc.create_statistic,
-                onPressed: selectedType != null && selectedScope.isNotEmpty
+                onPressed: selectedType.isNotEmpty && selectedScope.isNotEmpty
                     ? () => submitStatistic()
                     : null,
               ),
@@ -641,52 +670,65 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   /// Creates the statistic based on the user selections. If the statistic
   /// requires selecting specific groups or games, navigates to the respective
-  /// selection view. Otherwise, saves the statistic to the database and returns
-  /// to the previous screen.
+  /// selection view. For multiple selected types, one [Statistic] per type is
+  /// created — all sharing the same scope, timeframe and color.
   Future<void> submitStatistic() async {
     final scopes = [...selectedScope];
-    final statistic = Statistic(
-      type: selectedType!,
-      scopes: scopes,
-      timeframe: selectedTimeframe,
-      color: selectedColor,
-    );
+    final db = Provider.of<AppDatabase>(context, listen: false);
 
     if (scopes.contains(StatisticScope.selectedGroups)) {
-      // Navigating to the group selection
-      final createdStatistic = await Navigator.of(context).push<Statistic>(
+      final created = await Navigator.of(context).push<Statistic>(
         adaptivePageRoute(
-          builder: (context) =>
-              ChooseGroupView(groups: groups, statistic: statistic),
+          builder: (context) => ChooseGroupView(
+            groups: groups,
+            statistic: buildStat(selectedType.first),
+          ),
         ),
       );
-      if (!mounted) return;
-      if (createdStatistic != null) {
-        widget.onStatisticCreated(createdStatistic);
-        Navigator.of(context).pop(createdStatistic);
+      if (created == null) return;
+      final additionalStats = [
+        for (final type in selectedType.skip(1)) created.copyWith(type: type),
+      ];
+      for (final stat in additionalStats) {
+        await db.statisticDao.addStatistic(statistic: stat);
       }
+      if (!mounted) return;
+      widget.onStatisticCreated([created, ...additionalStats]);
+      Navigator.of(context).pop();
     } else if (scopes.contains(StatisticScope.selectedGames)) {
-      // Navigating to the game selection
-      final createdStatistic = await Navigator.of(context).push<Statistic>(
+      final created = await Navigator.of(context).push<Statistic>(
         adaptivePageRoute(
-          builder: (context) =>
-              ChooseGameView(games: games, statistic: statistic),
+          builder: (context) => ChooseGameView(
+            games: games,
+            statistic: buildStat(selectedType.first),
+          ),
         ),
       );
-      if (!mounted) return;
-      if (createdStatistic != null) {
-        widget.onStatisticCreated(createdStatistic);
-        Navigator.of(context).pop(createdStatistic);
+      if (created == null) return;
+      final additionalStats = [
+        for (final t in selectedType.skip(1)) created.copyWith(type: t),
+      ];
+      for (final stat in additionalStats) {
+        await db.statisticDao.addStatistic(statistic: stat);
       }
-    } else {
-      // Create statistic and pop
-      final db = Provider.of<AppDatabase>(context, listen: false);
-      await db.statisticDao.addStatistic(statistic: statistic);
       if (!mounted) return;
-      widget.onStatisticCreated(statistic);
-      Navigator.of(context).pop(statistic);
+      widget.onStatisticCreated([created, ...additionalStats]);
+      Navigator.of(context).pop();
+    } else {
+      final stats = [for (final t in selectedType) buildStat(t)];
+      await db.statisticDao.addStatisticsAsList(statistics: stats);
+      if (!mounted) return;
+      widget.onStatisticCreated(stats);
+      Navigator.of(context).pop();
     }
   }
+
+  Statistic buildStat(StatisticType type) => Statistic(
+    type: type,
+    scopes: selectedScope,
+    timeframe: selectedTimeframe,
+    color: selectedColor,
+  );
 
   @override
   void dispose() {

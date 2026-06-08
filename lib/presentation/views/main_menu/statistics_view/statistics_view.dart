@@ -105,10 +105,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                   await navigator.push<Statistic>(
                     adaptivePageRoute(
                       builder: (context) => CreateStatisticView(
-                        onStatisticCreated: (newStat) {
+                        onStatisticCreated: (newStats) {
                           if (!mounted) return;
                           setState(() {
-                            statistics = [newStat, ...statistics];
+                            statistics = [...newStats, ...statistics];
                             statisticTiles = statistics
                                 .map(
                                   (stat) => buildStatisticTile(
