@@ -1142,6 +1142,12 @@ abstract class AppLocalizations {
   /// **'There is no group matching your search'**
   String get there_is_no_group_matching_your_search;
 
+  /// No description provided for @there_is_no_match_matching_your_search.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no match matching your search'**
+  String get there_is_no_match_matching_your_search;
+
   /// No description provided for @this_cannot_be_undone.
   ///
   /// In en, this message translates to:
