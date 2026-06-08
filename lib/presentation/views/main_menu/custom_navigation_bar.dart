@@ -60,7 +60,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
         actions: [
-          if (currentIndex == 0) // Nur im Matches-Tab
+          if (currentIndex == 0)
             HapticIconButton(
               icon: Icon(
                 matchSearchProvider.isSearching ? Icons.close : Icons.search,
