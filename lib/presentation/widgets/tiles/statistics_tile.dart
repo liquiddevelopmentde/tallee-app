@@ -358,6 +358,10 @@ class StatisticsTile extends StatelessWidget {
     );
   }
 
+  bool get hasGroup => selectedGroups != null && selectedGroups!.isNotEmpty;
+
+  bool get hasGame => selectedGames != null && selectedGames!.isNotEmpty;
+
   String getGroupText(List<Group> groups) {
     var text = groups[0].name;
     if (groups.length > 1) {
@@ -373,8 +377,4 @@ class StatisticsTile extends StatelessWidget {
     }
     return text;
   }
-
-  bool get hasGroup => selectedGroups != null && selectedGroups!.isNotEmpty;
-
-  bool get hasGame => selectedGames != null && selectedGames!.isNotEmpty;
 }
