@@ -194,23 +194,20 @@ class _StatisticsViewState extends State<StatisticsView> {
     final stat1 = Statistic(
       type: StatisticType.totalWins,
       color: AppColor.blue,
-      displayCount: 5,
-      createdAt: DateTime.now(),
-      scopes: [StatisticScope.selectedGroups],
+      displayCount: 3,
+      scopes: [StatisticScope.allPlayers],
     );
     final stat2 = Statistic(
       type: StatisticType.averageScore,
       color: AppColor.pink,
       displayCount: 5,
-      createdAt: DateTime.now(),
-      scopes: [StatisticScope.selectedGroups],
+      scopes: [StatisticScope.allPlayers],
     );
     final stat3 = Statistic(
       type: StatisticType.averageScore,
       color: AppColor.green,
-      displayCount: 5,
-      createdAt: DateTime.now(),
-      scopes: [StatisticScope.selectedGroups],
+      displayCount: 8,
+      scopes: [StatisticScope.allPlayers],
     );
     await db.statisticDao.addStatisticsAsList(
       statistics: [stat1, stat2, stat3],
