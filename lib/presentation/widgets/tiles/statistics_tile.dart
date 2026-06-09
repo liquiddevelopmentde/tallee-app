@@ -206,12 +206,13 @@ class StatisticsTile extends StatelessWidget {
                 child: Wrap(
                   alignment: WrapAlignment.start,
                   crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 4,
+                  spacing: 30,
                   runSpacing: 4,
                   children: [
                     // Game
                     if (hasGame)
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         spacing: 8,
                         children: [
                           const Icon(
@@ -230,11 +231,10 @@ class StatisticsTile extends StatelessWidget {
                           ),
                         ],
                       ),
-                    if (hasGroup && hasGame) const SizedBox(width: 20),
-
                     // Group
                     if (hasGroup)
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         spacing: 8,
                         children: [
                           const Icon(
