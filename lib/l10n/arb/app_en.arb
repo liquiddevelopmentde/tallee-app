@@ -42,6 +42,9 @@
   "create_teams": "Create teams",
   "created_on": "Created on",
   "data": "Data",
+  "deleted": "Deleted",
+  "delete_player_warning_details": "This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.",
+
   "data_successfully_deleted": "Data successfully deleted",
   "data_successfully_exported": "Data successfully exported",
   "data_successfully_imported": "Data successfully imported",

@@ -116,6 +116,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get data => 'Daten';
 
   @override
+  String get deleted => 'Gelöscht';
+
+  @override
+  String get delete_player_warning_details =>
+      'Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.';
+
+  @override
   String get data_successfully_deleted => 'Daten erfolgreich gelöscht';
 
   @override

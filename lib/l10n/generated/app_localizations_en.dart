@@ -116,6 +116,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get data => 'Data';
 
   @override
+  String get deleted => 'Deleted';
+
+  @override
+  String get delete_player_warning_details =>
+      'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.';
+
+  @override
   String get data_successfully_deleted => 'Data successfully deleted';
 
   @override

@@ -95,36 +95,37 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
       appBar: AppBar(
         title: Text(loc.player_profile),
         actions: [
-          HapticIconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () async {
-              showDialog<bool>(
-                context: context,
-                builder: (context) => CustomAlertDialog(
-                  title: loc.delete_player,
-                  content: Text(loc.this_cannot_be_undone),
-                  actions: [
-                    CustomDialogAction(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      text: loc.delete,
-                    ),
-                    CustomDialogAction(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      buttonType: ButtonType.secondary,
-                      text: loc.cancel,
-                    ),
-                  ],
-                ),
-              ).then((confirmed) async {
-                if (confirmed! && context.mounted) {
-                  //TODO: implement player deletion in db
-                  if (!context.mounted) return;
-                  Navigator.pop(context);
-                  widget.callback();
-                }
-              });
-            },
-          ),
+          if (!widget.player.deleted)
+            HapticIconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                showDialog<bool>(
+                  context: context,
+                  builder: (context) => CustomAlertDialog(
+                    title: loc.delete_player,
+                    content: Text(loc.delete_player_warning_details),
+                    actions: [
+                      CustomDialogAction(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        text: loc.delete,
+                      ),
+                      CustomDialogAction(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        buttonType: ButtonType.secondary,
+                        text: loc.cancel,
+                      ),
+                    ],
+                  ),
+                ).then((confirmed) async {
+                  if (confirmed! && context.mounted) {
+                    await db.playerDao.deletePlayer(playerId: widget.player.id);
+                    if (!context.mounted) return;
+                    Navigator.pop(context);
+                    widget.callback();
+                  }
+                });
+              },
+            ),
         ],
       ),
       body: SafeArea(
@@ -139,6 +140,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 bottom: 100,
               ),
               children: [
+                // Icon
                 const Center(
                   child: ColoredIconContainer(
                     icon: Icons.person,
@@ -147,6 +149,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   ),
                 ),
                 const SizedBox(height: 10),
+
+                // Playername + Playercount
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -170,7 +174,17 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     ),
                   ],
                 ),
+                // Deleted state
+                if (widget.player.deleted) ...[
+                  Text(
+                    loc.deleted,
+                    style: const TextStyle(fontSize: 13, color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
                 const SizedBox(height: 5),
+
+                // Created at date
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(_player.createdAt)}',
                   style: const TextStyle(
@@ -180,6 +194,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
+
+                // Groups
                 InfoTile(
                   title: '${loc.groups} ($totalGroups)',
                   icon: Icons.people,
@@ -221,6 +237,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   ),
                 ),
                 const SizedBox(height: 15),
+
+                // Matches
                 InfoTile(
                   title: '${loc.matches} ($totalMatches)',
                   icon: Icons.sports_esports,
@@ -262,6 +280,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   ),
                 ),
                 const SizedBox(height: 15),
+
+                // Statistics
                 InfoTile(
                   title: loc.statistics,
                   icon: Icons.bar_chart,
@@ -285,73 +305,77 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
               ],
             ),
-            Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom,
-              child: MainMenuButton(
-                text: loc.edit_player,
-                icon: Icons.edit,
-                onPressed: () async {
-                  nameController.text = _player.name;
-                  showDialog<bool>(
-                    context: context,
-                    builder: (context) => StatefulBuilder(
-                      builder: (context, setDialogState) {
-                        return CustomAlertDialog(
-                          title: loc.edit_name,
-                          content: TextInputField(
-                            controller: nameController,
-                            hintText: loc.set_name,
-                            onChanged: (_) => setDialogState(() {}),
-                          ),
-                          actions: [
-                            CustomDialogAction(
-                              onPressed: isConfirmButtonEnabled()
-                                  ? () => Navigator.of(context).pop(true)
-                                  : null,
-                              text: loc.confirm,
-                            ),
-                            CustomDialogAction(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              buttonType: ButtonType.secondary,
-                              text: loc.cancel,
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ).then((confirmed) async {
-                    if (confirmed! && context.mounted) {
-                      final newName = nameController.text.trim();
 
-                      if (newName != _player.name) {
-                        final fetchedPlayerNameCount = await db.playerDao
-                            .getNameCount(name: newName);
-                        await db.playerDao.updatePlayerName(
-                          playerId: _player.id,
-                          name: newName,
-                        );
-                        widget.callback.call();
-                        setState(() {
-                          _player = Player(
-                            name: newName,
-                            createdAt: _player.createdAt,
-                            id: _player.id,
-                            nameCount: _player.nameCount,
-                            description: _player.description,
+            // Edit player button
+            if (!widget.player.deleted)
+              Positioned(
+                bottom: MediaQuery.paddingOf(context).bottom,
+                child: MainMenuButton(
+                  text: loc.edit_player,
+                  icon: Icons.edit,
+                  onPressed: () async {
+                    nameController.text = _player.name;
+                    showDialog<bool>(
+                      context: context,
+                      builder: (context) => StatefulBuilder(
+                        builder: (context, setDialogState) {
+                          return CustomAlertDialog(
+                            title: loc.edit_name,
+                            content: TextInputField(
+                              controller: nameController,
+                              hintText: loc.set_name,
+                              onChanged: (_) => setDialogState(() {}),
+                            ),
+                            actions: [
+                              CustomDialogAction(
+                                onPressed: isConfirmButtonEnabled()
+                                    ? () => Navigator.of(context).pop(true)
+                                    : null,
+                                text: loc.confirm,
+                              ),
+                              CustomDialogAction(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                buttonType: ButtonType.secondary,
+                                text: loc.cancel,
+                              ),
+                            ],
                           );
+                        },
+                      ),
+                    ).then((confirmed) async {
+                      if (confirmed! && context.mounted) {
+                        final newName = nameController.text.trim();
 
-                          // If there is already a player with the same name,
-                          // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
-                          playerNameCount = fetchedPlayerNameCount == 0
-                              ? ''
-                              : ' #${fetchedPlayerNameCount + 1}';
-                        });
+                        if (newName != _player.name) {
+                          final fetchedPlayerNameCount = await db.playerDao
+                              .getNameCount(name: newName);
+                          await db.playerDao.updatePlayerName(
+                            playerId: _player.id,
+                            name: newName,
+                          );
+                          widget.callback.call();
+                          setState(() {
+                            _player = Player(
+                              name: newName,
+                              createdAt: _player.createdAt,
+                              id: _player.id,
+                              nameCount: _player.nameCount,
+                              description: _player.description,
+                            );
+
+                            // If there is already a player with the same name,
+                            // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
+                            playerNameCount = fetchedPlayerNameCount == 0
+                                ? ''
+                                : ' #${fetchedPlayerNameCount + 1}';
+                          });
+                        }
                       }
-                    }
-                  });
-                },
+                    });
+                  },
+                ),
               ),
-            ),
           ],
         ),
       ),

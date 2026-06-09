@@ -308,6 +308,18 @@ abstract class AppLocalizations {
   /// **'Data'**
   String get data;
 
+  /// No description provided for @deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted'**
+  String get deleted;
+
+  /// No description provided for @delete_player_warning_details.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.'**
+  String get delete_player_warning_details;
+
   /// No description provided for @data_successfully_deleted.
   ///
   /// In en, this message translates to:
