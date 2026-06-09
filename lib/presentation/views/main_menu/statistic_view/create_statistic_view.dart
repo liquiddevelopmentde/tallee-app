@@ -602,7 +602,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
               child: AnimatedDialogButton(
                 buttonConstraints: const BoxConstraints(minWidth: 390),
-                buttonText: loc.create_statistic,
+                buttonText: submitButtonText,
                 onPressed: selectedType.isNotEmpty && selectedScope.isNotEmpty
                     ? () => submitStatistic()
                     : null,
@@ -613,6 +613,13 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       ),
     );
   }
+
+  String get submitButtonText =>
+      selectedScope.contains(StatisticScope.selectedGroups)
+      ? AppLocalizations.of(context).choose_group
+      : selectedScope.contains(StatisticScope.selectedGames)
+      ? AppLocalizations.of(context).choose_game
+      : AppLocalizations.of(context).create_statistic;
 
   TextStyle get headerStyle => const TextStyle(
     color: CustomTheme.textColor,

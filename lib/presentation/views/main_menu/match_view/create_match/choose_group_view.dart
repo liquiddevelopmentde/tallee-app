@@ -149,7 +149,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
               child: AnimatedDialogButton(
                 buttonConstraints: const BoxConstraints(minWidth: 390),
-                buttonText: loc.create_statistic,
+                buttonText: buttonText,
                 onPressed: selectedGroups.isNotEmpty
                     ? () => submitStatistic()
                     : null,
@@ -160,6 +160,12 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
       ),
     );
   }
+
+  String get buttonText =>
+      widget.statistic != null &&
+          widget.statistic!.scopes.contains(StatisticScope.selectedGames)
+      ? AppLocalizations.of(context).choose_game
+      : AppLocalizations.of(context).create_statistic ;
 
   Future<void> submitStatistic() async {
     final statistic = widget.statistic!.copyWith(
