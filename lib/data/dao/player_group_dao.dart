@@ -55,6 +55,7 @@ class PlayerGroupDao extends DatabaseAccessor<AppDatabase>
             name: row.name,
             nameCount: row.nameCount,
             description: row.description,
+            deleted: row.deleted,
           ),
         )
         .toList();

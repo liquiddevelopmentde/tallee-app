@@ -5,14 +5,16 @@ class Player {
   final String id;
   final DateTime createdAt;
   final String name;
-  int nameCount;
   final String description;
+  final bool deleted;
+  int nameCount;
 
   Player({
+    required this.name,
+    this.deleted = false,
+    this.nameCount = 0,
     String? id,
     DateTime? createdAt,
-    required this.name,
-    this.nameCount = 0,
     String? description,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
@@ -27,15 +29,17 @@ class Player {
     String? id,
     DateTime? createdAt,
     String? name,
-    int? nameCount,
     String? description,
+    int? nameCount,
+    bool? deleted,
   }) {
     return Player(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
-      nameCount: nameCount ?? this.nameCount,
       description: description ?? this.description,
+      nameCount: nameCount ?? this.nameCount,
+      deleted: deleted ?? this.deleted,
     );
   }
 
@@ -57,13 +61,15 @@ class Player {
     : id = json['id'],
       createdAt = DateTime.parse(json['createdAt']),
       name = json['name'],
-      nameCount = 0,
-      description = json['description'];
+      description = json['description'],
+      deleted = json['deleted'],
+      nameCount = 0;
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),
     'name': name,
     'description': description,
+    'deleted': deleted,
   };
 }
