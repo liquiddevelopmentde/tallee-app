@@ -615,10 +615,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   }
 
   String get submitButtonText =>
-      selectedScope.contains(StatisticScope.selectedGroups)
-      ? AppLocalizations.of(context).choose_group
-      : selectedScope.contains(StatisticScope.selectedGames)
-      ? AppLocalizations.of(context).choose_game
+      selectedScope.contains(StatisticScope.selectedGroups) ||
+          selectedScope.contains(StatisticScope.selectedGames)
+      ? AppLocalizations.of(context).confirm
       : AppLocalizations.of(context).create_statistic;
 
   TextStyle get headerStyle => const TextStyle(

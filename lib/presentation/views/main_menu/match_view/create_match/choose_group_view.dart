@@ -164,8 +164,8 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
   String get buttonText =>
       widget.statistic != null &&
           widget.statistic!.scopes.contains(StatisticScope.selectedGames)
-      ? AppLocalizations.of(context).choose_game
-      : AppLocalizations.of(context).create_statistic ;
+      ? AppLocalizations.of(context).confirm
+      : AppLocalizations.of(context).create_statistic;
 
   Future<void> submitStatistic() async {
     final statistic = widget.statistic!.copyWith(
