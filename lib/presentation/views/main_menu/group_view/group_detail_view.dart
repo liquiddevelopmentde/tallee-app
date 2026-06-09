@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -19,7 +18,7 @@ import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class GroupDetailView extends StatefulWidget {
   /// A view that displays the profile of a group
@@ -148,9 +147,8 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     spacing: 12,
                     runSpacing: 8,
                     children: _group.members.map((member) {
-                      return TextIconTile(
-                        text: member.name,
-                        suffixText: getNameCountText(member),
+                      return PlayerTile(
+                        player: member,
                         onTileTap: () {
                           Navigator.of(context).pushReplacement(
                             adaptivePageRoute(

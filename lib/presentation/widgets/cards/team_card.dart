@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/team.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class TeamCard extends StatelessWidget {
   const TeamCard({
@@ -108,10 +108,7 @@ class TeamCard extends StatelessWidget {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       ...team.members.take(shownPlayerAmount).map((player) {
-                        return TextIconTile(
-                          text: player.name,
-                          suffixText: getNameCountText(player),
-                        );
+                        return PlayerTile(player: player);
                       }),
                       if (team.members.length > shownPlayerAmount)
                         Text(

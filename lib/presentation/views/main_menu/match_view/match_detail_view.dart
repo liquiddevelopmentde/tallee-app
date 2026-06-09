@@ -20,7 +20,7 @@ import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class MatchDetailView extends StatefulWidget {
   /// A view that displays the profile of a match
@@ -190,9 +190,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             spacing: 12,
                             runSpacing: 8,
                             children: match.players.map((player) {
-                              return TextIconTile(
-                                text: player.name,
-                                suffixText: getNameCountText(player),
+                              return PlayerTile(
+                                player: player,
                                 onTileTap: () {
                                   Navigator.of(context).pushReplacement(
                                     adaptivePageRoute(

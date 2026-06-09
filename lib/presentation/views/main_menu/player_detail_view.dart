@@ -174,6 +174,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     ),
                   ],
                 ),
+
                 // Deleted state
                 if (widget.player.deleted) ...[
                   Text(

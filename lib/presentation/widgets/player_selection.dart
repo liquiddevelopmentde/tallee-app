@@ -11,7 +11,7 @@ import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class PlayerSelection extends StatefulWidget {
@@ -151,9 +151,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                           for (var player in selectedPlayers)
                             Padding(
                               padding: const EdgeInsets.only(right: 8.0),
-                              child: TextIconTile(
-                                text: player.name,
-                                suffixText: getNameCountText(player),
+                              child: PlayerTile(
+                                player: player,
                                 onIconTap: () async {
                                   await HapticFeedback.selectionClick();
                                   setState(() {
