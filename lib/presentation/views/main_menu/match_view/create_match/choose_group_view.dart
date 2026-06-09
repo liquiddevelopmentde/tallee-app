@@ -140,17 +140,19 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                 ),
               ),
             ),
+
             // Create statistic button
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-              child: AnimatedDialogButton(
-                buttonConstraints: const BoxConstraints(minWidth: 390),
-                buttonText: buttonText,
-                onPressed: selectedGroups.isNotEmpty
-                    ? () => submitStatistic()
-                    : null,
+            if (widget.statistic != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+                child: AnimatedDialogButton(
+                  buttonConstraints: const BoxConstraints(minWidth: 390),
+                  buttonText: buttonText,
+                  onPressed: selectedGroups.isNotEmpty
+                      ? () => submitStatistic()
+                      : null,
+                ),
               ),
-            ),
           ],
         ),
       ),
