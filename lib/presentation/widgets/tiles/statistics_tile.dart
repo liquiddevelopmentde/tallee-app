@@ -221,7 +221,9 @@ class StatisticsTile extends StatelessWidget {
                             size: 20,
                           ),
                           Text(
-                            getGameText(selectedGames!),
+                            getSubtitleText(
+                              selectedGames!.map((g) => g.name).toList(),
+                            ),
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -242,7 +244,9 @@ class StatisticsTile extends StatelessWidget {
                             color: CustomTheme.hintColor,
                           ),
                           Text(
-                            getGroupText(selectedGroups!),
+                            getSubtitleText(
+                              selectedGroups!.map((g) => g.name).toList(),
+                            ),
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -362,19 +366,19 @@ class StatisticsTile extends StatelessWidget {
 
   bool get hasGame => selectedGames != null && selectedGames!.isNotEmpty;
 
-  String getGroupText(List<Group> groups) {
-    var text = groups[0].name;
-    if (groups.length > 1) {
-      return '$text + ${groups.length - 1}';
+  String getSubtitleText(List<String> names) {
+    const maxChars = 40;
+    var result = '';
+    for (var i = 0; i < names.length; i++) {
+      final separator = i == 0 ? '' : ', ';
+      final candidate = '$result$separator${names[i]}';
+      final remaining = names.length - i - 1;
+      final suffix = remaining > 0 ? ' +$remaining' : '';
+      if (candidate.length + suffix.length > maxChars && i > 0) {
+        return '$result +${names.length - i}';
+      }
+      result = candidate;
     }
-    return text;
-  }
-
-  String getGameText(List<Game> games) {
-    var text = games[0].name;
-    if (games.length > 1) {
-      return '$text + ${games.length - 1}';
-    }
-    return text;
+    return result;
   }
 }
