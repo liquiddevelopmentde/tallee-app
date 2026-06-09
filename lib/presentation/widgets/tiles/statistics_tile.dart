@@ -124,7 +124,7 @@ class StatisticsTile extends StatelessWidget {
 
                         /// Adjust bar color for highlighted overflow entries
                         final barClr = isHighlightedOverflow
-                            ? barColor.withAlpha(150)
+                            ? barColor.withAlpha(120)
                             : barColor;
 
                         const textLeftPadding = 4.0;
@@ -274,7 +274,7 @@ class StatisticsTile extends StatelessWidget {
     required bool isHighlightedOverflow,
   }) {
     final nameCountText = getNameCountText(player);
-    final textAlpha = isHighlightedOverflow ? 220 : 255;
+    final textAlpha = isHighlightedOverflow ? 150 : 255;
 
     if (barColor != getColorFromAppColor(AppColor.yellow)) {
       return RichText(
