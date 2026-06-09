@@ -95,8 +95,7 @@ class _GroupTileState extends State<GroupTile> {
                   ...widget.group.members,
                 ]..sort((a, b) => a.name.compareTo(b.name)))
                   TextIconTile(
-                    text: member.name,
-                    suffixText: getNameCountText(member),
+                    content: buildPlayerNameCountWidget(member),
                     onTileTap: () {
                       Navigator.push(
                         context,

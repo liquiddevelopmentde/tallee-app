@@ -149,8 +149,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     runSpacing: 8,
                     children: _group.members.map((member) {
                       return TextIconTile(
-                        text: member.name,
-                        suffixText: getNameCountText(member),
+                        content: buildPlayerNameCountWidget(member),
                         onTileTap: () {
                           Navigator.of(context).pushReplacement(
                             adaptivePageRoute(

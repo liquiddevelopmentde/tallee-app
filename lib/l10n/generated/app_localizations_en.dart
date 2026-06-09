@@ -58,6 +58,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Click another player to create a pair';
 
   @override
+  String get select_another_player_to_pair => 'Select another player to pair';
+
+  @override
   String get color => 'Color';
 
   @override

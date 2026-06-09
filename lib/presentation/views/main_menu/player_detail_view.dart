@@ -147,28 +147,15 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      _player.name,
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: CustomTheme.textColor,
-                      ),
-                      textAlign: TextAlign.center,
+                Center(
+                  child: buildPlayerNameCountWidget(
+                    _player,
+                    mainStyle: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: CustomTheme.textColor,
                     ),
-                    Text(
-                      playerNameCount,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: CustomTheme.textColor.withAlpha(120),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 5),
                 Text(
