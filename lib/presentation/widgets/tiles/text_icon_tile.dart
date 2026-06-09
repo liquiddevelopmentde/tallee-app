@@ -6,14 +6,16 @@ import 'package:tallee/data/models/team.dart';
 
 class TextIconTile extends StatelessWidget {
   /// A tile widget that displays text with an optional icon that can be tapped.
-  /// - [text]: The text to display in the tile.
+  /// - [player]: An optional player object to display.
+  /// - [pair]: An optional team object representing a pair of players.
+  /// - [text]: The text to display if no player or pair is provided.
   /// - [onIconTap]: The callback to be invoked when the icon is tapped.
   /// - [icon]: Optional custom icon. Defaults to [Icons.close].
+  /// - [onTileTap]: The callback to be invoked when the tile is tapped.
   const TextIconTile({
     super.key,
     this.player,
     this.text = '',
-    this.suffixText = '',
     this.pair,
     this.onIconTap,
     this.icon,
@@ -25,8 +27,6 @@ class TextIconTile extends StatelessWidget {
 
   /// The text to display if no player is provided.
   final String text;
-
-  final String suffixText;
 
   final Team? pair;
 

@@ -302,9 +302,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
           child: TextIconTile(
             player: unit.members.first,
             pair: isPaired ? unit : null,
-            icon: isPairingMode
-                ? null
-                : (isPaired ? Icons.content_cut : Icons.close),
+            icon: Icons.close,
             onTileTap:
                 !isPaired &&
                     widget.pairingEnabled &&

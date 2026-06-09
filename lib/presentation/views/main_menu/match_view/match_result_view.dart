@@ -684,7 +684,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                       maxChars: 23,
                     )
                   : TextIconListTile(
-                      text: allTeams[index].members.first.name,
+                      player: allTeams[index].members.first,
                       pair: allTeams[index].members.length > 1
                           ? allTeams[index]
                           : null,

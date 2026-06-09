@@ -6,14 +6,16 @@ import 'package:tallee/data/models/team.dart';
 
 class TextIconListTile extends StatelessWidget {
   /// A list tile widget that displays text with an optional icon button.
-  /// - [text]: The text to display in the tile.
+  /// - [player]: An optional player object to display.
+  /// - [pair]: An optional team object representing a pair of players.
+  /// - [text]: The text to display if no player or pair is provided.
   /// - [onPressed]: The callback to be invoked when the icon is pressed.
-  /// - [iconEnabled]: A boolean to determine if the icon should be displayed.
+  /// - [icon]: The icon to display in the tile.
+  /// - [color]: Optional background color for the tile.
   const TextIconListTile({
     super.key,
     this.player,
     this.text = '',
-    this.suffixText = '',
     this.pair,
     this.icon,
     this.color,
@@ -25,9 +27,6 @@ class TextIconListTile extends StatelessWidget {
 
   /// The text to display if no player is provided.
   final String text;
-
-  /// An optional suffix text to display after the main text.
-  final String suffixText;
 
   /// An optional parameter to show 2 players (a pair) in one tile
   final Team? pair;

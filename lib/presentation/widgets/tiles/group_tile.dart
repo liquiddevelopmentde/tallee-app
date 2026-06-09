@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
@@ -95,8 +94,7 @@ class _GroupTileState extends State<GroupTile> {
                   ...widget.group.members,
                 ]..sort((a, b) => a.name.compareTo(b.name)))
                   TextIconTile(
-                    text: member.name,
-                    suffixText: getNameCountText(member),
+                    player: member,
                     onTileTap: () {
                       Navigator.push(
                         context,

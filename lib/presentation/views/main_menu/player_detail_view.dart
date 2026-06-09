@@ -42,7 +42,6 @@ class PlayerDetailView extends StatefulWidget {
 class _PlayerDetailViewState extends State<PlayerDetailView> {
   late final AppDatabase db;
   late Player _player;
-  late String playerNameCount;
   bool isLoading = true;
 
   /// Total matches played by this player
@@ -77,7 +76,6 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
     super.initState();
     _player = widget.player;
     db = Provider.of<AppDatabase>(context, listen: false);
-    playerNameCount = getNameCountText(_player);
     _loadData();
   }
 
@@ -319,19 +317,14 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                         );
                         widget.callback.call();
                         setState(() {
-                          _player = Player(
+                          _player = _player.copyWith(
                             name: newName,
-                            createdAt: _player.createdAt,
-                            id: _player.id,
-                            nameCount: _player.nameCount,
-                            description: _player.description,
+                            // If there is already a player with the same name,
+                            // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
+                            nameCount: fetchedPlayerNameCount == 0
+                                ? 0
+                                : fetchedPlayerNameCount + 1,
                           );
-
-                          // If there is already a player with the same name,
-                          // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
-                          playerNameCount = fetchedPlayerNameCount == 0
-                              ? ''
-                              : ' #${fetchedPlayerNameCount + 1}';
                         });
                       }
                     }
