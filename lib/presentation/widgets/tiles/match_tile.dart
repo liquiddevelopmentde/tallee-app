@@ -8,7 +8,6 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
@@ -265,8 +264,7 @@ class _MatchTileState extends State<MatchTile> {
                 runSpacing: 6,
                 children: match.teams!.map((team) {
                   return TextIconTile(
-                    text: team.members.first.name,
-                    suffixText: getNameCountText(team.members.first),
+                    player: team.members.first,
                     pair: team.members.length > 1 ? team : null,
                   );
                 }).toList(),
@@ -287,8 +285,7 @@ class _MatchTileState extends State<MatchTile> {
                 runSpacing: 6,
                 children: players.map((player) {
                   return TextIconTile(
-                    text: player.name,
-                    suffixText: getNameCountText(player),
+                    player: player,
                     onTileTap: () {
                       Navigator.push(
                         context,
@@ -427,39 +424,21 @@ class _MatchTileState extends State<MatchTile> {
               0
         : null;
 
-    InlineSpan buildMvtSpan(Team team) {
-      if (widget.match.isTeamMatch) {
-        return TextSpan(text: team.name, style: mainStyle);
-      }
-
-      if (team.members.length <= 1) {
-        final member = team.members.first;
-        return TextSpan(
-          children: [
-            TextSpan(text: member.name, style: mainStyle),
-            TextSpan(text: getNameCountText(member), style: countStyle),
-          ],
-        );
-      }
-
-      return TextSpan(
-        children: [
-          TextSpan(text: team.members[0].name, style: mainStyle),
-          TextSpan(text: getNameCountText(team.members[0]), style: countStyle),
-          const TextSpan(text: ' & ', style: mainStyle),
-          TextSpan(text: team.members[1].name, style: mainStyle),
-          TextSpan(text: getNameCountText(team.members[1]), style: countStyle),
-        ],
-      );
-    }
-
     return Text.rich(
       TextSpan(
         style: const TextStyle(color: CustomTheme.textColor),
         children: [
           for (var i = 0; i < mvt.length; i++) ...[
             if (i > 0) const TextSpan(text: ', ', style: mainStyle),
-            buildMvtSpan(mvt[i]),
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: buildUnitNameWidget(
+                mvt[i],
+                isTeamMatch: widget.match.isTeamMatch,
+                mainStyle: mainStyle,
+                countStyle: countStyle,
+              ),
+            ),
           ],
           if (score != null)
             TextSpan(text: ' (${getPointLabel(loc, score)})', style: mainStyle),

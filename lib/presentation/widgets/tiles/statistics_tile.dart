@@ -140,41 +140,24 @@ class StatisticsTile extends StatelessWidget {
                                 // Player
                                 Padding(
                                   padding: const EdgeInsets.only(left: 4.0),
-                                  child: RichText(
-                                    maxLines: 1,
-                                    softWrap: false,
-                                    overflow: TextOverflow.ellipsis,
-                                    text: TextSpan(
-                                      style: DefaultTextStyle.of(context).style,
-                                      children: [
-                                        TextSpan(
-                                          text: displayValues[index].$1.name,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: textClr,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: getNameCountText(
-                                            displayValues[index].$1,
-                                          ),
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                (barColor ==
-                                                            getColorFromAppColor(
-                                                              AppColor.yellow,
-                                                            )
-                                                        ? const Color(
-                                                            0xFF101010,
-                                                          )
-                                                        : CustomTheme.textColor)
-                                                    .withAlpha(150),
-                                          ),
-                                        ),
-                                      ],
+                                  child: buildUnitNameWidget(
+                                    displayValues[index].$1,
+                                    mainStyle: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: textClr,
+                                    ),
+                                    countStyle: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          (barColor ==
+                                                      getColorFromAppColor(
+                                                        AppColor.yellow,
+                                                      )
+                                                  ? const Color(0xFF101010)
+                                                  : CustomTheme.textColor)
+                                              .withAlpha(150),
                                     ),
                                   ),
                                 ),

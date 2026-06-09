@@ -27,12 +27,6 @@ class Team {
     return 'Team{id: $id, name: $name, color: $color, score: $score, members: $members}';
   }
 
-  String get displayName => name.isNotEmpty
-      ? name
-      : members
-            .map((m) => m.nameCount != 0 ? '${m.name} #${m.nameCount}' : m.name)
-            .join(' & ');
-
   Team copyWith({
     String? id,
     String? name,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -191,9 +190,10 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                 isPairingMode
                     ? loc.click_another_player_to_create_a_pair
                     : loc.selected_players,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color: isPairingMode ? CustomTheme.primaryColor : null,
                 ),
               ),
             ],
@@ -239,27 +239,22 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                 child: ListView.builder(
                   itemCount: suggestedPlayers.length,
                   itemBuilder: (BuildContext context, int index) {
+                    final player = suggestedPlayers[index];
                     return TextIconListTile(
-                      text: suggestedPlayers[index].name,
-                      suffixText: getNameCountText(suggestedPlayers[index]),
+                      player: player,
                       icon: Icons.add,
                       onPressed: () async {
                         await HapticFeedback.selectionClick();
                         setState(() {
                           // If the player is not already selected
-                          if (!selectedPlayers.contains(
-                            suggestedPlayers[index],
-                          )) {
+                          if (!selectedPlayers.contains(player)) {
                             // Add player as a new unit
                             selectedUnits.insert(
                               0,
-                              Team(
-                                name: '',
-                                members: [suggestedPlayers[index]],
-                              ),
+                              Team(name: '', members: [player]),
                             );
                             // Remove the player from the suggestedPlayers
-                            suggestedPlayers.remove(suggestedPlayers[index]);
+                            suggestedPlayers.remove(player);
                             // Notify parent
                             widget.onChanged(selectedPlayers, selectedUnits);
                           }
@@ -305,10 +300,11 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                 )
               : null,
           child: TextIconTile(
-            text: unit.members.first.name,
-            suffixText: getNameCountText(unit.members.first),
+            player: unit.members.first,
             pair: isPaired ? unit : null,
-            icon: isPaired ? Icons.content_cut : Icons.close,
+            icon: isPairingMode
+                ? null
+                : (isPaired ? Icons.content_cut : Icons.close),
             onTileTap:
                 !isPaired &&
                     widget.pairingEnabled &&

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -147,9 +146,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
-                    children: _group.members.map((member) {
+                    children: _group.members.map<Widget>((member) {
                       return TextIconTile(
-                        content: buildPlayerNameCountWidget(member),
+                        player: member,
                         onTileTap: () {
                           Navigator.of(context).pushReplacement(
                             adaptivePageRoute(

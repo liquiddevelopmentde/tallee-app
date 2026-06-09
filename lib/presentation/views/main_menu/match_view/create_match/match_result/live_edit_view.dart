@@ -53,37 +53,26 @@ class _LiveEditViewState extends State<LiveEditView> {
   }
 
   Widget buildLiveEditWidget() {
-    if (widget.match.isTeamMatch) {
+    if (widget.match.useTeamLogic) {
       return ListView.builder(
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
+          final team = allTeams[index];
           return LiveEditListTile(
-            title: Text(
-              allTeams[index].name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            onChanged: (value) {
-              scores[index] = value;
-            },
-            value: scores[index],
-            color: getColorFromAppColor(allTeams[index].color),
-          );
-        },
-      );
-    } else if (!widget.match.isTeamMatch &&
-        (widget.match.teams?.isNotEmpty ?? false)) {
-      return ListView.builder(
-        itemCount: allTeams.length,
-        itemBuilder: (context, index) {
-          return LiveEditListTile(
-            title: buildPairgameNameWidget(
-              allTeams[index],
+            title: buildUnitNameWidget(
+              team,
+              isTeamMatch: widget.match.isTeamMatch,
               rowAlignment: MainAxisAlignment.center,
+              mainStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
             onChanged: (value) {
               scores[index] = value;
             },
             value: scores[index],
+            color: getColorFromAppColor(team.color),
           );
         },
       );
@@ -92,9 +81,12 @@ class _LiveEditViewState extends State<LiveEditView> {
         itemCount: allPlayers.length,
         itemBuilder: (context, index) {
           return LiveEditListTile(
-            title: Text(
-              allPlayers[index].name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            title: buildUnitNameWidget(
+              allPlayers[index],
+              mainStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
             onChanged: (value) {
               setState(() {

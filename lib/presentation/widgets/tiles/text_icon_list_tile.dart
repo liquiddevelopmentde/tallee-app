@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 
 class TextIconListTile extends StatelessWidget {
@@ -10,7 +11,8 @@ class TextIconListTile extends StatelessWidget {
   /// - [iconEnabled]: A boolean to determine if the icon should be displayed.
   const TextIconListTile({
     super.key,
-    required this.text,
+    this.player,
+    this.text = '',
     this.suffixText = '',
     this.pair,
     this.icon,
@@ -18,7 +20,10 @@ class TextIconListTile extends StatelessWidget {
     this.onPressed,
   });
 
-  /// The text to display in the tile.
+  /// An optional player object to display.
+  final Player? player;
+
+  /// The text to display if no player is provided.
   final String text;
 
   /// An optional suffix text to display after the main text.
@@ -55,87 +60,21 @@ class TextIconListTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: [
-          if (pair == null) ...[
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 12.5),
-              child: RichText(
-                text: TextSpan(
-                  style: DefaultTextStyle.of(context).style,
-                  children: [
-                    TextSpan(
-                      text: text,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    TextSpan(
-                      text: suffixText,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: CustomTheme.textColor.withAlpha(100),
-                      ),
-                    ),
-                  ],
-                ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 12.5),
+            child: buildUnitNameWidget(
+              pair ?? player ?? Player(name: text, nameCount: 0),
+              mainStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+              countStyle: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: CustomTheme.textColor.withAlpha(100),
               ),
             ),
-          ] else ...[
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 12.5),
-              child: Row(
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      style: DefaultTextStyle.of(context).style,
-                      children: [
-                        TextSpan(
-                          text: pair!.members[0].name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        TextSpan(
-                          text: getNameCountText(pair!.members[0]),
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            color: CustomTheme.textColor.withAlpha(100),
-                          ),
-                        ),
-                        const TextSpan(
-                          text: ' & ',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        TextSpan(
-                          text: pair!.members[1].name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        TextSpan(
-                          text: getNameCountText(pair!.members[1]),
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            color: CustomTheme.textColor.withAlpha(100),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  const Icon(Icons.link),
-                ],
-              ),
-            ),
-          ],
+          ),
           if (icon != null)
             GestureDetector(onTap: onPressed, child: Icon(icon, size: 20)),
         ],

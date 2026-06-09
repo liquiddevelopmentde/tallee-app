@@ -58,9 +58,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Click another player to create a pair';
 
   @override
-  String get select_another_player_to_pair => 'Select another player to pair';
-
-  @override
   String get color => 'Color';
 
   @override
@@ -492,6 +489,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get select_a_timeframe => 'Select a timeframe';
+
+  @override
+  String get select_another_player_to_pair => 'Select another player to pair';
 
   @override
   String get select_loser => 'Select Loser';

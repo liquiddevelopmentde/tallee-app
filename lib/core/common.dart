@@ -5,7 +5,6 @@ import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
-import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 /// Translates a [Ruleset] enum value to its corresponding localized string.
@@ -167,7 +166,7 @@ InlineSpan buildPlayerNameCountSpan(
 
 /// Builds a text widget that renders a player's name together with the
 /// `#nameCount` suffix.
-Widget buildPlayerNameCountWidget(
+Widget _buildPlayerNameCountWidget(
   Player player, {
   TextStyle? mainStyle,
   TextStyle? countStyle,
@@ -190,58 +189,100 @@ String getPointLabel(AppLocalizations loc, int points) {
   }
 }
 
+/// Builds a name display widget for a "Participating Unit" (Player or Team/Pair).
+/// Handles teams, pairs, and individual players with consistent styling.
+Widget buildUnitNameWidget(
+  dynamic unit, {
+  bool isTeamMatch = false,
+  MainAxisAlignment rowAlignment = MainAxisAlignment.start,
+  TextStyle? mainStyle,
+  TextStyle? countStyle,
+}) {
+  if (unit is Team) {
+    if (isTeamMatch) {
+      return Text(
+        unit.name,
+        style:
+            mainStyle ??
+            const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: CustomTheme.textColor,
+            ),
+        overflow: TextOverflow.ellipsis,
+      );
+    } else {
+      return _buildPairgameNameWidget(
+        unit,
+        rowAlignment: rowAlignment,
+        mainStyle: mainStyle,
+        countStyle: countStyle,
+      );
+    }
+  } else if (unit is Player) {
+    return _buildPlayerNameCountWidget(
+      unit,
+      mainStyle: mainStyle,
+      countStyle: countStyle,
+    );
+  }
+  return const SizedBox.shrink();
+}
+
 /// Builds the name display used in several tiles when a pair is part of a match.
 ///
 /// Shows either "PlayerA (count) & PlayerB (count)" with a link icon for pairs
 /// or a single player's name with the count for single players.
-Widget buildPairgameNameWidget(
+Widget _buildPairgameNameWidget(
   Team team, {
   MainAxisAlignment rowAlignment = MainAxisAlignment.start,
+  TextStyle? mainStyle,
+  TextStyle? countStyle,
 }) {
-  const mainStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+  final resolvedMainStyle =
+      mainStyle ?? const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
 
-  final countStyle = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-    color: CustomTheme.textColor.withAlpha(100),
-  );
+  final resolvedCountStyle =
+      countStyle ??
+      TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: CustomTheme.textColor.withAlpha(100),
+      );
+
   return Row(
     mainAxisAlignment: rowAlignment,
+    mainAxisSize: MainAxisSize.min,
     children: [
       if (team.members.length > 1) ...[
         RichText(
           text: TextSpan(
             style: const TextStyle(color: CustomTheme.textColor),
             children: [
-              TextSpan(text: team.members[0].name, style: mainStyle),
-              TextSpan(
-                text: getNameCountText(team.members[0]),
-                style: countStyle,
+              buildPlayerNameCountSpan(
+                team.members[0],
+                mainStyle: resolvedMainStyle,
+                countStyle: resolvedCountStyle,
               ),
-              const TextSpan(text: ' & ', style: mainStyle),
-              TextSpan(text: team.members[1].name, style: mainStyle),
-              TextSpan(
-                text: getNameCountText(team.members[1]),
-                style: countStyle,
+              TextSpan(text: ' & ', style: resolvedMainStyle),
+              buildPlayerNameCountSpan(
+                team.members[1],
+                mainStyle: resolvedMainStyle,
+                countStyle: resolvedCountStyle,
               ),
             ],
           ),
         ),
         const SizedBox(width: 5),
-        const Icon(Icons.link),
-      ] else ...[
-        RichText(
-          text: TextSpan(
-            style: const TextStyle(color: CustomTheme.textColor),
-            children: [
-              TextSpan(text: team.members.first.name, style: mainStyle),
-              TextSpan(
-                text: getNameCountText(team.members.first),
-                style: countStyle,
-              ),
-            ],
-          ),
+        const Icon(Icons.link, size: 18),
+      ] else if (team.members.isNotEmpty) ...[
+        _buildPlayerNameCountWidget(
+          team.members.first,
+          mainStyle: resolvedMainStyle,
+          countStyle: resolvedCountStyle,
         ),
+      ] else ...[
+        Text(team.name, style: resolvedMainStyle),
       ],
     ],
   );

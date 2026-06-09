@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 
 class TextIconTile extends StatelessWidget {
@@ -10,15 +11,19 @@ class TextIconTile extends StatelessWidget {
   /// - [icon]: Optional custom icon. Defaults to [Icons.close].
   const TextIconTile({
     super.key,
-    required this.text,
+    this.player,
+    this.text = '',
     this.suffixText = '',
     this.pair,
     this.onIconTap,
-    this.icon = Icons.close,
+    this.icon,
     this.onTileTap,
   });
 
-  /// The text to display in the tile.
+  /// An optional player object to display.
+  final Player? player;
+
+  /// The text to display if no player is provided.
   final String text;
 
   final String suffixText;
@@ -28,15 +33,15 @@ class TextIconTile extends StatelessWidget {
   /// The callback to be invoked when the icon is tapped.
   final VoidCallback? onIconTap;
 
-  /// The icon to display. Defaults to [Icons.close].
-  final IconData icon;
+  /// The icon to display.
+  final IconData? icon;
 
   /// The callback to be invoked when the tile is tapped.
   final VoidCallback? onTileTap;
 
   @override
   Widget build(BuildContext context) {
-    final iconEnabled = onIconTap != null;
+    final iconEnabled = onIconTap != null && icon != null;
 
     return GestureDetector(
       onTap: onTileTap,
@@ -52,76 +57,22 @@ class TextIconTile extends StatelessWidget {
           children: [
             if (iconEnabled) const SizedBox(width: 3),
             Flexible(
-              child: RichText(
-                overflow: TextOverflow.ellipsis,
-                text: TextSpan(
-                  style: DefaultTextStyle.of(context).style,
-                  children: [
-                    if (pair == null) ...[
-                      TextSpan(
-                        text: text,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      TextSpan(
-                        text: suffixText,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: CustomTheme.textColor.withAlpha(100),
-                        ),
-                      ),
-                    ] else ...[
-                      TextSpan(
-                        text: pair!.members[0].name,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      TextSpan(
-                        text: getNameCountText(pair!.members[0]),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: CustomTheme.textColor.withAlpha(100),
-                        ),
-                      ),
-                      const TextSpan(
-                        text: ' & ',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      TextSpan(
-                        text: pair!.members[1].name,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      TextSpan(
-                        text: getNameCountText(pair!.members[1]),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: CustomTheme.textColor.withAlpha(100),
-                        ),
-                      ),
-                    ],
-                  ],
+              child: buildUnitNameWidget(
+                pair ?? player ?? Player(name: text, nameCount: 0),
+                mainStyle: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                countStyle: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: CustomTheme.textColor.withAlpha(100),
                 ),
               ),
             ),
             if (iconEnabled) ...<Widget>[
               const SizedBox(width: 3),
-              GestureDetector(
-                onTap: onIconTap,
-                child: const Icon(Icons.close, size: 20),
-              ),
+              GestureDetector(onTap: onIconTap, child: Icon(icon!, size: 20)),
             ],
           ],
         ),

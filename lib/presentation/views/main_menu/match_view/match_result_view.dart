@@ -63,9 +63,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   final Set<Player> _selectedPlayers = {};
   final Set<Team> _selectedTeams = {};
 
-  bool get useTeamLogic =>
-      isTeamMatch ||
-      !widget.match.isTeamMatch && (widget.match.teams?.isNotEmpty ?? false);
+  bool get useTeamLogic => widget.match.useTeamLogic;
 
   @override
   void initState() {
@@ -461,7 +459,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   Widget buildSinglePlayerSelectionWidget() {
-    if (widget.match.isTeamMatch) {
+    if (useTeamLogic) {
       return RadioGroup<Team>(
         groupValue: _selectedTeam,
         onChanged: (Team? team) async {
@@ -474,40 +472,9 @@ class _MatchResultViewState extends State<MatchResultView> {
           itemCount: allTeams.length,
           itemBuilder: (context, index) {
             return CustomRadioListTile(
-              content: TeamCard(team: allTeams[index], maxChars: 24),
-              value: allTeams[index],
-              onContainerTap: (team) async {
-                setState(() {
-                  // Check if the already selected player is the same as the newly tapped player.
-                  if (_selectedTeam == team) {
-                    // If yes deselected the player by setting it to null.
-                    _selectedTeam = null;
-                  } else {
-                    // If no assign the newly tapped player to the selected player.
-                    (_selectedTeam = team);
-                  }
-                });
-              },
-            );
-          },
-        ),
-      );
-    } else if (!widget.match.isTeamMatch &&
-        (widget.match.teams?.isNotEmpty ?? false)) {
-      // pair mode
-      return RadioGroup<Team>(
-        groupValue: _selectedTeam,
-        onChanged: (Team? team) async {
-          setState(() {
-            _selectedTeam = team;
-          });
-        },
-        child: ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: allTeams.length,
-          itemBuilder: (context, index) {
-            return CustomRadioListTile(
-              content: buildPairgameNameWidget(allTeams[index]),
+              content: widget.match.isTeamMatch
+                  ? TeamCard(team: allTeams[index], maxChars: 24)
+                  : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
               value: allTeams[index],
               onContainerTap: (team) async {
                 setState(() {
@@ -538,10 +505,9 @@ class _MatchResultViewState extends State<MatchResultView> {
           itemCount: allPlayers.length,
           itemBuilder: (context, index) {
             return CustomRadioListTile(
-              content: Text(
-                allPlayers[index].name,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+              content: buildUnitNameWidget(
+                allPlayers[index],
+                mainStyle: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
@@ -567,31 +533,14 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   Widget buildScoreEntryWidget() {
-    if (widget.match.isTeamMatch) {
+    if (useTeamLogic) {
       return ListView.separated(
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return ScoreListTile(
-            content: TeamCard(team: allTeams[index], width: 220, maxChars: 16),
-            horizontalPadding: 0,
-            controller: controller[index],
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Divider(indent: 20),
-          );
-        },
-      );
-    } else if (!widget.match.isTeamMatch &&
-        (widget.match.teams?.isNotEmpty ?? false)) {
-      //pair mode
-      return ListView.separated(
-        itemCount: allTeams.length,
-        itemBuilder: (context, index) {
-          return ScoreListTile(
-            content: buildPairgameNameWidget(allTeams[index]),
+            content: widget.match.isTeamMatch
+                ? TeamCard(team: allTeams[index], width: 220, maxChars: 16)
+                : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
             horizontalPadding: 0,
             controller: controller[index],
           );
@@ -608,10 +557,12 @@ class _MatchResultViewState extends State<MatchResultView> {
         itemCount: allPlayers.length,
         itemBuilder: (context, index) {
           return ScoreListTile(
-            content: Text(
-              allPlayers[index].name,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+            content: buildUnitNameWidget(
+              allPlayers[index],
+              mainStyle: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             controller: controller[index],
           );
@@ -682,12 +633,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       );
     }
 
-    final int itemCount =
-        widget.match.isTeamMatch ||
-            !widget.match.isTeamMatch &&
-                (widget.match.teams?.isNotEmpty ?? false)
-        ? allTeams.length
-        : allPlayers.length;
+    final int itemCount = useTeamLogic ? allTeams.length : allPlayers.length;
     final fixedPlacementCol = SizedBox(
       width: 58,
       child: ListView.builder(
@@ -706,7 +652,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
     late final Expanded valueCol;
 
-    if (widget.match.isTeamMatch) {
+    if (useTeamLogic) {
       valueCol = Expanded(
         child: ReorderableListView.builder(
           scrollController: valueController,
@@ -726,45 +672,24 @@ class _MatchResultViewState extends State<MatchResultView> {
             return SizedBox(
               key: ValueKey(allTeams[index].id),
               height: rowHeight,
-              child: TeamCard(
-                margin: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
-                showDragHandle: true,
-                team: allTeams[index],
-                maxChars: 23,
-              ),
-            );
-          },
-        ),
-      );
-    } else if (!widget.match.isTeamMatch &&
-        (widget.match.teams?.isNotEmpty ?? false)) {
-      //pair mode
-      valueCol = Expanded(
-        child: ReorderableListView.builder(
-          scrollController: valueController,
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: EdgeBlockedBouncingScrollPhysics(),
-          ),
-          padding: EdgeInsets.zero,
-          proxyDecorator: buildProxyDecorator,
-          onReorderItem: (int oldIndex, int newIndex) {
-            setState(() {
-              final Team team = allTeams.removeAt(oldIndex);
-              allTeams.insert(newIndex, team);
-            });
-          },
-          itemCount: itemCount,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              key: ValueKey(allTeams[index].id),
-              height: rowHeight,
-              child: TextIconListTile(
-                text: allTeams[index].displayName,
-                pair: allTeams[index].members.length > 1
-                    ? allTeams[index]
-                    : null,
-                icon: Icons.drag_handle,
-              ),
+              child: widget.match.isTeamMatch
+                  ? TeamCard(
+                      margin: const EdgeInsets.only(
+                        left: 10,
+                        top: 5,
+                        bottom: 5,
+                      ),
+                      showDragHandle: true,
+                      team: allTeams[index],
+                      maxChars: 23,
+                    )
+                  : TextIconListTile(
+                      text: allTeams[index].members.first.name,
+                      pair: allTeams[index].members.length > 1
+                          ? allTeams[index]
+                          : null,
+                      icon: Icons.drag_handle,
+                    ),
             );
           },
         ),
@@ -790,7 +715,7 @@ class _MatchResultViewState extends State<MatchResultView> {
               key: ValueKey(allPlayers[index].id),
               height: rowHeight,
               child: TextIconListTile(
-                text: allPlayers[index].name,
+                player: allPlayers[index],
                 icon: Icons.drag_handle,
               ),
             );
@@ -831,34 +756,15 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   Widget buildMultipleWinnerSelectionWidget() {
-    if (widget.match.isTeamMatch) {
+    if (useTeamLogic) {
       return ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return CustomCheckboxListTile(
-            content: TeamCard(team: allTeams[index], maxChars: 24),
-            value: _selectedTeams.contains(allTeams[index]),
-            onChanged: (bool value) {
-              setState(() {
-                if (value) {
-                  _selectedTeams.add(allTeams[index]);
-                } else {
-                  _selectedTeams.remove(allTeams[index]);
-                }
-              });
-            },
-          );
-        },
-      );
-    } else if (!widget.match.isTeamMatch &&
-        (widget.match.teams?.isNotEmpty ?? false)) {
-      return ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: allTeams.length,
-        itemBuilder: (context, index) {
-          return CustomCheckboxListTile(
-            content: buildPairgameNameWidget(allTeams[index]),
+            content: widget.match.isTeamMatch
+                ? TeamCard(team: allTeams[index], maxChars: 24)
+                : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
             value: _selectedTeams.contains(allTeams[index]),
             onChanged: (bool value) {
               setState(() {
@@ -878,10 +784,12 @@ class _MatchResultViewState extends State<MatchResultView> {
         itemCount: allPlayers.length,
         itemBuilder: (context, index) {
           return CustomCheckboxListTile(
-            content: Text(
-              allPlayers[index].name,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            content: buildUnitNameWidget(
+              allPlayers[index],
+              mainStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             value: _selectedPlayers.contains(allPlayers[index]),
             onChanged: (bool value) {
@@ -898,8 +806,6 @@ class _MatchResultViewState extends State<MatchResultView> {
       );
     }
   }
-
-  // buildPairgameNameWidget moved to `lib/core/common.dart` as a shared helper.
 
   // Returns a copy of the current match with updated scores based on the text entered in the score entry fields.
   Match getMatchWithUnsavedScores() {

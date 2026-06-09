@@ -44,14 +44,14 @@ class TeamCard extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Text(
-                team.displayName,
-                style: const TextStyle(
+              child: buildUnitNameWidget(
+                team,
+                isTeamMatch: true,
+                mainStyle: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
             ),
             const SizedBox(width: 8),
@@ -92,11 +92,10 @@ class TeamCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 3,
                 children: [
-                  Text(
-                    team.displayName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                  buildUnitNameWidget(
+                    team,
+                    isTeamMatch: true,
+                    mainStyle: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: CustomTheme.textColor,
@@ -109,10 +108,7 @@ class TeamCard extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         ...team.members.take(shownPlayerAmount).map((player) {
-                          return TextIconTile(
-                            text: player.name,
-                            suffixText: getNameCountText(player),
-                          );
+                          return TextIconTile(player: player);
                         }),
                         if (team.members.length > shownPlayerAmount)
                           Text(

@@ -148,7 +148,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
                 const SizedBox(height: 10),
                 Center(
-                  child: buildPlayerNameCountWidget(
+                  child: buildUnitNameWidget(
                     _player,
                     mainStyle: const TextStyle(
                       fontSize: 28,
