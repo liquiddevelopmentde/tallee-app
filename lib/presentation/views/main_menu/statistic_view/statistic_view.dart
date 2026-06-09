@@ -141,83 +141,39 @@ class _StatisticsViewState extends State<StatisticsView> {
             ),
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom + 20,
-              child: Row(
-                spacing: 8,
-                children: [
-                  if (statistics.isEmpty)
-                    MainMenuButton(
-                      text: 'Demo hinzufügen',
-                      icon: Icons.bar_chart,
-                      onPressed: () => createExampleStatistics(),
+              child: MainMenuButton(
+                text: loc.create_statistic,
+                icon: Icons.bar_chart,
+                onPressed: () async {
+                  if (!mounted) return;
+                  final navigator = Navigator.of(this.context);
+                  await navigator.push<Statistic>(
+                    adaptivePageRoute(
+                      builder: (context) => CreateStatisticView(
+                        onStatisticCreated: (newStats) {
+                          if (!mounted) return;
+                          setState(() {
+                            statistics = [...newStats, ...statistics];
+                            statisticTiles = statistics
+                                .map(
+                                  (stat) => buildStatisticTile(
+                                    context: context,
+                                    statistic: stat,
+                                  ),
+                                )
+                                .toList();
+                          });
+                        },
+                      ),
                     ),
-                  MainMenuButton(
-                    text: statistics.isNotEmpty ? loc.create_statistic : null,
-                    icon: statistics.isNotEmpty ? Icons.bar_chart : Icons.add,
-                    onPressed: () async {
-                      if (!mounted) return;
-                      final navigator = Navigator.of(this.context);
-                      await navigator.push<Statistic>(
-                        adaptivePageRoute(
-                          builder: (context) => CreateStatisticView(
-                            onStatisticCreated: (newStats) {
-                              if (!mounted) return;
-                              setState(() {
-                                statistics = [...newStats, ...statistics];
-                                statisticTiles = statistics
-                                    .map(
-                                      (stat) => buildStatisticTile(
-                                        context: context,
-                                        statistic: stat,
-                                      ),
-                                    )
-                                    .toList();
-                              });
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ],
         );
       },
     );
-  }
-
-  /// Creates example statistics
-  void createExampleStatistics() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    final stat1 = Statistic(
-      type: StatisticType.totalWins,
-      color: AppColor.blue,
-      displayCount: 3,
-      scopes: [StatisticScope.allPlayers],
-    );
-    final stat2 = Statistic(
-      type: StatisticType.averageScore,
-      color: AppColor.pink,
-      displayCount: 5,
-      scopes: [StatisticScope.allPlayers],
-    );
-    final stat3 = Statistic(
-      type: StatisticType.averageScore,
-      color: AppColor.green,
-      displayCount: 8,
-      scopes: [StatisticScope.allPlayers],
-    );
-    await db.statisticDao.addStatisticsAsList(
-      statistics: [stat1, stat2, stat3],
-    );
-
-    statistics = [stat1, stat2, stat3];
-    setState(() {
-      statisticTiles = statistics
-          .map((stat) => buildStatisticTile(context: context, statistic: stat))
-          .toList();
-    });
   }
 
   /// Loads all statistics, matches, and players from the database
