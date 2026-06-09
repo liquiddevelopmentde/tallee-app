@@ -64,9 +64,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
         leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(
-              context,
-            ).pop(selectedGroups.isEmpty ? null : selectedGroups.first);
+            Navigator.of(context).pop(popResult);
           },
         ),
         title: Text(loc.choose_group),
@@ -79,9 +77,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
           if (didPop) {
             return;
           }
-          Navigator.of(
-            context,
-          ).pop(selectedGroups.isEmpty ? null : selectedGroups.first);
+          Navigator.of(context).pop(popResult);
         },
         child: Column(
           children: [
@@ -166,6 +162,11 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
           widget.statistic!.scopes.contains(StatisticScope.selectedGames)
       ? AppLocalizations.of(context).confirm
       : AppLocalizations.of(context).create_statistic;
+
+  Object? get popResult {
+    if (widget.statistic != null) return null;
+    return selectedGroups.isEmpty ? null : selectedGroups.first;
+  }
 
   Future<void> submitStatistic() async {
     final statistic = widget.statistic!.copyWith(
