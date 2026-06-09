@@ -125,6 +125,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
 
               InfoTile(
                 icon: Icons.filter_alt,
+                width: MediaQuery.sizeOf(context).width * 0.95,
                 title: loc.filter,
                 content: Column(
                   spacing: 8,
