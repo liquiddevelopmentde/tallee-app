@@ -189,12 +189,12 @@ class StatisticCalculator {
           players.map((p) {
             final scores = _scoresOf(p, matches);
             final avg = scores.isEmpty
-                ? 0.0
+                ? 0
                 : double.parse(
                     (scores.reduce((a, b) => a + b) / scores.length)
                         .toStringAsFixed(2),
                   );
-            return (p, avg as num);
+            return (p, avg);
           }).toList(),
         );
 

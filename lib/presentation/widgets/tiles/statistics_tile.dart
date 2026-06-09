@@ -176,12 +176,7 @@ class StatisticsTile extends StatelessWidget {
                               // Value
                               Center(
                                 child: Text(
-                                  displayValues[index].$2 <= 1 &&
-                                          displayValues[index].$2 is double
-                                      ? displayValues[index].$2.toStringAsFixed(
-                                          2,
-                                        )
-                                      : displayValues[index].$2.toString(),
+                                  formatValue(displayValues[index].$2),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 16,
@@ -263,6 +258,14 @@ class StatisticsTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String formatValue(num value) {
+    if (value is double) {
+      return value.toStringAsFixed(1);
+    } else {
+      return value.toString();
+    }
   }
 
   Widget playerText({
