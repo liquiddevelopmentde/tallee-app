@@ -21,7 +21,7 @@ class PlayerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextIconTile(
       text: player.name,
-      italic: player.deleted,
+      highlighted: player.deleted,
       suffixText: getNameCountText(player),
       onIconTap: onIconTap,
       onTileTap: onTileTap,

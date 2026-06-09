@@ -15,7 +15,7 @@ class TextIconTile extends StatelessWidget {
     this.onIconTap,
     this.icon = Icons.close,
     this.onTileTap,
-    this.italic = false,
+    this.highlighted = false,
   });
 
   final String text;
@@ -23,7 +23,7 @@ class TextIconTile extends StatelessWidget {
   final VoidCallback? onIconTap;
   final IconData icon;
   final VoidCallback? onTileTap;
-  final bool italic;
+  final bool highlighted;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,9 @@ class TextIconTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: CustomTheme.onBoxColor,
+          color: highlighted
+              ? CustomTheme.onBoxColor.withAlpha((250 * 0.6).round())
+              : CustomTheme.onBoxColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -51,9 +53,13 @@ class TextIconTile extends StatelessWidget {
                     TextSpan(
                       text: text,
                       style: TextStyle(
-                        fontStyle: italic ? FontStyle.italic : FontStyle.normal,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
+                        color: highlighted
+                            ? CustomTheme.textColor.withAlpha(
+                                (250 * 0.6).round(),
+                              )
+                            : CustomTheme.textColor,
                       ),
                     ),
                     TextSpan(
@@ -61,7 +67,11 @@ class TextIconTile extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: CustomTheme.textColor.withAlpha(120),
+                        color: highlighted
+                            ? CustomTheme.textColor.withAlpha(
+                                (120 * 0.6).round(),
+                              )
+                            : CustomTheme.textColor.withAlpha(120),
                       ),
                     ),
                   ],
