@@ -70,6 +70,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get color_red => 'Rot';
 
   @override
+  String get delete_statistic => 'Statistik löschen';
+
+  @override
   String get color_teal => 'Türkis';
 
   @override

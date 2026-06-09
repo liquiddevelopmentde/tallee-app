@@ -59,6 +59,7 @@
   "delete_group": "Gruppe löschen",
   "delete_match": "Spiel löschen",
   "delete_player": "Spieler:in löschen",
+  "delete_statistic": "Statistik löschen",
   "description": "Beschreibung",
   "displayed_entries": "Angezeigte Einträge",
   "drag_to_set_placement": "Ziehen um Platzierung zu setzen",

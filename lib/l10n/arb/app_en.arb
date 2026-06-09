@@ -59,6 +59,7 @@
   "delete_group": "Delete Group",
   "delete_match": "Delete Match",
   "delete_player": "Delete player?",
+  "delete_statistic": "Delete statistic",
   "description": "Description",
   "displayed_entries": "Displayed entries",
   "drag_to_set_placement": "Drag to set placement",

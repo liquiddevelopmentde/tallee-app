@@ -218,6 +218,12 @@ abstract class AppLocalizations {
   /// **'Red'**
   String get color_red;
 
+  /// No description provided for @delete_statistic.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete statistic'**
+  String get delete_statistic;
+
   /// No description provided for @color_teal.
   ///
   /// In en, this message translates to:
