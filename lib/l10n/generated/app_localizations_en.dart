@@ -70,9 +70,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get color_red => 'Red';
 
   @override
-  String get delete_statistic => 'Delete statistic';
-
-  @override
   String get color_teal => 'Teal';
 
   @override
@@ -158,6 +155,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete_player => 'Delete player?';
+
+  @override
+  String get delete_statistic => 'Delete statistic';
 
   @override
   String get description => 'Description';

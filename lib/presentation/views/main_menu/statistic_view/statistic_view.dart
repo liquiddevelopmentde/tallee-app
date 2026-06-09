@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
@@ -19,7 +18,6 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/create_statistic_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
 import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -70,17 +68,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                   child: TopCenteredMessage(
                     icon: Icons.info,
                     title: loc.info,
-                    content: Skeleton.unite(
-                      child: Column(
-                        children: [
-                          Text(loc.no_statistics_created_yet),
-                          AnimatedDialogButton(
-                            buttonText: loc.create_example_statistics,
-                            onPressed: () => createExampleStatistics(),
-                          ),
-                        ],
-                      ),
-                    ),
+                    content: Text(loc.no_statistics_created_yet),
                   ),
                 ),
                 child: ReorderableListView.builder(
@@ -153,33 +141,44 @@ class _StatisticsViewState extends State<StatisticsView> {
             ),
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom + 20,
-              child: MainMenuButton(
-                text: loc.create_statistic,
-                icon: Icons.bar_chart,
-                onPressed: () async {
-                  if (!mounted) return;
-                  final navigator = Navigator.of(this.context);
-                  await navigator.push<Statistic>(
-                    adaptivePageRoute(
-                      builder: (context) => CreateStatisticView(
-                        onStatisticCreated: (newStats) {
-                          if (!mounted) return;
-                          setState(() {
-                            statistics = [...newStats, ...statistics];
-                            statisticTiles = statistics
-                                .map(
-                                  (stat) => buildStatisticTile(
-                                    context: context,
-                                    statistic: stat,
-                                  ),
-                                )
-                                .toList();
-                          });
-                        },
-                      ),
+              child: Row(
+                spacing: 8,
+                children: [
+                  if (statistics.isEmpty)
+                    MainMenuButton(
+                      text: 'Demo hinzufügen',
+                      icon: Icons.bar_chart,
+                      onPressed: () => createExampleStatistics(),
                     ),
-                  );
-                },
+                  MainMenuButton(
+                    text: statistics.isNotEmpty ? loc.create_statistic : null,
+                    icon: statistics.isNotEmpty ? Icons.bar_chart : Icons.add,
+                    onPressed: () async {
+                      if (!mounted) return;
+                      final navigator = Navigator.of(this.context);
+                      await navigator.push<Statistic>(
+                        adaptivePageRoute(
+                          builder: (context) => CreateStatisticView(
+                            onStatisticCreated: (newStats) {
+                              if (!mounted) return;
+                              setState(() {
+                                statistics = [...newStats, ...statistics];
+                                statisticTiles = statistics
+                                    .map(
+                                      (stat) => buildStatisticTile(
+                                        context: context,
+                                        statistic: stat,
+                                      ),
+                                    )
+                                    .toList();
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ],
