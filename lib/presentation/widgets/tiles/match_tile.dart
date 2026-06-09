@@ -12,7 +12,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class MatchTile extends StatefulWidget {
   /// A tile widget that displays information about a match, including its name,
@@ -280,9 +280,8 @@ class _MatchTileState extends State<MatchTile> {
                 spacing: 6,
                 runSpacing: 6,
                 children: players.map((player) {
-                  return TextIconTile(
-                    text: player.name,
-                    suffixText: getNameCountText(player),
+                  return PlayerTile(
+                    player: player,
                     onTileTap: () {
                       Navigator.push(
                         context,

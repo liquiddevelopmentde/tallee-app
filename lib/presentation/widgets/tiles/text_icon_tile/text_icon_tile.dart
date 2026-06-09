@@ -3,9 +3,11 @@ import 'package:tallee/core/custom_theme.dart';
 
 class TextIconTile extends StatelessWidget {
   /// A tile widget that displays text with an optional icon that can be tapped.
-  /// - [text]: The text to display in the tile.
-  /// - [onIconTap]: The callback to be invoked when the icon is tapped.
-  /// - [icon]: Optional custom icon. Defaults to [Icons.close].
+  /// - `text`: The text to display in the tile.
+  /// - `suffixText`: Optional text to display after the main text, styled with a smaller font and lighter color.
+  /// - `onIconTap`: The callback to be invoked when the icon is tapped.
+  /// - `icon`: Optional custom icon. Defaults to `Icons.close`.
+  /// - `onTileTap`: The callback to be invoked when the tile is tapped.
   const TextIconTile({
     super.key,
     required this.text,
@@ -13,21 +15,15 @@ class TextIconTile extends StatelessWidget {
     this.onIconTap,
     this.icon = Icons.close,
     this.onTileTap,
+    this.italic = false,
   });
 
-  /// The text to display in the tile.
   final String text;
-
   final String suffixText;
-
-  /// The callback to be invoked when the icon is tapped.
   final VoidCallback? onIconTap;
-
-  /// The icon to display. Defaults to [Icons.close].
   final IconData icon;
-
-  /// The callback to be invoked when the tile is tapped.
   final VoidCallback? onTileTap;
+  final bool italic;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +50,8 @@ class TextIconTile extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: text,
-                      style: const TextStyle(
+                      style: TextStyle(
+                        fontStyle: italic ? FontStyle.italic : FontStyle.normal,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),

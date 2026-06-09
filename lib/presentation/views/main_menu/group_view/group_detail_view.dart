@@ -19,7 +19,7 @@ import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
 
 class GroupDetailView extends StatefulWidget {
   /// A view that displays the profile of a group
