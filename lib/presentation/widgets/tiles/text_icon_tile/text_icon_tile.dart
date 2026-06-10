@@ -28,15 +28,22 @@ class TextIconTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final iconEnabled = onIconTap != null;
+    final backgroundColor = highlighted
+        ? CustomTheme.onBoxColor.withAlpha((140).round())
+        : CustomTheme.onBoxColor;
+    final textClr = highlighted
+        ? CustomTheme.textColor.withAlpha((140).round())
+        : CustomTheme.textColor;
+    final suffixColor = highlighted
+        ? CustomTheme.textColor.withAlpha((80).round())
+        : CustomTheme.textColor.withAlpha((150).round());
 
     return GestureDetector(
       onTap: onTileTap,
       child: Container(
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: highlighted
-              ? CustomTheme.onBoxColor.withAlpha((250 * 0.6).round())
-              : CustomTheme.onBoxColor,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -55,11 +62,7 @@ class TextIconTile extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: highlighted
-                            ? CustomTheme.textColor.withAlpha(
-                                (250 * 0.6).round(),
-                              )
-                            : CustomTheme.textColor,
+                        color: textClr,
                       ),
                     ),
                     TextSpan(
@@ -67,11 +70,7 @@ class TextIconTile extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: highlighted
-                            ? CustomTheme.textColor.withAlpha(
-                                (120 * 0.6).round(),
-                              )
-                            : CustomTheme.textColor.withAlpha(120),
+                        color: suffixColor,
                       ),
                     ),
                   ],
