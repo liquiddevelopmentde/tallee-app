@@ -159,7 +159,11 @@
                       "type": "number"
                     }
                   },
-                  "required": ["roundNumber", "score", "change"],
+                  "required": [
+                    "roundNumber",
+                    "score",
+                    "change"
+                  ],
                   "additionalProperties": false
                 }
               ]
@@ -295,6 +299,7 @@
     "players",
     "games",
     "groups",
-    "matches"
+    "matches",
+    "statistics"
   ]
 }
