@@ -541,7 +541,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                   height: 44,
                                   child: Row(
                                     children: [
-                                      buildRandomColorCircle(),
+                                      buildColorCircle(),
                                       const SizedBox(width: 12),
                                       Text(loc.random_color, style: itemStyle),
                                     ],
@@ -744,7 +744,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     color: selectedColor ?? getRandomAppColor(),
   );
 
-  Widget buildRandomColorCircle() {
+  Widget buildColorCircle() {
     final segmentColors = [
       AppColor.red,
       AppColor.purple,
