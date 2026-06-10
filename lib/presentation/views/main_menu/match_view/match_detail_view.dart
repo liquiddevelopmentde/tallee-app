@@ -6,6 +6,7 @@ import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -373,7 +374,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           label,
           style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
         ),
-        Expanded(child: _buildWinnerNameWidget()),
+        Expanded(child: buildWinnerNameWidget()),
       ];
     } else {
       // No result yet
@@ -387,7 +388,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   }
 
   /// Builds the widget that displays the winner(s) or loser(s) name(s)
-  Widget _buildWinnerNameWidget() {
+  Widget buildWinnerNameWidget() {
     final mvtTeams = match.mvt;
     final mvpPlayers = match.mvp;
 

@@ -257,16 +257,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   }
 
   Future<void> onChoosingGroup() async {
-    // Remove all players from the previously selected group from
-    // the selected players list, in case the user deselects the
-    // group or selects a different group.
-    selectedPlayers.removeWhere(
-      (player) =>
-          selectedGroup?.members.any((member) => member.id == player.id) ??
-          false,
-    );
-
-    selectedGroup = await Navigator.of(context).push(
+    final oldGroup = selectedGroup;
+    final newGroup = await Navigator.of(context).push<Group?>(
       adaptivePageRoute(
         builder: (context) => ChooseGroupView(
           groups: groupsList,
@@ -275,14 +267,50 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       ),
     );
 
+    if (newGroup?.id == oldGroup?.id) return;
+
     setState(() {
-      if (selectedGroup != null) {
-        selectedPlayers += [...selectedGroup!.members];
-      }
-      // Reset units when group changes to ensure consistency
-      selectedUnits = selectedPlayers
-          .map((p) => Team(name: '', members: [p]))
+      final List<Player> oldMembers = oldGroup?.members ?? [];
+      final List<Player> newMembers = newGroup?.members ?? [];
+
+      // 1. Determine which players were in the old group but are NOT in the new group.
+      // These players should be removed.
+      final playersToRemove = oldMembers
+          .where((oldM) => !newMembers.any((newM) => newM.id == oldM.id))
           .toList();
+
+      // 2. Process current units to remove those players and dissolve broken pairs.
+      final List<Team> updatedUnits = [];
+      for (var unit in selectedUnits) {
+        final remainingMembers = unit.members
+            .where((m) => !playersToRemove.any((p) => p.id == m.id))
+            .toList();
+
+        if (remainingMembers.isEmpty) {
+          // All members of this unit were removed.
+          continue;
+        } else if (remainingMembers.length < unit.members.length) {
+          // Unit was a pair, but some members were removed -> dissolve it.
+          for (var p in remainingMembers) {
+            updatedUnits.add(Team(name: '', members: [p]));
+          }
+        } else {
+          // Unit remains intact.
+          updatedUnits.add(unit);
+        }
+      }
+
+      // 3. Add players from the new group who aren't already selected.
+      final currentPlayers = updatedUnits.expand((u) => u.members).toList();
+      for (var member in newMembers) {
+        if (!currentPlayers.any((p) => p.id == member.id)) {
+          updatedUnits.add(Team(name: '', members: [member]));
+        }
+      }
+
+      selectedGroup = newGroup;
+      selectedUnits = updatedUnits;
+      selectedPlayers = selectedUnits.expand((u) => u.members).toList();
       isTeamMatch = selectedUnits.any((u) => u.members.length > 1);
     });
   }

@@ -81,6 +81,9 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   /// Set of unit IDs currently selected for pairing
   final Set<String> pairingSelection = {};
 
+  /// Track which unit is currently being pressed (for visual feedback)
+  String? pressingId;
+
   /// Controller for the search bar input.
   late final TextEditingController _searchBarController =
       TextEditingController();
@@ -186,14 +189,16 @@ class _PlayerSelectionState extends State<PlayerSelection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                isPairingMode
-                    ? loc.click_another_player_to_create_a_pair
-                    : loc.selected_players,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: isPairingMode ? CustomTheme.primaryColor : null,
+              Expanded(
+                child: Text(
+                  isPairingMode
+                      ? loc.click_another_player_to_create_a_pair
+                      : loc.selected_players,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: isPairingMode ? CustomTheme.primaryColor : null,
+                  ),
                 ),
               ),
             ],
@@ -212,7 +217,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                           for (var unit in selectedUnits)
                             Padding(
                               padding: const EdgeInsets.only(right: 8.0),
-                              child: _buildUnitTile(unit),
+                              child: buildUnitTile(unit),
                             ),
                         ],
                       ),
@@ -271,17 +276,23 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     );
   }
 
-  Widget _buildUnitTile(Team unit) {
+  Widget buildUnitTile(Team unit) {
     final isPaired = unit.members.length > 1;
     final isSelectedForPairing = pairingSelection.contains(unit.id);
 
     return Opacity(
       opacity: 1.0,
       child: GestureDetector(
+        onLongPressDown: !isPaired && widget.pairingEnabled
+            ? (_) => setState(() => pressingId = unit.id)
+            : null,
+        onLongPressCancel: () => setState(() => pressingId = null),
+        onLongPressEnd: (_) => setState(() => pressingId = null),
         onLongPress: !isPaired && widget.pairingEnabled
             ? () async {
                 await HapticFeedback.selectionClick();
                 setState(() {
+                  pressingId = null;
                   if (isSelectedForPairing) {
                     pairingSelection.remove(unit.id);
                   } else {
@@ -302,7 +313,11 @@ class _PlayerSelectionState extends State<PlayerSelection> {
           child: TextIconTile(
             player: unit.members.first,
             pair: isPaired ? unit : null,
-            icon: Icons.close,
+            icon: isPairingMode ? null : Icons.close,
+            backgroundColor: pressingId == unit.id
+                ? Colors.grey.shade800
+                : null,
+            pairIconLeft: true,
             onTileTap:
                 !isPaired &&
                     widget.pairingEnabled &&

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 

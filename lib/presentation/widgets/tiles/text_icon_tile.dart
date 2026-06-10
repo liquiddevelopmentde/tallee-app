@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 
@@ -17,9 +17,11 @@ class TextIconTile extends StatelessWidget {
     this.player,
     this.text = '',
     this.pair,
+    this.pairIconLeft = false,
     this.onIconTap,
     this.icon,
     this.onTileTap,
+    this.backgroundColor,
   });
 
   /// An optional player object to display.
@@ -30,6 +32,8 @@ class TextIconTile extends StatelessWidget {
 
   final Team? pair;
 
+  final bool pairIconLeft;
+
   /// The callback to be invoked when the icon is tapped.
   final VoidCallback? onIconTap;
 
@@ -39,16 +43,19 @@ class TextIconTile extends StatelessWidget {
   /// The callback to be invoked when the tile is tapped.
   final VoidCallback? onTileTap;
 
+  final Color? backgroundColor;
+
   @override
   Widget build(BuildContext context) {
     final iconEnabled = onIconTap != null && icon != null;
 
     return GestureDetector(
       onTap: onTileTap,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: CustomTheme.onBoxColor,
+          color: backgroundColor ?? CustomTheme.onBoxColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -68,6 +75,7 @@ class TextIconTile extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   color: CustomTheme.textColor.withAlpha(100),
                 ),
+                pairIconLeft: pairIconLeft,
               ),
             ),
             if (iconEnabled) ...<Widget>[

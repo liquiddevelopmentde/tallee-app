@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 
@@ -17,6 +17,7 @@ class TextIconListTile extends StatelessWidget {
     this.player,
     this.text = '',
     this.pair,
+    this.pairIconLeft = false,
     this.icon,
     this.color,
     this.onPressed,
@@ -30,6 +31,9 @@ class TextIconListTile extends StatelessWidget {
 
   /// An optional parameter to show 2 players (a pair) in one tile
   final Team? pair;
+
+  /// An optional parameter which puts the pair icon on the left side
+  final bool pairIconLeft;
 
   /// The icon to display in the tile.
   final IconData? icon;
@@ -72,6 +76,7 @@ class TextIconListTile extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 color: CustomTheme.textColor.withAlpha(100),
               ),
+              pairIconLeft: pairIconLeft,
             ),
           ),
           if (icon != null)

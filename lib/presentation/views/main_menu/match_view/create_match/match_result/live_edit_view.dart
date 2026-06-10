@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
