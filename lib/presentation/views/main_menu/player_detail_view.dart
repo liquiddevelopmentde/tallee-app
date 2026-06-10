@@ -197,47 +197,49 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 const SizedBox(height: 20),
 
                 // Groups
-                InfoTile(
-                  title: '${loc.groups} ($totalGroups)',
-                  icon: Icons.people,
-                  horizontalAlignment: CrossAxisAlignment.start,
-                  content: AppSkeleton(
-                    enabled: isLoading,
-                    fixLayoutBuilder: true,
-                    alignment: Alignment.topLeft,
-                    child: playerGroups.isNotEmpty
-                        ? Wrap(
-                            alignment: WrapAlignment.start,
-                            crossAxisAlignment: WrapCrossAlignment.start,
-                            spacing: 12,
-                            runSpacing: 8,
-                            children: playerGroups.map((group) {
-                              return PlayerProfileListTile(
-                                title: group.name,
-                                count: group.members.length,
-                                onTap: () {
-                                  Navigator.of(context).pushReplacement(
-                                    adaptivePageRoute(
-                                      builder: (context) => GroupDetailView(
-                                        group: group,
-                                        callback: widget.callback,
+                if (!widget.player.deleted) ...[
+                  InfoTile(
+                    title: '${loc.groups} ($totalGroups)',
+                    icon: Icons.people,
+                    horizontalAlignment: CrossAxisAlignment.start,
+                    content: AppSkeleton(
+                      enabled: isLoading,
+                      fixLayoutBuilder: true,
+                      alignment: Alignment.topLeft,
+                      child: playerGroups.isNotEmpty
+                          ? Wrap(
+                              alignment: WrapAlignment.start,
+                              crossAxisAlignment: WrapCrossAlignment.start,
+                              spacing: 12,
+                              runSpacing: 8,
+                              children: playerGroups.map((group) {
+                                return PlayerProfileListTile(
+                                  title: group.name,
+                                  count: group.members.length,
+                                  onTap: () {
+                                    Navigator.of(context).pushReplacement(
+                                      adaptivePageRoute(
+                                        builder: (context) => GroupDetailView(
+                                          group: group,
+                                          callback: widget.callback,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          )
-                        : Text(
-                            loc.not_part_of_any_group,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: CustomTheme.textColor,
+                                    );
+                                  },
+                                );
+                              }).toList(),
+                            )
+                          : Text(
+                              loc.not_part_of_any_group,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: CustomTheme.textColor,
+                              ),
                             ),
-                          ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 15),
+                  const SizedBox(height: 15),
+                ],
 
                 // Matches
                 InfoTile(
