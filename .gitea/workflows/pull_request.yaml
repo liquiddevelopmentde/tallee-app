@@ -90,3 +90,15 @@ jobs:
           fi
 
           echo "All messages translated."
+
+      - name: Check for unused localization keys
+        run: |
+          dart run remove_unused_localizations --keep-unused
+
+          if [ -f "unused_localization_keys.txt" ]; then
+            echo "Found unused localization keys in unused_localization_keys.txt"
+            cat unused_localization_keys.txt
+            exit 1
+          fi
+
+          echo "No unused localization keys found."
