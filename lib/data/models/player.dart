@@ -22,7 +22,7 @@ class Player {
 
   @override
   String toString() {
-    return 'Player{id: $id, createdAt: $createdAt, name: $name, nameCount: $nameCount, description: $description}';
+    return 'Player{id: $id, createdAt: $createdAt, name: $name, nameCount: $nameCount, description: $description, deleted: $deleted}';
   }
 
   Player copyWith({

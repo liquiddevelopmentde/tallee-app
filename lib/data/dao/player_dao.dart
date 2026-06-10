@@ -119,6 +119,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   }
 
   /// Checks if a player with the given [playerId] exists in the database.
+  /// Ignores the `deleted` flag, so it returns `true` even for players marked as deleted.
   /// Returns `true` if the player exists, `false` otherwise.
   Future<bool> playerExists({required String playerId}) async {
     final query = select(playerTable)..where((p) => p.id.equals(playerId));
@@ -127,9 +128,13 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   }
 
   /// Retrieves all players from the database.
-  Future<List<Player>> getAllPlayers({bool excludeDeletePlayer = true}) async {
+  /// If [includeDeletedPlayer] is `false`, players marked as deleted will be filtered out from the result.
+  /// Returns empty list if no players are found.
+  Future<List<Player>> getAllPlayers({
+    bool includeDeletedPlayer = false,
+  }) async {
     var query = select(playerTable);
-    if (excludeDeletePlayer) {
+    if (!includeDeletedPlayer) {
       query = query..where((p) => p.deleted.equals(false));
     }
     final result = await query.get();
@@ -261,11 +266,8 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
       final rowsAffected =
           await (update(playerTable)..where((tbl) => tbl.id.equals(playerId)))
               .write(const PlayerTableCompanion(deleted: Value(true)));
-      final success = await db.playerGroupDao.removePlayerFromAllGroups(
-        playerId: playerId,
-      );
-
-      return rowsAffected > 0 && success;
+      await db.playerGroupDao.removePlayerFromAllGroups(playerId: playerId);
+      return rowsAffected > 0;
     } else {
       final rowsAffected = await (delete(
         playerTable,

@@ -199,6 +199,46 @@ void main() {
         }
       });
 
+      test('getMatchById() contains deleted player correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        // Delete one player from the match (soft delete)
+        await database.playerDao.deletePlayer(playerId: testPlayer4.id);
+        var match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+
+        expect(match.players.length, testMatch1.players.length - 1);
+        expect(match.players.any((p) => p.id == testPlayer4.id), isFalse);
+
+        match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+          includeDeletdPlayer: true,
+        );
+        expect(match.players.length, testMatch1.players.length);
+        expect(match.players.any((p) => p.id == testPlayer4.id), isTrue);
+      });
+
+      test('getAllMatches() contains deleted player correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        // Delete one player from the match (soft delete)
+        await database.playerDao.deletePlayer(playerId: testPlayer4.id);
+        var allMatches = await database.matchDao.getAllMatches();
+        expect(allMatches.length, 1);
+        var match = allMatches.first;
+        expect(match.players.length, testMatch1.players.length - 1);
+        expect(match.players.any((p) => p.id == testPlayer4.id), isFalse);
+
+        allMatches = await database.matchDao.getAllMatches(
+          includeDeletedPlayers: true,
+        );
+        expect(allMatches.length, 1);
+        match = allMatches.first;
+        expect(match.players.length, testMatch1.players.length);
+        expect(match.players.any((p) => p.id == testPlayer4.id), isTrue);
+      });
+
       test('addMatch() ignores duplicate games', () async {
         var added = await database.matchDao.addMatch(match: testMatch1);
         expect(added, isTrue);

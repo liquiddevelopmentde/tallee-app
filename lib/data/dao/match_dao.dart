@@ -274,7 +274,11 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   }
 
   /// Retrieves all matches from the database.
-  Future<List<Match>> getAllMatches() async {
+  /// If [includeDeletedPlayers] is `true`, players that have been marked as
+  /// deleted will be included in the match's player list.
+  Future<List<Match>> getAllMatches({
+    bool includeDeletedPlayers = false,
+  }) async {
     final query = select(matchTable);
     final result = await query.get();
 
@@ -289,6 +293,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
         final players = await db.playerMatchDao.getPlayersOfMatch(
           matchId: row.id,
+          includeDeletedPlayer: includeDeletedPlayers,
         );
 
         final scores = await db.scoreEntryDao.getAllMatchScores(
@@ -315,7 +320,13 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   }
 
   /// Retrieves a [Match] by its [matchId].
-  Future<Match> getMatchById({required String matchId}) async {
+  /// If [includeDeletedPlayer] is `true`, players that have been marked as deleted
+  /// will be included in the match's player list. Returns `null` if no match
+  /// with the given [matchId] is found.
+  Future<Match> getMatchById({
+    required String matchId,
+    bool includeDeletdPlayer = false,
+  }) async {
     final query = select(matchTable)..where((g) => g.id.equals(matchId));
     final row = await query.getSingle();
 
@@ -326,7 +337,10 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       group = await db.groupDao.getGroupById(groupId: row.groupId!);
     }
 
-    final players = await db.playerMatchDao.getPlayersOfMatch(matchId: matchId);
+    final players = await db.playerMatchDao.getPlayersOfMatch(
+      matchId: matchId,
+      includeDeletedPlayer: includeDeletdPlayer,
+    );
 
     final scores = await db.scoreEntryDao.getAllMatchScores(matchId: matchId);
 
