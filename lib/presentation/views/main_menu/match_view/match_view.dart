@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
@@ -269,8 +271,6 @@ class _MatchViewState extends State<MatchView> {
       }
     });
   }
-
-  int max(int a, int b) => a > b ? a : b;
 
   void _handleSearchToggle() {
     if (!mounted) {

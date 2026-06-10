@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
@@ -228,8 +230,6 @@ class _GroupViewState extends State<GroupView> {
       }
     });
   }
-
-  int max(int a, int b) => a > b ? a : b;
 
   void _handleSearchToggle() {
     if (!mounted) {

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -170,6 +172,4 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
       }
     });
   }
-
-  int max(int a, int b) => a > b ? a : b;
 }
