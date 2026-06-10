@@ -86,6 +86,7 @@ class CustomSearchBar extends StatelessWidget {
         const SizedBox(width: 5),
       ],
       backgroundColor: WidgetStateProperty.all(CustomTheme.boxColor),
+      overlayColor: WidgetStateProperty.all(Colors.transparent),
       side: WidgetStateProperty.all(
         const BorderSide(color: CustomTheme.boxBorderColor),
       ),

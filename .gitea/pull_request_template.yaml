@@ -40,7 +40,7 @@ body:
       label: PR-Checkliste
       description: Stelle sicher, dass alle Punkte erfüllt sind, bevor du den Pull Request zum Review freigibst.
       options:
-        - label: Ich habe für Navigationen den AdaptiveNavigator` verwendet
+        - label: Ich habe für Navigationen den `adaptiveNavigator` verwendet
           required: false
         - label: Ich habe alle Strings lokalisiert (de/en)
           required: false

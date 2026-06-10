@@ -5,13 +5,21 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
+import 'package:tallee/state/group_search_provider.dart';
+import 'package:tallee/state/match_search_provider.dart';
 
 void main() {
   runApp(
-    Provider<AppDatabase>(
-      create: (context) => AppDatabase(),
+    MultiProvider(
+      providers: [
+        Provider<AppDatabase>(
+          create: (context) => AppDatabase(),
+          dispose: (context, db) => db.close(),
+        ),
+        ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
+        ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
+      ],
       child: const GameTracker(),
-      dispose: (context, db) => db.close(),
     ),
   );
 }
@@ -47,6 +55,12 @@ class GameTracker extends StatelessWidget {
         inputDecorationTheme: CustomTheme.inputDecorationTheme,
         searchBarTheme: CustomTheme.searchBarTheme,
         radioTheme: CustomTheme.radioTheme,
+        // deactivate splash effects
+        splashFactory: NoSplash.splashFactory,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        focusColor: Colors.transparent,
         // color scheme
         colorScheme: ColorScheme.fromSeed(
           seedColor: CustomTheme.textColor,
