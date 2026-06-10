@@ -541,12 +541,20 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
   /* Delete */
 
-  /// Deletes the match with the given [matchId] from the database.
+  /// Deletes the match with the given [matchId] from the database and purges
+  /// lone players.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> deleteMatch({required String matchId}) async {
-    final query = delete(matchTable)..where((tbl) => tbl.id.equals(matchId));
-    final rowsAffected = await query.go();
-    return rowsAffected > 0;
+    return db.transaction(() async {
+      final query = delete(matchTable)..where((tbl) => tbl.id.equals(matchId));
+      final rowsAffected = await query.go();
+
+      if (rowsAffected > 0) {
+        await db.playerDao.purgeSoftDeletedPlayer();
+      }
+
+      return rowsAffected > 0;
+    });
   }
 
   /// Deletes all matches from the database.

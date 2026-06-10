@@ -63,14 +63,14 @@ void main() {
         name: 'First Test Match',
         game: testGame,
         group: testGroup1,
-        players: [testPlayer4, testPlayer5],
+        players: [...testGroup1.members, testPlayer4, testPlayer5],
         scores: {testPlayer4.id: ScoreEntry(score: 1)},
       );
       testMatch2 = Match(
         name: 'Second Test Match',
         game: testGame,
         group: testGroup2,
-        players: [testPlayer1, testPlayer2, testPlayer3],
+        players: [...testGroup2.members, testPlayer1, testPlayer2, testPlayer3],
       );
       testMatchOnlyPlayers = Match(
         name: 'Test Match with Players',
@@ -556,6 +556,34 @@ void main() {
 
         deleted = await database.matchDao.deleteMatch(matchId: testMatch1.id);
         expect(deleted, isFalse);
+      });
+
+      test('deleteMatch() purges soft-deleted players', () async {
+        await database.matchDao.addMatchesAsList(
+          matches: [testMatch1, testMatch2],
+        );
+
+        final softDeleted = await database.playerDao.deletePlayer(
+          playerId: testPlayer1.id,
+        );
+        expect(softDeleted, isTrue);
+
+        var exists = await database.playerDao.playerExists(
+          playerId: testPlayer1.id,
+        );
+        expect(exists, isTrue);
+
+        await database.matchDao.deleteMatch(matchId: testMatch1.id);
+        exists = await database.playerDao.playerExists(
+          playerId: testPlayer1.id,
+        );
+        expect(exists, isTrue);
+
+        await database.matchDao.deleteMatch(matchId: testMatch2.id);
+        exists = await database.playerDao.playerExists(
+          playerId: testPlayer1.id,
+        );
+        expect(exists, isFalse);
       });
 
       test('deleteAllMatches() works correctly', () async {

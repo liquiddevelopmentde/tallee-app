@@ -284,6 +284,30 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return rowsAffected > 0;
   }
 
+  /// Deletes all players marked as deleted from the database, if they are not associated with any match.
+  /// Returns the number of players that were deleted.
+  Future<int> purgeSoftDeletedPlayer() async {
+    final deletedPlayers = await (select(
+      playerTable,
+    )..where((tbl) => tbl.deleted.equals(true))).get();
+
+    if (deletedPlayers.isEmpty) return 0;
+
+    var removedPlayer = 0;
+    await transaction(() async {
+      for (final player in deletedPlayers) {
+        if (await canTrueDelete(playerId: player.id)) {
+          final rowsAffected = await (delete(
+            playerTable,
+          )..where((tbl) => tbl.id.equals(player.id))).go();
+          removedPlayer += rowsAffected;
+        }
+      }
+    });
+
+    return removedPlayer;
+  }
+
   /* Name count management */
 
   /// Retrieves the count of players with the given [name].
