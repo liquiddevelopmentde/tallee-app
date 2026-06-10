@@ -50,7 +50,7 @@ jobs:
       - name: Run tests
         run: flutter test
 
-  localizations:
+  untranslated_localizations:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -90,6 +90,28 @@ jobs:
           fi
 
           echo "All messages translated."
+
+  unused_localizations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Required for Flutter action
+      - name: Install jq
+        run: |
+          apt-get update
+          apt-get install -y jq 
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Get dependencies
+        run: |
+          git config --global --add safe.directory '*'
+          flutter pub get
 
       - name: Check for unused localization keys
         run: |
