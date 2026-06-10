@@ -42,6 +42,7 @@ class DataTransferService {
       'games': games.map((game) => game.toJson()).toList(),
       'groups': groups.map((group) => group.toJson()).toList(),
       'matches': matches.map((match) => match.toJson()).toList(),
+      'statistics': [],
     };
 
     return json.encode(jsonMap);
