@@ -922,10 +922,10 @@ void main() {
             {
               'id': testStatistic.id,
               'createdAt': testStatistic.createdAt.toIso8601String(),
-              'type': testStatistic.type.toString(),
-              'scopes': testStatistic.scopes.map((s) => s.toString()).toList(),
-              'timeframe': testStatistic.timeframe.toString(),
-              'color': testStatistic.color.toString(),
+              'type': testStatistic.type.name,
+              'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+              'timeframe': testStatistic.timeframe.name,
+              'color': testStatistic.color.name,
               'selectedGroups': [testGroup.id],
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
@@ -1061,6 +1061,41 @@ void main() {
               ],
             },
           ],
+          'statistics': [
+            {
+              'id': testStatistic.id,
+              'createdAt': testStatistic.createdAt.toIso8601String(),
+              'type': testStatistic.type.name,
+              'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+              'timeframe': testStatistic.timeframe.name,
+              'color': testStatistic.color.name,
+              'selectedGroups': null,
+              'selectedGames': [testGame.id],
+              'displayCount': testStatistic.displayCount,
+            },
+            {
+              'id': testStatistic.id,
+              'createdAt': testStatistic.createdAt.toIso8601String(),
+              'type': testStatistic.type.name,
+              'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+              'timeframe': testStatistic.timeframe.name,
+              'color': testStatistic.color.name,
+              'selectedGroups': [testGroup.id],
+              'selectedGames': null,
+              'displayCount': testStatistic.displayCount,
+            },
+            {
+              'id': testStatistic.id,
+              'createdAt': testStatistic.createdAt.toIso8601String(),
+              'type': testStatistic.type.name,
+              'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+              'timeframe': testStatistic.timeframe.name,
+              'color': testStatistic.color.name,
+              'selectedGroups': [testGroup.id],
+              'selectedGames': [testGame.id],
+              'displayCount': testStatistic.displayCount,
+            },
+          ],
         });
 
         final isValidRoot = await DataTransferService.validateJsonSchema(
@@ -1124,6 +1159,41 @@ void main() {
                 'endedAt': null,
               },
             ],
+            'statistics': [
+              {
+                'id': testStatistic.id,
+                'createdAt': testStatistic.createdAt.toIso8601String(),
+                'type': testStatistic.type.name,
+                'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+                'timeframe': testStatistic.timeframe.name,
+                'color': testStatistic.color.name,
+                'selectedGroups': [testGroup.id],
+                'selectedGames': [testGame.id],
+                'displayCount': testStatistic.displayCount,
+              },
+              {
+                'id': testStatistic.id,
+                'createdAt': testStatistic.createdAt.toIso8601String(),
+                'type': testStatistic.type.name,
+                'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+                'timeframe': testStatistic.timeframe.name,
+                'color': testStatistic.color.name,
+                'selectedGroups': null,
+                'selectedGames': [testGame.id],
+                'displayCount': testStatistic.displayCount,
+              },
+              {
+                'id': testStatistic.id,
+                'createdAt': testStatistic.createdAt.toIso8601String(),
+                'type': testStatistic.type.name,
+                'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+                'timeframe': testStatistic.timeframe.name,
+                'color': testStatistic.color.name,
+                'selectedGroups': [testGroup.id],
+                'selectedGames': null,
+                'displayCount': testStatistic.displayCount,
+              },
+            ],
           });
 
           final isValid = await DataTransferService.validateJsonSchema(
@@ -1155,6 +1225,19 @@ void main() {
                 },
               ],
               'matches': [],
+              'statistics': [
+                {
+                  'id': testStatistic.id,
+                  'createdAt': testStatistic.createdAt.toIso8601String(),
+                  'type': testStatistic.type.name,
+                  'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+                  'timeframe': testStatistic.timeframe.name,
+                  'color': testStatistic.color.name,
+                  'selectedGroups': [testGroup.id],
+                  'selectedGames': [testGame.id],
+                  'displayCount': testStatistic.displayCount,
+                },
+              ],
             });
 
             final isValid = await DataTransferService.validateJsonSchema(
@@ -1198,6 +1281,7 @@ void main() {
                   'createdAt': fixedDate.toIso8601String(),
                 },
               ],
+              'statistics': [],
             });
 
             final isValid = await DataTransferService.validateJsonSchema(
@@ -1261,6 +1345,7 @@ void main() {
                   ],
                 },
               ],
+              'statistics': [],
             });
 
             final isValid = await DataTransferService.validateJsonSchema(
@@ -1313,9 +1398,10 @@ void main() {
                       'score': 0,
                       'memberIds': [testPlayer1.id],
                     },
-                  ], // Invalid: minItems 2
+                  ],
                 },
               ],
+              'statistics': [],
             });
 
             final isValid = await DataTransferService.validateJsonSchema(
