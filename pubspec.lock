@@ -950,7 +950,7 @@ packages:
     source: hosted
     version: "0.6.0"
   remove_unused_localizations:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: remove_unused_localizations
       sha256: "1690df0d1b8ddeebfbeeeb29f46fa98573d27695dad6e67739aea28a7e209fe3"
