@@ -274,11 +274,9 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   }
 
   /// Retrieves all matches from the database.
-  /// If [includeDeletedPlayers] is `true`, players that have been marked as
+  /// If [includeDeletedPlayer] is `true`, players that have been marked as
   /// deleted will be included in the match's player list.
-  Future<List<Match>> getAllMatches({
-    bool includeDeletedPlayers = false,
-  }) async {
+  Future<List<Match>> getAllMatches({bool includeDeletedPlayer = false}) async {
     final query = select(matchTable);
     final result = await query.get();
 
@@ -293,7 +291,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
         final players = await db.playerMatchDao.getPlayersOfMatch(
           matchId: row.id,
-          includeDeletedPlayer: includeDeletedPlayers,
+          includeDeletedPlayer: includeDeletedPlayer,
         );
 
         final scores = await db.scoreEntryDao.getAllMatchScores(
@@ -320,7 +318,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   }
 
   /// Retrieves a [Match] by its [matchId].
-  /// If [includeDeletedPlayer] is `true`, players that have been marked as deleted
+  /// If [includeDeletdPlayer] is `true`, players that have been marked as deleted
   /// will be included in the match's player list. Returns `null` if no match
   /// with the given [matchId] is found.
   Future<Match> getMatchById({

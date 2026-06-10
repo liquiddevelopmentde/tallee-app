@@ -231,7 +231,7 @@ void main() {
         expect(match.players.any((p) => p.id == testPlayer4.id), isFalse);
 
         allMatches = await database.matchDao.getAllMatches(
-          includeDeletedPlayers: true,
+          includeDeletedPlayer: true,
         );
         expect(allMatches.length, 1);
         match = allMatches.first;
