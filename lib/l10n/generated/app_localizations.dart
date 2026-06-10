@@ -242,12 +242,6 @@ abstract class AppLocalizations {
   /// **'Could not add player {playerName}'**
   String could_not_add_player(String playerName);
 
-  /// No description provided for @create_example_statistics.
-  ///
-  /// In en, this message translates to:
-  /// **'Create example statistics'**
-  String get create_example_statistics;
-
   /// No description provided for @create_game.
   ///
   /// In en, this message translates to:
@@ -529,12 +523,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Highest Score'**
   String get highest_score;
-
-  /// No description provided for @home.
-  ///
-  /// In en, this message translates to:
-  /// **'Home'**
-  String get home;
 
   /// No description provided for @import_canceled.
   ///
@@ -896,18 +884,6 @@ abstract class AppLocalizations {
   /// **'Select a display color'**
   String get select_a_display_color;
 
-  /// No description provided for @select_a_game.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a game'**
-  String get select_a_game;
-
-  /// No description provided for @select_a_group.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a group'**
-  String get select_a_group;
-
   /// No description provided for @select_a_scope.
   ///
   /// In en, this message translates to:
@@ -925,18 +901,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Loser'**
   String get select_loser;
-
-  /// No description provided for @select_the_filtered_games.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the games you want to filter by.'**
-  String get select_the_filtered_games;
-
-  /// No description provided for @select_the_filtered_groups.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the groups you want to filter by.'**
-  String get select_the_filtered_groups;
 
   /// No description provided for @select_the_filtered_timeframe.
   ///

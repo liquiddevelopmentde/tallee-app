@@ -84,9 +84,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get create_example_statistics => 'Create example statistics';
-
-  @override
   String get create_game => 'Create Game';
 
   @override
@@ -239,9 +236,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get highest_score => 'Highest Score';
-
-  @override
-  String get home => 'Home';
 
   @override
   String get import_canceled => 'Import canceled';
@@ -426,12 +420,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_a_display_color => 'Select a display color';
 
   @override
-  String get select_a_game => 'Select a game';
-
-  @override
-  String get select_a_group => 'Select a group';
-
-  @override
   String get select_a_scope => 'Select a scope';
 
   @override
@@ -439,14 +427,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get select_loser => 'Select Loser';
-
-  @override
-  String get select_the_filtered_games =>
-      'Select the games you want to filter by.';
-
-  @override
-  String get select_the_filtered_groups =>
-      'Select the groups you want to filter by.';
 
   @override
   String get select_the_filtered_timeframe =>

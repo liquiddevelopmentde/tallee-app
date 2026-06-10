@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/constants.dart';
@@ -198,22 +201,31 @@ class _GroupViewState extends State<GroupView> {
 
   /// Filters the groups based on the search [query].
   void filterGroups(String query) {
-    final lowercaseQuery = query.toLowerCase();
     setState(() {
       if (query.isEmpty) {
         filteredGroups = [...groups];
       } else {
-        filteredGroups.clear();
-        filteredGroups.addAll(
-          groups.where(
-            (group) =>
-                group.name.toLowerCase().contains(lowercaseQuery) ||
-                group.members.any(
-                  (player) =>
-                      player.name.toLowerCase().contains(lowercaseQuery),
-                ),
-          ),
-        );
+        final List<({Group group, int score})> scoredGroups = [];
+
+        for (final group in groups) {
+          int maxScore = 0;
+
+          // Check group name
+          maxScore = max(maxScore, weightedRatio(group.name, query));
+
+          // Check member names
+          for (final member in group.members) {
+            maxScore = max(maxScore, weightedRatio(member.name, query));
+          }
+
+          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+            scoredGroups.add((group: group, score: maxScore));
+          }
+        }
+
+        // Sort by score descending
+        scoredGroups.sort((a, b) => b.score.compareTo(a.score));
+        filteredGroups = scoredGroups.map((e) => e.group).toList();
       }
     });
   }
