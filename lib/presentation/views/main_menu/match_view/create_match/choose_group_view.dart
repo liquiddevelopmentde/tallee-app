@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -143,18 +144,32 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
         filteredGroups.clear();
         filteredGroups.addAll(widget.groups);
       } else {
+        final List<({Group group, int score})> scoredGroups = [];
+
+        for (final group in widget.groups) {
+          int maxScore = 0;
+
+          // Check group name
+          maxScore = max(maxScore, weightedRatio(group.name, query));
+
+          // Check member names
+          for (final member in group.members) {
+            maxScore = max(maxScore, weightedRatio(member.name, query));
+          }
+
+          if (maxScore >= 70) {
+            scoredGroups.add((group: group, score: maxScore));
+          }
+        }
+
+        // Sort by score descending
+        scoredGroups.sort((a, b) => b.score.compareTo(a.score));
+
         filteredGroups.clear();
-        filteredGroups.addAll(
-          widget.groups.where(
-            (group) =>
-                group.name.toLowerCase().contains(query.toLowerCase()) ||
-                group.members.any(
-                  (player) =>
-                      player.name.toLowerCase().contains(query.toLowerCase()),
-                ),
-          ),
-        );
+        filteredGroups.addAll(scoredGroups.map((e) => e.group));
       }
     });
   }
+
+  int max(int a, int b) => a > b ? a : b;
 }

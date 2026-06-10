@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
@@ -224,8 +227,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
 
   /// Applies the search filter to the games list based on [query].
   void _applySearchFilter(String query) {
-    final q = query.toLowerCase().trim();
-    if (q.isEmpty) {
+    if (query.isEmpty) {
       setState(() {
         filteredGames = List<Game>.from(games);
       });
@@ -233,11 +235,25 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     }
 
     setState(() {
-      filteredGames = games.where((game) {
-        final name = game.name.toLowerCase();
-        final description = game.description.toLowerCase();
-        return name.contains(q) || description.contains(q);
-      }).toList();
+      final List<({Game game, int score})> scoredGames = [];
+
+      for (final game in games) {
+        int maxScore = 0;
+
+        // Check name
+        maxScore = max(maxScore, weightedRatio(game.name, query));
+
+        // Check description
+        maxScore = max(maxScore, weightedRatio(game.description, query));
+
+        if (maxScore >= 70) {
+          scoredGames.add((game: game, score: maxScore));
+        }
+      }
+
+      // Sort by score descending
+      scoredGames.sort((a, b) => b.score.compareTo(a.score));
+      filteredGames = scoredGames.map((e) => e.game).toList();
     });
   }
 
