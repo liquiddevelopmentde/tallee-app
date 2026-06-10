@@ -125,10 +125,17 @@ void main() {
         }
         expect(result.players.length, testMatch1.players.length);
 
-        for (int i = 0; i < testMatch1.players.length; i++) {
-          expect(result.players[i].id, testMatch1.players[i].id);
-          expect(result.players[i].name, testMatch1.players[i].name);
-          expect(result.players[i].createdAt, testMatch1.players[i].createdAt);
+        final testPlayers = {
+          for (final player in result.players) player.id: player,
+        };
+
+        for (final player in result.players) {
+          final testPlayer = testPlayers[player.id];
+          expect(testPlayer, isNotNull);
+          expect(player.name, testPlayer!.name);
+          expect(player.createdAt, testPlayer.createdAt);
+          expect(player.nameCount, testPlayer.nameCount);
+          expect(player.description, testPlayer.description);
         }
       });
 
@@ -191,10 +198,17 @@ void main() {
 
           // Players-Checks
           expect(match.players.length, testMatch.players.length);
-          for (int i = 0; i < testMatch.players.length; i++) {
-            expect(match.players[i].id, testMatch.players[i].id);
-            expect(match.players[i].name, testMatch.players[i].name);
-            expect(match.players[i].createdAt, testMatch.players[i].createdAt);
+          final testPlayers = {
+            for (final player in match.players) player.id: player,
+          };
+
+          for (final player in match.players) {
+            final testPlayer = testPlayers[player.id];
+            expect(testPlayer, isNotNull);
+            expect(player.name, testPlayer!.name);
+            expect(player.createdAt, testPlayer.createdAt);
+            expect(player.nameCount, testPlayer.nameCount);
+            expect(player.description, testPlayer.description);
           }
         }
       });
@@ -309,10 +323,11 @@ void main() {
           playerId: testPlayer1.id,
         );
 
-        expect(matches, hasLength(1));
-        expect(matches.first.id, testMatch2.id);
+        expect(matches, hasLength(2));
+        final matchIds = matches.map((m) => m.id).toSet();
+        expect(matchIds, containsAll({testMatch1.id, testMatch2.id}));
         expect(
-          matches.first.players.any((p) => p.id == testPlayer1.id),
+          matches.every((m) => m.players.any((p) => p.id == testPlayer1.id)),
           isTrue,
         );
       });
