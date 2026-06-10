@@ -122,6 +122,15 @@ class PlayerGroupDao extends DatabaseAccessor<AppDatabase>
     return true;
   }
 
+  /// Removes a player from all groups based on [playerId].
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> removePlayerFromAllGroups({required String playerId}) async {
+    final query = delete(playerGroupTable)
+      ..where((tbl) => tbl.playerId.equals(playerId));
+    final rowsAffected = await query.go();
+    return rowsAffected > 0;
+  }
+
   /* Delete */
 
   /// Removes a player from a group based on [playerId] and [groupId].

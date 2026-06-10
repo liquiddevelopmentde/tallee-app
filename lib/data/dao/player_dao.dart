@@ -261,13 +261,17 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
       final rowsAffected =
           await (update(playerTable)..where((tbl) => tbl.id.equals(playerId)))
               .write(const PlayerTableCompanion(deleted: Value(true)));
+      final success = await db.playerGroupDao.removePlayerFromAllGroups(
+        playerId: playerId,
+      );
+
+      return rowsAffected > 0 && success;
+    } else {
+      final rowsAffected = await (delete(
+        playerTable,
+      )..where((tbl) => tbl.id.equals(playerId))).go();
       return rowsAffected > 0;
     }
-
-    final rowsAffected = await (delete(
-      playerTable,
-    )..where((tbl) => tbl.id.equals(playerId))).go();
-    return rowsAffected > 0;
   }
 
   /// Deletes all players from the database.
