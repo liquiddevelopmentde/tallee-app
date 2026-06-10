@@ -249,7 +249,7 @@ class _MatchViewState extends State<MatchView> {
           for (final player in match.players) {
             maxScore = max(
               maxScore,
-              weightedRatio('${player.name}#${player.nameCount}', query),
+              weightedRatio('${player.name} #${player.nameCount}', query),
             );
           }
 
@@ -260,7 +260,7 @@ class _MatchViewState extends State<MatchView> {
             }
           }
 
-          if (maxScore >= 70) {
+          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
             scoredMatches.add((match: match, score: maxScore));
           }
         }

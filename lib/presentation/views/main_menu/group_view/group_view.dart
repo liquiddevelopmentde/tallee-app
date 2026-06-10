@@ -219,7 +219,7 @@ class _GroupViewState extends State<GroupView> {
             maxScore = max(maxScore, weightedRatio(member.name, query));
           }
 
-          if (maxScore >= 70) {
+          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
             scoredGroups.add((group: group, score: maxScore));
           }
         }

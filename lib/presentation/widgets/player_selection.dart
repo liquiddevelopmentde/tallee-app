@@ -129,7 +129,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
 
                     if (isNotSelected) {
                       final score = weightedRatio(player.name, value);
-                      if (score >= 70) {
+                      if (score >= Constants.FUZZY_SEARCH_THRESHOLD) {
                         scoredPlayers.add((player: player, score: score));
                       }
                     }

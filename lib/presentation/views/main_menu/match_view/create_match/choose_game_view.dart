@@ -5,6 +5,7 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -246,7 +247,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
         // Check description
         maxScore = max(maxScore, weightedRatio(game.description, query));
 
-        if (maxScore >= 70) {
+        if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
           scoredGames.add((game: game, score: maxScore));
         }
       }

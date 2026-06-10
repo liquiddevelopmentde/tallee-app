@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -159,7 +160,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
             maxScore = max(maxScore, weightedRatio(member.name, query));
           }
 
-          if (maxScore >= 70) {
+          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
             scoredGroups.add((group: group, score: maxScore));
           }
         }
