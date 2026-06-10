@@ -33,6 +33,7 @@ dependencies:
   url_launcher: ^6.3.2
   uuid: ^4.5.3
   remove_unused_localizations: ^1.1.2
+  fuzzywuzzy: ^1.2.0
 
 dev_dependencies:
   arb_utils: ^0.11.0
