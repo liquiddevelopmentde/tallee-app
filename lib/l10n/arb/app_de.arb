@@ -1,6 +1,7 @@
 {
   "@@locale": "de",
   "add_team": "Team hinzufügen",
+  "names_or_descriptions_too_long": "Die Daten enthalten zu lange Namen oder Beschreibungen.",
   "all_players": "Alle Spieler:innen",
   "all_players_selected": "Alle Spieler:innen ausgewählt",
   "all_time": "Gesamter Zeitraum",

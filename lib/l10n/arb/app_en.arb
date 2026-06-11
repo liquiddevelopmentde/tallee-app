@@ -1,5 +1,6 @@
 {
   "@@locale": "en",
+  "names_or_descriptions_too_long": "The data contains names or descriptions that are too long.",
   "add_team": "Add Team",
   "all_players": "All players",
   "all_players_selected": "All players selected",
