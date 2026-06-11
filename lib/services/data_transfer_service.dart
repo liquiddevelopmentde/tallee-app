@@ -125,42 +125,48 @@ class DataTransferService {
     final players = decoded['players'] as List<dynamic>? ?? [];
     for (final p in players) {
       final name = p['name'] as String?;
-      if (name != null && name.length > Constants.MAX_PLAYER_NAME_LENGTH)
+      if (name != null && name.length > Constants.MAX_PLAYER_NAME_LENGTH) {
         return false;
+      }
     }
 
     // Spiele validieren
     final games = decoded['games'] as List<dynamic>? ?? [];
     for (final g in games) {
       final name = g['name'] as String?;
-      if (name != null && name.length > Constants.MAX_GAME_NAME_LENGTH)
+      if (name != null && name.length > Constants.MAX_GAME_NAME_LENGTH) {
         return false;
+      }
       final desc = g['description'] as String?;
-      if (desc != null && desc.length > Constants.MAX_GAME_DESCRIPTION_LENGTH)
+      if (desc != null && desc.length > Constants.MAX_GAME_DESCRIPTION_LENGTH) {
         return false;
+      }
     }
 
     // Gruppen validieren
     final groups = decoded['groups'] as List<dynamic>? ?? [];
     for (final g in groups) {
       final name = g['name'] as String?;
-      if (name != null && name.length > Constants.MAX_GROUP_NAME_LENGTH)
+      if (name != null && name.length > Constants.MAX_GROUP_NAME_LENGTH) {
         return false;
+      }
     }
 
     // Matches und Teams validieren
     final matches = decoded['matches'] as List<dynamic>? ?? [];
     for (final m in matches) {
       final name = m['name'] as String?;
-      if (name != null && name.length > Constants.MAX_MATCH_NAME_LENGTH)
+      if (name != null && name.length > Constants.MAX_MATCH_NAME_LENGTH) {
         return false;
+      }
 
       final teams = m['teams'] as List<dynamic>? ?? [];
       for (final t in teams) {
         final teamName = t['name'] as String?;
         if (teamName != null &&
-            teamName.length > Constants.MAX_TEAM_NAME_LENGTH)
+            teamName.length > Constants.MAX_TEAM_NAME_LENGTH) {
           return false;
+        }
       }
     }
 
