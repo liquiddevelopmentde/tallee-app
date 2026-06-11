@@ -76,7 +76,7 @@ class StatisticsTile extends StatelessWidget {
               visible:
                   values.isNotEmpty && values.any((entry) => entry.$2 != 0),
 
-              // No data avaiable message
+              // No data available message
               replacement: Center(
                 heightFactor: 4,
                 child: Text(loc.no_data_available),
@@ -277,36 +277,29 @@ class StatisticsTile extends StatelessWidget {
     required double textLeftPadding,
     required bool isHighlightedOverflow,
   }) {
-    final nameCountText = getNameCountText(player);
     final textAlpha = isHighlightedOverflow ? 150 : 255;
+    final baseStyle = DefaultTextStyle.of(context).style;
 
     if (barColor != getColorFromAppColor(AppColor.yellow)) {
       return RichText(
         maxLines: 1,
         softWrap: false,
         overflow: TextOverflow.ellipsis,
-        text: TextSpan(
-          style: DefaultTextStyle.of(context).style,
-          children: [
-            TextSpan(
-              text: player.name,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: CustomTheme.textColor.withAlpha(textAlpha),
-              ),
+        text: buildPlayerNameCountSpan(
+          player,
+          style: baseStyle,
+          mainStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: CustomTheme.textColor.withAlpha(textAlpha),
+          ),
+          countStyle: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: CustomTheme.textColor.withAlpha(
+              isHighlightedOverflow ? 170 : 150,
             ),
-            TextSpan(
-              text: nameCountText,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: CustomTheme.textColor.withAlpha(
-                  isHighlightedOverflow ? 170 : 150,
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       );
     }
@@ -341,26 +334,19 @@ class StatisticsTile extends StatelessWidget {
         maxLines: 1,
         softWrap: false,
         overflow: TextOverflow.ellipsis,
-        text: TextSpan(
-          style: DefaultTextStyle.of(context).style,
-          children: [
-            TextSpan(
-              text: player.name,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            TextSpan(
-              text: nameCountText,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ],
+        text: buildPlayerNameCountSpan(
+          player,
+          style: baseStyle,
+          mainStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          countStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
     );
