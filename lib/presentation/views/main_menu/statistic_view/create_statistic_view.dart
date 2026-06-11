@@ -603,7 +603,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               child: AnimatedDialogButton(
                 buttonConstraints: const BoxConstraints(minWidth: 390),
                 buttonText: submitButtonText,
-                onPressed: selectedType.isNotEmpty && selectedScope.isNotEmpty
+                onPressed:
+                    (selectedType.isNotEmpty && selectedScope.isNotEmpty) &&
+                        !isLoading
                     ? () => submitStatistic()
                     : null,
               ),
