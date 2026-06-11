@@ -6,7 +6,8 @@ class AnimatedDialogButton extends StatefulWidget {
   /// when pressed.
   /// - [buttonText]: The text to be displayed on the button.
   /// - [onPressed]: Callback function that is triggered when the button is pressed.
-  /// - [buttonConstraints]: Optional constraints to control the button's size.
+  /// - [buttonConstraints]: Optional constraints to control the button's size, only works if [sizeRelativeToWidth] is not provided.
+  /// - [sizeRelativeToWidth]: Optional size of the button relative to the width of the screen.
   /// - [buttonType]: The type of the button, which determines its styling.
   /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
   const AnimatedDialogButton({
@@ -14,6 +15,7 @@ class AnimatedDialogButton extends StatefulWidget {
     required this.buttonText,
     this.onPressed,
     this.buttonConstraints,
+    this.sizeRelativeToWidth,
     this.buttonType = ButtonType.primary,
     this.isDescructive = false,
   });
@@ -23,6 +25,8 @@ class AnimatedDialogButton extends StatefulWidget {
   final VoidCallback? onPressed;
 
   final BoxConstraints? buttonConstraints;
+
+  final double? sizeRelativeToWidth;
 
   final ButtonType buttonType;
 
@@ -58,7 +62,14 @@ class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
               duration: const Duration(milliseconds: 100),
               child: Center(
                 child: Container(
-                  constraints: widget.buttonConstraints,
+                  constraints: widget.sizeRelativeToWidth == null
+                      ? widget.buttonConstraints
+                      : BoxConstraints(
+                          minWidth:
+                              MediaQuery.sizeOf(context).width *
+                              widget.sizeRelativeToWidth!,
+                          minHeight: 50,
+                        ),
                   decoration: buttonDecoration,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
