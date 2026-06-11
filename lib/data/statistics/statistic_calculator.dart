@@ -26,6 +26,8 @@ class StatisticCalculator {
     );
   }
 
+  /// Returns the list of [Match] objects that should be considered for the
+  /// statistic based on the statistic's scopes, games, groups and the timeframe.
   static List<Match> _getFilteredMatches(
     Statistic statistic,
     List<Match> matches,
@@ -70,7 +72,8 @@ class StatisticCalculator {
     return filteredMatches;
   }
 
-  /// Returns a [Player] List with the selected players depending on
+  /// Returns the list of [Player] objects that should be considered for the
+  /// statistic based on the statistic's scopes and the filtered matches.
   static List<Player> _getFilteredPlayers(
     Statistic statistic,
     List<Player> allPlayers,
