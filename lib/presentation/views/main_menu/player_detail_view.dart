@@ -150,14 +150,16 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      _player.name,
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: CustomTheme.textColor,
+                    Expanded(
+                      child: Text(
+                        _player.name,
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: CustomTheme.textColor,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                     Text(
                       playerNameCount,
