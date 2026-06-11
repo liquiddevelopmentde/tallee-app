@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 
 class CustomDialogAction extends StatelessWidget {
   /// A custom dialog action widget that represents a button in a dialog.
@@ -25,7 +25,7 @@ class CustomDialogAction extends StatelessWidget {
   final bool isDestructive;
   @override
   Widget build(BuildContext context) {
-    return AnimatedDialogButton(
+    return BottomAnimatedButton(
       onPressed: onPressed != null
           ? () async {
               await HapticFeedback.selectionClick();
