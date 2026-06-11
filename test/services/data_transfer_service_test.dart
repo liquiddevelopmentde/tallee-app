@@ -1218,5 +1218,97 @@ void main() {
       );
       expect(isValid, true);
     });
+
+    group('validateContent()', () {
+      test('returns true for valid data', () {
+        final validData = {
+          'players': [
+            {
+              'name': 'A' * 32,
+              'description': 'D',
+            }
+          ],
+          'games': [
+            {
+              'name': 'G' * 32,
+              'description': 'D' * 256,
+            }
+          ],
+          'groups': [
+            {
+              'name': 'Gr' * 16,
+            }
+          ],
+          'matches': [
+            {
+              'name': 'M' * 32,
+              'teams': [
+                {'name': 'T' * 32}
+              ],
+            }
+          ],
+        };
+        expect(DataTransferService.validateContent(validData), isTrue);
+      });
+
+      test('returns false if player name is too long', () {
+        final data = {
+          'players': [
+            {'name': 'A' * 33}
+          ]
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
+
+      test('returns false if game name is too long', () {
+        final data = {
+          'games': [
+            {'name': 'G' * 33}
+          ]
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
+
+      test('returns false if game description is too long', () {
+        final data = {
+          'games': [
+            {'name': 'G', 'description': 'D' * 257}
+          ]
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
+
+      test('returns false if group name is too long', () {
+        final data = {
+          'groups': [
+            {'name': 'Gr' * 17}
+          ]
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
+
+      test('returns false if match name is too long', () {
+        final data = {
+          'matches': [
+            {'name': 'M' * 33}
+          ]
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
+
+      test('returns false if team name is too long', () {
+        final data = {
+          'matches': [
+            {
+              'name': 'M',
+              'teams': [
+                {'name': 'T' * 33}
+              ]
+            }
+          ]
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
+    });
   });
 }

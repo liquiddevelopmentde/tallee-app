@@ -98,7 +98,7 @@ class DataTransferService {
 
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
-      if (!_validateContent(decoded)) {
+      if (!validateContent(decoded)) {
         return ImportResult.invalidData;
       }
 
@@ -119,7 +119,8 @@ class DataTransferService {
   }
 
   /// Überprüft die Längen der Felder gegen die definierten Constants.
-  static bool _validateContent(Map<String, dynamic> decoded) {
+  @visibleForTesting
+  static bool validateContent(Map<String, dynamic> decoded) {
     // Spieler validieren
     final players = decoded['players'] as List<dynamic>? ?? [];
     for (final p in players) {
