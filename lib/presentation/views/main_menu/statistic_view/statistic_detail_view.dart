@@ -150,7 +150,6 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                         ],
                       ),
                     ),
-
                     divider,
 
                     // Timeframe
@@ -171,7 +170,6 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                         ],
                       ),
                     ),
-
                     divider,
 
                     // Groups
