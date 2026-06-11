@@ -68,7 +68,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                   child: TopCenteredMessage(
                     icon: Icons.info,
                     title: loc.info,
-                    content: Text(loc.no_statistics_created_yet),
+                    message: loc.no_statistics_created_yet,
                   ),
                 ),
                 child: ReorderableListView.builder(

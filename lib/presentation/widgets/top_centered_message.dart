@@ -12,7 +12,6 @@ class TopCenteredMessage extends StatelessWidget {
     required this.icon,
     required this.title,
     this.message,
-    this.content,
     this.fullscreen = true,
   });
 
@@ -21,8 +20,6 @@ class TopCenteredMessage extends StatelessWidget {
   final String title;
 
   final String? message;
-
-  final Widget? content;
 
   final bool fullscreen;
 
@@ -44,9 +41,7 @@ class TopCenteredMessage extends StatelessWidget {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-          if (content != null)
-            content!
-          else if (message != null)
+          if (message != null)
             Text(
               message!,
               style: const TextStyle(fontSize: 16),
