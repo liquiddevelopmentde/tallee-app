@@ -16,7 +16,7 @@ import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
-import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 
 class CreateStatisticView extends StatefulWidget {
   const CreateStatisticView({super.key, required this.onStatisticCreated});
@@ -600,7 +600,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
             // Create statistic button
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-              child: AnimatedDialogButton(
+              child: BottomAnimatedButton(
                 buttonConstraints: const BoxConstraints(minWidth: 390),
                 buttonText: submitButtonText,
                 onPressed:

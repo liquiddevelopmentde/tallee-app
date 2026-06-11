@@ -12,7 +12,7 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
-import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/group_tile.dart';
@@ -149,7 +149,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
             if (widget.statistic != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-                child: AnimatedDialogButton(
+                child: BottomAnimatedButton(
                   buttonConstraints: const BoxConstraints(minWidth: 390),
                   buttonText: buttonText,
                   onPressed: selectedGroups.isNotEmpty

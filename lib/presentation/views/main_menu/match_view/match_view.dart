@@ -20,7 +20,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/match_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -207,7 +207,7 @@ class _MatchViewState extends State<MatchView> {
           ),
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
-            child: MainMenuButton(
+            child: FloatingAnimatedButton(
               text: loc.create_match,
               icon: RpgAwesome.clovers_card,
               onPressed: () async {
