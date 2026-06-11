@@ -153,10 +153,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                 // Live Edit Mode Button
                 if (rulesetSupportsScoreEntry()) ...[
                   AnimatedDialogButton(
-                    buttonConstraints: const BoxConstraints(
-                      minWidth: double.infinity,
-                      minHeight: 50,
-                    ),
+                    sizeRelativeToWidth: 0.95,
                     buttonText: loc.live_edit_mode,
                     buttonType: ButtonType.secondary,
                     onPressed: () =>
@@ -182,10 +179,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
                 // Save Changes Button
                 AnimatedDialogButton(
-                  buttonConstraints: const BoxConstraints(
-                    minWidth: double.infinity,
-                    minHeight: 50,
-                  ),
+                  sizeRelativeToWidth: 0.95,
                   buttonText: loc.save_changes,
                   onPressed: canSave
                       ? () async {

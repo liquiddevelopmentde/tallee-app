@@ -480,7 +480,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
             Positioned(
               bottom: MediaQuery.of(context).padding.bottom,
               child: AnimatedDialogButton(
-                buttonConstraints: const BoxConstraints(minWidth: 350),
+                sizeRelativeToWidth: 0.95,
                 buttonText: loc.create_statistic,
                 onPressed: selectedType != null && selectedScope.isNotEmpty
                     ? () => submitStatistic()

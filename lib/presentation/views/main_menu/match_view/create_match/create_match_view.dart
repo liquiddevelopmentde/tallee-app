@@ -179,10 +179,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: AnimatedDialogButton(
-                  buttonConstraints: const BoxConstraints(
-                    minWidth: double.infinity,
-                    minHeight: 50,
-                  ),
+                  sizeRelativeToWidth: 0.95,
                   buttonType: ButtonType.primary,
                   onPressed: isSubmitButtonEnabled()
                       ? () {

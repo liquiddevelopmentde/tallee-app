@@ -101,10 +101,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: AnimatedDialogButton(
-                  buttonConstraints: const BoxConstraints(
-                    minWidth: double.infinity,
-                    minHeight: 50,
-                  ),
+                  sizeRelativeToWidth: 0.95,
                   buttonText: widget.groupToEdit == null
                       ? loc.create_group
                       : loc.edit_group,
