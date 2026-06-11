@@ -193,6 +193,9 @@ jobs:
           git config --global --add safe.directory '*'
           flutter pub get
 
+      - name: Sort pubspec.yaml
+        run: dart run pubspec_dependency_sorter
+
       - name: Check code format
         id: check_format
         continue-on-error: true
