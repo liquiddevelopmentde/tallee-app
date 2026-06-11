@@ -69,15 +69,12 @@ void main() {
 
   group('Statistic-Game Tests', () {
     group('READ', () {
-      test(
-        'getGamesForStatistic() returns null for non-existing 9d ',
-        () async {
-          final games = await database.statisticGameDao.getGamesForStatistic(
-            'non-existing-id',
-          );
-          expect(games, isNull);
-        },
-      );
+      test('getGamesForStatistic() returns null for non-existing id', () async {
+        final games = await database.statisticGameDao.getGamesForStatistic(
+          'non-existing-id',
+        );
+        expect(games, isNull);
+      });
 
       test('getGamesForStatistic() returns the correct game', () async {
         await database.statisticGameDao.addStatisticGames(

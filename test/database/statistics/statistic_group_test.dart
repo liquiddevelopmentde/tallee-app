@@ -73,7 +73,7 @@ void main() {
   group('Statistic-Group Tests', () {
     group('READ', () {
       test(
-        'getGroupsForStatistic() returns null for non-existing 9d ',
+        'getGroupsForStatistic() returns null for non-existing id',
         () async {
           final groups = await database.statisticGroupDao.getGroupsForStatistic(
             'non-existing-id',

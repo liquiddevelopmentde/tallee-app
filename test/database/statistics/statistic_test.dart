@@ -195,7 +195,7 @@ void main() {
         expect(fetched.displayCount, testStatistic1.displayCount);
       });
 
-      test('getGameById() returns null for non-existent stat', () async {
+      test('getGameById() returns null for non-existent statistic', () async {
         final fetched = await database.statisticDao.getStatisticById(
           statisticId: 'non-existent-id',
         );
