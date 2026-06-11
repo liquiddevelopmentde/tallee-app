@@ -12,7 +12,7 @@ import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class PlayerSelection extends StatefulWidget {

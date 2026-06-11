@@ -14,6 +14,7 @@ import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
 
 class MatchTile extends StatefulWidget {
   /// A tile widget that displays information about a match, including its name,

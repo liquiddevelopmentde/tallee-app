@@ -22,6 +22,7 @@ import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
 
 class MatchDetailView extends StatefulWidget {
   /// A view that displays the profile of a match

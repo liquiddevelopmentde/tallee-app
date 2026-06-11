@@ -19,7 +19,6 @@ class TextIconTile extends StatelessWidget {
   /// - `onTileTap`: The callback to be invoked when the tile is tapped.
   const TextIconTile({
     super.key,
-    this.player,
     this.text = '',
     this.pair,
     this.pairIconLeft = false,
@@ -28,27 +27,23 @@ class TextIconTile extends StatelessWidget {
     this.onTileTap,
     this.backgroundColor,
     this.highlighted = false,
+    this.player,
+    this.suffixText = '',
   });
 
-  /// An optional player object to display.
   final Player? player;
 
-  /// The text to display if no player is provided.
   final String text;
 
   final Team? pair;
 
   final bool pairIconLeft;
 
-  /// The callback to be invoked when the icon is tapped.
   final String suffixText;
   final VoidCallback? onIconTap;
 
-  /// The icon to display.
   final IconData? icon;
 
-  /// The callback to be invoked when the tile is tapped.
-  final IconData icon;
   final VoidCallback? onTileTap;
   final bool highlighted;
 
@@ -84,10 +79,10 @@ class TextIconTile extends StatelessWidget {
             Flexible(
               child: buildUnitNameWidget(
                 pair ?? player ?? Player(name: text, nameCount: 0),
-                mainStyle: const TextStyle(
+                mainStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: textClr
+                  color: textClr,
                 ),
                 countStyle: TextStyle(
                   fontSize: 13,

@@ -299,68 +299,69 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
 
             // Edit player button
             if (!widget.player.deleted)
-            Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom,
-              child: FloatingAnimatedButton(
-                text: loc.edit_player,
-                icon: Icons.edit,
-                onPressed: () async {
-                  nameController.text = player.name;
-                  showDialog<bool>(
-                    context: context,
-                    builder: (context) => StatefulBuilder(
-                      builder: (context, setDialogState) {
-                        return CustomAlertDialog(
-                          title: loc.edit_name,
-                          content: TextInputField(
-                            controller: nameController,
-                            hintText: loc.set_name,
-                            onChanged: (_) => setDialogState(() {}),
-                          ),
-                          actions: [
-                            CustomDialogAction(
-                              onPressed: isConfirmButtonEnabled()
-                                  ? () => Navigator.of(context).pop(true)
-                                  : null,
-                              text: loc.confirm,
+              Positioned(
+                bottom: MediaQuery.paddingOf(context).bottom,
+                child: FloatingAnimatedButton(
+                  text: loc.edit_player,
+                  icon: Icons.edit,
+                  onPressed: () async {
+                    nameController.text = player.name;
+                    showDialog<bool>(
+                      context: context,
+                      builder: (context) => StatefulBuilder(
+                        builder: (context, setDialogState) {
+                          return CustomAlertDialog(
+                            title: loc.edit_name,
+                            content: TextInputField(
+                              controller: nameController,
+                              hintText: loc.set_name,
+                              onChanged: (_) => setDialogState(() {}),
                             ),
-                            CustomDialogAction(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              buttonType: ButtonType.secondary,
-                              text: loc.cancel,
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ).then((confirmed) async {
-                    if (confirmed! && context.mounted) {
-                      final newName = nameController.text.trim();
-
-                      if (newName != player.name) {
-                        final fetchedPlayerNameCount = await db.playerDao
-                            .getNameCount(name: newName);
-                        await db.playerDao.updatePlayerName(
-                          playerId: player.id,
-                          name: newName,
-                        );
-                        widget.callback.call();
-                        setState(() {
-                          player = player.copyWith(
-                            name: newName,
-                            // If there is already a player with the same name,
-                            // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
-                            nameCount: fetchedPlayerNameCount == 0
-                                ? 0
-                                : fetchedPlayerNameCount + 1,
+                            actions: [
+                              CustomDialogAction(
+                                onPressed: isConfirmButtonEnabled()
+                                    ? () => Navigator.of(context).pop(true)
+                                    : null,
+                                text: loc.confirm,
+                              ),
+                              CustomDialogAction(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                buttonType: ButtonType.secondary,
+                                text: loc.cancel,
+                              ),
+                            ],
                           );
-                        });
+                        },
+                      ),
+                    ).then((confirmed) async {
+                      if (confirmed! && context.mounted) {
+                        final newName = nameController.text.trim();
+
+                        if (newName != player.name) {
+                          final fetchedPlayerNameCount = await db.playerDao
+                              .getNameCount(name: newName);
+                          await db.playerDao.updatePlayerName(
+                            playerId: player.id,
+                            name: newName,
+                          );
+                          widget.callback.call();
+                          setState(() {
+                            player = player.copyWith(
+                              name: newName,
+                              // If there is already a player with the same name,
+                              // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
+                              nameCount: fetchedPlayerNameCount == 0
+                                  ? 0
+                                  : fetchedPlayerNameCount + 1,
+                            );
+                          });
+                        }
                       }
-                    }
-                  });
-                },
+                    });
+                  },
+                ),
               ),
-            ),
           ],
         ),
       ),
