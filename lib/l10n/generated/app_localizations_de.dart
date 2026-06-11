@@ -419,10 +419,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get select_a_timeframe => 'Zeitraum auswählen';
 
   @override
-  String get select_another_player_to_pair =>
-      'Anderen Spieler auswählen um ein Paar zu erstellen';
-
-  @override
   String get select_loser => 'Verlierer:in wählen';
 
   @override

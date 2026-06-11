@@ -884,12 +884,6 @@ abstract class AppLocalizations {
   /// **'Select a timeframe'**
   String get select_a_timeframe;
 
-  /// No description provided for @select_another_player_to_pair.
-  ///
-  /// In en, this message translates to:
-  /// **'Select another player to pair'**
-  String get select_another_player_to_pair;
-
   /// No description provided for @select_loser.
   ///
   /// In en, this message translates to:
