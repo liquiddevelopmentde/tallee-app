@@ -235,18 +235,18 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 ),
               ),
             ),
-
-            // Create statistic button
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-              child: AnimatedDialogButton(
-                buttonConstraints: const BoxConstraints(minWidth: 390),
-                buttonText: loc.create_statistic,
-                onPressed: selectedGames.isNotEmpty
-                    ? () => submitStatistic()
-                    : null,
+            if (widget.statistic != null)
+              // Create statistic button
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+                child: AnimatedDialogButton(
+                  buttonConstraints: const BoxConstraints(minWidth: 390),
+                  buttonText: loc.create_statistic,
+                  onPressed: selectedGames.isNotEmpty
+                      ? () => submitStatistic()
+                      : null,
+                ),
               ),
-            ),
           ],
         ),
       ),
