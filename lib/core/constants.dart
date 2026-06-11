@@ -2,6 +2,9 @@
 class Constants {
   Constants._(); // Private constructor to prevent instantiation
 
+  /// Treshold for fuzzy search
+  static const int FUZZY_SEARCH_THRESHOLD = 50;
+
   /// Minimum duration of all app skeletons
   static const Duration MINIMUM_SKELETON_DURATION = Duration(milliseconds: 250);
 

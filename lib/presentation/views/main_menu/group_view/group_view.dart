@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/constants.dart';
@@ -10,7 +13,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/group_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -177,7 +180,7 @@ class _GroupViewState extends State<GroupView> {
           ),
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
-            child: MainMenuButton(
+            child: FloatingAnimatedButton(
               text: loc.create_group,
               icon: Icons.group_add,
               onPressed: () async {
@@ -199,22 +202,31 @@ class _GroupViewState extends State<GroupView> {
 
   /// Filters the groups based on the search [query].
   void filterGroups(String query) {
-    final lowercaseQuery = query.toLowerCase();
     setState(() {
       if (query.isEmpty) {
         filteredGroups = [...groups];
       } else {
-        filteredGroups.clear();
-        filteredGroups.addAll(
-          groups.where(
-            (group) =>
-                group.name.toLowerCase().contains(lowercaseQuery) ||
-                group.members.any(
-                  (player) =>
-                      player.name.toLowerCase().contains(lowercaseQuery),
-                ),
-          ),
-        );
+        final List<({Group group, int score})> scoredGroups = [];
+
+        for (final group in groups) {
+          int maxScore = 0;
+
+          // Check group name
+          maxScore = max(maxScore, weightedRatio(group.name, query));
+
+          // Check member names
+          for (final member in group.members) {
+            maxScore = max(maxScore, weightedRatio(member.name, query));
+          }
+
+          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+            scoredGroups.add((group: group, score: maxScore));
+          }
+        }
+
+        // Sort by score descending
+        scoredGroups.sort((a, b) => b.score.compareTo(a.score));
+        filteredGroups = scoredGroups.map((e) => e.group).toList();
       }
     });
   }

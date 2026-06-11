@@ -11,7 +11,7 @@ import 'package:tallee/presentation/views/main_menu/statistics_view/create_stati
 import 'package:tallee/presentation/views/main_menu/statistics_view/statistic_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistics_view/statistic_tile_factory.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class StatisticsView extends StatefulWidget {
@@ -78,7 +78,7 @@ class _StatisticsViewState extends State<StatisticsView> {
             ),
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom + 20,
-              child: MainMenuButton(
+              child: FloatingAnimatedButton(
                 text: loc.create_statistic,
                 icon: Icons.bar_chart,
                 onPressed: () async {
