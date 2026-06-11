@@ -9,6 +9,10 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get names_or_descriptions_too_long =>
+      'Die Daten enthalten zu lange Namen oder Beschreibungen.';
+
+  @override
   String get add_team => 'Team hinzufügen';
 
   @override
