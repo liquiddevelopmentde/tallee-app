@@ -9,7 +9,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/manage_members_view.dart';
-import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/tiles/team_creation_tile.dart';
 
 class CreateTeamsView extends StatefulWidget {
@@ -86,7 +86,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Add new team
-                MainMenuButton(
+                FloatingAnimatedButton(
                   icon: Icons.add,
                   text: loc.add_team,
                   onPressed: teams.length >= widget.match.players.length
@@ -96,7 +96,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                 const SizedBox(width: 15),
 
                 // Confirm teams
-                MainMenuButton(
+                FloatingAnimatedButton(
                   icon: Icons.arrow_forward_sharp,
                   onPressed: teams.length >= 2
                       ? () {

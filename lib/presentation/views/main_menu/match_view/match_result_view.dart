@@ -12,7 +12,7 @@ import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/match_result/live_edit_view.dart';
-import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
@@ -153,11 +153,8 @@ class _MatchResultViewState extends State<MatchResultView> {
               children: [
                 // Live Edit Mode Button
                 if (rulesetSupportsScoreEntry()) ...[
-                  AnimatedDialogButton(
-                    buttonConstraints: const BoxConstraints(
-                      minWidth: double.infinity,
-                      minHeight: 50,
-                    ),
+                  BottomAnimatedButton(
+                    sizeRelativeToWidth: 0.95,
                     buttonText: loc.live_edit_mode,
                     buttonType: ButtonType.secondary,
                     onPressed: () =>
@@ -182,11 +179,8 @@ class _MatchResultViewState extends State<MatchResultView> {
                 ],
 
                 // Save Changes Button
-                AnimatedDialogButton(
-                  buttonConstraints: const BoxConstraints(
-                    minWidth: double.infinity,
-                    minHeight: 50,
-                  ),
+                BottomAnimatedButton(
+                  sizeRelativeToWidth: 0.95,
                   buttonText: loc.save_changes,
                   onPressed: canSave
                       ? () async {
