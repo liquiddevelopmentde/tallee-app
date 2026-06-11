@@ -49,6 +49,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
 
   @override
+  String get click_another_player_to_create_a_pair =>
+      'Klicke einen weiteren Spieler an, um ein Paar zu erstellen';
+
+  @override
   String get color => 'Farbe';
 
   @override

@@ -49,6 +49,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose which metric is calculated and shown in this statistic.';
 
   @override
+  String get click_another_player_to_create_a_pair =>
+      'Click another player to create a pair';
+
+  @override
   String get color => 'Color';
 
   @override
