@@ -11,7 +11,7 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 
 class CreateStatisticView extends StatefulWidget {
   const CreateStatisticView({super.key, required this.onStatisticCreated});
@@ -479,7 +479,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
             // Create statistic button
             Positioned(
               bottom: MediaQuery.of(context).padding.bottom,
-              child: AnimatedDialogButton(
+              child: BottomAnimatedButton(
                 sizeRelativeToWidth: 0.95,
                 buttonText: loc.create_statistic,
                 onPressed: selectedType != null && selectedScope.isNotEmpty

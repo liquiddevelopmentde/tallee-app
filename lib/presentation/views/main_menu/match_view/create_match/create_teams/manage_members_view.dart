@@ -12,7 +12,7 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
-import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
 /// Displays the given [teams] as a flat reorderable list where every team is
@@ -90,14 +90,14 @@ class _ManageMembersViewState extends State<ManageMembersView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MainMenuButton(
+                FloatingAnimatedButton(
                   onPressed: () => setState(() {
                     redistributePlayers();
                   }),
                   icon: Icons.cached,
                 ),
                 const SizedBox(width: 16),
-                MainMenuButton(
+                FloatingAnimatedButton(
                   onPressed: allTeamsHaveMembers
                       ? () async => submitMatch()
                       : null,

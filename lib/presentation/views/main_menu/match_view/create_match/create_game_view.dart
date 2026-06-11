@@ -12,7 +12,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
@@ -224,7 +224,7 @@ class _CreateGameViewState extends State<CreateGameView> {
               // Create/Edit game button
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: AnimatedDialogButton(
+                child: BottomAnimatedButton(
                   buttonText: isEditing ? loc.edit_game : loc.create_game,
                   sizeRelativeToWidth: 0.95,
                   buttonType: ButtonType.primary,

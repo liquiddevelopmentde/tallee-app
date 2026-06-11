@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/enums.dart';
 
-class AnimatedDialogButton extends StatefulWidget {
+class BottomAnimatedButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
   /// when pressed.
   /// - [buttonText]: The text to be displayed on the button.
@@ -10,7 +10,7 @@ class AnimatedDialogButton extends StatefulWidget {
   /// - [sizeRelativeToWidth]: Optional size of the button relative to the width of the screen.
   /// - [buttonType]: The type of the button, which determines its styling.
   /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
-  const AnimatedDialogButton({
+  const BottomAnimatedButton({
     super.key,
     required this.buttonText,
     this.onPressed,
@@ -33,10 +33,10 @@ class AnimatedDialogButton extends StatefulWidget {
   final bool isDescructive;
 
   @override
-  State<AnimatedDialogButton> createState() => _AnimatedDialogButtonState();
+  State<BottomAnimatedButton> createState() => _BottomAnimatedButtonState();
 }
 
-class _AnimatedDialogButtonState extends State<AnimatedDialogButton> {
+class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
   bool _isPressed = false;
 
   @override
