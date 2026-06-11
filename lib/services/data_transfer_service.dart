@@ -83,6 +83,7 @@ class DataTransferService {
     final db = Provider.of<AppDatabase>(context, listen: false);
 
     final path = await FilePicker.pickFiles(
+      allowMultiple: false,
       type: FileType.custom,
       allowedExtensions: ['json'],
     );
@@ -92,7 +93,7 @@ class DataTransferService {
     }
 
     try {
-      final jsonString = await _readFileContent(path.files.first);
+      final jsonString = await _readFileContent(path.files.single);
       if (jsonString == null) return ImportResult.fileReadError;
 
       final isValid = await validateJsonSchema(jsonString);
