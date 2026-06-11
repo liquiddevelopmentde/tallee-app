@@ -87,11 +87,7 @@ class DataTransferService {
       allowedExtensions: ['json'],
     );
 
-    if (path == null) {
-      return ImportResult.canceled;
-    }
-
-    if (path.files.isEmpty) {
+    if (path == null || path.files.isEmpty) {
       return ImportResult.canceled;
     }
 
