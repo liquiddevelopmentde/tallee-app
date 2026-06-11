@@ -118,10 +118,10 @@ class DataTransferService {
     }
   }
 
-  /// Überprüft die Längen der Felder gegen die definierten Constants.
+  /// Validates field lengths against the defined constants.
   @visibleForTesting
   static bool validateContent(Map<String, dynamic> decoded) {
-    // Spieler validieren
+    // Validate players
     final players = decoded['players'] as List<dynamic>? ?? [];
     for (final p in players) {
       final name = p['name'] as String?;
@@ -130,7 +130,7 @@ class DataTransferService {
       }
     }
 
-    // Spiele validieren
+    // Validate games
     final games = decoded['games'] as List<dynamic>? ?? [];
     for (final g in games) {
       final name = g['name'] as String?;
@@ -143,7 +143,7 @@ class DataTransferService {
       }
     }
 
-    // Gruppen validieren
+    // Validate groups
     final groups = decoded['groups'] as List<dynamic>? ?? [];
     for (final g in groups) {
       final name = g['name'] as String?;
@@ -152,7 +152,7 @@ class DataTransferService {
       }
     }
 
-    // Matches und Teams validieren
+    // Validate matches and teams
     final matches = decoded['matches'] as List<dynamic>? ?? [];
     for (final m in matches) {
       final name = m['name'] as String?;
