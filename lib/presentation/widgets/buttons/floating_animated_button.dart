@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class MainMenuButton extends StatefulWidget {
+class FloatingAnimatedButton extends StatefulWidget {
   /// A button for the main menu with an optional icon and a press animation.
   /// - [onPressed]: The callback to be invoked when the button is pressed.
   /// - [icon]: The icon of the button.
   /// - [text]: The text of the button.
-  const MainMenuButton({
+  const FloatingAnimatedButton({
     super.key,
     required this.onPressed,
     required this.icon,
@@ -28,10 +28,10 @@ class MainMenuButton extends StatefulWidget {
   final void Function()? onLongPressed;
 
   @override
-  State<MainMenuButton> createState() => _MainMenuButtonState();
+  State<FloatingAnimatedButton> createState() => _FloatingAnimatedButtonState();
 }
 
-class _MainMenuButtonState extends State<MainMenuButton>
+class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late AnimationController _disabledAnimationController;
