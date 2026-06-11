@@ -45,6 +45,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get classifier => 'Klassifikator';
 
   @override
+  String get click_another_player_to_create_a_pair =>
+      'Klicke einen weiteren Spieler an, um ein Paar zu erstellen';
+
+  @override
   String get color => 'Farbe';
 
   @override
@@ -413,6 +417,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get select_a_timeframe => 'Zeitraum auswählen';
+
+  @override
+  String get select_another_player_to_pair =>
+      'Anderen Spieler auswählen um ein Paar zu erstellen';
 
   @override
   String get select_loser => 'Verlierer:in wählen';

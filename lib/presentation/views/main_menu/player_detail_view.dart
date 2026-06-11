@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +7,7 @@ import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -41,8 +44,7 @@ class PlayerDetailView extends StatefulWidget {
 
 class _PlayerDetailViewState extends State<PlayerDetailView> {
   late final AppDatabase db;
-  late Player _player;
-  late String playerNameCount;
+  late Player player;
   bool isLoading = true;
 
   /// Total matches played by this player
@@ -75,9 +77,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   @override
   void initState() {
     super.initState();
-    _player = widget.player;
+    player = widget.player;
     db = Provider.of<AppDatabase>(context, listen: false);
-    playerNameCount = getNameCountText(_player);
     _loadData();
   }
 
@@ -147,32 +148,19 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      _player.name,
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: CustomTheme.textColor,
-                      ),
-                      textAlign: TextAlign.center,
+                Center(
+                  child: buildUnitNameWidget(
+                    player,
+                    mainStyle: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: CustomTheme.textColor,
                     ),
-                    Text(
-                      playerNameCount,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: CustomTheme.textColor.withAlpha(120),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(_player.createdAt)}',
+                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(player.createdAt)}',
                   style: const TextStyle(
                     fontSize: 12,
                     color: CustomTheme.textColor,
@@ -291,7 +279,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 text: loc.edit_player,
                 icon: Icons.edit,
                 onPressed: () async {
-                  nameController.text = _player.name;
+                  nameController.text = player.name;
                   showDialog<bool>(
                     context: context,
                     builder: (context) => StatefulBuilder(
@@ -323,28 +311,23 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     if (confirmed! && context.mounted) {
                       final newName = nameController.text.trim();
 
-                      if (newName != _player.name) {
+                      if (newName != player.name) {
                         final fetchedPlayerNameCount = await db.playerDao
                             .getNameCount(name: newName);
                         await db.playerDao.updatePlayerName(
-                          playerId: _player.id,
+                          playerId: player.id,
                           name: newName,
                         );
                         widget.callback.call();
                         setState(() {
-                          _player = Player(
+                          player = player.copyWith(
                             name: newName,
-                            createdAt: _player.createdAt,
-                            id: _player.id,
-                            nameCount: _player.nameCount,
-                            description: _player.description,
+                            // If there is already a player with the same name,
+                            // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
+                            nameCount: fetchedPlayerNameCount == 0
+                                ? 0
+                                : fetchedPlayerNameCount + 1,
                           );
-
-                          // If there is already a player with the same name,
-                          // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
-                          playerNameCount = fetchedPlayerNameCount == 0
-                              ? ''
-                              : ' #${fetchedPlayerNameCount + 1}';
                         });
                       }
                     }
@@ -362,10 +345,10 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   Future<void> _loadData() async {
     isLoading = true;
     final fetchedMatches = await db.matchDao.getMatchesByPlayer(
-      playerId: _player.id,
+      playerId: player.id,
     );
     final fetchedGroups = await db.groupDao.getGroupsByPlayer(
-      playerId: _player.id,
+      playerId: player.id,
     );
 
     if (!mounted) return;
@@ -374,7 +357,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
       playerMatches = fetchedMatches;
       totalMatches = fetchedMatches.length;
       matchesWon = fetchedMatches
-          .where((match) => match.mvp.any((mvp) => mvp.id == _player.id))
+          .where((match) => match.mvp.any((mvp) => mvp.id == player.id))
           .length;
       playerGroups = fetchedGroups;
       totalGroups = fetchedGroups.length;

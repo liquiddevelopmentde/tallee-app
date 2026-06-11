@@ -91,9 +91,9 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 child: PlayerSelection(
                   initialSelectedPlayers: initialSelectedPlayers,
                   onPlayerCreated: () => widget.onMembersChanged?.call(),
-                  onChanged: (value) {
+                  onChanged: (players, units) {
                     setState(() {
-                      selectedPlayers = [...value];
+                      selectedPlayers = [...players];
                     });
                   },
                 ),

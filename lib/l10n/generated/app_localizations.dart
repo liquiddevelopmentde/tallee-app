@@ -170,6 +170,12 @@ abstract class AppLocalizations {
   /// **'Classifier'**
   String get classifier;
 
+  /// No description provided for @click_another_player_to_create_a_pair.
+  ///
+  /// In en, this message translates to:
+  /// **'Click another player to create a pair'**
+  String get click_another_player_to_create_a_pair;
+
   /// No description provided for @color.
   ///
   /// In en, this message translates to:
@@ -877,6 +883,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select a timeframe'**
   String get select_a_timeframe;
+
+  /// No description provided for @select_another_player_to_pair.
+  ///
+  /// In en, this message translates to:
+  /// **'Select another player to pair'**
+  String get select_another_player_to_pair;
 
   /// No description provided for @select_loser.
   ///
