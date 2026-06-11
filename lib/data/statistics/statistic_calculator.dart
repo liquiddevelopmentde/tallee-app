@@ -12,7 +12,7 @@ class StatisticCalculator {
     required List<Match> matches,
     required List<Player> players,
   }) {
-    final filteredMatches = _getFilterMatches(statistic, matches);
+    final filteredMatches = _getFilteredMatches(statistic, matches);
     final filteredPlayers = _getFilteredPlayers(
       statistic,
       players,
@@ -26,7 +26,7 @@ class StatisticCalculator {
     );
   }
 
-  static List<Match> _getFilterMatches(
+  static List<Match> _getFilteredMatches(
     Statistic statistic,
     List<Match> matches,
   ) {
