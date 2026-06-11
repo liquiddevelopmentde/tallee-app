@@ -49,12 +49,20 @@ class _ChooseTileState extends State<ChooseTile> {
               widget.title,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            const Spacer(),
-            if (widget.trailing != null) widget.trailing!,
-            if (widget.onPressed != null) ...[
-              const SizedBox(width: 10),
-              const Icon(Icons.arrow_forward_ios, size: 16),
-            ],
+            SizedBox(width: 16),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (widget.trailing != null)
+                    Flexible(child: widget.trailing!),
+                  if (widget.onPressed != null) ...[
+                    const SizedBox(width: 10),
+                    const Icon(Icons.arrow_forward_ios, size: 16),
+                  ],
+                ],
+              ),
+            ),
           ],
         ),
       ),
