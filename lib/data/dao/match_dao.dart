@@ -394,6 +394,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
         final players = await db.playerMatchDao.getPlayersOfMatch(
           matchId: row.id,
+          includeDeletedPlayer: true,
         );
         final scores = await db.scoreEntryDao.getAllMatchScores(
           matchId: row.id,
