@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -170,17 +171,28 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                     return !selectedPlayers.any((p) => p.id == player.id);
                   }).toList();
                 } else {
-                  // If there is input, it filters by name match (case-insensitive) and ensures
+                  // If there is input, it filters by fuzzy match and ensures
                   // that already selected players are excluded from the results.
-                  suggestedPlayers = allPlayers.where((player) {
-                    final bool nameMatches = player.name.toLowerCase().contains(
-                      value.toLowerCase(),
-                    );
+                  final List<({Player player, int score})> scoredPlayers = [];
+
+                  for (final player in allPlayers) {
                     final bool isNotSelected = !selectedPlayers.any(
                       (p) => p.id == player.id,
                     );
-                    return nameMatches && isNotSelected;
-                  }).toList();
+
+                    if (isNotSelected) {
+                      final score = weightedRatio(player.name, value);
+                      if (score >= Constants.FUZZY_SEARCH_THRESHOLD) {
+                        scoredPlayers.add((player: player, score: score));
+                      }
+                    }
+                  }
+
+                  // Sort by score descending
+                  scoredPlayers.sort((a, b) => b.score.compareTo(a.score));
+                  suggestedPlayers = scoredPlayers
+                      .map((e) => e.player)
+                      .toList();
                 }
               });
             },
