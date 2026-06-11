@@ -61,12 +61,15 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         scrolledUnderElevation: 0,
         actions: [
           if (currentIndex == 0) // Nur im Matches-Tab
-            HapticIconButton(
-              icon: Icon(
-                matchSearchProvider.isSearching ? Icons.close : Icons.search,
-              ),
-              onPressed: () => matchSearchProvider.toggleSearch(),
-            ),
+            matchSearchProvider.isSearching
+                ? HapticIconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () => matchSearchProvider.toggleSearch(),
+                  )
+                : HapticIconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () => matchSearchProvider.toggleSearch(),
+                  ),
           if (currentIndex == 1)
             HapticIconButton(
               icon: Icon(

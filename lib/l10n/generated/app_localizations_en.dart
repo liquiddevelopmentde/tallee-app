@@ -21,9 +21,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all_time => 'All time';
 
   @override
-  String get amount_of_matches => 'Amount of Matches';
-
-  @override
   String get app_name => 'Tallee';
 
   @override
@@ -39,16 +36,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
-  String get choose_color => 'Choose Color';
-
-  @override
   String get choose_game => 'Choose Game';
 
   @override
   String get choose_group => 'Choose Group';
-
-  @override
-  String get choose_ruleset => 'Choose Ruleset';
 
   @override
   String get classifier => 'Classifier';
@@ -197,18 +188,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Error while deleting game, please try again';
 
   @override
-  String get error_deleting_group =>
-      'Error while deleting group, please try again';
-
-  @override
   String get error_editing_group =>
       'Error while editing group, please try again';
 
   @override
   String get error_reading_file => 'Error reading file';
-
-  @override
-  String get exit_view => 'Exit View';
 
   @override
   String get export_canceled => 'Export canceled';
@@ -247,9 +231,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get highest_score => 'Highest Score';
 
   @override
-  String get home => 'Home';
-
-  @override
   String get import_canceled => 'Import canceled';
 
   @override
@@ -275,9 +256,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get last_year => 'Last year';
-
-  @override
-  String get least_points => 'Least Points';
 
   @override
   String get legal => 'Legal';
@@ -328,9 +306,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get members => 'Members';
 
   @override
-  String get most_points => 'Most Points';
-
-  @override
   String get multiple_winners => 'Multiple Winners';
 
   @override
@@ -344,9 +319,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_license_text_available => 'No license text available';
-
-  @override
-  String get no_licenses_found => 'No licenses found';
 
   @override
   String get no_matches_created_yet => 'No matches created yet';
@@ -368,16 +340,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_players_selected => 'No players selected';
 
   @override
-  String get no_recent_matches_available => 'No recent matches available';
-
-  @override
   String get no_results_entered_yet => 'No results entered yet';
-
-  @override
-  String get no_second_match_available => 'No second match available';
-
-  @override
-  String get no_statistics_available => 'No statistics available';
 
   @override
   String get no_statistics_created_yet => 'No statistics created yet';
@@ -392,9 +355,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get none_group => 'None';
 
   @override
-  String get not_available => 'Not available';
-
-  @override
   String get not_part_of_any_group => 'Not part of any group yet';
 
   @override
@@ -405,9 +365,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get played_matches => 'Played Matches';
-
-  @override
-  String get player_name => 'Player name';
 
   @override
   String get player_profile => 'Player Profile';
@@ -425,39 +382,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacy_policy => 'Privacy Policy';
 
   @override
-  String get quick_create => 'Quick Create';
-
-  @override
-  String get recent_matches => 'Recent Matches';
-
-  @override
-  String get redistribute => 'Redistribute';
-
-  @override
   String get results => 'Results';
 
   @override
   String get ruleset => 'Ruleset';
-
-  @override
-  String get ruleset_least_points =>
-      'Inverse scoring: the player with the fewest points wins.';
-
-  @override
-  String get ruleset_most_points =>
-      'Traditional ruleset: the player with the most points wins.';
-
-  @override
-  String get ruleset_placement =>
-      'Players can be arranged in an order, which reflects their placement.';
-
-  @override
-  String get ruleset_single_loser =>
-      'Exactly one loser is determined; last place receives the penalty or consequence.';
-
-  @override
-  String get ruleset_single_winner =>
-      'Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.';
 
   @override
   String get save_changes => 'Save Changes';
@@ -532,9 +460,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statistics => 'Statistics';
 
   @override
-  String get stats => 'Stats';
-
-  @override
   String successfully_added_player(String playerName) {
     return 'Successfully added player $playerName';
   }
@@ -585,9 +510,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get total_wins => 'Total wins';
 
   @override
-  String get undo => 'Undo';
-
-  @override
   String get unknown_exception => 'Unknown Exception (see console)';
 
   @override
@@ -598,9 +520,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get winrate => 'Winrate';
-
-  @override
-  String get wins => 'Wins';
 
   @override
   String get worst_score => 'Worst score';
