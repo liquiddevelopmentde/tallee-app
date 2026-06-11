@@ -293,6 +293,14 @@ class _SettingsViewState extends State<SettingsView> {
         if (context.mounted) {
           showSnackbar(context: context, message: loc.invalid_schema);
         }
+      case ImportResult.invalidData:
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(
+            context: context,
+            message: loc.names_or_descriptions_too_long,
+          );
+        }
       case ImportResult.fileReadError:
         await HapticFeedback.errorNotification();
         if (context.mounted) {
