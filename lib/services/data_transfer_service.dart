@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_schema/json_schema.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -98,6 +99,10 @@ class DataTransferService {
 
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
+      if (!validateContent(decoded)) {
+        return ImportResult.invalidData;
+      }
+
       await importDataToDatabase(db, decoded);
 
       return ImportResult.success;
@@ -112,6 +117,61 @@ class DataTransferService {
       print(stack);
       return ImportResult.unknownException;
     }
+  }
+
+  /// Validates field lengths against the defined constants.
+  @visibleForTesting
+  static bool validateContent(Map<String, dynamic> decoded) {
+    // Validate players
+    final players = decoded['players'] as List<dynamic>? ?? [];
+    for (final p in players) {
+      final name = p['name'] as String?;
+      if (name != null && name.length > Constants.MAX_PLAYER_NAME_LENGTH) {
+        return false;
+      }
+    }
+
+    // Validate games
+    final games = decoded['games'] as List<dynamic>? ?? [];
+    for (final g in games) {
+      final name = g['name'] as String?;
+      if (name != null && name.length > Constants.MAX_GAME_NAME_LENGTH) {
+        return false;
+      }
+      final desc = g['description'] as String?;
+      if (desc != null && desc.length > Constants.MAX_GAME_DESCRIPTION_LENGTH) {
+        return false;
+      }
+    }
+
+    // Validate groups
+    final groups = decoded['groups'] as List<dynamic>? ?? [];
+    for (final g in groups) {
+      final name = g['name'] as String?;
+      if (name != null && name.length > Constants.MAX_GROUP_NAME_LENGTH) {
+        return false;
+      }
+    }
+
+    // Validate matches and teams
+    final matches = decoded['matches'] as List<dynamic>? ?? [];
+    for (final m in matches) {
+      final name = m['name'] as String?;
+      if (name != null && name.length > Constants.MAX_MATCH_NAME_LENGTH) {
+        return false;
+      }
+
+      final teams = m['teams'] as List<dynamic>? ?? [];
+      for (final t in teams) {
+        final teamName = t['name'] as String?;
+        if (teamName != null &&
+            teamName.length > Constants.MAX_TEAM_NAME_LENGTH) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   /// Imports parsed JSON data into the database.
