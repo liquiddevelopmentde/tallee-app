@@ -49,7 +49,7 @@ class _ChooseTileState extends State<ChooseTile> {
               widget.title,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
