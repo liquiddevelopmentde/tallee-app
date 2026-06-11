@@ -146,6 +146,8 @@ class Match {
     'notes': notes,
   };
 
+  bool get useTeamLogic => isTeamMatch || (teams?.isNotEmpty ?? false);
+
   // Most Valuable Player(s) based on the match's ruleset
   List<Player> get mvp {
     if (players.isEmpty || scores.isEmpty) return [];

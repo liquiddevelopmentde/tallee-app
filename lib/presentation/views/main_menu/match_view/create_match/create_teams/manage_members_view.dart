@@ -77,8 +77,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
                   key: ValueKey('player_${player.id}'),
                   index: index,
                   child: TextIconListTile(
-                    text: player.name,
-                    suffixText: getNameCountText(player),
+                    player: player,
                     icon: Icons.drag_handle,
                   ),
                 );

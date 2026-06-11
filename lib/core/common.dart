@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 /// Translates a [Ruleset] enum value to its corresponding localized string.
@@ -126,14 +125,6 @@ String getExtraPlayerCount(Match match) {
     return '';
   }
   return ' + ${count.toString()}';
-}
-
-/// Returns the player name count if greater 0 in the format " #2", otherwise an empty string
-String getNameCountText(Player player) {
-  if (player.nameCount >= 1) {
-    return ' #${player.nameCount}';
-  }
-  return '';
 }
 
 /// Returns the correct singular or plural form of "point(s)" based on the [points] value.

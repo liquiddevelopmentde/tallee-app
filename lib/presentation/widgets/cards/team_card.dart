@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
@@ -44,14 +45,14 @@ class TeamCard extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Text(
-                team.name,
-                style: const TextStyle(
+              child: buildUnitNameWidget(
+                team,
+                isTeamMatch: true,
+                mainStyle: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
             ),
             const SizedBox(width: 8),
@@ -92,11 +93,10 @@ class TeamCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 3,
                 children: [
-                  Text(
-                    team.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                  buildUnitNameWidget(
+                    team,
+                    isTeamMatch: true,
+                    mainStyle: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: CustomTheme.textColor,
