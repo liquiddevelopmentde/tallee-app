@@ -55,10 +55,9 @@ jobs:
         run: |
           git config --global user.name "Gitea Actions [bot]"
           git config --global user.email "actions@yannick-weigert.de"
-          git config pull.rebase false
-          git pull origin "$BRANCH_NAME"
           git add pubspec.yaml
           git commit -m "Updated version number [skip ci]"
+          git pull --rebase --autostash origin "$BRANCH_NAME"
           git push origin HEAD:$BRANCH_NAME
 
   generate_licenses:
@@ -98,10 +97,9 @@ jobs:
           if [ -n "$(git status --porcelain lib test)" ]; then
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
-            git config pull.rebase false
-            git pull origin "$BRANCH_NAME"
             git add lib test
             git commit -m "Updated licenses [skip ci]"
+            git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin HEAD:$BRANCH_NAME
           else
             echo "No changes to commit"
@@ -161,13 +159,12 @@ jobs:
           git fetch origin "$BRANCH_NAME"
           git checkout "$BRANCH_NAME"
 
-          if [ -n "$(git status --porcelain lib test)" ]; then
+          if [ -n "$(git status --porcelain lib/l10n)" ]; then
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
-            git config pull.rebase false
-            git pull origin "$BRANCH_NAME"
             git add lib/l10n
             git commit -m "Generated localizations [skip ci]"
+            git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin "HEAD:$BRANCH_NAME"
           else
             echo "No changes to commit"
@@ -216,10 +213,9 @@ jobs:
           if [ -n "$(git status --porcelain lib test)" ]; then
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
-            git config pull.rebase false
-            git pull origin "$BRANCH_NAME"
             git add lib test
             git commit -m "Auto-format code [skip ci]"
+            git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin HEAD:$BRANCH_NAME
           else
             echo "No changes to commit"
