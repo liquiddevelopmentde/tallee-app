@@ -60,16 +60,26 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
         actions: [
-          if (currentIndex == 0)
+          if (currentIndex == 0) // Only in MatchView
             HapticIconButton(
-              icon: Icon(
-                matchSearchProvider.isSearching ? Icons.close : Icons.search,
+              key: ValueKey(
+                matchSearchProvider.isSearching
+                    ? 'match_search_close_button'
+                    : 'match_search_open_button',
               ),
+              icon: matchSearchProvider.isSearching
+                  ? const Icon(Icons.close)
+                  : const Icon(Icons.search),
               onPressed: () => matchSearchProvider.toggleSearch(),
             ),
 
-          if (currentIndex == 1)
+          if (currentIndex == 1) // Only in GroupView
             HapticIconButton(
+              key: ValueKey(
+                groupSearchProvider.isSearching
+                    ? 'group_search_close_button'
+                    : 'group_search_open_button',
+              ),
               icon: Icon(
                 groupSearchProvider.isSearching ? Icons.close : Icons.search,
               ),

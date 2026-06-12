@@ -203,7 +203,6 @@ class _SettingsViewState extends State<SettingsView> {
                               spacing: 10,
                               children: [
                                 HapticIconButton(
-                                  color: CustomTheme.textColor,
                                   icon: const Icon(Icons.language),
                                   onPressed: () async => {
                                     await HapticFeedback.lightImpact(),
@@ -213,7 +212,6 @@ class _SettingsViewState extends State<SettingsView> {
                                   },
                                 ),
                                 HapticIconButton(
-                                  color: CustomTheme.textColor,
                                   icon: const FaIcon(FontAwesomeIcons.github),
                                   onPressed: () async => {
                                     await HapticFeedback.lightImpact(),
@@ -225,7 +223,6 @@ class _SettingsViewState extends State<SettingsView> {
                                   },
                                 ),
                                 HapticIconButton(
-                                  color: CustomTheme.textColor,
                                   icon: Icon(
                                     Platform.isIOS
                                         ? CupertinoIcons.mail_solid
