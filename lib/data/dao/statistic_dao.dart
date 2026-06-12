@@ -1,6 +1,4 @@
-import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/statistic_table.dart';
 import 'package:tallee/data/models/statistic.dart';
@@ -18,8 +16,8 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
     await into(statisticTable).insert(
       StatisticTableCompanion.insert(
         id: statistic.id,
-        type: statistic.type.name,
-        timeframe: Value(statistic.timeframe?.name),
+        type: statistic.type,
+        timeframe: Value(statistic.timeframe),
         displayCount: Value(statistic.displayCount),
       ),
       mode: InsertMode.insertOrReplace,
@@ -58,11 +56,9 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
       final scopes = await db.statisticScopeDao.getScopeForStatistic(row.id);
 
       return Statistic(
-        type: StatisticType.values.firstWhere((type) => type.name == row.type),
+        type: row.type,
         scopes: scopes,
-        timeframe: Timeframe.values.firstWhereOrNull(
-          (t) => t.name == row.timeframe,
-        ),
+        timeframe: row.timeframe,
         selectedGroups: groups,
         selectedGames: games,
         displayCount: row.displayCount,
@@ -83,13 +79,9 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         final scopes = await db.statisticScopeDao.getScopeForStatistic(row.id);
 
         return Statistic(
-          type: StatisticType.values.firstWhere(
-            (type) => type.name == row.type,
-          ),
+          type: row.type,
           scopes: scopes,
-          timeframe: Timeframe.values.firstWhereOrNull(
-            (t) => t.name == row.timeframe,
-          ),
+          timeframe: row.timeframe,
           selectedGroups: groups,
           selectedGames: games,
           displayCount: row.displayCount,
