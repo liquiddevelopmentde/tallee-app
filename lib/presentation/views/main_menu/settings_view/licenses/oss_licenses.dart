@@ -14,7 +14,6 @@ const thisPackage = _tallee;
 const allDependencies = <Package>[
   __fe_analyzer_shared,
   _analyzer,
-  _animated_custom_dropdown,
   _arb_utils,
   _archive,
   _args,
@@ -56,7 +55,7 @@ const allDependencies = <Package>[
   _drift,
   _drift_dev,
   _drift_flutter,
-  _dropdown_flutter,
+  _dropdown_button2,
   _equatable,
   _fake_async,
   _ffi,
@@ -98,7 +97,6 @@ const allDependencies = <Package>[
   _leak_tracker_flutter_testing,
   _leak_tracker_testing,
   _lints,
-  _logger,
   _logging,
   _markdown,
   _matcher,
@@ -110,6 +108,7 @@ const allDependencies = <Package>[
   _nested,
   _node_preamble,
   _objective_c,
+  _once,
   _package_config,
   _package_info_plus,
   _package_info_plus_platform_interface,
@@ -128,8 +127,6 @@ const allDependencies = <Package>[
   _posix,
   _provider,
   _pub_semver,
-  _pubspec,
-  _pubspec_dependency_sorter,
   _pubspec_lock,
   _pubspec_manager,
   _pubspec_parse,
@@ -156,6 +153,7 @@ const allDependencies = <Package>[
   _simple_sparse_list,
   _skeletonizer,
   _sky_engine,
+  _sort_pubspec_dependencies,
   _source_gen,
   _source_map_stack_trace,
   _source_maps,
@@ -198,19 +196,17 @@ const allDependencies = <Package>[
   _win32,
   _xdg_directories,
   _xml,
-  _yaml,
-  _yaml_writer
+  _yaml
 ];
 
 /// Direct `dependencies`.
 const dependencies = <Package>[
-  _animated_custom_dropdown,
   _clock,
   _collection,
-  _dropdown_flutter,
   _cupertino_icons,
   _drift,
   _drift_flutter,
+  _dropdown_button2,
   _file_picker,
   _file_saver,
   _flutter,
@@ -219,27 +215,28 @@ const dependencies = <Package>[
   _flutter_popup,
   _fluttericon,
   _font_awesome_flutter,
+  _fuzzywuzzy,
   _intl,
   _json_schema,
+  _once,
   _package_info_plus,
   _path_provider,
   _provider,
+  _remove_unused_localizations,
   _skeletonizer,
   _url_launcher,
-  _uuid,
-  _remove_unused_localizations,
-  _fuzzywuzzy
+  _uuid
 ];
 
 /// Direct `dev_dependencies`.
 const devDependencies = <Package>[
   _arb_utils,
-  _flutter_test,
   _build_runner,
   _dart_pubspec_licenses,
   _drift_dev,
   _flutter_lints,
-  _pubspec_dependency_sorter
+  _flutter_test,
+  _sort_pubspec_dependencies
 ];
 
 /// Package license definition.
@@ -375,60 +372,19 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// animated_custom_dropdown 3.1.1
-const _animated_custom_dropdown = Package(
-    name: 'animated_custom_dropdown',
-    description: 'Custom dropdown widget allows to add highly customizable dropdown widget in your projects. Features includes Search on list data, Network search, Multi-selection and many more.',
-    homepage: 'https://github.com/AbdullahChauhan/custom-dropdown',
-    authors: [],
-    version: '3.1.1',
-    spdxIdentifiers: ['BSD-3-Clause'],
-    isMarkdown: false,
-    isSdk: false,
-    dependencies: [PackageRef('flutter')],
-    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
-    license: '''Copyright (c) 2024 Abdullah Chauhan
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following
-      disclaimer in the documentation and/or other materials provided
-      with the distribution.
-    * Neither the name of the copyright holder nor the names of its
-      contributors may be used to endorse or promote products derived
-      from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
-  );
-
-/// arb_utils 0.11.0
+/// arb_utils 0.11.1
 const _arb_utils = Package(
     name: 'arb_utils',
     description: 'A set of tools to work with .arb files (the preferred Dart way of dealing with i18n/l10n/translations)',
     homepage: 'https://gitlab.com/Rodsevich/arb_utils',
     repository: 'https://github.com/Rodsevich/arb_utils',
     authors: [],
-    version: '0.11.0',
+    version: '0.11.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter'), PackageRef('args'), PackageRef('collection'), PackageRef('intl'), PackageRef('intl_utils'), PackageRef('shared_preferences'), PackageRef('dcli'), PackageRef('dart_console')],
-    devDependencies: [PackageRef('lints'), PackageRef('test'), PackageRef('win32')],
+    dependencies: [PackageRef('flutter'), PackageRef('args'), PackageRef('collection'), PackageRef('intl'), PackageRef('intl_utils'), PackageRef('shared_preferences'), PackageRef('dcli')],
+    devDependencies: [PackageRef('lints'), PackageRef('test')],
     license: '''Copyright 2020 Nicolas Rodsevich
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -2594,14 +2550,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// drift 2.33.0
+/// drift 2.34.0
 const _drift = Package(
     name: 'drift',
     description: 'Drift is a reactive library to store relational data in Dart and Flutter applications.',
     homepage: 'https://drift.simonbinder.eu/',
     repository: 'https://github.com/simolus3/drift',
     authors: [],
-    version: '2.33.0',
+    version: '2.34.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2630,14 +2586,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// drift_dev 2.33.0
+/// drift_dev 2.34.0
 const _drift_dev = Package(
     name: 'drift_dev',
     description: 'Dev-dependency for users of drift. Contains the generator and development tools.',
     homepage: 'https://drift.simonbinder.eu/',
     repository: 'https://github.com/simolus3/drift',
     authors: [],
-    version: '2.33.0',
+    version: '2.34.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2702,21 +2658,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// dropdown_flutter 1.0.3
-const _dropdown_flutter = Package(
-    name: 'dropdown_flutter',
-    description: 'A Flutter package designed to enhance your app with customizable dropdowns, featuring list data search, network search, and multi-selection.',
-    homepage: 'https://github.com/farhansadikgalib/dropdown_flutter',
+/// dropdown_button2 3.1.0
+const _dropdown_button2 = Package(
+    name: 'dropdown_button2',
+    description: "Flutter's core Dropdown Button widget with a steady dropdown menu and many other options you can customize to your needs.",
+    repository: 'https://github.com/AhmedLSayed9/dropdown_button2',
     authors: [],
-    version: '1.0.3',
+    version: '3.1.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter')],
-    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    dependencies: [PackageRef('flutter'), PackageRef('meta')],
+    devDependencies: [PackageRef('flutter_test')],
     license: '''MIT License
 
-Copyright (c) 2024 Farhan Sadik Galib
+Copyright (c) 2021 AHMED ELSAYED
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -4919,43 +4875,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// logger 2.7.0
-const _logger = Package(
-    name: 'logger',
-    description: 'Small, easy to use and extensible logger which prints beautiful logs.',
-    repository: 'https://github.com/SourceHorizon/logger',
-    authors: [],
-    version: '2.7.0',
-    spdxIdentifiers: ['MIT'],
-    isMarkdown: false,
-    isSdk: false,
-    dependencies: [PackageRef('meta'), PackageRef('clock')],
-    devDependencies: [PackageRef('test'), PackageRef('lints'), PackageRef('file')],
-    license: '''MIT License
-
-Copyright (c) 2019 Simon Leier
-Copyright (c) 2019 Harm Aarts
-Copyright (c) 2023 Severin Hamader
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.''',
-  );
-
 /// logging 1.3.0
 const _logging = Package(
     name: 'logging',
@@ -5596,6 +5515,40 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
+/// once 1.8.0
+const _once = Package(
+    name: 'once',
+    description: 'Want to run a piece of code once periodically (Once - Daily - Weekly - Monthly - On new build - On new version - Any period)? We cover your back.',
+    repository: 'https://github.com/MostafaSolimanMO/once',
+    authors: [],
+    version: '1.8.0',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('shared_preferences'), PackageRef('package_info_plus')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''Copyright (c) 2022 Mostafa Soliman and Nour Magdi.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''',
+  );
+
 /// package_config 2.2.0
 const _package_config = Package(
     name: 'package_config',
@@ -6205,7 +6158,7 @@ const _posix = Package(
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('ffi'), PackageRef('meta'), PackageRef('path')],
-    devDependencies: [PackageRef('logger'), PackageRef('logging'), PackageRef('stack_trace'), PackageRef('test'), PackageRef('uuid')],
+    devDependencies: [PackageRef('logging'), PackageRef('stack_trace'), PackageRef('test'), PackageRef('uuid')],
     license: '''MIT License
 
 Copyright (c) 2020 Brett Sutton
@@ -6303,82 +6256,6 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
-  );
-
-/// pubspec 2.3.0
-const _pubspec = Package(
-    name: 'pubspec',
-    description: 'A library for manipulating pubspec.yaml files',
-    homepage: 'https://github.com/j4qfrost/pubspec',
-    authors: [],
-    version: '2.3.0',
-    spdxIdentifiers: ['BSD-3-Clause'],
-    isMarkdown: false,
-    isSdk: false,
-    dependencies: [PackageRef('path'), PackageRef('pub_semver'), PackageRef('yaml'), PackageRef('uri')],
-    devDependencies: [PackageRef('test'), PackageRef('dcli'), PackageRef('dcli_core')],
-    license: '''Copyright (c) 2015, Anders Holmgren.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
-  );
-
-/// pubspec_dependency_sorter 1.0.5
-const _pubspec_dependency_sorter = Package(
-    name: 'pubspec_dependency_sorter',
-    description: 'helps sort flutter,dart pubspec.yaml dependecies alphabetically.',
-    homepage: 'https://github.com/danchengash/pubspec-dependency-sorter',
-    authors: [],
-    version: '1.0.5',
-    spdxIdentifiers: ['BSD-3-Clause'],
-    isMarkdown: false,
-    isSdk: false,
-    dependencies: [PackageRef('logger'), PackageRef('pubspec'), PackageRef('flutter'), PackageRef('yaml_writer')],
-    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
-    license: '''Copyright (c) 2022, Danche Ng'ang'a.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
 /// pubspec_lock 3.0.2
@@ -38070,6 +37947,41 @@ Copyright (C) 2009-2017, International Business Machines Corporation,
 Google, and others. All Rights Reserved.''',
   );
 
+/// sort_pubspec_dependencies 0.0.2
+const _sort_pubspec_dependencies = Package(
+    name: 'sort_pubspec_dependencies',
+    description: 'Dev dart package for sorting dependencies and dev_dependencies in pubspec.yaml',
+    repository: 'https://github.com/tokyolem/sort_pubspec_dependencies',
+    authors: [],
+    version: '0.0.2',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [],
+    devDependencies: [],
+    license: '''MIT License
+
+Copyright (c) 2024 tokyolem
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
 /// source_gen 4.2.2
 const _source_gen = Package(
     name: 'source_gen',
@@ -40212,57 +40124,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// yaml_writer 2.1.0
-const _yaml_writer = Package(
-    name: 'yaml_writer',
-    description: "A library to write YAML documents, supporting Object encoding and 'dart:convert' 'Converter'.",
-    homepage: 'https://github.com/gmpassos/yaml_writer',
-    authors: [],
-    version: '2.1.0',
-    spdxIdentifiers: ['BSD-3-Clause'],
-    isMarkdown: false,
-    isSdk: false,
-    dependencies: [],
-    devDependencies: [PackageRef('lints'), PackageRef('test'), PackageRef('coverage'), PackageRef('yaml')],
-    license: '''Copyright 2014, the Dart project authors. All rights reserved.
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following
-      disclaimer in the documentation and/or other materials provided
-      with the distribution.
-    * Neither the name of Google Inc. nor the names of its
-      contributors may be used to endorse or promote products derived
-      from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
-  );
-
-/// tallee 0.0.49+300
+/// tallee 0.0.57+348
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.0.49+300',
+    version: '0.0.57+348',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('animated_custom_dropdown'), PackageRef('clock'), PackageRef('collection'), PackageRef('dropdown_flutter'), PackageRef('cupertino_icons'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_localizations'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('provider'), PackageRef('skeletonizer'), PackageRef('url_launcher'), PackageRef('uuid'), PackageRef('remove_unused_localizations'), PackageRef('fuzzywuzzy')],
-    devDependencies: [PackageRef('arb_utils'), PackageRef('flutter_test'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints'), PackageRef('pubspec_dependency_sorter')],
+    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_localizations'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('once'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('provider'), PackageRef('remove_unused_localizations'), PackageRef('skeletonizer'), PackageRef('url_launcher'), PackageRef('uuid')],
+    devDependencies: [PackageRef('arb_utils'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('sort_pubspec_dependencies')],
     license: '''GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 

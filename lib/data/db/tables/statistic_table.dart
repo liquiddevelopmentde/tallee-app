@@ -1,9 +1,12 @@
 import 'package:drift/drift.dart';
+import 'package:tallee/core/enums.dart';
 
 class StatisticTable extends Table {
   TextColumn get id => text()();
-  TextColumn get type => text()();
-  TextColumn get timeframe => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+  TextColumn get type => textEnum<StatisticType>()();
+  TextColumn get timeframe => textEnum<Timeframe>()();
+  TextColumn get color => textEnum<AppColor>()();
   IntColumn get displayCount => integer().withDefault(const Constant(5))();
 
   @override

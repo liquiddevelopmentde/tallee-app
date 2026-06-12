@@ -24,7 +24,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
         id: team.id,
         name: team.name,
         createdAt: team.createdAt,
-        color: Value(team.color.name),
+        color: Value(team.color),
         score: Value(team.score),
       ),
       mode: InsertMode.insertOrReplace,
@@ -60,7 +60,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
                 id: team.id,
                 name: team.name,
                 createdAt: team.createdAt,
-                color: Value(team.color.name),
+                color: Value(team.color),
                 score: Value(team.score),
               ),
             )
@@ -116,7 +116,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
           id: row.id,
           name: row.name,
           createdAt: row.createdAt,
-          color: AppColor.values.byName(row.color),
+          color: row.color,
           score: row.score,
           members: members,
         );
@@ -151,7 +151,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
       id: row.id,
       name: row.name,
       createdAt: row.createdAt,
-      color: AppColor.values.byName(row.color),
+      color: row.color,
       score: row.score,
       members: members,
     );
@@ -198,7 +198,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   }) async {
     final rowsAffected =
         await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
-          TeamTableCompanion(color: Value(color.name)),
+          TeamTableCompanion(color: Value(color)),
         );
     return rowsAffected > 0;
   }

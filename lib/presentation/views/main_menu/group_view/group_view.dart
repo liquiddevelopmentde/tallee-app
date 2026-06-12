@@ -108,7 +108,11 @@ class _GroupViewState extends State<GroupView> {
                 child: searchProvider.isSearching
                     ? Padding(
                         key: const ValueKey('group-searchbar-visible'),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          bottom: 10,
+                        ),
                         child: CustomSearchBar(
                           controller: searchBarController,
                           hintText: '',
@@ -145,14 +149,9 @@ class _GroupViewState extends State<GroupView> {
                         ),
                       ),
                       child: ListView.builder(
-                        padding: const EdgeInsets.only(bottom: 85),
-                        itemCount: filteredGroups.length + 1,
+                        padding: CustomTheme.listViewPadding(context),
+                        itemCount: filteredGroups.length,
                         itemBuilder: (BuildContext context, int index) {
-                          if (index == filteredGroups.length) {
-                            return SizedBox(
-                              height: MediaQuery.paddingOf(context).bottom - 20,
-                            );
-                          }
                           return GroupTile(
                             onPlayerChanged: loadGroups,
                             group: filteredGroups[index],

@@ -1,6 +1,4 @@
-import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/statistic_table.dart';
 import 'package:tallee/data/models/statistic.dart';
@@ -18,8 +16,10 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
     await into(statisticTable).insert(
       StatisticTableCompanion.insert(
         id: statistic.id,
-        type: statistic.type.name,
-        timeframe: Value(statistic.timeframe?.name),
+        createdAt: statistic.createdAt,
+        type: statistic.type,
+        timeframe: statistic.timeframe,
+        color: statistic.color,
         displayCount: Value(statistic.displayCount),
       ),
       mode: InsertMode.insertOrReplace,
@@ -47,10 +47,57 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
     return true;
   }
 
+  Future<bool> addStatisticsAsList({
+    required List<Statistic> statistics,
+  }) async {
+    if (statistics.isEmpty) return false;
+    await batch((b) {
+      b.insertAllOnConflictUpdate(
+        statisticTable,
+        statistics
+            .map(
+              (s) => StatisticTableCompanion.insert(
+                id: s.id,
+                createdAt: s.createdAt,
+                type: s.type,
+                timeframe: s.timeframe,
+                color: s.color,
+                displayCount: Value(s.displayCount),
+              ),
+            )
+            .toList(),
+      );
+    });
+
+    for (final statistic in statistics) {
+      await db.statisticScopeDao.addStatisticScopes(
+        statisticId: statistic.id,
+        scopes: statistic.scopes,
+      );
+
+      if (statistic.selectedGroups != null) {
+        await db.statisticGroupDao.addStatisticGroups(
+          statisticId: statistic.id,
+          groups: statistic.selectedGroups!,
+        );
+      }
+
+      if (statistic.selectedGames != null) {
+        await db.statisticGameDao.addStatisticGames(
+          statisticId: statistic.id,
+          games: statistic.selectedGames!,
+        );
+      }
+    }
+
+    return true;
+  }
+
   /* Read */
 
-  Future<Statistic?> getStatisticById(String statisticId) async {
-    final query = select(statisticTable);
+  Future<Statistic?> getStatisticById({required String statisticId}) async {
+    final query = select(statisticTable)
+      ..where((tbl) => tbl.id.equals(statisticId));
     final row = await query.getSingleOrNull();
     if (row != null) {
       final groups = await db.statisticGroupDao.getGroupsForStatistic(row.id);
@@ -58,15 +105,15 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
       final scopes = await db.statisticScopeDao.getScopeForStatistic(row.id);
 
       return Statistic(
-        type: StatisticType.values.firstWhere((type) => type.name == row.type),
+        type: row.type,
         scopes: scopes,
-        timeframe: Timeframe.values.firstWhereOrNull(
-          (t) => t.name == row.timeframe,
-        ),
+        timeframe: row.timeframe,
         selectedGroups: groups,
         selectedGames: games,
         displayCount: row.displayCount,
         id: row.id,
+        createdAt: row.createdAt,
+        color: row.color,
       );
     }
     return null;
@@ -83,17 +130,15 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         final scopes = await db.statisticScopeDao.getScopeForStatistic(row.id);
 
         return Statistic(
-          type: StatisticType.values.firstWhere(
-            (type) => type.name == row.type,
-          ),
+          type: row.type,
           scopes: scopes,
-          timeframe: Timeframe.values.firstWhereOrNull(
-            (t) => t.name == row.timeframe,
-          ),
+          timeframe: row.timeframe,
           selectedGroups: groups,
           selectedGames: games,
           displayCount: row.displayCount,
           id: row.id,
+          createdAt: row.createdAt,
+          color: row.color,
         );
       }),
     );
