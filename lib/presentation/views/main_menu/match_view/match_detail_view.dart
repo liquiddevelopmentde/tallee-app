@@ -374,6 +374,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           label,
           style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
         ),
+        const SizedBox(width: 20),
         Expanded(child: buildWinnerNameWidget()),
       ];
     } else {
@@ -399,30 +400,19 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     );
 
     if (useTeamLogic) {
-      final winners = <InlineSpan>[];
-
-      for (var i = 0; i < mvtTeams.length; i++) {
-        if (i > 0) {
-          winners.add(const TextSpan(text: ', ', style: winnerStyle));
-        }
-
-        winners.add(
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: buildUnitNameWidget(
+      return Wrap(
+        alignment: WrapAlignment.end,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 6,
+        runSpacing: 4,
+        children: [
+          for (var i = 0; i < mvtTeams.length; i++)
+            buildUnitNameWidget(
               mvtTeams[i],
               isTeamMatch: match.isTeamMatch,
               mainStyle: winnerStyle,
             ),
-          ),
-        );
-      }
-
-      return Text.rich(
-        TextSpan(children: winners),
-        textAlign: TextAlign.end,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+        ],
       );
     }
 
@@ -436,8 +426,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ],
       ),
       textAlign: TextAlign.end,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
     );
   }
 
