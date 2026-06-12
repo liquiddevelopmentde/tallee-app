@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/statistic_table.dart';
 import 'package:tallee/data/models/statistic.dart';
@@ -18,9 +17,9 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
       StatisticTableCompanion.insert(
         id: statistic.id,
         createdAt: statistic.createdAt,
-        type: statistic.type.name,
-        timeframe: statistic.timeframe.name,
-        color: statistic.color.name,
+        type: statistic.type,
+        timeframe: statistic.timeframe,
+        color: statistic.color,
         displayCount: Value(statistic.displayCount),
       ),
       mode: InsertMode.insertOrReplace,
@@ -60,9 +59,9 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
               (s) => StatisticTableCompanion.insert(
                 id: s.id,
                 createdAt: s.createdAt,
-                type: s.type.name,
-                timeframe: s.timeframe.name,
-                color: s.color.name,
+                type: s.type,
+                timeframe: s.timeframe,
+                color: s.color,
                 displayCount: Value(s.displayCount),
               ),
             )
@@ -106,15 +105,15 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
       final scopes = await db.statisticScopeDao.getScopeForStatistic(row.id);
 
       return Statistic(
-        type: StatisticType.values.firstWhere((type) => type.name == row.type),
+        type: row.type,
         scopes: scopes,
-        timeframe: Timeframe.values.firstWhere((t) => t.name == row.timeframe),
+        timeframe: row.timeframe,
         selectedGroups: groups,
         selectedGames: games,
         displayCount: row.displayCount,
         id: row.id,
         createdAt: row.createdAt,
-        color: AppColor.values.firstWhere((c) => c.name == row.color),
+        color: row.color,
       );
     }
     return null;
@@ -131,19 +130,15 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         final scopes = await db.statisticScopeDao.getScopeForStatistic(row.id);
 
         return Statistic(
-          type: StatisticType.values.firstWhere(
-            (type) => type.name == row.type,
-          ),
+          type: row.type,
           scopes: scopes,
-          timeframe: Timeframe.values.firstWhere(
-            (t) => t.name == row.timeframe,
-          ),
+          timeframe: row.timeframe,
           selectedGroups: groups,
           selectedGames: games,
           displayCount: row.displayCount,
           id: row.id,
           createdAt: row.createdAt,
-          color: AppColor.values.firstWhere((c) => c.name == row.color),
+          color: row.color,
         );
       }),
     );
