@@ -26,8 +26,8 @@ dependencies:
   fuzzywuzzy: ^1.2.0
   intl: any
   json_schema: ^5.2.2
-  once: ^1.8.0
   package_info_plus: ^9.0.1
+  once: ^1.8.0
   path_provider: ^2.1.5
   provider: ^6.1.5
   remove_unused_localizations: ^1.1.2
