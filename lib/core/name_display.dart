@@ -15,6 +15,7 @@ String getNameCountText(Player player) {
 /// `#nameCount` suffix.
 InlineSpan buildPlayerNameCountSpan(
   Player player, {
+  TextStyle? style,
   TextStyle? mainStyle,
   TextStyle? countStyle,
 }) {
@@ -29,7 +30,7 @@ InlineSpan buildPlayerNameCountSpan(
       );
 
   return TextSpan(
-    style: const TextStyle(color: CustomTheme.textColor),
+    style: style ?? const TextStyle(color: CustomTheme.textColor),
     children: [
       TextSpan(text: player.name, style: resolvedMainStyle),
       TextSpan(text: getNameCountText(player), style: resolvedCountStyle),

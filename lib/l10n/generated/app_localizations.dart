@@ -176,6 +176,12 @@ abstract class AppLocalizations {
   /// **'Classifier'**
   String get classifier;
 
+  /// No description provided for @classifier_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which metric is calculated and shown in this statistic.'**
+  String get classifier_description;
+
   /// No description provided for @click_another_player_to_create_a_pair.
   ///
   /// In en, this message translates to:
@@ -367,6 +373,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete player?'**
   String get delete_player;
+
+  /// No description provided for @delete_statistic.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete statistic'**
+  String get delete_statistic;
 
   /// No description provided for @description.
   ///
@@ -824,6 +836,12 @@ abstract class AppLocalizations {
   /// **'Privacy Policy'**
   String get privacy_policy;
 
+  /// No description provided for @random_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Random color'**
+  String get random_color;
+
   /// No description provided for @results.
   ///
   /// In en, this message translates to:
@@ -848,6 +866,12 @@ abstract class AppLocalizations {
   /// **'Scope'**
   String get scope;
 
+  /// No description provided for @scope_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which games or players are included in the calculation.'**
+  String get scope_description;
+
   /// No description provided for @search_for_groups.
   ///
   /// In en, this message translates to:
@@ -866,17 +890,11 @@ abstract class AppLocalizations {
   /// **'Select a classifier'**
   String get select_a_classifier;
 
-  /// No description provided for @select_a_game.
+  /// No description provided for @select_a_display_color.
   ///
   /// In en, this message translates to:
-  /// **'Select a game'**
-  String get select_a_game;
-
-  /// No description provided for @select_a_group.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a group'**
-  String get select_a_group;
+  /// **'Select a display color'**
+  String get select_a_display_color;
 
   /// No description provided for @select_a_scope.
   ///
@@ -895,18 +913,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Loser'**
   String get select_loser;
-
-  /// No description provided for @select_the_filtered_games.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the games you want to filter by.'**
-  String get select_the_filtered_games;
-
-  /// No description provided for @select_the_filtered_groups.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the groups you want to filter by.'**
-  String get select_the_filtered_groups;
 
   /// No description provided for @select_the_filtered_timeframe.
   ///

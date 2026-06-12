@@ -15,6 +15,7 @@ class InfoTile extends StatefulWidget {
     required this.icon,
     required this.content,
     this.padding,
+    this.margin,
     this.height,
     this.width,
     this.horizontalAlignment = CrossAxisAlignment.center,
@@ -31,6 +32,8 @@ class InfoTile extends StatefulWidget {
 
   /// Optional padding for the tile content.
   final EdgeInsets? padding;
+
+  final EdgeInsets? margin;
 
   /// Optional height for the tile.
   final double? height;
@@ -50,6 +53,7 @@ class _InfoTileState extends State<InfoTile> {
   Widget build(BuildContext context) {
     return Container(
       padding: widget.padding ?? const EdgeInsets.all(12),
+      margin: widget.margin,
       height: widget.height,
       width: widget.width ?? 380,
       decoration: CustomTheme.standardBoxDecoration,
