@@ -292,6 +292,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom,
               child: Row(
+                spacing: 8,
                 children: [
                   FloatingAnimatedButton(
                     icon: Icons.edit,
@@ -306,7 +307,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 15),
                   FloatingAnimatedButton(
                     text: loc.enter_results,
                     icon: Icons.emoji_events,

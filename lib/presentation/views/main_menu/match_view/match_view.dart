@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:once/once.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/constants.dart';
@@ -14,6 +15,7 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
@@ -74,6 +76,14 @@ class _MatchViewState extends State<MatchView> {
     db = Provider.of<AppDatabase>(context, listen: false);
     _searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
     _searchProvider.addListener(_handleSearchToggle);
+
+    Once.runOnce(
+      'exampleStats',
+      callback: () {
+        addExampleStatistics();
+      },
+    );
+
     loadMatches();
   }
 
@@ -126,7 +136,11 @@ class _MatchViewState extends State<MatchView> {
                 child: searchProvider.isSearching
                     ? Padding(
                         key: const ValueKey('match-searchbar-visible'),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          bottom: 10,
+                        ),
                         child: CustomSearchBar(
                           controller: searchBarController,
                           hintText: '',
@@ -141,7 +155,6 @@ class _MatchViewState extends State<MatchView> {
                         key: ValueKey('match-searchbar-hidden'),
                       ),
               ),
-              const SizedBox(height: 10),
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
@@ -164,34 +177,25 @@ class _MatchViewState extends State<MatchView> {
                         ),
                       ),
                       child: ListView.builder(
-                        padding: const EdgeInsets.only(bottom: 85),
-                        itemCount: filteredMatches.length + 1,
+                        padding: CustomTheme.listViewPadding(context),
+                        itemCount: filteredMatches.length,
+
                         itemBuilder: (BuildContext context, int index) {
-                          if (index == filteredMatches.length) {
-                            return SizedBox(
-                              height: MediaQuery.paddingOf(context).bottom - 20,
-                            );
-                          }
-                          return Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12.0),
-                              child: MatchTile(
-                                onPlayerEdited: loadMatches,
-                                width: MediaQuery.sizeOf(context).width * 0.95,
-                                onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    adaptivePageRoute(
-                                      builder: (context) => MatchDetailView(
-                                        match: filteredMatches[index],
-                                        onMatchUpdate: loadMatches,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                match: filteredMatches[index],
-                              ),
-                            ),
+                          return MatchTile(
+                            onPlayerEdited: loadMatches,
+                            width: MediaQuery.sizeOf(context).width * 0.95,
+                            onTap: () async {
+                              Navigator.push(
+                                context,
+                                adaptivePageRoute(
+                                  builder: (context) => MatchDetailView(
+                                    match: filteredMatches[index],
+                                    onMatchUpdate: loadMatches,
+                                  ),
+                                ),
+                              );
+                            },
+                            match: filteredMatches[index],
                           );
                         },
                       ),
@@ -303,5 +307,30 @@ class _MatchViewState extends State<MatchView> {
         });
       }
     });
+  }
+
+  Future<void> addExampleStatistics() async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final stat1 = Statistic(
+      type: StatisticType.totalWins,
+      color: AppColor.blue,
+      displayCount: 3,
+      scopes: [StatisticScope.allPlayers],
+    );
+    final stat2 = Statistic(
+      type: StatisticType.averageScore,
+      color: AppColor.pink,
+      displayCount: 5,
+      scopes: [StatisticScope.allPlayers],
+    );
+    final stat3 = Statistic(
+      type: StatisticType.averageScore,
+      color: AppColor.green,
+      displayCount: 8,
+      scopes: [StatisticScope.allPlayers],
+    );
+    await db.statisticDao.addStatisticsAsList(
+      statistics: [stat1, stat2, stat3],
+    );
   }
 }

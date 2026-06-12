@@ -7,7 +7,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
-import 'package:tallee/presentation/views/main_menu/statistics_view/statistics_view.dart';
+import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 import 'package:tallee/state/group_search_provider.dart';
@@ -60,13 +60,14 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
         actions: [
-          if (currentIndex == 0) // Nur im Matches-Tab
+          if (currentIndex == 0)
             HapticIconButton(
               icon: Icon(
                 matchSearchProvider.isSearching ? Icons.close : Icons.search,
               ),
               onPressed: () => matchSearchProvider.toggleSearch(),
             ),
+
           if (currentIndex == 1)
             HapticIconButton(
               icon: Icon(
@@ -74,6 +75,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               ),
               onPressed: () => groupSearchProvider.toggleSearch(),
             ),
+
           HapticIconButton(
             onPressed: () async {
               final navigator = Navigator.of(context);
