@@ -16,16 +16,7 @@ class StatisticScopeDao extends DatabaseAccessor<AppDatabase>
       ..where((tbl) => tbl.statisticId.equals(statisticId));
 
     final result = await query.get();
-    return result
-        .map(
-          (row) => StatisticScope.values.firstWhere(
-            (e) => e.name == row.scope,
-            orElse: () => throw Exception(
-              'Invalid scope value: ${row.scope} for statistic ID: $statisticId',
-            ),
-          ),
-        )
-        .toList();
+    return result.map((row) => row.scope).toList();
   }
 
   Future<bool> addStatisticScopes({
@@ -36,7 +27,7 @@ class StatisticScopeDao extends DatabaseAccessor<AppDatabase>
         .map(
           (scope) => StatisticScopeTableCompanion.insert(
             statisticId: statisticId,
-            scope: scope.name,
+            scope: scope,
           ),
         )
         .toList();
