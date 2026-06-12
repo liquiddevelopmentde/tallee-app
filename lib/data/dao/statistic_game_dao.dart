@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/statistic_game_table.dart';
 import 'package:tallee/data/models/game.dart';
@@ -24,9 +23,9 @@ class StatisticGameDao extends DatabaseAccessor<AppDatabase>
           (row) => Game(
             id: row.id,
             name: row.name,
-            ruleset: Ruleset.values.firstWhere((e) => e.name == row.ruleset),
+            ruleset: row.ruleset,
             description: row.description,
-            color: AppColor.values.firstWhere((e) => e.name == row.color),
+            color: row.color,
             icon: row.icon,
             createdAt: row.createdAt,
           ),
@@ -51,7 +50,7 @@ class StatisticGameDao extends DatabaseAccessor<AppDatabase>
       batch.insertAll(
         statisticGameTable,
         entries,
-        mode: InsertMode.insertOrReplace,
+        mode: .insertOrReplace,
       );
     }).then((_) => true).catchError((error) {
       print('Error adding statistic games: $error');
