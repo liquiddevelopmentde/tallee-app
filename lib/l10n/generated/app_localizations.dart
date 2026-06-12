@@ -98,12 +98,6 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
-  /// No description provided for @names_or_descriptions_too_long.
-  ///
-  /// In en, this message translates to:
-  /// **'The data contains names or descriptions that are too long.'**
-  String get names_or_descriptions_too_long;
-
   /// No description provided for @add_team.
   ///
   /// In en, this message translates to:
@@ -175,6 +169,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Classifier'**
   String get classifier;
+
+  /// No description provided for @classifier_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which metric is calculated and shown in this statistic.'**
+  String get classifier_description;
 
   /// No description provided for @click_another_player_to_create_a_pair.
   ///
@@ -302,18 +302,6 @@ abstract class AppLocalizations {
   /// **'Data'**
   String get data;
 
-  /// No description provided for @deleted.
-  ///
-  /// In en, this message translates to:
-  /// **'Deleted'**
-  String get deleted;
-
-  /// No description provided for @delete_player_warning_details.
-  ///
-  /// In en, this message translates to:
-  /// **'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.'**
-  String get delete_player_warning_details;
-
   /// No description provided for @data_successfully_deleted.
   ///
   /// In en, this message translates to:
@@ -379,6 +367,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete player?'**
   String get delete_player;
+
+  /// No description provided for @delete_player_warning_details.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.'**
+  String get delete_player_warning_details;
+
+  /// No description provided for @delete_statistic.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete statistic'**
+  String get delete_statistic;
+
+  /// No description provided for @deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted'**
+  String get deleted;
 
   /// No description provided for @description.
   ///
@@ -692,6 +698,12 @@ abstract class AppLocalizations {
   /// **'Multiple Winners'**
   String get multiple_winners;
 
+  /// No description provided for @names_or_descriptions_too_long.
+  ///
+  /// In en, this message translates to:
+  /// **'The data contains names or descriptions that are too long.'**
+  String get names_or_descriptions_too_long;
+
   /// No description provided for @no_data_available.
   ///
   /// In en, this message translates to:
@@ -836,6 +848,12 @@ abstract class AppLocalizations {
   /// **'Privacy Policy'**
   String get privacy_policy;
 
+  /// No description provided for @random_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Random color'**
+  String get random_color;
+
   /// No description provided for @results.
   ///
   /// In en, this message translates to:
@@ -860,6 +878,12 @@ abstract class AppLocalizations {
   /// **'Scope'**
   String get scope;
 
+  /// No description provided for @scope_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which games or players are included in the calculation.'**
+  String get scope_description;
+
   /// No description provided for @search_for_groups.
   ///
   /// In en, this message translates to:
@@ -878,17 +902,11 @@ abstract class AppLocalizations {
   /// **'Select a classifier'**
   String get select_a_classifier;
 
-  /// No description provided for @select_a_game.
+  /// No description provided for @select_a_display_color.
   ///
   /// In en, this message translates to:
-  /// **'Select a game'**
-  String get select_a_game;
-
-  /// No description provided for @select_a_group.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a group'**
-  String get select_a_group;
+  /// **'Select a display color'**
+  String get select_a_display_color;
 
   /// No description provided for @select_a_scope.
   ///
@@ -907,18 +925,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Loser'**
   String get select_loser;
-
-  /// No description provided for @select_the_filtered_games.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the games you want to filter by.'**
-  String get select_the_filtered_games;
-
-  /// No description provided for @select_the_filtered_groups.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the groups you want to filter by.'**
-  String get select_the_filtered_groups;
 
   /// No description provided for @select_the_filtered_timeframe.
   ///

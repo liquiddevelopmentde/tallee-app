@@ -2947,6 +2947,17 @@ class $StatisticTableTable extends StatisticTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<String> type = GeneratedColumn<String>(
@@ -2963,9 +2974,18 @@ class $StatisticTableTable extends StatisticTable
   late final GeneratedColumn<String> timeframe = GeneratedColumn<String>(
     'timeframe',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color = GeneratedColumn<String>(
+    'color',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _displayCountMeta = const VerificationMeta(
     'displayCount',
@@ -2980,7 +3000,14 @@ class $StatisticTableTable extends StatisticTable
     defaultValue: const Constant(5),
   );
   @override
-  List<GeneratedColumn> get $columns => [id, type, timeframe, displayCount];
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    type,
+    timeframe,
+    color,
+    displayCount,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2998,6 +3025,14 @@ class $StatisticTableTable extends StatisticTable
     } else if (isInserting) {
       context.missing(_idMeta);
     }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
     if (data.containsKey('type')) {
       context.handle(
         _typeMeta,
@@ -3011,6 +3046,16 @@ class $StatisticTableTable extends StatisticTable
         _timeframeMeta,
         timeframe.isAcceptableOrUnknown(data['timeframe']!, _timeframeMeta),
       );
+    } else if (isInserting) {
+      context.missing(_timeframeMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+        _colorMeta,
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_colorMeta);
     }
     if (data.containsKey('display_count')) {
       context.handle(
@@ -3034,6 +3079,10 @@ class $StatisticTableTable extends StatisticTable
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
       type: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}type'],
@@ -3041,7 +3090,11 @@ class $StatisticTableTable extends StatisticTable
       timeframe: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}timeframe'],
-      ),
+      )!,
+      color: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color'],
+      )!,
       displayCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}display_count'],
@@ -3058,23 +3111,27 @@ class $StatisticTableTable extends StatisticTable
 class StatisticTableData extends DataClass
     implements Insertable<StatisticTableData> {
   final String id;
+  final DateTime createdAt;
   final String type;
-  final String? timeframe;
+  final String timeframe;
+  final String color;
   final int displayCount;
   const StatisticTableData({
     required this.id,
+    required this.createdAt,
     required this.type,
-    this.timeframe,
+    required this.timeframe,
+    required this.color,
     required this.displayCount,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
     map['type'] = Variable<String>(type);
-    if (!nullToAbsent || timeframe != null) {
-      map['timeframe'] = Variable<String>(timeframe);
-    }
+    map['timeframe'] = Variable<String>(timeframe);
+    map['color'] = Variable<String>(color);
     map['display_count'] = Variable<int>(displayCount);
     return map;
   }
@@ -3082,10 +3139,10 @@ class StatisticTableData extends DataClass
   StatisticTableCompanion toCompanion(bool nullToAbsent) {
     return StatisticTableCompanion(
       id: Value(id),
+      createdAt: Value(createdAt),
       type: Value(type),
-      timeframe: timeframe == null && nullToAbsent
-          ? const Value.absent()
-          : Value(timeframe),
+      timeframe: Value(timeframe),
+      color: Value(color),
       displayCount: Value(displayCount),
     );
   }
@@ -3097,8 +3154,10 @@ class StatisticTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return StatisticTableData(
       id: serializer.fromJson<String>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       type: serializer.fromJson<String>(json['type']),
-      timeframe: serializer.fromJson<String?>(json['timeframe']),
+      timeframe: serializer.fromJson<String>(json['timeframe']),
+      color: serializer.fromJson<String>(json['color']),
       displayCount: serializer.fromJson<int>(json['displayCount']),
     );
   }
@@ -3107,28 +3166,36 @@ class StatisticTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
       'type': serializer.toJson<String>(type),
-      'timeframe': serializer.toJson<String?>(timeframe),
+      'timeframe': serializer.toJson<String>(timeframe),
+      'color': serializer.toJson<String>(color),
       'displayCount': serializer.toJson<int>(displayCount),
     };
   }
 
   StatisticTableData copyWith({
     String? id,
+    DateTime? createdAt,
     String? type,
-    Value<String?> timeframe = const Value.absent(),
+    String? timeframe,
+    String? color,
     int? displayCount,
   }) => StatisticTableData(
     id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
     type: type ?? this.type,
-    timeframe: timeframe.present ? timeframe.value : this.timeframe,
+    timeframe: timeframe ?? this.timeframe,
+    color: color ?? this.color,
     displayCount: displayCount ?? this.displayCount,
   );
   StatisticTableData copyWithCompanion(StatisticTableCompanion data) {
     return StatisticTableData(
       id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       type: data.type.present ? data.type.value : this.type,
       timeframe: data.timeframe.present ? data.timeframe.value : this.timeframe,
+      color: data.color.present ? data.color.value : this.color,
       displayCount: data.displayCount.present
           ? data.displayCount.value
           : this.displayCount,
@@ -3139,57 +3206,75 @@ class StatisticTableData extends DataClass
   String toString() {
     return (StringBuffer('StatisticTableData(')
           ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
           ..write('type: $type, ')
           ..write('timeframe: $timeframe, ')
+          ..write('color: $color, ')
           ..write('displayCount: $displayCount')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, type, timeframe, displayCount);
+  int get hashCode =>
+      Object.hash(id, createdAt, type, timeframe, color, displayCount);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is StatisticTableData &&
           other.id == this.id &&
+          other.createdAt == this.createdAt &&
           other.type == this.type &&
           other.timeframe == this.timeframe &&
+          other.color == this.color &&
           other.displayCount == this.displayCount);
 }
 
 class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
   final Value<String> id;
+  final Value<DateTime> createdAt;
   final Value<String> type;
-  final Value<String?> timeframe;
+  final Value<String> timeframe;
+  final Value<String> color;
   final Value<int> displayCount;
   final Value<int> rowid;
   const StatisticTableCompanion({
     this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
     this.type = const Value.absent(),
     this.timeframe = const Value.absent(),
+    this.color = const Value.absent(),
     this.displayCount = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   StatisticTableCompanion.insert({
     required String id,
+    required DateTime createdAt,
     required String type,
-    this.timeframe = const Value.absent(),
+    required String timeframe,
+    required String color,
     this.displayCount = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
-       type = Value(type);
+       createdAt = Value(createdAt),
+       type = Value(type),
+       timeframe = Value(timeframe),
+       color = Value(color);
   static Insertable<StatisticTableData> custom({
     Expression<String>? id,
+    Expression<DateTime>? createdAt,
     Expression<String>? type,
     Expression<String>? timeframe,
+    Expression<String>? color,
     Expression<int>? displayCount,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
       if (type != null) 'type': type,
       if (timeframe != null) 'timeframe': timeframe,
+      if (color != null) 'color': color,
       if (displayCount != null) 'display_count': displayCount,
       if (rowid != null) 'rowid': rowid,
     });
@@ -3197,15 +3282,19 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
 
   StatisticTableCompanion copyWith({
     Value<String>? id,
+    Value<DateTime>? createdAt,
     Value<String>? type,
-    Value<String?>? timeframe,
+    Value<String>? timeframe,
+    Value<String>? color,
     Value<int>? displayCount,
     Value<int>? rowid,
   }) {
     return StatisticTableCompanion(
       id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
       type: type ?? this.type,
       timeframe: timeframe ?? this.timeframe,
+      color: color ?? this.color,
       displayCount: displayCount ?? this.displayCount,
       rowid: rowid ?? this.rowid,
     );
@@ -3217,11 +3306,17 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
     if (type.present) {
       map['type'] = Variable<String>(type.value);
     }
     if (timeframe.present) {
       map['timeframe'] = Variable<String>(timeframe.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
     }
     if (displayCount.present) {
       map['display_count'] = Variable<int>(displayCount.value);
@@ -3236,8 +3331,10 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
   String toString() {
     return (StringBuffer('StatisticTableCompanion(')
           ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
           ..write('type: $type, ')
           ..write('timeframe: $timeframe, ')
+          ..write('color: $color, ')
           ..write('displayCount: $displayCount, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -7841,16 +7938,20 @@ typedef $$ScoreEntryTableTableProcessedTableManager =
 typedef $$StatisticTableTableCreateCompanionBuilder =
     StatisticTableCompanion Function({
       required String id,
+      required DateTime createdAt,
       required String type,
-      Value<String?> timeframe,
+      required String timeframe,
+      required String color,
       Value<int> displayCount,
       Value<int> rowid,
     });
 typedef $$StatisticTableTableUpdateCompanionBuilder =
     StatisticTableCompanion Function({
       Value<String> id,
+      Value<DateTime> createdAt,
       Value<String> type,
-      Value<String?> timeframe,
+      Value<String> timeframe,
+      Value<String> color,
       Value<int> displayCount,
       Value<int> rowid,
     });
@@ -7964,6 +8065,11 @@ class $$StatisticTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get type => $composableBuilder(
     column: $table.type,
     builder: (column) => ColumnFilters(column),
@@ -7971,6 +8077,11 @@ class $$StatisticTableTableFilterComposer
 
   ColumnFilters<String> get timeframe => $composableBuilder(
     column: $table.timeframe,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get color => $composableBuilder(
+    column: $table.color,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -8069,6 +8180,11 @@ class $$StatisticTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get type => $composableBuilder(
     column: $table.type,
     builder: (column) => ColumnOrderings(column),
@@ -8076,6 +8192,11 @@ class $$StatisticTableTableOrderingComposer
 
   ColumnOrderings<String> get timeframe => $composableBuilder(
     column: $table.timeframe,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -8097,11 +8218,17 @@ class $$StatisticTableTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
 
   GeneratedColumn<String> get timeframe =>
       $composableBuilder(column: $table.timeframe, builder: (column) => column);
+
+  GeneratedColumn<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
 
   GeneratedColumn<int> get displayCount => $composableBuilder(
     column: $table.displayCount,
@@ -8222,28 +8349,36 @@ class $$StatisticTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
                 Value<String> type = const Value.absent(),
-                Value<String?> timeframe = const Value.absent(),
+                Value<String> timeframe = const Value.absent(),
+                Value<String> color = const Value.absent(),
                 Value<int> displayCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion(
                 id: id,
+                createdAt: createdAt,
                 type: type,
                 timeframe: timeframe,
+                color: color,
                 displayCount: displayCount,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String id,
+                required DateTime createdAt,
                 required String type,
-                Value<String?> timeframe = const Value.absent(),
+                required String timeframe,
+                required String color,
                 Value<int> displayCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion.insert(
                 id: id,
+                createdAt: createdAt,
                 type: type,
                 timeframe: timeframe,
+                color: color,
                 displayCount: displayCount,
                 rowid: rowid,
               ),

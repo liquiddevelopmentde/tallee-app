@@ -17,14 +17,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.0.1"
-  animated_custom_dropdown:
-    dependency: "direct main"
-    description:
-      name: animated_custom_dropdown
-      sha256: "5a72dc209041bb53f6c7164bc2e366552d5197cdb032b1c9b2c36e3013024486"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.1"
   arb_utils:
     dependency: "direct dev"
     description:
@@ -353,14 +345,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.0"
-  dropdown_flutter:
+  dropdown_button2:
     dependency: "direct main"
     description:
-      name: dropdown_flutter
-      sha256: "5ae3d05d768d0bb6030ff735e6b4b93f7b29be3cf3bec7c86cd4f444c8f067ff"
+      name: dropdown_button2
+      sha256: "24f5b775483a9b3c508092766798c10e3f23127e66b3f4a305b5bfb59ff1debc"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "3.1.0"
   equatable:
     dependency: transitive
     description:
@@ -773,6 +765,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.3.0"
+  once:
+    dependency: "direct main"
+    description:
+      name: once
+      sha256: "649089ab89d12aa270168d88792291314becdb9dba64044e40f147c89ca75368"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.8.0"
   package_config:
     dependency: transitive
     description:
@@ -982,7 +982,7 @@ packages:
     source: hosted
     version: "0.6.0"
   remove_unused_localizations:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: remove_unused_localizations
       sha256: "1690df0d1b8ddeebfbeeeb29f46fa98573d27695dad6e67739aea28a7e209fe3"
