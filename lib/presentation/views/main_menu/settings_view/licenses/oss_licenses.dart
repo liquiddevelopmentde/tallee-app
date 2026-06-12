@@ -372,19 +372,19 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// arb_utils 0.11.0
+/// arb_utils 0.11.1
 const _arb_utils = Package(
     name: 'arb_utils',
     description: 'A set of tools to work with .arb files (the preferred Dart way of dealing with i18n/l10n/translations)',
     homepage: 'https://gitlab.com/Rodsevich/arb_utils',
     repository: 'https://github.com/Rodsevich/arb_utils',
     authors: [],
-    version: '0.11.0',
+    version: '0.11.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter'), PackageRef('args'), PackageRef('collection'), PackageRef('intl'), PackageRef('intl_utils'), PackageRef('shared_preferences'), PackageRef('dcli'), PackageRef('dart_console')],
-    devDependencies: [PackageRef('lints'), PackageRef('test'), PackageRef('win32')],
+    dependencies: [PackageRef('flutter'), PackageRef('args'), PackageRef('collection'), PackageRef('intl'), PackageRef('intl_utils'), PackageRef('shared_preferences'), PackageRef('dcli')],
+    devDependencies: [PackageRef('lints'), PackageRef('test')],
     license: '''Copyright 2020 Nicolas Rodsevich
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -2550,14 +2550,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// drift 2.33.0
+/// drift 2.34.0
 const _drift = Package(
     name: 'drift',
     description: 'Drift is a reactive library to store relational data in Dart and Flutter applications.',
     homepage: 'https://drift.simonbinder.eu/',
     repository: 'https://github.com/simolus3/drift',
     authors: [],
-    version: '2.33.0',
+    version: '2.34.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2586,14 +2586,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// drift_dev 2.33.0
+/// drift_dev 2.34.0
 const _drift_dev = Package(
     name: 'drift_dev',
     description: 'Dev-dependency for users of drift. Contains the generator and development tools.',
     homepage: 'https://drift.simonbinder.eu/',
     repository: 'https://github.com/simolus3/drift',
     authors: [],
-    version: '2.33.0',
+    version: '2.34.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -40124,12 +40124,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// tallee 0.0.56+347
+/// tallee 0.0.57+348
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.0.56+347',
+    version: '0.0.57+348',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
