@@ -36,7 +36,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Required for the Flutter action and SDK download
+      # Required for Flutter action
       - name: Install dependencies
         run: |
           apt-get update
