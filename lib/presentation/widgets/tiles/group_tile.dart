@@ -46,7 +46,7 @@ class _GroupTileState extends State<GroupTile> {
         }
       },
       child: AnimatedContainer(
-        margin: CustomTheme.standardMargin,
+        margin: CustomTheme.tileMargin,
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         decoration: widget.isHighlighted
             ? CustomTheme.highlightedBoxDecoration
