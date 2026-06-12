@@ -18,7 +18,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         id: statistic.id,
         createdAt: statistic.createdAt,
         type: statistic.type,
-        timeframe: Value(statistic.timeframe),
+        timeframe: statistic.timeframe,
         color: statistic.color,
         displayCount: Value(statistic.displayCount),
       ),
@@ -59,9 +59,9 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
               (s) => StatisticTableCompanion.insert(
                 id: s.id,
                 createdAt: s.createdAt,
-                type: s.type.name,
-                timeframe: s.timeframe.name,
-                color: s.color.name,
+                type: s.type,
+                timeframe: s.timeframe,
+                color: s.color,
                 displayCount: Value(s.displayCount),
               ),
             )
@@ -113,7 +113,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         displayCount: row.displayCount,
         id: row.id,
         createdAt: row.createdAt,
-        color: row.color),
+        color: row.color,
       );
     }
     return null;
@@ -138,7 +138,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
           displayCount: row.displayCount,
           id: row.id,
           createdAt: row.createdAt,
-          color: row.color),
+          color: row.color,
         );
       }),
     );
