@@ -111,6 +111,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     final loc = AppLocalizations.of(context);
     final buttonText = isEditMode() ? loc.save_changes : loc.create_match;
     final viewTitle = isEditMode() ? loc.edit_match : loc.create_new_match;
+    print(viewTitle);
 
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
@@ -143,13 +144,14 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 ),
 
               // Group selection tile.
-              ChooseTile(
-                title: loc.group,
-                trailing: selectedGroup == null
-                    ? Text(loc.none_group)
-                    : Text(selectedGroup!.name),
-                onPressed: () async => onChoosingGroup(),
-              ),
+              if (!isEditMode() || !isMatchFinished())
+                ChooseTile(
+                  title: loc.group,
+                  trailing: selectedGroup == null
+                      ? Text(loc.none_group)
+                      : Text(selectedGroup!.name),
+                  onPressed: () async => onChoosingGroup(),
+                ),
 
               if (!isEditMode())
                 ChooseTile(
@@ -170,23 +172,26 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 ),
 
               // Player selection widget.
-              Expanded(
-                child: PlayerSelection(
-                  key: ValueKey(selectedGroup?.id ?? 'no_group'),
-                  initialSelectedUnits: selectedUnits,
-                  pairingEnabled: !isTeamMatch,
-                  onPlayerCreated: () => widget.onMatchesUpdated?.call(),
-                  onChanged: (players, units) {
-                    setState(() {
-                      selectedPlayers = players;
-                      selectedUnits = units;
-                      // Do not auto-enable team match.
-                      // Pairs are handled internally via selectedUnits.
-                      removeGroupWhenNoMemberLeft();
-                    });
-                  },
+              if (!isEditMode() || !isMatchFinished()) ...[
+                Expanded(
+                  child: PlayerSelection(
+                    key: ValueKey(selectedGroup?.id ?? 'no_group'),
+                    initialSelectedUnits: selectedUnits,
+                    pairingEnabled: !isTeamMatch,
+                    onPlayerCreated: () => widget.onMatchesUpdated?.call(),
+                    onChanged: (players, units) {
+                      setState(() {
+                        selectedPlayers = players;
+                        selectedUnits = units;
+                        // Do not auto-enable team match.
+                        // Pairs are handled internally via selectedUnits.
+                        removeGroupWhenNoMemberLeft();
+                      });
+                    },
+                  ),
                 ),
-              ),
+              ] else
+                const Spacer(),
 
               // Create or save button.
               Padding(
@@ -209,9 +214,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     );
   }
 
-  bool isEditMode() {
-    return widget.matchToEdit != null;
-  }
+  bool isEditMode() => widget.matchToEdit != null;
+
+  bool isMatchFinished() => widget.matchToEdit?.endedAt != null;
 
   // If a match was provided to the view, this method prefills the input fields
   void prefillMatchDetails() {
