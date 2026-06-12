@@ -83,10 +83,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get confirm => 'Bestätigen';
 
   @override
-  String get delete_group_warning_details =>
-      'Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.';
-
-  @override
   String could_not_add_player(String playerName) {
     return 'Spieler:in $playerName konnte nicht hinzugefügt werden';
   }
@@ -154,6 +150,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get delete_group => 'Gruppe löschen';
+
+  @override
+  String get delete_group_warning_details =>
+      'Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.';
 
   @override
   String get delete_match => 'Spiel löschen';

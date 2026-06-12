@@ -242,12 +242,6 @@ abstract class AppLocalizations {
   /// **'Confirm'**
   String get confirm;
 
-  /// No description provided for @delete_group_warning_details.
-  ///
-  /// In en, this message translates to:
-  /// **'This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.'**
-  String get delete_group_warning_details;
-
   /// No description provided for @could_not_add_player.
   ///
   /// In en, this message translates to:
@@ -361,6 +355,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Group'**
   String get delete_group;
+
+  /// No description provided for @delete_group_warning_details.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.'**
+  String get delete_group_warning_details;
 
   /// No description provided for @delete_match.
   ///
