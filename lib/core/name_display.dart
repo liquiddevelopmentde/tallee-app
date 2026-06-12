@@ -17,16 +17,21 @@ InlineSpan buildPlayerNameCountSpan(
   Player player, {
   TextStyle? mainStyle,
   TextStyle? countStyle,
+  bool highlighted = false,
 }) {
+  final Color? mainColor = highlighted
+      ? CustomTheme.textColor.withAlpha(150)
+      : mainStyle?.color;
+  final Color? countColor = highlighted
+      ? CustomTheme.primaryColor.withAlpha(50)
+      : countStyle?.color;
+
   final resolvedMainStyle =
-      mainStyle ?? const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+      (mainStyle ?? const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))
+          .copyWith(color: mainColor);
   final resolvedCountStyle =
-      countStyle ??
-      TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: CustomTheme.textColor.withAlpha(100),
-      );
+      (countStyle ?? const TextStyle(fontSize: 14, fontWeight: FontWeight.w500))
+          .copyWith(color: countColor);
 
   return TextSpan(
     style: const TextStyle(color: CustomTheme.textColor),
@@ -43,12 +48,14 @@ Widget _buildPlayerNameCountWidget(
   Player player, {
   TextStyle? mainStyle,
   TextStyle? countStyle,
+  bool highlighted = false,
 }) {
   return Text.rich(
     buildPlayerNameCountSpan(
       player,
       mainStyle: mainStyle,
       countStyle: countStyle,
+      highlighted: highlighted,
     ),
   );
 }
@@ -62,6 +69,7 @@ Widget buildUnitNameWidget(
   TextStyle? mainStyle,
   TextStyle? countStyle,
   bool pairIconLeft = false,
+  List<bool> highlighted = const [],
 }) {
   if (unit is Team) {
     if (isTeamMatch) {
@@ -83,6 +91,7 @@ Widget buildUnitNameWidget(
         mainStyle: mainStyle,
         countStyle: countStyle,
         iconLeft: pairIconLeft,
+        highlighted: highlighted,
       );
     }
   } else if (unit is Player) {
@@ -90,6 +99,7 @@ Widget buildUnitNameWidget(
       unit,
       mainStyle: mainStyle,
       countStyle: countStyle,
+      highlighted: highlighted.isNotEmpty && highlighted[0],
     );
   }
   return const SizedBox.shrink();
@@ -105,6 +115,7 @@ Widget _buildPairGameNameWidget(
   TextStyle? mainStyle,
   TextStyle? countStyle,
   bool iconLeft = false,
+  List<bool> highlighted = const [],
 }) {
   final resolvedMainStyle =
       mainStyle ?? const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
@@ -136,12 +147,21 @@ Widget _buildPairGameNameWidget(
                 team.members[0],
                 mainStyle: resolvedMainStyle,
                 countStyle: resolvedCountStyle,
+                highlighted: highlighted[0],
               ),
-              TextSpan(text: ' & ', style: resolvedMainStyle),
+              TextSpan(
+                text: ' & ',
+                style: highlighted.every((h) => h)
+                    ? resolvedMainStyle.copyWith(
+                        color: CustomTheme.textColor.withAlpha(150),
+                      )
+                    : resolvedMainStyle,
+              ),
               buildPlayerNameCountSpan(
                 team.members[1],
                 mainStyle: resolvedMainStyle,
                 countStyle: resolvedCountStyle,
+                highlighted: highlighted[1],
               ),
             ],
           ),
@@ -151,6 +171,7 @@ Widget _buildPairGameNameWidget(
           team.members.first,
           mainStyle: resolvedMainStyle,
           countStyle: resolvedCountStyle,
+          highlighted: highlighted[0],
         ),
       ] else ...[
         Text(team.name, style: resolvedMainStyle),

@@ -13,8 +13,8 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
 
 class MatchTile extends StatefulWidget {
   /// A tile widget that displays information about a match, including its name,
@@ -264,11 +264,12 @@ class _MatchTileState extends State<MatchTile> {
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: match.teams!.map((team) {
-                  return TextIconTile(
-                    player: team.members.first,
-                    pair: team.members.length > 1 ? team : null,
-                  );
+                children: match.teams!.map((pair) {
+                  if (pair.members.length > 1) {
+                    return PairTile(pair: pair);
+                  } else {
+                    return PlayerTile(player: pair.members.first);
+                  }
                 }).toList(),
               ),
             ] else if (players.isNotEmpty) ...[

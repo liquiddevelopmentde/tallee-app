@@ -12,7 +12,8 @@ import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class PlayerSelection extends StatefulWidget {
@@ -322,60 +323,56 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                   borderRadius: BorderRadius.circular(12),
                 )
               : null,
-          child: TextIconTile(
-            player: unit.members.first,
-            pair: isPaired ? unit : null,
-            icon: isPairingMode ? null : Icons.close,
-            backgroundColor: pressingId == unit.id
-                ? Colors.grey.shade800
-                : null,
-            pairIconLeft: true,
-            onTileTap:
-                !isPaired &&
-                    widget.pairingEnabled &&
-                    pairingSelection.isNotEmpty &&
-                    !isSelectedForPairing
-                ? () async {
-                    await HapticFeedback.selectionClick();
-                    setState(() {
-                      pairingSelection.add(unit.id);
-                      // Enter pairing mode as soon as we add a selection
-                      isPairingMode = pairingSelection.isNotEmpty;
-                      // Auto-merge if we have exactly 2 units selected
-                      if (pairingSelection.length == 2) {
-                        _autoMergePairingSelection();
-                        // _autoMergePairingSelection clears pairingSelection; ensure mode is off
-                        isPairingMode = pairingSelection.isNotEmpty;
-                      }
-                      widget.onChanged(selectedPlayers, selectedUnits);
-                    });
-                  }
-                : null,
-            onIconTap: () async {
-              await HapticFeedback.selectionClick();
+          child: isPaired
+              ? PairTile(
+                  pair: unit,
+                  pairIconLeft: true,
+                  onIconTap: () => unmergeUnit(unit),
+                )
+              : PlayerTile(
+                  player: unit.members.first,
+                  icon: isPairingMode ? null : Icons.close,
+                  backgroundColor: pressingId == unit.id
+                      ? Colors.grey.shade800
+                      : null,
+                  onTileTap:
+                      !isPaired &&
+                          widget.pairingEnabled &&
+                          pairingSelection.isNotEmpty &&
+                          !isSelectedForPairing
+                      ? () async {
+                          await HapticFeedback.selectionClick();
+                          setState(() {
+                            pairingSelection.add(unit.id);
+                            // Enter pairing mode as soon as we add a selection
+                            isPairingMode = pairingSelection.isNotEmpty;
+                            // Auto-merge if we have exactly 2 units selected
+                            if (pairingSelection.length == 2) {
+                              _autoMergePairingSelection();
+                              // _autoMergePairingSelection clears pairingSelection; ensure mode is off
+                              isPairingMode = pairingSelection.isNotEmpty;
+                            }
+                            widget.onChanged(selectedPlayers, selectedUnits);
+                          });
+                        }
+                      : null,
+                  // Remove single player unit
+                  onIconTap: () => setState(() {
+                    selectedUnits.remove(unit);
+                    pairingSelection.remove(unit.id);
+                    isPairingMode = pairingSelection.isNotEmpty;
+                    widget.onChanged(selectedPlayers, selectedUnits);
 
-              if (isPaired) {
-                // Unlink pair
-                unmergeUnit(unit);
-              } else {
-                // Remove single player unit
-                setState(() {
-                  selectedUnits.remove(unit);
-                  pairingSelection.remove(unit.id);
-                  isPairingMode = pairingSelection.isNotEmpty;
-                  widget.onChanged(selectedPlayers, selectedUnits);
-
-                  final player = unit.members.first;
-                  final currentSearch = _searchBarController.text.toLowerCase();
-                  if (currentSearch.isEmpty ||
-                      player.name.toLowerCase().contains(currentSearch)) {
-                    suggestedPlayers.add(player);
-                    suggestedPlayers.sort((a, b) => a.name.compareTo(b.name));
-                  }
-                });
-              }
-            },
-          ),
+                    final player = unit.members.first;
+                    final currentSearch = _searchBarController.text
+                        .toLowerCase();
+                    if (currentSearch.isEmpty ||
+                        player.name.toLowerCase().contains(currentSearch)) {
+                      suggestedPlayers.add(player);
+                      suggestedPlayers.sort((a, b) => a.name.compareTo(b.name));
+                    }
+                  }),
+                ),
         ),
       ),
     );

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/name_display.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/team.dart';
 
 class TextIconTile extends StatelessWidget {
   /// A tile widget that displays text with an optional icon that can be tapped.
@@ -19,35 +16,22 @@ class TextIconTile extends StatelessWidget {
   /// - `onTileTap`: The callback to be invoked when the tile is tapped.
   const TextIconTile({
     super.key,
-    this.text = '',
-    this.pair,
-    this.pairIconLeft = false,
-    this.onIconTap,
-    this.icon,
-    this.onTileTap,
+    required this.content,
     this.backgroundColor,
+    this.icon = Icons.close,
+    this.onIconTap,
+    this.pairIconLeft = false,
+    this.onTileTap,
     this.highlighted = false,
-    this.player,
-    this.suffixText = '',
   });
 
-  final Player? player;
-
-  final String text;
-
-  final Team? pair;
-
-  final bool pairIconLeft;
-
-  final String suffixText;
-  final VoidCallback? onIconTap;
-
+  final Widget content;
+  final Color? backgroundColor;
   final IconData? icon;
-
+  final VoidCallback? onIconTap;
+  final bool pairIconLeft;
   final VoidCallback? onTileTap;
   final bool highlighted;
-
-  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +39,6 @@ class TextIconTile extends StatelessWidget {
     final backgroundColor = highlighted
         ? CustomTheme.onBoxColor.withAlpha((140).round())
         : CustomTheme.onBoxColor;
-    final textClr = highlighted
-        ? CustomTheme.textColor.withAlpha((140).round())
-        : CustomTheme.textColor;
-    final suffixColor = highlighted
-        ? CustomTheme.textColor.withAlpha((80).round())
-        : CustomTheme.textColor.withAlpha((150).round());
 
     return GestureDetector(
       onTap: onTileTap,
@@ -76,22 +54,7 @@ class TextIconTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (iconEnabled) const SizedBox(width: 3),
-            Flexible(
-              child: buildUnitNameWidget(
-                pair ?? player ?? Player(name: text, nameCount: 0),
-                mainStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: textClr,
-                ),
-                countStyle: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: suffixColor,
-                ),
-                pairIconLeft: pairIconLeft,
-              ),
-            ),
+            Flexible(child: content),
             if (iconEnabled) ...<Widget>[
               const SizedBox(width: 3),
               GestureDetector(onTap: onIconTap, child: Icon(icon!, size: 20)),
