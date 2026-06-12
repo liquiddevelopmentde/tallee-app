@@ -83,6 +83,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm => 'Confirm';
 
   @override
+  String get delete_group_warning_details =>
+      'This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.';
+
+  @override
   String could_not_add_player(String playerName) {
     return 'Could not add player $playerName';
   }
