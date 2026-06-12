@@ -73,8 +73,6 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                         ),
                         HapticIconButton(
                           icon: const Icon(FontAwesome.trash),
-                          color: CustomTheme.textColor,
-                          iconSize: 25,
                           onPressed: widget.onDelete,
                         ),
                       ],

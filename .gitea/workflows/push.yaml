@@ -194,7 +194,7 @@ jobs:
           flutter pub get
 
       - name: Sort pubspec.yaml
-        run: dart run pubspec_dependency_sorter
+        run: dart run sort_pubspec_dependencies
 
       - name: Check code format
         id: check_format
@@ -203,20 +203,22 @@ jobs:
 
       - name: Format code
         if: steps.check_format.outcome == 'failure'
+        run: |
+          dart fix --apply lib
+          dart fix --apply test
+
+      - name: Commit changes
         env:
           GITEA_TOKEN: ${{ secrets.BOT_TOKEN }}
           BRANCH_NAME: ${{ gitea.ref_name }}
         run: |
           git fetch origin "$BRANCH_NAME"
           git checkout "$BRANCH_NAME"
-          
-          dart fix --apply lib
-          dart fix --apply test
-          
-          if [ -n "$(git status --porcelain lib test)" ]; then
+
+          if [ -n "$(git status --porcelain lib test pubspec.yaml)" ]; then
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
-            git add lib test
+            git add lib test pubspec.yaml
             git commit -m "Auto-format code [skip ci]"
             git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin HEAD:$BRANCH_NAME
