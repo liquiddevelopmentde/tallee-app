@@ -101,7 +101,7 @@ class _GroupTileState extends State<GroupTile> {
                         adaptivePageRoute(
                           builder: (context) => PlayerDetailView(
                             player: member,
-                            callback: () {
+                            onPlayerNameUpdated: () {
                               widget.onPlayerChanged?.call();
                             },
                           ),

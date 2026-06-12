@@ -154,7 +154,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                             adaptivePageRoute(
                               builder: (context) => PlayerDetailView(
                                 player: member,
-                                callback: widget.callback,
+                                onPlayerNameUpdated: widget.callback,
                               ),
                             ),
                           );

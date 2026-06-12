@@ -30,13 +30,13 @@ class PlayerDetailView extends StatefulWidget {
   const PlayerDetailView({
     super.key,
     required this.player,
-    required this.callback,
+    required this.onPlayerNameUpdated,
   });
 
   /// The player to display
   final Player player;
 
-  final VoidCallback callback;
+  final VoidCallback onPlayerNameUpdated;
 
   @override
   State<PlayerDetailView> createState() => _PlayerDetailViewState();
@@ -122,7 +122,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     await db.playerDao.deletePlayer(playerId: widget.player.id);
                     if (!context.mounted) return;
                     Navigator.pop(context);
-                    widget.callback();
+                    widget.onPlayerNameUpdated();
                   }
                 });
               },
@@ -209,7 +209,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                       adaptivePageRoute(
                                         builder: (context) => GroupDetailView(
                                           group: group,
-                                          callback: widget.callback,
+                                          callback: widget.onPlayerNameUpdated,
                                         ),
                                       ),
                                     );
@@ -253,7 +253,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                     adaptivePageRoute(
                                       builder: (context) => MatchDetailView(
                                         match: match,
-                                        onMatchUpdate: widget.callback,
+                                        onMatchUpdate:
+                                            widget.onPlayerNameUpdated,
                                       ),
                                     ),
                                   );
@@ -345,7 +346,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             playerId: player.id,
                             name: newName,
                           );
-                          widget.callback.call();
+                          widget.onPlayerNameUpdated.call();
                           setState(() {
                             player = player.copyWith(
                               name: newName,

@@ -276,7 +276,7 @@ class _MatchTileState extends State<MatchTile> {
                           adaptivePageRoute(
                             builder: (context) => PlayerDetailView(
                               player: pair.members.first,
-                              callback: () {
+                              onPlayerNameUpdated: () {
                                 widget.onPlayerEdited?.call();
                               },
                             ),
@@ -310,7 +310,7 @@ class _MatchTileState extends State<MatchTile> {
                         adaptivePageRoute(
                           builder: (context) => PlayerDetailView(
                             player: player,
-                            callback: () {
+                            onPlayerNameUpdated: () {
                               widget.onPlayerEdited?.call();
                             },
                           ),

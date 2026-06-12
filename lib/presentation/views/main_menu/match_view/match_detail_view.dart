@@ -192,7 +192,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                                     PlayerDetailView(
                                                       player:
                                                           team.members.first,
-                                                      callback:
+                                                      onPlayerNameUpdated:
                                                           widget.onMatchUpdate,
                                                     ),
                                               ),
@@ -231,7 +231,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                     adaptivePageRoute(
                                       builder: (context) => PlayerDetailView(
                                         player: player,
-                                        callback: widget.onMatchUpdate,
+                                        onPlayerNameUpdated:
+                                            widget.onMatchUpdate,
                                       ),
                                     ),
                                   );
