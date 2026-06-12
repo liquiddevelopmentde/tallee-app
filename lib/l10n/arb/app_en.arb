@@ -1,6 +1,5 @@
 {
   "@@locale": "en",
-  "names_or_descriptions_too_long": "The data contains names or descriptions that are too long.",
   "add_team": "Add Team",
   "all_players": "All players",
   "all_players_selected": "All players selected",
@@ -113,6 +112,7 @@
   "member": "Member",
   "members": "Members",
   "multiple_winners": "Multiple Winners",
+  "names_or_descriptions_too_long": "The data contains names or descriptions that are too long.",
   "no_data_available": "No data available",
   "no_games_created_yet": "No games created yet",
   "no_groups_created_yet": "No groups created yet",

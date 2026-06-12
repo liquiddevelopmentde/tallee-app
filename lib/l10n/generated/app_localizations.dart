@@ -98,12 +98,6 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
-  /// No description provided for @names_or_descriptions_too_long.
-  ///
-  /// In en, this message translates to:
-  /// **'The data contains names or descriptions that are too long.'**
-  String get names_or_descriptions_too_long;
-
   /// No description provided for @add_team.
   ///
   /// In en, this message translates to:
@@ -691,6 +685,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Multiple Winners'**
   String get multiple_winners;
+
+  /// No description provided for @names_or_descriptions_too_long.
+  ///
+  /// In en, this message translates to:
+  /// **'The data contains names or descriptions that are too long.'**
+  String get names_or_descriptions_too_long;
 
   /// No description provided for @no_data_available.
   ///
