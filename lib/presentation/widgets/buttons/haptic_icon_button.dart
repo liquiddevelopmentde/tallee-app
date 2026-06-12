@@ -1,51 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class HapticIconButton extends StatelessWidget {
+class HapticIconButton extends StatefulWidget {
   const HapticIconButton({
     super.key,
     required this.icon,
     required this.onPressed,
-    this.iconSize,
-    this.color,
     this.padding,
-    this.alignment,
-    this.constraints,
-    this.style,
-    this.isSelected,
-    this.selectedIcon,
+    this.margin,
   });
 
   final Widget icon;
   final VoidCallback? onPressed;
-  final double? iconSize;
-  final Color? color;
   final EdgeInsetsGeometry? padding;
-  final AlignmentGeometry? alignment;
-  final BoxConstraints? constraints;
-  final ButtonStyle? style;
-  final bool? isSelected;
-  final Widget? selectedIcon;
+  final EdgeInsetsGeometry? margin;
+
+  @override
+  State<StatefulWidget> createState() => _HapticIconButtonState();
+}
+
+class _HapticIconButtonState extends State<HapticIconButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController controller;
+
+  @override
+  void initState() {
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+      lowerBound: 0.6,
+      upperBound: 1.0,
+      value: 1.0,
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      iconSize: iconSize,
-      highlightColor: Colors.transparent, //disable splash animation
-      color: color,
-      padding: padding,
-      alignment: alignment ?? Alignment.center,
-      constraints: constraints,
-      style: style,
-      isSelected: isSelected,
-      selectedIcon: selectedIcon,
-      icon: icon,
-      onPressed: onPressed == null
-          ? null
-          : () async {
-              await HapticFeedback.selectionClick();
-              onPressed!.call();
-            },
+    final isEnabled = widget.onPressed != null;
+
+    return AnimatedOpacity(
+      opacity: isEnabled ? 1.0 : 0.4,
+      duration: const Duration(milliseconds: 200),
+      child: FadeTransition(
+        opacity: controller,
+        child: GestureDetector(
+          onTapDown: isEnabled ? (_) => handleTapDown() : null,
+          onTapUp: isEnabled ? (_) => handleRelease() : null,
+          onTapCancel: isEnabled ? () => handleRelease() : null,
+          onTap: isEnabled
+              ? () async {
+                  await HapticFeedback.selectionClick();
+                  widget.onPressed!.call();
+                }
+              : null,
+          child: Container(
+            padding: widget.padding ?? const EdgeInsets.all(8.0),
+            margin: widget.margin,
+            child: widget.icon,
+          ),
+        ),
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void handleTapDown() {
+    controller.reverse();
+  }
+
+  Future<void> handleRelease() async {
+    await controller.reverse();
+    await controller.forward();
   }
 }
