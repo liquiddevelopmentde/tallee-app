@@ -31,15 +31,16 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    container: node:20-bookworm
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Required for Flutter action
-      - name: Install jq
+      # Required for the Flutter action and SDK download
+      - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y jq 
+          apt-get install -y jq unzip xz-utils
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -50,6 +51,7 @@ jobs:
         run: |
           git config --global --add safe.directory '*'
           flutter pub get
+          flutter --version
 
       - name: Run tests
         run: flutter test
