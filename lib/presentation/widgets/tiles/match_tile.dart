@@ -61,7 +61,7 @@ class _MatchTileState extends State<MatchTile> {
         widget.onTap.call();
       },
       child: Container(
-        margin: EdgeInsets.zero,
+        margin: CustomTheme.tileMargin,
         width: widget.width,
         padding: const EdgeInsets.all(12),
         decoration: CustomTheme.standardBoxDecoration,

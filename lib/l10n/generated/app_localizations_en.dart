@@ -49,6 +49,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get classifier => 'Classifier';
 
   @override
+  String get classifier_description =>
+      'Choose which metric is calculated and shown in this statistic.';
+
+  @override
   String get click_another_player_to_create_a_pair =>
       'Click another player to create a pair';
 
@@ -163,6 +167,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete_player => 'Delete player?';
+
+  @override
+  String get delete_statistic => 'Delete statistic';
 
   @override
   String get description => 'Description';
@@ -397,6 +404,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacy_policy => 'Privacy Policy';
 
   @override
+  String get random_color => 'Random color';
+
+  @override
   String get results => 'Results';
 
   @override
@@ -409,6 +419,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scope => 'Scope';
 
   @override
+  String get scope_description =>
+      'Choose which games or players are included in the calculation.';
+
+  @override
   String get search_for_groups => 'Search for groups';
 
   @override
@@ -418,10 +432,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_a_classifier => 'Select a classifier';
 
   @override
-  String get select_a_game => 'Select a game';
-
-  @override
-  String get select_a_group => 'Select a group';
+  String get select_a_display_color => 'Select a display color';
 
   @override
   String get select_a_scope => 'Select a scope';
@@ -431,14 +442,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get select_loser => 'Select Loser';
-
-  @override
-  String get select_the_filtered_games =>
-      'Select the games you want to filter by.';
-
-  @override
-  String get select_the_filtered_groups =>
-      'Select the groups you want to filter by.';
 
   @override
   String get select_the_filtered_timeframe =>

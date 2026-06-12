@@ -49,6 +49,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get classifier => 'Klassifikator';
 
   @override
+  String get classifier_description =>
+      'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
+
+  @override
   String get click_another_player_to_create_a_pair =>
       'Klicke einen weiteren Spieler an, um ein Paar zu erstellen';
 
@@ -163,6 +167,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get delete_player => 'Spieler:in löschen';
+
+  @override
+  String get delete_statistic => 'Statistik löschen';
 
   @override
   String get description => 'Beschreibung';
@@ -397,6 +404,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get privacy_policy => 'Datenschutzerklärung';
 
   @override
+  String get random_color => 'Zufällige Farbe';
+
+  @override
   String get results => 'Ergebnisse';
 
   @override
@@ -409,6 +419,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scope => 'Bereich';
 
   @override
+  String get scope_description =>
+      'Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.';
+
+  @override
   String get search_for_groups => 'Nach Gruppen suchen';
 
   @override
@@ -418,10 +432,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get select_a_classifier => 'Klassifikator auswählen';
 
   @override
-  String get select_a_game => 'Spielvorlage auswählen';
-
-  @override
-  String get select_a_group => 'Gruppe auswählen';
+  String get select_a_display_color => 'Wähle eine Anzeigefarbe aus';
 
   @override
   String get select_a_scope => 'Bereich auswählen';
@@ -431,14 +442,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get select_loser => 'Verlierer:in wählen';
-
-  @override
-  String get select_the_filtered_games =>
-      'Wähle Spiele, nach denen gefiltert werden soll.';
-
-  @override
-  String get select_the_filtered_groups =>
-      'Wähle Gruppen, nach denen gefiltert werden soll.';
 
   @override
   String get select_the_filtered_timeframe =>
