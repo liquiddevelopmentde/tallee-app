@@ -268,7 +268,22 @@ class _MatchTileState extends State<MatchTile> {
                   if (pair.members.length > 1) {
                     return PairTile(pair: pair);
                   } else {
-                    return PlayerTile(player: pair.members.first);
+                    return PlayerTile(
+                      player: pair.members.first,
+                      onTileTap: () {
+                        Navigator.push(
+                          context,
+                          adaptivePageRoute(
+                            builder: (context) => PlayerDetailView(
+                              player: pair.members.first,
+                              callback: () {
+                                widget.onPlayerEdited?.call();
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   }
                 }).toList(),
               ),
