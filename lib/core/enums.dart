@@ -58,13 +58,7 @@ enum StatisticType {
   winrate,
 }
 
-enum StatisticScope {
-  allPlayers,
-  //selectedPlayer,
-  selectedGroups,
-  selectedGames,
-  timeframe,
-}
+enum StatisticScope { allPlayers, selectedGroups, selectedGames }
 
 enum Timeframe {
   last7Days,

@@ -7,7 +7,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
-import 'package:tallee/presentation/views/main_menu/statistics_view/statistics_view.dart';
+import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 import 'package:tallee/state/group_search_provider.dart';
@@ -60,20 +60,32 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
         actions: [
-          if (currentIndex == 0) // Nur im Matches-Tab
+          if (currentIndex == 0) // Only in MatchView
             HapticIconButton(
-              icon: Icon(
-                matchSearchProvider.isSearching ? Icons.close : Icons.search,
+              key: ValueKey(
+                matchSearchProvider.isSearching
+                    ? 'match_search_close_button'
+                    : 'match_search_open_button',
               ),
+              icon: matchSearchProvider.isSearching
+                  ? const Icon(Icons.close)
+                  : const Icon(Icons.search),
               onPressed: () => matchSearchProvider.toggleSearch(),
             ),
-          if (currentIndex == 1)
+
+          if (currentIndex == 1) // Only in GroupView
             HapticIconButton(
+              key: ValueKey(
+                groupSearchProvider.isSearching
+                    ? 'group_search_close_button'
+                    : 'group_search_open_button',
+              ),
               icon: Icon(
                 groupSearchProvider.isSearching ? Icons.close : Icons.search,
               ),
               onPressed: () => groupSearchProvider.toggleSearch(),
             ),
+
           HapticIconButton(
             onPressed: () async {
               final navigator = Navigator.of(context);

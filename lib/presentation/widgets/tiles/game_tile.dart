@@ -64,7 +64,8 @@ class GameTile extends StatelessWidget {
         }
       },
       child: AnimatedContainer(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        margin: CustomTheme.tileMargin,
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: !isHighlighted
             ? CustomTheme.standardBoxDecoration
             : CustomTheme.highlightedBoxDecoration.copyWith(
@@ -75,88 +76,82 @@ class GameTile extends StatelessWidget {
                 ),
               ),
         duration: const Duration(milliseconds: 200),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Title
-              Row(
-                spacing: 8,
-                children: [
-                  Container(
-                    width: 15,
-                    height: 15,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: gameColor,
-                    ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Title
+            Row(
+              spacing: 8,
+              children: [
+                Container(
+                  width: 15,
+                  height: 15,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: gameColor,
                   ),
-                  Text(
-                    title,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-
-              // Title
-              if (subtitle != null && subtitle!.isNotEmpty) ...[
-                const SizedBox(height: 4),
+                ),
                 Text(
-                  subtitle!,
+                  title,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   softWrap: false,
                   style: const TextStyle(
-                    fontSize: 14,
-                    color: CustomTheme.hintColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
                 ),
               ],
+            ),
 
-              // Badge
-              if (badgeText != null) ...[
-                const SizedBox(height: 5),
-                Container(
-                  constraints: const BoxConstraints(maxWidth: 250),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 2,
-                    horizontal: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: gameColor,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    badgeText!,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: TextStyle(
-                      color: badgeTextColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+            // Title
+            if (subtitle != null && subtitle!.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                subtitle!,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                softWrap: false,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: CustomTheme.hintColor,
                 ),
-              ],
-
-              // Description
-              if (description.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                Text(description, style: const TextStyle(fontSize: 14)),
-                const SizedBox(height: 2.5),
-              ],
+              ),
             ],
-          ),
+
+            // Badge
+            if (badgeText != null) ...[
+              const SizedBox(height: 5),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 250),
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+                decoration: BoxDecoration(
+                  color: gameColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  badgeText!,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(
+                    color: badgeTextColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+
+            // Description
+            if (description.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(description, style: const TextStyle(fontSize: 14)),
+              const SizedBox(height: 2.5),
+            ],
+          ],
         ),
       ),
     );

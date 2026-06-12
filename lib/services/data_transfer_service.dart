@@ -14,6 +14,7 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/data/models/team.dart';
 
 class DataTransferService {
@@ -37,12 +38,14 @@ class DataTransferService {
     final groups = await db.groupDao.getAllGroups();
     final players = await db.playerDao.getAllPlayers();
     final games = await db.gameDao.getAllGames();
+    final statistics = await db.statisticDao.getAllStatistics();
 
     final Map<String, dynamic> jsonMap = {
       'players': players.map((player) => player.toJson()).toList(),
-      'games': games.map((game) => game.toJson()).toList(),
       'groups': groups.map((group) => group.toJson()).toList(),
+      'games': games.map((game) => game.toJson()).toList(),
       'matches': matches.map((match) => match.toJson()).toList(),
+      'statistics': statistics.map((stat) => stat.toJson()).toList(),
     };
 
     return json.encode(jsonMap);
@@ -81,11 +84,12 @@ class DataTransferService {
     final db = Provider.of<AppDatabase>(context, listen: false);
 
     final path = await FilePicker.pickFiles(
+      allowMultiple: false,
       type: FileType.custom,
       allowedExtensions: ['json'],
     );
 
-    if (path == null) {
+    if (path == null || path.files.isEmpty) {
       return ImportResult.canceled;
     }
 
@@ -196,10 +200,13 @@ class DataTransferService {
       playerById,
     );
 
+    final importedStats = parseStatsFromJson(decodedJson, gameById, groupById);
+
     await db.playerDao.addPlayersAsList(players: importedPlayers);
     await db.gameDao.addGamesAsList(games: importedGames);
     await db.groupDao.addGroupsAsList(groups: importedGroups);
     await db.matchDao.addMatchesAsList(matches: importedMatches);
+    await db.statisticDao.addStatisticsAsList(statistics: importedStats);
   }
 
   /* Parsing Methods */
@@ -326,6 +333,61 @@ class DataTransferService {
         endedAt: endedAt,
         notes: notes,
         scores: scores,
+      );
+    }).toList();
+  }
+
+  /// Parses statistics from JSON data.
+  @visibleForTesting
+  static List<Statistic> parseStatsFromJson(
+    Map<String, dynamic> decodedJson,
+    Map<String, Game> gamesMap,
+    Map<String, Group> groupsMap,
+  ) {
+    final statsJson = (decodedJson['statistics'] as List<dynamic>?) ?? [];
+    return statsJson.map((s) {
+      final map = s as Map<String, dynamic>;
+
+      final selectedGameIds = (map['selectedGames'] as List<dynamic>? ?? [])
+          .cast<String>();
+      final selectedGroupIds = (map['selectedGroups'] as List<dynamic>? ?? [])
+          .cast<String>();
+
+      final selectedGames = selectedGameIds
+          .map((id) => gamesMap[id])
+          .whereType<Game>()
+          .toList();
+      final selectedGroups = selectedGroupIds
+          .map((id) => groupsMap[id])
+          .whereType<Group>()
+          .toList();
+
+      return Statistic(
+        id: map['id'] as String,
+        createdAt: DateTime.parse(map['createdAt'] as String),
+        type: StatisticType.values.firstWhere(
+          (e) => e.name == map['type'] || e.toString() == map['type'],
+          orElse: () => StatisticType.totalWins,
+        ),
+        scopes: (map['scopes'] as List<dynamic>? ?? [])
+            .map(
+              (scope) => StatisticScope.values.firstWhere(
+                (e) => e.name == scope || e.toString() == scope,
+                orElse: () => StatisticScope.allPlayers,
+              ),
+            )
+            .toList(),
+        timeframe: Timeframe.values.firstWhere(
+          (e) => e.name == map['timeframe'] || e.toString() == map['timeframe'],
+          orElse: () => Timeframe.allTime,
+        ),
+        color: AppColor.values.firstWhere(
+          (e) => e.name == map['color'] || e.toString() == map['color'],
+          orElse: () => AppColor.orange,
+        ),
+        selectedGroups: selectedGroups.isEmpty ? null : selectedGroups,
+        selectedGames: selectedGames.isEmpty ? null : selectedGames,
+        displayCount: map['displayCount'] as int? ?? 5,
       );
     }).toList();
   }
