@@ -703,17 +703,15 @@ class $GameTableTable extends GameTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _rulesetMeta = const VerificationMeta(
-    'ruleset',
-  );
   @override
-  late final GeneratedColumn<String> ruleset = GeneratedColumn<String>(
-    'ruleset',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<Ruleset, String> ruleset =
+      GeneratedColumn<String>(
+        'ruleset',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<Ruleset>($GameTableTable.$converterruleset);
   static const VerificationMeta _descriptionMeta = const VerificationMeta(
     'description',
   );
@@ -725,15 +723,15 @@ class $GameTableTable extends GameTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _colorMeta = const VerificationMeta('color');
   @override
-  late final GeneratedColumn<String> color = GeneratedColumn<String>(
-    'color',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<AppColor, String> color =
+      GeneratedColumn<String>(
+        'color',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<AppColor>($GameTableTable.$convertercolor);
   static const VerificationMeta _iconMeta = const VerificationMeta('icon');
   @override
   late final GeneratedColumn<String> icon = GeneratedColumn<String>(
@@ -789,14 +787,6 @@ class $GameTableTable extends GameTable
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('ruleset')) {
-      context.handle(
-        _rulesetMeta,
-        ruleset.isAcceptableOrUnknown(data['ruleset']!, _rulesetMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_rulesetMeta);
-    }
     if (data.containsKey('description')) {
       context.handle(
         _descriptionMeta,
@@ -807,14 +797,6 @@ class $GameTableTable extends GameTable
       );
     } else if (isInserting) {
       context.missing(_descriptionMeta);
-    }
-    if (data.containsKey('color')) {
-      context.handle(
-        _colorMeta,
-        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_colorMeta);
     }
     if (data.containsKey('icon')) {
       context.handle(
@@ -849,18 +831,22 @@ class $GameTableTable extends GameTable
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
-      ruleset: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}ruleset'],
-      )!,
+      ruleset: $GameTableTable.$converterruleset.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}ruleset'],
+        )!,
+      ),
       description: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       )!,
-      color: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}color'],
-      )!,
+      color: $GameTableTable.$convertercolor.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}color'],
+        )!,
+      ),
       icon: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}icon'],
@@ -876,14 +862,19 @@ class $GameTableTable extends GameTable
   $GameTableTable createAlias(String alias) {
     return $GameTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<Ruleset, String, String> $converterruleset =
+      const EnumNameConverter<Ruleset>(Ruleset.values);
+  static JsonTypeConverter2<AppColor, String, String> $convertercolor =
+      const EnumNameConverter<AppColor>(AppColor.values);
 }
 
 class GameTableData extends DataClass implements Insertable<GameTableData> {
   final String id;
   final String name;
-  final String ruleset;
+  final Ruleset ruleset;
   final String description;
-  final String color;
+  final AppColor color;
   final String icon;
   final DateTime createdAt;
   const GameTableData({
@@ -900,9 +891,17 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
-    map['ruleset'] = Variable<String>(ruleset);
+    {
+      map['ruleset'] = Variable<String>(
+        $GameTableTable.$converterruleset.toSql(ruleset),
+      );
+    }
     map['description'] = Variable<String>(description);
-    map['color'] = Variable<String>(color);
+    {
+      map['color'] = Variable<String>(
+        $GameTableTable.$convertercolor.toSql(color),
+      );
+    }
     map['icon'] = Variable<String>(icon);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -928,9 +927,13 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     return GameTableData(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      ruleset: serializer.fromJson<String>(json['ruleset']),
+      ruleset: $GameTableTable.$converterruleset.fromJson(
+        serializer.fromJson<String>(json['ruleset']),
+      ),
       description: serializer.fromJson<String>(json['description']),
-      color: serializer.fromJson<String>(json['color']),
+      color: $GameTableTable.$convertercolor.fromJson(
+        serializer.fromJson<String>(json['color']),
+      ),
       icon: serializer.fromJson<String>(json['icon']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -941,9 +944,13 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
-      'ruleset': serializer.toJson<String>(ruleset),
+      'ruleset': serializer.toJson<String>(
+        $GameTableTable.$converterruleset.toJson(ruleset),
+      ),
       'description': serializer.toJson<String>(description),
-      'color': serializer.toJson<String>(color),
+      'color': serializer.toJson<String>(
+        $GameTableTable.$convertercolor.toJson(color),
+      ),
       'icon': serializer.toJson<String>(icon),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -952,9 +959,9 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
   GameTableData copyWith({
     String? id,
     String? name,
-    String? ruleset,
+    Ruleset? ruleset,
     String? description,
-    String? color,
+    AppColor? color,
     String? icon,
     DateTime? createdAt,
   }) => GameTableData(
@@ -1013,9 +1020,9 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
 class GameTableCompanion extends UpdateCompanion<GameTableData> {
   final Value<String> id;
   final Value<String> name;
-  final Value<String> ruleset;
+  final Value<Ruleset> ruleset;
   final Value<String> description;
-  final Value<String> color;
+  final Value<AppColor> color;
   final Value<String> icon;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
@@ -1032,9 +1039,9 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
   GameTableCompanion.insert({
     required String id,
     required String name,
-    required String ruleset,
+    required Ruleset ruleset,
     required String description,
-    required String color,
+    required AppColor color,
     required String icon,
     required DateTime createdAt,
     this.rowid = const Value.absent(),
@@ -1070,9 +1077,9 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
   GameTableCompanion copyWith({
     Value<String>? id,
     Value<String>? name,
-    Value<String>? ruleset,
+    Value<Ruleset>? ruleset,
     Value<String>? description,
-    Value<String>? color,
+    Value<AppColor>? color,
     Value<String>? icon,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
@@ -1099,13 +1106,17 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
       map['name'] = Variable<String>(name.value);
     }
     if (ruleset.present) {
-      map['ruleset'] = Variable<String>(ruleset.value);
+      map['ruleset'] = Variable<String>(
+        $GameTableTable.$converterruleset.toSql(ruleset.value),
+      );
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
     if (color.present) {
-      map['color'] = Variable<String>(color.value);
+      map['color'] = Variable<String>(
+        $GameTableTable.$convertercolor.toSql(color.value),
+      );
     }
     if (icon.present) {
       map['icon'] = Variable<String>(icon.value);
@@ -1915,16 +1926,16 @@ class $TeamTableTable extends TeamTable
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _colorMeta = const VerificationMeta('color');
   @override
-  late final GeneratedColumn<String> color = GeneratedColumn<String>(
-    'color',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultValue: const Constant('blue'),
-  );
+  late final GeneratedColumnWithTypeConverter<AppColor, String> color =
+      GeneratedColumn<String>(
+        'color',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: Constant(AppColor.blue.name),
+      ).withConverter<AppColor>($TeamTableTable.$convertercolor);
   static const VerificationMeta _scoreMeta = const VerificationMeta('score');
   @override
   late final GeneratedColumn<int> score = GeneratedColumn<int>(
@@ -1969,12 +1980,6 @@ class $TeamTableTable extends TeamTable
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
-    if (data.containsKey('color')) {
-      context.handle(
-        _colorMeta,
-        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
-      );
-    }
     if (data.containsKey('score')) {
       context.handle(
         _scoreMeta,
@@ -2002,10 +2007,12 @@ class $TeamTableTable extends TeamTable
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
-      color: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}color'],
-      )!,
+      color: $TeamTableTable.$convertercolor.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}color'],
+        )!,
+      ),
       score: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}score'],
@@ -2017,13 +2024,16 @@ class $TeamTableTable extends TeamTable
   $TeamTableTable createAlias(String alias) {
     return $TeamTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<AppColor, String, String> $convertercolor =
+      const EnumNameConverter<AppColor>(AppColor.values);
 }
 
 class TeamTableData extends DataClass implements Insertable<TeamTableData> {
   final String id;
   final String name;
   final DateTime createdAt;
-  final String color;
+  final AppColor color;
   final int? score;
   const TeamTableData({
     required this.id,
@@ -2038,7 +2048,11 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
     map['created_at'] = Variable<DateTime>(createdAt);
-    map['color'] = Variable<String>(color);
+    {
+      map['color'] = Variable<String>(
+        $TeamTableTable.$convertercolor.toSql(color),
+      );
+    }
     if (!nullToAbsent || score != null) {
       map['score'] = Variable<int>(score);
     }
@@ -2066,7 +2080,9 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      color: serializer.fromJson<String>(json['color']),
+      color: $TeamTableTable.$convertercolor.fromJson(
+        serializer.fromJson<String>(json['color']),
+      ),
       score: serializer.fromJson<int?>(json['score']),
     );
   }
@@ -2077,7 +2093,9 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'color': serializer.toJson<String>(color),
+      'color': serializer.toJson<String>(
+        $TeamTableTable.$convertercolor.toJson(color),
+      ),
       'score': serializer.toJson<int?>(score),
     };
   }
@@ -2086,7 +2104,7 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
     String? id,
     String? name,
     DateTime? createdAt,
-    String? color,
+    AppColor? color,
     Value<int?> score = const Value.absent(),
   }) => TeamTableData(
     id: id ?? this.id,
@@ -2134,7 +2152,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
   final Value<String> id;
   final Value<String> name;
   final Value<DateTime> createdAt;
-  final Value<String> color;
+  final Value<AppColor> color;
   final Value<int?> score;
   final Value<int> rowid;
   const TeamTableCompanion({
@@ -2177,7 +2195,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     Value<String>? id,
     Value<String>? name,
     Value<DateTime>? createdAt,
-    Value<String>? color,
+    Value<AppColor>? color,
     Value<int?>? score,
     Value<int>? rowid,
   }) {
@@ -2204,7 +2222,9 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (color.present) {
-      map['color'] = Variable<String>(color.value);
+      map['color'] = Variable<String>(
+        $TeamTableTable.$convertercolor.toSql(color.value),
+      );
     }
     if (score.present) {
       map['score'] = Variable<int>(score.value);
@@ -2898,26 +2918,24 @@ class $StatisticTableTable extends StatisticTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
-  late final GeneratedColumn<String> type = GeneratedColumn<String>(
-    'type',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _timeframeMeta = const VerificationMeta(
-    'timeframe',
-  );
+  late final GeneratedColumnWithTypeConverter<StatisticType, String> type =
+      GeneratedColumn<String>(
+        'type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<StatisticType>($StatisticTableTable.$convertertype);
   @override
-  late final GeneratedColumn<String> timeframe = GeneratedColumn<String>(
-    'timeframe',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
+  late final GeneratedColumnWithTypeConverter<Timeframe?, String> timeframe =
+      GeneratedColumn<String>(
+        'timeframe',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<Timeframe?>($StatisticTableTable.$convertertimeframen);
   static const VerificationMeta _displayCountMeta = const VerificationMeta(
     'displayCount',
   );
@@ -2949,20 +2967,6 @@ class $StatisticTableTable extends StatisticTable
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('type')) {
-      context.handle(
-        _typeMeta,
-        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_typeMeta);
-    }
-    if (data.containsKey('timeframe')) {
-      context.handle(
-        _timeframeMeta,
-        timeframe.isAcceptableOrUnknown(data['timeframe']!, _timeframeMeta),
-      );
-    }
     if (data.containsKey('display_count')) {
       context.handle(
         _displayCountMeta,
@@ -2985,13 +2989,17 @@ class $StatisticTableTable extends StatisticTable
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
-      type: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}type'],
-      )!,
-      timeframe: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}timeframe'],
+      type: $StatisticTableTable.$convertertype.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}type'],
+        )!,
+      ),
+      timeframe: $StatisticTableTable.$convertertimeframen.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}timeframe'],
+        ),
       ),
       displayCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -3004,13 +3012,20 @@ class $StatisticTableTable extends StatisticTable
   $StatisticTableTable createAlias(String alias) {
     return $StatisticTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<StatisticType, String, String> $convertertype =
+      const EnumNameConverter<StatisticType>(StatisticType.values);
+  static JsonTypeConverter2<Timeframe, String, String> $convertertimeframe =
+      const EnumNameConverter<Timeframe>(Timeframe.values);
+  static JsonTypeConverter2<Timeframe?, String?, String?> $convertertimeframen =
+      JsonTypeConverter2.asNullable($convertertimeframe);
 }
 
 class StatisticTableData extends DataClass
     implements Insertable<StatisticTableData> {
   final String id;
-  final String type;
-  final String? timeframe;
+  final StatisticType type;
+  final Timeframe? timeframe;
   final int displayCount;
   const StatisticTableData({
     required this.id,
@@ -3022,9 +3037,15 @@ class StatisticTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['type'] = Variable<String>(type);
+    {
+      map['type'] = Variable<String>(
+        $StatisticTableTable.$convertertype.toSql(type),
+      );
+    }
     if (!nullToAbsent || timeframe != null) {
-      map['timeframe'] = Variable<String>(timeframe);
+      map['timeframe'] = Variable<String>(
+        $StatisticTableTable.$convertertimeframen.toSql(timeframe),
+      );
     }
     map['display_count'] = Variable<int>(displayCount);
     return map;
@@ -3048,8 +3069,12 @@ class StatisticTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return StatisticTableData(
       id: serializer.fromJson<String>(json['id']),
-      type: serializer.fromJson<String>(json['type']),
-      timeframe: serializer.fromJson<String?>(json['timeframe']),
+      type: $StatisticTableTable.$convertertype.fromJson(
+        serializer.fromJson<String>(json['type']),
+      ),
+      timeframe: $StatisticTableTable.$convertertimeframen.fromJson(
+        serializer.fromJson<String?>(json['timeframe']),
+      ),
       displayCount: serializer.fromJson<int>(json['displayCount']),
     );
   }
@@ -3058,16 +3083,20 @@ class StatisticTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'type': serializer.toJson<String>(type),
-      'timeframe': serializer.toJson<String?>(timeframe),
+      'type': serializer.toJson<String>(
+        $StatisticTableTable.$convertertype.toJson(type),
+      ),
+      'timeframe': serializer.toJson<String?>(
+        $StatisticTableTable.$convertertimeframen.toJson(timeframe),
+      ),
       'displayCount': serializer.toJson<int>(displayCount),
     };
   }
 
   StatisticTableData copyWith({
     String? id,
-    String? type,
-    Value<String?> timeframe = const Value.absent(),
+    StatisticType? type,
+    Value<Timeframe?> timeframe = const Value.absent(),
     int? displayCount,
   }) => StatisticTableData(
     id: id ?? this.id,
@@ -3111,8 +3140,8 @@ class StatisticTableData extends DataClass
 
 class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
   final Value<String> id;
-  final Value<String> type;
-  final Value<String?> timeframe;
+  final Value<StatisticType> type;
+  final Value<Timeframe?> timeframe;
   final Value<int> displayCount;
   final Value<int> rowid;
   const StatisticTableCompanion({
@@ -3124,7 +3153,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
   });
   StatisticTableCompanion.insert({
     required String id,
-    required String type,
+    required StatisticType type,
     this.timeframe = const Value.absent(),
     this.displayCount = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -3148,8 +3177,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
 
   StatisticTableCompanion copyWith({
     Value<String>? id,
-    Value<String>? type,
-    Value<String?>? timeframe,
+    Value<StatisticType>? type,
+    Value<Timeframe?>? timeframe,
     Value<int>? displayCount,
     Value<int>? rowid,
   }) {
@@ -3169,10 +3198,14 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       map['id'] = Variable<String>(id.value);
     }
     if (type.present) {
-      map['type'] = Variable<String>(type.value);
+      map['type'] = Variable<String>(
+        $StatisticTableTable.$convertertype.toSql(type.value),
+      );
     }
     if (timeframe.present) {
-      map['timeframe'] = Variable<String>(timeframe.value);
+      map['timeframe'] = Variable<String>(
+        $StatisticTableTable.$convertertimeframen.toSql(timeframe.value),
+      );
     }
     if (displayCount.present) {
       map['display_count'] = Variable<int>(displayCount.value);
@@ -3216,15 +3249,17 @@ class $StatisticScopeTableTable extends StatisticScopeTable
       'REFERENCES statistic_table (id) ON DELETE CASCADE',
     ),
   );
-  static const VerificationMeta _scopeMeta = const VerificationMeta('scope');
   @override
-  late final GeneratedColumn<String> scope = GeneratedColumn<String>(
-    'scope',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<StatisticScope, String> scope =
+      GeneratedColumn<String>(
+        'scope',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<StatisticScope>(
+        $StatisticScopeTableTable.$converterscope,
+      );
   @override
   List<GeneratedColumn> get $columns => [statisticId, scope];
   @override
@@ -3250,14 +3285,6 @@ class $StatisticScopeTableTable extends StatisticScopeTable
     } else if (isInserting) {
       context.missing(_statisticIdMeta);
     }
-    if (data.containsKey('scope')) {
-      context.handle(
-        _scopeMeta,
-        scope.isAcceptableOrUnknown(data['scope']!, _scopeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_scopeMeta);
-    }
     return context;
   }
 
@@ -3274,10 +3301,12 @@ class $StatisticScopeTableTable extends StatisticScopeTable
         DriftSqlType.string,
         data['${effectivePrefix}statistic_id'],
       )!,
-      scope: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}scope'],
-      )!,
+      scope: $StatisticScopeTableTable.$converterscope.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}scope'],
+        )!,
+      ),
     );
   }
 
@@ -3285,12 +3314,15 @@ class $StatisticScopeTableTable extends StatisticScopeTable
   $StatisticScopeTableTable createAlias(String alias) {
     return $StatisticScopeTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<StatisticScope, String, String> $converterscope =
+      const EnumNameConverter<StatisticScope>(StatisticScope.values);
 }
 
 class StatisticScopeTableData extends DataClass
     implements Insertable<StatisticScopeTableData> {
   final String statisticId;
-  final String scope;
+  final StatisticScope scope;
   const StatisticScopeTableData({
     required this.statisticId,
     required this.scope,
@@ -3299,7 +3331,11 @@ class StatisticScopeTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['statistic_id'] = Variable<String>(statisticId);
-    map['scope'] = Variable<String>(scope);
+    {
+      map['scope'] = Variable<String>(
+        $StatisticScopeTableTable.$converterscope.toSql(scope),
+      );
+    }
     return map;
   }
 
@@ -3317,7 +3353,9 @@ class StatisticScopeTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return StatisticScopeTableData(
       statisticId: serializer.fromJson<String>(json['statisticId']),
-      scope: serializer.fromJson<String>(json['scope']),
+      scope: $StatisticScopeTableTable.$converterscope.fromJson(
+        serializer.fromJson<String>(json['scope']),
+      ),
     );
   }
   @override
@@ -3325,15 +3363,19 @@ class StatisticScopeTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'statisticId': serializer.toJson<String>(statisticId),
-      'scope': serializer.toJson<String>(scope),
+      'scope': serializer.toJson<String>(
+        $StatisticScopeTableTable.$converterscope.toJson(scope),
+      ),
     };
   }
 
-  StatisticScopeTableData copyWith({String? statisticId, String? scope}) =>
-      StatisticScopeTableData(
-        statisticId: statisticId ?? this.statisticId,
-        scope: scope ?? this.scope,
-      );
+  StatisticScopeTableData copyWith({
+    String? statisticId,
+    StatisticScope? scope,
+  }) => StatisticScopeTableData(
+    statisticId: statisticId ?? this.statisticId,
+    scope: scope ?? this.scope,
+  );
   StatisticScopeTableData copyWithCompanion(StatisticScopeTableCompanion data) {
     return StatisticScopeTableData(
       statisticId: data.statisticId.present
@@ -3365,7 +3407,7 @@ class StatisticScopeTableData extends DataClass
 class StatisticScopeTableCompanion
     extends UpdateCompanion<StatisticScopeTableData> {
   final Value<String> statisticId;
-  final Value<String> scope;
+  final Value<StatisticScope> scope;
   final Value<int> rowid;
   const StatisticScopeTableCompanion({
     this.statisticId = const Value.absent(),
@@ -3374,7 +3416,7 @@ class StatisticScopeTableCompanion
   });
   StatisticScopeTableCompanion.insert({
     required String statisticId,
-    required String scope,
+    required StatisticScope scope,
     this.rowid = const Value.absent(),
   }) : statisticId = Value(statisticId),
        scope = Value(scope);
@@ -3392,7 +3434,7 @@ class StatisticScopeTableCompanion
 
   StatisticScopeTableCompanion copyWith({
     Value<String>? statisticId,
-    Value<String>? scope,
+    Value<StatisticScope>? scope,
     Value<int>? rowid,
   }) {
     return StatisticScopeTableCompanion(
@@ -3409,7 +3451,9 @@ class StatisticScopeTableCompanion
       map['statistic_id'] = Variable<String>(statisticId.value);
     }
     if (scope.present) {
-      map['scope'] = Variable<String>(scope.value);
+      map['scope'] = Variable<String>(
+        $StatisticScopeTableTable.$converterscope.toSql(scope.value),
+      );
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -5079,9 +5123,9 @@ typedef $$GameTableTableCreateCompanionBuilder =
     GameTableCompanion Function({
       required String id,
       required String name,
-      required String ruleset,
+      required Ruleset ruleset,
       required String description,
-      required String color,
+      required AppColor color,
       required String icon,
       required DateTime createdAt,
       Value<int> rowid,
@@ -5090,9 +5134,9 @@ typedef $$GameTableTableUpdateCompanionBuilder =
     GameTableCompanion Function({
       Value<String> id,
       Value<String> name,
-      Value<String> ruleset,
+      Value<Ruleset> ruleset,
       Value<String> description,
-      Value<String> color,
+      Value<AppColor> color,
       Value<String> icon,
       Value<DateTime> createdAt,
       Value<int> rowid,
@@ -5167,20 +5211,22 @@ class $$GameTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get ruleset => $composableBuilder(
-    column: $table.ruleset,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<Ruleset, Ruleset, String> get ruleset =>
+      $composableBuilder(
+        column: $table.ruleset,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<String> get description => $composableBuilder(
     column: $table.description,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get color => $composableBuilder(
-    column: $table.color,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<AppColor, AppColor, String> get color =>
+      $composableBuilder(
+        column: $table.color,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<String> get icon => $composableBuilder(
     column: $table.icon,
@@ -5303,7 +5349,7 @@ class $$GameTableTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<String> get ruleset =>
+  GeneratedColumnWithTypeConverter<Ruleset, String> get ruleset =>
       $composableBuilder(column: $table.ruleset, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
@@ -5311,7 +5357,7 @@ class $$GameTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get color =>
+  GeneratedColumnWithTypeConverter<AppColor, String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
 
   GeneratedColumn<String> get icon =>
@@ -5405,9 +5451,9 @@ class $$GameTableTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<String> ruleset = const Value.absent(),
+                Value<Ruleset> ruleset = const Value.absent(),
                 Value<String> description = const Value.absent(),
-                Value<String> color = const Value.absent(),
+                Value<AppColor> color = const Value.absent(),
                 Value<String> icon = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -5425,9 +5471,9 @@ class $$GameTableTableTableManager
               ({
                 required String id,
                 required String name,
-                required String ruleset,
+                required Ruleset ruleset,
                 required String description,
-                required String color,
+                required AppColor color,
                 required String icon,
                 required DateTime createdAt,
                 Value<int> rowid = const Value.absent(),
@@ -6568,7 +6614,7 @@ typedef $$TeamTableTableCreateCompanionBuilder =
       required String id,
       required String name,
       required DateTime createdAt,
-      Value<String> color,
+      Value<AppColor> color,
       Value<int?> score,
       Value<int> rowid,
     });
@@ -6577,7 +6623,7 @@ typedef $$TeamTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> name,
       Value<DateTime> createdAt,
-      Value<String> color,
+      Value<AppColor> color,
       Value<int?> score,
       Value<int> rowid,
     });
@@ -6634,10 +6680,11 @@ class $$TeamTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get color => $composableBuilder(
-    column: $table.color,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<AppColor, AppColor, String> get color =>
+      $composableBuilder(
+        column: $table.color,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<int> get score => $composableBuilder(
     column: $table.score,
@@ -6723,7 +6770,7 @@ class $$TeamTableTableAnnotationComposer
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
-  GeneratedColumn<String> get color =>
+  GeneratedColumnWithTypeConverter<AppColor, String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
 
   GeneratedColumn<int> get score =>
@@ -6786,7 +6833,7 @@ class $$TeamTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
-                Value<String> color = const Value.absent(),
+                Value<AppColor> color = const Value.absent(),
                 Value<int?> score = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TeamTableCompanion(
@@ -6802,7 +6849,7 @@ class $$TeamTableTableTableManager
                 required String id,
                 required String name,
                 required DateTime createdAt,
-                Value<String> color = const Value.absent(),
+                Value<AppColor> color = const Value.absent(),
                 Value<int?> score = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TeamTableCompanion.insert(
@@ -7773,16 +7820,16 @@ typedef $$ScoreEntryTableTableProcessedTableManager =
 typedef $$StatisticTableTableCreateCompanionBuilder =
     StatisticTableCompanion Function({
       required String id,
-      required String type,
-      Value<String?> timeframe,
+      required StatisticType type,
+      Value<Timeframe?> timeframe,
       Value<int> displayCount,
       Value<int> rowid,
     });
 typedef $$StatisticTableTableUpdateCompanionBuilder =
     StatisticTableCompanion Function({
       Value<String> id,
-      Value<String> type,
-      Value<String?> timeframe,
+      Value<StatisticType> type,
+      Value<Timeframe?> timeframe,
       Value<int> displayCount,
       Value<int> rowid,
     });
@@ -7896,15 +7943,17 @@ class $$StatisticTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get type => $composableBuilder(
+  ColumnWithTypeConverterFilters<StatisticType, StatisticType, String>
+  get type => $composableBuilder(
     column: $table.type,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
-  ColumnFilters<String> get timeframe => $composableBuilder(
-    column: $table.timeframe,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<Timeframe?, Timeframe, String> get timeframe =>
+      $composableBuilder(
+        column: $table.timeframe,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<int> get displayCount => $composableBuilder(
     column: $table.displayCount,
@@ -8029,10 +8078,10 @@ class $$StatisticTableTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get type =>
+  GeneratedColumnWithTypeConverter<StatisticType, String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
 
-  GeneratedColumn<String> get timeframe =>
+  GeneratedColumnWithTypeConverter<Timeframe?, String> get timeframe =>
       $composableBuilder(column: $table.timeframe, builder: (column) => column);
 
   GeneratedColumn<int> get displayCount => $composableBuilder(
@@ -8154,8 +8203,8 @@ class $$StatisticTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<String> type = const Value.absent(),
-                Value<String?> timeframe = const Value.absent(),
+                Value<StatisticType> type = const Value.absent(),
+                Value<Timeframe?> timeframe = const Value.absent(),
                 Value<int> displayCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion(
@@ -8168,8 +8217,8 @@ class $$StatisticTableTableTableManager
           createCompanionCallback:
               ({
                 required String id,
-                required String type,
-                Value<String?> timeframe = const Value.absent(),
+                required StatisticType type,
+                Value<Timeframe?> timeframe = const Value.absent(),
                 Value<int> displayCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion.insert(
@@ -8295,13 +8344,13 @@ typedef $$StatisticTableTableProcessedTableManager =
 typedef $$StatisticScopeTableTableCreateCompanionBuilder =
     StatisticScopeTableCompanion Function({
       required String statisticId,
-      required String scope,
+      required StatisticScope scope,
       Value<int> rowid,
     });
 typedef $$StatisticScopeTableTableUpdateCompanionBuilder =
     StatisticScopeTableCompanion Function({
       Value<String> statisticId,
-      Value<String> scope,
+      Value<StatisticScope> scope,
       Value<int> rowid,
     });
 
@@ -8350,9 +8399,10 @@ class $$StatisticScopeTableTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<String> get scope => $composableBuilder(
+  ColumnWithTypeConverterFilters<StatisticScope, StatisticScope, String>
+  get scope => $composableBuilder(
     column: $table.scope,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   $$StatisticTableTableFilterComposer get statisticId {
@@ -8426,7 +8476,7 @@ class $$StatisticScopeTableTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<String> get scope =>
+  GeneratedColumnWithTypeConverter<StatisticScope, String> get scope =>
       $composableBuilder(column: $table.scope, builder: (column) => column);
 
   $$StatisticTableTableAnnotationComposer get statisticId {
@@ -8490,7 +8540,7 @@ class $$StatisticScopeTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> statisticId = const Value.absent(),
-                Value<String> scope = const Value.absent(),
+                Value<StatisticScope> scope = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticScopeTableCompanion(
                 statisticId: statisticId,
@@ -8500,7 +8550,7 @@ class $$StatisticScopeTableTableTableManager
           createCompanionCallback:
               ({
                 required String statisticId,
-                required String scope,
+                required StatisticScope scope,
                 Value<int> rowid = const Value.absent(),
               }) => StatisticScopeTableCompanion.insert(
                 statisticId: statisticId,

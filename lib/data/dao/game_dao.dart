@@ -21,9 +21,9 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
         GameTableCompanion.insert(
           id: game.id,
           name: game.name,
-          ruleset: game.ruleset.name,
+          ruleset: game.ruleset,
           description: game.description,
-          color: game.color.name,
+          color: game.color,
           icon: game.icon,
           createdAt: game.createdAt,
         ),
@@ -47,9 +47,9 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
               (game) => GameTableCompanion.insert(
                 id: game.id,
                 name: game.name,
-                ruleset: game.ruleset.name,
+                ruleset: game.ruleset,
                 description: game.description,
-                color: game.color.name,
+                color: game.color,
                 icon: game.icon,
                 createdAt: game.createdAt,
               ),
@@ -90,9 +90,9 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
           (row) => Game(
             id: row.id,
             name: row.name,
-            ruleset: Ruleset.values.firstWhere((e) => e.name == row.ruleset),
+            ruleset: row.ruleset,
             description: row.description,
-            color: AppColor.values.firstWhere((e) => e.name == row.color),
+            color: row.color,
             icon: row.icon,
             createdAt: row.createdAt,
           ),
@@ -107,9 +107,9 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     return Game(
       id: row.id,
       name: row.name,
-      ruleset: Ruleset.values.firstWhere((e) => e.name == row.ruleset),
+      ruleset: row.ruleset,
       description: row.description,
-      color: AppColor.values.firstWhere((e) => e.name == row.color),
+      color: row.color,
       icon: row.icon,
       createdAt: row.createdAt,
     );
@@ -136,7 +136,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   }) async {
     final rowsAffected =
         await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
-          GameTableCompanion(ruleset: Value(ruleset.name)),
+          GameTableCompanion(ruleset: Value(ruleset)),
         );
     return rowsAffected > 0;
   }
@@ -160,7 +160,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   }) async {
     final rowsAffected =
         await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
-          GameTableCompanion(color: Value(color.name)),
+          GameTableCompanion(color: Value(color)),
         );
     return rowsAffected > 0;
   }
