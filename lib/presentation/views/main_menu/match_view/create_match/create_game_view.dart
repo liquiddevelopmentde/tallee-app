@@ -12,8 +12,9 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
@@ -49,10 +50,10 @@ class _CreateGameViewState extends State<CreateGameView> {
   late final AppDatabase db;
 
   late List<(Ruleset, String)> _rulesets;
-  late List<(GameColor, String)> _colors;
+  late List<(AppColor, String)> _colors;
 
   Ruleset? selectedRuleset = Ruleset.singleWinner;
-  GameColor? selectedColor = GameColor.orange;
+  AppColor? selectedColor = AppColor.orange;
 
   /// Controller for the game name input field.
   final _gameNameController = TextEditingController();
@@ -87,10 +88,10 @@ class _CreateGameViewState extends State<CreateGameView> {
       ),
     );
     _colors = List.generate(
-      GameColor.values.length,
+      AppColor.values.length,
       (index) => (
-        GameColor.values[index],
-        translateGameColorToString(GameColor.values[index], context),
+        AppColor.values[index],
+        translateAppColorToString(AppColor.values[index], context),
       ),
     );
 
@@ -117,7 +118,6 @@ class _CreateGameViewState extends State<CreateGameView> {
 
     return ScaffoldMessenger(
       child: Scaffold(
-        backgroundColor: CustomTheme.backgroundColor,
         appBar: AppBar(
           title: Text(isEditing ? loc.edit_game : loc.create_game),
           actions: [
@@ -224,9 +224,9 @@ class _CreateGameViewState extends State<CreateGameView> {
               // Create/Edit game button
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: CustomWidthButton(
-                  text: isEditing ? loc.edit_game : loc.create_game,
-                  sizeRelativeToWidth: 1,
+                child: BottomAnimatedButton(
+                  buttonText: isEditing ? loc.edit_game : loc.create_game,
+                  sizeRelativeToWidth: 0.95,
                   buttonType: ButtonType.primary,
                   onPressed:
                       _gameNameController.text.trim().isNotEmpty &&
@@ -311,12 +311,7 @@ class _CreateGameViewState extends State<CreateGameView> {
     final messenger = _scaffoldMessengerKey.currentState;
     if (messenger != null) {
       messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(message, style: const TextStyle(color: Colors.white)),
-          backgroundColor: CustomTheme.boxColor,
-        ),
-      );
+      messenger.showSnackBar(CustomSnackBar(message: message));
     }
   }
 
@@ -468,7 +463,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                                     height: 16,
                                     margin: const EdgeInsets.only(left: 12),
                                     decoration: BoxDecoration(
-                                      color: getColorFromGameColor(
+                                      color: getColorFromAppColor(
                                         _colors[index].$1,
                                       ),
                                       shape: BoxShape.circle,
@@ -502,13 +497,13 @@ class _CreateGameViewState extends State<CreateGameView> {
             width: 16,
             height: 16,
             decoration: BoxDecoration(
-              color: getColorFromGameColor(selectedColor!),
+              color: getColorFromAppColor(selectedColor!),
               shape: BoxShape.circle,
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 5),
-            child: Text(translateGameColorToString(selectedColor!, context)),
+            child: Text(translateAppColorToString(selectedColor!, context)),
           ),
           Transform.rotate(
             angle: pi / 2,

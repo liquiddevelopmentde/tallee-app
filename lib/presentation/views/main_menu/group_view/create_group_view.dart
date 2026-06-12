@@ -8,7 +8,8 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/custom_width_button.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
@@ -89,26 +90,29 @@ class _CreateGroupViewState extends State<CreateGroupView> {
               Expanded(
                 child: PlayerSelection(
                   initialSelectedPlayers: initialSelectedPlayers,
-                  onChanged: (value) {
+                  onPlayerCreated: () => widget.onMembersChanged?.call(),
+                  onChanged: (players, units) {
                     setState(() {
-                      selectedPlayers = [...value];
+                      selectedPlayers = [...players];
                     });
                   },
                 ),
               ),
-              CustomWidthButton(
-                text: widget.groupToEdit == null
-                    ? loc.create_group
-                    : loc.edit_group,
-                sizeRelativeToWidth: 0.95,
-                buttonType: ButtonType.primary,
-                onPressed:
-                    (_groupNameController.text.isEmpty ||
-                        (selectedPlayers.length < 2))
-                    ? null
-                    : _saveGroup,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: BottomAnimatedButton(
+                  sizeRelativeToWidth: 0.95,
+                  buttonText: widget.groupToEdit == null
+                      ? loc.create_group
+                      : loc.edit_group,
+                  buttonType: ButtonType.primary,
+                  onPressed:
+                      (_groupNameController.text.isEmpty ||
+                          (selectedPlayers.length < 2))
+                      ? null
+                      : _saveGroup,
+                ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -134,6 +138,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     if (!mounted) return;
 
     if (success) {
+      widget.onMembersChanged?.call();
       await HapticFeedback.successNotification();
       if (mounted) {
         Navigator.pop(context, updatedGroup);
@@ -157,7 +162,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     final success = await db.groupDao.addGroup(
       group: Group(name: groupName, members: selectedPlayers),
     );
-
     return success;
   }
 
@@ -227,12 +231,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     final messenger = _scaffoldMessengerKey.currentState;
     if (messenger != null) {
       messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(message, style: const TextStyle(color: Colors.white)),
-          backgroundColor: CustomTheme.boxColor,
-        ),
-      );
+      messenger.showSnackBar(CustomSnackBar(message: message));
     }
   }
 }

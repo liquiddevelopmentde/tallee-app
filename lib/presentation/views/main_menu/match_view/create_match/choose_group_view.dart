@@ -1,7 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:provider/provider.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/group_tile.dart';
@@ -10,32 +21,40 @@ import 'package:tallee/presentation/widgets/top_centered_message.dart';
 class ChooseGroupView extends StatefulWidget {
   /// A view that allows the user to choose a group from a list of groups.
   /// - [groups]: A list of available groups to choose from
-  /// - [initialGroupId]: The ID of the initially selected group
+  /// - [initialGroup]: The initially selected group
   const ChooseGroupView({
     super.key,
     required this.groups,
-    required this.initialGroupId,
+    this.initialGroup,
+    this.statistic,
   });
 
   /// A list of available groups to choose from
   final List<Group> groups;
 
   /// The ID of the initially selected group
-  final String initialGroupId;
+  final Group? initialGroup;
+
+  /// Optional statistic payload for choosing groups for a statistic
+  final Statistic? statistic;
 
   @override
   State<ChooseGroupView> createState() => _ChooseGroupViewState();
 }
 
 class _ChooseGroupViewState extends State<ChooseGroupView> {
-  late String selectedGroupId;
   final TextEditingController controller = TextEditingController();
+
+  List<Group> selectedGroups = [];
   late final List<Group> filteredGroups;
+
+  // If selecting multiple is possible
+  bool enableMultiSelection = false;
 
   @override
   void initState() {
-    selectedGroupId = widget.initialGroupId;
     filteredGroups = [...widget.groups];
+    enableMultiSelection = widget.statistic != null;
     super.initState();
   }
 
@@ -49,13 +68,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
         leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context).pop(
-              selectedGroupId == ''
-                  ? null
-                  : widget.groups.firstWhere(
-                      (group) => group.id == selectedGroupId,
-                    ),
-            );
+            Navigator.of(context).pop(popResult);
           },
         ),
         title: Text(loc.choose_group),
@@ -68,13 +81,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
           if (didPop) {
             return;
           }
-          Navigator.of(context).pop(
-            selectedGroupId == ''
-                ? null
-                : widget.groups.firstWhere(
-                    (group) => group.id == selectedGroupId,
-                  ),
-          );
+          Navigator.of(context).pop(popResult);
         },
         child: Column(
           children: [
@@ -109,19 +116,26 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                   ),
                 ),
                 child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 85),
+                  padding: const EdgeInsets.only(bottom: 85, top: 10),
                   itemCount: filteredGroups.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GroupTile(
                       group: filteredGroups[index],
-                      isHighlighted:
-                          selectedGroupId == filteredGroups[index].id,
+                      isHighlighted: selectedGroups.any(
+                        (group) => group.id == filteredGroups[index].id,
+                      ),
                       onTap: () {
                         setState(() {
-                          if (selectedGroupId != filteredGroups[index].id) {
-                            selectedGroupId = filteredGroups[index].id;
+                          if (selectedGroups.contains(filteredGroups[index])) {
+                            selectedGroups.removeWhere(
+                              (group) => group.id == filteredGroups[index].id,
+                            );
                           } else {
-                            selectedGroupId = '';
+                            // In single select mode only allow one group
+                            if (!enableMultiSelection) {
+                              selectedGroups.clear();
+                            }
+                            selectedGroups.add(filteredGroups[index]);
                           }
                         });
                       },
@@ -130,10 +144,63 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                 ),
               ),
             ),
+
+            // Create statistic button
+            if (widget.statistic != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+                child: BottomAnimatedButton(
+                  buttonConstraints: const BoxConstraints(minWidth: 390),
+                  buttonText: buttonText,
+                  onPressed: selectedGroups.isNotEmpty
+                      ? () => submitStatistic()
+                      : null,
+                ),
+              ),
           ],
         ),
       ),
     );
+  }
+
+  String get buttonText =>
+      widget.statistic != null &&
+          widget.statistic!.scopes.contains(StatisticScope.selectedGames)
+      ? AppLocalizations.of(context).confirm
+      : AppLocalizations.of(context).create_statistic;
+
+  Object? get popResult {
+    if (widget.statistic != null) return null;
+    return selectedGroups.isEmpty ? null : selectedGroups.first;
+  }
+
+  Future<void> submitStatistic() async {
+    final statistic = widget.statistic!.copyWith(
+      selectedGroups: selectedGroups,
+    );
+    final db = Provider.of<AppDatabase>(context, listen: false);
+
+    if (widget.statistic!.scopes.contains(StatisticScope.selectedGames)) {
+      // Choose a game
+      final games = await db.gameDao.getAllGames();
+      if (mounted) {
+        final createdStatistic = await Navigator.of(context).push<Statistic>(
+          adaptivePageRoute(
+            builder: (context) =>
+                ChooseGameView(statistic: statistic, games: games),
+          ),
+        );
+        if (!mounted) return;
+        if (createdStatistic != null) {
+          Navigator.of(context).pop(createdStatistic);
+        }
+      }
+    } else {
+      // Create statistic
+      await db.statisticDao.addStatistic(statistic: statistic);
+      if (!mounted) return;
+      Navigator.of(context).pop(statistic);
+    }
   }
 
   /// Filters the groups based on the search [query].
@@ -143,17 +210,29 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
         filteredGroups.clear();
         filteredGroups.addAll(widget.groups);
       } else {
+        final List<({Group group, int score})> scoredGroups = [];
+
+        for (final group in widget.groups) {
+          int maxScore = 0;
+
+          // Check group name
+          maxScore = max(maxScore, weightedRatio(group.name, query));
+
+          // Check member names
+          for (final member in group.members) {
+            maxScore = max(maxScore, weightedRatio(member.name, query));
+          }
+
+          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+            scoredGroups.add((group: group, score: maxScore));
+          }
+        }
+
+        // Sort by score descending
+        scoredGroups.sort((a, b) => b.score.compareTo(a.score));
+
         filteredGroups.clear();
-        filteredGroups.addAll(
-          widget.groups.where(
-            (group) =>
-                group.name.toLowerCase().contains(query.toLowerCase()) ||
-                group.members.any(
-                  (player) =>
-                      player.name.toLowerCase().contains(query.toLowerCase()),
-                ),
-          ),
-        );
+        filteredGroups.addAll(scoredGroups.map((e) => e.group));
       }
     });
   }

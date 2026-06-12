@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
-import 'package:tallee/presentation/views/main_menu/statistics_view.dart';
+import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
+import 'package:tallee/state/group_search_provider.dart';
+import 'package:tallee/state/match_search_provider.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   /// A custom navigation bar widget that provides tabbed navigation
@@ -30,6 +33,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final matchSearchProvider = Provider.of<MatchSearchProvider>(context);
+    final groupSearchProvider = Provider.of<GroupSearchProvider>(context);
     // Pretty ugly but works
     final List<Widget> tabs = [
       KeyedSubtree(
@@ -55,6 +60,32 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
         actions: [
+          if (currentIndex == 0) // Only in MatchView
+            HapticIconButton(
+              key: ValueKey(
+                matchSearchProvider.isSearching
+                    ? 'match_search_close_button'
+                    : 'match_search_open_button',
+              ),
+              icon: matchSearchProvider.isSearching
+                  ? const Icon(Icons.close)
+                  : const Icon(Icons.search),
+              onPressed: () => matchSearchProvider.toggleSearch(),
+            ),
+
+          if (currentIndex == 1) // Only in GroupView
+            HapticIconButton(
+              key: ValueKey(
+                groupSearchProvider.isSearching
+                    ? 'group_search_close_button'
+                    : 'group_search_open_button',
+              ),
+              icon: Icon(
+                groupSearchProvider.isSearching ? Icons.close : Icons.search,
+              ),
+              onPressed: () => groupSearchProvider.toggleSearch(),
+            ),
+
           HapticIconButton(
             onPressed: () async {
               final navigator = Navigator.of(context);

@@ -11,6 +11,7 @@ import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses_view.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
@@ -202,7 +203,6 @@ class _SettingsViewState extends State<SettingsView> {
                               spacing: 10,
                               children: [
                                 HapticIconButton(
-                                  color: CustomTheme.textColor,
                                   icon: const Icon(Icons.language),
                                   onPressed: () async => {
                                     await HapticFeedback.lightImpact(),
@@ -212,7 +212,6 @@ class _SettingsViewState extends State<SettingsView> {
                                   },
                                 ),
                                 HapticIconButton(
-                                  color: CustomTheme.textColor,
                                   icon: const FaIcon(FontAwesomeIcons.github),
                                   onPressed: () async => {
                                     await HapticFeedback.lightImpact(),
@@ -224,7 +223,6 @@ class _SettingsViewState extends State<SettingsView> {
                                   },
                                 ),
                                 HapticIconButton(
-                                  color: CustomTheme.textColor,
                                   icon: Icon(
                                     Platform.isIOS
                                         ? CupertinoIcons.mail_solid
@@ -292,6 +290,14 @@ class _SettingsViewState extends State<SettingsView> {
         if (context.mounted) {
           showSnackbar(context: context, message: loc.invalid_schema);
         }
+      case ImportResult.invalidData:
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(
+            context: context,
+            message: loc.names_or_descriptions_too_long,
+          );
+        }
       case ImportResult.fileReadError:
         await HapticFeedback.errorNotification();
         if (context.mounted) {
@@ -350,28 +356,13 @@ class _SettingsViewState extends State<SettingsView> {
   ///
   /// [context] The BuildContext to show the snackbar in.
   /// [message] The message to display in the snackbar.
-  /// [duration] The duration for which the snackbar is displayed.
-  /// [action] An optional callback function to execute when the action button is pressed.
-  void showSnackbar({
-    required BuildContext context,
-    required String message,
-    Duration duration = const Duration(seconds: 3),
-    VoidCallback? action,
-  }) {
+  void showSnackbar({required BuildContext context, required String message}) {
     if (!context.mounted) return;
 
-    final loc = AppLocalizations.of(context);
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, style: const TextStyle(color: Colors.white)),
-        backgroundColor: CustomTheme.onBoxColor,
-        duration: duration,
-        action: action != null
-            ? SnackBarAction(label: loc.undo, onPressed: action)
-            : null,
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(CustomSnackBar(message: message));
   }
 
   /// Initializes the package information.

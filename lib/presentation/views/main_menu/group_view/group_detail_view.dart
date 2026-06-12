@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -11,9 +10,10 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
+import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
-import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
@@ -146,11 +146,19 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
-                    children: _group.members.map((member) {
+                    children: _group.members.map<Widget>((member) {
                       return TextIconTile(
-                        text: member.name,
-                        suffixText: getNameCountText(member),
-                        iconEnabled: false,
+                        player: member,
+                        onTileTap: () {
+                          Navigator.of(context).pushReplacement(
+                            adaptivePageRoute(
+                              builder: (context) => PlayerDetailView(
+                                player: member,
+                                callback: widget.callback,
+                              ),
+                            ),
+                          );
+                        },
                       );
                     }).toList(),
                   ),
@@ -180,7 +188,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
             ),
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom,
-              child: MainMenuButton(
+              child: FloatingAnimatedButton(
                 text: loc.edit_group,
                 icon: Icons.edit,
                 onPressed: () async {

@@ -3,11 +3,15 @@ import 'dart:core' hide Match;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
 
@@ -17,13 +21,12 @@ class MatchTile extends StatefulWidget {
   /// - [match]: The match data to be displayed.
   /// - [onTap]: The callback invoked when the tile is tapped.
   /// - [width]: Optional width for the tile.
-  /// - [compact]: Whether to display the tile in a compact mode
   const MatchTile({
     super.key,
     required this.match,
     required this.onTap,
     this.width,
-    this.compact = false,
+    this.onPlayerEdited,
   });
 
   /// The match data to be displayed.
@@ -32,11 +35,11 @@ class MatchTile extends StatefulWidget {
   /// The callback invoked when the tile is tapped.
   final VoidCallback onTap;
 
+  /// The callback invoked when the players are edited
+  final VoidCallback? onPlayerEdited;
+
   /// Optional width for the tile.
   final double? width;
-
-  /// Whether to display the tile in a compact mode
-  final bool compact;
 
   @override
   State<MatchTile> createState() => _MatchTileState();
@@ -57,7 +60,7 @@ class _MatchTileState extends State<MatchTile> {
         widget.onTap.call();
       },
       child: Container(
-        margin: EdgeInsets.zero,
+        margin: CustomTheme.tileMargin,
         width: widget.width,
         padding: const EdgeInsets.all(12),
         decoration: CustomTheme.standardBoxDecoration,
@@ -100,40 +103,27 @@ class _MatchTileState extends State<MatchTile> {
                 ],
               ),
               const SizedBox(height: 4),
-            ] else if (widget.compact) ...[
-              Row(
-                children: [
-                  const Icon(Icons.person, size: 16, color: Colors.grey),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      '${match.players.length} ${loc.players}',
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
             ] else ...[
               const SizedBox(height: 8),
             ],
 
             // Game + Ruleset Badge
-            if (!widget.compact)
-              GameLabel(
-                title: match.game.name,
-                description: translateRulesetToString(
-                  match.game.ruleset,
-                  context,
-                ),
-                color: match.game.color,
+            GameLabel(
+              title: match.game.name,
+              description: translateRulesetToString(
+                match.game.ruleset,
+                context,
               ),
+              color: match.game.color,
+            ),
 
             const SizedBox(height: 12),
 
             // Winner / In Progress Info
-            if (match.mvp.isNotEmpty) ...[
+            if ((match.isTeamMatch ||
+                    (widget.match.teams?.isNotEmpty ?? false)) &&
+                match.mvt.isNotEmpty) ...[
+              // MVT Display for team matches
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -151,22 +141,37 @@ class _MatchTileState extends State<MatchTile> {
                   children: [
                     getMvpIcon(),
                     const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        getMvpText(loc),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+                    Expanded(child: getMvtTextWidget(loc)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+            ] else if (match.mvp.isNotEmpty) ...[
+              // MVP Display for player matches
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.green.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Colors.green.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    getMvpIcon(),
+                    const SizedBox(width: 8),
+                    Expanded(child: getMvpTextWidget(loc)),
                   ],
                 ),
               ),
               const SizedBox(height: 12),
             ] else ...[
+              // Match in progress display
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -205,8 +210,68 @@ class _MatchTileState extends State<MatchTile> {
               const SizedBox(height: 12),
             ],
 
-            // Players List
-            if (players.isNotEmpty && widget.compact == false) ...[
+            if (match.teams != null &&
+                match.teams!.isNotEmpty &&
+                match.isTeamMatch) ...[
+              // Team display
+              Text(
+                loc.teams,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final useSingleColumn = match.teams!.any(
+                    (team) => team.name.length > 10,
+                  );
+
+                  const spacing = 8.0;
+                  final itemWidth = useSingleColumn
+                      ? constraints.maxWidth
+                      : (constraints.maxWidth - spacing) / 2;
+
+                  return Wrap(
+                    spacing: spacing,
+                    runSpacing: spacing,
+                    children: match.teams!.map((team) {
+                      return TeamCard(
+                        team: team,
+                        compact: true,
+                        width: itemWidth,
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+            ] else if (!match.isTeamMatch &&
+                (widget.match.teams?.isNotEmpty ?? false)) ...[
+              // Player with Pairs display
+              Text(
+                loc.players,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: match.teams!.map((team) {
+                  return TextIconTile(
+                    player: team.members.first,
+                    pair: team.members.length > 1 ? team : null,
+                  );
+                }).toList(),
+              ),
+            ] else if (players.isNotEmpty) ...[
+              // Player display
               Text(
                 loc.players,
                 style: const TextStyle(
@@ -221,11 +286,30 @@ class _MatchTileState extends State<MatchTile> {
                 runSpacing: 6,
                 children: players.map((player) {
                   return TextIconTile(
-                    text: player.name,
-                    suffixText: getNameCountText(player),
-                    iconEnabled: false,
+                    player: player,
+                    onTileTap: () {
+                      Navigator.push(
+                        context,
+                        adaptivePageRoute(
+                          builder: (context) => PlayerDetailView(
+                            player: player,
+                            callback: () {
+                              widget.onPlayerEdited?.call();
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   );
                 }).toList(),
+              ),
+            ] else ...[
+              Text(
+                loc.no_players_available,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: CustomTheme.hintColor,
+                ),
               ),
             ],
           ],
@@ -252,34 +336,127 @@ class _MatchTileState extends State<MatchTile> {
     }
   }
 
-  String getMvpText(AppLocalizations loc) {
-    if (widget.match.mvp.isEmpty) return '';
+  // Returns the appropriate text widget based on the match's ruleset and MVP.
+  Widget getMvpTextWidget(AppLocalizations loc) {
+    if (widget.match.mvp.isEmpty) return const SizedBox.shrink();
     final ruleset = widget.match.game.ruleset;
+    final players = widget.match.mvp;
 
-    if (ruleset == Ruleset.singleWinner) {
-      return '${loc.winner}: ${widget.match.mvp.first.name}';
-    } else if (ruleset == Ruleset.singleLoser) {
-      return '${loc.loser}: ${widget.match.mvp.first.name}';
-    } else if (ruleset == Ruleset.highestScore ||
-        ruleset == Ruleset.lowestScore) {
-      final mvp = widget.match.mvp;
-      final mvpScore = widget.match.scores[mvp.first.id]?.score ?? 0;
-      final mvpNames = mvp.map((player) => player.name).join(', ');
-      return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
-    } else if (ruleset == Ruleset.placement) {
-      return '${loc.winner}: ${widget.match.mvp.first.name}';
-    } else if (ruleset == Ruleset.multipleWinners) {
-      final mvpNames = widget.match.mvp.map((player) => player.name).join(', ');
-      return '${loc.winners}: $mvpNames';
+    const labelStyle = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: CustomTheme.textColor,
+    );
+
+    const nameStyle = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor,
+    );
+
+    final countStyle = TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor.withAlpha(100),
+    );
+
+    final namesToRender =
+        ruleset == Ruleset.multipleWinners ||
+            ruleset == Ruleset.highestScore ||
+            ruleset == Ruleset.lowestScore
+        ? players
+        : [players.first];
+
+    final children = <InlineSpan>[];
+
+    for (var i = 0; i < namesToRender.length; i++) {
+      children.add(
+        buildPlayerNameCountSpan(
+          namesToRender[i],
+          mainStyle: nameStyle,
+          countStyle: countStyle,
+        ),
+      );
+
+      if (i < namesToRender.length - 1) {
+        children.add(const TextSpan(text: ', ', style: labelStyle));
+      }
     }
-    return '${loc.winner}: n.A.';
+
+    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.lowestScore) {
+      final mvpScore = widget.match.scores[players.first.id]?.score ?? 0;
+      children.add(
+        TextSpan(text: ' (${getPointLabel(loc, mvpScore)})', style: labelStyle),
+      );
+    }
+
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(color: CustomTheme.textColor),
+        children: children,
+      ),
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
+  // Returns the appropriate text widget based on the match's ruleset and MVT.
+  Widget getMvtTextWidget(AppLocalizations loc) {
+    if (widget.match.mvt.isEmpty) return const SizedBox.shrink();
+    final ruleset = widget.match.game.ruleset;
+    final mvt = widget.match.mvt;
+
+    const mainStyle = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor,
+    );
+
+    final countStyle = TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor.withAlpha(100),
+    );
+
+    final score =
+        (ruleset == Ruleset.highestScore || ruleset == Ruleset.lowestScore)
+        ? widget.match.teams!
+                  .firstWhere((team) => team.id == mvt.first.id)
+                  .score ??
+              0
+        : null;
+
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(color: CustomTheme.textColor),
+        children: [
+          for (var i = 0; i < mvt.length; i++) ...[
+            if (i > 0) const TextSpan(text: ', ', style: mainStyle),
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: buildUnitNameWidget(
+                mvt[i],
+                isTeamMatch: widget.match.isTeamMatch,
+                mainStyle: mainStyle,
+                countStyle: countStyle,
+              ),
+            ),
+          ],
+          if (score != null)
+            TextSpan(text: ' (${getPointLabel(loc, score)})', style: mainStyle),
+        ],
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  // Returns the appropriate icon based on the match's ruleset.
   Icon getMvpIcon() {
     final icon = getRulesetIcon(widget.match.game.ruleset);
 
     switch (widget.match.game.ruleset) {
       case Ruleset.singleWinner:
+      case Ruleset.multipleWinners:
         return Icon(icon, size: 20, color: Colors.amber);
       case Ruleset.singleLoser:
         return Icon(icon, size: 20, color: Colors.blue);
@@ -287,8 +464,6 @@ class _MatchTileState extends State<MatchTile> {
         return Icon(icon, size: 20, color: Colors.orange);
       case Ruleset.highestScore:
         return Icon(icon, size: 20, color: Colors.green);
-      case Ruleset.multipleWinners:
-        return Icon(icon, size: 20, color: Colors.amber);
       case Ruleset.placement:
         return Icon(icon, size: 20, color: Colors.deepOrangeAccent);
     }

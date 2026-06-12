@@ -8,13 +8,13 @@ class Game {
   final String name;
   final Ruleset ruleset;
   final String description;
-  final GameColor color;
+  final AppColor color;
   final String icon;
 
   Game({
     required this.name,
     required this.ruleset,
-    this.color = GameColor.orange,
+    this.color = AppColor.orange,
     this.description = '',
     this.icon = '',
     String? id,
@@ -33,7 +33,7 @@ class Game {
     String? name,
     Ruleset? ruleset,
     String? description,
-    GameColor? color,
+    AppColor? color,
     String? icon,
   }) {
     return Game(
@@ -73,7 +73,10 @@ class Game {
         orElse: () => Ruleset.singleWinner,
       ),
       description = json['description'],
-      color = GameColor.values.firstWhere((e) => e.name == json['color']),
+      color = AppColor.values.firstWhere(
+        (e) => e.name == json['color'],
+        orElse: () => AppColor.orange,
+      ),
       icon = json['icon'];
 
   Map<String, dynamic> toJson() => {

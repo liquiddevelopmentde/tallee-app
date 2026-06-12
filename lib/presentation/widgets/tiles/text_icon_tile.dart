@@ -1,76 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/name_display.dart';
+import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/team.dart';
 
 class TextIconTile extends StatelessWidget {
   /// A tile widget that displays text with an optional icon that can be tapped.
-  /// - [text]: The text to display in the tile.
-  /// - [iconEnabled]: A boolean to determine if the icon should be displayed.
+  /// - [player]: An optional player object to display.
+  /// - [pair]: An optional team object representing a pair of players.
+  /// - [text]: The text to display if no player or pair is provided.
   /// - [onIconTap]: The callback to be invoked when the icon is tapped.
+  /// - [icon]: Optional custom icon. Defaults to [Icons.close].
+  /// - [onTileTap]: The callback to be invoked when the tile is tapped.
   const TextIconTile({
     super.key,
-    required this.text,
-    this.suffixText = '',
-    this.iconEnabled = true,
+    this.player,
+    this.text = '',
+    this.pair,
+    this.pairIconLeft = false,
     this.onIconTap,
+    this.icon,
+    this.onTileTap,
+    this.backgroundColor,
   });
 
-  /// The text to display in the tile.
+  /// An optional player object to display.
+  final Player? player;
+
+  /// The text to display if no player is provided.
   final String text;
 
-  final String suffixText;
+  final Team? pair;
 
-  /// A boolean to determine if the icon should be displayed.
-  final bool iconEnabled;
+  final bool pairIconLeft;
 
   /// The callback to be invoked when the icon is tapped.
   final VoidCallback? onIconTap;
 
+  /// The icon to display.
+  final IconData? icon;
+
+  /// The callback to be invoked when the tile is tapped.
+  final VoidCallback? onTileTap;
+
+  final Color? backgroundColor;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: CustomTheme.onBoxColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (iconEnabled) const SizedBox(width: 3),
-          Flexible(
-            child: RichText(
-              overflow: TextOverflow.ellipsis,
-              text: TextSpan(
-                style: DefaultTextStyle.of(context).style,
-                children: [
-                  TextSpan(
-                    text: text,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  TextSpan(
-                    text: suffixText,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: CustomTheme.textColor.withAlpha(120),
-                    ),
-                  ),
-                ],
+    final iconEnabled = onIconTap != null && icon != null;
+
+    return GestureDetector(
+      onTap: onTileTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: backgroundColor ?? CustomTheme.onBoxColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (iconEnabled) const SizedBox(width: 3),
+            Flexible(
+              child: buildUnitNameWidget(
+                pair ?? player ?? Player(name: text, nameCount: 0),
+                mainStyle: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                countStyle: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: CustomTheme.textColor.withAlpha(100),
+                ),
+                pairIconLeft: pairIconLeft,
               ),
             ),
-          ),
-          if (iconEnabled) ...<Widget>[
-            const SizedBox(width: 3),
-            GestureDetector(
-              onTap: onIconTap,
-              child: const Icon(Icons.close, size: 20),
-            ),
+            if (iconEnabled) ...<Widget>[
+              const SizedBox(width: 3),
+              GestureDetector(onTap: onIconTap, child: Icon(icon!, size: 20)),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

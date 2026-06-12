@@ -49,12 +49,16 @@ class CustomTheme {
   // ==================== Padding & Margins ====================
   static const EdgeInsets standardMargin = EdgeInsets.symmetric(
     horizontal: 12,
-    vertical: 10,
+    vertical: 6,
   );
-  static const EdgeInsets tileMargin = EdgeInsets.symmetric(
-    horizontal: 12,
-    vertical: 5,
+  static const EdgeInsets tileMargin = EdgeInsets.only(
+    left: 12,
+    right: 12,
+    bottom: 10,
   );
+
+  static EdgeInsets listViewPadding(BuildContext context) =>
+      EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom + 70);
 
   // ==================== Decorations ====================
   static BoxDecoration standardBoxDecoration = BoxDecoration(
@@ -65,7 +69,11 @@ class CustomTheme {
 
   static BoxDecoration highlightedBoxDecoration = BoxDecoration(
     color: boxColor,
-    border: Border.all(color: textColor, width: 2),
+    border: Border.all(
+      color: textColor,
+      width: 2,
+      strokeAlign: BorderSide.strokeAlignCenter,
+    ),
     borderRadius: standardBorderRadiusAll,
   );
 

@@ -9,25 +9,31 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get add_team => 'Add Team';
+
+  @override
   String get all_players => 'All players';
 
   @override
   String get all_players_selected => 'All players selected';
 
   @override
-  String get amount_of_matches => 'Amount of Matches';
+  String get all_time => 'All time';
 
   @override
   String get app_name => 'Tallee';
 
   @override
+  String get average_score => 'Average score';
+
+  @override
   String get best_player => 'Best Player';
 
   @override
-  String get cancel => 'Cancel';
+  String get best_score => 'Best score';
 
   @override
-  String get choose_color => 'Choose Color';
+  String get cancel => 'Cancel';
 
   @override
   String get choose_game => 'Choose Game';
@@ -36,7 +42,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get choose_group => 'Choose Group';
 
   @override
-  String get choose_ruleset => 'Choose Ruleset';
+  String get classifier => 'Classifier';
+
+  @override
+  String get classifier_description =>
+      'Choose which metric is calculated and shown in this statistic.';
+
+  @override
+  String get click_another_player_to_create_a_pair =>
+      'Click another player to create a pair';
 
   @override
   String get color => 'Color';
@@ -66,8 +80,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get color_yellow => 'Yellow';
 
   @override
-  String could_not_add_player(Object playerName) {
-    return 'Could not add player';
+  String get confirm => 'Confirm';
+
+  @override
+  String could_not_add_player(String playerName) {
+    return 'Could not add player $playerName';
   }
 
   @override
@@ -84,6 +101,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get create_new_match => 'Create new match';
+
+  @override
+  String get create_statistic => 'Create statistic';
+
+  @override
+  String get create_teams => 'Create teams';
 
   @override
   String get created_on => 'Created on';
@@ -132,7 +155,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_match => 'Delete Match';
 
   @override
+  String get delete_player => 'Delete player?';
+
+  @override
+  String get delete_statistic => 'Delete statistic';
+
+  @override
   String get description => 'Description';
+
+  @override
+  String get displayed_entries => 'Displayed entries';
 
   @override
   String get drag_to_set_placement => 'Drag to set placement';
@@ -145,6 +177,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get edit_match => 'Edit Match';
+
+  @override
+  String get edit_name => 'Edit name';
+
+  @override
+  String get edit_player => 'Edit player';
 
   @override
   String get enter_points => 'Enter points';
@@ -161,10 +199,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Error while deleting game, please try again';
 
   @override
-  String get error_deleting_group =>
-      'Error while deleting group, please try again';
-
-  @override
   String get error_editing_group =>
       'Error while editing group, please try again';
 
@@ -172,13 +206,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_reading_file => 'Error reading file';
 
   @override
-  String get exit_view => 'Exit View';
-
-  @override
   String get export_canceled => 'Export canceled';
 
   @override
   String get export_data => 'Export data';
+
+  @override
+  String get filter => 'Filter';
 
   @override
   String get format_exception => 'Format Exception (see console)';
@@ -188,6 +222,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get game_name => 'Game Name';
+
+  @override
+  String get games => 'Games';
 
   @override
   String get group => 'Group';
@@ -205,9 +242,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get highest_score => 'Highest Score';
 
   @override
-  String get home => 'Home';
-
-  @override
   String get import_canceled => 'Import canceled';
 
   @override
@@ -220,7 +254,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalid_schema => 'Invalid Schema';
 
   @override
-  String get least_points => 'Least Points';
+  String get last_180_days => 'Last 180 days';
+
+  @override
+  String get last_30_days => 'Last 30 days';
+
+  @override
+  String get last_7_days => 'Last 7 days';
+
+  @override
+  String get last_90_days => 'Last 90 days';
+
+  @override
+  String get last_year => 'Last year';
 
   @override
   String get legal => 'Legal';
@@ -235,10 +281,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get live_edit_mode => 'Live Edit Mode';
 
   @override
+  String get loading => 'Loading...';
+
+  @override
   String get loser => 'Loser';
 
   @override
   String get lowest_score => 'Lowest Score';
+
+  @override
+  String get manage_members => 'Manage Members';
 
   @override
   String get match_in_progress => 'Match in progress...';
@@ -253,13 +305,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matches => 'Matches';
 
   @override
+  String get matches_played => 'Matches played';
+
+  @override
+  String get matches_won => 'Matches won';
+
+  @override
+  String get member => 'Member';
+
+  @override
   String get members => 'Members';
 
   @override
-  String get most_points => 'Most Points';
+  String get multiple_winners => 'Multiple Winners';
 
   @override
-  String get multiple_winners => 'Multiple Winners';
+  String get names_or_descriptions_too_long =>
+      'The data contains names or descriptions that are too long.';
 
   @override
   String get no_data_available => 'No data available';
@@ -274,10 +336,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_license_text_available => 'No license text available';
 
   @override
-  String get no_licenses_found => 'No licenses found';
+  String get no_matches_created_yet => 'No matches created yet';
 
   @override
-  String get no_matches_created_yet => 'No matches created yet';
+  String get no_matches_played_yet => 'No games played yet';
+
+  @override
+  String get no_players_available => 'No players available';
 
   @override
   String get no_players_created_yet => 'No players created yet';
@@ -290,16 +355,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_players_selected => 'No players selected';
 
   @override
-  String get no_recent_matches_available => 'No recent matches available';
-
-  @override
   String get no_results_entered_yet => 'No results entered yet';
 
   @override
-  String get no_second_match_available => 'No second match available';
+  String get no_statistics_created_yet => 'No statistics created yet';
 
   @override
-  String get no_statistics_available => 'No statistics available';
+  String get no_teams_available => 'No teams available';
 
   @override
   String get none => 'None';
@@ -308,7 +370,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get none_group => 'None';
 
   @override
-  String get not_available => 'Not available';
+  String get not_part_of_any_group => 'Not part of any group yet';
 
   @override
   String get place => 'place';
@@ -320,7 +382,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get played_matches => 'Played Matches';
 
   @override
-  String get player_name => 'Player name';
+  String get player_profile => 'Player Profile';
 
   @override
   String get players => 'Players';
@@ -335,10 +397,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacy_policy => 'Privacy Policy';
 
   @override
-  String get quick_create => 'Quick Create';
-
-  @override
-  String get recent_matches => 'Recent Matches';
+  String get random_color => 'Random color';
 
   @override
   String get results => 'Results';
@@ -347,27 +406,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ruleset => 'Ruleset';
 
   @override
-  String get ruleset_least_points =>
-      'Inverse scoring: the player with the fewest points wins.';
-
-  @override
-  String get ruleset_most_points =>
-      'Traditional ruleset: the player with the most points wins.';
-
-  @override
-  String get ruleset_placement =>
-      'Players can be arranged in an order, which reflects their placement.';
-
-  @override
-  String get ruleset_single_loser =>
-      'Exactly one loser is determined; last place receives the penalty or consequence.';
-
-  @override
-  String get ruleset_single_winner =>
-      'Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.';
-
-  @override
   String get save_changes => 'Save Changes';
+
+  @override
+  String get scope => 'Scope';
+
+  @override
+  String get scope_description =>
+      'Choose which games or players are included in the calculation.';
 
   @override
   String get search_for_groups => 'Search for groups';
@@ -376,7 +422,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_for_players => 'Search for players';
 
   @override
+  String get select_a_classifier => 'Select a classifier';
+
+  @override
+  String get select_a_display_color => 'Select a display color';
+
+  @override
+  String get select_a_scope => 'Select a scope';
+
+  @override
+  String get select_a_timeframe => 'Select a timeframe';
+
+  @override
   String get select_loser => 'Select Loser';
+
+  @override
+  String get select_the_filtered_timeframe =>
+      'Select the timeframe you want to filter by.';
 
   @override
   String get select_winner => 'Select Winner';
@@ -385,7 +447,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_winners => 'Select Winners';
 
   @override
+  String get selected_games => 'Selected games';
+
+  @override
+  String get selected_groups => 'Selected groups';
+
+  @override
   String get selected_players => 'Selected players';
+
+  @override
+  String get set_name => 'Set name';
 
   @override
   String get settings => 'Settings';
@@ -400,12 +471,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statistics => 'Statistics';
 
   @override
-  String get stats => 'Stats';
-
-  @override
   String successfully_added_player(String playerName) {
     return 'Successfully added player $playerName';
   }
+
+  @override
+  String get team => 'Team';
+
+  @override
+  String get team_match => 'Team Match';
+
+  @override
+  String get teams => 'Teams';
 
   @override
   String get there_are_no_games_matching_your_search =>
@@ -416,16 +493,32 @@ class AppLocalizationsEn extends AppLocalizations {
       'There is no group matching your search';
 
   @override
+  String get there_is_no_match_matching_your_search =>
+      'There is no match matching your search';
+
+  @override
   String get this_cannot_be_undone => 'This can\'t be undone.';
 
   @override
   String get tie => 'Tie';
 
   @override
+  String get timeframe => 'Timeframe';
+
+  @override
   String get today_at => 'Today at';
 
   @override
-  String get undo => 'Undo';
+  String get total_losses => 'Total losses';
+
+  @override
+  String get total_matches => 'Total matches';
+
+  @override
+  String get total_score => 'Total score';
+
+  @override
+  String get total_wins => 'Total wins';
 
   @override
   String get unknown_exception => 'Unknown Exception (see console)';
@@ -440,7 +533,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get winrate => 'Winrate';
 
   @override
-  String get wins => 'Wins';
+  String get worst_score => 'Worst score';
 
   @override
   String get yesterday_at => 'Yesterday at';

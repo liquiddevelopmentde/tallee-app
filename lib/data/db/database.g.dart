@@ -703,17 +703,15 @@ class $GameTableTable extends GameTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _rulesetMeta = const VerificationMeta(
-    'ruleset',
-  );
   @override
-  late final GeneratedColumn<String> ruleset = GeneratedColumn<String>(
-    'ruleset',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<Ruleset, String> ruleset =
+      GeneratedColumn<String>(
+        'ruleset',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<Ruleset>($GameTableTable.$converterruleset);
   static const VerificationMeta _descriptionMeta = const VerificationMeta(
     'description',
   );
@@ -725,15 +723,15 @@ class $GameTableTable extends GameTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _colorMeta = const VerificationMeta('color');
   @override
-  late final GeneratedColumn<String> color = GeneratedColumn<String>(
-    'color',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<AppColor, String> color =
+      GeneratedColumn<String>(
+        'color',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<AppColor>($GameTableTable.$convertercolor);
   static const VerificationMeta _iconMeta = const VerificationMeta('icon');
   @override
   late final GeneratedColumn<String> icon = GeneratedColumn<String>(
@@ -789,14 +787,6 @@ class $GameTableTable extends GameTable
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('ruleset')) {
-      context.handle(
-        _rulesetMeta,
-        ruleset.isAcceptableOrUnknown(data['ruleset']!, _rulesetMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_rulesetMeta);
-    }
     if (data.containsKey('description')) {
       context.handle(
         _descriptionMeta,
@@ -807,14 +797,6 @@ class $GameTableTable extends GameTable
       );
     } else if (isInserting) {
       context.missing(_descriptionMeta);
-    }
-    if (data.containsKey('color')) {
-      context.handle(
-        _colorMeta,
-        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_colorMeta);
     }
     if (data.containsKey('icon')) {
       context.handle(
@@ -849,18 +831,22 @@ class $GameTableTable extends GameTable
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
-      ruleset: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}ruleset'],
-      )!,
+      ruleset: $GameTableTable.$converterruleset.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}ruleset'],
+        )!,
+      ),
       description: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       )!,
-      color: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}color'],
-      )!,
+      color: $GameTableTable.$convertercolor.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}color'],
+        )!,
+      ),
       icon: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}icon'],
@@ -876,14 +862,19 @@ class $GameTableTable extends GameTable
   $GameTableTable createAlias(String alias) {
     return $GameTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<Ruleset, String, String> $converterruleset =
+      const EnumNameConverter<Ruleset>(Ruleset.values);
+  static JsonTypeConverter2<AppColor, String, String> $convertercolor =
+      const EnumNameConverter<AppColor>(AppColor.values);
 }
 
 class GameTableData extends DataClass implements Insertable<GameTableData> {
   final String id;
   final String name;
-  final String ruleset;
+  final Ruleset ruleset;
   final String description;
-  final String color;
+  final AppColor color;
   final String icon;
   final DateTime createdAt;
   const GameTableData({
@@ -900,9 +891,17 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
-    map['ruleset'] = Variable<String>(ruleset);
+    {
+      map['ruleset'] = Variable<String>(
+        $GameTableTable.$converterruleset.toSql(ruleset),
+      );
+    }
     map['description'] = Variable<String>(description);
-    map['color'] = Variable<String>(color);
+    {
+      map['color'] = Variable<String>(
+        $GameTableTable.$convertercolor.toSql(color),
+      );
+    }
     map['icon'] = Variable<String>(icon);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -928,9 +927,13 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     return GameTableData(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      ruleset: serializer.fromJson<String>(json['ruleset']),
+      ruleset: $GameTableTable.$converterruleset.fromJson(
+        serializer.fromJson<String>(json['ruleset']),
+      ),
       description: serializer.fromJson<String>(json['description']),
-      color: serializer.fromJson<String>(json['color']),
+      color: $GameTableTable.$convertercolor.fromJson(
+        serializer.fromJson<String>(json['color']),
+      ),
       icon: serializer.fromJson<String>(json['icon']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -941,9 +944,13 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
-      'ruleset': serializer.toJson<String>(ruleset),
+      'ruleset': serializer.toJson<String>(
+        $GameTableTable.$converterruleset.toJson(ruleset),
+      ),
       'description': serializer.toJson<String>(description),
-      'color': serializer.toJson<String>(color),
+      'color': serializer.toJson<String>(
+        $GameTableTable.$convertercolor.toJson(color),
+      ),
       'icon': serializer.toJson<String>(icon),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -952,9 +959,9 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
   GameTableData copyWith({
     String? id,
     String? name,
-    String? ruleset,
+    Ruleset? ruleset,
     String? description,
-    String? color,
+    AppColor? color,
     String? icon,
     DateTime? createdAt,
   }) => GameTableData(
@@ -1013,9 +1020,9 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
 class GameTableCompanion extends UpdateCompanion<GameTableData> {
   final Value<String> id;
   final Value<String> name;
-  final Value<String> ruleset;
+  final Value<Ruleset> ruleset;
   final Value<String> description;
-  final Value<String> color;
+  final Value<AppColor> color;
   final Value<String> icon;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
@@ -1032,9 +1039,9 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
   GameTableCompanion.insert({
     required String id,
     required String name,
-    required String ruleset,
+    required Ruleset ruleset,
     required String description,
-    required String color,
+    required AppColor color,
     required String icon,
     required DateTime createdAt,
     this.rowid = const Value.absent(),
@@ -1070,9 +1077,9 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
   GameTableCompanion copyWith({
     Value<String>? id,
     Value<String>? name,
-    Value<String>? ruleset,
+    Value<Ruleset>? ruleset,
     Value<String>? description,
-    Value<String>? color,
+    Value<AppColor>? color,
     Value<String>? icon,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
@@ -1099,13 +1106,17 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
       map['name'] = Variable<String>(name.value);
     }
     if (ruleset.present) {
-      map['ruleset'] = Variable<String>(ruleset.value);
+      map['ruleset'] = Variable<String>(
+        $GameTableTable.$converterruleset.toSql(ruleset.value),
+      );
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
     if (color.present) {
-      map['color'] = Variable<String>(color.value);
+      map['color'] = Variable<String>(
+        $GameTableTable.$convertercolor.toSql(color.value),
+      );
     }
     if (icon.present) {
       map['icon'] = Variable<String>(icon.value);
@@ -1185,6 +1196,21 @@ class $MatchTableTable extends MatchTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _isTeamMatchMeta = const VerificationMeta(
+    'isTeamMatch',
+  );
+  @override
+  late final GeneratedColumn<bool> isTeamMatch = GeneratedColumn<bool>(
+    'is_team_match',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_team_match" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -1222,6 +1248,7 @@ class $MatchTableTable extends MatchTable
     gameId,
     groupId,
     name,
+    isTeamMatch,
     notes,
     createdAt,
     endedAt,
@@ -1264,6 +1291,15 @@ class $MatchTableTable extends MatchTable
       );
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('is_team_match')) {
+      context.handle(
+        _isTeamMatchMeta,
+        isTeamMatch.isAcceptableOrUnknown(
+          data['is_team_match']!,
+          _isTeamMatchMeta,
+        ),
+      );
     }
     if (data.containsKey('notes')) {
       context.handle(
@@ -1312,6 +1348,10 @@ class $MatchTableTable extends MatchTable
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      isTeamMatch: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_team_match'],
+      )!,
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -1338,6 +1378,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
   final String gameId;
   final String? groupId;
   final String name;
+  final bool isTeamMatch;
   final String notes;
   final DateTime createdAt;
   final DateTime? endedAt;
@@ -1346,6 +1387,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     required this.gameId,
     this.groupId,
     required this.name,
+    required this.isTeamMatch,
     required this.notes,
     required this.createdAt,
     this.endedAt,
@@ -1359,6 +1401,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       map['group_id'] = Variable<String>(groupId);
     }
     map['name'] = Variable<String>(name);
+    map['is_team_match'] = Variable<bool>(isTeamMatch);
     map['notes'] = Variable<String>(notes);
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || endedAt != null) {
@@ -1375,6 +1418,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
           ? const Value.absent()
           : Value(groupId),
       name: Value(name),
+      isTeamMatch: Value(isTeamMatch),
       notes: Value(notes),
       createdAt: Value(createdAt),
       endedAt: endedAt == null && nullToAbsent
@@ -1393,6 +1437,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       gameId: serializer.fromJson<String>(json['gameId']),
       groupId: serializer.fromJson<String?>(json['groupId']),
       name: serializer.fromJson<String>(json['name']),
+      isTeamMatch: serializer.fromJson<bool>(json['isTeamMatch']),
       notes: serializer.fromJson<String>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       endedAt: serializer.fromJson<DateTime?>(json['endedAt']),
@@ -1406,6 +1451,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       'gameId': serializer.toJson<String>(gameId),
       'groupId': serializer.toJson<String?>(groupId),
       'name': serializer.toJson<String>(name),
+      'isTeamMatch': serializer.toJson<bool>(isTeamMatch),
       'notes': serializer.toJson<String>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'endedAt': serializer.toJson<DateTime?>(endedAt),
@@ -1417,6 +1463,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     String? gameId,
     Value<String?> groupId = const Value.absent(),
     String? name,
+    bool? isTeamMatch,
     String? notes,
     DateTime? createdAt,
     Value<DateTime?> endedAt = const Value.absent(),
@@ -1425,6 +1472,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
     gameId: gameId ?? this.gameId,
     groupId: groupId.present ? groupId.value : this.groupId,
     name: name ?? this.name,
+    isTeamMatch: isTeamMatch ?? this.isTeamMatch,
     notes: notes ?? this.notes,
     createdAt: createdAt ?? this.createdAt,
     endedAt: endedAt.present ? endedAt.value : this.endedAt,
@@ -1435,6 +1483,9 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
       gameId: data.gameId.present ? data.gameId.value : this.gameId,
       groupId: data.groupId.present ? data.groupId.value : this.groupId,
       name: data.name.present ? data.name.value : this.name,
+      isTeamMatch: data.isTeamMatch.present
+          ? data.isTeamMatch.value
+          : this.isTeamMatch,
       notes: data.notes.present ? data.notes.value : this.notes,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       endedAt: data.endedAt.present ? data.endedAt.value : this.endedAt,
@@ -1448,6 +1499,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
           ..write('gameId: $gameId, ')
           ..write('groupId: $groupId, ')
           ..write('name: $name, ')
+          ..write('isTeamMatch: $isTeamMatch, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('endedAt: $endedAt')
@@ -1456,8 +1508,16 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, gameId, groupId, name, notes, createdAt, endedAt);
+  int get hashCode => Object.hash(
+    id,
+    gameId,
+    groupId,
+    name,
+    isTeamMatch,
+    notes,
+    createdAt,
+    endedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1466,6 +1526,7 @@ class MatchTableData extends DataClass implements Insertable<MatchTableData> {
           other.gameId == this.gameId &&
           other.groupId == this.groupId &&
           other.name == this.name &&
+          other.isTeamMatch == this.isTeamMatch &&
           other.notes == this.notes &&
           other.createdAt == this.createdAt &&
           other.endedAt == this.endedAt);
@@ -1476,6 +1537,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
   final Value<String> gameId;
   final Value<String?> groupId;
   final Value<String> name;
+  final Value<bool> isTeamMatch;
   final Value<String> notes;
   final Value<DateTime> createdAt;
   final Value<DateTime?> endedAt;
@@ -1485,6 +1547,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     this.gameId = const Value.absent(),
     this.groupId = const Value.absent(),
     this.name = const Value.absent(),
+    this.isTeamMatch = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.endedAt = const Value.absent(),
@@ -1495,6 +1558,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     required String gameId,
     this.groupId = const Value.absent(),
     required String name,
+    this.isTeamMatch = const Value.absent(),
     required String notes,
     required DateTime createdAt,
     this.endedAt = const Value.absent(),
@@ -1509,6 +1573,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     Expression<String>? gameId,
     Expression<String>? groupId,
     Expression<String>? name,
+    Expression<bool>? isTeamMatch,
     Expression<String>? notes,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? endedAt,
@@ -1519,6 +1584,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
       if (gameId != null) 'game_id': gameId,
       if (groupId != null) 'group_id': groupId,
       if (name != null) 'name': name,
+      if (isTeamMatch != null) 'is_team_match': isTeamMatch,
       if (notes != null) 'notes': notes,
       if (createdAt != null) 'created_at': createdAt,
       if (endedAt != null) 'ended_at': endedAt,
@@ -1531,6 +1597,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     Value<String>? gameId,
     Value<String?>? groupId,
     Value<String>? name,
+    Value<bool>? isTeamMatch,
     Value<String>? notes,
     Value<DateTime>? createdAt,
     Value<DateTime?>? endedAt,
@@ -1541,6 +1608,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
       gameId: gameId ?? this.gameId,
       groupId: groupId ?? this.groupId,
       name: name ?? this.name,
+      isTeamMatch: isTeamMatch ?? this.isTeamMatch,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       endedAt: endedAt ?? this.endedAt,
@@ -1562,6 +1630,9 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (isTeamMatch.present) {
+      map['is_team_match'] = Variable<bool>(isTeamMatch.value);
     }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
@@ -1585,6 +1656,7 @@ class MatchTableCompanion extends UpdateCompanion<MatchTableData> {
           ..write('gameId: $gameId, ')
           ..write('groupId: $groupId, ')
           ..write('name: $name, ')
+          ..write('isTeamMatch: $isTeamMatch, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('endedAt: $endedAt, ')
@@ -1855,7 +1927,26 @@ class $TeamTableTable extends TeamTable
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, name, createdAt];
+  late final GeneratedColumnWithTypeConverter<AppColor, String> color =
+      GeneratedColumn<String>(
+        'color',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: Constant(AppColor.blue.name),
+      ).withConverter<AppColor>($TeamTableTable.$convertercolor);
+  static const VerificationMeta _scoreMeta = const VerificationMeta('score');
+  @override
+  late final GeneratedColumn<int> score = GeneratedColumn<int>(
+    'score',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, createdAt, color, score];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1889,6 +1980,12 @@ class $TeamTableTable extends TeamTable
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('score')) {
+      context.handle(
+        _scoreMeta,
+        score.isAcceptableOrUnknown(data['score']!, _scoreMeta),
+      );
+    }
     return context;
   }
 
@@ -1910,6 +2007,16 @@ class $TeamTableTable extends TeamTable
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      color: $TeamTableTable.$convertercolor.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}color'],
+        )!,
+      ),
+      score: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}score'],
+      ),
     );
   }
 
@@ -1917,16 +2024,23 @@ class $TeamTableTable extends TeamTable
   $TeamTableTable createAlias(String alias) {
     return $TeamTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<AppColor, String, String> $convertercolor =
+      const EnumNameConverter<AppColor>(AppColor.values);
 }
 
 class TeamTableData extends DataClass implements Insertable<TeamTableData> {
   final String id;
   final String name;
   final DateTime createdAt;
+  final AppColor color;
+  final int? score;
   const TeamTableData({
     required this.id,
     required this.name,
     required this.createdAt,
+    required this.color,
+    this.score,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1934,6 +2048,14 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
     map['created_at'] = Variable<DateTime>(createdAt);
+    {
+      map['color'] = Variable<String>(
+        $TeamTableTable.$convertercolor.toSql(color),
+      );
+    }
+    if (!nullToAbsent || score != null) {
+      map['score'] = Variable<int>(score);
+    }
     return map;
   }
 
@@ -1942,6 +2064,10 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       id: Value(id),
       name: Value(name),
       createdAt: Value(createdAt),
+      color: Value(color),
+      score: score == null && nullToAbsent
+          ? const Value.absent()
+          : Value(score),
     );
   }
 
@@ -1954,6 +2080,10 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      color: $TeamTableTable.$convertercolor.fromJson(
+        serializer.fromJson<String>(json['color']),
+      ),
+      score: serializer.fromJson<int?>(json['score']),
     );
   }
   @override
@@ -1963,20 +2093,33 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'color': serializer.toJson<String>(
+        $TeamTableTable.$convertercolor.toJson(color),
+      ),
+      'score': serializer.toJson<int?>(score),
     };
   }
 
-  TeamTableData copyWith({String? id, String? name, DateTime? createdAt}) =>
-      TeamTableData(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        createdAt: createdAt ?? this.createdAt,
-      );
+  TeamTableData copyWith({
+    String? id,
+    String? name,
+    DateTime? createdAt,
+    AppColor? color,
+    Value<int?> score = const Value.absent(),
+  }) => TeamTableData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    createdAt: createdAt ?? this.createdAt,
+    color: color ?? this.color,
+    score: score.present ? score.value : this.score,
+  );
   TeamTableData copyWithCompanion(TeamTableCompanion data) {
     return TeamTableData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      color: data.color.present ? data.color.value : this.color,
+      score: data.score.present ? data.score.value : this.score,
     );
   }
 
@@ -1985,37 +2128,47 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
     return (StringBuffer('TeamTableData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('color: $color, ')
+          ..write('score: $score')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, createdAt);
+  int get hashCode => Object.hash(id, name, createdAt, color, score);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TeamTableData &&
           other.id == this.id &&
           other.name == this.name &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.color == this.color &&
+          other.score == this.score);
 }
 
 class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
   final Value<String> id;
   final Value<String> name;
   final Value<DateTime> createdAt;
+  final Value<AppColor> color;
+  final Value<int?> score;
   final Value<int> rowid;
   const TeamTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.color = const Value.absent(),
+    this.score = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TeamTableCompanion.insert({
     required String id,
     required String name,
     required DateTime createdAt,
+    this.color = const Value.absent(),
+    this.score = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
@@ -2024,12 +2177,16 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     Expression<String>? id,
     Expression<String>? name,
     Expression<DateTime>? createdAt,
+    Expression<String>? color,
+    Expression<int>? score,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (createdAt != null) 'created_at': createdAt,
+      if (color != null) 'color': color,
+      if (score != null) 'score': score,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2038,12 +2195,16 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     Value<String>? id,
     Value<String>? name,
     Value<DateTime>? createdAt,
+    Value<AppColor>? color,
+    Value<int?>? score,
     Value<int>? rowid,
   }) {
     return TeamTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       createdAt: createdAt ?? this.createdAt,
+      color: color ?? this.color,
+      score: score ?? this.score,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2060,6 +2221,14 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (color.present) {
+      map['color'] = Variable<String>(
+        $TeamTableTable.$convertercolor.toSql(color.value),
+      );
+    }
+    if (score.present) {
+      map['score'] = Variable<int>(score.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2072,6 +2241,8 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('createdAt: $createdAt, ')
+          ..write('color: $color, ')
+          ..write('score: $score, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2732,6 +2903,1145 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
   }
 }
 
+class $StatisticTableTable extends StatisticTable
+    with TableInfo<$StatisticTableTable, StatisticTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StatisticTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<StatisticType, String> type =
+      GeneratedColumn<String>(
+        'type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<StatisticType>($StatisticTableTable.$convertertype);
+  @override
+  late final GeneratedColumnWithTypeConverter<Timeframe, String> timeframe =
+      GeneratedColumn<String>(
+        'timeframe',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<Timeframe>($StatisticTableTable.$convertertimeframe);
+  @override
+  late final GeneratedColumnWithTypeConverter<AppColor, String> color =
+      GeneratedColumn<String>(
+        'color',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<AppColor>($StatisticTableTable.$convertercolor);
+  static const VerificationMeta _displayCountMeta = const VerificationMeta(
+    'displayCount',
+  );
+  @override
+  late final GeneratedColumn<int> displayCount = GeneratedColumn<int>(
+    'display_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(5),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    type,
+    timeframe,
+    color,
+    displayCount,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'statistic_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StatisticTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('display_count')) {
+      context.handle(
+        _displayCountMeta,
+        displayCount.isAcceptableOrUnknown(
+          data['display_count']!,
+          _displayCountMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StatisticTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StatisticTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      type: $StatisticTableTable.$convertertype.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}type'],
+        )!,
+      ),
+      timeframe: $StatisticTableTable.$convertertimeframe.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}timeframe'],
+        )!,
+      ),
+      color: $StatisticTableTable.$convertercolor.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}color'],
+        )!,
+      ),
+      displayCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}display_count'],
+      )!,
+    );
+  }
+
+  @override
+  $StatisticTableTable createAlias(String alias) {
+    return $StatisticTableTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<StatisticType, String, String> $convertertype =
+      const EnumNameConverter<StatisticType>(StatisticType.values);
+  static JsonTypeConverter2<Timeframe, String, String> $convertertimeframe =
+      const EnumNameConverter<Timeframe>(Timeframe.values);
+  static JsonTypeConverter2<AppColor, String, String> $convertercolor =
+      const EnumNameConverter<AppColor>(AppColor.values);
+}
+
+class StatisticTableData extends DataClass
+    implements Insertable<StatisticTableData> {
+  final String id;
+  final DateTime createdAt;
+  final StatisticType type;
+  final Timeframe timeframe;
+  final AppColor color;
+  final int displayCount;
+  const StatisticTableData({
+    required this.id,
+    required this.createdAt,
+    required this.type,
+    required this.timeframe,
+    required this.color,
+    required this.displayCount,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    {
+      map['type'] = Variable<String>(
+        $StatisticTableTable.$convertertype.toSql(type),
+      );
+    }
+    {
+      map['timeframe'] = Variable<String>(
+        $StatisticTableTable.$convertertimeframe.toSql(timeframe),
+      );
+    }
+    {
+      map['color'] = Variable<String>(
+        $StatisticTableTable.$convertercolor.toSql(color),
+      );
+    }
+    map['display_count'] = Variable<int>(displayCount);
+    return map;
+  }
+
+  StatisticTableCompanion toCompanion(bool nullToAbsent) {
+    return StatisticTableCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      type: Value(type),
+      timeframe: Value(timeframe),
+      color: Value(color),
+      displayCount: Value(displayCount),
+    );
+  }
+
+  factory StatisticTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StatisticTableData(
+      id: serializer.fromJson<String>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      type: $StatisticTableTable.$convertertype.fromJson(
+        serializer.fromJson<String>(json['type']),
+      ),
+      timeframe: $StatisticTableTable.$convertertimeframe.fromJson(
+        serializer.fromJson<String>(json['timeframe']),
+      ),
+      color: $StatisticTableTable.$convertercolor.fromJson(
+        serializer.fromJson<String>(json['color']),
+      ),
+      displayCount: serializer.fromJson<int>(json['displayCount']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'type': serializer.toJson<String>(
+        $StatisticTableTable.$convertertype.toJson(type),
+      ),
+      'timeframe': serializer.toJson<String>(
+        $StatisticTableTable.$convertertimeframe.toJson(timeframe),
+      ),
+      'color': serializer.toJson<String>(
+        $StatisticTableTable.$convertercolor.toJson(color),
+      ),
+      'displayCount': serializer.toJson<int>(displayCount),
+    };
+  }
+
+  StatisticTableData copyWith({
+    String? id,
+    DateTime? createdAt,
+    StatisticType? type,
+    Timeframe? timeframe,
+    AppColor? color,
+    int? displayCount,
+  }) => StatisticTableData(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    type: type ?? this.type,
+    timeframe: timeframe ?? this.timeframe,
+    color: color ?? this.color,
+    displayCount: displayCount ?? this.displayCount,
+  );
+  StatisticTableData copyWithCompanion(StatisticTableCompanion data) {
+    return StatisticTableData(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      type: data.type.present ? data.type.value : this.type,
+      timeframe: data.timeframe.present ? data.timeframe.value : this.timeframe,
+      color: data.color.present ? data.color.value : this.color,
+      displayCount: data.displayCount.present
+          ? data.displayCount.value
+          : this.displayCount,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StatisticTableData(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('type: $type, ')
+          ..write('timeframe: $timeframe, ')
+          ..write('color: $color, ')
+          ..write('displayCount: $displayCount')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, createdAt, type, timeframe, color, displayCount);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StatisticTableData &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.type == this.type &&
+          other.timeframe == this.timeframe &&
+          other.color == this.color &&
+          other.displayCount == this.displayCount);
+}
+
+class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
+  final Value<String> id;
+  final Value<DateTime> createdAt;
+  final Value<StatisticType> type;
+  final Value<Timeframe> timeframe;
+  final Value<AppColor> color;
+  final Value<int> displayCount;
+  final Value<int> rowid;
+  const StatisticTableCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.type = const Value.absent(),
+    this.timeframe = const Value.absent(),
+    this.color = const Value.absent(),
+    this.displayCount = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StatisticTableCompanion.insert({
+    required String id,
+    required DateTime createdAt,
+    required StatisticType type,
+    required Timeframe timeframe,
+    required AppColor color,
+    this.displayCount = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       createdAt = Value(createdAt),
+       type = Value(type),
+       timeframe = Value(timeframe),
+       color = Value(color);
+  static Insertable<StatisticTableData> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdAt,
+    Expression<String>? type,
+    Expression<String>? timeframe,
+    Expression<String>? color,
+    Expression<int>? displayCount,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (type != null) 'type': type,
+      if (timeframe != null) 'timeframe': timeframe,
+      if (color != null) 'color': color,
+      if (displayCount != null) 'display_count': displayCount,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StatisticTableCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? createdAt,
+    Value<StatisticType>? type,
+    Value<Timeframe>? timeframe,
+    Value<AppColor>? color,
+    Value<int>? displayCount,
+    Value<int>? rowid,
+  }) {
+    return StatisticTableCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      type: type ?? this.type,
+      timeframe: timeframe ?? this.timeframe,
+      color: color ?? this.color,
+      displayCount: displayCount ?? this.displayCount,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(
+        $StatisticTableTable.$convertertype.toSql(type.value),
+      );
+    }
+    if (timeframe.present) {
+      map['timeframe'] = Variable<String>(
+        $StatisticTableTable.$convertertimeframe.toSql(timeframe.value),
+      );
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(
+        $StatisticTableTable.$convertercolor.toSql(color.value),
+      );
+    }
+    if (displayCount.present) {
+      map['display_count'] = Variable<int>(displayCount.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StatisticTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('type: $type, ')
+          ..write('timeframe: $timeframe, ')
+          ..write('color: $color, ')
+          ..write('displayCount: $displayCount, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StatisticScopeTableTable extends StatisticScopeTable
+    with TableInfo<$StatisticScopeTableTable, StatisticScopeTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StatisticScopeTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _statisticIdMeta = const VerificationMeta(
+    'statisticId',
+  );
+  @override
+  late final GeneratedColumn<String> statisticId = GeneratedColumn<String>(
+    'statistic_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES statistic_table (id) ON DELETE CASCADE',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<StatisticScope, String> scope =
+      GeneratedColumn<String>(
+        'scope',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<StatisticScope>(
+        $StatisticScopeTableTable.$converterscope,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [statisticId, scope];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'statistic_scope_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StatisticScopeTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('statistic_id')) {
+      context.handle(
+        _statisticIdMeta,
+        statisticId.isAcceptableOrUnknown(
+          data['statistic_id']!,
+          _statisticIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_statisticIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {statisticId, scope};
+  @override
+  StatisticScopeTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StatisticScopeTableData(
+      statisticId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}statistic_id'],
+      )!,
+      scope: $StatisticScopeTableTable.$converterscope.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}scope'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $StatisticScopeTableTable createAlias(String alias) {
+    return $StatisticScopeTableTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<StatisticScope, String, String> $converterscope =
+      const EnumNameConverter<StatisticScope>(StatisticScope.values);
+}
+
+class StatisticScopeTableData extends DataClass
+    implements Insertable<StatisticScopeTableData> {
+  final String statisticId;
+  final StatisticScope scope;
+  const StatisticScopeTableData({
+    required this.statisticId,
+    required this.scope,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['statistic_id'] = Variable<String>(statisticId);
+    {
+      map['scope'] = Variable<String>(
+        $StatisticScopeTableTable.$converterscope.toSql(scope),
+      );
+    }
+    return map;
+  }
+
+  StatisticScopeTableCompanion toCompanion(bool nullToAbsent) {
+    return StatisticScopeTableCompanion(
+      statisticId: Value(statisticId),
+      scope: Value(scope),
+    );
+  }
+
+  factory StatisticScopeTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StatisticScopeTableData(
+      statisticId: serializer.fromJson<String>(json['statisticId']),
+      scope: $StatisticScopeTableTable.$converterscope.fromJson(
+        serializer.fromJson<String>(json['scope']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'statisticId': serializer.toJson<String>(statisticId),
+      'scope': serializer.toJson<String>(
+        $StatisticScopeTableTable.$converterscope.toJson(scope),
+      ),
+    };
+  }
+
+  StatisticScopeTableData copyWith({
+    String? statisticId,
+    StatisticScope? scope,
+  }) => StatisticScopeTableData(
+    statisticId: statisticId ?? this.statisticId,
+    scope: scope ?? this.scope,
+  );
+  StatisticScopeTableData copyWithCompanion(StatisticScopeTableCompanion data) {
+    return StatisticScopeTableData(
+      statisticId: data.statisticId.present
+          ? data.statisticId.value
+          : this.statisticId,
+      scope: data.scope.present ? data.scope.value : this.scope,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StatisticScopeTableData(')
+          ..write('statisticId: $statisticId, ')
+          ..write('scope: $scope')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(statisticId, scope);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StatisticScopeTableData &&
+          other.statisticId == this.statisticId &&
+          other.scope == this.scope);
+}
+
+class StatisticScopeTableCompanion
+    extends UpdateCompanion<StatisticScopeTableData> {
+  final Value<String> statisticId;
+  final Value<StatisticScope> scope;
+  final Value<int> rowid;
+  const StatisticScopeTableCompanion({
+    this.statisticId = const Value.absent(),
+    this.scope = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StatisticScopeTableCompanion.insert({
+    required String statisticId,
+    required StatisticScope scope,
+    this.rowid = const Value.absent(),
+  }) : statisticId = Value(statisticId),
+       scope = Value(scope);
+  static Insertable<StatisticScopeTableData> custom({
+    Expression<String>? statisticId,
+    Expression<String>? scope,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (statisticId != null) 'statistic_id': statisticId,
+      if (scope != null) 'scope': scope,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StatisticScopeTableCompanion copyWith({
+    Value<String>? statisticId,
+    Value<StatisticScope>? scope,
+    Value<int>? rowid,
+  }) {
+    return StatisticScopeTableCompanion(
+      statisticId: statisticId ?? this.statisticId,
+      scope: scope ?? this.scope,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (statisticId.present) {
+      map['statistic_id'] = Variable<String>(statisticId.value);
+    }
+    if (scope.present) {
+      map['scope'] = Variable<String>(
+        $StatisticScopeTableTable.$converterscope.toSql(scope.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StatisticScopeTableCompanion(')
+          ..write('statisticId: $statisticId, ')
+          ..write('scope: $scope, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StatisticGameTableTable extends StatisticGameTable
+    with TableInfo<$StatisticGameTableTable, StatisticGameTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StatisticGameTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _statisticIdMeta = const VerificationMeta(
+    'statisticId',
+  );
+  @override
+  late final GeneratedColumn<String> statisticId = GeneratedColumn<String>(
+    'statistic_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES statistic_table (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _gameIdMeta = const VerificationMeta('gameId');
+  @override
+  late final GeneratedColumn<String> gameId = GeneratedColumn<String>(
+    'game_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES game_table (id) ON DELETE CASCADE',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [statisticId, gameId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'statistic_game_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StatisticGameTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('statistic_id')) {
+      context.handle(
+        _statisticIdMeta,
+        statisticId.isAcceptableOrUnknown(
+          data['statistic_id']!,
+          _statisticIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_statisticIdMeta);
+    }
+    if (data.containsKey('game_id')) {
+      context.handle(
+        _gameIdMeta,
+        gameId.isAcceptableOrUnknown(data['game_id']!, _gameIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_gameIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {statisticId, gameId};
+  @override
+  StatisticGameTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StatisticGameTableData(
+      statisticId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}statistic_id'],
+      )!,
+      gameId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}game_id'],
+      )!,
+    );
+  }
+
+  @override
+  $StatisticGameTableTable createAlias(String alias) {
+    return $StatisticGameTableTable(attachedDatabase, alias);
+  }
+}
+
+class StatisticGameTableData extends DataClass
+    implements Insertable<StatisticGameTableData> {
+  final String statisticId;
+  final String gameId;
+  const StatisticGameTableData({
+    required this.statisticId,
+    required this.gameId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['statistic_id'] = Variable<String>(statisticId);
+    map['game_id'] = Variable<String>(gameId);
+    return map;
+  }
+
+  StatisticGameTableCompanion toCompanion(bool nullToAbsent) {
+    return StatisticGameTableCompanion(
+      statisticId: Value(statisticId),
+      gameId: Value(gameId),
+    );
+  }
+
+  factory StatisticGameTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StatisticGameTableData(
+      statisticId: serializer.fromJson<String>(json['statisticId']),
+      gameId: serializer.fromJson<String>(json['gameId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'statisticId': serializer.toJson<String>(statisticId),
+      'gameId': serializer.toJson<String>(gameId),
+    };
+  }
+
+  StatisticGameTableData copyWith({String? statisticId, String? gameId}) =>
+      StatisticGameTableData(
+        statisticId: statisticId ?? this.statisticId,
+        gameId: gameId ?? this.gameId,
+      );
+  StatisticGameTableData copyWithCompanion(StatisticGameTableCompanion data) {
+    return StatisticGameTableData(
+      statisticId: data.statisticId.present
+          ? data.statisticId.value
+          : this.statisticId,
+      gameId: data.gameId.present ? data.gameId.value : this.gameId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StatisticGameTableData(')
+          ..write('statisticId: $statisticId, ')
+          ..write('gameId: $gameId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(statisticId, gameId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StatisticGameTableData &&
+          other.statisticId == this.statisticId &&
+          other.gameId == this.gameId);
+}
+
+class StatisticGameTableCompanion
+    extends UpdateCompanion<StatisticGameTableData> {
+  final Value<String> statisticId;
+  final Value<String> gameId;
+  final Value<int> rowid;
+  const StatisticGameTableCompanion({
+    this.statisticId = const Value.absent(),
+    this.gameId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StatisticGameTableCompanion.insert({
+    required String statisticId,
+    required String gameId,
+    this.rowid = const Value.absent(),
+  }) : statisticId = Value(statisticId),
+       gameId = Value(gameId);
+  static Insertable<StatisticGameTableData> custom({
+    Expression<String>? statisticId,
+    Expression<String>? gameId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (statisticId != null) 'statistic_id': statisticId,
+      if (gameId != null) 'game_id': gameId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StatisticGameTableCompanion copyWith({
+    Value<String>? statisticId,
+    Value<String>? gameId,
+    Value<int>? rowid,
+  }) {
+    return StatisticGameTableCompanion(
+      statisticId: statisticId ?? this.statisticId,
+      gameId: gameId ?? this.gameId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (statisticId.present) {
+      map['statistic_id'] = Variable<String>(statisticId.value);
+    }
+    if (gameId.present) {
+      map['game_id'] = Variable<String>(gameId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StatisticGameTableCompanion(')
+          ..write('statisticId: $statisticId, ')
+          ..write('gameId: $gameId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StatisticGroupTableTable extends StatisticGroupTable
+    with TableInfo<$StatisticGroupTableTable, StatisticGroupTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StatisticGroupTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _statisticIdMeta = const VerificationMeta(
+    'statisticId',
+  );
+  @override
+  late final GeneratedColumn<String> statisticId = GeneratedColumn<String>(
+    'statistic_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES statistic_table (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _groupIdMeta = const VerificationMeta(
+    'groupId',
+  );
+  @override
+  late final GeneratedColumn<String> groupId = GeneratedColumn<String>(
+    'group_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES group_table (id) ON DELETE CASCADE',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [statisticId, groupId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'statistic_group_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StatisticGroupTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('statistic_id')) {
+      context.handle(
+        _statisticIdMeta,
+        statisticId.isAcceptableOrUnknown(
+          data['statistic_id']!,
+          _statisticIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_statisticIdMeta);
+    }
+    if (data.containsKey('group_id')) {
+      context.handle(
+        _groupIdMeta,
+        groupId.isAcceptableOrUnknown(data['group_id']!, _groupIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_groupIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {statisticId, groupId};
+  @override
+  StatisticGroupTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StatisticGroupTableData(
+      statisticId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}statistic_id'],
+      )!,
+      groupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}group_id'],
+      )!,
+    );
+  }
+
+  @override
+  $StatisticGroupTableTable createAlias(String alias) {
+    return $StatisticGroupTableTable(attachedDatabase, alias);
+  }
+}
+
+class StatisticGroupTableData extends DataClass
+    implements Insertable<StatisticGroupTableData> {
+  final String statisticId;
+  final String groupId;
+  const StatisticGroupTableData({
+    required this.statisticId,
+    required this.groupId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['statistic_id'] = Variable<String>(statisticId);
+    map['group_id'] = Variable<String>(groupId);
+    return map;
+  }
+
+  StatisticGroupTableCompanion toCompanion(bool nullToAbsent) {
+    return StatisticGroupTableCompanion(
+      statisticId: Value(statisticId),
+      groupId: Value(groupId),
+    );
+  }
+
+  factory StatisticGroupTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StatisticGroupTableData(
+      statisticId: serializer.fromJson<String>(json['statisticId']),
+      groupId: serializer.fromJson<String>(json['groupId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'statisticId': serializer.toJson<String>(statisticId),
+      'groupId': serializer.toJson<String>(groupId),
+    };
+  }
+
+  StatisticGroupTableData copyWith({String? statisticId, String? groupId}) =>
+      StatisticGroupTableData(
+        statisticId: statisticId ?? this.statisticId,
+        groupId: groupId ?? this.groupId,
+      );
+  StatisticGroupTableData copyWithCompanion(StatisticGroupTableCompanion data) {
+    return StatisticGroupTableData(
+      statisticId: data.statisticId.present
+          ? data.statisticId.value
+          : this.statisticId,
+      groupId: data.groupId.present ? data.groupId.value : this.groupId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StatisticGroupTableData(')
+          ..write('statisticId: $statisticId, ')
+          ..write('groupId: $groupId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(statisticId, groupId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StatisticGroupTableData &&
+          other.statisticId == this.statisticId &&
+          other.groupId == this.groupId);
+}
+
+class StatisticGroupTableCompanion
+    extends UpdateCompanion<StatisticGroupTableData> {
+  final Value<String> statisticId;
+  final Value<String> groupId;
+  final Value<int> rowid;
+  const StatisticGroupTableCompanion({
+    this.statisticId = const Value.absent(),
+    this.groupId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StatisticGroupTableCompanion.insert({
+    required String statisticId,
+    required String groupId,
+    this.rowid = const Value.absent(),
+  }) : statisticId = Value(statisticId),
+       groupId = Value(groupId);
+  static Insertable<StatisticGroupTableData> custom({
+    Expression<String>? statisticId,
+    Expression<String>? groupId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (statisticId != null) 'statistic_id': statisticId,
+      if (groupId != null) 'group_id': groupId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StatisticGroupTableCompanion copyWith({
+    Value<String>? statisticId,
+    Value<String>? groupId,
+    Value<int>? rowid,
+  }) {
+    return StatisticGroupTableCompanion(
+      statisticId: statisticId ?? this.statisticId,
+      groupId: groupId ?? this.groupId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (statisticId.present) {
+      map['statistic_id'] = Variable<String>(statisticId.value);
+    }
+    if (groupId.present) {
+      map['group_id'] = Variable<String>(groupId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StatisticGroupTableCompanion(')
+          ..write('statisticId: $statisticId, ')
+          ..write('groupId: $groupId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2749,6 +4059,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ScoreEntryTableTable scoreEntryTable = $ScoreEntryTableTable(
     this,
   );
+  late final $StatisticTableTable statisticTable = $StatisticTableTable(this);
+  late final $StatisticScopeTableTable statisticScopeTable =
+      $StatisticScopeTableTable(this);
+  late final $StatisticGameTableTable statisticGameTable =
+      $StatisticGameTableTable(this);
+  late final $StatisticGroupTableTable statisticGroupTable =
+      $StatisticGroupTableTable(this);
   late final PlayerDao playerDao = PlayerDao(this as AppDatabase);
   late final GroupDao groupDao = GroupDao(this as AppDatabase);
   late final MatchDao matchDao = MatchDao(this as AppDatabase);
@@ -2761,6 +4078,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final GameDao gameDao = GameDao(this as AppDatabase);
   late final ScoreEntryDao scoreEntryDao = ScoreEntryDao(this as AppDatabase);
   late final TeamDao teamDao = TeamDao(this as AppDatabase);
+  late final StatisticDao statisticDao = StatisticDao(this as AppDatabase);
+  late final StatisticScopeDao statisticScopeDao = StatisticScopeDao(
+    this as AppDatabase,
+  );
+  late final StatisticGameDao statisticGameDao = StatisticGameDao(
+    this as AppDatabase,
+  );
+  late final StatisticGroupDao statisticGroupDao = StatisticGroupDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2774,6 +4101,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     teamTable,
     playerMatchTable,
     scoreEntryTable,
+    statisticTable,
+    statisticScopeTable,
+    statisticGameTable,
+    statisticGroupTable,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -2839,6 +4170,41 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('score_entry_table', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'statistic_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('statistic_scope_table', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'statistic_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('statistic_game_table', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'game_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('statistic_game_table', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'statistic_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('statistic_group_table', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'group_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('statistic_group_table', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -3419,6 +4785,33 @@ final class $$GroupTableTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $StatisticGroupTableTable,
+    List<StatisticGroupTableData>
+  >
+  _statisticGroupTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.statisticGroupTable,
+        aliasName: $_aliasNameGenerator(
+          db.groupTable.id,
+          db.statisticGroupTable.groupId,
+        ),
+      );
+
+  $$StatisticGroupTableTableProcessedTableManager get statisticGroupTableRefs {
+    final manager = $$StatisticGroupTableTableTableManager(
+      $_db,
+      $_db.statisticGroupTable,
+    ).filter((f) => f.groupId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _statisticGroupTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$GroupTableTableFilterComposer
@@ -3491,6 +4884,31 @@ class $$GroupTableTableFilterComposer
           }) => $$PlayerGroupTableTableFilterComposer(
             $db: $db,
             $table: $db.playerGroupTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> statisticGroupTableRefs(
+    Expression<bool> Function($$StatisticGroupTableTableFilterComposer f) f,
+  ) {
+    final $$StatisticGroupTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.statisticGroupTable,
+      getReferencedColumn: (t) => t.groupId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticGroupTableTableFilterComposer(
+            $db: $db,
+            $table: $db.statisticGroupTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -3603,6 +5021,32 @@ class $$GroupTableTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> statisticGroupTableRefs<T extends Object>(
+    Expression<T> Function($$StatisticGroupTableTableAnnotationComposer a) f,
+  ) {
+    final $$StatisticGroupTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.statisticGroupTable,
+          getReferencedColumn: (t) => t.groupId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$StatisticGroupTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.statisticGroupTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$GroupTableTableTableManager
@@ -3621,6 +5065,7 @@ class $$GroupTableTableTableManager
           PrefetchHooks Function({
             bool matchTableRefs,
             bool playerGroupTableRefs,
+            bool statisticGroupTableRefs,
           })
         > {
   $$GroupTableTableTableManager(_$AppDatabase db, $GroupTableTable table)
@@ -3671,12 +5116,17 @@ class $$GroupTableTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({matchTableRefs = false, playerGroupTableRefs = false}) {
+              ({
+                matchTableRefs = false,
+                playerGroupTableRefs = false,
+                statisticGroupTableRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (matchTableRefs) db.matchTable,
                     if (playerGroupTableRefs) db.playerGroupTable,
+                    if (statisticGroupTableRefs) db.statisticGroupTable,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -3723,6 +5173,27 @@ class $$GroupTableTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (statisticGroupTableRefs)
+                        await $_getPrefetchedData<
+                          GroupTableData,
+                          $GroupTableTable,
+                          StatisticGroupTableData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$GroupTableTableReferences
+                              ._statisticGroupTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$GroupTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).statisticGroupTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.groupId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -3743,15 +5214,19 @@ typedef $$GroupTableTableProcessedTableManager =
       $$GroupTableTableUpdateCompanionBuilder,
       (GroupTableData, $$GroupTableTableReferences),
       GroupTableData,
-      PrefetchHooks Function({bool matchTableRefs, bool playerGroupTableRefs})
+      PrefetchHooks Function({
+        bool matchTableRefs,
+        bool playerGroupTableRefs,
+        bool statisticGroupTableRefs,
+      })
     >;
 typedef $$GameTableTableCreateCompanionBuilder =
     GameTableCompanion Function({
       required String id,
       required String name,
-      required String ruleset,
+      required Ruleset ruleset,
       required String description,
-      required String color,
+      required AppColor color,
       required String icon,
       required DateTime createdAt,
       Value<int> rowid,
@@ -3760,9 +5235,9 @@ typedef $$GameTableTableUpdateCompanionBuilder =
     GameTableCompanion Function({
       Value<String> id,
       Value<String> name,
-      Value<String> ruleset,
+      Value<Ruleset> ruleset,
       Value<String> description,
-      Value<String> color,
+      Value<AppColor> color,
       Value<String> icon,
       Value<DateTime> createdAt,
       Value<int> rowid,
@@ -3789,6 +5264,33 @@ final class $$GameTableTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $StatisticGameTableTable,
+    List<StatisticGameTableData>
+  >
+  _statisticGameTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.statisticGameTable,
+        aliasName: $_aliasNameGenerator(
+          db.gameTable.id,
+          db.statisticGameTable.gameId,
+        ),
+      );
+
+  $$StatisticGameTableTableProcessedTableManager get statisticGameTableRefs {
+    final manager = $$StatisticGameTableTableTableManager(
+      $_db,
+      $_db.statisticGameTable,
+    ).filter((f) => f.gameId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _statisticGameTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$GameTableTableFilterComposer
@@ -3810,20 +5312,22 @@ class $$GameTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get ruleset => $composableBuilder(
-    column: $table.ruleset,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<Ruleset, Ruleset, String> get ruleset =>
+      $composableBuilder(
+        column: $table.ruleset,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<String> get description => $composableBuilder(
     column: $table.description,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get color => $composableBuilder(
-    column: $table.color,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<AppColor, AppColor, String> get color =>
+      $composableBuilder(
+        column: $table.color,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<String> get icon => $composableBuilder(
     column: $table.icon,
@@ -3851,6 +5355,31 @@ class $$GameTableTableFilterComposer
           }) => $$MatchTableTableFilterComposer(
             $db: $db,
             $table: $db.matchTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> statisticGameTableRefs(
+    Expression<bool> Function($$StatisticGameTableTableFilterComposer f) f,
+  ) {
+    final $$StatisticGameTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.statisticGameTable,
+      getReferencedColumn: (t) => t.gameId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticGameTableTableFilterComposer(
+            $db: $db,
+            $table: $db.statisticGameTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -3921,7 +5450,7 @@ class $$GameTableTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<String> get ruleset =>
+  GeneratedColumnWithTypeConverter<Ruleset, String> get ruleset =>
       $composableBuilder(column: $table.ruleset, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
@@ -3929,7 +5458,7 @@ class $$GameTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get color =>
+  GeneratedColumnWithTypeConverter<AppColor, String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
 
   GeneratedColumn<String> get icon =>
@@ -3962,6 +5491,32 @@ class $$GameTableTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> statisticGameTableRefs<T extends Object>(
+    Expression<T> Function($$StatisticGameTableTableAnnotationComposer a) f,
+  ) {
+    final $$StatisticGameTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.statisticGameTable,
+          getReferencedColumn: (t) => t.gameId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$StatisticGameTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.statisticGameTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$GameTableTableTableManager
@@ -3977,7 +5532,10 @@ class $$GameTableTableTableManager
           $$GameTableTableUpdateCompanionBuilder,
           (GameTableData, $$GameTableTableReferences),
           GameTableData,
-          PrefetchHooks Function({bool matchTableRefs})
+          PrefetchHooks Function({
+            bool matchTableRefs,
+            bool statisticGameTableRefs,
+          })
         > {
   $$GameTableTableTableManager(_$AppDatabase db, $GameTableTable table)
     : super(
@@ -3994,9 +5552,9 @@ class $$GameTableTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<String> ruleset = const Value.absent(),
+                Value<Ruleset> ruleset = const Value.absent(),
                 Value<String> description = const Value.absent(),
-                Value<String> color = const Value.absent(),
+                Value<AppColor> color = const Value.absent(),
                 Value<String> icon = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -4014,9 +5572,9 @@ class $$GameTableTableTableManager
               ({
                 required String id,
                 required String name,
-                required String ruleset,
+                required Ruleset ruleset,
                 required String description,
-                required String color,
+                required AppColor color,
                 required String icon,
                 required DateTime createdAt,
                 Value<int> rowid = const Value.absent(),
@@ -4038,36 +5596,63 @@ class $$GameTableTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({matchTableRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (matchTableRefs) db.matchTable],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (matchTableRefs)
-                    await $_getPrefetchedData<
-                      GameTableData,
-                      $GameTableTable,
-                      MatchTableData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$GameTableTableReferences
-                          ._matchTableRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$GameTableTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).matchTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.gameId == item.id),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({matchTableRefs = false, statisticGameTableRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (matchTableRefs) db.matchTable,
+                    if (statisticGameTableRefs) db.statisticGameTable,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (matchTableRefs)
+                        await $_getPrefetchedData<
+                          GameTableData,
+                          $GameTableTable,
+                          MatchTableData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$GameTableTableReferences
+                              ._matchTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$GameTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).matchTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.gameId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (statisticGameTableRefs)
+                        await $_getPrefetchedData<
+                          GameTableData,
+                          $GameTableTable,
+                          StatisticGameTableData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$GameTableTableReferences
+                              ._statisticGameTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$GameTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).statisticGameTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.gameId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -4084,7 +5669,7 @@ typedef $$GameTableTableProcessedTableManager =
       $$GameTableTableUpdateCompanionBuilder,
       (GameTableData, $$GameTableTableReferences),
       GameTableData,
-      PrefetchHooks Function({bool matchTableRefs})
+      PrefetchHooks Function({bool matchTableRefs, bool statisticGameTableRefs})
     >;
 typedef $$MatchTableTableCreateCompanionBuilder =
     MatchTableCompanion Function({
@@ -4092,6 +5677,7 @@ typedef $$MatchTableTableCreateCompanionBuilder =
       required String gameId,
       Value<String?> groupId,
       required String name,
+      Value<bool> isTeamMatch,
       required String notes,
       required DateTime createdAt,
       Value<DateTime?> endedAt,
@@ -4103,6 +5689,7 @@ typedef $$MatchTableTableUpdateCompanionBuilder =
       Value<String> gameId,
       Value<String?> groupId,
       Value<String> name,
+      Value<bool> isTeamMatch,
       Value<String> notes,
       Value<DateTime> createdAt,
       Value<DateTime?> endedAt,
@@ -4212,6 +5799,11 @@ class $$MatchTableTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isTeamMatch => $composableBuilder(
+    column: $table.isTeamMatch,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4346,6 +5938,11 @@ class $$MatchTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isTeamMatch => $composableBuilder(
+    column: $table.isTeamMatch,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
@@ -4422,6 +6019,11 @@ class $$MatchTableTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get isTeamMatch => $composableBuilder(
+    column: $table.isTeamMatch,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
@@ -4566,6 +6168,7 @@ class $$MatchTableTableTableManager
                 Value<String> gameId = const Value.absent(),
                 Value<String?> groupId = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<bool> isTeamMatch = const Value.absent(),
                 Value<String> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime?> endedAt = const Value.absent(),
@@ -4575,6 +6178,7 @@ class $$MatchTableTableTableManager
                 gameId: gameId,
                 groupId: groupId,
                 name: name,
+                isTeamMatch: isTeamMatch,
                 notes: notes,
                 createdAt: createdAt,
                 endedAt: endedAt,
@@ -4586,6 +6190,7 @@ class $$MatchTableTableTableManager
                 required String gameId,
                 Value<String?> groupId = const Value.absent(),
                 required String name,
+                Value<bool> isTeamMatch = const Value.absent(),
                 required String notes,
                 required DateTime createdAt,
                 Value<DateTime?> endedAt = const Value.absent(),
@@ -4595,6 +6200,7 @@ class $$MatchTableTableTableManager
                 gameId: gameId,
                 groupId: groupId,
                 name: name,
+                isTeamMatch: isTeamMatch,
                 notes: notes,
                 createdAt: createdAt,
                 endedAt: endedAt,
@@ -5109,6 +6715,8 @@ typedef $$TeamTableTableCreateCompanionBuilder =
       required String id,
       required String name,
       required DateTime createdAt,
+      Value<AppColor> color,
+      Value<int?> score,
       Value<int> rowid,
     });
 typedef $$TeamTableTableUpdateCompanionBuilder =
@@ -5116,6 +6724,8 @@ typedef $$TeamTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> name,
       Value<DateTime> createdAt,
+      Value<AppColor> color,
+      Value<int?> score,
       Value<int> rowid,
     });
 
@@ -5171,6 +6781,17 @@ class $$TeamTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnWithTypeConverterFilters<AppColor, AppColor, String> get color =>
+      $composableBuilder(
+        column: $table.color,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get score => $composableBuilder(
+    column: $table.score,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> playerMatchTableRefs(
     Expression<bool> Function($$PlayerMatchTableTableFilterComposer f) f,
   ) {
@@ -5220,6 +6841,16 @@ class $$TeamTableTableOrderingComposer
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get score => $composableBuilder(
+    column: $table.score,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TeamTableTableAnnotationComposer
@@ -5239,6 +6870,12 @@ class $$TeamTableTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<AppColor, String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<int> get score =>
+      $composableBuilder(column: $table.score, builder: (column) => column);
 
   Expression<T> playerMatchTableRefs<T extends Object>(
     Expression<T> Function($$PlayerMatchTableTableAnnotationComposer a) f,
@@ -5297,11 +6934,15 @@ class $$TeamTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<AppColor> color = const Value.absent(),
+                Value<int?> score = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TeamTableCompanion(
                 id: id,
                 name: name,
                 createdAt: createdAt,
+                color: color,
+                score: score,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -5309,11 +6950,15 @@ class $$TeamTableTableTableManager
                 required String id,
                 required String name,
                 required DateTime createdAt,
+                Value<AppColor> color = const Value.absent(),
+                Value<int?> score = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TeamTableCompanion.insert(
                 id: id,
                 name: name,
                 createdAt: createdAt,
+                color: color,
+                score: score,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -6273,6 +7918,1599 @@ typedef $$ScoreEntryTableTableProcessedTableManager =
       ScoreEntryTableData,
       PrefetchHooks Function({bool playerId, bool matchId})
     >;
+typedef $$StatisticTableTableCreateCompanionBuilder =
+    StatisticTableCompanion Function({
+      required String id,
+      required DateTime createdAt,
+      required StatisticType type,
+      required Timeframe timeframe,
+      required AppColor color,
+      Value<int> displayCount,
+      Value<int> rowid,
+    });
+typedef $$StatisticTableTableUpdateCompanionBuilder =
+    StatisticTableCompanion Function({
+      Value<String> id,
+      Value<DateTime> createdAt,
+      Value<StatisticType> type,
+      Value<Timeframe> timeframe,
+      Value<AppColor> color,
+      Value<int> displayCount,
+      Value<int> rowid,
+    });
+
+final class $$StatisticTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $StatisticTableTable,
+          StatisticTableData
+        > {
+  $$StatisticTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<
+    $StatisticScopeTableTable,
+    List<StatisticScopeTableData>
+  >
+  _statisticScopeTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.statisticScopeTable,
+        aliasName: $_aliasNameGenerator(
+          db.statisticTable.id,
+          db.statisticScopeTable.statisticId,
+        ),
+      );
+
+  $$StatisticScopeTableTableProcessedTableManager get statisticScopeTableRefs {
+    final manager = $$StatisticScopeTableTableTableManager(
+      $_db,
+      $_db.statisticScopeTable,
+    ).filter((f) => f.statisticId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _statisticScopeTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $StatisticGameTableTable,
+    List<StatisticGameTableData>
+  >
+  _statisticGameTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.statisticGameTable,
+        aliasName: $_aliasNameGenerator(
+          db.statisticTable.id,
+          db.statisticGameTable.statisticId,
+        ),
+      );
+
+  $$StatisticGameTableTableProcessedTableManager get statisticGameTableRefs {
+    final manager = $$StatisticGameTableTableTableManager(
+      $_db,
+      $_db.statisticGameTable,
+    ).filter((f) => f.statisticId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _statisticGameTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $StatisticGroupTableTable,
+    List<StatisticGroupTableData>
+  >
+  _statisticGroupTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.statisticGroupTable,
+        aliasName: $_aliasNameGenerator(
+          db.statisticTable.id,
+          db.statisticGroupTable.statisticId,
+        ),
+      );
+
+  $$StatisticGroupTableTableProcessedTableManager get statisticGroupTableRefs {
+    final manager = $$StatisticGroupTableTableTableManager(
+      $_db,
+      $_db.statisticGroupTable,
+    ).filter((f) => f.statisticId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _statisticGroupTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$StatisticTableTableFilterComposer
+    extends Composer<_$AppDatabase, $StatisticTableTable> {
+  $$StatisticTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<StatisticType, StatisticType, String>
+  get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<Timeframe, Timeframe, String> get timeframe =>
+      $composableBuilder(
+        column: $table.timeframe,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<AppColor, AppColor, String> get color =>
+      $composableBuilder(
+        column: $table.color,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get displayCount => $composableBuilder(
+    column: $table.displayCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> statisticScopeTableRefs(
+    Expression<bool> Function($$StatisticScopeTableTableFilterComposer f) f,
+  ) {
+    final $$StatisticScopeTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.statisticScopeTable,
+      getReferencedColumn: (t) => t.statisticId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticScopeTableTableFilterComposer(
+            $db: $db,
+            $table: $db.statisticScopeTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> statisticGameTableRefs(
+    Expression<bool> Function($$StatisticGameTableTableFilterComposer f) f,
+  ) {
+    final $$StatisticGameTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.statisticGameTable,
+      getReferencedColumn: (t) => t.statisticId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticGameTableTableFilterComposer(
+            $db: $db,
+            $table: $db.statisticGameTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> statisticGroupTableRefs(
+    Expression<bool> Function($$StatisticGroupTableTableFilterComposer f) f,
+  ) {
+    final $$StatisticGroupTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.statisticGroupTable,
+      getReferencedColumn: (t) => t.statisticId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticGroupTableTableFilterComposer(
+            $db: $db,
+            $table: $db.statisticGroupTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$StatisticTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $StatisticTableTable> {
+  $$StatisticTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timeframe => $composableBuilder(
+    column: $table.timeframe,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get displayCount => $composableBuilder(
+    column: $table.displayCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StatisticTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StatisticTableTable> {
+  $$StatisticTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<StatisticType, String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Timeframe, String> get timeframe =>
+      $composableBuilder(column: $table.timeframe, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<AppColor, String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<int> get displayCount => $composableBuilder(
+    column: $table.displayCount,
+    builder: (column) => column,
+  );
+
+  Expression<T> statisticScopeTableRefs<T extends Object>(
+    Expression<T> Function($$StatisticScopeTableTableAnnotationComposer a) f,
+  ) {
+    final $$StatisticScopeTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.statisticScopeTable,
+          getReferencedColumn: (t) => t.statisticId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$StatisticScopeTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.statisticScopeTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> statisticGameTableRefs<T extends Object>(
+    Expression<T> Function($$StatisticGameTableTableAnnotationComposer a) f,
+  ) {
+    final $$StatisticGameTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.statisticGameTable,
+          getReferencedColumn: (t) => t.statisticId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$StatisticGameTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.statisticGameTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> statisticGroupTableRefs<T extends Object>(
+    Expression<T> Function($$StatisticGroupTableTableAnnotationComposer a) f,
+  ) {
+    final $$StatisticGroupTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.statisticGroupTable,
+          getReferencedColumn: (t) => t.statisticId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$StatisticGroupTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.statisticGroupTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$StatisticTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StatisticTableTable,
+          StatisticTableData,
+          $$StatisticTableTableFilterComposer,
+          $$StatisticTableTableOrderingComposer,
+          $$StatisticTableTableAnnotationComposer,
+          $$StatisticTableTableCreateCompanionBuilder,
+          $$StatisticTableTableUpdateCompanionBuilder,
+          (StatisticTableData, $$StatisticTableTableReferences),
+          StatisticTableData,
+          PrefetchHooks Function({
+            bool statisticScopeTableRefs,
+            bool statisticGameTableRefs,
+            bool statisticGroupTableRefs,
+          })
+        > {
+  $$StatisticTableTableTableManager(
+    _$AppDatabase db,
+    $StatisticTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StatisticTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StatisticTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StatisticTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<StatisticType> type = const Value.absent(),
+                Value<Timeframe> timeframe = const Value.absent(),
+                Value<AppColor> color = const Value.absent(),
+                Value<int> displayCount = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StatisticTableCompanion(
+                id: id,
+                createdAt: createdAt,
+                type: type,
+                timeframe: timeframe,
+                color: color,
+                displayCount: displayCount,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime createdAt,
+                required StatisticType type,
+                required Timeframe timeframe,
+                required AppColor color,
+                Value<int> displayCount = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StatisticTableCompanion.insert(
+                id: id,
+                createdAt: createdAt,
+                type: type,
+                timeframe: timeframe,
+                color: color,
+                displayCount: displayCount,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$StatisticTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                statisticScopeTableRefs = false,
+                statisticGameTableRefs = false,
+                statisticGroupTableRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (statisticScopeTableRefs) db.statisticScopeTable,
+                    if (statisticGameTableRefs) db.statisticGameTable,
+                    if (statisticGroupTableRefs) db.statisticGroupTable,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (statisticScopeTableRefs)
+                        await $_getPrefetchedData<
+                          StatisticTableData,
+                          $StatisticTableTable,
+                          StatisticScopeTableData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$StatisticTableTableReferences
+                              ._statisticScopeTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$StatisticTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).statisticScopeTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.statisticId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (statisticGameTableRefs)
+                        await $_getPrefetchedData<
+                          StatisticTableData,
+                          $StatisticTableTable,
+                          StatisticGameTableData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$StatisticTableTableReferences
+                              ._statisticGameTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$StatisticTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).statisticGameTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.statisticId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (statisticGroupTableRefs)
+                        await $_getPrefetchedData<
+                          StatisticTableData,
+                          $StatisticTableTable,
+                          StatisticGroupTableData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$StatisticTableTableReferences
+                              ._statisticGroupTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$StatisticTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).statisticGroupTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.statisticId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$StatisticTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StatisticTableTable,
+      StatisticTableData,
+      $$StatisticTableTableFilterComposer,
+      $$StatisticTableTableOrderingComposer,
+      $$StatisticTableTableAnnotationComposer,
+      $$StatisticTableTableCreateCompanionBuilder,
+      $$StatisticTableTableUpdateCompanionBuilder,
+      (StatisticTableData, $$StatisticTableTableReferences),
+      StatisticTableData,
+      PrefetchHooks Function({
+        bool statisticScopeTableRefs,
+        bool statisticGameTableRefs,
+        bool statisticGroupTableRefs,
+      })
+    >;
+typedef $$StatisticScopeTableTableCreateCompanionBuilder =
+    StatisticScopeTableCompanion Function({
+      required String statisticId,
+      required StatisticScope scope,
+      Value<int> rowid,
+    });
+typedef $$StatisticScopeTableTableUpdateCompanionBuilder =
+    StatisticScopeTableCompanion Function({
+      Value<String> statisticId,
+      Value<StatisticScope> scope,
+      Value<int> rowid,
+    });
+
+final class $$StatisticScopeTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $StatisticScopeTableTable,
+          StatisticScopeTableData
+        > {
+  $$StatisticScopeTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $StatisticTableTable _statisticIdTable(_$AppDatabase db) =>
+      db.statisticTable.createAlias(
+        $_aliasNameGenerator(
+          db.statisticScopeTable.statisticId,
+          db.statisticTable.id,
+        ),
+      );
+
+  $$StatisticTableTableProcessedTableManager get statisticId {
+    final $_column = $_itemColumn<String>('statistic_id')!;
+
+    final manager = $$StatisticTableTableTableManager(
+      $_db,
+      $_db.statisticTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_statisticIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$StatisticScopeTableTableFilterComposer
+    extends Composer<_$AppDatabase, $StatisticScopeTableTable> {
+  $$StatisticScopeTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnWithTypeConverterFilters<StatisticScope, StatisticScope, String>
+  get scope => $composableBuilder(
+    column: $table.scope,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  $$StatisticTableTableFilterComposer get statisticId {
+    final $$StatisticTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.statisticId,
+      referencedTable: $db.statisticTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticTableTableFilterComposer(
+            $db: $db,
+            $table: $db.statisticTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StatisticScopeTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $StatisticScopeTableTable> {
+  $$StatisticScopeTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get scope => $composableBuilder(
+    column: $table.scope,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$StatisticTableTableOrderingComposer get statisticId {
+    final $$StatisticTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.statisticId,
+      referencedTable: $db.statisticTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.statisticTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StatisticScopeTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StatisticScopeTableTable> {
+  $$StatisticScopeTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumnWithTypeConverter<StatisticScope, String> get scope =>
+      $composableBuilder(column: $table.scope, builder: (column) => column);
+
+  $$StatisticTableTableAnnotationComposer get statisticId {
+    final $$StatisticTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.statisticId,
+      referencedTable: $db.statisticTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.statisticTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StatisticScopeTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StatisticScopeTableTable,
+          StatisticScopeTableData,
+          $$StatisticScopeTableTableFilterComposer,
+          $$StatisticScopeTableTableOrderingComposer,
+          $$StatisticScopeTableTableAnnotationComposer,
+          $$StatisticScopeTableTableCreateCompanionBuilder,
+          $$StatisticScopeTableTableUpdateCompanionBuilder,
+          (StatisticScopeTableData, $$StatisticScopeTableTableReferences),
+          StatisticScopeTableData,
+          PrefetchHooks Function({bool statisticId})
+        > {
+  $$StatisticScopeTableTableTableManager(
+    _$AppDatabase db,
+    $StatisticScopeTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StatisticScopeTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StatisticScopeTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$StatisticScopeTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> statisticId = const Value.absent(),
+                Value<StatisticScope> scope = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StatisticScopeTableCompanion(
+                statisticId: statisticId,
+                scope: scope,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String statisticId,
+                required StatisticScope scope,
+                Value<int> rowid = const Value.absent(),
+              }) => StatisticScopeTableCompanion.insert(
+                statisticId: statisticId,
+                scope: scope,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$StatisticScopeTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({statisticId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (statisticId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.statisticId,
+                                referencedTable:
+                                    $$StatisticScopeTableTableReferences
+                                        ._statisticIdTable(db),
+                                referencedColumn:
+                                    $$StatisticScopeTableTableReferences
+                                        ._statisticIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$StatisticScopeTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StatisticScopeTableTable,
+      StatisticScopeTableData,
+      $$StatisticScopeTableTableFilterComposer,
+      $$StatisticScopeTableTableOrderingComposer,
+      $$StatisticScopeTableTableAnnotationComposer,
+      $$StatisticScopeTableTableCreateCompanionBuilder,
+      $$StatisticScopeTableTableUpdateCompanionBuilder,
+      (StatisticScopeTableData, $$StatisticScopeTableTableReferences),
+      StatisticScopeTableData,
+      PrefetchHooks Function({bool statisticId})
+    >;
+typedef $$StatisticGameTableTableCreateCompanionBuilder =
+    StatisticGameTableCompanion Function({
+      required String statisticId,
+      required String gameId,
+      Value<int> rowid,
+    });
+typedef $$StatisticGameTableTableUpdateCompanionBuilder =
+    StatisticGameTableCompanion Function({
+      Value<String> statisticId,
+      Value<String> gameId,
+      Value<int> rowid,
+    });
+
+final class $$StatisticGameTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $StatisticGameTableTable,
+          StatisticGameTableData
+        > {
+  $$StatisticGameTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $StatisticTableTable _statisticIdTable(_$AppDatabase db) =>
+      db.statisticTable.createAlias(
+        $_aliasNameGenerator(
+          db.statisticGameTable.statisticId,
+          db.statisticTable.id,
+        ),
+      );
+
+  $$StatisticTableTableProcessedTableManager get statisticId {
+    final $_column = $_itemColumn<String>('statistic_id')!;
+
+    final manager = $$StatisticTableTableTableManager(
+      $_db,
+      $_db.statisticTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_statisticIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $GameTableTable _gameIdTable(_$AppDatabase db) =>
+      db.gameTable.createAlias(
+        $_aliasNameGenerator(db.statisticGameTable.gameId, db.gameTable.id),
+      );
+
+  $$GameTableTableProcessedTableManager get gameId {
+    final $_column = $_itemColumn<String>('game_id')!;
+
+    final manager = $$GameTableTableTableManager(
+      $_db,
+      $_db.gameTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_gameIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$StatisticGameTableTableFilterComposer
+    extends Composer<_$AppDatabase, $StatisticGameTableTable> {
+  $$StatisticGameTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$StatisticTableTableFilterComposer get statisticId {
+    final $$StatisticTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.statisticId,
+      referencedTable: $db.statisticTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticTableTableFilterComposer(
+            $db: $db,
+            $table: $db.statisticTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$GameTableTableFilterComposer get gameId {
+    final $$GameTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.gameId,
+      referencedTable: $db.gameTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GameTableTableFilterComposer(
+            $db: $db,
+            $table: $db.gameTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StatisticGameTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $StatisticGameTableTable> {
+  $$StatisticGameTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$StatisticTableTableOrderingComposer get statisticId {
+    final $$StatisticTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.statisticId,
+      referencedTable: $db.statisticTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.statisticTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$GameTableTableOrderingComposer get gameId {
+    final $$GameTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.gameId,
+      referencedTable: $db.gameTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GameTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.gameTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StatisticGameTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StatisticGameTableTable> {
+  $$StatisticGameTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$StatisticTableTableAnnotationComposer get statisticId {
+    final $$StatisticTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.statisticId,
+      referencedTable: $db.statisticTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.statisticTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$GameTableTableAnnotationComposer get gameId {
+    final $$GameTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.gameId,
+      referencedTable: $db.gameTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GameTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.gameTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StatisticGameTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StatisticGameTableTable,
+          StatisticGameTableData,
+          $$StatisticGameTableTableFilterComposer,
+          $$StatisticGameTableTableOrderingComposer,
+          $$StatisticGameTableTableAnnotationComposer,
+          $$StatisticGameTableTableCreateCompanionBuilder,
+          $$StatisticGameTableTableUpdateCompanionBuilder,
+          (StatisticGameTableData, $$StatisticGameTableTableReferences),
+          StatisticGameTableData,
+          PrefetchHooks Function({bool statisticId, bool gameId})
+        > {
+  $$StatisticGameTableTableTableManager(
+    _$AppDatabase db,
+    $StatisticGameTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StatisticGameTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StatisticGameTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StatisticGameTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> statisticId = const Value.absent(),
+                Value<String> gameId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StatisticGameTableCompanion(
+                statisticId: statisticId,
+                gameId: gameId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String statisticId,
+                required String gameId,
+                Value<int> rowid = const Value.absent(),
+              }) => StatisticGameTableCompanion.insert(
+                statisticId: statisticId,
+                gameId: gameId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$StatisticGameTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({statisticId = false, gameId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (statisticId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.statisticId,
+                                referencedTable:
+                                    $$StatisticGameTableTableReferences
+                                        ._statisticIdTable(db),
+                                referencedColumn:
+                                    $$StatisticGameTableTableReferences
+                                        ._statisticIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (gameId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.gameId,
+                                referencedTable:
+                                    $$StatisticGameTableTableReferences
+                                        ._gameIdTable(db),
+                                referencedColumn:
+                                    $$StatisticGameTableTableReferences
+                                        ._gameIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$StatisticGameTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StatisticGameTableTable,
+      StatisticGameTableData,
+      $$StatisticGameTableTableFilterComposer,
+      $$StatisticGameTableTableOrderingComposer,
+      $$StatisticGameTableTableAnnotationComposer,
+      $$StatisticGameTableTableCreateCompanionBuilder,
+      $$StatisticGameTableTableUpdateCompanionBuilder,
+      (StatisticGameTableData, $$StatisticGameTableTableReferences),
+      StatisticGameTableData,
+      PrefetchHooks Function({bool statisticId, bool gameId})
+    >;
+typedef $$StatisticGroupTableTableCreateCompanionBuilder =
+    StatisticGroupTableCompanion Function({
+      required String statisticId,
+      required String groupId,
+      Value<int> rowid,
+    });
+typedef $$StatisticGroupTableTableUpdateCompanionBuilder =
+    StatisticGroupTableCompanion Function({
+      Value<String> statisticId,
+      Value<String> groupId,
+      Value<int> rowid,
+    });
+
+final class $$StatisticGroupTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $StatisticGroupTableTable,
+          StatisticGroupTableData
+        > {
+  $$StatisticGroupTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $StatisticTableTable _statisticIdTable(_$AppDatabase db) =>
+      db.statisticTable.createAlias(
+        $_aliasNameGenerator(
+          db.statisticGroupTable.statisticId,
+          db.statisticTable.id,
+        ),
+      );
+
+  $$StatisticTableTableProcessedTableManager get statisticId {
+    final $_column = $_itemColumn<String>('statistic_id')!;
+
+    final manager = $$StatisticTableTableTableManager(
+      $_db,
+      $_db.statisticTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_statisticIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $GroupTableTable _groupIdTable(_$AppDatabase db) =>
+      db.groupTable.createAlias(
+        $_aliasNameGenerator(db.statisticGroupTable.groupId, db.groupTable.id),
+      );
+
+  $$GroupTableTableProcessedTableManager get groupId {
+    final $_column = $_itemColumn<String>('group_id')!;
+
+    final manager = $$GroupTableTableTableManager(
+      $_db,
+      $_db.groupTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_groupIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$StatisticGroupTableTableFilterComposer
+    extends Composer<_$AppDatabase, $StatisticGroupTableTable> {
+  $$StatisticGroupTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$StatisticTableTableFilterComposer get statisticId {
+    final $$StatisticTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.statisticId,
+      referencedTable: $db.statisticTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticTableTableFilterComposer(
+            $db: $db,
+            $table: $db.statisticTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$GroupTableTableFilterComposer get groupId {
+    final $$GroupTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.groupTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GroupTableTableFilterComposer(
+            $db: $db,
+            $table: $db.groupTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StatisticGroupTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $StatisticGroupTableTable> {
+  $$StatisticGroupTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$StatisticTableTableOrderingComposer get statisticId {
+    final $$StatisticTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.statisticId,
+      referencedTable: $db.statisticTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.statisticTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$GroupTableTableOrderingComposer get groupId {
+    final $$GroupTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.groupTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GroupTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.groupTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StatisticGroupTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StatisticGroupTableTable> {
+  $$StatisticGroupTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$StatisticTableTableAnnotationComposer get statisticId {
+    final $$StatisticTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.statisticId,
+      referencedTable: $db.statisticTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StatisticTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.statisticTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$GroupTableTableAnnotationComposer get groupId {
+    final $$GroupTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.groupTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GroupTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.groupTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StatisticGroupTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StatisticGroupTableTable,
+          StatisticGroupTableData,
+          $$StatisticGroupTableTableFilterComposer,
+          $$StatisticGroupTableTableOrderingComposer,
+          $$StatisticGroupTableTableAnnotationComposer,
+          $$StatisticGroupTableTableCreateCompanionBuilder,
+          $$StatisticGroupTableTableUpdateCompanionBuilder,
+          (StatisticGroupTableData, $$StatisticGroupTableTableReferences),
+          StatisticGroupTableData,
+          PrefetchHooks Function({bool statisticId, bool groupId})
+        > {
+  $$StatisticGroupTableTableTableManager(
+    _$AppDatabase db,
+    $StatisticGroupTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StatisticGroupTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StatisticGroupTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$StatisticGroupTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> statisticId = const Value.absent(),
+                Value<String> groupId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StatisticGroupTableCompanion(
+                statisticId: statisticId,
+                groupId: groupId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String statisticId,
+                required String groupId,
+                Value<int> rowid = const Value.absent(),
+              }) => StatisticGroupTableCompanion.insert(
+                statisticId: statisticId,
+                groupId: groupId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$StatisticGroupTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({statisticId = false, groupId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (statisticId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.statisticId,
+                                referencedTable:
+                                    $$StatisticGroupTableTableReferences
+                                        ._statisticIdTable(db),
+                                referencedColumn:
+                                    $$StatisticGroupTableTableReferences
+                                        ._statisticIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (groupId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.groupId,
+                                referencedTable:
+                                    $$StatisticGroupTableTableReferences
+                                        ._groupIdTable(db),
+                                referencedColumn:
+                                    $$StatisticGroupTableTableReferences
+                                        ._groupIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$StatisticGroupTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StatisticGroupTableTable,
+      StatisticGroupTableData,
+      $$StatisticGroupTableTableFilterComposer,
+      $$StatisticGroupTableTableOrderingComposer,
+      $$StatisticGroupTableTableAnnotationComposer,
+      $$StatisticGroupTableTableCreateCompanionBuilder,
+      $$StatisticGroupTableTableUpdateCompanionBuilder,
+      (StatisticGroupTableData, $$StatisticGroupTableTableReferences),
+      StatisticGroupTableData,
+      PrefetchHooks Function({bool statisticId, bool groupId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6293,4 +9531,12 @@ class $AppDatabaseManager {
       $$PlayerMatchTableTableTableManager(_db, _db.playerMatchTable);
   $$ScoreEntryTableTableTableManager get scoreEntryTable =>
       $$ScoreEntryTableTableTableManager(_db, _db.scoreEntryTable);
+  $$StatisticTableTableTableManager get statisticTable =>
+      $$StatisticTableTableTableManager(_db, _db.statisticTable);
+  $$StatisticScopeTableTableTableManager get statisticScopeTable =>
+      $$StatisticScopeTableTableTableManager(_db, _db.statisticScopeTable);
+  $$StatisticGameTableTableTableManager get statisticGameTable =>
+      $$StatisticGameTableTableTableManager(_db, _db.statisticGameTable);
+  $$StatisticGroupTableTableTableManager get statisticGroupTable =>
+      $$StatisticGroupTableTableTableManager(_db, _db.statisticGroupTable);
 }

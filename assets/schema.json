@@ -87,6 +87,7 @@
           },
           "memberIds": {
             "type": "array",
+            "minItems": 2,
             "items": {
               "type": "string"
             }
@@ -133,6 +134,7 @@
           },
           "playerIds": {
             "type": "array",
+            "minItems": 2,
             "items": {
               "type": "string"
             }
@@ -157,7 +159,11 @@
                       "type": "number"
                     }
                   },
-                  "required": ["roundNumber", "score", "change"],
+                  "required": [
+                    "roundNumber",
+                    "score",
+                    "change"
+                  ],
                   "additionalProperties": false
                 }
               ]
@@ -166,8 +172,53 @@
           "notes": {
             "type": "string"
           },
+          "isTeamMatch": {
+            "type": "boolean"
+          },
           "teams": {
-            "type": ["array", "null"]
+            "type": [
+              "array",
+              "null"
+            ],
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                },
+                "score": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "memberIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "name",
+                "createdAt",
+                "color",
+                "memberIds"
+              ]
+            }
           }
         },
         "additionalProperties": false,
@@ -177,7 +228,68 @@
           "createdAt",
           "gameId",
           "playerIds",
-          "notes"
+          "notes",
+          "isTeamMatch"
+        ]
+      }
+    },
+    "statistics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timeframe": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "selectedGroups": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "selectedGames": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "displayCount": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "createdAt",
+          "type",
+          "scopes",
+          "timeframe",
+          "color",
+          "displayCount"
         ]
       }
     }
@@ -187,6 +299,7 @@
     "players",
     "games",
     "groups",
-    "matches"
+    "matches",
+    "statistics"
   ]
 }
