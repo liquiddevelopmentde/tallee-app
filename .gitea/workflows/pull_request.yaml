@@ -31,16 +31,20 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/cirruslabs/flutter:stable
     steps:
-      - name: Install Node
-        run: |
-          apt-get update
-          apt-get install -y nodejs npm
-
       - name: Checkout code
         uses: actions/checkout@v4
+
+      # Required for Flutter action
+      - name: Install jq
+        run: |
+          apt-get update
+          apt-get install -y jq 
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
 
       - name: Get dependencies
         run: |
