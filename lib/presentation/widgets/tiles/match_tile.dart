@@ -20,25 +20,19 @@ class MatchTile extends StatefulWidget {
   /// creation date, associated group, winner, and players.
   /// - [match]: The match data to be displayed.
   /// - [onTap]: The callback invoked when the tile is tapped.
+  /// - [onPlayerEdited]: The callback invoked when the players are edited.
   /// - [width]: Optional width for the tile.
   const MatchTile({
     super.key,
     required this.match,
     required this.onTap,
-    this.width,
     this.onPlayerEdited,
+    this.width,
   });
 
-  /// The match data to be displayed.
   final Match match;
-
-  /// The callback invoked when the tile is tapped.
   final VoidCallback onTap;
-
-  /// The callback invoked when the players are edited
   final VoidCallback? onPlayerEdited;
-
-  /// Optional width for the tile.
   final double? width;
 
   @override
@@ -69,19 +63,20 @@ class _MatchTileState extends State<MatchTile> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              spacing: 8,
               children: [
                 Expanded(
                   child: Text(
                     match.name,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Text(
-                  _formatDate(match.createdAt, context),
+                  formatDate(match.createdAt, context),
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
@@ -320,7 +315,7 @@ class _MatchTileState extends State<MatchTile> {
 
   /// Formats the given [dateTime] into a human-readable string based on its
   /// difference from the current date.
-  String _formatDate(DateTime dateTime, BuildContext context) {
+  String formatDate(DateTime dateTime, BuildContext context) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
     final loc = AppLocalizations.of(context);
