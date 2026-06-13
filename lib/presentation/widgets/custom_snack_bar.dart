@@ -71,6 +71,8 @@ class _AnimatedContent extends StatelessWidget {
             child: Text(
               message,
               textAlign: TextAlign.center,
+              softWrap: true,
+              maxLines: null,
               textWidthBasis: TextWidthBasis.longestLine,
               style: const TextStyle(
                 color: CustomTheme.textColor,
