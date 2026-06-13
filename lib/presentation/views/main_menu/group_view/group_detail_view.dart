@@ -77,7 +77,6 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     loc.this_cannot_be_undone +
                         loc.this_cannot_be_undone +
                         loc.this_cannot_be_undone,
-                    maxLines: null,
                     overflow: TextOverflow.visible,
                   ),
                   actions: [

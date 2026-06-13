@@ -102,7 +102,6 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   title: loc.delete_player,
                   content: Text(
                     loc.this_cannot_be_undone,
-                    maxLines: null,
                     overflow: TextOverflow.visible,
                   ),
                   actions: [

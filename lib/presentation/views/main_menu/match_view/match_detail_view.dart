@@ -75,7 +75,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   title: '${loc.delete_match}?',
                   content: Text(
                     loc.this_cannot_be_undone,
-                    maxLines: null,
                     overflow: TextOverflow.visible,
                   ),
                   actions: [

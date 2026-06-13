@@ -138,7 +138,6 @@ class _CreateGameViewState extends State<CreateGameView> {
                       title: loc.delete_game,
                       content: Text(
                         dialogContent,
-                        maxLines: null,
                         overflow: TextOverflow.visible,
                         style: const TextStyle(fontSize: 15),
                       ),

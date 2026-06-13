@@ -127,7 +127,6 @@ class _SettingsViewState extends State<SettingsView> {
                           title: '${loc.delete_all_data}?',
                           content: Text(
                             loc.this_cannot_be_undone,
-                            maxLines: null,
                             overflow: TextOverflow.visible,
                           ),
                           actions: [

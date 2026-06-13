@@ -79,7 +79,6 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                     title: '${loc.delete_statistic}?',
                     content: Text(
                       loc.this_cannot_be_undone,
-                      maxLines: null,
                       overflow: TextOverflow.visible,
                     ),
                     actions: [
