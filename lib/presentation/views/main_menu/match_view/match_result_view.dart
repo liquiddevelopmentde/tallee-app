@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/edge_blocked_bouncing_scroll_physics.dart';
 import 'package:tallee/core/enums.dart';
@@ -242,7 +243,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   void inizializeAsNormalMatch() {
     allPlayers = [...widget.match.players];
-    allPlayers.sort((a, b) => a.name.compareTo(b.name));
+    allPlayers.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
 
     controller = List.generate(
       allPlayers.length,

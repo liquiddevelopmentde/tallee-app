@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -497,7 +498,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
           }
         } else {
           // Otherwise, use the loaded players from the database.
-          loadedPlayers.sort((a, b) => a.name.compareTo(b.name));
+          loadedPlayers.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
           allPlayers = [...loadedPlayers];
           if (widget.initialSelectedUnits != null ||
               widget.initialSelectedPlayers != null) {

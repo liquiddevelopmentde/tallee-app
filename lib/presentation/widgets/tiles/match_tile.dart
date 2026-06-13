@@ -51,7 +51,7 @@ class _MatchTileState extends State<MatchTile> {
     final match = widget.match;
     final group = match.group;
     final players = [...match.players]
-      ..sort((a, b) => a.name.compareTo(b.name));
+      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(
