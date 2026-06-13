@@ -73,7 +73,10 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 context: context,
                 builder: (context) => CustomAlertDialog(
                   title: '${loc.delete_group}?',
-                  content: Text(loc.delete_group_warning_details, overflow: TextOverflow.visible,),
+                  content: Text(
+                    loc.delete_group_warning_details,
+                    overflow: TextOverflow.visible,
+                  ),
                   actions: [
                     CustomDialogAction(
                       onPressed: () => Navigator.of(context).pop(true),
