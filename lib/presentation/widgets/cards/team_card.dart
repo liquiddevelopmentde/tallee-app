@@ -3,7 +3,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/team.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class TeamCard extends StatelessWidget {
   const TeamCard({
@@ -102,26 +102,25 @@ class TeamCard extends StatelessWidget {
                       color: CustomTheme.textColor,
                     ),
                   ),
-                  if (team.name.isNotEmpty)
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        ...team.members.take(shownPlayerAmount).map((player) {
-                          return TextIconTile(player: player);
-                        }),
-                        if (team.members.length > shownPlayerAmount)
-                          Text(
-                            '+ ${team.members.length - shownPlayerAmount}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: CustomTheme.textColor,
-                            ),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      ...team.members.take(shownPlayerAmount).map((player) {
+                        return PlayerTile(player: player);
+                      }),
+                      if (team.members.length > shownPlayerAmount)
+                        Text(
+                          '+ ${team.members.length - shownPlayerAmount}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: CustomTheme.textColor,
                           ),
-                      ],
-                    ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
             ),

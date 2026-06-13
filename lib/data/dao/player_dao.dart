@@ -119,6 +119,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   }
 
   /// Checks if a player with the given [playerId] exists in the database.
+  /// Ignores the `deleted` flag, so it returns `true` even for players marked as deleted.
   /// Returns `true` if the player exists, `false` otherwise.
   Future<bool> playerExists({required String playerId}) async {
     final query = select(playerTable)..where((p) => p.id.equals(playerId));
@@ -127,8 +128,15 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   }
 
   /// Retrieves all players from the database.
-  Future<List<Player>> getAllPlayers() async {
-    final query = select(playerTable);
+  /// If [includeDeletedPlayer] is `false`, players marked as deleted will be filtered out from the result.
+  /// Returns empty list if no players are found.
+  Future<List<Player>> getAllPlayers({
+    bool includeDeletedPlayer = false,
+  }) async {
+    var query = select(playerTable);
+    if (!includeDeletedPlayer) {
+      query = query..where((p) => p.deleted.equals(false));
+    }
     final result = await query.get();
     return result
         .map(
@@ -138,6 +146,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
             description: row.description,
             createdAt: row.createdAt,
             nameCount: row.nameCount,
+            deleted: row.deleted,
           ),
         )
         .toList();
@@ -153,7 +162,20 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
       description: row.description,
       createdAt: row.createdAt,
       nameCount: row.nameCount,
+      deleted: row.deleted,
     );
+  }
+
+  /// Checks, if a player can be safely deleted.
+  /// Returns `false`, if a player is in at least one match, else `true`.
+  Future<bool> canTrueDelete({required String playerId}) async {
+    final query =
+        (selectOnly(db.playerMatchTable)
+              ..where(db.playerMatchTable.playerId.equals(playerId))
+              ..addColumns([db.playerMatchTable.playerId.count()]))
+            .map((row) => row.read(db.playerMatchTable.playerId.count()));
+    final count = await query.getSingle();
+    return (count ?? 0) == 0;
   }
 
   /* Update */
@@ -233,12 +255,57 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
 
   /* Delete */
 
-  /// Deletes the player with the given [id] from the database.
-  /// Returns `true` if the player was deleted, `false` if the player did not exist.
+  /// Deletes the player with the given [playerId] from the database.
+  /// - [canTrueDelete] == `false`: Set deleted flag
+  /// - [canTrueDelete] == `true`: Delete from database
+  ///
+  /// Returns `true` if the player was deleted/marked, `false` if the player did
+  /// not exist.
   Future<bool> deletePlayer({required String playerId}) async {
-    final query = delete(playerTable)..where((tbl) => tbl.id.equals(playerId));
+    if (!await canTrueDelete(playerId: playerId)) {
+      final rowsAffected =
+          await (update(playerTable)..where((tbl) => tbl.id.equals(playerId)))
+              .write(const PlayerTableCompanion(deleted: Value(true)));
+      await db.playerGroupDao.removePlayerFromAllGroups(playerId: playerId);
+      return rowsAffected > 0;
+    } else {
+      final rowsAffected = await (delete(
+        playerTable,
+      )..where((tbl) => tbl.id.equals(playerId))).go();
+      return rowsAffected > 0;
+    }
+  }
+
+  /// Deletes all players from the database.
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> deleteAllPlayers() async {
+    final query = delete(playerTable);
     final rowsAffected = await query.go();
     return rowsAffected > 0;
+  }
+
+  /// Deletes all players marked as deleted from the database, if they are not associated with any match.
+  /// Returns the number of players that were deleted.
+  Future<int> purgeSoftDeletedPlayer() async {
+    final deletedPlayers = await (select(
+      playerTable,
+    )..where((tbl) => tbl.deleted.equals(true))).get();
+
+    if (deletedPlayers.isEmpty) return 0;
+
+    var removedPlayer = 0;
+    await transaction(() async {
+      for (final player in deletedPlayers) {
+        if (await canTrueDelete(playerId: player.id)) {
+          final rowsAffected = await (delete(
+            playerTable,
+          )..where((tbl) => tbl.id.equals(player.id))).go();
+          removedPlayer += rowsAffected;
+        }
+      }
+    });
+
+    return removedPlayer;
   }
 
   /* Name count management */
@@ -279,6 +346,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
         description: result.description,
         createdAt: result.createdAt,
         nameCount: result.nameCount,
+        deleted: result.deleted,
       );
     }
     return null;
@@ -325,14 +393,6 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     final rowsAffected =
         await (update(playerTable)..where((tbl) => tbl.name.equals(name)))
             .write(const PlayerTableCompanion(nameCount: Value(1)));
-    return rowsAffected > 0;
-  }
-
-  /// Deletes all players from the database.
-  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
-  Future<bool> deleteAllPlayers() async {
-    final query = delete(playerTable);
-    final rowsAffected = await query.go();
     return rowsAffected > 0;
   }
 }

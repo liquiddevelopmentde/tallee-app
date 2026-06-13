@@ -18,7 +18,7 @@ import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class GroupDetailView extends StatefulWidget {
   /// A view that displays the profile of a group
@@ -73,7 +73,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 context: context,
                 builder: (context) => CustomAlertDialog(
                   title: '${loc.delete_group}?',
-                  content: Text(loc.this_cannot_be_undone),
+                  content: Text(loc.delete_group_warning_details),
                   actions: [
                     CustomDialogAction(
                       onPressed: () => Navigator.of(context).pop(true),
@@ -146,15 +146,15 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
-                    children: _group.members.map<Widget>((member) {
-                      return TextIconTile(
+                    children: _group.members.map((member) {
+                      return PlayerTile(
                         player: member,
                         onTileTap: () {
                           Navigator.of(context).pushReplacement(
                             adaptivePageRoute(
                               builder: (context) => PlayerDetailView(
                                 player: member,
-                                callback: widget.callback,
+                                onPlayerNameUpdated: widget.callback,
                               ),
                             ),
                           );

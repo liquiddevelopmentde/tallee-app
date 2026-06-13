@@ -21,7 +21,8 @@ import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class MatchDetailView extends StatefulWidget {
   /// A view that displays the profile of a match
@@ -179,29 +180,25 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                   spacing: 12,
                                   runSpacing: 8,
                                   children: (match.teams ?? []).map((team) {
-                                    return TextIconTile(
-                                      player: team.members.first,
-                                      pair: team.members.length > 1
-                                          ? team
-                                          : null,
-                                      onTileTap: team.members.length > 1
-                                          ? null
-                                          : () {
-                                              Navigator.of(
-                                                context,
-                                              ).pushReplacement(
-                                                adaptivePageRoute(
-                                                  builder: (context) =>
-                                                      PlayerDetailView(
-                                                        player:
-                                                            team.members.first,
-                                                        callback: widget
-                                                            .onMatchUpdate,
-                                                      ),
-                                                ),
-                                              );
-                                            },
-                                    );
+                                    if (team.members.length > 1) {
+                                      return PairTile(pair: team);
+                                    } else {
+                                      return PlayerTile(
+                                        player: team.members.first,
+                                        onTileTap: () => Navigator.of(context)
+                                            .pushReplacement(
+                                              adaptivePageRoute(
+                                                builder: (context) =>
+                                                    PlayerDetailView(
+                                                      player:
+                                                          team.members.first,
+                                                      onPlayerNameUpdated:
+                                                          widget.onMatchUpdate,
+                                                    ),
+                                              ),
+                                            ),
+                                      );
+                                    }
                                   }).toList(),
                                 )
                         : Text(
@@ -227,14 +224,15 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             spacing: 12,
                             runSpacing: 8,
                             children: match.players.map((player) {
-                              return TextIconTile(
+                              return PlayerTile(
                                 player: player,
                                 onTileTap: () {
                                   Navigator.of(context).pushReplacement(
                                     adaptivePageRoute(
                                       builder: (context) => PlayerDetailView(
                                         player: player,
-                                        callback: widget.onMatchUpdate,
+                                        onPlayerNameUpdated:
+                                            widget.onMatchUpdate,
                                       ),
                                     ),
                                   );

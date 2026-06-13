@@ -57,9 +57,12 @@
     }
   },
   "delete_group": "Gruppe löschen",
+  "delete_group_warning_details": "Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.",
   "delete_match": "Spiel löschen",
   "delete_player": "Spieler:in löschen",
+  "delete_player_warning_details": "Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.",
   "delete_statistic": "Statistik löschen",
+  "deleted": "Gelöscht",
   "description": "Beschreibung",
   "displayed_entries": "Angezeigte Einträge",
   "drag_to_set_placement": "Ziehen um Platzierung zu setzen",

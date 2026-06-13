@@ -152,13 +152,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_group => 'Gruppe löschen';
 
   @override
+  String get delete_group_warning_details =>
+      'Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.';
+
+  @override
   String get delete_match => 'Spiel löschen';
 
   @override
   String get delete_player => 'Spieler:in löschen';
 
   @override
+  String get delete_player_warning_details =>
+      'Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.';
+
+  @override
   String get delete_statistic => 'Statistik löschen';
+
+  @override
+  String get deleted => 'Gelöscht';
 
   @override
   String get description => 'Beschreibung';
