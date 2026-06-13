@@ -5,7 +5,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class GroupTile extends StatefulWidget {
   /// A tile widget that displays information about a group, including its name and members.
@@ -95,7 +95,7 @@ class _GroupTileState extends State<GroupTile> {
                 for (var member in [
                   ...widget.group.members,
                 ]..sort((a, b) => a.name.compareIgnoringCaseTo(b.name)))
-                  TextIconTile(
+                  PlayerTile(
                     player: member,
                     onTileTap: () {
                       Navigator.push(
@@ -103,7 +103,7 @@ class _GroupTileState extends State<GroupTile> {
                         adaptivePageRoute(
                           builder: (context) => PlayerDetailView(
                             player: member,
-                            callback: () {
+                            onPlayerNameUpdated: () {
                               widget.onPlayerChanged?.call();
                             },
                           ),

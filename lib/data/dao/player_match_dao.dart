@@ -62,8 +62,12 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Retrieves a list of [Player]s associated with the given [matchId].
-  /// Returns empty list if no players are found.
-  Future<List<Player>> getPlayersOfMatch({required String matchId}) async {
+  /// If [includeDeletedPlayer] is `false`, deleted players will be filtered
+  /// out from the result. Returns empty list if no players are found.
+  Future<List<Player>> getPlayersOfMatch({
+    required String matchId,
+    bool includeDeletedPlayer = false,
+  }) async {
     final result = await (select(
       playerMatchTable,
     )..where((tbl) => tbl.matchId.equals(matchId))).get();
@@ -73,9 +77,13 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     final futures = result.map(
       (row) => db.playerDao.getPlayerById(playerId: row.playerId),
     );
-    final players = await Future.wait(futures);
+    final fetchedPlayers = await Future.wait(futures);
 
-    return players;
+    return (includeDeletedPlayer
+          ? fetchedPlayers.toList()
+          // Filter deleted players
+          : fetchedPlayers.where((p) => !p.deleted).toList())
+      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
   }
 
   /// Retrieves a list of [Player]s associated with a specific team in a match.
