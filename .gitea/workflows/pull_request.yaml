@@ -31,21 +31,27 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/cirruslabs/flutter:stable
+    container: node:20-bookworm
     steps:
-      - name: Install Node
-        run: |
-          apt-get update
-          apt-get install -y nodejs npm
-
       - name: Checkout code
         uses: actions/checkout@v4
+
+      # Required for Flutter action
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y jq unzip xz-utils
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
 
       - name: Get dependencies
         run: |
           git config --global --add safe.directory '*'
           flutter pub get
+          flutter --version
 
       - name: Run tests
         run: flutter test
