@@ -9,11 +9,6 @@ class TextIconTile extends StatelessWidget {
   /// - [onIconTap]: The callback to be invoked when the icon is tapped.
   /// - [icon]: Optional custom icon. Defaults to [Icons.close].
   /// - [onTileTap]: The callback to be invoked when the tile is tapped.
-  /// - `text`: The text to display in the tile.
-  /// - `suffixText`: Optional text to display after the main text, styled with a smaller font and lighter color.
-  /// - `onIconTap`: The callback to be invoked when the icon is tapped.
-  /// - `icon`: Optional custom icon. Defaults to `Icons.close`.
-  /// - `onTileTap`: The callback to be invoked when the tile is tapped.
   const TextIconTile({
     super.key,
     required this.content,
