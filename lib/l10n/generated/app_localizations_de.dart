@@ -9,10 +9,6 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get names_or_descriptions_too_long =>
-      'Die Daten enthalten zu lange Namen oder Beschreibungen.';
-
-  @override
   String get add_team => 'Team hinzufügen';
 
   @override
@@ -322,6 +318,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get multiple_winners => 'Mehrere Gewinner:innen';
+
+  @override
+  String get names_or_descriptions_too_long =>
+      'Die Daten enthalten zu lange Namen oder Beschreibungen.';
 
   @override
   String get no_data_available => 'Keine Daten verfügbar';
