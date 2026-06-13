@@ -111,7 +111,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     final loc = AppLocalizations.of(context);
     final buttonText = isEditMode() ? loc.save_changes : loc.create_match;
     final viewTitle = isEditMode() ? loc.edit_match : loc.create_new_match;
-    print(viewTitle);
 
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
