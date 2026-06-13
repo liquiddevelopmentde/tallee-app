@@ -356,6 +356,12 @@ abstract class AppLocalizations {
   /// **'Delete Group'**
   String get delete_group;
 
+  /// No description provided for @delete_group_warning_details.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.'**
+  String get delete_group_warning_details;
+
   /// No description provided for @delete_match.
   ///
   /// In en, this message translates to:
@@ -368,11 +374,23 @@ abstract class AppLocalizations {
   /// **'Delete player?'**
   String get delete_player;
 
+  /// No description provided for @delete_player_warning_details.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.'**
+  String get delete_player_warning_details;
+
   /// No description provided for @delete_statistic.
   ///
   /// In en, this message translates to:
   /// **'Delete statistic'**
   String get delete_statistic;
+
+  /// No description provided for @deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted'**
+  String get deleted;
 
   /// No description provided for @description.
   ///

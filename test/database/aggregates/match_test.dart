@@ -63,14 +63,14 @@ void main() {
         name: 'First Test Match',
         game: testGame,
         group: testGroup1,
-        players: [testPlayer4, testPlayer5],
+        players: [...testGroup1.members, testPlayer4, testPlayer5],
         scores: {testPlayer4.id: ScoreEntry(score: 1)},
       );
       testMatch2 = Match(
         name: 'Second Test Match',
         game: testGame,
         group: testGroup2,
-        players: [testPlayer1, testPlayer2, testPlayer3],
+        players: [...testGroup2.members, testPlayer1, testPlayer2, testPlayer3],
       );
       testMatchOnlyPlayers = Match(
         name: 'Test Match with Players',
@@ -125,10 +125,17 @@ void main() {
         }
         expect(result.players.length, testMatch1.players.length);
 
-        for (int i = 0; i < testMatch1.players.length; i++) {
-          expect(result.players[i].id, testMatch1.players[i].id);
-          expect(result.players[i].name, testMatch1.players[i].name);
-          expect(result.players[i].createdAt, testMatch1.players[i].createdAt);
+        final testPlayers = {
+          for (final player in result.players) player.id: player,
+        };
+
+        for (final player in result.players) {
+          final testPlayer = testPlayers[player.id];
+          expect(testPlayer, isNotNull);
+          expect(player.name, testPlayer!.name);
+          expect(player.createdAt, testPlayer.createdAt);
+          expect(player.nameCount, testPlayer.nameCount);
+          expect(player.description, testPlayer.description);
         }
       });
 
@@ -191,12 +198,59 @@ void main() {
 
           // Players-Checks
           expect(match.players.length, testMatch.players.length);
-          for (int i = 0; i < testMatch.players.length; i++) {
-            expect(match.players[i].id, testMatch.players[i].id);
-            expect(match.players[i].name, testMatch.players[i].name);
-            expect(match.players[i].createdAt, testMatch.players[i].createdAt);
+          final testPlayers = {
+            for (final player in match.players) player.id: player,
+          };
+
+          for (final player in match.players) {
+            final testPlayer = testPlayers[player.id];
+            expect(testPlayer, isNotNull);
+            expect(player.name, testPlayer!.name);
+            expect(player.createdAt, testPlayer.createdAt);
+            expect(player.nameCount, testPlayer.nameCount);
+            expect(player.description, testPlayer.description);
           }
         }
+      });
+
+      test('getMatchById() contains deleted player correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        // Delete one player from the match (soft delete)
+        await database.playerDao.deletePlayer(playerId: testPlayer4.id);
+        var match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+
+        expect(match.players.length, testMatch1.players.length - 1);
+        expect(match.players.any((p) => p.id == testPlayer4.id), isFalse);
+
+        match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+          includeDeletdPlayer: true,
+        );
+        expect(match.players.length, testMatch1.players.length);
+        expect(match.players.any((p) => p.id == testPlayer4.id), isTrue);
+      });
+
+      test('getAllMatches() contains deleted player correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        // Delete one player from the match (soft delete)
+        await database.playerDao.deletePlayer(playerId: testPlayer4.id);
+        var allMatches = await database.matchDao.getAllMatches();
+        expect(allMatches.length, 1);
+        var match = allMatches.first;
+        expect(match.players.length, testMatch1.players.length - 1);
+        expect(match.players.any((p) => p.id == testPlayer4.id), isFalse);
+
+        allMatches = await database.matchDao.getAllMatches(
+          includeDeletedPlayer: true,
+        );
+        expect(allMatches.length, 1);
+        match = allMatches.first;
+        expect(match.players.length, testMatch1.players.length);
+        expect(match.players.any((p) => p.id == testPlayer4.id), isTrue);
       });
 
       test('addMatch() ignores duplicate games', () async {
@@ -269,10 +323,11 @@ void main() {
           playerId: testPlayer1.id,
         );
 
-        expect(matches, hasLength(1));
-        expect(matches.first.id, testMatch2.id);
+        expect(matches, hasLength(2));
+        final matchIds = matches.map((m) => m.id).toSet();
+        expect(matchIds, containsAll({testMatch1.id, testMatch2.id}));
         expect(
-          matches.first.players.any((p) => p.id == testPlayer1.id),
+          matches.every((m) => m.players.any((p) => p.id == testPlayer1.id)),
           isTrue,
         );
       });
@@ -516,6 +571,34 @@ void main() {
 
         deleted = await database.matchDao.deleteMatch(matchId: testMatch1.id);
         expect(deleted, isFalse);
+      });
+
+      test('deleteMatch() purges soft-deleted players', () async {
+        await database.matchDao.addMatchesAsList(
+          matches: [testMatch1, testMatch2],
+        );
+
+        final softDeleted = await database.playerDao.deletePlayer(
+          playerId: testPlayer1.id,
+        );
+        expect(softDeleted, isTrue);
+
+        var exists = await database.playerDao.playerExists(
+          playerId: testPlayer1.id,
+        );
+        expect(exists, isTrue);
+
+        await database.matchDao.deleteMatch(matchId: testMatch1.id);
+        exists = await database.playerDao.playerExists(
+          playerId: testPlayer1.id,
+        );
+        expect(exists, isTrue);
+
+        await database.matchDao.deleteMatch(matchId: testMatch2.id);
+        exists = await database.playerDao.playerExists(
+          playerId: testPlayer1.id,
+        );
+        expect(exists, isFalse);
       });
 
       test('deleteAllMatches() works correctly', () async {

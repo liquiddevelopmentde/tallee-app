@@ -152,13 +152,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_group => 'Delete Group';
 
   @override
+  String get delete_group_warning_details =>
+      'This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.';
+
+  @override
   String get delete_match => 'Delete Match';
 
   @override
   String get delete_player => 'Delete player?';
 
   @override
+  String get delete_player_warning_details =>
+      'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.';
+
+  @override
   String get delete_statistic => 'Delete statistic';
+
+  @override
+  String get deleted => 'Deleted';
 
   @override
   String get description => 'Description';

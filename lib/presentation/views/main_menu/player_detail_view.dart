@@ -30,13 +30,13 @@ class PlayerDetailView extends StatefulWidget {
   const PlayerDetailView({
     super.key,
     required this.player,
-    required this.callback,
+    required this.onPlayerNameUpdated,
   });
 
   /// The player to display
   final Player player;
 
-  final VoidCallback callback;
+  final VoidCallback onPlayerNameUpdated;
 
   @override
   State<PlayerDetailView> createState() => _PlayerDetailViewState();
@@ -96,36 +96,37 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
       appBar: AppBar(
         title: Text(loc.player_profile),
         actions: [
-          HapticIconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () async {
-              showDialog<bool>(
-                context: context,
-                builder: (context) => CustomAlertDialog(
-                  title: loc.delete_player,
-                  content: Text(loc.this_cannot_be_undone),
-                  actions: [
-                    CustomDialogAction(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      text: loc.delete,
-                    ),
-                    CustomDialogAction(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      buttonType: ButtonType.secondary,
-                      text: loc.cancel,
-                    ),
-                  ],
-                ),
-              ).then((confirmed) async {
-                if (confirmed! && context.mounted) {
-                  //TODO: implement player deletion in db
-                  if (!context.mounted) return;
-                  Navigator.pop(context);
-                  widget.callback();
-                }
-              });
-            },
-          ),
+          if (!widget.player.deleted)
+            HapticIconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                showDialog<bool>(
+                  context: context,
+                  builder: (context) => CustomAlertDialog(
+                    title: loc.delete_player,
+                    content: Text(loc.delete_player_warning_details),
+                    actions: [
+                      CustomDialogAction(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        text: loc.delete,
+                      ),
+                      CustomDialogAction(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        buttonType: ButtonType.secondary,
+                        text: loc.cancel,
+                      ),
+                    ],
+                  ),
+                ).then((confirmed) async {
+                  if (confirmed! && context.mounted) {
+                    await db.playerDao.deletePlayer(playerId: widget.player.id);
+                    if (!context.mounted) return;
+                    Navigator.pop(context);
+                    widget.onPlayerNameUpdated();
+                  }
+                });
+              },
+            ),
         ],
       ),
       body: SafeArea(
@@ -140,6 +141,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 bottom: 100,
               ),
               children: [
+                // Icon
                 const Center(
                   child: ColoredIconContainer(
                     icon: Icons.person,
@@ -148,6 +150,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   ),
                 ),
                 const SizedBox(height: 10),
+
+                // Playername + Playercount
                 Center(
                   child: buildUnitNameWidget(
                     player,
@@ -158,7 +162,18 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     ),
                   ),
                 ),
+
+                // Deleted state
+                if (widget.player.deleted) ...[
+                  Text(
+                    loc.deleted,
+                    style: const TextStyle(fontSize: 13, color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
                 const SizedBox(height: 5),
+
+                // Created at date
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(player.createdAt)}',
                   style: const TextStyle(
@@ -168,47 +183,53 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                InfoTile(
-                  title: '${loc.groups} ($totalGroups)',
-                  icon: Icons.people,
-                  horizontalAlignment: CrossAxisAlignment.start,
-                  content: AppSkeleton(
-                    enabled: isLoading,
-                    fixLayoutBuilder: true,
-                    alignment: Alignment.topLeft,
-                    child: playerGroups.isNotEmpty
-                        ? Wrap(
-                            alignment: WrapAlignment.start,
-                            crossAxisAlignment: WrapCrossAlignment.start,
-                            spacing: 12,
-                            runSpacing: 8,
-                            children: playerGroups.map((group) {
-                              return PlayerProfileListTile(
-                                title: group.name,
-                                count: group.members.length,
-                                onTap: () {
-                                  Navigator.of(context).pushReplacement(
-                                    adaptivePageRoute(
-                                      builder: (context) => GroupDetailView(
-                                        group: group,
-                                        callback: widget.callback,
+
+                // Groups
+                if (!widget.player.deleted) ...[
+                  InfoTile(
+                    title: '${loc.groups} ($totalGroups)',
+                    icon: Icons.people,
+                    horizontalAlignment: CrossAxisAlignment.start,
+                    content: AppSkeleton(
+                      enabled: isLoading,
+                      fixLayoutBuilder: true,
+                      alignment: Alignment.topLeft,
+                      child: playerGroups.isNotEmpty
+                          ? Wrap(
+                              alignment: WrapAlignment.start,
+                              crossAxisAlignment: WrapCrossAlignment.start,
+                              spacing: 12,
+                              runSpacing: 8,
+                              children: playerGroups.map((group) {
+                                return PlayerProfileListTile(
+                                  title: group.name,
+                                  count: group.members.length,
+                                  onTap: () {
+                                    Navigator.of(context).pushReplacement(
+                                      adaptivePageRoute(
+                                        builder: (context) => GroupDetailView(
+                                          group: group,
+                                          callback: widget.onPlayerNameUpdated,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          )
-                        : Text(
-                            loc.not_part_of_any_group,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: CustomTheme.textColor,
+                                    );
+                                  },
+                                );
+                              }).toList(),
+                            )
+                          : Text(
+                              loc.not_part_of_any_group,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: CustomTheme.textColor,
+                              ),
                             ),
-                          ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 15),
+                  const SizedBox(height: 15),
+                ],
+
+                // Matches
                 InfoTile(
                   title: '${loc.matches} ($totalMatches)',
                   icon: Icons.sports_esports,
@@ -232,7 +253,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                     adaptivePageRoute(
                                       builder: (context) => MatchDetailView(
                                         match: match,
-                                        onMatchUpdate: widget.callback,
+                                        onMatchUpdate:
+                                            widget.onPlayerNameUpdated,
                                       ),
                                     ),
                                   );
@@ -250,6 +272,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   ),
                 ),
                 const SizedBox(height: 15),
+
+                // Statistics
                 InfoTile(
                   title: loc.statistics,
                   icon: Icons.bar_chart,
@@ -273,68 +297,72 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
               ],
             ),
-            Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom,
-              child: FloatingAnimatedButton(
-                text: loc.edit_player,
-                icon: Icons.edit,
-                onPressed: () async {
-                  nameController.text = player.name;
-                  showDialog<bool>(
-                    context: context,
-                    builder: (context) => StatefulBuilder(
-                      builder: (context, setDialogState) {
-                        return CustomAlertDialog(
-                          title: loc.edit_name,
-                          content: TextInputField(
-                            controller: nameController,
-                            hintText: loc.set_name,
-                            onChanged: (_) => setDialogState(() {}),
-                          ),
-                          actions: [
-                            CustomDialogAction(
-                              onPressed: isConfirmButtonEnabled()
-                                  ? () => Navigator.of(context).pop(true)
-                                  : null,
-                              text: loc.confirm,
-                            ),
-                            CustomDialogAction(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              buttonType: ButtonType.secondary,
-                              text: loc.cancel,
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ).then((confirmed) async {
-                    if (confirmed! && context.mounted) {
-                      final newName = nameController.text.trim();
 
-                      if (newName != player.name) {
-                        final fetchedPlayerNameCount = await db.playerDao
-                            .getNameCount(name: newName);
-                        await db.playerDao.updatePlayerName(
-                          playerId: player.id,
-                          name: newName,
-                        );
-                        widget.callback.call();
-                        setState(() {
-                          player = player.copyWith(
-                            name: newName,
-                            // If there is already a player with the same name,
-                            // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
-                            nameCount: fetchedPlayerNameCount == 0
-                                ? 0
-                                : fetchedPlayerNameCount + 1,
+            // Edit player button
+            if (!widget.player.deleted)
+              Positioned(
+                bottom: MediaQuery.paddingOf(context).bottom,
+                child: FloatingAnimatedButton(
+                  text: loc.edit_player,
+                  icon: Icons.edit,
+                  onPressed: () async {
+                    nameController.text = player.name;
+                    showDialog<bool>(
+                      context: context,
+                      builder: (context) => StatefulBuilder(
+                        builder: (context, setDialogState) {
+                          return CustomAlertDialog(
+                            title: loc.edit_name,
+                            content: TextInputField(
+                              controller: nameController,
+                              hintText: loc.set_name,
+                              onChanged: (_) => setDialogState(() {}),
+                            ),
+                            actions: [
+                              CustomDialogAction(
+                                onPressed: isConfirmButtonEnabled()
+                                    ? () => Navigator.of(context).pop(true)
+                                    : null,
+                                text: loc.confirm,
+                              ),
+                              CustomDialogAction(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                buttonType: ButtonType.secondary,
+                                text: loc.cancel,
+                              ),
+                            ],
                           );
-                        });
+                        },
+                      ),
+                    ).then((confirmed) async {
+                      if (confirmed! && context.mounted) {
+                        final newName = nameController.text.trim();
+
+                        if (newName != player.name) {
+                          final fetchedPlayerNameCount = await db.playerDao
+                              .getNameCount(name: newName);
+                          await db.playerDao.updatePlayerName(
+                            playerId: player.id,
+                            name: newName,
+                          );
+                          widget.onPlayerNameUpdated.call();
+                          setState(() {
+                            player = player.copyWith(
+                              name: newName,
+                              // If there is already a player with the same name,
+                              // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
+                              nameCount: fetchedPlayerNameCount == 0
+                                  ? 0
+                                  : fetchedPlayerNameCount + 1,
+                            );
+                          });
+                        }
                       }
-                    }
-                  });
-                },
+                    });
+                  },
+                ),
               ),
-            ),
           ],
         ),
       ),

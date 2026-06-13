@@ -1,8 +1,13 @@
+import 'dart:core' hide Match;
+
 import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 
 void main() {
@@ -408,6 +413,50 @@ void main() {
         );
         expect(deleted, isFalse);
       });
+
+      test(
+        'deletePlayer() true deletes only when player is not in a match',
+        () async {
+          await database.playerDao.addPlayersAsList(
+            players: [testPlayer1, testPlayer2],
+          );
+
+          final game = Game(name: 'test-game', ruleset: Ruleset.highestScore);
+          await database.gameDao.addGame(game: game);
+
+          final match = Match(
+            name: 'test-match',
+            game: game,
+            players: [testPlayer1, testPlayer2],
+          );
+          final added = await database.matchDao.addMatch(match: match);
+          expect(added, isTrue);
+
+          var deleted = await database.playerDao.deletePlayer(
+            playerId: testPlayer1.id,
+          );
+          expect(deleted, isTrue);
+          var exists = await database.playerDao.playerExists(
+            playerId: testPlayer1.id,
+          );
+          expect(exists, isTrue);
+
+          final removed = await database.playerMatchDao.removePlayerFromMatch(
+            matchId: match.id,
+            playerId: testPlayer1.id,
+          );
+          expect(removed, isTrue);
+
+          deleted = await database.playerDao.deletePlayer(
+            playerId: testPlayer1.id,
+          );
+          expect(deleted, isTrue);
+          exists = await database.playerDao.playerExists(
+            playerId: testPlayer1.id,
+          );
+          expect(exists, isFalse);
+        },
+      );
 
       test('deleteAllPlayers() removes all players', () async {
         await database.playerDao.addPlayersAsList(
