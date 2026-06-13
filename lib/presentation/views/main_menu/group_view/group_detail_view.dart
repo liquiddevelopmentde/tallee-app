@@ -73,7 +73,13 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 context: context,
                 builder: (context) => CustomAlertDialog(
                   title: '${loc.delete_group}?',
-                  content: Text(loc.this_cannot_be_undone),
+                  content: Text(
+                    loc.this_cannot_be_undone +
+                        loc.this_cannot_be_undone +
+                        loc.this_cannot_be_undone,
+                    maxLines: null,
+                    overflow: TextOverflow.visible,
+                  ),
                   actions: [
                     CustomDialogAction(
                       onPressed: () => Navigator.of(context).pop(true),
