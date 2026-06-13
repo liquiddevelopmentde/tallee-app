@@ -18,6 +18,9 @@
           },
           "description": {
             "type": "string"
+          },
+          "deleted": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false,
@@ -25,7 +28,8 @@
           "id",
           "createdAt",
           "name",
-          "description"
+          "description",
+          "deleted"
         ]
       }
     },

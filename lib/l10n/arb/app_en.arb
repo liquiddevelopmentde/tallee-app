@@ -57,9 +57,12 @@
     }
   },
   "delete_group": "Delete Group",
+  "delete_group_warning_details": "This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.",
   "delete_match": "Delete Match",
   "delete_player": "Delete player?",
+  "delete_player_warning_details": "This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.",
   "delete_statistic": "Delete statistic",
+  "deleted": "Deleted",
   "description": "Description",
   "displayed_entries": "Displayed entries",
   "drag_to_set_placement": "Drag to set placement",

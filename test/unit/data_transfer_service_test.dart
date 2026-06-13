@@ -572,12 +572,14 @@ void main() {
               'name': testPlayer1.name,
               'description': testPlayer1.description,
               'createdAt': testPlayer1.createdAt.toIso8601String(),
+              'deleted': false,
             },
             {
               'id': testPlayer2.id,
               'name': testPlayer2.name,
               'description': testPlayer2.description,
               'createdAt': testPlayer2.createdAt.toIso8601String(),
+              'deleted': true,
             },
           ],
         };
@@ -1004,6 +1006,7 @@ void main() {
               'name': testPlayer1.name,
               'description': testPlayer1.description,
               'createdAt': testPlayer1.createdAt.toIso8601String(),
+              'deleted': false,
             },
           ],
           'games': [
@@ -1113,12 +1116,14 @@ void main() {
                 'name': testPlayer1.name,
                 'description': testPlayer1.description,
                 'createdAt': testPlayer1.createdAt.toIso8601String(),
+                'deleted': false,
               },
               {
                 'id': testPlayer2.id,
                 'name': testPlayer2.name,
                 'description': testPlayer2.description,
                 'createdAt': testPlayer2.createdAt.toIso8601String(),
+                'deleted': true,
               },
             ],
             'games': [
