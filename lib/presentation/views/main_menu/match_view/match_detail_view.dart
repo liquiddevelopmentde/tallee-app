@@ -12,7 +12,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/util/adaptive_page_route.dart';
 import 'package:tallee/presentation/util/name_display.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
