@@ -51,6 +51,7 @@ class GameTracker extends StatelessWidget {
         scaffoldBackgroundColor: CustomTheme.backgroundColor,
         // themes
         appBarTheme: CustomTheme.appBarTheme,
+        textTheme: CustomTheme.textTheme,
         actionIconTheme: CustomTheme.actionIconTheme,
         inputDecorationTheme: CustomTheme.inputDecorationTheme,
         searchBarTheme: CustomTheme.searchBarTheme,

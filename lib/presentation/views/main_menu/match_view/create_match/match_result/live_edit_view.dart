@@ -17,9 +17,11 @@ class LiveEditView extends StatefulWidget {
 
 class _LiveEditViewState extends State<LiveEditView> {
   List<Team> get allTeams =>
-      (widget.match.teams ?? [])..sort((a, b) => a.name.compareTo(b.name));
+      (widget.match.teams ?? [])
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
   List<Player> get allPlayers =>
-      widget.match.players..sort((a, b) => a.name.compareTo(b.name));
+      widget.match.players
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
   List<int> scores = [];
 
   @override

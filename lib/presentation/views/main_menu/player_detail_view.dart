@@ -101,7 +101,10 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   context: context,
                   builder: (context) => CustomAlertDialog(
                     title: loc.delete_player,
-                    content: Text(loc.delete_player_warning_details),
+                    content: Text(
+                      loc.delete_player_warning_details,
+                      overflow: TextOverflow.visible,
+                    ),
                     actions: [
                       CustomDialogAction(
                         onPressed: () => Navigator.of(context).pop(true),

@@ -93,6 +93,24 @@ class CustomTheme {
     iconTheme: IconThemeData(color: textColor),
   );
 
+  static final TextTheme textTheme = const TextTheme(
+    displayLarge: TextStyle(overflow: TextOverflow.ellipsis),
+    displayMedium: TextStyle(overflow: TextOverflow.ellipsis),
+    displaySmall: TextStyle(overflow: TextOverflow.ellipsis),
+    headlineLarge: TextStyle(overflow: TextOverflow.ellipsis),
+    headlineMedium: TextStyle(overflow: TextOverflow.ellipsis),
+    headlineSmall: TextStyle(overflow: TextOverflow.ellipsis),
+    titleLarge: TextStyle(overflow: TextOverflow.ellipsis),
+    titleMedium: TextStyle(overflow: TextOverflow.ellipsis),
+    titleSmall: TextStyle(overflow: TextOverflow.ellipsis),
+    bodyLarge: TextStyle(overflow: TextOverflow.ellipsis),
+    bodyMedium: TextStyle(overflow: TextOverflow.ellipsis),
+    bodySmall: TextStyle(overflow: TextOverflow.ellipsis),
+    labelLarge: TextStyle(overflow: TextOverflow.ellipsis),
+    labelMedium: TextStyle(overflow: TextOverflow.ellipsis),
+    labelSmall: TextStyle(overflow: TextOverflow.ellipsis),
+  ).apply(bodyColor: textColor, displayColor: textColor);
+
   static final ActionIconThemeData actionIconTheme = ActionIconThemeData(
     backButtonIconBuilder: (context) => const HapticBackButton(),
     closeButtonIconBuilder: (context) => const HapticCloseButton(),

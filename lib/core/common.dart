@@ -238,3 +238,9 @@ String translateStatisticTypeToString(
       return loc.winrate;
   }
 }
+
+extension Comparison on String {
+  /// Compares this string with [other] ignoring upper-/lowercase.
+  int compareIgnoringCaseTo(String other) =>
+      toLowerCase().compareTo(other.toLowerCase());
+}

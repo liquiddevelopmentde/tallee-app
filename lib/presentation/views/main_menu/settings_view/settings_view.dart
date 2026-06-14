@@ -125,7 +125,10 @@ class _SettingsViewState extends State<SettingsView> {
                         context: context,
                         builder: (context) => CustomAlertDialog(
                           title: '${loc.delete_all_data}?',
-                          content: Text(loc.this_cannot_be_undone),
+                          content: Text(
+                            loc.this_cannot_be_undone,
+                            overflow: TextOverflow.visible,
+                          ),
                           actions: [
                             CustomDialogAction(
                               onPressed: () => Navigator.of(context).pop(true),
