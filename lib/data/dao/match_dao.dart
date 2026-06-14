@@ -8,6 +8,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 
 part 'match_dao.g.dart';
@@ -300,18 +301,13 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
         final teams = await _getMatchTeams(matchId: row.id);
 
-        return Match(
-          id: row.id,
-          name: row.name,
+        return _buildMatchFromRow(
+          row: row,
           game: game,
-          group: group,
           players: players,
-          teams: teams.isEmpty ? null : teams,
-          isTeamMatch: row.isTeamMatch,
-          notes: row.notes,
-          createdAt: row.createdAt,
-          endedAt: row.endedAt,
+          group: group,
           scores: scores,
+          teams: teams,
         );
       }),
     );
@@ -343,18 +339,12 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final scores = await db.scoreEntryDao.getAllMatchScores(matchId: matchId);
 
     final teams = await _getMatchTeams(matchId: matchId);
-
-    return Match(
-      id: row.id,
-      name: row.name,
+    return _buildMatchFromRow(
+      row: row,
       game: game,
-      group: group,
       players: players,
-      teams: teams.isEmpty ? null : teams,
-      isTeamMatch: row.isTeamMatch,
-      notes: row.notes,
-      createdAt: row.createdAt,
-      endedAt: row.endedAt,
+      teams: teams,
+      group: group,
       scores: scores,
     );
   }
@@ -402,18 +392,13 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         );
         final teams = await _getMatchTeams(matchId: row.id);
 
-        return Match(
-          id: row.id,
-          name: row.name,
+        return _buildMatchFromRow(
+          row: row,
           game: game,
-          group: group,
           players: players,
-          teams: teams.isEmpty ? null : teams,
-          isTeamMatch: row.isTeamMatch,
-          notes: row.notes,
-          createdAt: row.createdAt,
-          endedAt: row.endedAt,
+          group: group,
           scores: scores,
+          teams: teams,
         );
       }),
     );
@@ -434,30 +419,25 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         );
         final teams = await _getMatchTeams(matchId: row.id);
 
-        return Match(
-          id: row.id,
-          name: row.name,
+        return _buildMatchFromRow(
+          row: row,
           game: game,
-          group: group,
           players: players,
-          teams: teams.isEmpty ? null : teams,
-          isTeamMatch: row.isTeamMatch,
-          notes: row.notes,
-          createdAt: row.createdAt,
-          endedAt: row.endedAt,
+          group: group,
+          teams: teams,
         );
       }),
     );
   }
 
   /// Helper method to retrieve teams for a specific match
-  Future<List<Team>> _getMatchTeams({required String matchId}) async {
+  Future<List<Team>?> _getMatchTeams({required String matchId}) async {
     // Get all unique team IDs from PlayerMatchTable for this match
     final playerMatchQuery = select(db.playerMatchTable)
       ..where((tbl) => tbl.matchId.equals(matchId) & tbl.teamId.isNotNull());
     final playerMatches = await playerMatchQuery.get();
 
-    if (playerMatches.isEmpty) return [];
+    if (playerMatches.isEmpty) return null;
 
     final teamIds = playerMatches
         .map((pm) => pm.teamId)
@@ -584,5 +564,30 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final query = delete(matchTable)..where((tbl) => tbl.gameId.equals(gameId));
     final rowsAffected = await query.go();
     return rowsAffected;
+  }
+
+  /* Helper */
+
+  Match _buildMatchFromRow({
+    required MatchTableData row,
+    required Game game,
+    required List<Player> players,
+    Group? group,
+    Map<String, ScoreEntry?>? scores,
+    List<Team>? teams,
+  }) {
+    return Match(
+      id: row.id,
+      name: row.name,
+      game: game,
+      group: group,
+      players: players,
+      scores: scores,
+      teams: teams,
+      isTeamMatch: row.isTeamMatch,
+      notes: row.notes,
+      createdAt: row.createdAt,
+      endedAt: row.endedAt,
+    );
   }
 }
