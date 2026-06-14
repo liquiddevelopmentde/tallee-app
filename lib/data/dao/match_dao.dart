@@ -540,6 +540,17 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     return rowsAffected > 0;
   }
 
+  /// Removes the endedAt timestamp of the match with the given [matchId],
+  /// marking it as ongoing.
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> removeMatchEndedAt({required String matchId}) async {
+    final query = update(matchTable)..where((tbl) => tbl.id.equals(matchId));
+    final rowsAffected = await query.write(
+      const MatchTableCompanion(endedAt: Value(null)),
+    );
+    return rowsAffected > 0;
+  }
+
   /* Delete */
 
   /// Deletes the match with the given [matchId] from the database and purges
