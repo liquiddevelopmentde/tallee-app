@@ -13,7 +13,6 @@ import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licen
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
-import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/data_transfer_service.dart';
 import 'package:url_launcher/url_launcher.dart';
