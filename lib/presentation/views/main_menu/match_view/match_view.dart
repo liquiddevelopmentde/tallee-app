@@ -22,7 +22,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
-import 'package:tallee/presentation/widgets/tiles/match_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/state/match_search_provider.dart';
 

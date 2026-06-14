@@ -21,7 +21,7 @@ import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/player_profile_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/object_tiles/player_profile_list_tile.dart';
 
 class PlayerDetailView extends StatefulWidget {
   const PlayerDetailView({

@@ -15,7 +15,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
-import 'package:tallee/presentation/widgets/tiles/group_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class ChooseGroupView extends StatefulWidget {
