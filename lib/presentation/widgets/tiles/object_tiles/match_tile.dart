@@ -114,60 +114,11 @@ class _MatchTileState extends State<MatchTile> {
 
             const SizedBox(height: 12),
 
-            // Winner / In Progress Info
-            if ((match.isTeamMatch ||
-                    (widget.match.teams?.isNotEmpty ?? false)) &&
-                match.mvt.isNotEmpty) ...[
-              // MVT Display for team matches
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Colors.green.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    getMvpIcon(),
-                    const SizedBox(width: 8),
-                    Expanded(child: getMvtTextWidget(loc)),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-            ] else if (match.mvp.isNotEmpty) ...[
-              // MVP Display for player matches
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Colors.green.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    getMvpIcon(),
-                    const SizedBox(width: 8),
-                    Expanded(child: getMvpTextWidget(loc)),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-            ] else ...[
+            Visibility(
+              visible: match.endedAt != null,
+
               // Match in progress display
-              Container(
+              replacement: Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
                   horizontal: 12,
@@ -202,8 +153,59 @@ class _MatchTileState extends State<MatchTile> {
                   ],
                 ),
               ),
-              const SizedBox(height: 12),
-            ],
+
+              child: Visibility(
+                visible: match.mvp.isNotEmpty,
+
+                // MVT Display for team matches
+                replacement: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.green.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      getMvpIcon(),
+                      const SizedBox(width: 8),
+                      Expanded(child: getMvtTextWidget(loc)),
+                    ],
+                  ),
+                ),
+
+                // MVP Display for player matches
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.green.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      getMvpIcon(),
+                      const SizedBox(width: 8),
+                      Expanded(child: getMvpTextWidget(loc)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
 
             if (match.teams != null &&
                 match.teams!.isNotEmpty &&
