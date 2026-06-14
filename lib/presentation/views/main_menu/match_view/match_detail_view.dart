@@ -22,7 +22,7 @@ import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
-import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 

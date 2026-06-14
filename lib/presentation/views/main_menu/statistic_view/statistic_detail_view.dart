@@ -13,8 +13,8 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
-import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
 
 class StatisticDetailView extends StatefulWidget {
   const StatisticDetailView({

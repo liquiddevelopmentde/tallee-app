@@ -10,7 +10,7 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/util/name_display.dart';
-import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 
 class StatisticsTile extends StatelessWidget {
   /// A tile widget that displays statistical data using horizontal bars.

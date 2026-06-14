@@ -21,7 +21,7 @@ import 'package:tallee/presentation/views/main_menu/statistic_view/create_statis
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
-import 'package:tallee/presentation/widgets/tiles/statistics_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class StatisticsView extends StatefulWidget {

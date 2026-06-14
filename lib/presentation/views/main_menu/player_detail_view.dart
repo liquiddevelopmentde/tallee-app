@@ -20,7 +20,8 @@ import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
-import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/detail_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/player_profile_list_tile.dart';
 
 class PlayerDetailView extends StatefulWidget {
@@ -274,26 +275,15 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 const SizedBox(height: 15),
 
                 // Statistics
-                InfoTile(
-                  title: loc.statistics,
-                  icon: Icons.bar_chart,
-                  content: AppSkeleton(
-                    enabled: isLoading,
-                    fixLayoutBuilder: true,
-                    child: Column(
-                      children: [
-                        _buildStatRow(
-                          loc.matches_played,
-                          totalMatches.toString(),
-                        ),
-                        _buildStatRow(loc.matches_won, matchesWon.toString()),
-                        _buildStatRow(
-                          loc.winrate,
-                          '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
-                        ),
-                      ],
+                DetailTile(
+                  rows: [
+                    (loc.matches_played, totalMatches.toString()),
+                    (loc.matches_won, matchesWon.toString()),
+                    (
+                      loc.winrate,
+                      '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -391,35 +381,6 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
       totalGroups = fetchedGroups.length;
       isLoading = false;
     });
-  }
-
-  /// Builds a single statistic row with a label and value
-  /// - [label]: The label of the statistic
-  /// - [value]: The value of the statistic
-  Widget _buildStatRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: CustomTheme.textColor,
-                ),
-              ),
-            ],
-          ),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
   }
 
   bool isConfirmButtonEnabled() => nameController.text.trim().isNotEmpty;
