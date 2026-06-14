@@ -344,7 +344,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String playerId,
   }) async {
     // Clear previous loosers if exists
-    deleteAllScoresForMatch(matchId: matchId);
+    await deleteAllScoresForMatch(matchId: matchId);
     await db.matchDao.updateMatchEndedAt(
       matchId: matchId,
       endedAt: DateTime.now(),
