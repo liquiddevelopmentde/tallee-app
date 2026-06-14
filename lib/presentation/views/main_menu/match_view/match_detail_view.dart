@@ -429,6 +429,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   /// Returns the result widget for scores or placement
   Widget getMultiResultRows(AppLocalizations loc) {
     List<(Widget, int)> scores = getSortedScores();
+    bool hasMatchEnded = match.endedAt != null;
 
     return Column(
       children: [
@@ -437,7 +438,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(child: scores[i].$1),
-              getResultValueText(loc, i, scores[i].$2),
+              hasMatchEnded
+                  ? getResultValueText(loc, i, scores[i].$2)
+                  : const Text('-'),
             ],
           ),
       ],
@@ -459,7 +462,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       }
     } else {
       final scores = match.scores;
-      for (var player in match.players) {
+      final players = match.players
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      for (var player in players) {
         int score = scores[player.id]?.score ?? 0;
         namedScores.add((buildUnitNameWidget(player), score));
       }
