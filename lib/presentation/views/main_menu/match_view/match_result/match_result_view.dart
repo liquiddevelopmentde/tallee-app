@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/util/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/live_edit_view.dart';
@@ -10,8 +10,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_result/mult
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/placement_drag_list.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/score_enter_list.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/single_player_selection.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match

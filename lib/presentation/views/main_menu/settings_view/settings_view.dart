@@ -10,7 +10,7 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licenses_view.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';

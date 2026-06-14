@@ -1,7 +1,7 @@
 import 'dart:core' hide Match;
 
 import 'package:flutter/cupertino.dart';
-import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/util/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';

@@ -1,4 +1,4 @@
-import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/models.dart';
 
 export 'app_color_utils.dart';
 export 'icon_utils.dart';

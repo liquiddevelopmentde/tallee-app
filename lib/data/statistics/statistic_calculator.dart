@@ -1,7 +1,6 @@
 import 'dart:math';
 
-import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 
 class StatisticCalculator {
   /// Computes the statistic values for a given [Statistic].

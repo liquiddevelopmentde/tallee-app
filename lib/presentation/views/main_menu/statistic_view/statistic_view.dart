@@ -8,15 +8,14 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/icon_utils.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/util/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/create_statistic_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 

@@ -4,7 +4,7 @@ import 'package:tallee/data/db/tables/game_table.dart';
 import 'package:tallee/data/db/tables/group_table.dart';
 import 'package:tallee/data/db/tables/match_table.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
-import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/models.dart';
 
 part 'match_dao.g.dart';
 

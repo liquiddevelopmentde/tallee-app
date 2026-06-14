@@ -5,7 +5,7 @@ import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
 class TeamCreationTile extends StatefulWidget {

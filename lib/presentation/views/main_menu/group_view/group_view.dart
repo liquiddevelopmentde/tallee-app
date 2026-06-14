@@ -13,7 +13,7 @@ import 'package:tallee/presentation/util/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';

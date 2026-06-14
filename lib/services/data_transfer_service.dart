@@ -8,8 +8,7 @@ import 'package:json_schema/json_schema.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 
 class DataTransferService {
   /// Deletes all data from the database.
