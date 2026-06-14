@@ -51,7 +51,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   late final AppDatabase db;
 
   /// Controller for the match name input field
-  final TextEditingController _matchNameController = TextEditingController();
+  final TextEditingController matchNameController = TextEditingController();
 
   /// Hint text for the match name input field
   String? hintText;
@@ -72,7 +72,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   @override
   void initState() {
     super.initState();
-    _matchNameController.addListener(() {
+    matchNameController.addListener(() {
       setState(() {});
     });
 
@@ -81,7 +81,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
   @override
   void dispose() {
-    _matchNameController.dispose();
+    matchNameController.dispose();
     super.dispose();
   }
 
@@ -112,7 +112,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               Container(
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
-                  controller: _matchNameController,
+                  controller: matchNameController,
                   hintText: hintText ?? '',
                   maxLength: Constants.MAX_MATCH_NAME_LENGTH,
                 ),
@@ -220,7 +220,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   // If a match was provided to the view, this method prefills the input fields
   void prefillMatchDetails() {
     final match = widget.matchToEdit!;
-    _matchNameController.text = match.name;
+    matchNameController.text = match.name;
     selectedPlayers = match.players;
     selectedGame = match.game;
     isTeamMatch = match.isTeamMatch;
@@ -390,9 +390,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   Future<void> updateMatch() async {
     final updatedMatch = Match(
       id: widget.matchToEdit!.id,
-      name: _matchNameController.text.isEmpty
+      name: matchNameController.text.isEmpty
           ? (hintText ?? '')
-          : _matchNameController.text.trim(),
+          : matchNameController.text.trim(),
       group: selectedGroup,
       players: selectedPlayers,
       game: selectedGame!,
@@ -442,16 +442,18 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   // Returns the created match.
   Future<Match> createMatch() async {
     final hasPairs = selectedUnits.any((u) => u.members.length > 1);
+    final effectivePairs = hasPairs ? selectedUnits : null;
+    final effectiveTitle = matchNameController.text.isEmpty
+        ? (hintText ?? '')
+        : matchNameController.text.trim();
 
     Match match = Match(
-      name: _matchNameController.text.isEmpty
-          ? (hintText ?? '')
-          : _matchNameController.text.trim(),
+      name: effectiveTitle,
       createdAt: DateTime.now(),
       group: selectedGroup,
       players: selectedPlayers,
       isTeamMatch: isTeamMatch,
-      teams: selectedUnits,
+      teams: effectivePairs,
       game: selectedGame!,
     );
 
