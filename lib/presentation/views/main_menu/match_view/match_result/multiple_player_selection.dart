@@ -41,6 +41,7 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
       allPlayers = widget.match.players;
       selectedPlayers = widget.match.mvp;
     }
+
     super.initState();
   }
 
@@ -97,5 +98,5 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
     }
   }
 
-  bool get hasTeams => false;
+  bool get hasTeams => widget.match.useTeamLogic;
 }

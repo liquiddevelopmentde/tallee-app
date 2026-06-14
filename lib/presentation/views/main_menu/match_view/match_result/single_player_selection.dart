@@ -119,6 +119,5 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
     }
   }
 
-  bool get hasTeams =>
-      widget.match.teams != null && widget.match.teams!.isNotEmpty;
+  bool get hasTeams => widget.match.useTeamLogic;
 }

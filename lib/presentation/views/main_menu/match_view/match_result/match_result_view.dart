@@ -11,15 +11,13 @@ import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/util/adaptive_page_route.dart';
 import 'package:tallee/presentation/util/edge_blocked_bouncing_scroll_physics.dart';
-import 'package:tallee/presentation/util/name_display.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/live_edit_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/multiple_player_selection.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/score_enter_list.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/single_player_selection.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
-import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/match_result_view/score_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
 class MatchResultView extends StatefulWidget {
@@ -64,6 +62,8 @@ class _MatchResultViewState extends State<MatchResultView> {
   Team? selectedTeam;
   List<Player> selectedPlayers = [];
   List<Team> selectedTeams = [];
+
+  Map<dynamic, int> scores = {};
 
   bool get useTeamLogic => widget.match.useTeamLogic;
 
@@ -153,7 +153,15 @@ class _MatchResultViewState extends State<MatchResultView> {
 
                   // Show score entry
                   if (rulesetSupportsScoreEntry())
-                    Expanded(child: buildScoreEntryWidget()),
+                    Expanded(
+                      child: ScoreEnterList(
+                        match: widget.match,
+                        onScoreChanged: (Map<dynamic, int> newScores) =>
+                            scores = newScores,
+                        onCanSaveChanged: (bool canSave) =>
+                            setState(() => this.canSave = canSave),
+                      ),
+                    ),
 
                   // Show draggable placement list
                   if (rulesetSupportsDragBehaviour())
@@ -398,11 +406,8 @@ class _MatchResultViewState extends State<MatchResultView> {
   Future<void> _handleScores() async {
     if (useTeamLogic) {
       for (int i = 0; i < allTeams.length; i++) {
-        var text = controller[i].text;
-        if (text.isEmpty) {
-          text = '0';
-        }
-        final score = int.parse(text);
+        final team = allTeams[i];
+        final score = scores[team] ?? 0;
         await db.teamDao.updateTeamScore(
           matchId: widget.match.id,
           teamId: allTeams[i].id,
@@ -411,11 +416,8 @@ class _MatchResultViewState extends State<MatchResultView> {
       }
     } else {
       for (int i = 0; i < allPlayers.length; i++) {
-        var text = controller[i].text;
-        if (text.isEmpty) {
-          text = '0';
-        }
-        final score = int.parse(text);
+        final player = allPlayers[i];
+        final score = scores[player] ?? 0;
         await db.scoreEntryDao.addScore(
           matchId: widget.match.id,
           playerId: allPlayers[i].id,
@@ -467,51 +469,6 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool rulesetSupportsDragBehaviour() {
     return ruleset == Ruleset.placement;
-  }
-
-  Widget buildScoreEntryWidget() {
-    if (useTeamLogic) {
-      return ListView.separated(
-        itemCount: allTeams.length,
-        itemBuilder: (context, index) {
-          return ScoreListTile(
-            content: widget.match.isTeamMatch
-                ? TeamCard(team: allTeams[index], width: 220, maxChars: 16)
-                : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
-            horizontalPadding: 0,
-            controller: controller[index],
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Divider(indent: 20),
-          );
-        },
-      );
-    } else {
-      return ListView.separated(
-        itemCount: allPlayers.length,
-        itemBuilder: (context, index) {
-          return ScoreListTile(
-            content: buildUnitNameWidget(
-              allPlayers[index],
-              mainStyle: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            controller: controller[index],
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Divider(indent: 20),
-          );
-        },
-      );
-    }
   }
 
   Widget buildPlacementWidget() {
@@ -691,56 +648,6 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
 
     isSyncingScroll = false;
-  }
-
-  Widget buildMultipleWinnerSelectionWidget() {
-    if (useTeamLogic) {
-      return ListView.builder(
-        itemCount: allTeams.length,
-        itemBuilder: (context, index) {
-          return CustomCheckboxListTile(
-            content: widget.match.isTeamMatch
-                ? TeamCard(team: allTeams[index], maxChars: 24)
-                : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
-            value: selectedTeams.contains(allTeams[index]),
-            onChanged: (bool value) {
-              setState(() {
-                if (value) {
-                  selectedTeams.add(allTeams[index]);
-                } else {
-                  selectedTeams.remove(allTeams[index]);
-                }
-              });
-            },
-          );
-        },
-      );
-    } else {
-      return ListView.builder(
-        itemCount: allPlayers.length,
-        itemBuilder: (context, index) {
-          return CustomCheckboxListTile(
-            content: buildUnitNameWidget(
-              allPlayers[index],
-              mainStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            value: selectedPlayers.contains(allPlayers[index]),
-            onChanged: (bool value) {
-              setState(() {
-                if (value) {
-                  selectedPlayers.add(allPlayers[index]);
-                } else {
-                  selectedPlayers.remove(allPlayers[index]);
-                }
-              });
-            },
-          );
-        },
-      );
-    }
   }
 
   // Returns a copy of the current match with updated scores based on the text entered in the score entry fields.
