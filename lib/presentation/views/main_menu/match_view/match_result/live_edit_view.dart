@@ -9,8 +9,10 @@ import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 
 class LiveEditView extends StatefulWidget {
-  const LiveEditView({super.key, required this.match});
+  const LiveEditView({super.key, required this.match, this.onScoresChanged});
+
   final Match match;
+  final void Function(Map<dynamic, int>)? onScoresChanged;
 
   @override
   State<LiveEditView> createState() => _LiveEditViewState();
@@ -23,21 +25,22 @@ class _LiveEditViewState extends State<LiveEditView> {
   List<Player> get allPlayers =>
       widget.match.players
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-  List<int> scores = [];
+  Map<dynamic, int> scores = {};
 
   @override
   void initState() {
     super.initState();
 
     if (widget.match.isTeamMatch) {
-      scores = List.generate(
-        allTeams.length,
-        (index) => allTeams[index].score ?? 0,
+      scores = Map.fromEntries(
+        allTeams.map((team) => MapEntry(team, team.score ?? 0)),
       );
     } else {
-      scores = List.generate(
-        allPlayers.length,
-        (index) => widget.match.scores[allPlayers[index].id]?.score ?? 0,
+      scores = Map.fromEntries(
+        allPlayers.map(
+          (player) =>
+              MapEntry(player, widget.match.scores[player.id]?.score ?? 0),
+        ),
       );
     }
   }
@@ -73,9 +76,10 @@ class _LiveEditViewState extends State<LiveEditView> {
               ),
             ),
             onChanged: (value) {
-              scores[index] = value;
+              scores[team] = value;
+              widget.onScoresChanged?.call(scores);
             },
-            value: scores[index],
+            value: scores[team] ?? 0,
             color: getColorFromAppColor(team.color),
           );
         },
@@ -94,10 +98,11 @@ class _LiveEditViewState extends State<LiveEditView> {
             ),
             onChanged: (value) {
               setState(() {
-                scores[index] = value;
+                scores[allPlayers[index]] = value;
+                widget.onScoresChanged?.call(scores);
               });
             },
-            value: scores[index],
+            value: scores[allPlayers[index]] ?? 0,
           );
         },
       );

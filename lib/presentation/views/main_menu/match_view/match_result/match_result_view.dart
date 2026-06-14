@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -10,15 +9,13 @@ import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/util/adaptive_page_route.dart';
-import 'package:tallee/presentation/util/edge_blocked_bouncing_scroll_physics.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/live_edit_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/multiple_player_selection.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/placement_drag_list.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/score_enter_list.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/single_player_selection.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
-import 'package:tallee/presentation/widgets/cards/team_card.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
 class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
@@ -44,18 +41,8 @@ class _MatchResultViewState extends State<MatchResultView> {
   late final List<Player> allPlayers;
   late final List<Team> allTeams;
 
-  /// List of text controllers for score entry, one for each player
-  late final List<TextEditingController> controller;
-
-  /// Controller for scroll synchronizing in placements
-  late final ScrollController placementController;
-  late final ScrollController valueController;
-  bool isSyncingScroll = false;
-
   /// Flag to indicate if the save button should be enabled
-  late bool canSave;
-
-  late bool isTeamMatch;
+  bool canSave = false;
 
   /// Currently selected player(s)/team(s) (winner / looser)
   Player? selectedPlayer;
@@ -63,28 +50,29 @@ class _MatchResultViewState extends State<MatchResultView> {
   List<Player> selectedPlayers = [];
   List<Team> selectedTeams = [];
 
-  Map<dynamic, int> scores = {};
+  /// Scores entered for each player/team
+  Map<dynamic, int?> scores = {};
 
   bool get useTeamLogic => widget.match.useTeamLogic;
+
+  bool get isTeamMatch => widget.match.isTeamMatch;
+
+  bool rulesetSupportsPlayerSelection() =>
+      ruleset == Ruleset.singleWinner ||
+      ruleset == Ruleset.singleLoser ||
+      ruleset == Ruleset.multipleWinners;
+
+  bool rulesetSupportsScoreEntry() =>
+      ruleset == Ruleset.lowestScore || ruleset == Ruleset.highestScore;
+
+  bool rulesetSupportsDragBehaviour() => ruleset == Ruleset.placement;
 
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
     ruleset = widget.match.game.ruleset;
-    canSave = !rulesetSupportsScoreEntry();
-    isTeamMatch = widget.match.isTeamMatch;
 
-    placementController = ScrollController();
-    valueController = ScrollController();
-    placementController.addListener(onPlacementScroll);
-    valueController.addListener(onValueScroll);
-
-    if (useTeamLogic) {
-      initializeAsTeamMatch();
-    } else {
-      inizializeAsNormalMatch();
-    }
-
+    initData();
     super.initState();
   }
 
@@ -132,40 +120,41 @@ class _MatchResultViewState extends State<MatchResultView> {
                   // Show player selection
                   if (rulesetSupportsPlayerSelection())
                     if (ruleset == Ruleset.multipleWinners)
-                      Expanded(
-                        child: MultiplePlayerSelection(
-                          match: widget.match,
-                          onPlayersSelected: (List<Player> players) =>
-                              selectedPlayers = players,
-                          onTeamsSelected: (List<Team> teams) =>
-                              selectedTeams = teams,
-                        ),
+                      MultiplePlayerSelection(
+                        match: widget.match,
+                        onPlayersSelected: (List<Player> players) =>
+                            selectedPlayers = players,
+                        onTeamsSelected: (List<Team> teams) =>
+                            selectedTeams = teams,
                       )
                     else
-                      Expanded(
-                        child: SinglePlayerSelection(
-                          match: widget.match,
-                          onPlayerSelected: (Player? player) =>
-                              selectedPlayer = player,
-                          onTeamSelected: (Team? team) => selectedTeam = team,
-                        ),
+                      SinglePlayerSelection(
+                        match: widget.match,
+                        onPlayerSelected: (Player? player) =>
+                            selectedPlayer = player,
+                        onTeamSelected: (Team? team) => selectedTeam = team,
                       ),
 
                   // Show score entry
                   if (rulesetSupportsScoreEntry())
-                    Expanded(
-                      child: ScoreEnterList(
-                        match: widget.match,
-                        onScoreChanged: (Map<dynamic, int> newScores) =>
-                            scores = newScores,
-                        onCanSaveChanged: (bool canSave) =>
-                            setState(() => this.canSave = canSave),
-                      ),
+                    ScoreEnterList(
+                      match: widget.match,
+                      initialScores: scores,
+                      onScoreChanged: (Map<dynamic, int?> newScores) =>
+                          scores = newScores,
+                      onCanSaveChanged: (bool canSave) =>
+                          setState(() => this.canSave = canSave),
                     ),
 
                   // Show draggable placement list
                   if (rulesetSupportsDragBehaviour())
-                    Expanded(child: buildPlacementWidget()),
+                    PlacementDragList(
+                      match: widget.match,
+                      onPlayerOrderChanged: (List<Player> players) =>
+                          allPlayers = players,
+                      onTeamOrderChanged: (List<Team> teams) =>
+                          allTeams = teams,
+                    ),
                 ],
               ),
             ),
@@ -182,24 +171,17 @@ class _MatchResultViewState extends State<MatchResultView> {
                     sizeRelativeToWidth: 0.95,
                     buttonText: loc.live_edit_mode,
                     buttonType: ButtonType.secondary,
-                    onPressed: () =>
-                        Navigator.push(
-                          context,
-                          adaptivePageRoute(
-                            fullscreenDialog: true,
-                            builder: (context) => LiveEditView(
-                              match: getMatchWithUnsavedScores(),
-                            ),
-                          ),
-                        ).then(
-                          (scores) => {
-                            if (scores != null)
-                              {
-                                for (int i = 0; i < scores.length; i++)
-                                  {controller[i].text = scores[i].toString()},
-                              },
-                          },
+                    onPressed: () => Navigator.push(
+                      context,
+                      adaptivePageRoute(
+                        fullscreenDialog: true,
+                        builder: (context) => LiveEditView(
+                          match: getMatchWithTempScores(),
+                          onScoresChanged: (Map<dynamic, int> newScores) =>
+                              onScoresChanged(newScores),
                         ),
+                      ),
+                    ),
                   ),
                 ],
 
@@ -214,7 +196,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                             matchId: widget.match.id,
                             endedAt: ending,
                           );
-                          await _handleSaving();
+                          await handleSaving();
                           if (!context.mounted) return;
                           Navigator.pop(context);
                         }
@@ -228,112 +210,88 @@ class _MatchResultViewState extends State<MatchResultView> {
     );
   }
 
-  void initializeAsTeamMatch() {
-    allTeams = [...(widget.match.teams ?? [])];
+  void onScoresChanged(Map<dynamic, int> newScores) {
+    scores = Map<dynamic, int>.from(newScores);
 
-    controller = List.generate(
-      allTeams.length,
-      (index) => TextEditingController()..addListener(() => onTextEnter()),
+    final List<dynamic> participants = useTeamLogic ? allTeams : allPlayers;
+    final hasScoresForAll = participants.every(
+      (entry) => scores.containsKey(entry),
     );
+    final hasAnyScore = scores.isNotEmpty;
 
-    // Prefill fields
-    if (widget.match.mvt.isNotEmpty) {
-      if (rulesetSupportsPlayerSelection()) {
-        if (ruleset == Ruleset.multipleWinners) {
-          for (int i = 0; i < allTeams.length; i++) {
-            if (allTeams[i].score == 1) {
-              selectedTeams.add(allTeams[i]);
-            }
-          }
-        } else {
-          selectedTeam = allTeams.firstWhere(
-            (team) => team.id == widget.match.mvt.first.id,
-          );
-        }
-      } else if (rulesetSupportsScoreEntry()) {
-        for (int i = 0; i < allTeams.length; i++) {
-          final score = allTeams[i].score ?? 0;
-          controller[i].text = score.toString();
-        }
-      } else if (rulesetSupportsDragBehaviour()) {
-        allTeams.sort((a, b) {
-          final scoreA = a.score ?? 0;
-          final scoreB = b.score ?? 0;
-          return scoreB.compareTo(scoreA);
-        });
-      }
+    setState(() {
+      canSave = hasAnyScore && hasScoresForAll;
+    });
+  }
+
+  void initData() {
+    allPlayers = widget.match.players;
+    allTeams = widget.match.teams ?? [];
+
+    selectedPlayer = widget.match.mvp.firstOrNull;
+    selectedTeam = widget.match.mvt.firstOrNull;
+    selectedPlayers = widget.match.mvp;
+    selectedTeams = widget.match.mvt;
+
+    if (widget.match.isTeamMatch) {
+      scores = Map.fromEntries(
+        allTeams.map((team) => MapEntry(team, team.score)),
+      );
+    } else {
+      scores = Map.fromEntries(
+        allPlayers.map(
+          (player) => MapEntry(player, widget.match.scores[player.id]?.score),
+        ),
+      );
     }
   }
 
-  void inizializeAsNormalMatch() {
-    allPlayers = [...widget.match.players];
-    allPlayers.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+  /// Creates a match object with the currently entered scores.
+  Match getMatchWithTempScores() {
+    if (useTeamLogic) {
+      final teams = widget.match.teams ?? <Team>[];
+      final tempTeams = teams
+          .map((team) => team.copyWith(score: scores[team] ?? 0))
+          .toList();
 
-    controller = List.generate(
-      allPlayers.length,
-      (index) => TextEditingController()..addListener(() => onTextEnter()),
-    );
+      return widget.match.copyWith(teams: tempTeams);
+    } else {
+      final player = widget.match.players;
 
-    // Prefill fields
-    if (widget.match.mvp.isNotEmpty) {
-      if (rulesetSupportsPlayerSelection()) {
-        if (ruleset == Ruleset.multipleWinners) {
-          for (int i = 0; i < allPlayers.length; i++) {
-            if (widget.match.scores[allPlayers[i].id]?.score == 1) {
-              selectedPlayers.add(allPlayers[i]);
-            }
-          }
-        } else {
-          selectedPlayer = allPlayers.firstWhere(
-            (p) => p.id == widget.match.mvp.first.id,
-          );
-        }
-      } else if (rulesetSupportsScoreEntry()) {
-        for (int i = 0; i < allPlayers.length; i++) {
-          final scoreList = widget.match.scores[allPlayers[i].id];
-          final score = scoreList?.score ?? 0;
-          controller[i].text = score.toString();
-        }
-      } else if (rulesetSupportsDragBehaviour()) {
-        allPlayers.sort((a, b) {
-          final scoreA = widget.match.scores[a.id]?.score ?? 0;
-          final scoreB = widget.match.scores[b.id]?.score ?? 0;
-          return scoreB.compareTo(scoreA);
-        });
-      }
-    }
-  }
+      final scoreEntryMap = Map.fromEntries(
+        player.map(
+          (player) => MapEntry(
+            player.id,
+            ScoreEntry(roundNumber: 0, score: scores[player] ?? 0, change: 0),
+          ),
+        ),
+      );
 
-  /// Updated [canSave] everytime a text is entered in one of the score entry fields.
-  void onTextEnter() {
-    if (rulesetSupportsScoreEntry()) {
-      setState(() {
-        canSave = controller.every((c) => c.text.isNotEmpty);
-      });
+      return widget.match.copyWith(scores: scoreEntryMap);
     }
   }
 
   /// Handles saving or removing the winner in the database
   /// based on the current selection.
-  Future<void> _handleSaving() async {
+  Future<void> handleSaving() async {
     if (ruleset == Ruleset.singleWinner) {
-      await _handleWinner();
+      await handleWinner();
     } else if (ruleset == Ruleset.singleLoser) {
-      await _handleLoser();
+      await handleLoser();
     } else if (ruleset == Ruleset.lowestScore ||
         ruleset == Ruleset.highestScore) {
-      await _handleScores();
+      await handleScores();
     } else if (ruleset == Ruleset.placement) {
-      await _handlePlacement();
+      await handlePlacement();
     } else if (ruleset == Ruleset.multipleWinners) {
-      await _handleWinners();
+      await handleWinners();
     }
 
     widget.onWinnerChanged?.call();
   }
 
   /// Handles saving or removing the (single) winner in the database.
-  Future<bool> _handleWinner() async {
+  Future<bool> handleWinner() async {
     if (useTeamLogic) {
       if (selectedTeam == null) {
         return await db.teamDao.removeWinnerTeam(matchId: widget.match.id);
@@ -356,7 +314,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   /// Handles saving the (multiple) winners to the database.
-  Future<bool> _handleWinners() async {
+  Future<bool> handleWinners() async {
     if (useTeamLogic) {
       if (selectedTeams.isEmpty) {
         return await db.teamDao.removeWinnerTeam(matchId: widget.match.id);
@@ -380,7 +338,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   /// Handles saving or removing the loser in the database.
-  Future<bool> _handleLoser() async {
+  Future<bool> handleLoser() async {
     if (useTeamLogic) {
       if (selectedTeam == null) {
         return await db.teamDao.removeLoserTeam(matchId: widget.match.id);
@@ -403,7 +361,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   /// Handles saving the scores for each player in the database.
-  Future<void> _handleScores() async {
+  Future<void> handleScores() async {
     if (useTeamLogic) {
       for (int i = 0; i < allTeams.length; i++) {
         final team = allTeams[i];
@@ -428,7 +386,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   /// Handles saving the placement for each player in the database.
-  Future<void> _handlePlacement() async {
+  Future<void> handlePlacement() async {
     if (useTeamLogic) {
       await db.teamDao.setTeamPlacements(
         matchId: widget.match.id,
@@ -455,233 +413,5 @@ class _MatchResultViewState extends State<MatchResultView> {
       default:
         return loc.enter_points;
     }
-  }
-
-  bool rulesetSupportsPlayerSelection() {
-    return ruleset == Ruleset.singleWinner ||
-        ruleset == Ruleset.singleLoser ||
-        ruleset == Ruleset.multipleWinners;
-  }
-
-  bool rulesetSupportsScoreEntry() {
-    return ruleset == Ruleset.lowestScore || ruleset == Ruleset.highestScore;
-  }
-
-  bool rulesetSupportsDragBehaviour() {
-    return ruleset == Ruleset.placement;
-  }
-
-  Widget buildPlacementWidget() {
-    final double rowHeight = widget.match.isTeamMatch ? 80 : 60;
-    final double badgeSize = widget.match.isTeamMatch ? 65 : 50;
-
-    Widget buildPlacementBadge(int index) {
-      return Container(
-        alignment: Alignment.center,
-        height: badgeSize,
-        width: badgeSize,
-        decoration: BoxDecoration(
-          color: CustomTheme.boxBorderColor,
-          borderRadius: CustomTheme.standardBorderRadiusAll,
-        ),
-        child: Text(
-          ' #${index + 1} ',
-          style: const TextStyle(
-            color: CustomTheme.textColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-      );
-    }
-
-    Widget buildProxyDecorator(
-      Widget child,
-      int index,
-      Animation<double> animation,
-    ) {
-      return AnimatedBuilder(
-        animation: animation,
-        child: child,
-        builder: (context, child) {
-          final alpha = (Curves.easeInOut.transform(animation.value) * 40)
-              .toInt();
-          return Stack(
-            children: [
-              child!,
-              Positioned.fill(
-                left: 4,
-                top: 4,
-                right: 4,
-                bottom: 4,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(alpha),
-                    borderRadius: CustomTheme.standardBorderRadiusAll,
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      );
-    }
-
-    final int itemCount = useTeamLogic ? allTeams.length : allPlayers.length;
-    final fixedPlacementCol = SizedBox(
-      width: 58,
-      child: ListView.builder(
-        controller: placementController,
-        physics: const NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.zero,
-        itemCount: itemCount,
-        itemBuilder: (context, index) {
-          return SizedBox(
-            height: rowHeight,
-            child: Center(child: buildPlacementBadge(index)),
-          );
-        },
-      ),
-    );
-
-    late final Expanded valueCol;
-
-    if (useTeamLogic) {
-      valueCol = Expanded(
-        child: ReorderableListView.builder(
-          scrollController: valueController,
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: EdgeBlockedBouncingScrollPhysics(),
-          ),
-          padding: EdgeInsets.zero,
-          proxyDecorator: buildProxyDecorator,
-          onReorderItem: (int oldIndex, int newIndex) {
-            setState(() {
-              final Team team = allTeams.removeAt(oldIndex);
-              allTeams.insert(newIndex, team);
-            });
-          },
-          itemCount: itemCount,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              key: ValueKey(allTeams[index].id),
-              height: rowHeight,
-              child: widget.match.isTeamMatch
-                  ? TeamCard(
-                      margin: const EdgeInsets.only(
-                        left: 10,
-                        top: 5,
-                        bottom: 5,
-                      ),
-                      showDragHandle: true,
-                      team: allTeams[index],
-                      maxChars: 23,
-                    )
-                  : TextIconListTile(
-                      player: allTeams[index].members.first,
-                      pair: allTeams[index].members.length > 1
-                          ? allTeams[index]
-                          : null,
-                      icon: Icons.drag_handle,
-                      pairIconLeft: true,
-                    ),
-            );
-          },
-        ),
-      );
-    } else {
-      valueCol = Expanded(
-        child: ReorderableListView.builder(
-          scrollController: valueController,
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: EdgeBlockedBouncingScrollPhysics(),
-          ),
-          padding: EdgeInsets.zero,
-          proxyDecorator: buildProxyDecorator,
-          onReorderItem: (int oldIndex, int newIndex) {
-            setState(() {
-              final Player item = allPlayers.removeAt(oldIndex);
-              allPlayers.insert(newIndex, item);
-            });
-          },
-          itemCount: itemCount,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              key: ValueKey(allPlayers[index].id),
-              height: rowHeight,
-              child: TextIconListTile(
-                player: allPlayers[index],
-                icon: Icons.drag_handle,
-              ),
-            );
-          },
-        ),
-      );
-    }
-
-    return Row(children: [fixedPlacementCol, valueCol]);
-  }
-
-  /// Handler for placement scrolling
-  void onPlacementScroll() {
-    syncScroll(placementController, valueController);
-  }
-
-  /// Handler for value scrolling
-  void onValueScroll() {
-    syncScroll(valueController, placementController);
-  }
-
-  /// Synchronizes the scroll position of the target controller to match the source controller.
-  void syncScroll(ScrollController source, ScrollController target) {
-    if (isSyncingScroll || !source.hasClients || !target.hasClients) {
-      return;
-    }
-
-    isSyncingScroll = true;
-    final minExtent = target.position.minScrollExtent;
-    final maxExtent = target.position.maxScrollExtent;
-    final targetOffset = source.offset.clamp(minExtent, maxExtent).toDouble();
-
-    if ((target.offset - targetOffset).abs() > 0.5) {
-      target.jumpTo(targetOffset);
-    }
-
-    isSyncingScroll = false;
-  }
-
-  // Returns a copy of the current match with updated scores based on the text entered in the score entry fields.
-  Match getMatchWithUnsavedScores() {
-    if (useTeamLogic) {
-      return widget.match.copyWith(
-        teams: List.generate(
-          allTeams.length,
-          (index) => allTeams[index].copyWith(
-            score: int.tryParse(controller[index].text) ?? 0,
-          ),
-        ),
-      );
-    } else {
-      return widget.match.copyWith(
-        scores: {
-          for (int i = 0; i < allPlayers.length; i++)
-            allPlayers[i].id: ScoreEntry(
-              score: int.tryParse(controller[i].text) ?? 0,
-            ),
-        },
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    for (final c in controller) {
-      c.dispose();
-    }
-    placementController.removeListener(onPlacementScroll);
-    valueController.removeListener(onValueScroll);
-    placementController.dispose();
-    valueController.dispose();
-    super.dispose();
   }
 }
