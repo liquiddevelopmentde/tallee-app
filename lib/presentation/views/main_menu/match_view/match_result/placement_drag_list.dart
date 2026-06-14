@@ -3,7 +3,7 @@ import 'dart:core' hide Match;
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/models.dart';
-import 'package:tallee/presentation/util/edge_blocked_bouncing_scroll_physics.dart';
+import 'package:tallee/presentation/utils/edge_blocked_bouncing_scroll_physics.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/data/models/models.dart';
-import 'package:tallee/presentation/util/name_display.dart';
+import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 
