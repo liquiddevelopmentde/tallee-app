@@ -45,9 +45,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
   }
 
   bool get useTeamLogic => widget.match.useTeamLogic;
-
   bool get isTeamMatch => widget.match.isTeamMatch;
-
   int get itemCount => useTeamLogic ? allTeams.length : allPlayers.length;
 
   @override
@@ -96,7 +94,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                       return SizedBox(
                         key: ValueKey(allTeams[index].id),
                         height: rowHeight,
-                        child: widget.match.isTeamMatch
+                        child: isTeamMatch
                             ? TeamCard(
                                 margin: const EdgeInsets.only(
                                   left: 4,

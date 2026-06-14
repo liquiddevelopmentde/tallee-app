@@ -37,6 +37,9 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
   /// Suppresses the [onTextEnter] listener while controllers are updated
   bool suppressListener = false;
 
+  bool get isTeamMatch => widget.match.isTeamMatch;
+  bool get useTeamLogic => widget.match.useTeamLogic;
+
   @override
   void initState() {
     super.initState();
@@ -45,7 +48,7 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
     allPlayers = widget.match.players
       ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
 
-    final entryLength = hasTeams ? allTeams.length : allPlayers.length;
+    final entryLength = useTeamLogic ? allTeams.length : allPlayers.length;
 
     controller = List.generate(entryLength, (index) => TextEditingController());
 
@@ -67,17 +70,15 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
     }
   }
 
-  bool get hasTeams => widget.match.useTeamLogic;
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: hasTeams
+      child: useTeamLogic
           ? ListView.separated(
               itemCount: allTeams.length,
               itemBuilder: (context, index) {
                 return ScoreListTile(
-                  content: hasTeams
+                  content: isTeamMatch
                       ? TeamCard(
                           team: allTeams[index],
                           width: 220,
@@ -140,7 +141,7 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
 
     final Map<dynamic, int> scores = {};
     for (int i = 0; i < entryLength; i++) {
-      if (hasTeams) {
+      if (isTeamMatch) {
         final teamScore = widget.match.teams?[i].score;
         if (teamScore != null) scores[allTeams[i]] = teamScore;
       } else {
@@ -154,12 +155,12 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
   /// Applies the [newScores] scores to the controllers and the internal [scores]
   /// map.
   bool applyScores(Map<dynamic, int?> newScores) {
-    final entryLength = hasTeams ? allTeams.length : allPlayers.length;
+    final entryLength = isTeamMatch ? allTeams.length : allPlayers.length;
     bool changed = false;
     suppressListener = true;
 
     for (int i = 0; i < entryLength; i++) {
-      final entry = hasTeams ? allTeams[i] : allPlayers[i];
+      final entry = isTeamMatch ? allTeams[i] : allPlayers[i];
       if (!newScores.containsKey(entry)) continue;
 
       scores[entry] = newScores[entry];

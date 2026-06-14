@@ -1,6 +1,7 @@
 import 'dart:core' hide Match;
 
 import 'package:flutter/cupertino.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/util/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
@@ -23,23 +24,25 @@ class SinglePlayerSelection extends StatefulWidget {
 }
 
 class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
-  late Team? selectedTeam;
+  Team? selectedTeam;
   late List<Team> allTeams;
 
-  late Player? selectedPlayer;
+  Player? selectedPlayer;
   late List<Player> allPlayers;
 
+  bool get isTeamMatch => widget.match.isTeamMatch;
   bool get useTeamLogic => widget.match.useTeamLogic;
 
   @override
   void initState() {
-    if (widget.match.isTeamMatch) {
-      allTeams = widget.match.teams ?? [];
-      selectedTeam = widget.match.mvt.first;
-    } else {
-      allPlayers = widget.match.players;
-      selectedPlayer = widget.match.mvp.first;
-    }
+    allTeams = (widget.match.teams ?? [])
+      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+    allPlayers = widget.match.players
+      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+
+    selectedTeam = widget.match.mvt.firstOrNull;
+    selectedPlayer = widget.match.mvp.firstOrNull;
+
     super.initState();
   }
 
@@ -60,7 +63,7 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
                 itemCount: allTeams.length,
                 itemBuilder: (context, index) {
                   return CustomRadioListTile(
-                    content: widget.match.isTeamMatch
+                    content: isTeamMatch
                         ? TeamCard(team: allTeams[index], maxChars: 24)
                         : buildUnitNameWidget(
                             allTeams[index],

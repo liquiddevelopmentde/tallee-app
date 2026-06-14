@@ -30,6 +30,7 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
   late List<Player> allPlayers;
   List<Player> selectedPlayers = [];
 
+  bool get isTeamMatch => widget.match.isTeamMatch;
   bool get useTeamLogic => widget.match.useTeamLogic;
 
   @override
@@ -53,7 +54,7 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
               itemCount: allTeams.length,
               itemBuilder: (context, index) {
                 return CustomCheckboxListTile(
-                  content: widget.match.isTeamMatch
+                  content: isTeamMatch
                       ? TeamCard(team: allTeams[index], maxChars: 24)
                       : buildUnitNameWidget(
                           allTeams[index],
