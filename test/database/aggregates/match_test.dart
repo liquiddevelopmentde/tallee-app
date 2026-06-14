@@ -227,7 +227,7 @@ void main() {
 
         match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
-          includeDeletdPlayer: true,
+          includeDeletedPlayer: true,
         );
         expect(match.players.length, testMatch1.players.length);
         expect(match.players.any((p) => p.id == testPlayer4.id), isTrue);

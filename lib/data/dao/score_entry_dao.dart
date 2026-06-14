@@ -338,19 +338,19 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return await getLoser(matchId: matchId) != null;
   }
 
-  // Setting the looser for a game and clearing previous looser if exists.
+  // Setting the loser for a game and clearing previous loser if exists.
   Future<bool> setLoser({
     required String matchId,
     required String playerId,
   }) async {
-    // Clear previous loosers if exists
+    // Clear previous losers if exists
     await deleteAllScoresForMatch(matchId: matchId);
     await db.matchDao.updateMatchEndedAt(
       matchId: matchId,
       endedAt: DateTime.now(),
     );
 
-    // Set the loosers score to 0
+    // Set the losers score to 0
     final rowsAffected = await into(scoreEntryTable).insert(
       ScoreEntryTableCompanion.insert(
         playerId: playerId,
@@ -365,7 +365,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return rowsAffected > 0;
   }
 
-  /// Retrieves the looser of a match by looking for a score entry where score
+  /// Retrieves the loser of a match by looking for a score entry where score
   /// is 0. Returns `null` if no player found, else the first with the score.
   Future<Player?> getLoser({required String matchId}) async {
     final query =
@@ -391,10 +391,10 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
-  /// Removes the looser of a match.
+  /// Removes the loser of a match.
   ///
-  /// Returns `true` if the looser was removed, `false` if there are multiple
-  /// scores or if the looser cannot be removed.
+  /// Returns `true` if the loser was removed, `false` if there are multiple
+  /// scores or if the loser cannot be removed.
   Future<bool> removeLoser({required String matchId}) async {
     final scores = await getAllMatchScores(matchId: matchId);
 

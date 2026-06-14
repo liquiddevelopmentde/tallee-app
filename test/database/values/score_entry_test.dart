@@ -649,37 +649,37 @@ void main() {
 
     group('LOSER', () {
       test('hasLoser() works correctly', () async {
-        var hasLooser = await database.scoreEntryDao.hasLoser(
+        var hasLoser = await database.scoreEntryDao.hasLoser(
           matchId: testMatch1.id,
         );
-        expect(hasLooser, isFalse);
+        expect(hasLoser, isFalse);
 
         await database.scoreEntryDao.setLoser(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
 
-        hasLooser = await database.scoreEntryDao.hasLoser(
+        hasLoser = await database.scoreEntryDao.hasLoser(
           matchId: testMatch1.id,
         );
-        expect(hasLooser, isTrue);
+        expect(hasLoser, isTrue);
       });
 
       test('getLoser() returns correct loser', () async {
-        var looser = await database.scoreEntryDao.getLoser(
+        var loser = await database.scoreEntryDao.getLoser(
           matchId: testMatch1.id,
         );
-        expect(looser, isNull);
+        expect(loser, isNull);
 
         await database.scoreEntryDao.setLoser(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
         );
 
-        looser = await database.scoreEntryDao.getLoser(matchId: testMatch1.id);
+        loser = await database.scoreEntryDao.getLoser(matchId: testMatch1.id);
 
-        expect(looser, isNotNull);
-        expect(looser!.id, testPlayer1.id);
+        expect(loser, isNotNull);
+        expect(loser!.id, testPlayer1.id);
 
         final match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
@@ -703,10 +703,10 @@ void main() {
         );
         expect(removed, isTrue);
 
-        var looser = await database.scoreEntryDao.getLoser(
+        var loser = await database.scoreEntryDao.getLoser(
           matchId: testMatch1.id,
         );
-        expect(looser, isNull);
+        expect(loser, isNull);
 
         final match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,

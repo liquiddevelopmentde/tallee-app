@@ -44,7 +44,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Flag to indicate if the save button should be enabled
   bool canSave = false;
 
-  /// Currently selected player(s)/team(s) (winner / looser)
+  /// Currently selected player(s)/team(s) (winner / loser)
   Player? selectedPlayer;
   Team? selectedTeam;
   List<Player> selectedPlayers = [];
