@@ -74,7 +74,10 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 context: context,
                 builder: (context) => CustomAlertDialog(
                   title: '${loc.delete_match}?',
-                  content: Text(loc.this_cannot_be_undone),
+                  content: Text(
+                    loc.this_cannot_be_undone,
+                    overflow: TextOverflow.visible,
+                  ),
                   actions: [
                     CustomDialogAction(
                       onPressed: () => Navigator.of(context).pop(true),

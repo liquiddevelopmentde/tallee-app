@@ -468,8 +468,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       teamIds.map((teamId) => db.teamDao.getTeamById(teamId: teamId)),
     );
 
-    return teams
-      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    return teams;
   }
 
   /* Update */

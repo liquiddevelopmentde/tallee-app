@@ -59,7 +59,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   /// Games filtered according to the current search query
   late List<Game> filteredGames;
   List<Game> get games =>
-      widget.games..sort((a, b) => a.name.compareTo(b.name));
+      widget.games..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
 
   // If selecting multiple is possible
   bool enableMultiSelection = false;
@@ -110,6 +110,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
               if (result != null && result.game != null) {
                 setState(() {
                   games.insert(0, result.game);
+                  games.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
                 });
                 refreshFromSource();
               }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -55,9 +56,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// Hint text for the match name input field
   String? hintText;
 
-  List<Group> groupsList = [];
-  List<Player> playerList = [];
-  List<Game> gamesList = [];
+  List<Group> groups = [];
+  List<Player> players = [];
+  List<Game> games = [];
 
   Group? selectedGroup;
   Game? selectedGame;
@@ -75,22 +76,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       setState(() {});
     });
 
-    db = Provider.of<AppDatabase>(context, listen: false);
-
-    Future.wait([
-      db.groupDao.getAllGroups(),
-      db.playerDao.getAllPlayers(),
-      db.gameDao.getAllGames(),
-    ]).then((result) async {
-      groupsList = result[0] as List<Group>;
-      playerList = result[1] as List<Player>;
-      gamesList = (result[2] as List<Game>);
-
-      // If a match is provided, prefill the fields
-      if (isEditMode()) {
-        prefillMatchDetails();
-      }
-    });
+    loadData();
   }
 
   @override
@@ -209,6 +195,28 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     );
   }
 
+  void loadData() {
+    db = Provider.of<AppDatabase>(context, listen: false);
+
+    Future.wait([
+      db.groupDao.getAllGroups(),
+      db.playerDao.getAllPlayers(),
+      db.gameDao.getAllGames(),
+    ]).then((result) async {
+      groups = result[0] as List<Group>
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      players = result[1] as List<Player>
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      games = (result[2] as List<Game>)
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+
+      // If a match is provided, prefill the fields
+      if (isEditMode()) {
+        prefillMatchDetails();
+      }
+    });
+  }
+
   bool isEditMode() {
     return widget.matchToEdit != null;
   }
@@ -238,7 +246,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     selectedGame = await Navigator.of(context).push(
       adaptivePageRoute(
         builder: (context) => ChooseGameView(
-          games: gamesList,
+          games: games,
           initialGame: selectedGame,
           onGamesUpdated: widget.onMatchesUpdated,
         ),
@@ -256,9 +264,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   Future<void> onChoosingGroup() async {
     final oldGroup = selectedGroup;
     final newGroup = await Navigator.of(context).push<Group?>(
-      adaptivePageRoute(
-        builder: (context) => ChooseGroupView(groups: groupsList),
-      ),
+      adaptivePageRoute(builder: (context) => ChooseGroupView(groups: groups)),
     );
 
     if (newGroup?.id == oldGroup?.id) return;

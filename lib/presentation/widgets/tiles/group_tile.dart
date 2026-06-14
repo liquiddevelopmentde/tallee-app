@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
@@ -57,6 +58,7 @@ class _GroupTileState extends State<GroupTile> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              spacing: 10,
               children: [
                 Flexible(
                   child: Text(
@@ -92,7 +94,7 @@ class _GroupTileState extends State<GroupTile> {
               children: <Widget>[
                 for (var member in [
                   ...widget.group.members,
-                ]..sort((a, b) => a.name.compareTo(b.name)))
+                ]..sort((a, b) => a.name.compareIgnoringCaseTo(b.name)))
                   PlayerTile(
                     player: member,
                     onTileTap: () {

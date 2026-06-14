@@ -1,10 +1,7 @@
-// ignore_for_file: unused_import
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/name_display.dart';
@@ -104,7 +101,10 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   context: context,
                   builder: (context) => CustomAlertDialog(
                     title: loc.delete_player,
-                    content: Text(loc.delete_player_warning_details),
+                    content: Text(
+                      loc.delete_player_warning_details,
+                      overflow: TextOverflow.visible,
+                    ),
                     actions: [
                       CustomDialogAction(
                         onPressed: () => Navigator.of(context).pop(true),
