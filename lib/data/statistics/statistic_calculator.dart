@@ -1,8 +1,6 @@
 import 'dart:math';
 
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
 
 class StatisticCalculator {

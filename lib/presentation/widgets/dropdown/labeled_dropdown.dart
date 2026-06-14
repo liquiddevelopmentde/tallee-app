@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/widgets/dropdown/dropdown_option.dart';
 
+export 'dropdown_option.dart';
+
 /// A titled dropdown section with a consistent style.
 ///
 /// Supports both single-select (default constructor) and multi-select

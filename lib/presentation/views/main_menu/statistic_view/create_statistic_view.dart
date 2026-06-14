@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -17,7 +16,6 @@ import 'package:tallee/presentation/util/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/dropdown/dropdown_option.dart';
 import 'package:tallee/presentation/widgets/dropdown/labeled_dropdown.dart';
 
 class CreateStatisticView extends StatefulWidget {

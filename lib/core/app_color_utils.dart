@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/statistic.dart';
 
 /// Returns the [Color] object corresponding to a [AppColor] enum value.

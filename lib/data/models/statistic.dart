@@ -5,6 +5,8 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:uuid/uuid.dart';
 
+export 'package:tallee/core/enums.dart';
+
 class Statistic {
   final String id;
   final DateTime createdAt;

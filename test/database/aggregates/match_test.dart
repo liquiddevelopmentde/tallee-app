@@ -2,13 +2,8 @@ import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' hide isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score_entry.dart';
 
 void main() {
   late AppDatabase database;

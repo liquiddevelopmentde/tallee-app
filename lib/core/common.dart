@@ -1,5 +1,9 @@
 import 'package:tallee/data/models/match.dart';
 
+export 'app_color_utils.dart';
+export 'icon_utils.dart';
+export 'translations.dart';
+
 /// Counts how many players in the [match] are not part of the group
 ///
 /// Returns the text you append after the group name, e.g. " + 5" or an empty

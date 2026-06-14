@@ -7,15 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:json_schema/json_schema.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/statistic.dart';
-import 'package:tallee/data/models/team.dart';
 
 class DataTransferService {
   /// Deletes all data from the database.
