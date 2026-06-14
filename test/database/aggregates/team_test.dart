@@ -268,6 +268,11 @@ void main() {
 
         fetchedTeam = await database.teamDao.getTeamById(teamId: testTeam1.id);
         expect(fetchedTeam.name, newName);
+
+        final match = await database.matchDao.getMatchById(
+          matchId: matchWithNoTeams.id,
+        );
+        expect(match.endedAt, isNull);
       });
 
       test('updateTeamName() does nothing for non-existent team', () async {
@@ -372,6 +377,11 @@ void main() {
           expect(entry!.score, 1);
         }
 
+        var match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNotNull);
+
         final removed = await database.teamDao.removeWinnerTeam(
           matchId: testMatch1.id,
         );
@@ -387,6 +397,9 @@ void main() {
           );
           expect(entry, isNull);
         }
+
+        match = await database.matchDao.getMatchById(matchId: testMatch1.id);
+        expect(match.endedAt, isNull);
       });
 
       test('set-/removeLoserTeam() works correctly', () async {
@@ -410,6 +423,11 @@ void main() {
           expect(entry!.score, 0);
         }
 
+        var match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNotNull);
+
         final removed = await database.teamDao.removeLoserTeam(
           matchId: testMatch1.id,
         );
@@ -425,6 +443,9 @@ void main() {
           );
           expect(entry, isNull);
         }
+
+        match = await database.matchDao.getMatchById(matchId: testMatch1.id);
+        expect(match.endedAt, isNull);
       });
 
       test('set-/removeWinnerTeams() works correctly', () async {
@@ -452,6 +473,11 @@ void main() {
           expect(entry!.score, 1);
         }
 
+        var match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNotNull);
+
         for (final member in testTeam2.members) {
           final entry = await database.scoreEntryDao.getScore(
             playerId: member.id,
@@ -487,6 +513,9 @@ void main() {
           );
           expect(entry, isNull);
         }
+
+        match = await database.matchDao.getMatchById(matchId: testMatch1.id);
+        expect(match.endedAt, isNull);
       });
 
       test('setTeamPlacements() works correctly', () async {
@@ -520,6 +549,11 @@ void main() {
           expect(entry, isNotNull);
           expect(entry!.score, 1);
         }
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNotNull);
       });
     });
   });

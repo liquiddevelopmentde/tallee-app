@@ -4286,10 +4286,7 @@ final class $$PlayerTableTableReferences
   static MultiTypedResultKey<$PlayerGroupTableTable, List<PlayerGroupTableData>>
   _playerGroupTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.playerGroupTable,
-    aliasName: $_aliasNameGenerator(
-      db.playerTable.id,
-      db.playerGroupTable.playerId,
-    ),
+    aliasName: 'player_table__id__player_group_table__player_id',
   );
 
   $$PlayerGroupTableTableProcessedTableManager get playerGroupTableRefs {
@@ -4309,10 +4306,7 @@ final class $$PlayerTableTableReferences
   static MultiTypedResultKey<$PlayerMatchTableTable, List<PlayerMatchTableData>>
   _playerMatchTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.playerMatchTable,
-    aliasName: $_aliasNameGenerator(
-      db.playerTable.id,
-      db.playerMatchTable.playerId,
-    ),
+    aliasName: 'player_table__id__player_match_table__player_id',
   );
 
   $$PlayerMatchTableTableProcessedTableManager get playerMatchTableRefs {
@@ -4332,10 +4326,7 @@ final class $$PlayerTableTableReferences
   static MultiTypedResultKey<$ScoreEntryTableTable, List<ScoreEntryTableData>>
   _scoreEntryTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.scoreEntryTable,
-    aliasName: $_aliasNameGenerator(
-      db.playerTable.id,
-      db.scoreEntryTable.playerId,
-    ),
+    aliasName: 'player_table__id__score_entry_table__player_id',
   );
 
   $$ScoreEntryTableTableProcessedTableManager get scoreEntryTableRefs {
@@ -4816,7 +4807,7 @@ final class $$GroupTableTableReferences
   static MultiTypedResultKey<$MatchTableTable, List<MatchTableData>>
   _matchTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.matchTable,
-    aliasName: $_aliasNameGenerator(db.groupTable.id, db.matchTable.groupId),
+    aliasName: 'group_table__id__match_table__group_id',
   );
 
   $$MatchTableTableProcessedTableManager get matchTableRefs {
@@ -4834,10 +4825,7 @@ final class $$GroupTableTableReferences
   static MultiTypedResultKey<$PlayerGroupTableTable, List<PlayerGroupTableData>>
   _playerGroupTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.playerGroupTable,
-    aliasName: $_aliasNameGenerator(
-      db.groupTable.id,
-      db.playerGroupTable.groupId,
-    ),
+    aliasName: 'group_table__id__player_group_table__group_id',
   );
 
   $$PlayerGroupTableTableProcessedTableManager get playerGroupTableRefs {
@@ -4861,10 +4849,7 @@ final class $$GroupTableTableReferences
   _statisticGroupTableRefsTable(_$AppDatabase db) =>
       MultiTypedResultKey.fromTable(
         db.statisticGroupTable,
-        aliasName: $_aliasNameGenerator(
-          db.groupTable.id,
-          db.statisticGroupTable.groupId,
-        ),
+        aliasName: 'group_table__id__statistic_group_table__group_id',
       );
 
   $$StatisticGroupTableTableProcessedTableManager get statisticGroupTableRefs {
@@ -5318,7 +5303,7 @@ final class $$GameTableTableReferences
   static MultiTypedResultKey<$MatchTableTable, List<MatchTableData>>
   _matchTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.matchTable,
-    aliasName: $_aliasNameGenerator(db.gameTable.id, db.matchTable.gameId),
+    aliasName: 'game_table__id__match_table__game_id',
   );
 
   $$MatchTableTableProcessedTableManager get matchTableRefs {
@@ -5340,10 +5325,7 @@ final class $$GameTableTableReferences
   _statisticGameTableRefsTable(_$AppDatabase db) =>
       MultiTypedResultKey.fromTable(
         db.statisticGameTable,
-        aliasName: $_aliasNameGenerator(
-          db.gameTable.id,
-          db.statisticGameTable.gameId,
-        ),
+        aliasName: 'game_table__id__statistic_game_table__game_id',
       );
 
   $$StatisticGameTableTableProcessedTableManager get statisticGameTableRefs {
@@ -5768,8 +5750,8 @@ final class $$MatchTableTableReferences
     extends BaseReferences<_$AppDatabase, $MatchTableTable, MatchTableData> {
   $$MatchTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $GameTableTable _gameIdTable(_$AppDatabase db) => db.gameTable
-      .createAlias($_aliasNameGenerator(db.matchTable.gameId, db.gameTable.id));
+  static $GameTableTable _gameIdTable(_$AppDatabase db) =>
+      db.gameTable.createAlias('match_table__game_id__game_table__id');
 
   $$GameTableTableProcessedTableManager get gameId {
     final $_column = $_itemColumn<String>('game_id')!;
@@ -5786,9 +5768,7 @@ final class $$MatchTableTableReferences
   }
 
   static $GroupTableTable _groupIdTable(_$AppDatabase db) =>
-      db.groupTable.createAlias(
-        $_aliasNameGenerator(db.matchTable.groupId, db.groupTable.id),
-      );
+      db.groupTable.createAlias('match_table__group_id__group_table__id');
 
   $$GroupTableTableProcessedTableManager? get groupId {
     final $_column = $_itemColumn<String>('group_id');
@@ -5807,10 +5787,7 @@ final class $$MatchTableTableReferences
   static MultiTypedResultKey<$PlayerMatchTableTable, List<PlayerMatchTableData>>
   _playerMatchTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.playerMatchTable,
-    aliasName: $_aliasNameGenerator(
-      db.matchTable.id,
-      db.playerMatchTable.matchId,
-    ),
+    aliasName: 'match_table__id__player_match_table__match_id',
   );
 
   $$PlayerMatchTableTableProcessedTableManager get playerMatchTableRefs {
@@ -5830,10 +5807,7 @@ final class $$MatchTableTableReferences
   static MultiTypedResultKey<$ScoreEntryTableTable, List<ScoreEntryTableData>>
   _scoreEntryTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.scoreEntryTable,
-    aliasName: $_aliasNameGenerator(
-      db.matchTable.id,
-      db.scoreEntryTable.matchId,
-    ),
+    aliasName: 'match_table__id__score_entry_table__match_id',
   );
 
   $$ScoreEntryTableTableProcessedTableManager get scoreEntryTableRefs {
@@ -6439,10 +6413,8 @@ final class $$PlayerGroupTableTableReferences
     super.$_typedResult,
   );
 
-  static $PlayerTableTable _playerIdTable(_$AppDatabase db) =>
-      db.playerTable.createAlias(
-        $_aliasNameGenerator(db.playerGroupTable.playerId, db.playerTable.id),
-      );
+  static $PlayerTableTable _playerIdTable(_$AppDatabase db) => db.playerTable
+      .createAlias('player_group_table__player_id__player_table__id');
 
   $$PlayerTableTableProcessedTableManager get playerId {
     final $_column = $_itemColumn<String>('player_id')!;
@@ -6458,10 +6430,8 @@ final class $$PlayerGroupTableTableReferences
     );
   }
 
-  static $GroupTableTable _groupIdTable(_$AppDatabase db) =>
-      db.groupTable.createAlias(
-        $_aliasNameGenerator(db.playerGroupTable.groupId, db.groupTable.id),
-      );
+  static $GroupTableTable _groupIdTable(_$AppDatabase db) => db.groupTable
+      .createAlias('player_group_table__group_id__group_table__id');
 
   $$GroupTableTableProcessedTableManager get groupId {
     final $_column = $_itemColumn<String>('group_id')!;
@@ -6804,10 +6774,7 @@ final class $$TeamTableTableReferences
   static MultiTypedResultKey<$PlayerMatchTableTable, List<PlayerMatchTableData>>
   _playerMatchTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.playerMatchTable,
-    aliasName: $_aliasNameGenerator(
-      db.teamTable.id,
-      db.playerMatchTable.teamId,
-    ),
+    aliasName: 'team_table__id__player_match_table__team_id',
   );
 
   $$PlayerMatchTableTableProcessedTableManager get playerMatchTableRefs {
@@ -7115,10 +7082,8 @@ final class $$PlayerMatchTableTableReferences
     super.$_typedResult,
   );
 
-  static $PlayerTableTable _playerIdTable(_$AppDatabase db) =>
-      db.playerTable.createAlias(
-        $_aliasNameGenerator(db.playerMatchTable.playerId, db.playerTable.id),
-      );
+  static $PlayerTableTable _playerIdTable(_$AppDatabase db) => db.playerTable
+      .createAlias('player_match_table__player_id__player_table__id');
 
   $$PlayerTableTableProcessedTableManager get playerId {
     final $_column = $_itemColumn<String>('player_id')!;
@@ -7134,10 +7099,8 @@ final class $$PlayerMatchTableTableReferences
     );
   }
 
-  static $MatchTableTable _matchIdTable(_$AppDatabase db) =>
-      db.matchTable.createAlias(
-        $_aliasNameGenerator(db.playerMatchTable.matchId, db.matchTable.id),
-      );
+  static $MatchTableTable _matchIdTable(_$AppDatabase db) => db.matchTable
+      .createAlias('player_match_table__match_id__match_table__id');
 
   $$MatchTableTableProcessedTableManager get matchId {
     final $_column = $_itemColumn<String>('match_id')!;
@@ -7154,9 +7117,7 @@ final class $$PlayerMatchTableTableReferences
   }
 
   static $TeamTableTable _teamIdTable(_$AppDatabase db) =>
-      db.teamTable.createAlias(
-        $_aliasNameGenerator(db.playerMatchTable.teamId, db.teamTable.id),
-      );
+      db.teamTable.createAlias('player_match_table__team_id__team_table__id');
 
   $$TeamTableTableProcessedTableManager? get teamId {
     final $_column = $_itemColumn<String>('team_id');
@@ -7594,10 +7555,8 @@ final class $$ScoreEntryTableTableReferences
     super.$_typedResult,
   );
 
-  static $PlayerTableTable _playerIdTable(_$AppDatabase db) =>
-      db.playerTable.createAlias(
-        $_aliasNameGenerator(db.scoreEntryTable.playerId, db.playerTable.id),
-      );
+  static $PlayerTableTable _playerIdTable(_$AppDatabase db) => db.playerTable
+      .createAlias('score_entry_table__player_id__player_table__id');
 
   $$PlayerTableTableProcessedTableManager get playerId {
     final $_column = $_itemColumn<String>('player_id')!;
@@ -7614,9 +7573,7 @@ final class $$ScoreEntryTableTableReferences
   }
 
   static $MatchTableTable _matchIdTable(_$AppDatabase db) =>
-      db.matchTable.createAlias(
-        $_aliasNameGenerator(db.scoreEntryTable.matchId, db.matchTable.id),
-      );
+      db.matchTable.createAlias('score_entry_table__match_id__match_table__id');
 
   $$MatchTableTableProcessedTableManager get matchId {
     final $_column = $_itemColumn<String>('match_id')!;
@@ -8027,10 +7984,7 @@ final class $$StatisticTableTableReferences
   _statisticScopeTableRefsTable(_$AppDatabase db) =>
       MultiTypedResultKey.fromTable(
         db.statisticScopeTable,
-        aliasName: $_aliasNameGenerator(
-          db.statisticTable.id,
-          db.statisticScopeTable.statisticId,
-        ),
+        aliasName: 'statistic_table__id__statistic_scope_table__statistic_id',
       );
 
   $$StatisticScopeTableTableProcessedTableManager get statisticScopeTableRefs {
@@ -8054,10 +8008,7 @@ final class $$StatisticTableTableReferences
   _statisticGameTableRefsTable(_$AppDatabase db) =>
       MultiTypedResultKey.fromTable(
         db.statisticGameTable,
-        aliasName: $_aliasNameGenerator(
-          db.statisticTable.id,
-          db.statisticGameTable.statisticId,
-        ),
+        aliasName: 'statistic_table__id__statistic_game_table__statistic_id',
       );
 
   $$StatisticGameTableTableProcessedTableManager get statisticGameTableRefs {
@@ -8081,10 +8032,7 @@ final class $$StatisticTableTableReferences
   _statisticGroupTableRefsTable(_$AppDatabase db) =>
       MultiTypedResultKey.fromTable(
         db.statisticGroupTable,
-        aliasName: $_aliasNameGenerator(
-          db.statisticTable.id,
-          db.statisticGroupTable.statisticId,
-        ),
+        aliasName: 'statistic_table__id__statistic_group_table__statistic_id',
       );
 
   $$StatisticGroupTableTableProcessedTableManager get statisticGroupTableRefs {
@@ -8575,13 +8523,9 @@ final class $$StatisticScopeTableTableReferences
     super.$_typedResult,
   );
 
-  static $StatisticTableTable _statisticIdTable(_$AppDatabase db) =>
-      db.statisticTable.createAlias(
-        $_aliasNameGenerator(
-          db.statisticScopeTable.statisticId,
-          db.statisticTable.id,
-        ),
-      );
+  static $StatisticTableTable _statisticIdTable(_$AppDatabase db) => db
+      .statisticTable
+      .createAlias('statistic_scope_table__statistic_id__statistic_table__id');
 
   $$StatisticTableTableProcessedTableManager get statisticId {
     final $_column = $_itemColumn<String>('statistic_id')!;
@@ -8860,13 +8804,9 @@ final class $$StatisticGameTableTableReferences
     super.$_typedResult,
   );
 
-  static $StatisticTableTable _statisticIdTable(_$AppDatabase db) =>
-      db.statisticTable.createAlias(
-        $_aliasNameGenerator(
-          db.statisticGameTable.statisticId,
-          db.statisticTable.id,
-        ),
-      );
+  static $StatisticTableTable _statisticIdTable(_$AppDatabase db) => db
+      .statisticTable
+      .createAlias('statistic_game_table__statistic_id__statistic_table__id');
 
   $$StatisticTableTableProcessedTableManager get statisticId {
     final $_column = $_itemColumn<String>('statistic_id')!;
@@ -8883,9 +8823,7 @@ final class $$StatisticGameTableTableReferences
   }
 
   static $GameTableTable _gameIdTable(_$AppDatabase db) =>
-      db.gameTable.createAlias(
-        $_aliasNameGenerator(db.statisticGameTable.gameId, db.gameTable.id),
-      );
+      db.gameTable.createAlias('statistic_game_table__game_id__game_table__id');
 
   $$GameTableTableProcessedTableManager get gameId {
     final $_column = $_itemColumn<String>('game_id')!;
@@ -9231,13 +9169,9 @@ final class $$StatisticGroupTableTableReferences
     super.$_typedResult,
   );
 
-  static $StatisticTableTable _statisticIdTable(_$AppDatabase db) =>
-      db.statisticTable.createAlias(
-        $_aliasNameGenerator(
-          db.statisticGroupTable.statisticId,
-          db.statisticTable.id,
-        ),
-      );
+  static $StatisticTableTable _statisticIdTable(_$AppDatabase db) => db
+      .statisticTable
+      .createAlias('statistic_group_table__statistic_id__statistic_table__id');
 
   $$StatisticTableTableProcessedTableManager get statisticId {
     final $_column = $_itemColumn<String>('statistic_id')!;
@@ -9253,10 +9187,8 @@ final class $$StatisticGroupTableTableReferences
     );
   }
 
-  static $GroupTableTable _groupIdTable(_$AppDatabase db) =>
-      db.groupTable.createAlias(
-        $_aliasNameGenerator(db.statisticGroupTable.groupId, db.groupTable.id),
-      );
+  static $GroupTableTable _groupIdTable(_$AppDatabase db) => db.groupTable
+      .createAlias('statistic_group_table__group_id__group_table__id');
 
   $$GroupTableTableProcessedTableManager get groupId {
     final $_column = $_itemColumn<String>('group_id')!;

@@ -210,6 +210,10 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required String matchId,
     required int score,
   }) async {
+    await db.matchDao.updateMatchEndedAt(
+      matchId: matchId,
+      endedAt: DateTime.now(),
+    );
     await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
       const TeamTableCompanion(score: Value(null)),
     );

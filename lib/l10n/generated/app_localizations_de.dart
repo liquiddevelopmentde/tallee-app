@@ -187,7 +187,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get edit_group => 'Gruppe bearbeiten';
 
   @override
-  String get edit_match => 'Gruppe bearbeiten';
+  String get edit_match => 'Match bearbeiten';
 
   @override
   String get edit_name => 'Name ändern';

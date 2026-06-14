@@ -422,7 +422,5 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
     );
   }
 
-  bool isConfirmButtonEnabled() {
-    return nameController.text.trim().isNotEmpty;
-  }
+  bool isConfirmButtonEnabled() => nameController.text.trim().isNotEmpty;
 }

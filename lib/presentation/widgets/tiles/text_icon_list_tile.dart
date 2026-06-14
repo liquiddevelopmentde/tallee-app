@@ -63,20 +63,22 @@ class TextIconListTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 12.5),
-            child: buildUnitNameWidget(
-              pair ?? player ?? Player(name: text, nameCount: 0),
-              mainStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12.5),
+              child: buildUnitNameWidget(
+                pair ?? player ?? Player(name: text, nameCount: 0),
+                mainStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                countStyle: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: CustomTheme.textColor.withAlpha(100),
+                ),
+                pairIconLeft: pairIconLeft,
               ),
-              countStyle: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: CustomTheme.textColor.withAlpha(100),
-              ),
-              pairIconLeft: pairIconLeft,
             ),
           ),
           if (icon != null)

@@ -20,6 +20,7 @@ import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
+import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
@@ -49,6 +50,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   late Match match;
 
+  late TextEditingController nameController;
+
   bool get useTeamLogic => match.useTeamLogic;
 
   @override
@@ -56,6 +59,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
     match = widget.match;
+    nameController = TextEditingController();
   }
 
   @override
@@ -297,16 +301,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 children: [
                   FloatingAnimatedButton(
                     icon: Icons.edit,
-                    onPressed: () => Navigator.push(
-                      context,
-                      adaptivePageRoute(
-                        fullscreenDialog: true,
-                        builder: (context) => CreateMatchView(
-                          matchToEdit: match,
-                          onMatchUpdated: onMatchUpdated,
-                        ),
-                      ),
-                    ),
+                    onPressed: () => editMatchNavigation(loc),
                   ),
                   FloatingAnimatedButton(
                     text: loc.enter_results,
@@ -375,6 +370,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           label,
           style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
         ),
+        const SizedBox(width: 20),
         Expanded(child: buildWinnerNameWidget()),
       ];
     } else {
@@ -400,30 +396,19 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     );
 
     if (useTeamLogic) {
-      final winners = <InlineSpan>[];
-
-      for (var i = 0; i < mvtTeams.length; i++) {
-        if (i > 0) {
-          winners.add(const TextSpan(text: ', ', style: winnerStyle));
-        }
-
-        winners.add(
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: buildUnitNameWidget(
+      return Wrap(
+        alignment: WrapAlignment.end,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 6,
+        runSpacing: 4,
+        children: [
+          for (var i = 0; i < mvtTeams.length; i++)
+            buildUnitNameWidget(
               mvtTeams[i],
               isTeamMatch: match.isTeamMatch,
               mainStyle: winnerStyle,
             ),
-          ),
-        );
-      }
-
-      return Text.rich(
-        TextSpan(children: winners),
-        textAlign: TextAlign.end,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+        ],
       );
     }
 
@@ -437,8 +422,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ],
       ),
       textAlign: TextAlign.end,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
     );
   }
 
@@ -565,17 +548,68 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   }
 
   Future<void> updateScoresForCurrentMatch() async {
-    if (useTeamLogic) {
-      final teams = await db.teamDao.getTeamsByMatchId(matchId: match.id);
-      setState(() {
-        match = match.copyWith(teams: teams);
-      });
-    } else {
-      final scores = await db.scoreEntryDao.getAllMatchScores(
-        matchId: match.id,
+    final match = await db.matchDao.getMatchById(matchId: this.match.id);
+    setState(() {
+      this.match = match;
+    });
+  }
+
+  bool isConfirmButtonEnabled() => nameController.text.trim().isNotEmpty;
+
+  /// Navigates to the edit match view if the match hasnt ended yet, otherwise
+  /// shows a dialog to only edit the name
+  void editMatchNavigation(AppLocalizations loc) {
+    // Match hasnt ended yet, allow editing
+    if (match.endedAt == null) {
+      Navigator.push(
+        context,
+        adaptivePageRoute(
+          fullscreenDialog: true,
+          builder: (context) => CreateMatchView(
+            matchToEdit: match,
+            onMatchUpdated: onMatchUpdated,
+          ),
+        ),
       );
-      setState(() {
-        match = match.copyWith(scores: scores);
+    } else {
+      // Match has ended, only allow name change
+      nameController.text = match.name;
+      showDialog<bool>(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setDialogState) {
+            return CustomAlertDialog(
+              title: loc.edit_name,
+              content: TextInputField(
+                controller: nameController,
+                hintText: loc.set_name,
+                onChanged: (_) => setDialogState(() {}),
+              ),
+              actions: [
+                CustomDialogAction(
+                  onPressed: isConfirmButtonEnabled()
+                      ? () => Navigator.of(context).pop(true)
+                      : null,
+                  text: loc.confirm,
+                ),
+                CustomDialogAction(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  buttonType: ButtonType.secondary,
+                  text: loc.cancel,
+                ),
+              ],
+            );
+          },
+        ),
+      ).then((confirmed) async {
+        if (confirmed! && context.mounted) {
+          final newName = nameController.text.trim();
+
+          if (newName != match.name) {
+            await db.matchDao.updateMatchName(matchId: match.id, name: newName);
+            onMatchUpdated(match.copyWith(name: newName));
+          }
+        }
       });
     }
   }

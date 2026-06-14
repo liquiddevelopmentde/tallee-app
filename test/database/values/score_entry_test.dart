@@ -525,15 +525,16 @@ void main() {
 
         expect(deleted, isTrue);
 
-        final match1Scores = await database.scoreEntryDao.getAllMatchScores(
+        final match1 = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match1Scores.length, 0);
+        expect(match1.scores.length, 0);
+        expect(match1.endedAt, isNull);
 
-        final match2Scores = await database.scoreEntryDao.getAllMatchScores(
+        final match2 = await database.matchDao.getMatchById(
           matchId: testMatch2.id,
         );
-        expect(match2Scores.length, 1);
+        expect(match2.scores.length, 1);
       });
 
       test('deleteAllScoresForPlayerInMatch() works correctly', () async {
@@ -589,9 +590,14 @@ void main() {
           matchId: testMatch1.id,
         );
         expect(hasWinner, isTrue);
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNotNull);
       });
 
-      test('getWinnersForMatch() returns correct winner', () async {
+      test('getWinner() works correctly', () async {
         var winner = await database.scoreEntryDao.getWinner(
           matchId: testMatch1.id,
         );
@@ -606,6 +612,11 @@ void main() {
 
         expect(winner, isNotNull);
         expect(winner!.id, testPlayer1.id);
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNotNull);
       });
 
       test('removeWinner() works correctly', () async {
@@ -628,6 +639,11 @@ void main() {
           matchId: testMatch1.id,
         );
         expect(winner, isNull);
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNull);
       });
     });
 
@@ -649,7 +665,7 @@ void main() {
         expect(hasLooser, isTrue);
       });
 
-      test('getLoser() returns correct winner', () async {
+      test('getLoser() returns correct loser', () async {
         var looser = await database.scoreEntryDao.getLoser(
           matchId: testMatch1.id,
         );
@@ -664,6 +680,11 @@ void main() {
 
         expect(looser, isNotNull);
         expect(looser!.id, testPlayer1.id);
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNotNull);
       });
 
       test('removeLoser() works correctly', () async {
@@ -686,6 +707,11 @@ void main() {
           matchId: testMatch1.id,
         );
         expect(looser, isNull);
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNull);
       });
     });
   });

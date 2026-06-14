@@ -181,9 +181,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   sizeRelativeToWidth: 0.95,
                   buttonType: ButtonType.primary,
                   onPressed: isSubmitButtonEnabled()
-                      ? () {
-                          submitButtonNavigation(context);
-                        }
+                      ? () => submitButtonNavigation(context)
                       : null,
                   buttonText: buttonText,
                 ),
@@ -194,6 +192,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       ),
     );
   }
+
+  bool isEditMode() => widget.matchToEdit != null;
 
   void loadData() {
     db = Provider.of<AppDatabase>(context, listen: false);
@@ -215,10 +215,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         prefillMatchDetails();
       }
     });
-  }
-
-  bool isEditMode() {
-    return widget.matchToEdit != null;
   }
 
   // If a match was provided to the view, this method prefills the input fields

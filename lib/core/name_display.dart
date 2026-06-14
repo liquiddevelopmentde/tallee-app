@@ -131,6 +131,9 @@ Widget _buildPairGameNameWidget(
 
   final bool showIcon = team.members.length > 1;
 
+  bool isHighlighted(int index) =>
+      highlighted.length > index && highlighted[index];
+
   return Row(
     mainAxisAlignment: rowAlignment,
     mainAxisSize: MainAxisSize.min,
@@ -148,11 +151,11 @@ Widget _buildPairGameNameWidget(
                 team.members[0],
                 mainStyle: resolvedMainStyle,
                 countStyle: resolvedCountStyle,
-                highlighted: highlighted[0],
+                highlighted: isHighlighted(0),
               ),
               TextSpan(
                 text: ' & ',
-                style: highlighted.every((h) => h)
+                style: highlighted.isNotEmpty && highlighted.every((h) => h)
                     ? resolvedMainStyle.copyWith(
                         color: CustomTheme.textColor.withAlpha(150),
                       )
@@ -162,7 +165,7 @@ Widget _buildPairGameNameWidget(
                 team.members[1],
                 mainStyle: resolvedMainStyle,
                 countStyle: resolvedCountStyle,
-                highlighted: highlighted[1],
+                highlighted: isHighlighted(1),
               ),
             ],
           ),
@@ -172,7 +175,7 @@ Widget _buildPairGameNameWidget(
           team.members.first,
           mainStyle: resolvedMainStyle,
           countStyle: resolvedCountStyle,
-          highlighted: highlighted[0],
+          highlighted: isHighlighted(0),
         ),
       ] else ...[
         Text(team.name, style: resolvedMainStyle),
