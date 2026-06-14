@@ -753,7 +753,6 @@ class _MatchResultViewState extends State<MatchResultView> {
   Widget buildMultipleWinnerSelectionWidget() {
     if (useTeamLogic) {
       return ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
           return CustomCheckboxListTile(
@@ -775,7 +774,6 @@ class _MatchResultViewState extends State<MatchResultView> {
       );
     } else {
       return ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
         itemCount: allPlayers.length,
         itemBuilder: (context, index) {
           return CustomCheckboxListTile(
