@@ -12,11 +12,13 @@ class ScoreEnterList extends StatefulWidget {
   const ScoreEnterList({
     super.key,
     required this.match,
+    this.initialScores,
     this.onScoreChanged,
     this.onCanSaveChanged,
   });
 
   final Match match;
+  final Map<dynamic, int>? initialScores;
   final void Function(Map<dynamic, int>)? onScoreChanged;
   final void Function(bool)? onCanSaveChanged;
 
@@ -35,81 +37,102 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
 
   @override
   void initState() {
+    super.initState();
     allTeams = widget.match.teams ?? [];
     allPlayers = widget.match.players;
 
     final entryLength = hasTeams ? allTeams.length : allPlayers.length;
 
-    // initalize text contoller
-    controller = List.generate(
-      entryLength,
-      (index) => TextEditingController()..addListener(() => onTextEnter()),
-    );
-
+    controller = List.generate(entryLength, (index) => TextEditingController());
     initalizeScores(entryLength);
+    for (final c in controller) {
+      c.addListener(onTextEnter);
+    }
 
-    super.initState();
+    canSave = controller.every((c) => c.text.isNotEmpty);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.onCanSaveChanged?.call(canSave);
+    });
   }
 
   bool get hasTeams => widget.match.useTeamLogic;
 
   @override
   Widget build(BuildContext context) {
-    if (hasTeams) {
-      return ListView.separated(
-        itemCount: allTeams.length,
-        itemBuilder: (context, index) {
-          return ScoreListTile(
-            content: hasTeams
-                ? TeamCard(team: allTeams[index], width: 220, maxChars: 16)
-                : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
-            horizontalPadding: 0,
-            controller: controller[index],
-            onChanged: (String text) {
-              final score = int.tryParse(text) ?? 0;
-              scores[allTeams[index]] = score;
-              widget.onScoreChanged?.call(scores);
-            },
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Divider(indent: 20),
-          );
-        },
-      );
-    } else {
-      return ListView.separated(
-        itemCount: allPlayers.length,
-        itemBuilder: (context, index) {
-          return ScoreListTile(
-            content: buildUnitNameWidget(
-              allPlayers[index],
-              mainStyle: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w500,
-              ),
+    return Expanded(
+      child: hasTeams
+          ? ListView.separated(
+              itemCount: allTeams.length,
+              itemBuilder: (context, index) {
+                return ScoreListTile(
+                  content: hasTeams
+                      ? TeamCard(
+                          team: allTeams[index],
+                          width: 220,
+                          maxChars: 16,
+                        )
+                      : buildUnitNameWidget(
+                          allTeams[index],
+                          isTeamMatch: false,
+                        ),
+                  horizontalPadding: 0,
+                  controller: controller[index],
+                  onChanged: (String text) {
+                    final score = int.tryParse(text) ?? 0;
+                    scores[allTeams[index]] = score;
+                    widget.onScoreChanged?.call(scores);
+                  },
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Divider(indent: 20),
+                );
+              },
+            )
+          : ListView.separated(
+              itemCount: allPlayers.length,
+              itemBuilder: (context, index) {
+                return ScoreListTile(
+                  content: buildUnitNameWidget(
+                    allPlayers[index],
+                    mainStyle: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  controller: controller[index],
+                  onChanged: (String text) {
+                    final score = int.tryParse(text) ?? 0;
+                    scores[allPlayers[index]] = score;
+                    widget.onScoreChanged?.call(scores);
+                  },
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Divider(indent: 20),
+                );
+              },
             ),
-            controller: controller[index],
-            onChanged: (String text) {
-              final score = int.tryParse(text) ?? 0;
-              scores[allPlayers[index]] = score;
-              widget.onScoreChanged?.call(scores);
-            },
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Divider(indent: 20),
-          );
-        },
-      );
-    }
+    );
   }
 
   void initalizeScores(int entryLength) {
+    if (widget.initialScores != null &&
+        widget.initialScores!.length == entryLength) {
+      scores = Map<dynamic, int>.from(widget.initialScores!);
+
+      for (int i = 0; i < entryLength; i++) {
+        final entry = hasTeams ? allTeams[i] : allPlayers[i];
+        final score = scores[entry];
+        controller[i].text = score?.toString() ?? '';
+      }
+      return;
+    }
+
     // initilize scores
     for (int i = 0; i < entryLength; i++) {
       int? score;
@@ -140,6 +163,7 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
   @override
   void dispose() {
     for (final c in controller) {
+      c.removeListener(onTextEnter);
       c.dispose();
     }
     super.dispose();

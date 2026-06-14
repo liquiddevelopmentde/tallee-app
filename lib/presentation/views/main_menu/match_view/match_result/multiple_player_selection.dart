@@ -32,9 +32,11 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
   late List<Player> allPlayers;
   List<Player> selectedPlayers = [];
 
+  bool get useTeamLogic => widget.match.useTeamLogic;
+
   @override
   void initState() {
-    if (hasTeams) {
+    if (useTeamLogic) {
       allTeams = widget.match.teams ?? [];
       selectedTeams = widget.match.mvt;
     } else {
@@ -47,56 +49,57 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
 
   @override
   Widget build(BuildContext context) {
-    if (hasTeams) {
-      return ListView.builder(
-        itemCount: allTeams.length,
-        itemBuilder: (context, index) {
-          return CustomCheckboxListTile(
-            content: widget.match.isTeamMatch
-                ? TeamCard(team: allTeams[index], maxChars: 24)
-                : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
-            value: selectedTeams.contains(allTeams[index]),
-            onChanged: (bool value) {
-              setState(() {
-                if (value) {
-                  selectedTeams.add(allTeams[index]);
-                } else {
-                  selectedTeams.remove(allTeams[index]);
-                }
-                widget.onTeamsSelected?.call(selectedTeams);
-              });
-            },
-          );
-        },
-      );
-    } else {
-      return ListView.builder(
-        itemCount: allPlayers.length,
-        itemBuilder: (context, index) {
-          return CustomCheckboxListTile(
-            content: buildUnitNameWidget(
-              allPlayers[index],
-              mainStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+    return Expanded(
+      child: useTeamLogic
+          ? ListView.builder(
+              itemCount: allTeams.length,
+              itemBuilder: (context, index) {
+                return CustomCheckboxListTile(
+                  content: widget.match.isTeamMatch
+                      ? TeamCard(team: allTeams[index], maxChars: 24)
+                      : buildUnitNameWidget(
+                          allTeams[index],
+                          isTeamMatch: false,
+                        ),
+                  value: selectedTeams.contains(allTeams[index]),
+                  onChanged: (bool value) {
+                    setState(() {
+                      if (value) {
+                        selectedTeams.add(allTeams[index]);
+                      } else {
+                        selectedTeams.remove(allTeams[index]);
+                      }
+                      widget.onTeamsSelected?.call(selectedTeams);
+                    });
+                  },
+                );
+              },
+            )
+          : ListView.builder(
+              itemCount: allPlayers.length,
+              itemBuilder: (context, index) {
+                return CustomCheckboxListTile(
+                  content: buildUnitNameWidget(
+                    allPlayers[index],
+                    mainStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  value: selectedPlayers.contains(allPlayers[index]),
+                  onChanged: (bool value) {
+                    setState(() {
+                      if (value) {
+                        selectedPlayers.add(allPlayers[index]);
+                      } else {
+                        selectedPlayers.remove(allPlayers[index]);
+                      }
+                      widget.onPlayersSelected?.call(selectedPlayers);
+                    });
+                  },
+                );
+              },
             ),
-            value: selectedPlayers.contains(allPlayers[index]),
-            onChanged: (bool value) {
-              setState(() {
-                if (value) {
-                  selectedPlayers.add(allPlayers[index]);
-                } else {
-                  selectedPlayers.remove(allPlayers[index]);
-                }
-                widget.onPlayersSelected?.call(selectedPlayers);
-              });
-            },
-          );
-        },
-      );
-    }
+    );
   }
-
-  bool get hasTeams => widget.match.useTeamLogic;
 }

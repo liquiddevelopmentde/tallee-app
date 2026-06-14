@@ -31,6 +31,8 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
   late Player? selectedPlayer;
   late List<Player> allPlayers;
 
+  bool get useTeamLogic => widget.match.useTeamLogic;
+
   @override
   void initState() {
     if (widget.match.isTeamMatch) {
@@ -45,79 +47,80 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
 
   @override
   Widget build(BuildContext context) {
-    if (hasTeams) {
-      return RadioGroup<Team>(
-        groupValue: selectedTeam,
-        onChanged: (Team? team) async {
-          setState(() {
-            selectedTeam = team;
-            widget.onTeamSelected?.call(team);
-          });
-        },
-        child: ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: allTeams.length,
-          itemBuilder: (context, index) {
-            return CustomRadioListTile(
-              content: widget.match.isTeamMatch
-                  ? TeamCard(team: allTeams[index], maxChars: 24)
-                  : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
-              value: allTeams[index],
-              onContainerTap: (team) async {
+    return Expanded(
+      child: useTeamLogic
+          ? RadioGroup<Team>(
+              groupValue: selectedTeam,
+              onChanged: (Team? team) async {
                 setState(() {
-                  // Check if the already selected player is the same as the newly tapped player.
-                  if (selectedTeam == team) {
-                    // If yes deselected the player by setting it to null.
-                    selectedTeam = null;
-                  } else {
-                    // If no assign the newly tapped player to the selected player.
-                    (selectedTeam = team);
-                  }
+                  selectedTeam = team;
                   widget.onTeamSelected?.call(team);
                 });
               },
-            );
-          },
-        ),
-      );
-    } else {
-      return RadioGroup<Player>(
-        groupValue: selectedPlayer,
-        onChanged: (Player? player) => setState(() {
-          selectedPlayer = player;
-        }),
-        child: ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: allPlayers.length,
-          itemBuilder: (context, index) {
-            return CustomRadioListTile(
-              content: buildUnitNameWidget(
-                allPlayers[index],
-                mainStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: allTeams.length,
+                itemBuilder: (context, index) {
+                  return CustomRadioListTile(
+                    content: widget.match.isTeamMatch
+                        ? TeamCard(team: allTeams[index], maxChars: 24)
+                        : buildUnitNameWidget(
+                            allTeams[index],
+                            isTeamMatch: false,
+                          ),
+                    value: allTeams[index],
+                    onContainerTap: (team) async {
+                      setState(() {
+                        // Check if the already selected player is the same as the newly tapped player.
+                        if (selectedTeam == team) {
+                          // If yes deselected the player by setting it to null.
+                          selectedTeam = null;
+                        } else {
+                          // If no assign the newly tapped player to the selected player.
+                          (selectedTeam = team);
+                        }
+                        widget.onTeamSelected?.call(team);
+                      });
+                    },
+                  );
+                },
               ),
-              value: allPlayers[index],
-              onContainerTap: (player) async {
-                setState(() {
-                  // Check if the already selected player is the same as the newly tapped player.
-                  if (selectedPlayer == player) {
-                    // If yes deselected the player by setting it to null.
-                    selectedPlayer = null;
-                  } else {
-                    // If no assign the newly tapped player to the selected player.
-                    (selectedPlayer = player);
-                  }
-                  widget.onPlayerSelected?.call(player);
-                });
-              },
-            );
-          },
-        ),
-      );
-    }
+            )
+          : RadioGroup<Player>(
+              groupValue: selectedPlayer,
+              onChanged: (Player? player) => setState(() {
+                selectedPlayer = player;
+              }),
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: allPlayers.length,
+                itemBuilder: (context, index) {
+                  return CustomRadioListTile(
+                    content: buildUnitNameWidget(
+                      allPlayers[index],
+                      mainStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    value: allPlayers[index],
+                    onContainerTap: (player) async {
+                      setState(() {
+                        // Check if the already selected player is the same as the newly tapped player.
+                        if (selectedPlayer == player) {
+                          // If yes deselected the player by setting it to null.
+                          selectedPlayer = null;
+                        } else {
+                          // If no assign the newly tapped player to the selected player.
+                          (selectedPlayer = player);
+                        }
+                        widget.onPlayerSelected?.call(player);
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+    );
   }
-
-  bool get hasTeams => widget.match.useTeamLogic;
 }
