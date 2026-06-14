@@ -13,6 +13,7 @@ import 'package:tallee/presentation/util/adaptive_page_route.dart';
 import 'package:tallee/presentation/util/edge_blocked_bouncing_scroll_physics.dart';
 import 'package:tallee/presentation/util/name_display.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/live_edit_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/multiple_player_selection.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/single_player_selection.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
@@ -61,8 +62,8 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Currently selected player(s)/team(s) (winner / looser)
   Player? selectedPlayer;
   Team? selectedTeam;
-  final Set<Player> _selectedPlayers = {};
-  final Set<Team> _selectedTeams = {};
+  List<Player> selectedPlayers = [];
+  List<Team> selectedTeams = [];
 
   bool get useTeamLogic => widget.match.useTeamLogic;
 
@@ -131,15 +132,21 @@ class _MatchResultViewState extends State<MatchResultView> {
                   // Show player selection
                   if (rulesetSupportsPlayerSelection())
                     if (ruleset == Ruleset.multipleWinners)
-                      Expanded(child: buildMultipleWinnerSelectionWidget())
+                      Expanded(
+                        child: MultiplePlayerSelection(
+                          match: widget.match,
+                          onPlayersSelected: (List<Player> players) =>
+                              selectedPlayers = players,
+                          onTeamsSelected: (List<Team> teams) =>
+                              selectedTeams = teams,
+                        ),
+                      )
                     else
                       Expanded(
                         child: SinglePlayerSelection(
                           match: widget.match,
-                          onPlayerSelected: (Player? player) {
-                            selectedPlayer = player;
-                            print('Selected player: ${player?.name}');
-                          },
+                          onPlayerSelected: (Player? player) =>
+                              selectedPlayer = player,
                           onTeamSelected: (Team? team) => selectedTeam = team,
                         ),
                       ),
@@ -227,7 +234,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         if (ruleset == Ruleset.multipleWinners) {
           for (int i = 0; i < allTeams.length; i++) {
             if (allTeams[i].score == 1) {
-              _selectedTeams.add(allTeams[i]);
+              selectedTeams.add(allTeams[i]);
             }
           }
         } else {
@@ -265,7 +272,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         if (ruleset == Ruleset.multipleWinners) {
           for (int i = 0; i < allPlayers.length; i++) {
             if (widget.match.scores[allPlayers[i].id]?.score == 1) {
-              _selectedPlayers.add(allPlayers[i]);
+              selectedPlayers.add(allPlayers[i]);
             }
           }
         } else {
@@ -343,22 +350,22 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Handles saving the (multiple) winners to the database.
   Future<bool> _handleWinners() async {
     if (useTeamLogic) {
-      if (_selectedTeams.isEmpty) {
+      if (selectedTeams.isEmpty) {
         return await db.teamDao.removeWinnerTeam(matchId: widget.match.id);
       } else {
         return await db.teamDao.setWinnerTeams(
           matchId: widget.match.id,
 
-          winners: _selectedTeams.toList(),
+          winners: selectedTeams.toList(),
         );
       }
     } else {
-      if (_selectedPlayers.isEmpty) {
+      if (selectedPlayers.isEmpty) {
         return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
       } else {
         return await db.scoreEntryDao.setWinners(
           matchId: widget.match.id,
-          winners: _selectedPlayers.toList(),
+          winners: selectedPlayers.toList(),
         );
       }
     }
@@ -695,13 +702,13 @@ class _MatchResultViewState extends State<MatchResultView> {
             content: widget.match.isTeamMatch
                 ? TeamCard(team: allTeams[index], maxChars: 24)
                 : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
-            value: _selectedTeams.contains(allTeams[index]),
+            value: selectedTeams.contains(allTeams[index]),
             onChanged: (bool value) {
               setState(() {
                 if (value) {
-                  _selectedTeams.add(allTeams[index]);
+                  selectedTeams.add(allTeams[index]);
                 } else {
-                  _selectedTeams.remove(allTeams[index]);
+                  selectedTeams.remove(allTeams[index]);
                 }
               });
             },
@@ -720,13 +727,13 @@ class _MatchResultViewState extends State<MatchResultView> {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            value: _selectedPlayers.contains(allPlayers[index]),
+            value: selectedPlayers.contains(allPlayers[index]),
             onChanged: (bool value) {
               setState(() {
                 if (value) {
-                  _selectedPlayers.add(allPlayers[index]);
+                  selectedPlayers.add(allPlayers[index]);
                 } else {
-                  _selectedPlayers.remove(allPlayers[index]);
+                  selectedPlayers.remove(allPlayers[index]);
                 }
               });
             },
