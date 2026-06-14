@@ -1,4 +1,6 @@
 /// Barrel file for all domain models.
+///
+/// Imports [Game], [Group], [Match], [Player], [ScoreEntry], [Statistic], and [Team].
 library;
 
 export 'game.dart';

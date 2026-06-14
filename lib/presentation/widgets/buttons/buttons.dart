@@ -1,4 +1,7 @@
 /// Barrel file for all button widgets.
+///
+/// Imports [BottomAnimatedButton], [FloatingAnimatedButton], [HapticBackButton],
+/// [HapticCloseButton], and [HapticIconButton].
 library;
 
 export 'bottom_animated_button.dart';
