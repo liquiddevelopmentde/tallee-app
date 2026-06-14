@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
+import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
