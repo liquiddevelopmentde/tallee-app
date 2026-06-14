@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/team.dart';
+import 'package:tallee/presentation/util/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
 
 class PairTile extends StatelessWidget {
