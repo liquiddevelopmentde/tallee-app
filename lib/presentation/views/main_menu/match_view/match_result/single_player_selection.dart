@@ -1,0 +1,124 @@
+import 'dart:core' hide Match;
+
+import 'package:flutter/cupertino.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/team.dart';
+import 'package:tallee/presentation/util/name_display.dart';
+import 'package:tallee/presentation/widgets/cards/team_card.dart';
+import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
+
+class SinglePlayerSelection extends StatefulWidget {
+  const SinglePlayerSelection({
+    super.key,
+    required this.match,
+    this.onPlayerSelected,
+    this.onTeamSelected,
+  });
+
+  final Match match;
+  final void Function(Player?)? onPlayerSelected;
+  final void Function(Team?)? onTeamSelected;
+
+  @override
+  State<SinglePlayerSelection> createState() => _SinglePlayerSelectionState();
+}
+
+class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
+  late Team? selectedTeam;
+  late List<Team> allTeams;
+
+  late Player? selectedPlayer;
+  late List<Player> allPlayers;
+
+  @override
+  void initState() {
+    if (widget.match.isTeamMatch) {
+      allTeams = widget.match.teams ?? [];
+      selectedTeam = widget.match.mvt.first;
+    } else {
+      allPlayers = widget.match.players;
+      selectedPlayer = widget.match.mvp.first;
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (hasTeams) {
+      return RadioGroup<Team>(
+        groupValue: selectedTeam,
+        onChanged: (Team? team) async {
+          setState(() {
+            selectedTeam = team;
+            widget.onTeamSelected?.call(team);
+          });
+        },
+        child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: allTeams.length,
+          itemBuilder: (context, index) {
+            return CustomRadioListTile(
+              content: widget.match.isTeamMatch
+                  ? TeamCard(team: allTeams[index], maxChars: 24)
+                  : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
+              value: allTeams[index],
+              onContainerTap: (team) async {
+                setState(() {
+                  // Check if the already selected player is the same as the newly tapped player.
+                  if (selectedTeam == team) {
+                    // If yes deselected the player by setting it to null.
+                    selectedTeam = null;
+                  } else {
+                    // If no assign the newly tapped player to the selected player.
+                    (selectedTeam = team);
+                  }
+                  widget.onTeamSelected?.call(team);
+                });
+              },
+            );
+          },
+        ),
+      );
+    } else {
+      return RadioGroup<Player>(
+        groupValue: selectedPlayer,
+        onChanged: (Player? player) => setState(() {
+          selectedPlayer = player;
+        }),
+        child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: allPlayers.length,
+          itemBuilder: (context, index) {
+            return CustomRadioListTile(
+              content: buildUnitNameWidget(
+                allPlayers[index],
+                mainStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              value: allPlayers[index],
+              onContainerTap: (player) async {
+                setState(() {
+                  // Check if the already selected player is the same as the newly tapped player.
+                  if (selectedPlayer == player) {
+                    // If yes deselected the player by setting it to null.
+                    selectedPlayer = null;
+                  } else {
+                    // If no assign the newly tapped player to the selected player.
+                    (selectedPlayer = player);
+                  }
+                  widget.onPlayerSelected?.call(player);
+                });
+              },
+            );
+          },
+        ),
+      );
+    }
+  }
+
+  bool get hasTeams =>
+      widget.match.teams != null && widget.match.teams!.isNotEmpty;
+}

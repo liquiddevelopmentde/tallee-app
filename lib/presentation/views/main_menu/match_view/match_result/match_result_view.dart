@@ -12,12 +12,12 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/util/adaptive_page_route.dart';
 import 'package:tallee/presentation/util/edge_blocked_bouncing_scroll_physics.dart';
 import 'package:tallee/presentation/util/name_display.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/match_result/live_edit_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/live_edit_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/single_player_selection.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/score_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
@@ -59,8 +59,8 @@ class _MatchResultViewState extends State<MatchResultView> {
   late bool isTeamMatch;
 
   /// Currently selected player(s)/team(s) (winner / looser)
-  Player? _selectedPlayer;
-  Team? _selectedTeam;
+  Player? selectedPlayer;
+  Team? selectedTeam;
   final Set<Player> _selectedPlayers = {};
   final Set<Team> _selectedTeams = {};
 
@@ -133,7 +133,16 @@ class _MatchResultViewState extends State<MatchResultView> {
                     if (ruleset == Ruleset.multipleWinners)
                       Expanded(child: buildMultipleWinnerSelectionWidget())
                     else
-                      Expanded(child: buildSinglePlayerSelectionWidget()),
+                      Expanded(
+                        child: SinglePlayerSelection(
+                          match: widget.match,
+                          onPlayerSelected: (Player? player) {
+                            selectedPlayer = player;
+                            print('Selected player: ${player?.name}');
+                          },
+                          onTeamSelected: (Team? team) => selectedTeam = team,
+                        ),
+                      ),
 
                   // Show score entry
                   if (rulesetSupportsScoreEntry())
@@ -222,7 +231,7 @@ class _MatchResultViewState extends State<MatchResultView> {
             }
           }
         } else {
-          _selectedTeam = allTeams.firstWhere(
+          selectedTeam = allTeams.firstWhere(
             (team) => team.id == widget.match.mvt.first.id,
           );
         }
@@ -260,7 +269,7 @@ class _MatchResultViewState extends State<MatchResultView> {
             }
           }
         } else {
-          _selectedPlayer = allPlayers.firstWhere(
+          selectedPlayer = allPlayers.firstWhere(
             (p) => p.id == widget.match.mvp.first.id,
           );
         }
@@ -311,21 +320,21 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Handles saving or removing the (single) winner in the database.
   Future<bool> _handleWinner() async {
     if (useTeamLogic) {
-      if (_selectedTeam == null) {
+      if (selectedTeam == null) {
         return await db.teamDao.removeWinnerTeam(matchId: widget.match.id);
       } else {
         return await db.teamDao.setWinnerTeam(
           matchId: widget.match.id,
-          teamId: _selectedTeam!.id,
+          teamId: selectedTeam!.id,
         );
       }
     } else {
-      if (_selectedPlayer == null) {
+      if (selectedPlayer == null) {
         return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
       } else {
         return await db.scoreEntryDao.setWinner(
           matchId: widget.match.id,
-          playerId: _selectedPlayer!.id,
+          playerId: selectedPlayer!.id,
         );
       }
     }
@@ -358,21 +367,21 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Handles saving or removing the loser in the database.
   Future<bool> _handleLoser() async {
     if (useTeamLogic) {
-      if (_selectedTeam == null) {
+      if (selectedTeam == null) {
         return await db.teamDao.removeLoserTeam(matchId: widget.match.id);
       } else {
         return await db.teamDao.setLoserTeam(
           matchId: widget.match.id,
-          teamId: _selectedTeam!.id,
+          teamId: selectedTeam!.id,
         );
       }
     } else {
-      if (_selectedPlayer == null) {
+      if (selectedPlayer == null) {
         return await db.scoreEntryDao.removeLoser(matchId: widget.match.id);
       } else {
         return await db.scoreEntryDao.setLoser(
           matchId: widget.match.id,
-          playerId: _selectedPlayer!.id,
+          playerId: selectedPlayer!.id,
         );
       }
     }
@@ -451,80 +460,6 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool rulesetSupportsDragBehaviour() {
     return ruleset == Ruleset.placement;
-  }
-
-  Widget buildSinglePlayerSelectionWidget() {
-    if (useTeamLogic) {
-      return RadioGroup<Team>(
-        groupValue: _selectedTeam,
-        onChanged: (Team? team) async {
-          setState(() {
-            _selectedTeam = team;
-          });
-        },
-        child: ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: allTeams.length,
-          itemBuilder: (context, index) {
-            return CustomRadioListTile(
-              content: widget.match.isTeamMatch
-                  ? TeamCard(team: allTeams[index], maxChars: 24)
-                  : buildUnitNameWidget(allTeams[index], isTeamMatch: false),
-              value: allTeams[index],
-              onContainerTap: (team) async {
-                setState(() {
-                  // Check if the already selected player is the same as the newly tapped player.
-                  if (_selectedTeam == team) {
-                    // If yes deselected the player by setting it to null.
-                    _selectedTeam = null;
-                  } else {
-                    // If no assign the newly tapped player to the selected player.
-                    (_selectedTeam = team);
-                  }
-                });
-              },
-            );
-          },
-        ),
-      );
-    } else {
-      return RadioGroup<Player>(
-        groupValue: _selectedPlayer,
-        onChanged: (Player? value) async {
-          setState(() {
-            _selectedPlayer = value;
-          });
-        },
-        child: ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: allPlayers.length,
-          itemBuilder: (context, index) {
-            return CustomRadioListTile(
-              content: buildUnitNameWidget(
-                allPlayers[index],
-                mainStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              value: allPlayers[index],
-              onContainerTap: (value) async {
-                setState(() {
-                  // Check if the already selected player is the same as the newly tapped player.
-                  if (_selectedPlayer == value) {
-                    // If yes deselected the player by setting it to null.
-                    _selectedPlayer = null;
-                  } else {
-                    // If no assign the newly tapped player to the selected player.
-                    (_selectedPlayer = value);
-                  }
-                });
-              },
-            );
-          },
-        ),
-      );
-    }
   }
 
   Widget buildScoreEntryWidget() {
