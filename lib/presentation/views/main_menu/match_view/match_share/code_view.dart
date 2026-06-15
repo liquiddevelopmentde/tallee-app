@@ -6,10 +6,21 @@ import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dar
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 
 class CodeView extends StatelessWidget {
-  const CodeView({super.key});
+  const CodeView({
+    super.key,
+    required this.secondsRemaining,
+    required this.totalSeconds,
+  });
+
+  final int secondsRemaining;
+  final int totalSeconds;
 
   @override
   Widget build(BuildContext context) {
+    final double progress = secondsRemaining / totalSeconds;
+    final int minutes = secondsRemaining ~/ 60;
+    final int seconds = secondsRemaining % 60;
+
     return Column(
       children: [
         Padding(
@@ -31,6 +42,31 @@ class CodeView extends StatelessWidget {
             ],
           ),
         ),
+        SizedBox(height: 5),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: CustomTheme.onBoxColor,
+              color: CustomTheme.primaryColor,
+              minHeight: 8,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          minutes == 0 && seconds == 0
+              ? 'Code expired'
+              : 'Expires in ${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+          style: const TextStyle(
+            color: CustomTheme.textColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 10),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -75,7 +111,8 @@ class CodeView extends StatelessWidget {
               onPressed: () {
                 SharePlus.instance.share(
                   ShareParams(
-                    text: "Copy my Tallee match! Code: A6K1FJ",
+                    text:
+                        "Here is the match data for our game! Enter code A6K1FJ in Tallee.",
                     title: "Talle Match Share",
                     subject: "Talle Match Share",
                   ),
@@ -96,7 +133,11 @@ class CodeView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Text(
         char,
-        style: const TextStyle(fontSize: 45, fontWeight: FontWeight.w400),
+        style: const TextStyle(
+          fontSize: 45,
+          fontWeight: FontWeight.w400,
+          color: CustomTheme.textColor,
+        ),
       ),
     );
   }

@@ -115,7 +115,10 @@ class _MatchShareViewState extends State<MatchShareView> {
                     secondsRemaining: _secondsRemaining,
                     totalSeconds: _totalSeconds,
                   ),
-                  const CodeView(),
+                  CodeView(
+                    secondsRemaining: _secondsRemaining,
+                    totalSeconds: _totalSeconds,
+                  ),
                   const FileView(),
                 ],
               ),
