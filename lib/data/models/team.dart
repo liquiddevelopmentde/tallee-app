@@ -75,7 +75,7 @@ class Team {
         (e) => e.name == json['color'],
         orElse: () => AppColor.orange,
       ),
-      score = json['score'] ?? 0,
+      score = json['score'],
       members = []; // Populated during import via DataTransferService
 
   Map<String, dynamic> toJson() => {

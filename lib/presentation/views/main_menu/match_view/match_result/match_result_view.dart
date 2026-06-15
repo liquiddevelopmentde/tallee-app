@@ -171,8 +171,9 @@ class _MatchResultViewState extends State<MatchResultView> {
                       adaptivePageRoute(
                         fullscreenDialog: true,
                         builder: (context) => LiveEditView(
-                          match: getMatchWithTempScores(),
-                          onScoresChanged: (Map<dynamic, int> newScores) =>
+                          initialScores: scores,
+                          match: widget.match,
+                          onScoresChanged: (Map<dynamic, int?> newScores) =>
                               onScoresChanged(newScores),
                         ),
                       ),
@@ -205,64 +206,42 @@ class _MatchResultViewState extends State<MatchResultView> {
     );
   }
 
-  void onScoresChanged(Map<dynamic, int> newScores) {
-    scores = Map<dynamic, int>.from(newScores);
+  /// Callback function to handle score changes from the LiveEditView / ScoreEnterList
+  void onScoresChanged(Map<dynamic, int?> newScores) {
+    // Update the map
+    scores = Map<dynamic, int?>.from(newScores);
 
-    final List<dynamic> participants = useTeamLogic ? allTeams : allPlayers;
-    final hasScoresForAll = participants.every(
-      (entry) => scores.containsKey(entry),
+    // update canSave state
+    final List<dynamic> units = useTeamLogic ? allTeams : allPlayers;
+    final isEveryUnitInScores = units.every(
+      (unit) => scores.containsKey(unit) && scores[unit] != null,
     );
-    final hasAnyScore = scores.isNotEmpty;
+    final hasScores = scores.isNotEmpty;
 
     setState(() {
-      canSave = hasAnyScore && hasScoresForAll;
+      canSave = hasScores && isEveryUnitInScores;
     });
   }
 
   void initData() {
-    allPlayers = widget.match.players;
-    allTeams = widget.match.teams ?? [];
+    if (widget.match.useTeamLogic) {
+      allTeams = widget.match.teams ?? [];
+      selectedTeam = widget.match.mvt.firstOrNull;
+      selectedTeams = widget.match.mvt;
 
-    selectedPlayer = widget.match.mvp.firstOrNull;
-    selectedTeam = widget.match.mvt.firstOrNull;
-    selectedPlayers = widget.match.mvp;
-    selectedTeams = widget.match.mvt;
-
-    if (widget.match.isTeamMatch) {
       scores = Map.fromEntries(
         allTeams.map((team) => MapEntry(team, team.score)),
       );
     } else {
+      allPlayers = widget.match.players;
+      selectedPlayer = widget.match.mvp.firstOrNull;
+      selectedPlayers = widget.match.mvp;
+
       scores = Map.fromEntries(
         allPlayers.map(
           (player) => MapEntry(player, widget.match.scores[player.id]?.score),
         ),
       );
-    }
-  }
-
-  /// Creates a match object with the currently entered scores.
-  Match getMatchWithTempScores() {
-    if (useTeamLogic) {
-      final teams = widget.match.teams ?? <Team>[];
-      final tempTeams = teams
-          .map((team) => team.copyWith(score: scores[team] ?? 0))
-          .toList();
-
-      return widget.match.copyWith(teams: tempTeams);
-    } else {
-      final player = widget.match.players;
-
-      final scoreEntryMap = Map.fromEntries(
-        player.map(
-          (player) => MapEntry(
-            player.id,
-            ScoreEntry(roundNumber: 0, score: scores[player] ?? 0, change: 0),
-          ),
-        ),
-      );
-
-      return widget.match.copyWith(scores: scoreEntryMap);
     }
   }
 

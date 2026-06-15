@@ -11,13 +11,13 @@ class ScoreEnterList extends StatefulWidget {
   const ScoreEnterList({
     super.key,
     required this.match,
-    this.initialScores,
+    required this.initialScores,
     this.onScoreChanged,
     this.onCanSaveChanged,
   });
 
   final Match match;
-  final Map<dynamic, int?>? initialScores;
+  final Map<dynamic, int?> initialScores;
   final void Function(Map<dynamic, int?>)? onScoreChanged;
   final void Function(bool)? onCanSaveChanged;
 
@@ -42,32 +42,36 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
 
   @override
   void initState() {
-    super.initState();
-    allTeams = (widget.match.teams ?? [])
-      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-    allPlayers = widget.match.players
-      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+    int entryLength = 0;
 
-    final entryLength = useTeamLogic ? allTeams.length : allPlayers.length;
+    // init data
+    if (useTeamLogic) {
+      allTeams = (widget.match.teams ?? [])
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      entryLength = allTeams.length;
+    } else {
+      allPlayers = widget.match.players
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      entryLength = allPlayers.length;
+    }
 
+    // Init controlelrs
     controller = List.generate(entryLength, (index) => TextEditingController());
-
-    applyScores(getScoreMap(entryLength));
+    applyScoresToControllers(widget.initialScores);
 
     for (final c in controller) {
       c.addListener(onTextEnter);
     }
-
     reportCanSave();
+
+    super.initState();
   }
 
   @override
   void didUpdateWidget(ScoreEnterList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Sync the scores when they are changed in live edit view
-    if (widget.initialScores != null && applyScores(widget.initialScores!)) {
-      reportCanSave();
-    }
+    scores = widget.initialScores;
+    applyScoresToControllers(scores);
   }
 
   @override
@@ -133,46 +137,17 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
     );
   }
 
-  Map<dynamic, int?> getScoreMap(int entryLength) {
-    if (widget.initialScores != null &&
-        widget.initialScores!.length == entryLength) {
-      return Map<dynamic, int?>.from(widget.initialScores!);
-    }
-
-    final Map<dynamic, int> scores = {};
-    for (int i = 0; i < entryLength; i++) {
-      if (isTeamMatch) {
-        final teamScore = widget.match.teams?[i].score;
-        if (teamScore != null) scores[allTeams[i]] = teamScore;
-      } else {
-        final scoreEntry = widget.match.scores[allPlayers[i].id];
-        if (scoreEntry != null) scores[allPlayers[i]] = scoreEntry.score;
-      }
-    }
-    return scores;
-  }
-
-  /// Applies the [newScores] scores to the controllers and the internal [scores]
-  /// map.
-  bool applyScores(Map<dynamic, int?> newScores) {
+  void applyScoresToControllers(Map<dynamic, int?> newScores) {
     final entryLength = useTeamLogic ? allTeams.length : allPlayers.length;
-    bool changed = false;
     suppressListener = true;
 
+    // iterate through entries
     for (int i = 0; i < entryLength; i++) {
-      final entry = useTeamLogic ? allTeams[i] : allPlayers[i];
-      if (!newScores.containsKey(entry)) continue;
-
-      scores[entry] = newScores[entry];
-      final newText = newScores[entry]?.toString() ?? '';
-      if (controller[i].text != newText) {
-        controller[i].text = newText;
-        changed = true;
-      }
+      dynamic key = useTeamLogic ? allTeams[i] : allPlayers[i];
+      final newText = newScores[key]?.toString() ?? '';
+      controller[i].text = newText;
     }
     suppressListener = false;
-
-    return changed;
   }
 
   void reportCanSave() {

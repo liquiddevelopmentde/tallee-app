@@ -6,10 +6,16 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 
 class LiveEditView extends StatefulWidget {
-  const LiveEditView({super.key, required this.match, this.onScoresChanged});
+  const LiveEditView({
+    super.key,
+    required this.match,
+    required this.initialScores,
+    this.onScoresChanged,
+  });
 
   final Match match;
-  final void Function(Map<dynamic, int>)? onScoresChanged;
+  final Map<dynamic, int?> initialScores;
+  final void Function(Map<dynamic, int?>)? onScoresChanged;
 
   @override
   State<LiveEditView> createState() => _LiveEditViewState();
@@ -22,27 +28,21 @@ class _LiveEditViewState extends State<LiveEditView> {
   List<Player> get allPlayers =>
       widget.match.players
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-  Map<dynamic, int> scores = {};
+  Map<dynamic, int?> scores = {};
 
   bool get useTeamLogic => widget.match.useTeamLogic;
   bool get isTeamMatch => widget.match.isTeamMatch;
 
   @override
   void initState() {
+    scores = widget.initialScores;
     super.initState();
+  }
 
-    if (widget.match.isTeamMatch) {
-      scores = Map.fromEntries(
-        allTeams.map((team) => MapEntry(team, team.score ?? 0)),
-      );
-    } else {
-      scores = Map.fromEntries(
-        allPlayers.map(
-          (player) =>
-              MapEntry(player, widget.match.scores[player.id]?.score ?? 0),
-        ),
-      );
-    }
+  @override
+  void didUpdateWidget(LiveEditView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    scores = widget.initialScores;
   }
 
   @override
