@@ -155,12 +155,12 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
   /// Applies the [newScores] scores to the controllers and the internal [scores]
   /// map.
   bool applyScores(Map<dynamic, int?> newScores) {
-    final entryLength = isTeamMatch ? allTeams.length : allPlayers.length;
+    final entryLength = useTeamLogic ? allTeams.length : allPlayers.length;
     bool changed = false;
     suppressListener = true;
 
     for (int i = 0; i < entryLength; i++) {
-      final entry = isTeamMatch ? allTeams[i] : allPlayers[i];
+      final entry = useTeamLogic ? allTeams[i] : allPlayers[i];
       if (!newScores.containsKey(entry)) continue;
 
       scores[entry] = newScores[entry];
