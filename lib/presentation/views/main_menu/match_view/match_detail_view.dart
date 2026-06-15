@@ -11,7 +11,7 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_share_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_share/match_share_view.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
