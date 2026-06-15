@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class LiveEditListTile extends StatefulWidget {
   const LiveEditListTile({

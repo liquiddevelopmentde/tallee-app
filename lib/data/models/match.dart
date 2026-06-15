@@ -8,6 +8,8 @@ import 'package:tallee/data/models/score_entry.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:uuid/uuid.dart';
 
+export 'package:tallee/core/enums.dart';
+
 class Match {
   final String id;
   final DateTime createdAt;

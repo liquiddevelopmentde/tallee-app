@@ -6,15 +6,8 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score_entry.dart';
-import 'package:tallee/data/models/statistic.dart';
-import 'package:tallee/data/models/team.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/data_transfer_service.dart';
 
 void main() {

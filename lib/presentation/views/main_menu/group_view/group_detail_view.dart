@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
-import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
-import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
-import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/detail_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class GroupDetailView extends StatefulWidget {
@@ -167,25 +162,14 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                InfoTile(
-                  title: loc.statistics,
-                  icon: Icons.bar_chart,
-                  content: AppSkeleton(
-                    enabled: isLoading,
-                    child: Column(
-                      children: [
-                        buildStatRow(
-                          loc.members,
-                          group.members.length.toString(),
-                        ),
-                        buildStatRow(
-                          loc.played_matches,
-                          totalMatches.toString(),
-                        ),
-                        buildStatRow(loc.best_player, bestPlayer),
-                      ],
-                    ),
-                  ),
+
+                // Statistics
+                DetailTile(
+                  rows: [
+                    (loc.members, group.members.length.toString()),
+                    (loc.played_matches, totalMatches.toString()),
+                    (loc.best_player, bestPlayer),
+                  ],
                 ),
               ],
             ),
@@ -220,35 +204,6 @@ class _GroupDetailViewState extends State<GroupDetailView> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  /// Builds a single statistic row with a label and value
-  /// - [label]: The label of the statistic
-  /// - [value]: The value of the statistic
-  Widget buildStatRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: CustomTheme.textColor,
-                ),
-              ),
-            ],
-          ),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ],
       ),
     );
   }

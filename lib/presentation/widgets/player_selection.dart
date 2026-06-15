@@ -417,7 +417,10 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     // Add new merged unit (max 2 players)
     selectedUnits.insert(
       0,
-      Team(name: '', members: allMembers.take(2).toList()),
+      Team(
+        name: allMembers.take(2).map((m) => m.name).join(' & '),
+        members: allMembers.take(2).toList(),
+      ),
     );
 
     pairingSelection.clear();

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 
+export 'custom_dialog_action.dart';
+
 class CustomAlertDialog extends StatelessWidget {
   /// A custom alert dialog widget that provides a os unspecific AlertDialog,
   /// with consistent colors, borders, and layout that match the app's custom theme.

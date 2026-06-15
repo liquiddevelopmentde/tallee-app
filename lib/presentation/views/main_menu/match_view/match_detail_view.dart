@@ -2,26 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
-import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
-import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
-import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
@@ -428,6 +425,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   /// Returns the result widget for scores or placement
   Widget getMultiResultRows(AppLocalizations loc) {
     List<(Widget, int)> scores = getSortedScores();
+    bool hasMatchEnded = match.endedAt != null;
 
     return Column(
       children: [
@@ -436,7 +434,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(child: scores[i].$1),
-              getResultValueText(loc, i, scores[i].$2),
+              hasMatchEnded
+                  ? getResultValueText(loc, i, scores[i].$2)
+                  : const Text('-'),
             ],
           ),
       ],
@@ -458,7 +458,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       }
     } else {
       final scores = match.scores;
-      for (var player in match.players) {
+      final players = match.players
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      for (var player in players) {
         int score = scores[player.id]?.score ?? 0;
         namedScores.add((buildUnitNameWidget(player), score));
       }

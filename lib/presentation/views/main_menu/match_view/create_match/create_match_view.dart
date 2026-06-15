@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/team.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/create_teams_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
@@ -51,7 +46,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   late final AppDatabase db;
 
   /// Controller for the match name input field
-  final TextEditingController _matchNameController = TextEditingController();
+  final TextEditingController matchNameController = TextEditingController();
 
   /// Hint text for the match name input field
   String? hintText;
@@ -72,7 +67,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   @override
   void initState() {
     super.initState();
-    _matchNameController.addListener(() {
+    matchNameController.addListener(() {
       setState(() {});
     });
 
@@ -81,7 +76,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
   @override
   void dispose() {
-    _matchNameController.dispose();
+    matchNameController.dispose();
     super.dispose();
   }
 
@@ -112,7 +107,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               Container(
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
-                  controller: _matchNameController,
+                  controller: matchNameController,
                   hintText: hintText ?? '',
                   maxLength: Constants.MAX_MATCH_NAME_LENGTH,
                 ),
@@ -220,7 +215,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   // If a match was provided to the view, this method prefills the input fields
   void prefillMatchDetails() {
     final match = widget.matchToEdit!;
-    _matchNameController.text = match.name;
+    matchNameController.text = match.name;
     selectedPlayers = match.players;
     selectedGame = match.game;
     isTeamMatch = match.isTeamMatch;
@@ -390,9 +385,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   Future<void> updateMatch() async {
     final updatedMatch = Match(
       id: widget.matchToEdit!.id,
-      name: _matchNameController.text.isEmpty
+      name: matchNameController.text.isEmpty
           ? (hintText ?? '')
-          : _matchNameController.text.trim(),
+          : matchNameController.text.trim(),
       group: selectedGroup,
       players: selectedPlayers,
       game: selectedGame!,
@@ -442,16 +437,18 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   // Returns the created match.
   Future<Match> createMatch() async {
     final hasPairs = selectedUnits.any((u) => u.members.length > 1);
+    final effectivePairs = hasPairs ? selectedUnits : null;
+    final effectiveTitle = matchNameController.text.isEmpty
+        ? (hintText ?? '')
+        : matchNameController.text.trim();
 
     Match match = Match(
-      name: _matchNameController.text.isEmpty
-          ? (hintText ?? '')
-          : _matchNameController.text.trim(),
+      name: effectiveTitle,
       createdAt: DateTime.now(),
       group: selectedGroup,
       players: selectedPlayers,
       isTeamMatch: isTeamMatch,
-      teams: selectedUnits,
+      teams: effectivePairs,
       game: selectedGame!,
     );
 
