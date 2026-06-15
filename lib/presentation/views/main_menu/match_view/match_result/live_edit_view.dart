@@ -24,6 +24,9 @@ class _LiveEditViewState extends State<LiveEditView> {
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
   Map<dynamic, int> scores = {};
 
+  bool get useTeamLogic => widget.match.useTeamLogic;
+  bool get isTeamMatch => widget.match.isTeamMatch;
+
   @override
   void initState() {
     super.initState();
@@ -52,57 +55,59 @@ class _LiveEditViewState extends State<LiveEditView> {
           icon: const Icon(Icons.close),
         ),
       ),
-      body: Column(children: [Expanded(child: buildLiveEditWidget())]),
+      body: Column(
+        children: [
+          Expanded(
+            child: useTeamLogic
+                ? ListView.builder(
+                    itemCount: allTeams.length,
+                    itemBuilder: (context, index) {
+                      final team = allTeams[index];
+                      return LiveEditListTile(
+                        title: buildUnitNameWidget(
+                          team,
+                          isTeamMatch: widget.match.isTeamMatch,
+                          rowAlignment: MainAxisAlignment.center,
+                          mainStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          scores[team] = value;
+                          widget.onScoresChanged?.call(scores);
+                        },
+                        value: scores[team] ?? 0,
+                        color: isTeamMatch
+                            ? getColorFromAppColor(team.color)
+                            : null,
+                      );
+                    },
+                  )
+                : ListView.builder(
+                    itemCount: allPlayers.length,
+                    itemBuilder: (context, index) {
+                      return LiveEditListTile(
+                        title: buildUnitNameWidget(
+                          allPlayers[index],
+                          mainStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            scores[allPlayers[index]] = value;
+                            widget.onScoresChanged?.call(scores);
+                          });
+                        },
+                        value: scores[allPlayers[index]] ?? 0,
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
-  }
-
-  Widget buildLiveEditWidget() {
-    if (widget.match.useTeamLogic) {
-      return ListView.builder(
-        itemCount: allTeams.length,
-        itemBuilder: (context, index) {
-          final team = allTeams[index];
-          return LiveEditListTile(
-            title: buildUnitNameWidget(
-              team,
-              isTeamMatch: widget.match.isTeamMatch,
-              rowAlignment: MainAxisAlignment.center,
-              mainStyle: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            onChanged: (value) {
-              scores[team] = value;
-              widget.onScoresChanged?.call(scores);
-            },
-            value: scores[team] ?? 0,
-            color: getColorFromAppColor(team.color),
-          );
-        },
-      );
-    } else {
-      return ListView.builder(
-        itemCount: allPlayers.length,
-        itemBuilder: (context, index) {
-          return LiveEditListTile(
-            title: buildUnitNameWidget(
-              allPlayers[index],
-              mainStyle: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            onChanged: (value) {
-              setState(() {
-                scores[allPlayers[index]] = value;
-                widget.onScoresChanged?.call(scores);
-              });
-            },
-            value: scores[allPlayers[index]] ?? 0,
-          );
-        },
-      );
-    }
   }
 }
