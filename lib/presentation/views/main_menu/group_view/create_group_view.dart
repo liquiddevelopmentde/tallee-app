@@ -8,7 +8,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/animated_dialog_button.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
@@ -91,20 +91,17 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 child: PlayerSelection(
                   initialSelectedPlayers: initialSelectedPlayers,
                   onPlayerCreated: () => widget.onMembersChanged?.call(),
-                  onChanged: (value) {
+                  onChanged: (players, units) {
                     setState(() {
-                      selectedPlayers = [...value];
+                      selectedPlayers = [...players];
                     });
                   },
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: AnimatedDialogButton(
-                  buttonConstraints: const BoxConstraints(
-                    minWidth: double.infinity,
-                    minHeight: 50,
-                  ),
+                child: BottomAnimatedButton(
+                  sizeRelativeToWidth: 0.95,
                   buttonText: widget.groupToEdit == null
                       ? loc.create_group
                       : loc.edit_group,

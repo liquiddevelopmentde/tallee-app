@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 
 class LiveEditListTile extends StatefulWidget {
   const LiveEditListTile({
@@ -12,7 +12,7 @@ class LiveEditListTile extends StatefulWidget {
     this.color,
   });
 
-  final String title;
+  final Widget title;
 
   final int value;
 
@@ -51,24 +51,15 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                 border: Border.all(color: widget.color!, width: 2),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Text(
-                widget.title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              child: widget.title,
             )
           else
-            Text(
-              widget.title,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
+            widget.title,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              MainMenuButton(
+              FloatingAnimatedButton(
                 onPressed: () => _score > minScore
                     ? {
                         setState(() {
@@ -108,7 +99,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                   ),
                 ),
               ),
-              MainMenuButton(
+              FloatingAnimatedButton(
                 onPressed: () => _score < maxScore
                     ? {
                         setState(() {

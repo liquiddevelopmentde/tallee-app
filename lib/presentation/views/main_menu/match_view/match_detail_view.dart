@@ -6,6 +6,7 @@ import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -13,15 +14,17 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/crea
 import 'package:tallee/presentation/views/main_menu/match_view/match_result_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share_view.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
-import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
+import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class MatchDetailView extends StatefulWidget {
   /// A view that displays the profile of a match
@@ -48,11 +51,16 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   late Match match;
 
+  late TextEditingController nameController;
+
+  bool get useTeamLogic => match.useTeamLogic;
+
   @override
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
     match = widget.match;
+    nameController = TextEditingController();
   }
 
   @override
@@ -82,7 +90,10 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 context: context,
                 builder: (context) => CustomAlertDialog(
                   title: '${loc.delete_match}?',
-                  content: Text(loc.this_cannot_be_undone),
+                  content: Text(
+                    loc.this_cannot_be_undone,
+                    overflow: TextOverflow.visible,
+                  ),
                   actions: [
                     CustomDialogAction(
                       onPressed: () => Navigator.of(context).pop(true),
@@ -169,20 +180,50 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 ],
 
                 // Teams or Players
-                if (match.isTeamMatch) ...[
-                  // Teams
+                if (useTeamLogic) ...[
+                  // Teams or Pairs
                   InfoTile(
-                    title: loc.teams,
-                    icon: Icons.scoreboard,
+                    title: match.isTeamMatch ? loc.teams : loc.players,
+                    icon: match.isTeamMatch ? Icons.scoreboard : Icons.people,
                     horizontalAlignment: CrossAxisAlignment.start,
                     content: match.teams != null && match.teams!.isNotEmpty
-                        ? Column(
-                            children: (match.teams ?? []).map((team) {
-                              return TeamCard(team: team);
-                            }).toList(),
-                          )
+                        ? match.isTeamMatch
+                              ? Column(
+                                  children: (match.teams ?? []).map((team) {
+                                    return TeamCard(team: team);
+                                  }).toList(),
+                                )
+                              : Wrap(
+                                  alignment: WrapAlignment.start,
+                                  crossAxisAlignment: WrapCrossAlignment.start,
+                                  spacing: 12,
+                                  runSpacing: 8,
+                                  children: (match.teams ?? []).map((team) {
+                                    if (team.members.length > 1) {
+                                      return PairTile(pair: team);
+                                    } else {
+                                      return PlayerTile(
+                                        player: team.members.first,
+                                        onTileTap: () => Navigator.of(context)
+                                            .pushReplacement(
+                                              adaptivePageRoute(
+                                                builder: (context) =>
+                                                    PlayerDetailView(
+                                                      player:
+                                                          team.members.first,
+                                                      onPlayerNameUpdated:
+                                                          widget.onMatchUpdate,
+                                                    ),
+                                              ),
+                                            ),
+                                      );
+                                    }
+                                  }).toList(),
+                                )
                         : Text(
-                            loc.no_teams_available,
+                            match.isTeamMatch
+                                ? loc.no_teams_available
+                                : loc.no_players_available,
                             style: const TextStyle(
                               fontSize: 14,
                               color: CustomTheme.textColor,
@@ -202,15 +243,15 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                             spacing: 12,
                             runSpacing: 8,
                             children: match.players.map((player) {
-                              return TextIconTile(
-                                text: player.name,
-                                suffixText: getNameCountText(player),
+                              return PlayerTile(
+                                player: player,
                                 onTileTap: () {
                                   Navigator.of(context).pushReplacement(
                                     adaptivePageRoute(
                                       builder: (context) => PlayerDetailView(
                                         player: player,
-                                        callback: widget.onMatchUpdate,
+                                        onPlayerNameUpdated:
+                                            widget.onMatchUpdate,
                                       ),
                                     ),
                                   );
@@ -268,22 +309,13 @@ class _MatchDetailViewState extends State<MatchDetailView> {
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom,
               child: Row(
+                spacing: 8,
                 children: [
-                  MainMenuButton(
+                  FloatingAnimatedButton(
                     icon: Icons.edit,
-                    onPressed: () => Navigator.push(
-                      context,
-                      adaptivePageRoute(
-                        fullscreenDialog: true,
-                        builder: (context) => CreateMatchView(
-                          matchToEdit: match,
-                          onMatchUpdated: onMatchUpdated,
-                        ),
-                      ),
-                    ),
+                    onPressed: () => editMatchNavigation(loc),
                   ),
-                  const SizedBox(width: 15),
-                  MainMenuButton(
+                  FloatingAnimatedButton(
                     text: loc.enter_results,
                     icon: Icons.emoji_events,
                     onPressed: () async {
@@ -339,12 +371,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     final ruleset = match.game.ruleset;
 
     if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
-      // Single winner/loser, multiple winner
-      final names = match.isTeamMatch
-          ? match.mvt.map((t) => t.name).toList()
-          : match.mvp.map((p) => p.name).toList();
-      final mvpNames = names.length == 1 ? names.first : names.join(', ');
-
       final label = ruleset == Ruleset.singleWinner
           ? loc.winner
           : ruleset == Ruleset.singleLoser
@@ -356,18 +382,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           label,
           style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
         ),
-        SizedBox(
-          width: 200,
-          child: Text(
-            mvpNames,
-            textAlign: TextAlign.end,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: CustomTheme.primaryColor,
-            ),
-          ),
-        ),
+        const SizedBox(width: 20),
+        Expanded(child: buildWinnerNameWidget()),
       ];
     } else {
       // No result yet
@@ -380,9 +396,50 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     }
   }
 
+  /// Builds the widget that displays the winner(s) or loser(s) name(s)
+  Widget buildWinnerNameWidget() {
+    final mvtTeams = match.mvt;
+    final mvpPlayers = match.mvp;
+
+    const winnerStyle = TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      color: CustomTheme.primaryColor,
+    );
+
+    if (useTeamLogic) {
+      return Wrap(
+        alignment: WrapAlignment.end,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 6,
+        runSpacing: 4,
+        children: [
+          for (var i = 0; i < mvtTeams.length; i++)
+            buildUnitNameWidget(
+              mvtTeams[i],
+              isTeamMatch: match.isTeamMatch,
+              mainStyle: winnerStyle,
+            ),
+        ],
+      );
+    }
+
+    return Text.rich(
+      TextSpan(
+        children: [
+          for (var i = 0; i < mvpPlayers.length; i++) ...[
+            if (i > 0) const TextSpan(text: ', ', style: winnerStyle),
+            buildPlayerNameCountSpan(mvpPlayers[i], mainStyle: winnerStyle),
+          ],
+        ],
+      ),
+      textAlign: TextAlign.end,
+    );
+  }
+
   /// Returns the result widget for scores or placement
   Widget getMultiResultRows(AppLocalizations loc) {
-    List<(String, int)> scores = getSortedScores();
+    List<(Widget, int)> scores = getSortedScores();
 
     return Column(
       children: [
@@ -390,13 +447,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                scores[i].$1,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: CustomTheme.textColor,
-                ),
-              ),
+              Expanded(child: scores[i].$1),
               getResultValueText(loc, i, scores[i].$2),
             ],
           ),
@@ -404,39 +455,34 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     );
   }
 
-  /// Returns a list of player/team names and their corresponding scores, sorted by score according to the ruleset
-  List<(String, int)> getSortedScores() {
-    List<(String, int)> namedScores = [];
+  /// Returns a list of player/team widgets and their corresponding scores, sorted by score according to the ruleset
+  List<(Widget, int)> getSortedScores() {
+    List<(Widget, int)> namedScores = [];
 
-    if (match.isTeamMatch) {
+    if (useTeamLogic) {
       final teams = match.teams ?? [];
       for (var team in teams) {
-        int score = team.score ?? 0;
-        namedScores.add((team.name, score));
-      }
-
-      final ruleset = match.game.ruleset;
-
-      if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
-        namedScores.sort((a, b) => b.$2.compareTo(a.$2));
-      } else if (ruleset == Ruleset.lowestScore) {
-        namedScores.sort((a, b) => a.$2.compareTo(b.$2));
+        Widget nameWidget = buildUnitNameWidget(
+          team,
+          isTeamMatch: match.isTeamMatch,
+        );
+        namedScores.add((nameWidget, team.score ?? 0));
       }
     } else {
       final scores = match.scores;
       for (var player in match.players) {
         int score = scores[player.id]?.score ?? 0;
-        namedScores.add((player.name, score));
-      }
-
-      final ruleset = match.game.ruleset;
-
-      if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
-        namedScores.sort((a, b) => b.$2.compareTo(a.$2));
-      } else if (ruleset == Ruleset.lowestScore) {
-        namedScores.sort((a, b) => a.$2.compareTo(b.$2));
+        namedScores.add((buildUnitNameWidget(player), score));
       }
     }
+
+    final ruleset = match.game.ruleset;
+    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
+      namedScores.sort((a, b) => b.$2.compareTo(a.$2));
+    } else if (ruleset == Ruleset.lowestScore) {
+      namedScores.sort((a, b) => a.$2.compareTo(b.$2));
+    }
+
     return namedScores;
   }
 
@@ -514,17 +560,68 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   }
 
   Future<void> updateScoresForCurrentMatch() async {
-    if (match.isTeamMatch) {
-      final teams = await db.teamDao.getTeamsByMatchId(matchId: match.id);
-      setState(() {
-        match = match.copyWith(teams: teams);
-      });
-    } else {
-      final scores = await db.scoreEntryDao.getAllMatchScores(
-        matchId: match.id,
+    final match = await db.matchDao.getMatchById(matchId: this.match.id);
+    setState(() {
+      this.match = match;
+    });
+  }
+
+  bool isConfirmButtonEnabled() => nameController.text.trim().isNotEmpty;
+
+  /// Navigates to the edit match view if the match hasnt ended yet, otherwise
+  /// shows a dialog to only edit the name
+  void editMatchNavigation(AppLocalizations loc) {
+    // Match hasnt ended yet, allow editing
+    if (match.endedAt == null) {
+      Navigator.push(
+        context,
+        adaptivePageRoute(
+          fullscreenDialog: true,
+          builder: (context) => CreateMatchView(
+            matchToEdit: match,
+            onMatchUpdated: onMatchUpdated,
+          ),
+        ),
       );
-      setState(() {
-        match = match.copyWith(scores: scores);
+    } else {
+      // Match has ended, only allow name change
+      nameController.text = match.name;
+      showDialog<bool>(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setDialogState) {
+            return CustomAlertDialog(
+              title: loc.edit_name,
+              content: TextInputField(
+                controller: nameController,
+                hintText: loc.set_name,
+                onChanged: (_) => setDialogState(() {}),
+              ),
+              actions: [
+                CustomDialogAction(
+                  onPressed: isConfirmButtonEnabled()
+                      ? () => Navigator.of(context).pop(true)
+                      : null,
+                  text: loc.confirm,
+                ),
+                CustomDialogAction(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  buttonType: ButtonType.secondary,
+                  text: loc.cancel,
+                ),
+              ],
+            );
+          },
+        ),
+      ).then((confirmed) async {
+        if (confirmed! && context.mounted) {
+          final newName = nameController.text.trim();
+
+          if (newName != match.name) {
+            await db.matchDao.updateMatchName(matchId: match.id, name: newName);
+            onMatchUpdated(match.copyWith(name: newName));
+          }
+        }
       });
     }
   }

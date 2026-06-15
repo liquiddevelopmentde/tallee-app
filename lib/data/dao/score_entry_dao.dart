@@ -203,11 +203,15 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return rowsAffected > 0;
   }
 
+  /// Deletes all score entries for a match.
   Future<bool> deleteAllScoresForMatch({required String matchId}) async {
     final query = delete(scoreEntryTable)
       ..where((tbl) => tbl.matchId.equals(matchId));
-    final rowsAffected = await query.go();
-    return rowsAffected > 0;
+    var rowsAffected = await query.go();
+
+    final success = await db.matchDao.removeMatchEndedAt(matchId: matchId);
+
+    return rowsAffected > 0 && success;
   }
 
   Future<bool> deleteAllScoresForPlayerInMatch({
@@ -235,6 +239,10 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }) async {
     // Clear previous winner if exists
     await deleteAllScoresForMatch(matchId: matchId);
+    await db.matchDao.updateMatchEndedAt(
+      matchId: matchId,
+      endedAt: DateTime.now(),
+    );
 
     // Set the winner's score to 1
     final rowsAffected = await into(scoreEntryTable).insert(
@@ -296,6 +304,10 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }) async {
     // Clear previous winners if exists
     await deleteAllScoresForMatch(matchId: matchId);
+    await db.matchDao.updateMatchEndedAt(
+      matchId: matchId,
+      endedAt: DateTime.now(),
+    );
 
     if (winners.isEmpty) return false;
 
@@ -332,7 +344,11 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String playerId,
   }) async {
     // Clear previous loosers if exists
-    deleteAllScoresForMatch(matchId: matchId);
+    await deleteAllScoresForMatch(matchId: matchId);
+    await db.matchDao.updateMatchEndedAt(
+      matchId: matchId,
+      endedAt: DateTime.now(),
+    );
 
     // Set the loosers score to 0
     final rowsAffected = await into(scoreEntryTable).insert(
@@ -397,6 +413,11 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String matchId,
     required List<Player> players,
   }) async {
+    await db.matchDao.updateMatchEndedAt(
+      matchId: matchId,
+      endedAt: DateTime.now(),
+    );
+
     for (int i = 0; i < players.length; i++) {
       await db.scoreEntryDao.addScore(
         matchId: matchId,

@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:once/once.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/constants.dart';
@@ -11,11 +15,12 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/main_menu_button.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/match_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -71,6 +76,14 @@ class _MatchViewState extends State<MatchView> {
     db = Provider.of<AppDatabase>(context, listen: false);
     _searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
     _searchProvider.addListener(_handleSearchToggle);
+
+    Once.runOnce(
+      'exampleStats',
+      callback: () {
+        addExampleStatistics();
+      },
+    );
+
     loadMatches();
   }
 
@@ -123,7 +136,11 @@ class _MatchViewState extends State<MatchView> {
                 child: searchProvider.isSearching
                     ? Padding(
                         key: const ValueKey('match-searchbar-visible'),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          bottom: 10,
+                        ),
                         child: CustomSearchBar(
                           controller: searchBarController,
                           hintText: '',
@@ -138,7 +155,6 @@ class _MatchViewState extends State<MatchView> {
                         key: ValueKey('match-searchbar-hidden'),
                       ),
               ),
-              const SizedBox(height: 10),
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
@@ -161,34 +177,25 @@ class _MatchViewState extends State<MatchView> {
                         ),
                       ),
                       child: ListView.builder(
-                        padding: const EdgeInsets.only(bottom: 85),
-                        itemCount: filteredMatches.length + 1,
+                        padding: CustomTheme.listViewPadding(context),
+                        itemCount: filteredMatches.length,
+
                         itemBuilder: (BuildContext context, int index) {
-                          if (index == filteredMatches.length) {
-                            return SizedBox(
-                              height: MediaQuery.paddingOf(context).bottom - 20,
-                            );
-                          }
-                          return Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12.0),
-                              child: MatchTile(
-                                onPlayerEdited: loadMatches,
-                                width: MediaQuery.sizeOf(context).width * 0.95,
-                                onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    adaptivePageRoute(
-                                      builder: (context) => MatchDetailView(
-                                        match: filteredMatches[index],
-                                        onMatchUpdate: loadMatches,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                match: filteredMatches[index],
-                              ),
-                            ),
+                          return MatchTile(
+                            onPlayerEdited: loadMatches,
+                            width: MediaQuery.sizeOf(context).width * 0.95,
+                            onTap: () async {
+                              Navigator.push(
+                                context,
+                                adaptivePageRoute(
+                                  builder: (context) => MatchDetailView(
+                                    match: filteredMatches[index],
+                                    onMatchUpdate: loadMatches,
+                                  ),
+                                ),
+                              );
+                            },
+                            match: filteredMatches[index],
                           );
                         },
                       ),
@@ -200,7 +207,7 @@ class _MatchViewState extends State<MatchView> {
           ),
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
-            child: MainMenuButton(
+            child: FloatingAnimatedButton(
               text: loc.create_match,
               icon: RpgAwesome.clovers_card,
               onPressed: () async {
@@ -223,35 +230,48 @@ class _MatchViewState extends State<MatchView> {
 
   void filterMatches(String query) {
     setState(() {
-      final lowercaseQuery = query.toLowerCase();
       if (query.isEmpty) {
         filteredMatches = [...matches];
       } else {
-        filteredMatches = matches.where((match) {
-          final matchNameMatch = match.name.toLowerCase().contains(
-            lowercaseQuery,
-          );
-          final gameNameMatch = match.game.name.toLowerCase().contains(
-            lowercaseQuery,
-          );
-          final groupNameMatch =
-              match.group?.name.toLowerCase().contains(lowercaseQuery) ?? false;
-          final playerNameMatch = match.players.any(
-            (player) => ('${player.name.toLowerCase()}#${player.nameCount}')
-                .contains(lowercaseQuery),
-          );
-          final teamNameMatch =
-              match.teams?.any(
-                (team) => team.name.toLowerCase().contains(lowercaseQuery),
-              ) ??
-              false;
+        final List<({Match match, int score})> scoredMatches = [];
 
-          return matchNameMatch ||
-              gameNameMatch ||
-              groupNameMatch ||
-              playerNameMatch ||
-              teamNameMatch;
-        }).toList();
+        for (final match in matches) {
+          int maxScore = 0;
+
+          // Check match name
+          maxScore = max(maxScore, weightedRatio(match.name, query));
+
+          // Check game name
+          maxScore = max(maxScore, weightedRatio(match.game.name, query));
+
+          // Check group name
+          if (match.group != null) {
+            maxScore = max(maxScore, weightedRatio(match.group!.name, query));
+          }
+
+          // Check player names
+          for (final player in match.players) {
+            maxScore = max(
+              maxScore,
+              weightedRatio('${player.name} #${player.nameCount}', query),
+            );
+          }
+
+          // Check team names
+          if (match.teams != null) {
+            for (final team in match.teams!) {
+              maxScore = max(maxScore, weightedRatio(team.name, query));
+            }
+          }
+
+          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+            scoredMatches.add((match: match, score: maxScore));
+          }
+        }
+
+        // Sort by score descending
+        scoredMatches.sort((a, b) => b.score.compareTo(a.score));
+        filteredMatches = scoredMatches.map((e) => e.match).toList();
       }
     });
   }
@@ -270,7 +290,7 @@ class _MatchViewState extends State<MatchView> {
   void loadMatches() {
     isLoading = true;
     Future.wait([
-      db.matchDao.getAllMatches(),
+      db.matchDao.getAllMatches(includeDeletedPlayer: true),
       Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
     ]).then((results) {
       if (mounted) {
@@ -287,5 +307,30 @@ class _MatchViewState extends State<MatchView> {
         });
       }
     });
+  }
+
+  Future<void> addExampleStatistics() async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final stat1 = Statistic(
+      type: StatisticType.totalWins,
+      color: AppColor.blue,
+      displayCount: 3,
+      scopes: [StatisticScope.allPlayers],
+    );
+    final stat2 = Statistic(
+      type: StatisticType.averageScore,
+      color: AppColor.pink,
+      displayCount: 5,
+      scopes: [StatisticScope.allPlayers],
+    );
+    final stat3 = Statistic(
+      type: StatisticType.averageScore,
+      color: AppColor.green,
+      displayCount: 8,
+      scopes: [StatisticScope.allPlayers],
+    );
+    await db.statisticDao.addStatisticsAsList(
+      statistics: [stat1, stat2, stat3],
+    );
   }
 }

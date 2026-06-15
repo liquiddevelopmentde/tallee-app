@@ -122,12 +122,6 @@ abstract class AppLocalizations {
   /// **'All time'**
   String get all_time;
 
-  /// No description provided for @amount_of_matches.
-  ///
-  /// In en, this message translates to:
-  /// **'Amount of Matches'**
-  String get amount_of_matches;
-
   /// No description provided for @app_name.
   ///
   /// In en, this message translates to:
@@ -158,12 +152,6 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
-  /// No description provided for @choose_color.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose Color'**
-  String get choose_color;
-
   /// No description provided for @choose_game.
   ///
   /// In en, this message translates to:
@@ -176,17 +164,23 @@ abstract class AppLocalizations {
   /// **'Choose Group'**
   String get choose_group;
 
-  /// No description provided for @choose_ruleset.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose Ruleset'**
-  String get choose_ruleset;
-
   /// No description provided for @classifier.
   ///
   /// In en, this message translates to:
   /// **'Classifier'**
   String get classifier;
+
+  /// No description provided for @classifier_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which metric is calculated and shown in this statistic.'**
+  String get classifier_description;
+
+  /// No description provided for @click_another_player_to_create_a_pair.
+  ///
+  /// In en, this message translates to:
+  /// **'Click another player to create a pair'**
+  String get click_another_player_to_create_a_pair;
 
   /// No description provided for @color.
   ///
@@ -362,6 +356,12 @@ abstract class AppLocalizations {
   /// **'Delete Group'**
   String get delete_group;
 
+  /// No description provided for @delete_group_warning_details.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.'**
+  String get delete_group_warning_details;
+
   /// No description provided for @delete_match.
   ///
   /// In en, this message translates to:
@@ -373,6 +373,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete player?'**
   String get delete_player;
+
+  /// No description provided for @delete_player_warning_details.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.'**
+  String get delete_player_warning_details;
+
+  /// No description provided for @delete_statistic.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete statistic'**
+  String get delete_statistic;
+
+  /// No description provided for @deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted'**
+  String get deleted;
 
   /// No description provided for @description.
   ///
@@ -446,12 +464,6 @@ abstract class AppLocalizations {
   /// **'Error while deleting game, please try again'**
   String get error_deleting_game;
 
-  /// No description provided for @error_deleting_group.
-  ///
-  /// In en, this message translates to:
-  /// **'Error while deleting group, please try again'**
-  String get error_deleting_group;
-
   /// No description provided for @error_editing_group.
   ///
   /// In en, this message translates to:
@@ -463,12 +475,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error reading file'**
   String get error_reading_file;
-
-  /// No description provided for @exit_view.
-  ///
-  /// In en, this message translates to:
-  /// **'Exit View'**
-  String get exit_view;
 
   /// No description provided for @export_canceled.
   ///
@@ -542,12 +548,6 @@ abstract class AppLocalizations {
   /// **'Highest Score'**
   String get highest_score;
 
-  /// No description provided for @home.
-  ///
-  /// In en, this message translates to:
-  /// **'Home'**
-  String get home;
-
   /// No description provided for @import_canceled.
   ///
   /// In en, this message translates to:
@@ -601,12 +601,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last year'**
   String get last_year;
-
-  /// No description provided for @least_points.
-  ///
-  /// In en, this message translates to:
-  /// **'Least Points'**
-  String get least_points;
 
   /// No description provided for @legal.
   ///
@@ -704,17 +698,17 @@ abstract class AppLocalizations {
   /// **'Members'**
   String get members;
 
-  /// No description provided for @most_points.
-  ///
-  /// In en, this message translates to:
-  /// **'Most Points'**
-  String get most_points;
-
   /// No description provided for @multiple_winners.
   ///
   /// In en, this message translates to:
   /// **'Multiple Winners'**
   String get multiple_winners;
+
+  /// No description provided for @names_or_descriptions_too_long.
+  ///
+  /// In en, this message translates to:
+  /// **'The data contains names or descriptions that are too long.'**
+  String get names_or_descriptions_too_long;
 
   /// No description provided for @no_data_available.
   ///
@@ -739,12 +733,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No license text available'**
   String get no_license_text_available;
-
-  /// No description provided for @no_licenses_found.
-  ///
-  /// In en, this message translates to:
-  /// **'No licenses found'**
-  String get no_licenses_found;
 
   /// No description provided for @no_matches_created_yet.
   ///
@@ -782,29 +770,11 @@ abstract class AppLocalizations {
   /// **'No players selected'**
   String get no_players_selected;
 
-  /// No description provided for @no_recent_matches_available.
-  ///
-  /// In en, this message translates to:
-  /// **'No recent matches available'**
-  String get no_recent_matches_available;
-
   /// No description provided for @no_results_entered_yet.
   ///
   /// In en, this message translates to:
   /// **'No results entered yet'**
   String get no_results_entered_yet;
-
-  /// No description provided for @no_second_match_available.
-  ///
-  /// In en, this message translates to:
-  /// **'No second match available'**
-  String get no_second_match_available;
-
-  /// No description provided for @no_statistics_available.
-  ///
-  /// In en, this message translates to:
-  /// **'No statistics available'**
-  String get no_statistics_available;
 
   /// No description provided for @no_statistics_created_yet.
   ///
@@ -830,12 +800,6 @@ abstract class AppLocalizations {
   /// **'None'**
   String get none_group;
 
-  /// No description provided for @not_available.
-  ///
-  /// In en, this message translates to:
-  /// **'Not available'**
-  String get not_available;
-
   /// No description provided for @not_part_of_any_group.
   ///
   /// In en, this message translates to:
@@ -859,12 +823,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Played Matches'**
   String get played_matches;
-
-  /// No description provided for @player_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Player name'**
-  String get player_name;
 
   /// No description provided for @player_profile.
   ///
@@ -896,23 +854,11 @@ abstract class AppLocalizations {
   /// **'Privacy Policy'**
   String get privacy_policy;
 
-  /// No description provided for @quick_create.
+  /// No description provided for @random_color.
   ///
   /// In en, this message translates to:
-  /// **'Quick Create'**
-  String get quick_create;
-
-  /// No description provided for @recent_matches.
-  ///
-  /// In en, this message translates to:
-  /// **'Recent Matches'**
-  String get recent_matches;
-
-  /// No description provided for @redistribute.
-  ///
-  /// In en, this message translates to:
-  /// **'Redistribute'**
-  String get redistribute;
+  /// **'Random color'**
+  String get random_color;
 
   /// No description provided for @results.
   ///
@@ -926,36 +872,6 @@ abstract class AppLocalizations {
   /// **'Ruleset'**
   String get ruleset;
 
-  /// No description provided for @ruleset_least_points.
-  ///
-  /// In en, this message translates to:
-  /// **'Inverse scoring: the player with the fewest points wins.'**
-  String get ruleset_least_points;
-
-  /// No description provided for @ruleset_most_points.
-  ///
-  /// In en, this message translates to:
-  /// **'Traditional ruleset: the player with the most points wins.'**
-  String get ruleset_most_points;
-
-  /// No description provided for @ruleset_placement.
-  ///
-  /// In en, this message translates to:
-  /// **'Players can be arranged in an order, which reflects their placement.'**
-  String get ruleset_placement;
-
-  /// No description provided for @ruleset_single_loser.
-  ///
-  /// In en, this message translates to:
-  /// **'Exactly one loser is determined; last place receives the penalty or consequence.'**
-  String get ruleset_single_loser;
-
-  /// No description provided for @ruleset_single_winner.
-  ///
-  /// In en, this message translates to:
-  /// **'Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.'**
-  String get ruleset_single_winner;
-
   /// No description provided for @save_changes.
   ///
   /// In en, this message translates to:
@@ -967,6 +883,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scope'**
   String get scope;
+
+  /// No description provided for @scope_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which games or players are included in the calculation.'**
+  String get scope_description;
 
   /// No description provided for @search_for_groups.
   ///
@@ -986,17 +908,11 @@ abstract class AppLocalizations {
   /// **'Select a classifier'**
   String get select_a_classifier;
 
-  /// No description provided for @select_a_game.
+  /// No description provided for @select_a_display_color.
   ///
   /// In en, this message translates to:
-  /// **'Select a game'**
-  String get select_a_game;
-
-  /// No description provided for @select_a_group.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a group'**
-  String get select_a_group;
+  /// **'Select a display color'**
+  String get select_a_display_color;
 
   /// No description provided for @select_a_scope.
   ///
@@ -1015,18 +931,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Loser'**
   String get select_loser;
-
-  /// No description provided for @select_the_filtered_games.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the games you want to filter by.'**
-  String get select_the_filtered_games;
-
-  /// No description provided for @select_the_filtered_groups.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the groups you want to filter by.'**
-  String get select_the_filtered_groups;
 
   /// No description provided for @select_the_filtered_timeframe.
   ///
@@ -1093,12 +997,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Statistics'**
   String get statistics;
-
-  /// No description provided for @stats.
-  ///
-  /// In en, this message translates to:
-  /// **'Stats'**
-  String get stats;
 
   /// Success message when adding a player
   ///
@@ -1190,12 +1088,6 @@ abstract class AppLocalizations {
   /// **'Total wins'**
   String get total_wins;
 
-  /// No description provided for @undo.
-  ///
-  /// In en, this message translates to:
-  /// **'Undo'**
-  String get undo;
-
   /// No description provided for @unknown_exception.
   ///
   /// In en, this message translates to:
@@ -1219,12 +1111,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Winrate'**
   String get winrate;
-
-  /// No description provided for @wins.
-  ///
-  /// In en, this message translates to:
-  /// **'Wins'**
-  String get wins;
 
   /// No description provided for @worst_score.
   ///

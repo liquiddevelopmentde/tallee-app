@@ -17,22 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.0.1"
-  animated_custom_dropdown:
-    dependency: "direct main"
-    description:
-      name: animated_custom_dropdown
-      sha256: "5a72dc209041bb53f6c7164bc2e366552d5197cdb032b1c9b2c36e3013024486"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.1"
   arb_utils:
     dependency: "direct dev"
     description:
       name: arb_utils
-      sha256: "93c12844693033d52b6f18bad926bdd3eb7a71dcbb72421c65c9ddcffe35764a"
+      sha256: "9d6721d04453109f8cd8d81761ec8a29a226f3f83a3e65da3300b8caa01503f5"
       url: "https://pub.dev"
     source: hosted
-    version: "0.11.0"
+    version: "0.11.1"
   archive:
     dependency: transitive
     description:
@@ -333,18 +325,18 @@ packages:
     dependency: "direct main"
     description:
       name: drift
-      sha256: "8033500116b24398fba0cca0369cc31678cd627c01e41753a61186911cea743e"
+      sha256: "6cc0b623c0e83f7080524d8396e9301b1d78b9c66a4fdceeb0f798211303254c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.33.0"
+    version: "2.34.0"
   drift_dev:
     dependency: "direct dev"
     description:
       name: drift_dev
-      sha256: b3dd5b75e30522a91da8abda9f5bb17230cb038097f6d15fa75d42bb563428aa
+      sha256: "9cfff1576b49725da0d32c040651a41ae195e8c4af8d8da301593e41d7abc2f7"
       url: "https://pub.dev"
     source: hosted
-    version: "2.33.0"
+    version: "2.34.0"
   drift_flutter:
     dependency: "direct main"
     description:
@@ -353,14 +345,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.0"
-  dropdown_flutter:
+  dropdown_button2:
     dependency: "direct main"
     description:
-      name: dropdown_flutter
-      sha256: "5ae3d05d768d0bb6030ff735e6b4b93f7b29be3cf3bec7c86cd4f444c8f067ff"
+      name: dropdown_button2
+      sha256: "24f5b775483a9b3c508092766798c10e3f23127e66b3f4a305b5bfb59ff1debc"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "3.1.0"
   equatable:
     dependency: transitive
     description:
@@ -498,6 +490,14 @@ packages:
     description:
       name: functional_data
       sha256: "76d17dc707c40e552014f5a49c0afcc3f1e3f05e800cd6b7872940bfe41a5039"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
+  fuzzywuzzy:
+    dependency: "direct main"
+    description:
+      name: fuzzywuzzy
+      sha256: "3004379ffd6e7f476a0c2091f38f16588dc45f67de7adf7c41aa85dec06b432c"
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
@@ -765,6 +765,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.3.0"
+  once:
+    dependency: "direct main"
+    description:
+      name: once
+      sha256: "649089ab89d12aa270168d88792291314becdb9dba64044e40f147c89ca75368"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.8.0"
   package_config:
     dependency: transitive
     description:
@@ -1130,6 +1138,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  sort_pubspec_dependencies:
+    dependency: "direct dev"
+    description:
+      name: sort_pubspec_dependencies
+      sha256: "42a711c0d53e573b4b24386c227c67b33202f12dc2585797485f40b7d543a839"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   source_gen:
     dependency: transitive
     description:

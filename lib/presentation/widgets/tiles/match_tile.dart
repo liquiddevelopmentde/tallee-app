@@ -7,37 +7,33 @@ import 'package:tallee/core/adaptive_page_route.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class MatchTile extends StatefulWidget {
   /// A tile widget that displays information about a match, including its name,
   /// creation date, associated group, winner, and players.
   /// - [match]: The match data to be displayed.
   /// - [onTap]: The callback invoked when the tile is tapped.
+  /// - [onPlayerEdited]: The callback invoked when the players are edited.
   /// - [width]: Optional width for the tile.
   const MatchTile({
     super.key,
     required this.match,
     required this.onTap,
-    this.width,
     this.onPlayerEdited,
+    this.width,
   });
 
-  /// The match data to be displayed.
   final Match match;
-
-  /// The callback invoked when the tile is tapped.
   final VoidCallback onTap;
-
-  /// The callback invoked when the players are edited
   final VoidCallback? onPlayerEdited;
-
-  /// Optional width for the tile.
   final double? width;
 
   @override
@@ -50,7 +46,7 @@ class _MatchTileState extends State<MatchTile> {
     final match = widget.match;
     final group = match.group;
     final players = [...match.players]
-      ..sort((a, b) => a.name.compareTo(b.name));
+      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(
@@ -59,7 +55,7 @@ class _MatchTileState extends State<MatchTile> {
         widget.onTap.call();
       },
       child: Container(
-        margin: EdgeInsets.zero,
+        margin: CustomTheme.tileMargin,
         width: widget.width,
         padding: const EdgeInsets.all(12),
         decoration: CustomTheme.standardBoxDecoration,
@@ -68,19 +64,20 @@ class _MatchTileState extends State<MatchTile> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              spacing: 8,
               children: [
                 Expanded(
                   child: Text(
                     match.name,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Text(
-                  _formatDate(match.createdAt, context),
+                  formatDate(match.createdAt, context),
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
@@ -119,7 +116,9 @@ class _MatchTileState extends State<MatchTile> {
             const SizedBox(height: 12),
 
             // Winner / In Progress Info
-            if (match.isTeamMatch && match.mvt.isNotEmpty) ...[
+            if ((match.isTeamMatch ||
+                    (widget.match.teams?.isNotEmpty ?? false)) &&
+                match.mvt.isNotEmpty) ...[
               // MVT Display for team matches
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -138,17 +137,7 @@ class _MatchTileState extends State<MatchTile> {
                   children: [
                     getMvpIcon(),
                     const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        getMvtText(loc),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+                    Expanded(child: getMvtTextWidget(loc)),
                   ],
                 ),
               ),
@@ -172,17 +161,7 @@ class _MatchTileState extends State<MatchTile> {
                   children: [
                     getMvpIcon(),
                     const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        getMvpText(loc),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+                    Expanded(child: getMvpTextWidget(loc)),
                   ],
                 ),
               ),
@@ -265,6 +244,44 @@ class _MatchTileState extends State<MatchTile> {
                 },
               ),
               const SizedBox(height: 12),
+            ] else if (!match.isTeamMatch &&
+                (widget.match.teams?.isNotEmpty ?? false)) ...[
+              // Player with Pairs display
+              Text(
+                loc.players,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: match.teams!.map((pair) {
+                  if (pair.members.length > 1) {
+                    return PairTile(pair: pair);
+                  } else {
+                    return PlayerTile(
+                      player: pair.members.first,
+                      onTileTap: () {
+                        Navigator.push(
+                          context,
+                          adaptivePageRoute(
+                            builder: (context) => PlayerDetailView(
+                              player: pair.members.first,
+                              onPlayerNameUpdated: () {
+                                widget.onPlayerEdited?.call();
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                }).toList(),
+              ),
             ] else if (players.isNotEmpty) ...[
               // Player display
               Text(
@@ -280,16 +297,15 @@ class _MatchTileState extends State<MatchTile> {
                 spacing: 6,
                 runSpacing: 6,
                 children: players.map((player) {
-                  return TextIconTile(
-                    text: player.name,
-                    suffixText: getNameCountText(player),
+                  return PlayerTile(
+                    player: player,
                     onTileTap: () {
                       Navigator.push(
                         context,
                         adaptivePageRoute(
                           builder: (context) => PlayerDetailView(
                             player: player,
-                            callback: () {
+                            onPlayerNameUpdated: () {
                               widget.onPlayerEdited?.call();
                             },
                           ),
@@ -316,7 +332,7 @@ class _MatchTileState extends State<MatchTile> {
 
   /// Formats the given [dateTime] into a human-readable string based on its
   /// difference from the current date.
-  String _formatDate(DateTime dateTime, BuildContext context) {
+  String formatDate(DateTime dateTime, BuildContext context) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
     final loc = AppLocalizations.of(context);
@@ -332,56 +348,118 @@ class _MatchTileState extends State<MatchTile> {
     }
   }
 
-  // Returns the appropriate text based on the match's ruleset and MVP.
-  String getMvpText(AppLocalizations loc) {
-    if (widget.match.mvp.isEmpty) return '';
+  // Returns the appropriate text widget based on the match's ruleset and MVP.
+  Widget getMvpTextWidget(AppLocalizations loc) {
+    if (widget.match.mvp.isEmpty) return const SizedBox.shrink();
     final ruleset = widget.match.game.ruleset;
+    final players = widget.match.mvp;
 
-    if (ruleset == Ruleset.singleWinner) {
-      return '${loc.winner}: ${widget.match.mvp.first.name}';
-    } else if (ruleset == Ruleset.singleLoser) {
-      return '${loc.loser}: ${widget.match.mvp.first.name}';
-    } else if (ruleset == Ruleset.highestScore ||
-        ruleset == Ruleset.lowestScore) {
-      final mvp = widget.match.mvp;
-      final mvpScore = widget.match.scores[mvp.first.id]?.score ?? 0;
-      final mvpNames = mvp.map((player) => player.name).join(', ');
-      return '${loc.winner}: $mvpNames (${getPointLabel(loc, mvpScore)})';
-    } else if (ruleset == Ruleset.placement) {
-      return '${loc.winner}: ${widget.match.mvp.first.name}';
-    } else if (ruleset == Ruleset.multipleWinners) {
-      final mvpNames = widget.match.mvp.map((player) => player.name).join(', ');
-      return '${loc.winners}: $mvpNames';
+    const labelStyle = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: CustomTheme.textColor,
+    );
+
+    const nameStyle = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor,
+    );
+
+    final countStyle = TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor.withAlpha(100),
+    );
+
+    final namesToRender =
+        ruleset == Ruleset.multipleWinners ||
+            ruleset == Ruleset.highestScore ||
+            ruleset == Ruleset.lowestScore
+        ? players
+        : [players.first];
+
+    final children = <InlineSpan>[];
+
+    for (var i = 0; i < namesToRender.length; i++) {
+      children.add(
+        buildPlayerNameCountSpan(
+          namesToRender[i],
+          mainStyle: nameStyle,
+          countStyle: countStyle,
+        ),
+      );
+
+      if (i < namesToRender.length - 1) {
+        children.add(const TextSpan(text: ', ', style: labelStyle));
+      }
     }
-    return '${loc.winner}: n.A.';
+
+    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.lowestScore) {
+      final mvpScore = widget.match.scores[players.first.id]?.score ?? 0;
+      children.add(
+        TextSpan(text: ' (${getPointLabel(loc, mvpScore)})', style: labelStyle),
+      );
+    }
+
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(color: CustomTheme.textColor),
+        children: children,
+      ),
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
-  // Returns the appropriate text based on the match's ruleset and MVT.
-  String getMvtText(AppLocalizations loc) {
-    if (widget.match.mvt.isEmpty) return '';
+  // Returns the appropriate text widget based on the match's ruleset and MVT.
+  Widget getMvtTextWidget(AppLocalizations loc) {
+    if (widget.match.mvt.isEmpty) return const SizedBox.shrink();
     final ruleset = widget.match.game.ruleset;
+    final mvt = widget.match.mvt;
 
-    switch (ruleset) {
-      case Ruleset.singleWinner:
-        return '${loc.winner}: ${widget.match.mvt.first.name}';
-      case Ruleset.singleLoser:
-        return '${loc.loser}: ${widget.match.mvt.first.name}';
-      case Ruleset.highestScore:
-      case Ruleset.lowestScore:
-        final mvt = widget.match.mvt;
-        final mvtScore =
-            widget.match.teams!
-                .firstWhere((team) => team.id == mvt.first.id)
-                .score ??
-            0;
-        final mvtNames = mvt.map((team) => team.name).join(', ');
-        return '${loc.winner}: $mvtNames (${getPointLabel(loc, mvtScore)})';
-      case Ruleset.placement:
-        return '${loc.winner}: ${widget.match.mvt.first.name}';
-      case Ruleset.multipleWinners:
-        final mvtNames = widget.match.mvt.map((team) => team.name).join(', ');
-        return '${loc.winners}: $mvtNames';
-    }
+    const mainStyle = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor,
+    );
+
+    final countStyle = TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: CustomTheme.textColor.withAlpha(100),
+    );
+
+    final score =
+        (ruleset == Ruleset.highestScore || ruleset == Ruleset.lowestScore)
+        ? widget.match.teams!
+                  .firstWhere((team) => team.id == mvt.first.id)
+                  .score ??
+              0
+        : null;
+
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(color: CustomTheme.textColor),
+        children: [
+          for (var i = 0; i < mvt.length; i++) ...[
+            if (i > 0) const TextSpan(text: ', ', style: mainStyle),
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: buildUnitNameWidget(
+                mvt[i],
+                isTeamMatch: widget.match.isTeamMatch,
+                mainStyle: mainStyle,
+                countStyle: countStyle,
+              ),
+            ),
+          ],
+          if (score != null)
+            TextSpan(text: ' (${getPointLabel(loc, score)})', style: mainStyle),
+        ],
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
   // Returns the appropriate icon based on the match's ruleset.

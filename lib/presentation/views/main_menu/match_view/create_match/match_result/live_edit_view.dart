@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
@@ -16,9 +17,11 @@ class LiveEditView extends StatefulWidget {
 
 class _LiveEditViewState extends State<LiveEditView> {
   List<Team> get allTeams =>
-      (widget.match.teams ?? [])..sort((a, b) => a.name.compareTo(b.name));
+      (widget.match.teams ?? [])
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
   List<Player> get allPlayers =>
-      widget.match.players..sort((a, b) => a.name.compareTo(b.name));
+      widget.match.players
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
   List<int> scores = [];
 
   @override
@@ -48,26 +51,31 @@ class _LiveEditViewState extends State<LiveEditView> {
           icon: const Icon(Icons.close),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(child: buildLiveEditWidget(widget.match.isTeamMatch)),
-        ],
-      ),
+      body: Column(children: [Expanded(child: buildLiveEditWidget())]),
     );
   }
 
-  Widget buildLiveEditWidget(bool isTeamMatch) {
-    if (isTeamMatch) {
+  Widget buildLiveEditWidget() {
+    if (widget.match.useTeamLogic) {
       return ListView.builder(
         itemCount: allTeams.length,
         itemBuilder: (context, index) {
+          final team = allTeams[index];
           return LiveEditListTile(
-            title: allTeams[index].name,
+            title: buildUnitNameWidget(
+              team,
+              isTeamMatch: widget.match.isTeamMatch,
+              rowAlignment: MainAxisAlignment.center,
+              mainStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
             onChanged: (value) {
               scores[index] = value;
             },
             value: scores[index],
-            color: getColorFromAppColor(allTeams[index].color),
+            color: getColorFromAppColor(team.color),
           );
         },
       );
@@ -76,7 +84,13 @@ class _LiveEditViewState extends State<LiveEditView> {
         itemCount: allPlayers.length,
         itemBuilder: (context, index) {
           return LiveEditListTile(
-            title: allPlayers[index].name,
+            title: buildUnitNameWidget(
+              allPlayers[index],
+              mainStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
             onChanged: (value) {
               setState(() {
                 scores[index] = value;

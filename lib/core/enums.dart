@@ -9,6 +9,7 @@ enum ButtonType { primary, secondary, tertiary }
 /// - [ImportResult.canceled]: The import operation was canceled by the user.
 /// - [ImportResult.fileReadError]: There was an error reading the selected file.
 /// - [ImportResult.invalidSchema]: The JSON schema of the imported data is invalid.
+/// - [ImportResult.invalidData]: The JSON Schema is correct, but the data itself is invalid.
 /// - [ImportResult.formatException]: A format exception occurred during import.
 /// - [ImportResult.unknownException]: An exception occurred during import.
 enum ImportResult {
@@ -16,6 +17,7 @@ enum ImportResult {
   canceled,
   fileReadError,
   invalidSchema,
+  invalidData,
   formatException,
   unknownException,
 }
@@ -56,13 +58,7 @@ enum StatisticType {
   winrate,
 }
 
-enum StatisticScope {
-  allPlayers,
-  //selectedPlayer,
-  selectedGroups,
-  selectedGames,
-  timeframe,
-}
+enum StatisticScope { allPlayers, selectedGroups, selectedGames }
 
 enum Timeframe {
   last7Days,

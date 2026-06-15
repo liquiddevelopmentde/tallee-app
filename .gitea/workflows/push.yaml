@@ -10,21 +10,27 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/cirruslabs/flutter:stable
+    container: node:20-bookworm
     steps:
-      - name: Install Node
-        run: |
-          apt-get update
-          apt-get install -y nodejs npm
-
       - name: Checkout code
         uses: actions/checkout@v4
+
+      # Required for the Flutter action and SDK download
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y jq unzip xz-utils
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
 
       - name: Get dependencies
         run: |
           git config --global --add safe.directory '*'
           flutter pub get
+          flutter --version
 
       - name: Run tests
         run: flutter test
@@ -55,14 +61,15 @@ jobs:
         run: |
           git config --global user.name "Gitea Actions [bot]"
           git config --global user.email "actions@yannick-weigert.de"
-          git config pull.rebase false
-          git pull origin "$BRANCH_NAME"
           git add pubspec.yaml
           git commit -m "Updated version number [skip ci]"
+          git pull --rebase --autostash origin "$BRANCH_NAME"
           git push origin HEAD:$BRANCH_NAME
 
   generate_licenses:
     runs-on: ubuntu-latest
+    needs: [update_version]
+    if: ${{ always() && needs.update_version.result != 'failure' }}
     env:
       GITEA_TOKEN: ${{ secrets.BOT_TOKEN }}
       BRANCH_NAME: ${{ gitea.ref_name }}
@@ -78,7 +85,7 @@ jobs:
       - name: Install jq
         run: |
           apt-get update
-          apt-get install -y jq 
+          apt-get install -y jq
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -98,10 +105,9 @@ jobs:
           if [ -n "$(git status --porcelain lib test)" ]; then
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
-            git config pull.rebase false
-            git pull origin "$BRANCH_NAME"
             git add lib test
             git commit -m "Updated licenses [skip ci]"
+            git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin HEAD:$BRANCH_NAME
           else
             echo "No changes to commit"
@@ -109,15 +115,21 @@ jobs:
 
   generate_localizations:
     runs-on: ubuntu-latest
+    needs: [generate_licenses]
+    if: ${{ always() && needs.generate_licenses.result != 'failure' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.BOT_TOKEN }}
+          ref: ${{ gitea.ref_name }}
 
       # Required for Flutter action
       - name: Install jq
         run: |
           apt-get update
-          apt-get install -y jq 
+          apt-get install -y jq
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -161,13 +173,12 @@ jobs:
           git fetch origin "$BRANCH_NAME"
           git checkout "$BRANCH_NAME"
 
-          if [ -n "$(git status --porcelain lib test)" ]; then
+          if [ -n "$(git status --porcelain lib/l10n)" ]; then
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
-            git config pull.rebase false
-            git pull origin "$BRANCH_NAME"
             git add lib/l10n
             git commit -m "Generated localizations [skip ci]"
+            git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin "HEAD:$BRANCH_NAME"
           else
             echo "No changes to commit"
@@ -175,16 +186,21 @@ jobs:
 
   format:
     runs-on: ubuntu-latest
-    needs: [update_version, generate_licenses, generate_localizations]
+    needs: [generate_localizations]
+    if: ${{ always() && needs.generate_localizations.result != 'failure' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.BOT_TOKEN }}
+          ref: ${{ gitea.ref_name }}
 
       # Required for Flutter action
       - name: Install jq
         run: |
           apt-get update
-          apt-get install -y jq 
+          apt-get install -y jq
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -196,6 +212,9 @@ jobs:
           git config --global --add safe.directory '*'
           flutter pub get
 
+      - name: Sort pubspec.yaml
+        run: dart run sort_pubspec_dependencies
+
       - name: Check code format
         id: check_format
         continue-on-error: true
@@ -203,23 +222,24 @@ jobs:
 
       - name: Format code
         if: steps.check_format.outcome == 'failure'
+        run: |
+          dart fix --apply lib
+          dart fix --apply test
+
+      - name: Commit changes
         env:
           GITEA_TOKEN: ${{ secrets.BOT_TOKEN }}
           BRANCH_NAME: ${{ gitea.ref_name }}
         run: |
           git fetch origin "$BRANCH_NAME"
           git checkout "$BRANCH_NAME"
-          
-          dart fix --apply lib
-          dart fix --apply test
-          
-          if [ -n "$(git status --porcelain lib test)" ]; then
+
+          if [ -n "$(git status --porcelain lib test pubspec.yaml)" ]; then
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
-            git config pull.rebase false
-            git pull origin "$BRANCH_NAME"
-            git add lib test
+            git add lib test pubspec.yaml
             git commit -m "Auto-format code [skip ci]"
+            git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin HEAD:$BRANCH_NAME
           else
             echo "No changes to commit"

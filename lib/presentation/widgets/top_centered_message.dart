@@ -4,23 +4,22 @@ class TopCenteredMessage extends StatelessWidget {
   /// A widget that displays a message centered at the top of the screen with an icon, title, and message.
   /// - [icon]: The icon to display above the title.
   /// - [title]: The title text to display.
-  /// - [message]: The message text to display below the title.
+  /// - [message]: An optional message text to display below the title.
+  /// - [content]: An optional widget to display below the title instead of the message text.
+  /// - [fullscreen]: If true, the message will be displayed at the top of the
   const TopCenteredMessage({
     super.key,
     required this.icon,
     required this.title,
-    required this.message,
+    this.message,
     this.fullscreen = true,
   });
 
-  /// The icon to display above the title.
   final IconData icon;
 
-  /// The title text to display.
   final String title;
 
-  /// The message text to display below the title.
-  final String message;
+  final String? message;
 
   final bool fullscreen;
 
@@ -42,11 +41,12 @@ class TopCenteredMessage extends StatelessWidget {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-          Text(
-            message,
-            style: const TextStyle(fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
+          if (message != null)
+            Text(
+              message!,
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
         ],
       ),
     );

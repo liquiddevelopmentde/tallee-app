@@ -125,7 +125,10 @@ class _SettingsViewState extends State<SettingsView> {
                         context: context,
                         builder: (context) => CustomAlertDialog(
                           title: '${loc.delete_all_data}?',
-                          content: Text(loc.this_cannot_be_undone),
+                          content: Text(
+                            loc.this_cannot_be_undone,
+                            overflow: TextOverflow.visible,
+                          ),
                           actions: [
                             CustomDialogAction(
                               onPressed: () => Navigator.of(context).pop(true),
@@ -203,7 +206,6 @@ class _SettingsViewState extends State<SettingsView> {
                               spacing: 10,
                               children: [
                                 HapticIconButton(
-                                  color: CustomTheme.textColor,
                                   icon: const Icon(Icons.language),
                                   onPressed: () async => {
                                     await HapticFeedback.lightImpact(),
@@ -213,7 +215,6 @@ class _SettingsViewState extends State<SettingsView> {
                                   },
                                 ),
                                 HapticIconButton(
-                                  color: CustomTheme.textColor,
                                   icon: const FaIcon(FontAwesomeIcons.github),
                                   onPressed: () async => {
                                     await HapticFeedback.lightImpact(),
@@ -225,7 +226,6 @@ class _SettingsViewState extends State<SettingsView> {
                                   },
                                 ),
                                 HapticIconButton(
-                                  color: CustomTheme.textColor,
                                   icon: Icon(
                                     Platform.isIOS
                                         ? CupertinoIcons.mail_solid
@@ -292,6 +292,14 @@ class _SettingsViewState extends State<SettingsView> {
         await HapticFeedback.errorNotification();
         if (context.mounted) {
           showSnackbar(context: context, message: loc.invalid_schema);
+        }
+      case ImportResult.invalidData:
+        await HapticFeedback.errorNotification();
+        if (context.mounted) {
+          showSnackbar(
+            context: context,
+            message: loc.names_or_descriptions_too_long,
+          );
         }
       case ImportResult.fileReadError:
         await HapticFeedback.errorNotification();

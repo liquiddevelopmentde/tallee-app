@@ -13,6 +13,7 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/services/data_transfer_service.dart';
 
@@ -25,6 +26,7 @@ void main() {
   late Group testGroup;
   late Team testTeam;
   late Match testMatch;
+  late Statistic testStatistic;
   final fixedDate = DateTime(2025, 11, 19, 0, 11, 23);
   final fakeClock = Clock(() => fixedDate);
 
@@ -72,6 +74,16 @@ void main() {
           testPlayer1.id: ScoreEntry(roundNumber: 1, score: 10, change: 10),
           testPlayer2.id: ScoreEntry(roundNumber: 1, score: 15, change: 15),
         },
+      );
+
+      testStatistic = Statistic(
+        type: StatisticType.totalScore,
+        scopes: [StatisticScope.selectedGames, StatisticScope.selectedGroups],
+        timeframe: Timeframe.last30Days,
+        color: AppColor.yellow,
+        selectedGames: [testGame],
+        selectedGroups: [testGroup],
+        displayCount: 7,
       );
     });
   });
@@ -291,6 +303,38 @@ void main() {
           expect(player2Score.roundNumber, 1);
           expect(player2Score.score, 15);
           expect(player2Score.change, 15);
+        });
+
+        testWidgets('Statistic data is correct', (tester) async {
+          await database.playerDao.addPlayersAsList(
+            players: [testPlayer1, testPlayer2],
+          );
+          await database.gameDao.addGame(game: testGame);
+          await database.groupDao.addGroup(group: testGroup);
+          await database.statisticDao.addStatistic(statistic: testStatistic);
+
+          final ctx = await getContext(tester);
+          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final decoded = json.decode(jsonString) as Map<String, dynamic>;
+
+          expect(decoded.containsKey('statistics'), isTrue);
+          final stats = decoded['statistics'] as List<dynamic>;
+          expect(stats.length, 1);
+
+          final statData = stats[0] as Map<String, dynamic>;
+          expect(statData['id'], testStatistic.id);
+          expect(statData['type'], testStatistic.type.name);
+          expect(statData['timeframe'], testStatistic.timeframe.name);
+          expect(statData['color'], testStatistic.color.name);
+          expect(statData['displayCount'], testStatistic.displayCount);
+          expect(
+            statData['selectedGames'],
+            containsAll(testStatistic.selectedGames!.map((g) => g.id)),
+          );
+          expect(
+            statData['selectedGroups'],
+            containsAll(testStatistic.selectedGroups!.map((g) => g.id)),
+          );
         });
 
         testWidgets('Match with teams is handled correctly', (tester) async {
@@ -528,12 +572,14 @@ void main() {
               'name': testPlayer1.name,
               'description': testPlayer1.description,
               'createdAt': testPlayer1.createdAt.toIso8601String(),
+              'deleted': false,
             },
             {
               'id': testPlayer2.id,
               'name': testPlayer2.name,
               'description': testPlayer2.description,
               'createdAt': testPlayer2.createdAt.toIso8601String(),
+              'deleted': true,
             },
           ],
         };
@@ -869,83 +915,90 @@ void main() {
         expect(matches.length, 1);
         expect(matches[0].endedAt, endedDate);
       });
-    });
 
-    test('validateJsonSchema() works correctly', () async {
-      final validJson = json.encode({
-        'players': [
-          {
-            'id': testPlayer1.id,
-            'name': testPlayer1.name,
-            'description': testPlayer1.description,
-            'createdAt': testPlayer1.createdAt.toIso8601String(),
-          },
-        ],
-        'games': [
-          {
-            'id': testGame.id,
-            'name': testGame.name,
-            'ruleset': testGame.ruleset.name,
-            'description': testGame.description,
-            'color': testGame.color.name,
-            'icon': testGame.icon,
-            'createdAt': testGame.createdAt.toIso8601String(),
-          },
-        ],
-        'groups': [
-          {
-            'id': testGroup.id,
-            'name': testGroup.name,
-            'description': testGroup.description,
-            'memberIds': [testPlayer1.id, testPlayer2.id],
-            'createdAt': testGroup.createdAt.toIso8601String(),
-          },
-        ],
-        'matches': [
-          {
-            'id': testMatch.id,
-            'name': testMatch.name,
-            'gameId': testGame.id,
-            'groupId': testGroup.id,
-            'playerIds': [testPlayer1.id, testPlayer2.id],
-            'notes': testMatch.notes,
-            'scores': {
-              testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
-              testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
+      test('parseStatsFromJson()', () {
+        final gamesById = {testGame.id: testGame};
+        final groupsById = {testGroup.id: testGroup};
+        final jsonMap = {
+          'statistics': [
+            {
+              'id': testStatistic.id,
+              'createdAt': testStatistic.createdAt.toIso8601String(),
+              'type': testStatistic.type.name,
+              'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+              'timeframe': testStatistic.timeframe.name,
+              'color': testStatistic.color.name,
+              'selectedGroups': [testGroup.id],
+              'selectedGames': [testGame.id],
+              'displayCount': testStatistic.displayCount,
             },
-            'createdAt': testMatch.createdAt.toIso8601String(),
-            'endedAt': null,
-            'isTeamMatch': true,
-            'teams': [
-              {
-                'id': testTeam.id,
-                'name': testTeam.name,
-                'memberIds': [testPlayer1.id, testPlayer2.id],
-                'createdAt': testTeam.createdAt.toIso8601String(),
-                'color': testTeam.color.name,
-                'score': testTeam.score,
-              },
-              {
-                'id': 'team-2',
-                'name': 'Team 2',
-                'memberIds': [testPlayer3.id],
-                'createdAt': testTeam.createdAt.toIso8601String(),
-                'color': 'red',
-                'score': 0,
-              },
-            ],
-          },
-        ],
+          ],
+        };
+
+        final stats = DataTransferService.parseStatsFromJson(
+          jsonMap,
+          gamesById,
+          groupsById,
+        );
+
+        expect(stats.length, 1);
+        expect(stats[0].id, testStatistic.id);
+        expect(stats[0].type, testStatistic.type);
+        expect(stats[0].timeframe, testStatistic.timeframe);
+        expect(stats[0].color, testStatistic.color);
+        expect(stats[0].displayCount, testStatistic.displayCount);
+        expect(stats[0].selectedGames, isNotNull);
+        expect(stats[0].selectedGames!.map((g) => g.id), contains(testGame.id));
+        expect(stats[0].selectedGroups, isNotNull);
+        expect(
+          stats[0].selectedGroups!.map((g) => g.id),
+          contains(testGroup.id),
+        );
       });
 
-      final isValidRoot = await DataTransferService.validateJsonSchema(
-        validJson,
-      );
-      expect(isValidRoot, true);
-    });
+      test('parseStatsFromJson() empty list', () {
+        final stats = DataTransferService.parseStatsFromJson(
+          {'statistics': []},
+          {},
+          {},
+        );
+        expect(stats, isEmpty);
+      });
 
-    group('Schema Validation', () {
-      test('validateJsonSchema() returns true for valid data', () async {
+      test('parseStatsFromJson() missing key', () {
+        final stats = DataTransferService.parseStatsFromJson(
+          <String, dynamic>{},
+          {},
+          {},
+        );
+        expect(stats, isEmpty);
+      });
+
+      test('parseStatsFromJson() ignores invalid game/group ids', () {
+        final jsonMap = {
+          'statistics': [
+            {
+              'id': testStatistic.id,
+              'createdAt': testStatistic.createdAt.toIso8601String(),
+              'type': testStatistic.type.toString(),
+              'scopes': testStatistic.scopes.map((s) => s.toString()).toList(),
+              'timeframe': testStatistic.timeframe.toString(),
+              'color': testStatistic.color.toString(),
+              'selectedGroups': ['unknown-group-id'],
+              'selectedGames': ['unknown-game-id'],
+              'displayCount': testStatistic.displayCount,
+            },
+          ],
+        };
+
+        final stats = DataTransferService.parseStatsFromJson(jsonMap, {}, {});
+
+        expect(stats.length, 1);
+        expect(stats[0].selectedGames, isNull);
+        expect(stats[0].selectedGroups, isNull);
+      });
+
+      test('validateJsonSchema() works correctly', () async {
         final validJson = json.encode({
           'players': [
             {
@@ -953,12 +1006,7 @@ void main() {
               'name': testPlayer1.name,
               'description': testPlayer1.description,
               'createdAt': testPlayer1.createdAt.toIso8601String(),
-            },
-            {
-              'id': testPlayer2.id,
-              'name': testPlayer2.name,
-              'description': testPlayer2.description,
-              'createdAt': testPlayer2.createdAt.toIso8601String(),
+              'deleted': false,
             },
           ],
           'games': [
@@ -989,64 +1037,93 @@ void main() {
               'groupId': testGroup.id,
               'playerIds': [testPlayer1.id, testPlayer2.id],
               'notes': testMatch.notes,
-              'isTeamMatch': false,
-              'teams': null,
               'scores': {
                 testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
                 testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
               },
               'createdAt': testMatch.createdAt.toIso8601String(),
               'endedAt': null,
+              'isTeamMatch': true,
+              'teams': [
+                {
+                  'id': testTeam.id,
+                  'name': testTeam.name,
+                  'memberIds': [testPlayer1.id, testPlayer2.id],
+                  'createdAt': testTeam.createdAt.toIso8601String(),
+                  'color': testTeam.color.name,
+                  'score': testTeam.score,
+                },
+                {
+                  'id': 'team-2',
+                  'name': 'Team 2',
+                  'memberIds': [testPlayer3.id],
+                  'createdAt': testTeam.createdAt.toIso8601String(),
+                  'color': 'red',
+                  'score': 0,
+                },
+              ],
+            },
+          ],
+          'statistics': [
+            {
+              'id': testStatistic.id,
+              'createdAt': testStatistic.createdAt.toIso8601String(),
+              'type': testStatistic.type.name,
+              'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+              'timeframe': testStatistic.timeframe.name,
+              'color': testStatistic.color.name,
+              'selectedGroups': null,
+              'selectedGames': [testGame.id],
+              'displayCount': testStatistic.displayCount,
+            },
+            {
+              'id': testStatistic.id,
+              'createdAt': testStatistic.createdAt.toIso8601String(),
+              'type': testStatistic.type.name,
+              'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+              'timeframe': testStatistic.timeframe.name,
+              'color': testStatistic.color.name,
+              'selectedGroups': [testGroup.id],
+              'selectedGames': null,
+              'displayCount': testStatistic.displayCount,
+            },
+            {
+              'id': testStatistic.id,
+              'createdAt': testStatistic.createdAt.toIso8601String(),
+              'type': testStatistic.type.name,
+              'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+              'timeframe': testStatistic.timeframe.name,
+              'color': testStatistic.color.name,
+              'selectedGroups': [testGroup.id],
+              'selectedGames': [testGame.id],
+              'displayCount': testStatistic.displayCount,
             },
           ],
         });
 
-        final isValid = await DataTransferService.validateJsonSchema(validJson);
-        expect(isValid, true);
+        final isValidRoot = await DataTransferService.validateJsonSchema(
+          validJson,
+        );
+        expect(isValidRoot, true);
       });
 
-      test(
-        'validateJsonSchema() returns false for group with only 1 member',
-        () async {
-          final invalidJson = json.encode({
+      group('Schema Validation', () {
+        test('validateJsonSchema() returns true for valid data', () async {
+          final validJson = json.encode({
             'players': [
               {
                 'id': testPlayer1.id,
                 'name': testPlayer1.name,
                 'description': testPlayer1.description,
                 'createdAt': testPlayer1.createdAt.toIso8601String(),
+                'deleted': false,
               },
-            ],
-            'games': [],
-            'groups': [
               {
-                'id': 'group-1',
-                'name': 'Invalid Group',
-                'description': '',
-                'memberIds': [testPlayer1.id],
-                'createdAt': fixedDate.toIso8601String(),
-              },
-            ],
-            'matches': [],
-          });
-
-          final isValid = await DataTransferService.validateJsonSchema(
-            invalidJson,
-          );
-          expect(isValid, false);
-        },
-      );
-
-      test(
-        'validateJsonSchema() returns false for match with only 1 player',
-        () async {
-          final invalidJson = json.encode({
-            'players': [
-              {
-                'id': testPlayer1.id,
-                'name': testPlayer1.name,
-                'description': testPlayer1.description,
-                'createdAt': testPlayer1.createdAt.toIso8601String(),
+                'id': testPlayer2.id,
+                'name': testPlayer2.name,
+                'description': testPlayer2.description,
+                'createdAt': testPlayer2.createdAt.toIso8601String(),
+                'deleted': true,
               },
             ],
             'games': [
@@ -1060,163 +1137,392 @@ void main() {
                 'createdAt': testGame.createdAt.toIso8601String(),
               },
             ],
-            'groups': [],
+            'groups': [
+              {
+                'id': testGroup.id,
+                'name': testGroup.name,
+                'description': testGroup.description,
+                'memberIds': [testPlayer1.id, testPlayer2.id],
+                'createdAt': testGroup.createdAt.toIso8601String(),
+              },
+            ],
             'matches': [
               {
-                'id': 'match-1',
-                'name': 'Invalid Match',
+                'id': testMatch.id,
+                'name': testMatch.name,
                 'gameId': testGame.id,
-                'playerIds': [testPlayer1.id],
-                'notes': '',
-                'createdAt': fixedDate.toIso8601String(),
-              },
-            ],
-          });
-
-          final isValid = await DataTransferService.validateJsonSchema(
-            invalidJson,
-          );
-          expect(isValid, false);
-        },
-      );
-
-      test(
-        'validateJsonSchema() returns false for team with 0 members',
-        () async {
-          final invalidJson = json.encode({
-            'players': [
-              {
-                'id': testPlayer1.id,
-                'name': testPlayer1.name,
-                'description': '',
-                'createdAt': fixedDate.toIso8601String(),
-              },
-            ],
-            'games': [
-              {
-                'id': testGame.id,
-                'name': testGame.name,
-                'ruleset': testGame.ruleset.name,
-                'description': '',
-                'color': testGame.color.name,
-                'icon': '',
-                'createdAt': fixedDate.toIso8601String(),
-              },
-            ],
-            'groups': [],
-            'matches': [
-              {
-                'id': 'match-1',
-                'name': 'Match',
-                'gameId': testGame.id,
+                'groupId': testGroup.id,
                 'playerIds': [testPlayer1.id, testPlayer2.id],
-                'notes': '',
-                'createdAt': fixedDate.toIso8601String(),
-                'isTeamMatch': true,
-                'scores': {},
-                'teams': [
-                  {
-                    'id': 'team-1',
-                    'name': 'Team 1',
-                    'createdAt': fixedDate.toIso8601String(),
-                    'color': 'blue',
-                    'score': 0,
-                    'memberIds': [], // Invalid: minItems 1
-                  },
-                  {
-                    'id': 'team-2',
-                    'name': 'Team 2',
-                    'createdAt': fixedDate.toIso8601String(),
-                    'color': 'red',
-                    'score': 0,
-                    'memberIds': [testPlayer2.id],
-                  },
-                ],
+                'notes': testMatch.notes,
+                'isTeamMatch': false,
+                'teams': null,
+                'scores': {
+                  testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
+                  testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
+                },
+                'createdAt': testMatch.createdAt.toIso8601String(),
+                'endedAt': null,
+              },
+            ],
+            'statistics': [
+              {
+                'id': testStatistic.id,
+                'createdAt': testStatistic.createdAt.toIso8601String(),
+                'type': testStatistic.type.name,
+                'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+                'timeframe': testStatistic.timeframe.name,
+                'color': testStatistic.color.name,
+                'selectedGroups': [testGroup.id],
+                'selectedGames': [testGame.id],
+                'displayCount': testStatistic.displayCount,
+              },
+              {
+                'id': testStatistic.id,
+                'createdAt': testStatistic.createdAt.toIso8601String(),
+                'type': testStatistic.type.name,
+                'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+                'timeframe': testStatistic.timeframe.name,
+                'color': testStatistic.color.name,
+                'selectedGroups': null,
+                'selectedGames': [testGame.id],
+                'displayCount': testStatistic.displayCount,
+              },
+              {
+                'id': testStatistic.id,
+                'createdAt': testStatistic.createdAt.toIso8601String(),
+                'type': testStatistic.type.name,
+                'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+                'timeframe': testStatistic.timeframe.name,
+                'color': testStatistic.color.name,
+                'selectedGroups': [testGroup.id],
+                'selectedGames': null,
+                'displayCount': testStatistic.displayCount,
               },
             ],
           });
 
           final isValid = await DataTransferService.validateJsonSchema(
-            invalidJson,
+            validJson,
           );
-          expect(isValid, false);
-        },
-      );
+          expect(isValid, true);
+        });
 
-      test(
-        'validateJsonSchema() returns false for team match with only 1 team',
-        () async {
-          final invalidJson = json.encode({
-            'players': [
-              {
-                'id': testPlayer1.id,
-                'name': testPlayer1.name,
-                'description': '',
-                'createdAt': fixedDate.toIso8601String(),
-              },
-            ],
-            'games': [
-              {
-                'id': testGame.id,
-                'name': testGame.name,
-                'ruleset': testGame.ruleset.name,
-                'description': '',
-                'color': testGame.color.name,
-                'icon': '',
-                'createdAt': fixedDate.toIso8601String(),
-              },
-            ],
-            'groups': [],
-            'matches': [
-              {
-                'id': 'match-1',
-                'name': 'Match',
-                'gameId': testGame.id,
-                'playerIds': [testPlayer1.id, testPlayer2.id],
-                'notes': '',
-                'createdAt': fixedDate.toIso8601String(),
-                'isTeamMatch': true,
-                'scores': {},
-                'teams': [
-                  {
-                    'id': 'team-1',
-                    'name': 'Team 1',
-                    'createdAt': fixedDate.toIso8601String(),
-                    'color': 'blue',
-                    'score': 0,
-                    'memberIds': [testPlayer1.id],
-                  },
-                ], // Invalid: minItems 2
-              },
-            ],
-          });
+        test(
+          'validateJsonSchema() returns false for group with only 1 member',
+          () async {
+            final invalidJson = json.encode({
+              'players': [
+                {
+                  'id': testPlayer1.id,
+                  'name': testPlayer1.name,
+                  'description': testPlayer1.description,
+                  'createdAt': testPlayer1.createdAt.toIso8601String(),
+                },
+              ],
+              'games': [],
+              'groups': [
+                {
+                  'id': 'group-1',
+                  'name': 'Invalid Group',
+                  'description': '',
+                  'memberIds': [testPlayer1.id],
+                  'createdAt': fixedDate.toIso8601String(),
+                },
+              ],
+              'matches': [],
+              'statistics': [
+                {
+                  'id': testStatistic.id,
+                  'createdAt': testStatistic.createdAt.toIso8601String(),
+                  'type': testStatistic.type.name,
+                  'scopes': testStatistic.scopes.map((s) => s.name).toList(),
+                  'timeframe': testStatistic.timeframe.name,
+                  'color': testStatistic.color.name,
+                  'selectedGroups': [testGroup.id],
+                  'selectedGames': [testGame.id],
+                  'displayCount': testStatistic.displayCount,
+                },
+              ],
+            });
 
-          final isValid = await DataTransferService.validateJsonSchema(
-            invalidJson,
-          );
-          expect(isValid, false);
-        },
-      );
+            final isValid = await DataTransferService.validateJsonSchema(
+              invalidJson,
+            );
+            expect(isValid, false);
+          },
+        );
+
+        test(
+          'validateJsonSchema() returns false for match with only 1 player',
+          () async {
+            final invalidJson = json.encode({
+              'players': [
+                {
+                  'id': testPlayer1.id,
+                  'name': testPlayer1.name,
+                  'description': testPlayer1.description,
+                  'createdAt': testPlayer1.createdAt.toIso8601String(),
+                },
+              ],
+              'games': [
+                {
+                  'id': testGame.id,
+                  'name': testGame.name,
+                  'ruleset': testGame.ruleset.name,
+                  'description': testGame.description,
+                  'color': testGame.color.name,
+                  'icon': testGame.icon,
+                  'createdAt': testGame.createdAt.toIso8601String(),
+                },
+              ],
+              'groups': [],
+              'matches': [
+                {
+                  'id': 'match-1',
+                  'name': 'Invalid Match',
+                  'gameId': testGame.id,
+                  'playerIds': [testPlayer1.id],
+                  'notes': '',
+                  'createdAt': fixedDate.toIso8601String(),
+                },
+              ],
+              'statistics': [],
+            });
+
+            final isValid = await DataTransferService.validateJsonSchema(
+              invalidJson,
+            );
+            expect(isValid, false);
+          },
+        );
+
+        test(
+          'validateJsonSchema() returns false for team with 0 members',
+          () async {
+            final invalidJson = json.encode({
+              'players': [
+                {
+                  'id': testPlayer1.id,
+                  'name': testPlayer1.name,
+                  'description': '',
+                  'createdAt': fixedDate.toIso8601String(),
+                },
+              ],
+              'games': [
+                {
+                  'id': testGame.id,
+                  'name': testGame.name,
+                  'ruleset': testGame.ruleset.name,
+                  'description': '',
+                  'color': testGame.color.name,
+                  'icon': '',
+                  'createdAt': fixedDate.toIso8601String(),
+                },
+              ],
+              'groups': [],
+              'matches': [
+                {
+                  'id': 'match-1',
+                  'name': 'Match',
+                  'gameId': testGame.id,
+                  'playerIds': [testPlayer1.id, testPlayer2.id],
+                  'notes': '',
+                  'createdAt': fixedDate.toIso8601String(),
+                  'isTeamMatch': true,
+                  'scores': {},
+                  'teams': [
+                    {
+                      'id': 'team-1',
+                      'name': 'Team 1',
+                      'createdAt': fixedDate.toIso8601String(),
+                      'color': 'blue',
+                      'score': 0,
+                      'memberIds': [], // Invalid: minItems 1
+                    },
+                    {
+                      'id': 'team-2',
+                      'name': 'Team 2',
+                      'createdAt': fixedDate.toIso8601String(),
+                      'color': 'red',
+                      'score': 0,
+                      'memberIds': [testPlayer2.id],
+                    },
+                  ],
+                },
+              ],
+              'statistics': [],
+            });
+
+            final isValid = await DataTransferService.validateJsonSchema(
+              invalidJson,
+            );
+            expect(isValid, false);
+          },
+        );
+
+        test(
+          'validateJsonSchema() returns false for team match with only 1 team',
+          () async {
+            final invalidJson = json.encode({
+              'players': [
+                {
+                  'id': testPlayer1.id,
+                  'name': testPlayer1.name,
+                  'description': '',
+                  'createdAt': fixedDate.toIso8601String(),
+                },
+              ],
+              'games': [
+                {
+                  'id': testGame.id,
+                  'name': testGame.name,
+                  'ruleset': testGame.ruleset.name,
+                  'description': '',
+                  'color': testGame.color.name,
+                  'icon': '',
+                  'createdAt': fixedDate.toIso8601String(),
+                },
+              ],
+              'groups': [],
+              'matches': [
+                {
+                  'id': 'match-1',
+                  'name': 'Match',
+                  'gameId': testGame.id,
+                  'playerIds': [testPlayer1.id, testPlayer2.id],
+                  'notes': '',
+                  'createdAt': fixedDate.toIso8601String(),
+                  'isTeamMatch': true,
+                  'scores': {},
+                  'teams': [
+                    {
+                      'id': 'team-1',
+                      'name': 'Team 1',
+                      'createdAt': fixedDate.toIso8601String(),
+                      'color': 'blue',
+                      'score': 0,
+                      'memberIds': [testPlayer1.id],
+                    },
+                  ],
+                },
+              ],
+              'statistics': [],
+            });
+
+            final isValid = await DataTransferService.validateJsonSchema(
+              invalidJson,
+            );
+            expect(isValid, false);
+          },
+        );
+      });
+
+      testWidgets('validateJsonSchema() validates exported json file', (
+        tester,
+      ) async {
+        await database.playerDao.addPlayer(player: testPlayer1);
+        await database.playerDao.addPlayer(player: testPlayer2);
+        await database.gameDao.addGame(game: testGame);
+        await database.groupDao.addGroup(group: testGroup);
+        await database.matchDao.addMatch(match: testMatch);
+
+        final ctx = await getContext(tester);
+        final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+
+        expect(jsonString, isNotEmpty);
+
+        final isValid = await tester.runAsync(
+          () => DataTransferService.validateJsonSchema(jsonString),
+        );
+        expect(isValid, true);
+      });
     });
 
-    testWidgets('validateJsonSchema() validates exported json file', (
-      tester,
-    ) async {
-      await database.playerDao.addPlayer(player: testPlayer1);
-      await database.playerDao.addPlayer(player: testPlayer2);
-      await database.gameDao.addGame(game: testGame);
-      await database.groupDao.addGroup(group: testGroup);
-      await database.matchDao.addMatch(match: testMatch);
+    group('validateContent() works correctly', () {
+      test('validateContent() returns true for valid data', () {
+        final validData = {
+          'players': [
+            {'name': 'A' * 32, 'description': 'D'},
+          ],
+          'games': [
+            {'name': 'G' * 32, 'description': 'D' * 256},
+          ],
+          'groups': [
+            {'name': 'Gr' * 16},
+          ],
+          'matches': [
+            {
+              'name': 'M' * 32,
+              'teams': [
+                {'name': 'T' * 32},
+              ],
+            },
+          ],
+        };
+        expect(DataTransferService.validateContent(validData), isTrue);
+      });
 
-      final ctx = await getContext(tester);
-      final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+      test('validateContent() returns false if player name is too long', () {
+        final data = {
+          'players': [
+            {'name': 'A' * 33},
+          ],
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
 
-      expect(jsonString, isNotEmpty);
+      test('validateContent() returns false if game name is too long', () {
+        final data = {
+          'games': [
+            {'name': 'G' * 33},
+          ],
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
 
-      final isValid = await tester.runAsync(
-        () => DataTransferService.validateJsonSchema(jsonString),
+      test(
+        'validateContent() returns false if game description is too long',
+        () {
+          final data = {
+            'games': [
+              {'name': 'G', 'description': 'D' * 257},
+            ],
+          };
+          expect(DataTransferService.validateContent(data), isFalse);
+        },
       );
-      expect(isValid, true);
+
+      test('validateContent() returns false if group name is too long', () {
+        final data = {
+          'groups': [
+            {'name': 'Gr' * 17},
+          ],
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
+
+      test('validateContent() returns false if match name is too long', () {
+        final data = {
+          'matches': [
+            {'name': 'M' * 33},
+          ],
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
+
+      test('validateContent() returns false if team name is too long', () {
+        final data = {
+          'matches': [
+            {
+              'name': 'M',
+              'teams': [
+                {'name': 'T' * 33},
+              ],
+            },
+          ],
+        };
+        expect(DataTransferService.validateContent(data), isFalse);
+      });
     });
   });
 }
