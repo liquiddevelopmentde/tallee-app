@@ -2,13 +2,8 @@ import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' hide isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/models.dart';
 
 void main() {
   late AppDatabase database;
@@ -227,7 +222,7 @@ void main() {
 
         match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
-          includeDeletdPlayer: true,
+          includeDeletedPlayer: true,
         );
         expect(match.players.length, testMatch1.players.length);
         expect(match.players.any((p) => p.id == testPlayer4.id), isTrue);

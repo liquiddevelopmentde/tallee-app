@@ -12,13 +12,13 @@ class ScoreListTile extends StatelessWidget {
     required this.content,
     required this.controller,
     this.horizontalPadding = 20,
+    this.onChanged,
   });
 
   final Widget content;
-
   final TextEditingController controller;
-
   final double horizontalPadding;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +37,7 @@ class ScoreListTile extends StatelessWidget {
             width: 100,
             height: 40,
             child: TextField(
+              onChanged: onChanged,
               controller: controller,
               keyboardType: const TextInputType.numberWithOptions(signed: true),
               maxLength: 5,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/name_display.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
+import 'package:tallee/presentation/utils/name_display.dart';
 
 class TextIconListTile extends StatelessWidget {
   /// A list tile widget that displays text with an optional icon button.

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 
+export 'pair_tile.dart';
+export 'player_tile.dart';
+
 class TextIconTile extends StatelessWidget {
   /// A tile widget that displays text with an optional icon that can be tapped.
   /// - [player]: An optional player object to display.
