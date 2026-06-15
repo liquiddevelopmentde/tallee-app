@@ -18,7 +18,7 @@ class FileView extends StatelessWidget {
             border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
             borderRadius: CustomTheme.standardBorderRadiusAll,
           ),
-          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -62,7 +62,6 @@ class FileView extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 10),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -71,7 +70,7 @@ class FileView extends StatelessWidget {
             borderRadius: CustomTheme.standardBorderRadiusAll,
           ),
           margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
           child: const Text(
             'Manually share the match data in a file for a 100% local transfer.',
             style: TextStyle(

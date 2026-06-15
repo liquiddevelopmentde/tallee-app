@@ -13,25 +13,24 @@ class CodeView extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30),
+          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(child: charContainer('A')),
               const SizedBox(width: 8),
-              Expanded(child: charContainer('A')),
+              Expanded(child: charContainer('6')),
               const SizedBox(width: 8),
-              Expanded(child: charContainer('A')),
+              Expanded(child: charContainer('K')),
               const SizedBox(width: 8),
-              Expanded(child: charContainer('A')),
+              Expanded(child: charContainer('1')),
               const SizedBox(width: 8),
-              Expanded(child: charContainer('A')),
+              Expanded(child: charContainer('F')),
               const SizedBox(width: 8),
-              Expanded(child: charContainer('A')),
+              Expanded(child: charContainer('J')),
             ],
           ),
         ),
-        const SizedBox(height: 10),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
