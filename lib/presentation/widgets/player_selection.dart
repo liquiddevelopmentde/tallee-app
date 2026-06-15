@@ -418,7 +418,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     selectedUnits.insert(
       0,
       Team(
-        name: '${allMembers[0].name} & ${allMembers[1].name} (unit)',
+        name: allMembers.take(2).map((m) => m.name).join(' & '),
         members: allMembers.take(2).toList(),
       ),
     );
