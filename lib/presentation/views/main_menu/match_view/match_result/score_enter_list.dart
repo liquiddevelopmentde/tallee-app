@@ -95,7 +95,7 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
                   horizontalPadding: 0,
                   controller: controller[index],
                   onChanged: (String text) {
-                    final score = int.tryParse(text) ?? 0;
+                    final score = text.isEmpty ? null : int.tryParse(text);
                     scores[allTeams[index]] = score;
                     widget.onScoreChanged?.call(scores);
                   },
@@ -121,7 +121,7 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
                   ),
                   controller: controller[index],
                   onChanged: (String text) {
-                    final score = int.tryParse(text) ?? 0;
+                    final score = text.isEmpty ? null : int.tryParse(text);
                     scores[allPlayers[index]] = score;
                     widget.onScoreChanged?.call(scores);
                   },
@@ -145,7 +145,9 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
     for (int i = 0; i < entryLength; i++) {
       dynamic key = useTeamLogic ? allTeams[i] : allPlayers[i];
       final newText = newScores[key]?.toString() ?? '';
-      controller[i].text = newText;
+      if (controller[i].text != newText) {
+        controller[i].text = newText;
+      }
     }
     suppressListener = false;
   }
