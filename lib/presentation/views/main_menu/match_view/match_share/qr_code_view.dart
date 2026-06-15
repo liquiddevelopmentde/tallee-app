@@ -13,7 +13,7 @@ class QrCodeView extends StatelessWidget {
     required this.totalSeconds,
   });
 
-  final QrImage qrImage;
+  final QrImage? qrImage;
   final bool isLoading;
   final int secondsRemaining;
   final int totalSeconds;
@@ -56,20 +56,10 @@ class QrCodeView extends StatelessWidget {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Visibility(
-                        visible: !isLoading,
-                        replacement: Opacity(
-                          opacity: 0.3,
-                          child: PrettyQrView(
-                            qrImage: loadingStateQr(),
-                            decoration: const PrettyQrDecoration(
-                              shape: PrettyQrSquaresSymbol(),
-                              background: Colors.white,
-                            ),
-                          ),
-                        ),
+                      Opacity(
+                        opacity: (isLoading || qrImage == null) ? 0.3 : 1.0,
                         child: PrettyQrView(
-                          qrImage: qrImage,
+                          qrImage: qrImage ?? loadingStateQr(),
                           decoration: const PrettyQrDecoration(
                             shape: PrettyQrSquaresSymbol(),
                             background: Colors.white,

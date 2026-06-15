@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 
@@ -10,10 +11,14 @@ class CodeView extends StatelessWidget {
     super.key,
     required this.secondsRemaining,
     required this.totalSeconds,
+    required this.shareCode,
+    required this.isLoading,
   });
 
   final int secondsRemaining;
   final int totalSeconds;
+  final String? shareCode;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -21,28 +26,29 @@ class CodeView extends StatelessWidget {
     final int minutes = secondsRemaining ~/ 60;
     final int seconds = secondsRemaining % 60;
 
+    final String displayCode = shareCode ?? 'XXXXXX';
+    final List<String> chars = displayCode.split('');
+
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(child: charContainer('A')),
-              const SizedBox(width: 8),
-              Expanded(child: charContainer('6')),
-              const SizedBox(width: 8),
-              Expanded(child: charContainer('K')),
-              const SizedBox(width: 8),
-              Expanded(child: charContainer('1')),
-              const SizedBox(width: 8),
-              Expanded(child: charContainer('F')),
-              const SizedBox(width: 8),
-              Expanded(child: charContainer('J')),
-            ],
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: AppSkeleton(
+            enabled: isLoading,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 0; i < 6; i++) ...[
+                  if (i > 0) const SizedBox(width: 8),
+                  Expanded(
+                    child: charContainer(chars.length > i ? chars[i] : ' '),
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 30),
           child: ClipRRect(
@@ -92,32 +98,36 @@ class CodeView extends StatelessWidget {
           children: [
             FloatingAnimatedButton(
               text: 'Copy Code',
-              onPressed: () {
-                Clipboard.setData(const ClipboardData(text: 'A6K1FJ')).then((
-                  _,
-                ) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      CustomSnackBar(message: 'Code copied to clipboard'),
-                    );
-                  }
-                });
-              },
+              onPressed: isLoading
+                  ? null
+                  : () {
+                      Clipboard.setData(ClipboardData(text: displayCode)).then((
+                        _,
+                      ) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            CustomSnackBar(message: 'Code copied to clipboard'),
+                          );
+                        }
+                      });
+                    },
               icon: Icons.copy,
             ),
-            SizedBox(width: 5),
+            const SizedBox(width: 5),
             FloatingAnimatedButton(
               text: "",
-              onPressed: () {
-                SharePlus.instance.share(
-                  ShareParams(
-                    text:
-                        "Here is the match data for our game! Enter code A6K1FJ in Tallee.",
-                    title: "Talle Match Share",
-                    subject: "Talle Match Share",
-                  ),
-                );
-              },
+              onPressed: isLoading
+                  ? null
+                  : () {
+                      SharePlus.instance.share(
+                        ShareParams(
+                          text:
+                              "Here is the match data for our game! Enter code $displayCode in Tallee.",
+                          title: "Talle Match Share",
+                          subject: "Talle Match Share",
+                        ),
+                      );
+                    },
               icon: Icons.share,
             ),
           ],

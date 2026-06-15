@@ -21,25 +21,23 @@ class MatchShareView extends StatefulWidget {
 
 class _MatchShareViewState extends State<MatchShareView> {
   @protected
-  late QrImage qrImage;
+  QrImage? qrImage;
 
-  late bool isLoading;
+  bool isLoading = true;
 
-  late Timer _timer;
+  Timer? _timer;
+
   int _secondsRemaining = 600; // 10 Minuten
+
   static const int _totalSeconds = 600;
+
+  String? shareCode;
 
   @override
   void initState() {
     super.initState();
 
-    ///TODO: Make this gather all the required data, e.g. associated players, groups, games, ...
-    final qrCode = QrCode.fromData(
-      data: 'A6K1FJ', //widget.match.toJson().toString(),
-      errorCorrectLevel: QrErrorCorrectLevel.H,
-    );
-    qrImage = QrImage(qrCode);
-    _startTimer();
+    initSharing();
   }
 
   void _startTimer() {
@@ -49,7 +47,7 @@ class _MatchShareViewState extends State<MatchShareView> {
           if (_secondsRemaining > 0) {
             _secondsRemaining--;
           } else {
-            _timer.cancel();
+            _timer!.cancel();
           }
         });
       }
@@ -58,14 +56,12 @@ class _MatchShareViewState extends State<MatchShareView> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    isLoading = false;
-
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -118,6 +114,8 @@ class _MatchShareViewState extends State<MatchShareView> {
                   CodeView(
                     secondsRemaining: _secondsRemaining,
                     totalSeconds: _totalSeconds,
+                    shareCode: shareCode,
+                    isLoading: isLoading,
                   ),
                   const FileView(),
                 ],
@@ -127,5 +125,19 @@ class _MatchShareViewState extends State<MatchShareView> {
         ),
       ),
     );
+  }
+
+  void initSharing() async {
+    await Future.delayed(const Duration(seconds: 3));
+    setState(() {
+      shareCode = "A3K1FJ";
+      final qrCode = QrCode.fromData(
+        data: shareCode!, //widget.match.toJson().toString(),
+        errorCorrectLevel: QrErrorCorrectLevel.H,
+      );
+      qrImage = QrImage(qrCode);
+      _startTimer();
+      isLoading = false;
+    });
   }
 }

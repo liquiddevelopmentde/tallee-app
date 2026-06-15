@@ -72,7 +72,7 @@ class FileView extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
           child: const Text(
-            'Manually share the match data in a file for a 100% local transfer.',
+            'Manually share the match data in a file for full local transfer.',
             style: TextStyle(
               color: CustomTheme.textColor,
               fontSize: 14,
