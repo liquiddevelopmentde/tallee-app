@@ -127,7 +127,7 @@ class _MatchShareViewState extends State<MatchShareView> {
                     ),
                   ),
                   if (isLoading)
-                    Center(
+                    const Center(
                       child: CircularProgressIndicator(
                         color: CustomTheme.primaryColor,
                         strokeWidth: 5,
@@ -235,7 +235,7 @@ class _MatchShareViewState extends State<MatchShareView> {
                           color: CustomTheme.textColor,
                         ),
                       ),
-                      SizedBox(width: 20),
+                      SizedBox(width: 10),
                       Text(
                         "x Players",
                         style: TextStyle(
