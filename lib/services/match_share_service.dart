@@ -74,7 +74,7 @@ class MatchShareService {
     String jsonString = jsonEncode(match.toJson());
     Uint8List fileBytes = utf8.encode(jsonString);
 
-    String? outputFile = await FilePicker.saveFile(
+    await FilePicker.saveFile(
       dialogTitle: 'Choose where to save your match:',
       fileName: filename,
       bytes: fileBytes,
