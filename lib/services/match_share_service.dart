@@ -39,15 +39,26 @@ class MatchShareService {
   }
 
   Future<Match> getMatchByToken(String token) async {
-    final response = await http.get(
-      Uri.parse('https://10.0.2.2:8000/v1/shares'),
-      headers: {'token': token},
-    );
-    if (response.statusCode == 200) {
+    try {
+      final response = await http.get(
+        Uri.parse('https://10.0.2.2:8000/v1/shares/$token'),
+      );
+
+      if (response.statusCode != 200) {
+        throw ServerException(response.statusCode);
+      }
+
       final Map<String, dynamic> data = jsonDecode(response.body);
-      return Match.fromJson(data);
-    } else {
-      throw Exception('Failed to get match by token.');
+
+      if (!data.containsKey('payload')) {
+        throw ParsingException();
+      }
+
+      return Match.fromJson(data['payload']);
+    } on SocketException {
+      throw NetworkException();
+    } on FormatException {
+      throw ParsingException();
     }
   }
 
