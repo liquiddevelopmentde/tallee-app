@@ -3,6 +3,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class QrCodeView extends StatelessWidget {
@@ -12,14 +15,16 @@ class QrCodeView extends StatelessWidget {
     required this.isLoading,
     required this.secondsRemaining,
     required this.totalSeconds,
-    required this.enableServerSharing,
+    required this.serverSharingEnabled,
+    required this.onOnlineSharingPrefChanged,
   });
 
   final QrImage? qrImage;
   final bool isLoading;
   final int secondsRemaining;
   final int totalSeconds;
-  final bool enableServerSharing;
+  final bool serverSharingEnabled;
+  final VoidCallback onOnlineSharingPrefChanged;
 
   QrImage loadingStateQr() {
     final qrCode = QrCode.fromData(
@@ -36,11 +41,29 @@ class QrCodeView extends StatelessWidget {
     final int minutes = secondsRemaining ~/ 60;
     final int seconds = secondsRemaining % 60;
 
-    return !enableServerSharing
-        ? TopCenteredMessage(
-            title: "Server sharing is disabled",
-            message: "Go to the settings to manually enable it.",
-            icon: Icons.close,
+    return !serverSharingEnabled
+        ? Column(
+            children: [
+              const TopCenteredMessage(
+                title: 'Online sharing is disabled',
+                message: 'Go to the settings to manually enable it.',
+                icon: Icons.close,
+              ),
+              SizedBox(height: 20),
+              FloatingAnimatedButton(
+                text: 'Open Settings',
+                icon: Icons.settings,
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    adaptivePageRoute(
+                      builder: (context) => const SettingsView(),
+                    ),
+                  );
+                  onOnlineSharingPrefChanged.call();
+                },
+              ),
+            ],
           )
         : Column(
             children: [

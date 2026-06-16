@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
@@ -14,14 +16,16 @@ class TokenView extends StatelessWidget {
     required this.totalSeconds,
     required this.shareToken,
     required this.isLoading,
-    required this.enableServerSharing,
+    required this.serverSharingEnabled,
+    required this.onOnlineSharingPrefChanged,
   });
 
   final int secondsRemaining;
   final int totalSeconds;
   final String? shareToken;
   final bool isLoading;
-  final bool enableServerSharing;
+  final bool serverSharingEnabled;
+  final VoidCallback onOnlineSharingPrefChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +36,29 @@ class TokenView extends StatelessWidget {
     final String displayCode = shareToken ?? 'XXXXXX';
     final List<String> chars = displayCode.split('');
 
-    return !enableServerSharing
-        ? TopCenteredMessage(
-            title: "Server sharing is disabled",
-            message: "Go to the settings to manually enable it.",
-            icon: Icons.close,
+    return !serverSharingEnabled
+        ? Column(
+            children: [
+              const TopCenteredMessage(
+                title: 'Online sharing is disabled',
+                message: 'Go to the settings to manually enable it.',
+                icon: Icons.close,
+              ),
+              SizedBox(height: 20),
+              FloatingAnimatedButton(
+                text: 'Open Settings',
+                icon: Icons.settings,
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    adaptivePageRoute(
+                      builder: (context) => const SettingsView(),
+                    ),
+                  );
+                  onOnlineSharingPrefChanged.call();
+                },
+              ),
+            ],
           )
         : Column(
             children: [
@@ -64,7 +86,7 @@ class TokenView extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
@@ -97,7 +119,7 @@ class TokenView extends StatelessWidget {
                   ),
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
-                margin: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                 child: const Text(
                   'Send this code to a person who also has Tallee to share the current match.',
@@ -140,9 +162,9 @@ class TokenView extends StatelessWidget {
                             SharePlus.instance.share(
                               ShareParams(
                                 text:
-                                    "Here is the match data for our game! Enter code $displayCode in Tallee.",
-                                title: "Tallee Match Share",
-                                subject: "Tallee Match Share",
+                                    'Here is the match data for our game! Enter code $displayCode in Tallee.',
+                                title: 'Tallee Match Share',
+                                subject: 'Tallee Match Share',
                               ),
                             );
                           },

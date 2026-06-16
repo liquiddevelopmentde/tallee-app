@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
@@ -6,10 +7,25 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/services/match_share_service.dart';
 
-class FileView extends StatelessWidget {
+class FileView extends StatefulWidget {
   final Match match;
 
   const FileView({required this.match, super.key});
+
+  @override
+  State<FileView> createState() => _FileViewState();
+}
+
+class _FileViewState extends State<FileView> {
+  late String formattedMatchName;
+  late double fileSize;
+
+  @override
+  void initState() {
+    formattedMatchName = widget.match.name.replaceAll(' ', '_');
+    fileSize = calculateFileSize(widget.match);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +44,16 @@ class FileView extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Icon(Icons.file_present, size: 30),
-              SizedBox(width: 10),
+              const Icon(Icons.file_present, size: 30),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${match.name.replaceAll(' ', '_')}.tallee",
-                      style: TextStyle(
+                      '$formattedMatchName.tallee',
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                         color: CustomTheme.textColor,
@@ -47,16 +63,16 @@ class FileView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "15 KB",
-                          style: TextStyle(
+                          '${fileSize.toStringAsFixed(1)} KB',
+                          style: const TextStyle(
                             fontSize: 14,
                             color: CustomTheme.textColor,
                           ),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
-                          "${match.players.length} Players",
-                          style: TextStyle(
+                          '${widget.match.players.length} Players',
+                          style: const TextStyle(
                             fontSize: 14,
                             color: CustomTheme.textColor,
                           ),
@@ -88,7 +104,7 @@ class FileView extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -96,19 +112,24 @@ class FileView extends StatelessWidget {
               text: 'Save File',
               icon: Icons.save,
               onPressed: () {
-                MatchShareService().saveMatchToCustomLocation(match);
+                MatchShareService().saveMatchToCustomLocation(widget.match);
               },
             ),
-            SizedBox(width: 5),
+            const SizedBox(width: 5),
             FloatingAnimatedButton(
               icon: Icons.share,
               onPressed: () {
-                MatchShareService().shareMatchAsFile(match);
+                MatchShareService().shareMatchAsFile(widget.match);
               },
             ),
           ],
         ),
       ],
     );
+  }
+
+  double calculateFileSize(Match match) {
+    final jsonString = jsonEncode(widget.match.toJson());
+    return utf8.encode(jsonString).length / 1024;
   }
 }

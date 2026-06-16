@@ -25,15 +25,16 @@ class MatchShareView extends StatefulWidget {
   State<MatchShareView> createState() => _MatchShareViewState();
 }
 
-class _MatchShareViewState extends State<MatchShareView> {
+class _MatchShareViewState extends State<MatchShareView>
+    with SingleTickerProviderStateMixin {
   @protected
   QrImage? qrImage;
 
   bool isLoading = true;
 
-  //standardmäßig true, um screen erst auf qr code zu leiten, daten werden erst
-  // nach consent gesendet
-  bool enableServerSharing = true;
+  // this gets set to false before any data is sent
+  // defaults to true, to already show the qr code behind the ConsentDialog
+  bool serverSharingEnabled = true;
 
   Timer? _timer;
 
@@ -43,9 +44,15 @@ class _MatchShareViewState extends State<MatchShareView> {
 
   String? shareToken;
 
+  late final TabController _tabController;
+
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initSharingView();
     });
@@ -73,9 +80,8 @@ class _MatchShareViewState extends State<MatchShareView> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: enableServerSharing ? 0 : 2,
-      length: 3,
+    return ScaffoldMessenger(
+      key: _scaffoldMessengerKey,
       child: Scaffold(
         appBar: AppBar(title: const Text('Match Share'), centerTitle: true),
         body: Column(
@@ -93,6 +99,7 @@ class _MatchShareViewState extends State<MatchShareView> {
                   ),
                 ),
                 child: TabBar(
+                  controller: _tabController,
                   splashFactory: NoSplash.splashFactory,
                   dividerColor: Colors.transparent,
                   indicatorSize: TabBarIndicatorSize.tab,
@@ -116,20 +123,27 @@ class _MatchShareViewState extends State<MatchShareView> {
             ),
             Expanded(
               child: TabBarView(
+                controller: _tabController,
                 children: [
                   QrCodeView(
                     qrImage: qrImage,
                     isLoading: isLoading,
                     secondsRemaining: _secondsRemaining,
                     totalSeconds: _totalSeconds,
-                    enableServerSharing: enableServerSharing,
+                    serverSharingEnabled: serverSharingEnabled,
+                    onOnlineSharingPrefChanged: () {
+                      initSharingView();
+                    },
                   ),
                   TokenView(
                     secondsRemaining: _secondsRemaining,
                     totalSeconds: _totalSeconds,
                     shareToken: shareToken,
                     isLoading: isLoading,
-                    enableServerSharing: enableServerSharing,
+                    serverSharingEnabled: serverSharingEnabled,
+                    onOnlineSharingPrefChanged: () {
+                      initSharingView();
+                    },
                   ),
                   FileView(match: widget.match),
                 ],
@@ -147,23 +161,31 @@ class _MatchShareViewState extends State<MatchShareView> {
 
     if (initialSharingConsent == null) {
       storedSharingConsent = await getStoredSharingConsent();
-      print("StoredSharingConsent 1: " + storedSharingConsent.toString());
       if (storedSharingConsent == null) {
         bool? userDecision = await showConsentDialog();
         if (userDecision != null) {
           await saveStoredSharingConsent(userDecision);
           storedSharingConsent = userDecision;
         } else {
-          //if user closed popup, set decision temporarily to false and ask again next time
+          // if the user closed popup without selecting an option, set decision
+          // temporarily to false and ask again next time
           storedSharingConsent = false;
         }
-      } else if (storedSharingConsent == false) {
-        setState(() {
-          enableServerSharing = false;
-        });
       }
     } else {
       storedSharingConsent = initialSharingConsent;
+    }
+
+    setState(() {
+      storedSharingConsent == true
+          ? serverSharingEnabled = true
+          : serverSharingEnabled = false;
+    });
+
+    if (serverSharingEnabled) {
+      _tabController.animateTo(0);
+    } else {
+      _tabController.animateTo(2);
     }
 
     if (storedSharingConsent) {
@@ -202,12 +224,12 @@ class _MatchShareViewState extends State<MatchShareView> {
             } else {
               errorMessage = 'An unexpected error occurred.';
             }
-            ScaffoldMessenger.of(context).showSnackBar(
+            _scaffoldMessengerKey.currentState?.showSnackBar(
               CustomSnackBar(
                 message: errorMessage,
-                actionText: "Retry",
+                actionText: 'Retry',
                 onActionTap: () {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
                   initSharingView(storedSharingConsent);
                 },
               ),
@@ -232,18 +254,18 @@ class _MatchShareViewState extends State<MatchShareView> {
     return showDialog(
       context: context,
       builder: (context) => CustomAlertDialog(
-        title: 'Share Match Data',
+        title: 'Online Sharing',
         content: const Text(
-          'To allow others to load your match, the game data needs to be transferred to our external server. The online token is only temporarily valid, and the data will be deleted automatically afterwards. Would you like to enable online sharing?',
+          'To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?',
           overflow: TextOverflow.visible,
         ),
         actions: [
           CustomDialogAction(
-            text: "Enable",
+            text: 'Enable',
             onPressed: () => Navigator.of(context).pop(true),
           ),
           CustomDialogAction(
-            text: "Disable",
+            text: 'Disable',
             buttonType: ButtonType.secondary,
             onPressed: () => Navigator.of(context).pop(false),
           ),
