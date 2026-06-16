@@ -5,7 +5,7 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_scan_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_import/match_import_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
@@ -65,10 +65,10 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 onPressed: () {
                   Navigator.push(
                     context,
-                    adaptivePageRoute(builder: (_) => const MatchScanView()),
+                    adaptivePageRoute(builder: (_) => const MatchImportView()),
                   );
                 },
-                icon: Icon(Icons.qr_code_scanner),
+                icon: const Icon(Icons.qr_code_scanner),
               )
             : null,
         actions: [

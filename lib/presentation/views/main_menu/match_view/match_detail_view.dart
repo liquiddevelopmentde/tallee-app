@@ -78,7 +78,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 ),
               );
             },
-            icon: Icon(Icons.share),
+            icon: const Icon(Icons.share),
           ),
           IconButton(
             icon: const Icon(Icons.delete),
