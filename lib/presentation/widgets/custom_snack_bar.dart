@@ -96,9 +96,10 @@ class _AnimatedContent extends StatelessWidget {
               ],
             ),
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
+                Flexible(
                   child: Text(
                     message,
                     overflow: TextOverflow.visible,
