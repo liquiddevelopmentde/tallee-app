@@ -166,7 +166,7 @@ class _MatchShareViewState extends State<MatchShareView> {
       storedSharingConsent = initialSharingConsent;
     }
 
-    if (storedSharingConsent!) {
+    if (storedSharingConsent) {
       Future.wait([
             MatchShareService().getShareToken(widget.match),
             Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
