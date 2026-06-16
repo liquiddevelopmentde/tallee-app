@@ -3,18 +3,17 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
-import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
 
-class MatchScanView extends StatefulWidget {
-  const MatchScanView({super.key});
+class MatchImportView extends StatefulWidget {
+  const MatchImportView({super.key});
 
   @override
-  State<MatchScanView> createState() => _MatchScanViewState();
+  State<MatchImportView> createState() => _MatchImportViewState();
 }
 
 final MobileScannerController controller = MobileScannerController();
 
-class _MatchScanViewState extends State<MatchScanView> {
+class _MatchImportViewState extends State<MatchImportView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +30,7 @@ class _MatchScanViewState extends State<MatchScanView> {
                 child: Stack(
                   children: [
                     ///TODO: See if required or if scanner loads quickly enough
-                    Center(
+                    const Center(
                       child: CircularProgressIndicator(
                         color: CustomTheme.primaryColor,
                         strokeWidth: 4,
@@ -47,20 +46,20 @@ class _MatchScanViewState extends State<MatchScanView> {
                           context: context,
                           builder: (context) => CustomAlertDialog(
                             title: 'Save match to device?',
-                            content: Text(
-                              "The match named x and the game, all x players and x groups attached to it will be saved to your Tallee instance.",
+                            content: const Text(
+                              'The match named x and the game, all x players and x groups attached to it will be saved to your Tallee instance.',
                             ),
                             actions: [
                               CustomDialogAction(
                                 onPressed: () =>
                                     Navigator.of(context).pop(true),
-                                text: "Save",
+                                text: 'Save',
                               ),
                               CustomDialogAction(
                                 onPressed: () =>
                                     Navigator.of(context).pop(false),
                                 buttonType: ButtonType.secondary,
-                                text: "Cancel",
+                                text: 'Cancel',
                               ),
                             ],
                           ),
@@ -85,10 +84,10 @@ class _MatchScanViewState extends State<MatchScanView> {
                 border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
                 borderRadius: CustomTheme.standardBorderRadiusAll,
               ),
-              margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
               padding: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
-              child: Text(
-                "Scan the QR Code of another Tallee instance to receive the shared match.",
+              child: const Text(
+                'Scan the QR Code of another Tallee instance to receive the shared match.',
                 style: TextStyle(color: CustomTheme.textColor, fontSize: 14),
                 textAlign: TextAlign.center,
               ),
