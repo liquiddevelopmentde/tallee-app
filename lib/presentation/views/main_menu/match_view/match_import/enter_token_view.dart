@@ -1,8 +1,14 @@
+import 'dart:core' hide Match;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/services/match_share_service.dart';
+import 'package:tallee/services/share_exceptions.dart';
 
 class EnterTokenView extends StatefulWidget {
   const EnterTokenView({super.key});
@@ -88,7 +94,14 @@ class _EnterTokenViewState extends State<EnterTokenView> {
           children: [
             FloatingAnimatedButton(
               text: 'Import match',
-              onPressed: null,
+              onPressed: () async {
+                Match? match = await getMatchByToken(
+                  tokenInputFieldController.text,
+                );
+                if (match != null) {
+                  print(match.toString());
+                }
+              },
               icon: Icons.cloud,
             ),
             const SizedBox(width: 5),
@@ -105,5 +118,27 @@ class _EnterTokenViewState extends State<EnterTokenView> {
         ),
       ],
     );
+  }
+
+  Future<Match?> getMatchByToken(String token) async {
+    String errorMessage = '';
+    try {
+      return await MatchShareService().getMatchByToken(token);
+    } on ServerException catch (error) {
+      errorMessage = 'Server error: ${error.statusCode}';
+    } on NetworkException {
+      errorMessage = 'Network error. Please check your connection.';
+    } on ParsingException {
+      errorMessage = 'Data parsing error. Please try again later.';
+    } catch (e) {
+      errorMessage = 'An unexpected error occurred.';
+    }
+
+    if (errorMessage.isNotEmpty && mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(CustomSnackBar(message: errorMessage));
+    }
+    return null;
   }
 }
