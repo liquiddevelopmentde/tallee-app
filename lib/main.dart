@@ -1,14 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/http_overrides.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 
 void main() {
+  if (kDebugMode) {
+    HttpOverrides.global = MyHttpOverrides();
+  }
   runApp(
     MultiProvider(
       providers: [
