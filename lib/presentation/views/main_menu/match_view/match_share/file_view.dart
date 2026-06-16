@@ -1,10 +1,15 @@
+import 'dart:core' hide Match;
+
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/services/match_share_service.dart';
 
 class FileView extends StatelessWidget {
-  const FileView({super.key});
+  final Match match;
+
+  const FileView({required this.match, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,44 +25,46 @@ class FileView extends StatelessWidget {
           ),
           margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Icon(Icons.file_present, size: 30),
               SizedBox(width: 10),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "shared_match.tallee",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: CustomTheme.textColor,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${match.name.replaceAll(' ', '_')}.tallee",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: CustomTheme.textColor,
+                      ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "15 KB",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: CustomTheme.textColor,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "15 KB",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: CustomTheme.textColor,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        "x Players",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: CustomTheme.textColor,
+                        SizedBox(width: 10),
+                        Text(
+                          "${match.players.length} Players",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: CustomTheme.textColor,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -81,18 +88,25 @@ class FileView extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ),
-        BottomAnimatedButton(
-          buttonText: 'Share File',
-          sizeRelativeToWidth: 0.85,
-          onPressed: () {
-            SharePlus.instance.share(
-              ShareParams(
-                text: "Das hier wird das File sein",
-                title: "Talle Match Share",
-                subject: "Talle Match Share",
-              ),
-            );
-          },
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FloatingAnimatedButton(
+              text: 'Save File',
+              icon: Icons.save,
+              onPressed: () {
+                MatchShareService().saveMatchToCustomLocation(match);
+              },
+            ),
+            SizedBox(width: 5),
+            FloatingAnimatedButton(
+              icon: Icons.share,
+              onPressed: () {
+                MatchShareService().shareMatchAsFile(match);
+              },
+            ),
+          ],
         ),
       ],
     );
