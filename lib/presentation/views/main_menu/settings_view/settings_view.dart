@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -113,6 +114,51 @@ class _SettingsViewState extends State<SettingsView> {
                         context: scaffoldMessengerContext,
                         result: result,
                       );
+                    },
+                  ),
+                  SettingsListTile(
+                    title: 'Online Sharing',
+                    icon: Icons.cloud,
+                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        builder: (context) => CustomAlertDialog(
+                          title: 'Online Sharing',
+                          content: const Text(
+                            'To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?',
+                            overflow: TextOverflow.visible,
+                          ),
+                          actions: [
+                            CustomDialogAction(
+                              text: 'Enable',
+                              onPressed: () async {
+                                await saveStoredSharingConsent(true);
+                                if (context.mounted)
+                                  Navigator.of(context).pop(true);
+                              },
+                            ),
+                            CustomDialogAction(
+                              text: 'Disable',
+                              buttonType: ButtonType.secondary,
+                              onPressed: () async {
+                                await saveStoredSharingConsent(false);
+                                if (context.mounted)
+                                  Navigator.of(context).pop(false);
+                              },
+                            ),
+                          ],
+                        ),
+                      ).then((confirmed) {
+                        if (context.mounted) {
+                          showSnackbar(
+                            context: scaffoldMessengerContext,
+                            message: confirmed
+                                ? "Successfully enabled online Sharing."
+                                : "Successfully disabled online Sharing.",
+                          );
+                        }
+                      });
                     },
                   ),
                   SettingsListTile(
@@ -373,5 +419,10 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() {
       _packageInfo = info;
     });
+  }
+
+  Future<void> saveStoredSharingConsent(bool consent) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('shareConsent', consent);
   }
 }
