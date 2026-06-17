@@ -96,7 +96,7 @@ class MatchShareService {
     // TODO: add locs
   }
 
-  Future<(ImportResult, Match?)> chooseFileToImport() async {
+  Future<(ImportResult, Match?, String)> chooseFileToImport() async {
     final path = await FilePicker.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
@@ -104,33 +104,39 @@ class MatchShareService {
     );
 
     if (path == null || path.files.isEmpty) {
-      return (ImportResult.canceled, null);
+      return (ImportResult.canceled, null, '');
     }
 
     try {
       final jsonString = await _readFileContent(path.files.single);
-      if (jsonString == null) return (ImportResult.fileReadError, null);
+      if (jsonString == null)
+        return (ImportResult.fileReadError, null, path.files.single.name);
 
       final isValid = await validateJsonSchema(jsonString);
-      if (!isValid) return (ImportResult.invalidSchema, null);
+      if (!isValid)
+        return (ImportResult.invalidSchema, null, path.files.single.name);
 
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
       if (!validateContent(decoded)) {
-        return (ImportResult.invalidData, null);
+        return (ImportResult.invalidData, null, path.files.single.name);
       }
 
-      return (ImportResult.success, Match.fromJson(decoded));
+      return (
+        ImportResult.success,
+        Match.fromJson(decoded),
+        path.files.single.name,
+      );
     } on FormatException catch (e, stack) {
       print('[importData] FormatException');
       print('[importData] $e');
       print(stack);
-      return (ImportResult.formatException, null);
+      return (ImportResult.formatException, null, path.files.single.name);
     } on Exception catch (e, stack) {
       print('[importData] Exception');
       print('[importData] $e');
       print(stack);
-      return (ImportResult.unknownException, null);
+      return (ImportResult.unknownException, null, path.files.single.name);
     }
   }
 
