@@ -11,6 +11,7 @@ dependencies:
   clock: ^1.1.2
   collection: ^1.19.1
   cupertino_icons: ^1.0.9
+  dotted_border: ^3.1.0
   drift: ^2.34.0
   drift_flutter: ^0.3.0
   dropdown_button2: ^3.1.0
@@ -55,4 +56,5 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
-    - assets/schema.json
+    - assets/app_schema.json
+    - assets/match_schema.json
