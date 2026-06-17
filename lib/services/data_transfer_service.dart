@@ -405,12 +405,12 @@ class DataTransferService {
   }
 
   /// Validates the given JSON string against the schema
-  /// in `assets/schema.json`.
+  /// in `assets/app_schema.json`.
   @visibleForTesting
   static Future<bool> validateJsonSchema(String jsonString) async {
     final String schemaString;
 
-    schemaString = await rootBundle.loadString('assets/schema.json');
+    schemaString = await rootBundle.loadString('assets/app_schema.json');
 
     try {
       final schema = JsonSchema.create(json.decode(schemaString));
