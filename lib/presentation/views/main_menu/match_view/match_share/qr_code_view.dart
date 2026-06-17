@@ -49,7 +49,7 @@ class QrCodeView extends StatelessWidget {
                 message: 'Go to the settings to manually enable it.',
                 icon: Icons.close,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               FloatingAnimatedButton(
                 text: 'Open Settings',
                 icon: Icons.settings,
@@ -127,7 +127,7 @@ class QrCodeView extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -138,13 +138,10 @@ class QrCodeView extends StatelessWidget {
                   ),
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
-                margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 5,
-                  vertical: 10,
-                ),
+                margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                 child: const Text(
-                  'Scan the QR Code with another Tallee instance to share the match.',
+                  'Scan the qr code with another Tallee instance to share the match.',
                   style: TextStyle(
                     color: CustomTheme.textColor,
                     fontSize: 14,

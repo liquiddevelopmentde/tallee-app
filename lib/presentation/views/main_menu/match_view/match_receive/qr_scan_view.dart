@@ -84,7 +84,11 @@ class _QrScanViewState extends State<QrScanView> {
             padding: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
             child: const Text(
               'Scan the QR Code of another Tallee instance to receive the shared match.',
-              style: TextStyle(color: CustomTheme.textColor, fontSize: 14),
+              style: TextStyle(
+                color: CustomTheme.textColor,
+                fontSize: 14,
+                overflow: TextOverflow.visible,
+              ),
               textAlign: TextAlign.center,
             ),
           ),
