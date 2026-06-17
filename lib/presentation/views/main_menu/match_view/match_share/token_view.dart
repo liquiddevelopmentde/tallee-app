@@ -44,7 +44,7 @@ class TokenView extends StatelessWidget {
                 message: 'Go to the settings to manually enable it.',
                 icon: Icons.close,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               FloatingAnimatedButton(
                 text: 'Open Settings',
                 icon: Icons.settings,
@@ -84,7 +84,7 @@ class TokenView extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ClipRRect(
@@ -108,7 +108,7 @@ class TokenView extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -131,7 +131,7 @@ class TokenView extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -184,7 +184,7 @@ class TokenView extends StatelessWidget {
       child: Text(
         char,
         style: const TextStyle(
-          fontSize: 45,
+          fontSize: 35, //war mal 45
           fontWeight: FontWeight.w400,
           color: CustomTheme.textColor,
         ),

@@ -83,6 +83,7 @@ class _MatchShareViewState extends State<MatchShareView>
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(title: const Text('Match Share'), centerTitle: true),
         body: Column(
           children: [

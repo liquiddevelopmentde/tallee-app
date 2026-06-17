@@ -93,7 +93,7 @@ class _FileViewState extends State<FileView> {
             borderRadius: CustomTheme.standardBorderRadiusAll,
           ),
           margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
           child: const Text(
             'Manually share the match data in a file for full local transfer.',
             style: TextStyle(
@@ -104,7 +104,7 @@ class _FileViewState extends State<FileView> {
             textAlign: TextAlign.center,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

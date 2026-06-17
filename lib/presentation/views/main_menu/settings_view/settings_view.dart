@@ -134,8 +134,9 @@ class _SettingsViewState extends State<SettingsView> {
                               text: 'Enable',
                               onPressed: () async {
                                 await saveStoredSharingConsent(true);
-                                if (context.mounted)
+                                if (context.mounted) {
                                   Navigator.of(context).pop(true);
+                                }
                               },
                             ),
                             CustomDialogAction(
@@ -143,8 +144,9 @@ class _SettingsViewState extends State<SettingsView> {
                               buttonType: ButtonType.secondary,
                               onPressed: () async {
                                 await saveStoredSharingConsent(false);
-                                if (context.mounted)
+                                if (context.mounted) {
                                   Navigator.of(context).pop(false);
+                                }
                               },
                             ),
                           ],
@@ -154,8 +156,8 @@ class _SettingsViewState extends State<SettingsView> {
                           showSnackbar(
                             context: scaffoldMessengerContext,
                             message: confirmed
-                                ? "Successfully enabled online Sharing."
-                                : "Successfully disabled online Sharing.",
+                                ? 'Successfully enabled online Sharing.'
+                                : 'Successfully disabled online Sharing.',
                           );
                         }
                       });

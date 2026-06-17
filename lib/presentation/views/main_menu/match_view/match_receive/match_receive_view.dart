@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_import/enter_token_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_import/import_file_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_import/qr_scan_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/enter_token_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/qr_scan_view.dart';
 
-class MatchImportView extends StatefulWidget {
-  const MatchImportView({super.key});
+class MatchReceiveView extends StatefulWidget {
+  const MatchReceiveView({super.key});
 
   @override
-  State<MatchImportView> createState() => _MatchImportViewState();
+  State<MatchReceiveView> createState() => _MatchReceiveViewViewState();
 }
 
-class _MatchImportViewState extends State<MatchImportView>
+class _MatchReceiveViewViewState extends State<MatchReceiveView>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 
@@ -30,6 +30,7 @@ class _MatchImportViewState extends State<MatchImportView>
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text('Match Import View'),
           centerTitle: true,
@@ -74,10 +75,10 @@ class _MatchImportViewState extends State<MatchImportView>
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: [
-                  const QrScanView(),
-                  const EnterTokenView(),
-                  const ImportFileView(),
+                children: const [
+                  QrScanView(),
+                  EnterTokenView(),
+                  ImportFileView(),
                 ],
               ),
             ),
