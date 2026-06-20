@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_schema/json_schema.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,7 +17,7 @@ class MatchShareService {
   Future<String> getShareToken(Match match) async {
     try {
       final response = await http.post(
-        Uri.parse('https://10.0.2.2:8000/v1/shares'),
+        Uri.parse('${getApiBaseUrl()}/v1/shares'),
         body: jsonEncode(match.toJson()),
         headers: {'Content-Type': 'application/json'},
       );
@@ -44,7 +45,7 @@ class MatchShareService {
   Future<Match> getMatchByToken(String token) async {
     try {
       final response = await http.get(
-        Uri.parse('https://10.0.2.2:8000/v1/shares/$token'),
+        Uri.parse('${getApiBaseUrl()}/v1/shares/$token'),
       );
 
       if (response.statusCode != 200) {
@@ -53,15 +54,33 @@ class MatchShareService {
 
       final Map<String, dynamic> data = jsonDecode(response.body);
 
+      print(data['payload']);
+
       if (!data.containsKey('payload')) {
         throw ParsingException();
       }
 
+      print(Match.fromJson(data['payload']));
       return Match.fromJson(data['payload']);
-    } on SocketException {
+    } on SocketException catch (e) {
+      print(e);
+      print(e.message);
       throw NetworkException();
     } on FormatException {
       throw ParsingException();
+    } on NetworkException catch (e) {
+      print(e);
+      throw NetworkException();
+    }
+  }
+
+  String getApiBaseUrl() {
+    if (kDebugMode) {
+      return Platform.isAndroid
+          ? dotenv.get('DEV_ANDROID_API_URL')
+          : dotenv.get('DEV_IOS_API_URL');
+    } else {
+      return dotenv.get('PROD_API_URL');
     }
   }
 
