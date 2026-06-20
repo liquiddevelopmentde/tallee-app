@@ -84,9 +84,9 @@ class _ImportFileViewState extends State<ImportFileView> {
             ),
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 40),
           child: Text(
             'Select a match file (.tallee) exported from Tallee match share to import the data.',
             overflow: TextOverflow.visible,
@@ -207,7 +207,7 @@ class _ImportFileViewState extends State<ImportFileView> {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      '${match.players.length != 0 ? match.players.length : match.teams!.length} Players',
+                      '${match.players.isNotEmpty ? match.players.length : match.teams!.length} Players',
                       style: const TextStyle(
                         fontSize: 14,
                         color: CustomTheme.textColor,

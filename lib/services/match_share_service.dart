@@ -128,12 +128,14 @@ class MatchShareService {
 
     try {
       final jsonString = await _readFileContent(path.files.single);
-      if (jsonString == null)
+      if (jsonString == null) {
         return (ImportResult.fileReadError, null, path.files.single.name);
+      }
 
       final isValid = await validateJsonSchema(jsonString);
-      if (!isValid)
+      if (!isValid) {
         return (ImportResult.invalidSchema, null, path.files.single.name);
+      }
 
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
