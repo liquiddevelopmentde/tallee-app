@@ -113,6 +113,8 @@ class _EnterTokenViewState extends State<EnterTokenView> {
               disabledPinTheme: disabledPinTheme,
               pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
               showCursor: false,
+              animationCurve: Curves.decelerate,
+              animationDuration: Duration(milliseconds: 200),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
                 TextInputFormatter.withFunction(

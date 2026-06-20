@@ -32,7 +32,7 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('Match Import View'),
+          title: const Text('Match Receive View'),
           centerTitle: true,
         ),
         body: Column(
@@ -60,6 +60,9 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
                     color: CustomTheme.primaryColor,
                   ),
                   labelColor: Colors.black,
+                  overlayColor: const WidgetStatePropertyAll(
+                    Colors.transparent,
+                  ),
                   unselectedLabelColor: CustomTheme.textColor,
                   onTap: (_) {
                     HapticFeedback.selectionClick();
@@ -67,7 +70,7 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
                   tabs: const [
                     Tab(icon: Icon(Icons.qr_code_scanner)),
                     Tab(icon: Icon(Icons.pin)),
-                    Tab(icon: Icon(Icons.file_upload)),
+                    Tab(icon: Icon(Icons.file_present)),
                   ],
                 ),
               ),

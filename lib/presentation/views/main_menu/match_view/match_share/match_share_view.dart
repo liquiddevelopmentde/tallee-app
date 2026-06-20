@@ -110,13 +110,16 @@ class _MatchShareViewState extends State<MatchShareView>
                     color: CustomTheme.primaryColor,
                   ),
                   labelColor: Colors.black,
+                  overlayColor: const WidgetStatePropertyAll(
+                    Colors.transparent,
+                  ),
                   unselectedLabelColor: CustomTheme.textColor,
                   onTap: (_) {
                     HapticFeedback.selectionClick();
                   },
                   tabs: const [
                     Tab(icon: Icon(Icons.qr_code)),
-                    Tab(icon: Icon(Icons.numbers)),
+                    Tab(icon: Icon(Icons.pin)),
                     Tab(icon: Icon(Icons.file_present)),
                   ],
                 ),
@@ -209,7 +212,7 @@ class _MatchShareViewState extends State<MatchShareView>
               });
             }
           })
-          .catchError((error) {
+          .catchError((error, stacktrace) {
             if (!mounted) {
               return;
             }
