@@ -1,14 +1,28 @@
+import 'dart:convert';
 import 'dart:core' hide Match;
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/match.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_players_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/services/match_share_service.dart';
 
-class ImportFileView extends StatelessWidget {
+class ImportFileView extends StatefulWidget {
   const ImportFileView({super.key});
+
+  @override
+  State<ImportFileView> createState() => _ImportFileViewState();
+}
+
+class _ImportFileViewState extends State<ImportFileView> {
+  bool successfulImport = false;
+
+  Color dottedBorderColor = CustomTheme.boxBorderColor;
+
+  late (ImportResult, Match?, String) data;
 
   @override
   Widget build(BuildContext context) {
@@ -19,20 +33,39 @@ class ImportFileView extends StatelessWidget {
           padding: CustomTheme.standardMargin.copyWith(left: 25, right: 25),
           child: GestureDetector(
             onTap: () async {
-              final (ImportResult, Match?) data = await MatchShareService()
-                  .chooseFileToImport();
+              data = await MatchShareService().chooseFileToImport();
               if (data.$1 == ImportResult.success) {
-                print(data.$2);
-              } else {
+                setState(() {
+                  successfulImport = true;
+                  dottedBorderColor = Colors.green;
+                });
                 print(data.$1);
+                print(data.$2);
+                print(data.$3);
+                print(data.$2!.players.length);
+                print(data.$2!.teams!.length);
+              } else {
+                successfulImport = false;
+                if (data.$1 != ImportResult.canceled) {
+                  setState(() {
+                    dottedBorderColor = Colors.red;
+                  });
+                  print(data.$1);
+                  print(data.$2);
+                  print(data.$3);
+                } else {
+                  setState(() {
+                    dottedBorderColor = CustomTheme.boxBorderColor;
+                  });
+                }
               }
             },
             child: DottedBorder(
-              options: const RoundedRectDottedBorderOptions(
-                radius: Radius.circular(12),
+              options: RoundedRectDottedBorderOptions(
+                radius: const Radius.circular(12),
                 dashPattern: [10, 5],
                 strokeWidth: 3,
-                color: CustomTheme.boxBorderColor,
+                color: dottedBorderColor,
               ),
               child: Container(
                 width: MediaQuery.widthOf(context) * 0.9,
@@ -44,29 +77,9 @@ class ImportFileView extends StatelessWidget {
                   color: CustomTheme.boxColor,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
-                child: Column(
-                  children: [
-                    const Icon(Icons.file_upload, size: 50),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Choose Match File',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Tap to browse',
-                      style: TextStyle(
-                        color: CustomTheme.textColor.withAlpha(180),
-                        fontSize: 16,
-                        overflow: TextOverflow.visible,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                child: !successfulImport
+                    ? chooseMatchFile()
+                    : displaySelectedFile(data.$3, data.$2!),
               ),
             ),
           ),
@@ -90,12 +103,128 @@ class ImportFileView extends StatelessWidget {
           children: [
             FloatingAnimatedButton(
               text: 'Import match',
-              icon: Icons.cloud_download,
-              onPressed: () {},
+              icon: Icons.file_download,
+              onPressed: successfulImport
+                  ? () {
+                      Navigator.push(
+                        context,
+                        adaptivePageRoute(
+                          builder: (_) => AssociatePlayersView(match: data.$2!),
+                        ),
+                      );
+                    }
+                  : null,
             ),
           ],
         ),
       ],
     );
+  }
+
+  Widget chooseMatchFile() {
+    return Column(
+      children: [
+        const Icon(Icons.file_present, size: 50),
+        const SizedBox(height: 20),
+        const Text(
+          'Choose Match File',
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          'Tap to browse',
+          style: TextStyle(
+            color: CustomTheme.textColor.withAlpha(180),
+            fontSize: 16,
+            overflow: TextOverflow.visible,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget displaySelectedFile(String filename, Match match) {
+    return Column(
+      children: [
+        fileTile(filename, match),
+        const SizedBox(height: 20),
+        const Text(
+          'Successfully processed file',
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          'Tap import match, to continue',
+          style: TextStyle(
+            color: CustomTheme.textColor.withAlpha(180),
+            fontSize: 16,
+            overflow: TextOverflow.visible,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget fileTile(String filename, Match match) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: CustomTheme.onBoxColor,
+        border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
+        borderRadius: CustomTheme.standardBorderRadiusAll,
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Icon(Icons.file_present, size: 30),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${match.name.replaceAll('.tallee', '').replaceAll(' ', '_')}.tallee',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: CustomTheme.textColor,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${calculateFileSize(match).toStringAsFixed(1)} KB',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: CustomTheme.textColor,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      '${match.players.length != 0 ? match.players.length : match.teams!.length} Players',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: CustomTheme.textColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  double calculateFileSize(Match match) {
+    final jsonString = jsonEncode(match.toJson());
+    return utf8.encode(jsonString).length / 1024;
   }
 }

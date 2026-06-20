@@ -62,10 +62,36 @@ class TokenView extends StatelessWidget {
           )
         : Column(
             children: [
+              const SizedBox(height: 50),
+              Column(
+                children: [
+                  const Icon(Icons.cloud_upload, size: 50),
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 0,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 20,
+                    ),
+                    child: const Text(
+                      'Send this code to a person who also has Tallee to share the current match.',
+                      style: TextStyle(
+                        color: CustomTheme.textColor,
+                        fontSize: 16,
+                        overflow: TextOverflow.visible,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 30,
-                  vertical: 10,
+                  vertical: 20,
                 ),
                 child: AppSkeleton(
                   enabled: isLoading,
@@ -97,7 +123,7 @@ class TokenView extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Text(
                 minutes == 0 && seconds == 0
                     ? 'Code expired'
@@ -108,30 +134,7 @@ class TokenView extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              const SizedBox(height: 20),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: CustomTheme.boxColor,
-                  border: Border.all(
-                    color: CustomTheme.boxBorderColor,
-                    width: 2,
-                  ),
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
-                ),
-                margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                child: const Text(
-                  'Send this code to a person who also has Tallee to share the current match.',
-                  style: TextStyle(
-                    color: CustomTheme.textColor,
-                    fontSize: 14,
-                    overflow: TextOverflow.visible,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -32,6 +32,26 @@ class _FileViewState extends State<FileView> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        const SizedBox(height: 50),
+        Column(
+          children: [
+            const Icon(Icons.file_download, size: 50),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: const Text(
+                'Manually share the match data in a file for full local transfer.',
+                style: TextStyle(
+                  color: CustomTheme.textColor,
+                  fontSize: 16,
+                  overflow: TextOverflow.visible,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -85,25 +105,6 @@ class _FileViewState extends State<FileView> {
             ],
           ),
         ),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: CustomTheme.onBoxColor,
-            border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
-            borderRadius: CustomTheme.standardBorderRadiusAll,
-          ),
-          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          child: const Text(
-            'Manually share the match data in a file for full local transfer.',
-            style: TextStyle(
-              color: CustomTheme.textColor,
-              fontSize: 14,
-              overflow: TextOverflow.visible,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
         const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -129,7 +130,7 @@ class _FileViewState extends State<FileView> {
   }
 
   double calculateFileSize(Match match) {
-    final jsonString = jsonEncode(widget.match.toJson());
+    final jsonString = jsonEncode(match.toJson());
     return utf8.encode(jsonString).length / 1024;
   }
 }
