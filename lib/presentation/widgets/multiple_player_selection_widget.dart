@@ -17,7 +17,7 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart'
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
-class PlayerSelection extends StatefulWidget {
+class MultiplePlayerSelectionWidget extends StatefulWidget {
   /// A widget that allows users to select players from a list,
   /// with search functionality and the ability to add new players.
   /// - [availablePlayers]: An optional list of players to choose from. If null,
@@ -26,7 +26,7 @@ class PlayerSelection extends StatefulWidget {
   /// - [initialSelectedUnits]: An optional list of units (teams) that should be pre-selected.
   /// - [onChanged]: A callback function that is invoked whenever the selection
   ///   changes, providing the updated list of selected players and units.
-  const PlayerSelection({
+  const MultiplePlayerSelectionWidget({
     super.key,
     this.availablePlayers,
     this.initialSelectedPlayers,
@@ -55,10 +55,12 @@ class PlayerSelection extends StatefulWidget {
   final VoidCallback? onPlayerCreated;
 
   @override
-  State<PlayerSelection> createState() => _PlayerSelectionState();
+  State<MultiplePlayerSelectionWidget> createState() =>
+      _MultiplePlayerSelectionWidgetState();
 }
 
-class _PlayerSelectionState extends State<PlayerSelection> {
+class _MultiplePlayerSelectionWidgetState
+    extends State<MultiplePlayerSelectionWidget> {
   late final AppDatabase db;
   bool isLoading = true;
 
@@ -121,7 +123,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   }
 
   @override
-  void didUpdateWidget(PlayerSelection oldWidget) {
+  void didUpdateWidget(MultiplePlayerSelectionWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     // If the units were reset or changed from the parent view,

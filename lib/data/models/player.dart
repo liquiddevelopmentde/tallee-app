@@ -63,7 +63,7 @@ class Player {
       name = json['name'],
       description = json['description'],
       deleted = json['deleted'],
-      nameCount = 0;
+      nameCount = json['nameCount'] ?? 0;
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -71,5 +71,6 @@ class Player {
     'name': name,
     'description': description,
     'deleted': deleted,
+    'nameCount': nameCount,
   };
 }
