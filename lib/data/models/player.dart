@@ -12,11 +12,12 @@ class Player {
   Player({
     required this.name,
     this.deleted = false,
-    this.nameCount = 0,
+    int? nameCount,
     String? id,
     DateTime? createdAt,
     String? description,
-  }) : id = id ?? const Uuid().v4(),
+  }) : nameCount = nameCount ?? 0,
+       id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
        description = description ?? '';
 

@@ -566,6 +566,7 @@ void main() {
               'description': testPlayer1.description,
               'createdAt': testPlayer1.createdAt.toIso8601String(),
               'deleted': false,
+              'nameCount': 0,
             },
             {
               'id': testPlayer2.id,
@@ -573,6 +574,7 @@ void main() {
               'description': testPlayer2.description,
               'createdAt': testPlayer2.createdAt.toIso8601String(),
               'deleted': true,
+              'nameCount': 0,
             },
           ],
         };
@@ -1000,6 +1002,7 @@ void main() {
               'description': testPlayer1.description,
               'createdAt': testPlayer1.createdAt.toIso8601String(),
               'deleted': false,
+              'nameCount': 0,
             },
           ],
           'games': [
@@ -1110,6 +1113,7 @@ void main() {
                 'description': testPlayer1.description,
                 'createdAt': testPlayer1.createdAt.toIso8601String(),
                 'deleted': false,
+                'nameCount': 0,
               },
               {
                 'id': testPlayer2.id,
@@ -1117,6 +1121,7 @@ void main() {
                 'description': testPlayer2.description,
                 'createdAt': testPlayer2.createdAt.toIso8601String(),
                 'deleted': true,
+                'nameCount': 0,
               },
             ],
             'games': [
@@ -1210,6 +1215,8 @@ void main() {
                   'name': testPlayer1.name,
                   'description': testPlayer1.description,
                   'createdAt': testPlayer1.createdAt.toIso8601String(),
+                  'deleted': false,
+                  'nameCount': 0,
                 },
               ],
               'games': [],
@@ -1255,6 +1262,8 @@ void main() {
                   'name': testPlayer1.name,
                   'description': testPlayer1.description,
                   'createdAt': testPlayer1.createdAt.toIso8601String(),
+                  'deleted': false,
+                  'nameCount': 0,
                 },
               ],
               'games': [
@@ -1299,6 +1308,8 @@ void main() {
                   'name': testPlayer1.name,
                   'description': '',
                   'createdAt': fixedDate.toIso8601String(),
+                  'deleted': false,
+                  'nameCount': 0,
                 },
               ],
               'games': [
@@ -1363,6 +1374,8 @@ void main() {
                   'name': testPlayer1.name,
                   'description': '',
                   'createdAt': fixedDate.toIso8601String(),
+                  'deleted': false,
+                  'nameCount': 0,
                 },
               ],
               'games': [
