@@ -52,11 +52,12 @@ class _SettingsViewState extends State<SettingsView> {
             backgroundColor: CustomTheme.backgroundColor,
             body: SingleChildScrollView(
               child: Column(
+                spacing: 10,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 16, bottom: 10),
+                    padding: const EdgeInsets.only(left: 16),
                     child: Text(
                       textAlign: TextAlign.start,
                       loc.settings,
@@ -67,11 +68,7 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      top: 10,
-                      bottom: 10,
-                    ),
+                    padding: const EdgeInsets.only(left: 16, top: 10),
                     child: Text(
                       textAlign: TextAlign.start,
                       loc.data,
@@ -156,11 +153,7 @@ class _SettingsViewState extends State<SettingsView> {
                     },
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      top: 10,
-                      bottom: 10,
-                    ),
+                    padding: const EdgeInsets.only(left: 16, top: 10),
                     child: Text(
                       textAlign: TextAlign.start,
                       loc.legal,

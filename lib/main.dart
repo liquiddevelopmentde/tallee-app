@@ -34,7 +34,7 @@ class GameTracker extends StatefulWidget {
 }
 
 class _GameTrackerState extends State<GameTracker> {
-  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
   /// Handles routes pushed by the OS when the app is opened via a `.tallee`
@@ -46,7 +46,7 @@ class _GameTrackerState extends State<GameTracker> {
         settings: settings,
         fullscreenDialog: true,
         builder: (_) =>
-            ImportFileView(filePath: name, messengerKey: _scaffoldMessengerKey),
+            ImportFileView(filePath: name, messengerKey: scaffoldMessengerKey),
       );
     }
     return null;
@@ -55,7 +55,7 @@ class _GameTrackerState extends State<GameTracker> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      scaffoldMessengerKey: _scaffoldMessengerKey,
+      scaffoldMessengerKey: scaffoldMessengerKey,
       onGenerateRoute: onGenerateRoute,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/translations.dart';
+import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
@@ -176,7 +178,8 @@ class _ImportFileViewState extends State<ImportFileView> {
     final jsonString = this.jsonString;
     if (jsonString == null) return;
 
-    final result = await DataTransferService.commitImport(context, jsonString);
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final result = await DataTransferService.commitImport(db, jsonString);
 
     if (!mounted) return;
     finishImport(importResult: result);

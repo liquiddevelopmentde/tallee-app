@@ -91,7 +91,7 @@ class DataTransferService {
     final jsonString = await _readFileContent(path.files.single);
     if (jsonString == null) return ImportResult.fileReadError;
 
-    return _processImport(db, jsonString);
+    return commitImport(db, jsonString);
   }
 
   /// Reads and validates a .tallee file at [filePath].
@@ -109,17 +109,30 @@ class DataTransferService {
     try {
       jsonString = await file.readAsString();
     } on Exception catch (e, stack) {
-      print('[prepareImportFromPath] Failed to read file');
-      print('[prepareImportFromPath] $e');
+      print('[getDataFromPath] Failed to read file');
+      print('[getDataFromPath] $e');
       print(stack);
       return (ImportResult.fileReadError, null);
     }
 
+    final (status, _) = await _validateJson(jsonString);
+    if (status != ImportResult.success) {
+      return (status, null);
+    }
+
+    return (ImportResult.success, jsonString);
+  }
+
+  /// Validates [jsonString] against the schema and the content length rules.
+  ///
+  /// Returns the decoded map on success, or an error status with a `null` map
+  /// when validation fails or the JSON is malformed.
+  static Future<(ImportResult, Map<String, dynamic>?)> _validateJson(
+    String jsonString,
+  ) async {
     try {
       final isValid = await validateJsonSchema(jsonString);
-      if (!isValid) {
-        return (ImportResult.invalidSchema, null);
-      }
+      if (!isValid) return (ImportResult.invalidSchema, null);
 
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
@@ -127,69 +140,36 @@ class DataTransferService {
         return (ImportResult.invalidData, null);
       }
 
-      return (ImportResult.success, jsonString);
+      return (ImportResult.success, decoded);
     } on FormatException catch (e, stack) {
-      print('[prepareImportFromPath] FormatException');
-      print('[prepareImportFromPath] $e');
+      print('[validateJson] FormatException');
+      print('[validateJson] $e');
       print(stack);
       return (ImportResult.formatException, null);
     } on Exception catch (e, stack) {
-      print('[prepareImportFromPath] Exception');
-      print('[prepareImportFromPath] $e');
+      print('[validateJson] Exception');
+      print('[validateJson] $e');
       print(stack);
       return (ImportResult.unknownException, null);
     }
   }
 
-  /// Writes the previously parsed [jsonString] data into the database.
-  static Future<ImportResult> commitImport(
-    BuildContext context,
-    String jsonString,
-  ) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    try {
-      final decoded = json.decode(jsonString) as Map<String, dynamic>;
-      await importDataToDatabase(db, decoded);
-      return ImportResult.success;
-    } on FormatException catch (e, stack) {
-      print('[commitImport] FormatException');
-      print('[commitImport] $e');
-      print(stack);
-      return ImportResult.formatException;
-    } on Exception catch (e, stack) {
-      print('[commitImport] Exception');
-      print('[commitImport] $e');
-      print(stack);
-      return ImportResult.unknownException;
-    }
-  }
-
   /// Validates the given [jsonString] and writes its content to the database.
-  static Future<ImportResult> _processImport(
+  static Future<ImportResult> commitImport(
     AppDatabase db,
     String jsonString,
   ) async {
+    final (status, decoded) = await _validateJson(jsonString);
+    if (status != ImportResult.success || decoded == null) {
+      return status;
+    }
+
     try {
-      final isValid = await validateJsonSchema(jsonString);
-      if (!isValid) return ImportResult.invalidSchema;
-
-      final decoded = json.decode(jsonString) as Map<String, dynamic>;
-
-      if (!validateContent(decoded)) {
-        return ImportResult.invalidData;
-      }
-
       await importDataToDatabase(db, decoded);
-
       return ImportResult.success;
-    } on FormatException catch (e, stack) {
-      print('[importData] FormatException');
-      print('[importData] $e');
-      print(stack);
-      return ImportResult.formatException;
     } on Exception catch (e, stack) {
-      print('[importData] Exception');
-      print('[importData] $e');
+      print('[commitImport] Failed to write data');
+      print('[commitImport] $e');
       print(stack);
       return ImportResult.unknownException;
     }
