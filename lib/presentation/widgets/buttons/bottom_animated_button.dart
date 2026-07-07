@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/enums.dart';
 
 class BottomAnimatedButton extends StatefulWidget {
@@ -53,7 +54,12 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
           onTapDown: (_) => setState(() => _isPressed = true),
           onTapUp: (_) => setState(() => _isPressed = false),
           onTapCancel: () => setState(() => _isPressed = false),
-          onTap: widget.onPressed,
+          onTap: () async {
+            await HapticFeedback.selectionClick();
+            if (widget.onPressed != null) {
+              widget.onPressed!();
+            }
+          },
           child: AnimatedScale(
             scale: _isPressed ? 0.95 : 1.0,
             duration: const Duration(milliseconds: 100),

@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/import_file_view.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
@@ -24,12 +26,37 @@ void main() {
   );
 }
 
-class GameTracker extends StatelessWidget {
+class GameTracker extends StatefulWidget {
   const GameTracker({super.key});
+
+  @override
+  State<GameTracker> createState() => _GameTrackerState();
+}
+
+class _GameTrackerState extends State<GameTracker> {
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
+  /// Handles routes pushed by the OS when the app is opened via a `.tallee`
+  /// file. The route name contains the file path/URI to import.
+  Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+    final name = settings.name;
+    if (name != null && name.toLowerCase().endsWith('.tallee')) {
+      return adaptivePageRoute(
+        settings: settings,
+        fullscreenDialog: true,
+        builder: (_) =>
+            ImportFileView(filePath: name, messengerKey: _scaffoldMessengerKey),
+      );
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: _scaffoldMessengerKey,
+      onGenerateRoute: onGenerateRoute,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       localeResolutionCallback: (locale, supportedLocales) {

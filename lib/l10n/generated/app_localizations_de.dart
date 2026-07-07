@@ -259,6 +259,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get import_data => 'Daten importieren';
 
   @override
+  String get import_preview_description =>
+      'Die folgenden Daten werden importiert';
+
+  @override
   String get info => 'Info';
 
   @override

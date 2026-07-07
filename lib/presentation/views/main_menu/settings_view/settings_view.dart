@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -105,9 +106,10 @@ class _SettingsViewState extends State<SettingsView> {
                     icon: Icons.download,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
                     onPressed: () async {
-                      final result = await DataTransferService.importData(
-                        scaffoldMessengerContext,
-                      );
+                      final result =
+                          await DataTransferService.importDataFromFiles(
+                            scaffoldMessengerContext,
+                          );
                       if (!scaffoldMessengerContext.mounted) return;
                       showImportSnackBar(
                         context: scaffoldMessengerContext,
@@ -288,37 +290,17 @@ class _SettingsViewState extends State<SettingsView> {
           );
         }
       case ImportResult.invalidSchema:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.invalid_schema);
-        }
       case ImportResult.invalidData:
+      case ImportResult.fileReadError:
+      case ImportResult.canceled:
+      case ImportResult.formatException:
+      case ImportResult.unknownException:
         await HapticFeedback.errorNotification();
         if (context.mounted) {
           showSnackbar(
             context: context,
-            message: loc.names_or_descriptions_too_long,
+            message: translateImportResultToString(result, context),
           );
-        }
-      case ImportResult.fileReadError:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.error_reading_file);
-        }
-      case ImportResult.canceled:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.import_canceled);
-        }
-      case ImportResult.formatException:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.format_exception);
-        }
-      case ImportResult.unknownException:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.unknown_exception);
         }
     }
   }

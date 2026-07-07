@@ -27,9 +27,11 @@ class DataTransferService {
   /// Returns the JSON string representation of the data in normalized format.
   static Future<String> getAppDataAsJson(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final matches = await db.matchDao.getAllMatches();
+    final matches = await db.matchDao.getAllMatches(includeDeletedPlayer: true);
     final groups = await db.groupDao.getAllGroups();
-    final players = await db.playerDao.getAllPlayers();
+    final players = await db.playerDao.getAllPlayers(
+      includeDeletedPlayer: true,
+    );
     final games = await db.gameDao.getAllGames();
     final statistics = await db.statisticDao.getAllStatistics();
 
@@ -72,8 +74,8 @@ class DataTransferService {
     }
   }
 
-  /// Imports data from a selected JSON file into the database.
-  static Future<ImportResult> importData(BuildContext context) async {
+  /// Opens the file picker and imports data from a selected .tallee file into the database.
+  static Future<ImportResult> importDataFromFiles(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
 
     final path = await FilePicker.pickFiles(
@@ -86,10 +88,88 @@ class DataTransferService {
       return ImportResult.canceled;
     }
 
-    try {
-      final jsonString = await _readFileContent(path.files.single);
-      if (jsonString == null) return ImportResult.fileReadError;
+    final jsonString = await _readFileContent(path.files.single);
+    if (jsonString == null) return ImportResult.fileReadError;
 
+    return _processImport(db, jsonString);
+  }
+
+  /// Reads and validates a .tallee file at [filePath].
+  /// Returns `(ImportResult, jsonString)`.
+  /// If validation fails, `jsonString` is `null`.
+  static Future<(ImportResult, String?)> getDataFromPath(
+    String filePath,
+  ) async {
+    final file = File(filePath);
+    if (!await file.exists()) {
+      return (ImportResult.fileReadError, null);
+    }
+
+    final String jsonString;
+    try {
+      jsonString = await file.readAsString();
+    } on Exception catch (e, stack) {
+      print('[prepareImportFromPath] Failed to read file');
+      print('[prepareImportFromPath] $e');
+      print(stack);
+      return (ImportResult.fileReadError, null);
+    }
+
+    try {
+      final isValid = await validateJsonSchema(jsonString);
+      if (!isValid) {
+        return (ImportResult.invalidSchema, null);
+      }
+
+      final decoded = json.decode(jsonString) as Map<String, dynamic>;
+
+      if (!validateContent(decoded)) {
+        return (ImportResult.invalidData, null);
+      }
+
+      return (ImportResult.success, jsonString);
+    } on FormatException catch (e, stack) {
+      print('[prepareImportFromPath] FormatException');
+      print('[prepareImportFromPath] $e');
+      print(stack);
+      return (ImportResult.formatException, null);
+    } on Exception catch (e, stack) {
+      print('[prepareImportFromPath] Exception');
+      print('[prepareImportFromPath] $e');
+      print(stack);
+      return (ImportResult.unknownException, null);
+    }
+  }
+
+  /// Writes the previously parsed [jsonString] data into the database.
+  static Future<ImportResult> commitImport(
+    BuildContext context,
+    String jsonString,
+  ) async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    try {
+      final decoded = json.decode(jsonString) as Map<String, dynamic>;
+      await importDataToDatabase(db, decoded);
+      return ImportResult.success;
+    } on FormatException catch (e, stack) {
+      print('[commitImport] FormatException');
+      print('[commitImport] $e');
+      print(stack);
+      return ImportResult.formatException;
+    } on Exception catch (e, stack) {
+      print('[commitImport] Exception');
+      print('[commitImport] $e');
+      print(stack);
+      return ImportResult.unknownException;
+    }
+  }
+
+  /// Validates the given [jsonString] and writes its content to the database.
+  static Future<ImportResult> _processImport(
+    AppDatabase db,
+    String jsonString,
+  ) async {
+    try {
       final isValid = await validateJsonSchema(jsonString);
       if (!isValid) return ImportResult.invalidSchema;
 
@@ -299,6 +379,11 @@ class DataTransferService {
               : null,
         ),
       );
+
+      // Drop score entries that reference players which are not part of the
+      // imported data. This keeps referential integrity and prevents foreign
+      // key violations when importing inconsistent or legacy files.
+      scores.removeWhere((playerId, _) => !playersMap.containsKey(playerId));
 
       // Link attributes to objects
       final game = gamesMap[gameId] ?? getFallbackGame();

@@ -560,6 +560,12 @@ abstract class AppLocalizations {
   /// **'Import data'**
   String get import_data;
 
+  /// No description provided for @import_preview_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The following data will be imported'**
+  String get import_preview_description;
+
   /// No description provided for @info.
   ///
   /// In en, this message translates to:

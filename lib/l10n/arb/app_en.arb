@@ -91,6 +91,7 @@
   "highest_score": "Highest Score",
   "import_canceled": "Import canceled",
   "import_data": "Import data",
+  "import_preview_description": "The following data will be imported",
   "info": "Info",
   "invalid_schema": "Invalid Schema",
   "last_180_days": "Last 180 days",

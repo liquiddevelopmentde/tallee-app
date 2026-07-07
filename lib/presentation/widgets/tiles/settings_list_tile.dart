@@ -31,41 +31,38 @@ class SettingsListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.95,
-          child: GestureDetector(
-            onTap: () async {
-              await HapticFeedback.selectionClick();
-              onPressed?.call();
-            },
-            child: Container(
-              margin: EdgeInsets.zero,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              decoration: CustomTheme.standardBoxDecoration,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ColoredIconContainer(
-                        icon: icon,
-                        containerSize: 44,
-                        iconSize: 28,
-                      ),
-                      const SizedBox(width: 16),
-                      Text(title, style: const TextStyle(fontSize: 18)),
-                    ],
-                  ),
-                  if (suffixWidget != null)
-                    suffixWidget!
-                  else
-                    const SizedBox.shrink(),
-                ],
-              ),
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.95,
+        child: GestureDetector(
+          onTap: () async {
+            await HapticFeedback.selectionClick();
+            onPressed?.call();
+          },
+          child: Container(
+            margin: EdgeInsets.zero,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            decoration: CustomTheme.standardBoxDecoration,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ColoredIconContainer(
+                      icon: icon,
+                      containerSize: 44,
+                      iconSize: 28,
+                    ),
+                    const SizedBox(width: 16),
+                    Text(title, style: const TextStyle(fontSize: 18)),
+                  ],
+                ),
+                if (suffixWidget != null)
+                  suffixWidget!
+                else
+                  const SizedBox.shrink(),
+              ],
             ),
           ),
         ),

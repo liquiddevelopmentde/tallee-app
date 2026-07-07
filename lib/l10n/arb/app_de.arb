@@ -91,6 +91,7 @@
   "highest_score": "Höchste Punkte",
   "import_canceled": "Import abgebrochen",
   "import_data": "Daten importieren",
+  "import_preview_description": "Die folgenden Daten werden importiert",
   "info": "Info",
   "invalid_schema": "Ungültiges Schema",
   "last_180_days": "Letzte 180 Tage",
