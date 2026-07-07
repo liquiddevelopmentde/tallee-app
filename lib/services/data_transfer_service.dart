@@ -56,7 +56,7 @@ class DataTransferService {
     try {
       final bytes = Uint8List.fromList(utf8.encode(jsonString));
       final path = await FilePicker.saveFile(
-        fileName: '$fileName.json',
+        fileName: '$fileName.tallee',
         bytes: bytes,
       );
 
@@ -79,7 +79,7 @@ class DataTransferService {
     final path = await FilePicker.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: ['json'],
+      allowedExtensions: ['tallee'],
     );
 
     if (path == null || path.files.isEmpty) {
