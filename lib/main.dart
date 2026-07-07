@@ -7,6 +7,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/import_file_view.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
+import 'package:tallee/state/data_refresh_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 
@@ -20,6 +21,7 @@ void main() {
         ),
         ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
         ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
+        ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
       ],
       child: const GameTracker(),
     ),

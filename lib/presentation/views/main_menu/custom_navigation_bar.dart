@@ -10,6 +10,7 @@ import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
+import 'package:tallee/state/data_refresh_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 
@@ -35,18 +36,19 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     final loc = AppLocalizations.of(context);
     final matchSearchProvider = Provider.of<MatchSearchProvider>(context);
     final groupSearchProvider = Provider.of<GroupSearchProvider>(context);
+    final refreshRevision = context.watch<DataRefreshProvider>().revision;
     // Pretty ugly but works
     final List<Widget> tabs = [
       KeyedSubtree(
-        key: ValueKey('matches_$tabKeyCount'),
+        key: ValueKey('matches_${tabKeyCount}_$refreshRevision'),
         child: const MatchView(),
       ),
       KeyedSubtree(
-        key: ValueKey('groups_$tabKeyCount'),
+        key: ValueKey('groups_${tabKeyCount}_$refreshRevision'),
         child: const GroupView(),
       ),
       KeyedSubtree(
-        key: ValueKey('stats_$tabKeyCount'),
+        key: ValueKey('stats_${tabKeyCount}_$refreshRevision'),
         child: const StatisticsView(),
       ),
     ];

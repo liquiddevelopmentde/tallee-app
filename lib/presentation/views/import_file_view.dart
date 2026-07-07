@@ -13,6 +13,7 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/data_transfer_service.dart';
+import 'package:tallee/state/data_refresh_provider.dart';
 
 /// A page shown when the app is opened by a `.tallee` file.
 ///
@@ -194,6 +195,10 @@ class _ImportFileViewState extends State<ImportFileView> {
     if (!mounted) return;
 
     final message = translateImportResultToString(importResult, context);
+
+    if (importResult == ImportResult.success) {
+      Provider.of<DataRefreshProvider>(context, listen: false).refresh();
+    }
 
     Navigator.of(context).maybePop();
 
