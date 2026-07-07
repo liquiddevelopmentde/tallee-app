@@ -89,7 +89,7 @@ class _SettingsViewState extends State<SettingsView> {
                           );
                       final result = await DataTransferService.exportData(
                         json,
-                        'tallee-data',
+                        'data',
                       );
                       if (!scaffoldMessengerContext.mounted) return;
                       showExportSnackBar(
