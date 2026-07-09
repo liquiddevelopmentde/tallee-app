@@ -5,6 +5,7 @@ on:
 
 jobs:
   lint:
+    name: 'Lint code'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -30,6 +31,7 @@ jobs:
         run: flutter analyze lib test
 
   test:
+    name: 'Test code'
     runs-on: ubuntu-latest
     container: node:20-bookworm
     steps:
@@ -57,6 +59,7 @@ jobs:
         run: flutter test
 
   untranslated_localizations:
+    name: 'Check for untranslated messages'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -98,6 +101,7 @@ jobs:
           echo "All messages translated."
 
   unused_localizations:
+    name: "Check for unused localizations"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
