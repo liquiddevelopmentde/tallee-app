@@ -26,6 +26,8 @@ String translateImportResultToString(
       return loc.names_or_descriptions_too_long;
     case ImportResult.fileReadError:
       return loc.error_reading_file;
+    case ImportResult.fileNotFound:
+      return loc.insufficient_permissions;
     case ImportResult.canceled:
       return loc.import_canceled;
     case ImportResult.formatException:

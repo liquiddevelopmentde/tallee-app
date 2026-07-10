@@ -43,6 +43,7 @@ class _GameTrackerState extends State<GameTracker> {
   Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     final path = settings.name;
     if (path != null && path.toLowerCase().endsWith('.tallee')) {
+      print('path: $path');
       return adaptivePageRoute(
         settings: settings,
         fullscreenDialog: true,

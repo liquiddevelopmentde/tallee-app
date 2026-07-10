@@ -65,6 +65,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get color_orange => 'Orange';
 
   @override
+  String get insufficient_permissions => 'Fehlende Berechtigungen';
+
+  @override
   String get color_pink => 'Rosa';
 
   @override

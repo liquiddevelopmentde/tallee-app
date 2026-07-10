@@ -16,6 +16,7 @@ enum ImportResult {
   success,
   canceled,
   fileReadError,
+  fileNotFound,
   invalidSchema,
   invalidData,
   formatException,

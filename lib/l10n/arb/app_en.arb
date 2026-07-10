@@ -18,6 +18,7 @@
   "color_blue": "Blue",
   "color_green": "Green",
   "color_orange": "Orange",
+  "insufficient_permissions": "Insufficient permissions",
   "color_pink": "Pink",
   "color_purple": "Purple",
   "color_red": "Red",
