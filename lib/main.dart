@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -38,27 +39,60 @@ class GameTracker extends StatefulWidget {
 class _GameTrackerState extends State<GameTracker> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  /// Handles routes pushed when a `.tallee` file is opened.
-  Route<dynamic>? onGenerateRoute(RouteSettings settings) {
-    final path = settings.name;
-    if (path != null && path.toLowerCase().endsWith('.tallee')) {
-      print('path: $path');
-      return adaptivePageRoute(
-        settings: settings,
+  /// Channel used by the native side to hand over `.tallee` files that were
+  /// opened from outside the app sandbox. The native code copies the file into
+  /// the sandbox first (see ios/Runner/SceneDelegate.swift) and forwards the
+  /// readable, copied path.
+  static const MethodChannel _importChannel = MethodChannel(
+    'de.liquid.tallee/import',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _importChannel.setMethodCallHandler(_handleImportMethodCall);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitialFile());
+  }
+
+  Future<dynamic> _handleImportMethodCall(MethodCall call) async {
+    if (call.method == 'onFileOpened' && call.arguments is String) {
+      _openImport(call.arguments as String);
+    }
+  }
+
+  /// Fetches a file that launched the app from a cold start, if any.
+  Future<void> _checkInitialFile() async {
+    try {
+      final path = await _importChannel.invokeMethod<String>('getInitialFile');
+      if (path != null) _openImport(path);
+    } on PlatformException {
+      // No native handler available (e.g. non-iOS platforms); nothing to open.
+    } on MissingPluginException {
+      // Import channel not wired up on this platform.
+    }
+  }
+
+  /// Pushes the import view for the `.tallee` file at [path].
+  void _openImport(String path) {
+    final navigator = navigatorKey.currentState;
+    if (navigator == null) return;
+    navigator.push(
+      adaptivePageRoute(
+        settings: RouteSettings(name: path),
         fullscreenDialog: true,
         builder: (_) =>
             ImportFileView(filePath: path, messengerKey: scaffoldMessengerKey),
-      );
-    }
-    return null;
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       scaffoldMessengerKey: scaffoldMessengerKey,
-      onGenerateRoute: onGenerateRoute,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       localeResolutionCallback: (locale, supportedLocales) {
