@@ -39,16 +39,15 @@ class _GameTrackerState extends State<GameTracker> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
-  /// Handles routes pushed by the OS when the app is opened via a `.tallee`
-  /// file. The route name contains the file path/URI to import.
+  /// Handles routes pushed when a `.tallee` file is opened.
   Route<dynamic>? onGenerateRoute(RouteSettings settings) {
-    final name = settings.name;
-    if (name != null && name.toLowerCase().endsWith('.tallee')) {
+    final path = settings.name;
+    if (path != null && path.toLowerCase().endsWith('.tallee')) {
       return adaptivePageRoute(
         settings: settings,
         fullscreenDialog: true,
         builder: (_) =>
-            ImportFileView(filePath: name, messengerKey: scaffoldMessengerKey),
+            ImportFileView(filePath: path, messengerKey: scaffoldMessengerKey),
       );
     }
     return null;

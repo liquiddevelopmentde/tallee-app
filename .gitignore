@@ -76,6 +76,7 @@ unlinked_spec.ds
 **/android/key.properties
 *.jks
 local.properties
+.kotlin
 
 # iOS/XCode related
 Podfile.lock
