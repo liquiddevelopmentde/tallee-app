@@ -65,7 +65,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get color_orange => 'Orange';
 
   @override
-  String get insufficient_permissions => 'Fehlende Berechtigungen';
+  String get file_couldnt_be_accessed =>
+      'Die Datei konnte nicht geöffnet werden';
 
   @override
   String get color_pink => 'Rosa';

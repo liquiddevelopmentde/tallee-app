@@ -206,11 +206,11 @@ abstract class AppLocalizations {
   /// **'Orange'**
   String get color_orange;
 
-  /// No description provided for @insufficient_permissions.
+  /// No description provided for @file_couldnt_be_accessed.
   ///
   /// In en, this message translates to:
-  /// **'Insufficient permissions'**
-  String get insufficient_permissions;
+  /// **'The file could not be accessed'**
+  String get file_couldnt_be_accessed;
 
   /// No description provided for @color_pink.
   ///

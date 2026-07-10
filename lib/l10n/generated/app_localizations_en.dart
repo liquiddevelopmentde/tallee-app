@@ -65,7 +65,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get color_orange => 'Orange';
 
   @override
-  String get insufficient_permissions => 'Insufficient permissions';
+  String get file_couldnt_be_accessed => 'The file could not be accessed';
 
   @override
   String get color_pink => 'Pink';

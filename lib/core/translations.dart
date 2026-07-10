@@ -27,7 +27,7 @@ String translateImportResultToString(
     case ImportResult.fileReadError:
       return loc.error_reading_file;
     case ImportResult.fileNotFound:
-      return loc.insufficient_permissions;
+      return loc.file_couldnt_be_accessed;
     case ImportResult.canceled:
       return loc.import_canceled;
     case ImportResult.formatException:

@@ -18,7 +18,7 @@
   "color_blue": "Blue",
   "color_green": "Green",
   "color_orange": "Orange",
-  "insufficient_permissions": "Insufficient permissions",
+  "file_couldnt_be_accessed": "The file could not be accessed",
   "color_pink": "Pink",
   "color_purple": "Purple",
   "color_red": "Red",

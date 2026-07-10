@@ -84,8 +84,12 @@ class DataTransferService {
       allowedExtensions: ['tallee'],
     );
 
-    if (path == null || path.files.isEmpty) {
+    if (path == null) {
       return ImportResult.canceled;
+    }
+
+    if (path.files.isEmpty) {
+      return ImportResult.invalidData;
     }
 
     final jsonString = await _readFileContent(path.files.single);
