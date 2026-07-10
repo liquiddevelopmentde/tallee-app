@@ -23,8 +23,9 @@
               android:resource="@style/NormalTheme"
               />
             <!-- Disable Flutter's automatic deep linking. The opened file's
-                 URI is resolved to a concrete path in MainActivity and pushed
-                 manually, so the raw intent URI must not be routed as well. -->
+                 intent is handled by the open_with_app plugin, which resolves
+                 the URI to a readable path; the raw intent URI must not be
+                 routed as a deep link as well. -->
             <meta-data
               android:name="flutter_deeplinking_enabled"
               android:value="false"
@@ -63,7 +64,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
+        <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

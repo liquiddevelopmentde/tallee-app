@@ -101,9 +101,7 @@ class DataTransferService {
     String filePath,
   ) async {
     final file = File(filePath);
-    print('file: $file');
     final exists = await file.exists();
-    print('exists: $exists');
     if (!exists) {
       return (ImportResult.fileNotFound, null);
     }

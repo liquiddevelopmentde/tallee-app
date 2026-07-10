@@ -4,8 +4,6 @@
 <dict>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
-	<key>FlutterDeepLinkingEnabled</key>
-	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -49,7 +47,7 @@
 					<key>UISceneConfigurationName</key>
 					<string>flutter</string>
 					<key>UISceneDelegateClassName</key>
-					<string>SceneDelegate</string>
+					<string>FlutterSceneDelegate</string>
 					<key>UISceneStoryboardFile</key>
 					<string>Main</string>
 				</dict>
