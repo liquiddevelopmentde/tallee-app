@@ -106,13 +106,18 @@ class _PlacementDragListState extends State<PlacementDragList> {
                                 team: allTeams[index],
                                 maxChars: 20,
                               )
-                            : TextIconListTile(
-                                player: allTeams[index].members.first,
-                                pair: allTeams[index].members.length > 1
-                                    ? allTeams[index]
-                                    : null,
-                                icon: Icons.drag_handle,
-                                pairIconLeft: true,
+                            : Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4,
+                                ),
+                                child: TextIconListTile(
+                                  player: allTeams[index].members.first,
+                                  pair: allTeams[index].members.length > 1
+                                      ? allTeams[index]
+                                      : null,
+                                  icon: Icons.drag_handle,
+                                  pairIconLeft: true,
+                                ),
                               ),
                       );
                     },
@@ -137,9 +142,12 @@ class _PlacementDragListState extends State<PlacementDragList> {
                       return SizedBox(
                         key: ValueKey(allPlayers[index].id),
                         height: rowHeight,
-                        child: TextIconListTile(
-                          player: allPlayers[index],
-                          icon: Icons.drag_handle,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: TextIconListTile(
+                            player: allPlayers[index],
+                            icon: Icons.drag_handle,
+                          ),
                         ),
                       );
                     },
@@ -180,9 +188,9 @@ class _PlacementDragListState extends State<PlacementDragList> {
             children: [
               child!,
               Positioned.fill(
-                left: 4,
+                left: useTeamLogic ? 4 : 0,
+                right: useTeamLogic ? 4 : 0,
                 top: 4,
-                right: 4,
                 bottom: 4,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
