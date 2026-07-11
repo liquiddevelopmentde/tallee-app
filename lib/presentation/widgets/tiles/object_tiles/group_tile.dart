@@ -66,7 +66,7 @@ class _GroupTileState extends State<GroupTile> {
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 16,
                     ),
                   ),
                 ),
