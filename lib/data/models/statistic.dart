@@ -62,7 +62,7 @@ class Statistic {
     'id': id,
     'createdAt': createdAt.toIso8601String(),
     'type': type.name,
-    'scopes': scopes.map((s) => s.toString()).toList(),
+    'scopes': scopes.map((s) => s.name).toList(),
     'timeframe': timeframe.name,
     'color': color.name,
     'selectedGroups': selectedGroups?.map((g) => g.id).toList(),
