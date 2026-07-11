@@ -41,7 +41,6 @@ class _ImportFileViewState extends State<ImportFileView> {
   @override
   void initState() {
     super.initState();
-    print('ImportFileView: initState, filePath: ${widget.filePath}');
     WidgetsBinding.instance.addPostFrameCallback((_) => loadData());
   }
 
@@ -160,10 +159,8 @@ class _ImportFileViewState extends State<ImportFileView> {
   }
 
   Future<void> loadData() async {
-    print('ImportFileView: loadData, filePath: ${widget.filePath}');
     setState(() => isLoading = true);
     final result = await DataTransferService.getDataFromPath(widget.filePath);
-    print('result: $result');
 
     if (!mounted) return;
 
