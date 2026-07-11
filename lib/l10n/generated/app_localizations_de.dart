@@ -65,10 +65,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get color_orange => 'Orange';
 
   @override
-  String get file_couldnt_be_accessed =>
-      'Die Datei konnte nicht geöffnet werden';
-
-  @override
   String get color_pink => 'Rosa';
 
   @override
@@ -225,6 +221,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get export_data => 'Daten exportieren';
+
+  @override
+  String get file_couldnt_be_accessed =>
+      'Die Datei konnte nicht geöffnet werden';
 
   @override
   String get filter => 'Filter';

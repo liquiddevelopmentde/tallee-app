@@ -4,14 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
 import 'package:tallee/services/data_transfer_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
 
@@ -81,6 +88,7 @@ class _ImportFileViewState extends State<ImportFileView> {
                     child: Column(
                       spacing: 10,
                       children: [
+                        // Playes
                         SettingsListTile(
                           icon: Icons.person_rounded,
                           title: loc.players,
@@ -88,7 +96,20 @@ class _ImportFileViewState extends State<ImportFileView> {
                             '${countOf('players')}',
                             style: style,
                           ),
+                          expandedContent: Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Wrap(
+                              spacing: 10,
+                              runSpacing: 10,
+                              children: getPlayersFromData
+                                  .map((player) => PlayerTile(player: player))
+                                  .toList(),
+                            ),
+                          ),
                         ),
+
+                        // Groups
                         SettingsListTile(
                           icon: Icons.group_rounded,
                           title: loc.groups,
@@ -96,7 +117,26 @@ class _ImportFileViewState extends State<ImportFileView> {
                             '${countOf('groups')}',
                             style: style,
                           ),
+                          expandedContent: Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Wrap(
+                              spacing: 10,
+                              runSpacing: 10,
+                              children: getGroupsFromData
+                                  .map(
+                                    (group) => TextIconListTile(
+                                      text: group.name,
+                                      description:
+                                          '${memberCountForGroup(group.id).toString()} ${loc.members}',
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
                         ),
+
+                        // Games
                         SettingsListTile(
                           icon: Icons.casino_rounded,
                           title: loc.games,
@@ -104,7 +144,29 @@ class _ImportFileViewState extends State<ImportFileView> {
                             '${countOf('games')}',
                             style: style,
                           ),
+                          expandedContent: Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Wrap(
+                              spacing: 10,
+                              runSpacing: 10,
+                              children: getGamesFromData
+                                  .map(
+                                    (game) => GameLabel(
+                                      title: game.name,
+                                      description: translateRulesetToString(
+                                        game.ruleset,
+                                        context,
+                                      ),
+                                      color: game.color,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
                         ),
+
+                        // Matches
                         SettingsListTile(
                           icon: Icons.gamepad_rounded,
                           title: loc.matches,
@@ -112,13 +174,58 @@ class _ImportFileViewState extends State<ImportFileView> {
                             '${countOf('matches')}',
                             style: style,
                           ),
+                          expandedContent: Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Column(
+                              spacing: 10,
+                              children: getMatchesFromData()
+                                  .map(
+                                    (match) => TextIconListTile(
+                                      text: match.name,
+                                      description: getGameNameForMatch(
+                                        match.id,
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
                         ),
+
+                        // Statistics
                         SettingsListTile(
                           icon: Icons.bar_chart_rounded,
                           title: loc.statistics,
                           suffixWidget: Text(
                             '${countOf('statistics')}',
                             style: style,
+                          ),
+                          expandedContent: Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Wrap(
+                              spacing: 10,
+                              runSpacing: 10,
+                              children: getStatisticsFromData
+                                  .map(
+                                    (statistic) => TextIconListTile(
+                                      text: translateStatisticTypeToString(
+                                        statistic.type,
+                                        context,
+                                      ),
+                                      description: statistic.scopes
+                                          .map(
+                                            (scope) => translateScopeToString(
+                                              scope,
+                                              context,
+                                            ),
+                                          )
+                                          .join(', '),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
                           ),
                         ),
                       ],
@@ -149,13 +256,112 @@ class _ImportFileViewState extends State<ImportFileView> {
     );
   }
 
+  bool get isJsonStringEmpty => jsonString == null || jsonString!.isEmpty;
+
   /// Returns the count of [key] in the json string
   int countOf(String key) {
-    final jsonString = this.jsonString;
-    if (jsonString == null || jsonString.isEmpty) return 0;
+    if (isJsonStringEmpty) return 0;
 
-    final decoded = json.decode(jsonString) as Map<String, dynamic>;
+    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
     return (decoded[key] as List<dynamic>?)?.length ?? 0;
+  }
+
+  List<Player> get getPlayersFromData {
+    if (isJsonStringEmpty) return [];
+
+    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
+    return (decoded['players'] as List<dynamic>?)
+            ?.whereType<Map<String, dynamic>>()
+            .map(Player.fromJson)
+            .toList() ??
+        [];
+  }
+
+  /// Returns all groups from the imported file
+  List<Group> get getGroupsFromData {
+    if (isJsonStringEmpty) return [];
+    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
+    return (decoded['groups'] as List<dynamic>?)
+            ?.whereType<Map<String, dynamic>>()
+            .map(Group.fromJson)
+            .toList() ??
+        [];
+  }
+
+  /// Returns the amount of memberIds for a group with the given [groupId].
+  int memberCountForGroup(String groupId) {
+    if (isJsonStringEmpty) return 0;
+
+    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
+    final groups = decoded['groups'] as List<dynamic>?;
+    if (groups == null) return 0;
+
+    final group = groups.whereType<Map<String, dynamic>>().firstWhere(
+      (g) => g['id'] == groupId,
+      orElse: () => <String, dynamic>{},
+    );
+
+    final members = group['memberIds'];
+    return members.length ?? 0;
+  }
+
+  List<Game> get getGamesFromData {
+    if (isJsonStringEmpty) return [];
+
+    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
+    return (decoded['games'] as List<dynamic>?)
+            ?.whereType<Map<String, dynamic>>()
+            .map(Game.fromJson)
+            .toList() ??
+        [];
+  }
+
+  List<Statistic> get getStatisticsFromData {
+    if (isJsonStringEmpty) return [];
+
+    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
+    return (decoded['statistics'] as List<dynamic>?)
+            ?.whereType<Map<String, dynamic>>()
+            .map(Statistic.fromJson)
+            .toList() ??
+        [];
+  }
+
+  List<Match> getMatchesFromData() {
+    if (isJsonStringEmpty) return [];
+
+    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
+    return (decoded['matches'] as List<dynamic>?)
+            ?.whereType<Map<String, dynamic>>()
+            .map(Match.fromJson)
+            .toList() ??
+        [];
+  }
+
+  String getGameNameForMatch(String matchId) {
+    if (isJsonStringEmpty) return '';
+
+    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
+    final matches = decoded['matches'] as List<dynamic>?;
+    if (matches == null) return '';
+
+    final match = matches.whereType<Map<String, dynamic>>().firstWhere(
+      (m) => m['id'] == matchId,
+      orElse: () => <String, dynamic>{},
+    );
+
+    final gameId = match['gameId'];
+    if (gameId == null) return '';
+
+    final games = decoded['games'] as List<dynamic>?;
+    if (games == null) return '';
+
+    final game = games.whereType<Map<String, dynamic>>().firstWhere(
+      (g) => g['id'] == gameId,
+      orElse: () => <String, dynamic>{},
+    );
+
+    return game['name'] ?? '';
   }
 
   Future<void> loadData() async {

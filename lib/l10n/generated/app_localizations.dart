@@ -206,12 +206,6 @@ abstract class AppLocalizations {
   /// **'Orange'**
   String get color_orange;
 
-  /// No description provided for @file_couldnt_be_accessed.
-  ///
-  /// In en, this message translates to:
-  /// **'The file could not be accessed'**
-  String get file_couldnt_be_accessed;
-
   /// No description provided for @color_pink.
   ///
   /// In en, this message translates to:
@@ -493,6 +487,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export data'**
   String get export_data;
+
+  /// No description provided for @file_couldnt_be_accessed.
+  ///
+  /// In en, this message translates to:
+  /// **'The file could not be accessed'**
+  String get file_couldnt_be_accessed;
 
   /// No description provided for @filter.
   ///
