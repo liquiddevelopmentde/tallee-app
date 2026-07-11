@@ -14,8 +14,9 @@ class TextIconListTile extends StatelessWidget {
   /// - [color]: Optional background color for the tile.
   const TextIconListTile({
     super.key,
-    this.player,
     this.text = '',
+    this.description,
+    this.player,
     this.pair,
     this.pairIconLeft = false,
     this.icon,
@@ -23,30 +24,19 @@ class TextIconListTile extends StatelessWidget {
     this.onPressed,
   });
 
-  /// An optional player object to display.
-  final Player? player;
-
-  /// The text to display if no player is provided.
   final String text;
-
-  /// An optional parameter to show 2 players (a pair) in one tile
+  final String? description;
+  final Player? player;
   final Team? pair;
-
-  /// An optional parameter which puts the pair icon on the left side
   final bool pairIconLeft;
-
-  /// The icon to display in the tile.
   final IconData? icon;
-
   final Color? color;
-
-  /// The callback to be invoked when the icon is pressed.
   final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 5),
       padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
         color:
@@ -66,18 +56,33 @@ class TextIconListTile extends StatelessWidget {
           Flexible(
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 12.5),
-              child: buildUnitNameWidget(
-                pair ?? player ?? Player(name: text, nameCount: 0),
-                mainStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                countStyle: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: CustomTheme.textColor.withAlpha(100),
-                ),
-                pairIconLeft: pairIconLeft,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildUnitNameWidget(
+                    pair ?? player ?? Player(name: text, nameCount: 0),
+                    mainStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    countStyle: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: CustomTheme.textColor.withAlpha(100),
+                    ),
+                    pairIconLeft: pairIconLeft,
+                  ),
+                  if (description != null)
+                    Text(
+                      description!,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: CustomTheme.textColor.withAlpha(100),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
