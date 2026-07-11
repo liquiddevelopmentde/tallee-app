@@ -35,28 +35,36 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
-            <!-- Open .tallee files (file:// from file managers) -->
+            <!-- Open .tallee files by path (file:// from classic file managers) -->
             <intent-filter android:label="Open Tallee">
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.EDIT"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                        android:scheme="file"
-                        android:mimeType="*/*"
-                        android:pathPattern=".*\\.tallee"
-                        android:host="*"/>
+                <data android:scheme="file" android:host="*" android:mimeType="*/*" android:pathPattern=".*\\.tallee"/>
+                <data android:scheme="content" android:host="*" android:mimeType="*/*" android:pathPattern=".*\\.tallee"/>
             </intent-filter>
 
-            <!-- For Content URI (e.g., from Downloads/File Manager) -->
+            <!-- Open .tallee files by our own MIME type -->
             <intent-filter android:label="Open Tallee">
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.EDIT"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                        android:scheme="content"
-                        android:mimeType="application/octet-stream"/>
+                <data android:scheme="file" android:mimeType="application/x-tallee"/>
+                <data android:scheme="content" android:mimeType="application/x-tallee"/>
+            </intent-filter>
+
+            <!-- Fallback: content:// with generic binary MIME type.
+                 Needed because most file managers report .tallee as
+                 application/octet-stream and content URIs usually carry no
+                 file extension in their path (so pathPattern can't match). -->
+            <intent-filter android:label="Open Tallee">
+                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.EDIT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="content" android:mimeType="application/octet-stream"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
