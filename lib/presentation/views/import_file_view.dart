@@ -15,7 +15,6 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
-import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
@@ -152,13 +151,12 @@ class _ImportFileViewState extends State<ImportFileView> {
                               runSpacing: 10,
                               children: getGamesFromData
                                   .map(
-                                    (game) => GameLabel(
-                                      title: game.name,
+                                    (game) => TextIconListTile(
+                                      text: game.name,
                                       description: translateRulesetToString(
                                         game.ruleset,
                                         context,
                                       ),
-                                      color: game.color,
                                     ),
                                   )
                                   .toList(),
@@ -183,9 +181,8 @@ class _ImportFileViewState extends State<ImportFileView> {
                                   .map(
                                     (match) => TextIconListTile(
                                       text: match.name,
-                                      description: getGameNameForMatch(
-                                        match.id,
-                                      ),
+                                      description:
+                                          '${getGameNameForMatch(match.id)}, ${getPlayerCountForMatch(match.id).toString()} ${loc.players}',
                                     ),
                                   )
                                   .toList(),
@@ -336,6 +333,22 @@ class _ImportFileViewState extends State<ImportFileView> {
             .map(Match.fromJson)
             .toList() ??
         [];
+  }
+
+  int getPlayerCountForMatch(String matchId) {
+    if (isJsonStringEmpty) return 0;
+
+    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
+    final matches = decoded['matches'] as List<dynamic>?;
+    if (matches == null) return 0;
+
+    final match = matches.whereType<Map<String, dynamic>>().firstWhere(
+      (m) => m['id'] == matchId,
+      orElse: () => <String, dynamic>{},
+    );
+
+    final playerIds = match['playerIds'] as List<dynamic>?;
+    return playerIds?.length ?? 0;
   }
 
   String getGameNameForMatch(String matchId) {
