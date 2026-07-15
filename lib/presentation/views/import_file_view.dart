@@ -255,128 +255,59 @@ class _ImportFileViewState extends State<ImportFileView> {
 
   bool get isJsonStringEmpty => jsonString == null || jsonString!.isEmpty;
 
+  /// Returns the decoded json data
+  Map<String, dynamic> get decodedData => isJsonStringEmpty
+      ? const {}
+      : json.decode(jsonString!) as Map<String, dynamic>;
+
+  /// Returns the raw map entries stored under [key].
+  List<Map<String, dynamic>> rawKeyList(String key) =>
+      (decodedData[key] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .toList() ??
+      const [];
+
+  /// Maps the entries under [key] into typed models via [fromJson].
+  List<T> listOf<T>(String key, T Function(Map<String, dynamic>) fromJson) =>
+      rawKeyList(key).map(fromJson).toList();
+
+  /// Finds the entry under [key] whose id equals [id], or an empty map.
+  Map<String, dynamic> findEntryByKeyAndId(String key, Object? id) =>
+      rawKeyList(key).firstWhere((e) => e['id'] == id, orElse: () => const {});
+
   /// Returns the count of [key] in the json string
-  int countOf(String key) {
-    if (isJsonStringEmpty) return 0;
+  int countOf(String key) => (decodedData[key] as List<dynamic>?)?.length ?? 0;
 
-    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
-    return (decoded[key] as List<dynamic>?)?.length ?? 0;
-  }
-
-  List<Player> get getPlayersFromData {
-    if (isJsonStringEmpty) return [];
-
-    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
-    return (decoded['players'] as List<dynamic>?)
-            ?.whereType<Map<String, dynamic>>()
-            .map(Player.fromJson)
-            .toList() ??
-        [];
-  }
+  List<Player> get getPlayersFromData => listOf('players', Player.fromJson);
 
   /// Returns all groups from the imported file
-  List<Group> get getGroupsFromData {
-    if (isJsonStringEmpty) return [];
-    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
-    return (decoded['groups'] as List<dynamic>?)
-            ?.whereType<Map<String, dynamic>>()
-            .map(Group.fromJson)
-            .toList() ??
-        [];
-  }
+  List<Group> get getGroupsFromData => listOf('groups', Group.fromJson);
 
   /// Returns the amount of memberIds for a group with the given [groupId].
-  int memberCountForGroup(String groupId) {
-    if (isJsonStringEmpty) return 0;
+  int memberCountForGroup(String groupId) =>
+      (findEntryByKeyAndId('groups', groupId)['memberIds'] as List<dynamic>?)
+          ?.length ??
+      0;
 
-    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
-    final groups = decoded['groups'] as List<dynamic>?;
-    if (groups == null) return 0;
+  List<Game> get getGamesFromData => listOf('games', Game.fromJson);
 
-    final group = groups.whereType<Map<String, dynamic>>().firstWhere(
-      (g) => g['id'] == groupId,
-      orElse: () => <String, dynamic>{},
-    );
+  List<Statistic> get getStatisticsFromData =>
+      listOf('statistics', Statistic.fromJson);
 
-    final members = group['memberIds'];
-    return members.length ?? 0;
-  }
+  List<Match> getMatchesFromData() => listOf('matches', Match.fromJson);
 
-  List<Game> get getGamesFromData {
-    if (isJsonStringEmpty) return [];
-
-    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
-    return (decoded['games'] as List<dynamic>?)
-            ?.whereType<Map<String, dynamic>>()
-            .map(Game.fromJson)
-            .toList() ??
-        [];
-  }
-
-  List<Statistic> get getStatisticsFromData {
-    if (isJsonStringEmpty) return [];
-
-    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
-    return (decoded['statistics'] as List<dynamic>?)
-            ?.whereType<Map<String, dynamic>>()
-            .map(Statistic.fromJson)
-            .toList() ??
-        [];
-  }
-
-  List<Match> getMatchesFromData() {
-    if (isJsonStringEmpty) return [];
-
-    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
-    return (decoded['matches'] as List<dynamic>?)
-            ?.whereType<Map<String, dynamic>>()
-            .map(Match.fromJson)
-            .toList() ??
-        [];
-  }
-
-  int getPlayerCountForMatch(String matchId) {
-    if (isJsonStringEmpty) return 0;
-
-    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
-    final matches = decoded['matches'] as List<dynamic>?;
-    if (matches == null) return 0;
-
-    final match = matches.whereType<Map<String, dynamic>>().firstWhere(
-      (m) => m['id'] == matchId,
-      orElse: () => <String, dynamic>{},
-    );
-
-    final playerIds = match['playerIds'] as List<dynamic>?;
-    return playerIds?.length ?? 0;
-  }
+  int getPlayerCountForMatch(String matchId) =>
+      (findEntryByKeyAndId('matches', matchId)['playerIds'] as List<dynamic>?)
+          ?.length ??
+      0;
 
   String getGameNameForMatch(String matchId) {
-    if (isJsonStringEmpty) return '';
-
-    final decoded = json.decode(jsonString!) as Map<String, dynamic>;
-    final matches = decoded['matches'] as List<dynamic>?;
-    if (matches == null) return '';
-
-    final match = matches.whereType<Map<String, dynamic>>().firstWhere(
-      (m) => m['id'] == matchId,
-      orElse: () => <String, dynamic>{},
-    );
-
-    final gameId = match['gameId'];
+    final gameId = findEntryByKeyAndId('matches', matchId)['gameId'];
     if (gameId == null) return '';
-
-    final games = decoded['games'] as List<dynamic>?;
-    if (games == null) return '';
-
-    final game = games.whereType<Map<String, dynamic>>().firstWhere(
-      (g) => g['id'] == gameId,
-      orElse: () => <String, dynamic>{},
-    );
-
-    return game['name'] ?? '';
+    return findEntryByKeyAndId('games', gameId)['name'] as String? ?? '';
   }
 
+  /// Loads the import data from the file path and updates the loading/state values.
   Future<void> loadData() async {
     setState(() => isLoading = true);
     final result = await DataTransferService.getDataFromPath(widget.filePath);
@@ -394,6 +325,7 @@ class _ImportFileViewState extends State<ImportFileView> {
     });
   }
 
+  /// Imports the data to the database
   Future<void> confirmImport() async {
     final jsonString = this.jsonString;
     if (jsonString == null) return;
