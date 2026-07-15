@@ -23,9 +23,7 @@
               android:resource="@style/NormalTheme"
               />
             <!-- Disable Flutter's automatic deep linking. The opened file's
-                 intent is handled by the open_with_app plugin, which resolves
-                 the URI to a readable path; the raw intent URI must not be
-                 routed as a deep link as well. -->
+                 intent is handled by flutter -->
             <meta-data
               android:name="flutter_deeplinking_enabled"
               android:value="false"
@@ -35,7 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
-            <!-- Open .tallee files by path (file:// from classic file managers) -->
+            <!-- Open .tallee files by path (file:// from file managers) -->
             <intent-filter android:label="Open Tallee">
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.EDIT"/>
