@@ -79,7 +79,10 @@ class Statistic {
       ),
       scopes = (json['scopes'] as List)
           .map(
-            (scope) => StatisticScope.values.firstWhere((e) => e.name == scope),
+            (scope) => StatisticScope.values.firstWhere(
+              (e) => e.name == scope,
+              orElse: () => StatisticScope.allPlayers,
+            ),
           )
           .toList(),
       timeframe = Timeframe.values.firstWhere(
