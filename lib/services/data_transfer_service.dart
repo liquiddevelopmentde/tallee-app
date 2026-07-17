@@ -371,7 +371,12 @@ class DataTransferService {
       scores.removeWhere((playerId, _) => !playersMap.containsKey(playerId));
 
       // Link attributes to objects
-      final game = gamesMap[gameId] ?? _getFallbackGame();
+      final Game game;
+      if (!gamesMap.containsKey(gameId)) {
+        throw Exception('Game with ID $gameId not found in gamesMap');
+      } else {
+        game = gamesMap[gameId]!;
+      }
       final group = groupId != null ? groupsMap[groupId] : null;
 
       final playerIds = (map['playerIds'] as List<dynamic>? ?? [])
@@ -453,17 +458,6 @@ class DataTransferService {
         displayCount: map['displayCount'] as int? ?? 5,
       );
     }).toList();
-  }
-
-  /// Creates a fallback game when the referenced game is not found.
-  static Game _getFallbackGame() {
-    return Game(
-      name: 'Unknown',
-      ruleset: Ruleset.singleWinner,
-      description: '',
-      color: AppColor.blue,
-      icon: '',
-    );
   }
 
   /// Helper method to read file content from either bytes or path
