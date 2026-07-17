@@ -92,7 +92,7 @@ class DataTransferService {
       return ImportResult.invalidData;
     }
 
-    final jsonString = await _readFileContent(path.files.single);
+    final jsonString = await readFileContent(path.files.single);
     if (jsonString == null) return ImportResult.fileReadError;
 
     return commitImport(db, jsonString);
@@ -371,7 +371,7 @@ class DataTransferService {
       scores.removeWhere((playerId, _) => !playersMap.containsKey(playerId));
 
       // Link attributes to objects
-      final game = gamesMap[gameId] ?? getFallbackGame();
+      final game = gamesMap[gameId] ?? _getFallbackGame();
       final group = groupId != null ? groupsMap[groupId] : null;
 
       final playerIds = (map['playerIds'] as List<dynamic>? ?? [])
@@ -456,8 +456,7 @@ class DataTransferService {
   }
 
   /// Creates a fallback game when the referenced game is not found.
-  @visibleForTesting
-  static Game getFallbackGame() {
+  static Game _getFallbackGame() {
     return Game(
       name: 'Unknown',
       ruleset: Ruleset.singleWinner,
@@ -468,7 +467,8 @@ class DataTransferService {
   }
 
   /// Helper method to read file content from either bytes or path
-  static Future<String?> _readFileContent(PlatformFile file) async {
+  @visibleForTesting
+  static Future<String?> readFileContent(PlatformFile file) async {
     if (file.bytes != null) return utf8.decode(file.bytes!);
     if (file.path != null) return await File(file.path!).readAsString();
     return null;
