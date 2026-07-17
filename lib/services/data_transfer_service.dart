@@ -371,12 +371,10 @@ class DataTransferService {
       scores.removeWhere((playerId, _) => !playersMap.containsKey(playerId));
 
       // Link attributes to objects
-      final Game game;
-      if (!gamesMap.containsKey(gameId)) {
-        throw Exception('Game with ID $gameId not found in gamesMap');
-      } else {
-        game = gamesMap[gameId]!;
-      }
+      final game = ArgumentError.checkNotNull(
+        gamesMap[gameId],
+        'game for id $gameId',
+      );
       final group = groupId != null ? groupsMap[groupId] : null;
 
       final playerIds = (map['playerIds'] as List<dynamic>? ?? [])

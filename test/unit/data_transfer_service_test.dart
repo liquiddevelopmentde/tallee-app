@@ -870,17 +870,18 @@ void main() {
         expect(matches, isEmpty);
       });
 
-      test('parseMatchesFromJson() creates unknown game for missing game', () {
+      test('parseMatchesFromJson() throws exception for missing game', () {
         final playerById = {testPlayer1.id: testPlayer1};
         final gameById = <String, Game>{};
         final groupById = <String, Group>{};
+        const gameId = 'game-id';
 
         final jsonMap = {
           'matches': [
             {
               'id': testMatch.id,
               'name': testMatch.name,
-              'gameId': 'non-existent-game-id',
+              'gameId': gameId,
               'playerIds': [testPlayer1.id],
               'isTeamMatch': false,
               'teams': null,
@@ -891,16 +892,21 @@ void main() {
           ],
         };
 
-        final matches = DataTransferService.parseMatchesFromJson(
-          jsonMap,
-          gameById,
-          groupById,
-          playerById,
+        expect(
+          () => DataTransferService.parseMatchesFromJson(
+            jsonMap,
+            gameById,
+            groupById,
+            playerById,
+          ),
+          throwsA(
+            isA<ArgumentError>().having(
+              (e) => e.toString(),
+              'message',
+              contains(gameId),
+            ),
+          ),
         );
-
-        expect(matches.length, 1);
-        expect(matches[0].game.name, 'Unknown');
-        expect(matches[0].game.ruleset, Ruleset.singleWinner);
       });
 
       test('parseMatchesFromJson() handles null group', () {
