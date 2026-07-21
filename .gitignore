@@ -173,3 +173,4 @@ app.*.map.json
 /devtools_options.yaml
 
 untranslated_messages.json
+.env

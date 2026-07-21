@@ -52,9 +52,8 @@ class _QrScanViewState extends State<QrScanView> {
               borderRadius: BorderRadius.circular(
                 CustomTheme.standardBorderRadius - 3,
               ),
-              child: SizedBox(
-                width: double.infinity,
-                height: MediaQuery.sizeOf(context).height * 0.45,
+              child: AspectRatio(
+                aspectRatio: 1.0,
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final scanAreaSize = constraints.maxWidth * 0.65;

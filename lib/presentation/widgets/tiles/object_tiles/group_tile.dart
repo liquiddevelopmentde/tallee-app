@@ -18,6 +18,8 @@ class GroupTile extends StatefulWidget {
     this.isHighlighted = false,
     this.onTap,
     this.onPlayerChanged,
+    this.borderColor,
+    this.playersClickable = true,
   });
 
   /// The group data to be displayed.
@@ -31,6 +33,12 @@ class GroupTile extends StatefulWidget {
 
   /// Callback function to be executed when the players in the group are changed.
   final VoidCallback? onPlayerChanged;
+
+  /// Optional border color for the tile.
+  final Color? borderColor;
+
+  /// Whether the players in the group should be clickable.
+  final bool playersClickable;
 
   @override
   State<GroupTile> createState() => _GroupTileState();
@@ -51,7 +59,11 @@ class _GroupTileState extends State<GroupTile> {
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         decoration: widget.isHighlighted
             ? CustomTheme.highlightedBoxDecoration
-            : CustomTheme.standardBoxDecoration,
+            : CustomTheme.standardBoxDecoration.copyWith(
+                border: widget.borderColor != null
+                    ? Border.all(color: widget.borderColor!)
+                    : null,
+              ),
         duration: const Duration(milliseconds: 150),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,19 +109,21 @@ class _GroupTileState extends State<GroupTile> {
                 ]..sort((a, b) => a.name.compareIgnoringCaseTo(b.name)))
                   PlayerTile(
                     player: member,
-                    onTileTap: () {
-                      Navigator.push(
-                        context,
-                        adaptivePageRoute(
-                          builder: (context) => PlayerDetailView(
-                            player: member,
-                            onPlayerNameUpdated: () {
-                              widget.onPlayerChanged?.call();
-                            },
-                          ),
-                        ),
-                      );
-                    },
+                    onTileTap: widget.playersClickable
+                        ? () {
+                            Navigator.push(
+                              context,
+                              adaptivePageRoute(
+                                builder: (context) => PlayerDetailView(
+                                  player: member,
+                                  onPlayerNameUpdated: () {
+                                    widget.onPlayerChanged?.call();
+                                  },
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
                   ),
               ],
             ),

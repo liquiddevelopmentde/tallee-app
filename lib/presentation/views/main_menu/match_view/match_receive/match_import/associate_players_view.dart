@@ -96,7 +96,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
               onPressed: remainingCount == 0
                   ? () async {
                       if (widget.match.group == null) {
-                        // TODO: Implement save logic
+                        await _saveMatch();
                       } else {
                         await Navigator.of(context).push(
                           adaptivePageRoute(
@@ -114,6 +114,10 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
         ),
       ),
     );
+  }
+
+  Future<void> _saveMatch() async {
+    return;
   }
 
   Future<Player?> _showPlayerSelectionSheet(Player? currentSelection) async {
@@ -141,7 +145,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
             Navigator.of(context).pop(player);
           },
           onPlayerCreated: () {
-            // Player creation is handled by onChanged which is also called.
+            _autoAssociatePlayers();
           },
           availablePlayers: availablePlayers,
           initialSelectedPlayer: currentSelection,

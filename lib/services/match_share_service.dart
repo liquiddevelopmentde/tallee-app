@@ -17,7 +17,7 @@ class MatchShareService {
   Future<String> getShareToken(Match match) async {
     try {
       final response = await http.post(
-        Uri.parse('${getApiBaseUrl()}/v1/shares'),
+        Uri.parse('${getApiBaseUrl()}/v1/shares/'),
         body: jsonEncode(match.toJson()),
         headers: {'Content-Type': 'application/json'},
       );
