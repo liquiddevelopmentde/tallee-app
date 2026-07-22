@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/import_file_view.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
+import 'package:tallee/state/data_refresh_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 
@@ -18,18 +24,43 @@ void main() {
         ),
         ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
         ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
+        ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
       ],
-      child: const GameTracker(),
+      child: const Tallee(),
     ),
   );
 }
 
-class GameTracker extends StatelessWidget {
-  const GameTracker({super.key});
+class Tallee extends StatefulWidget {
+  const Tallee({super.key});
+
+  @override
+  State<Tallee> createState() => _TalleeState();
+}
+
+class _TalleeState extends State<Tallee> {
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  /// Receives .tallee files opened via the system.
+  final OpenWithApp openWithApp = OpenWithApp();
+  StreamSubscription<String>? fileSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    // Warm start: a file opened while the app is already running.
+    fileSubscription = openWithApp.getFileStream().listen(openImport);
+    // Cold start: a file that launched the app.
+    WidgetsBinding.instance.addPostFrameCallback((_) => checkInitialFile());
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: scaffoldMessengerKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       localeResolutionCallback: (locale, supportedLocales) {
@@ -80,5 +111,31 @@ class GameTracker extends StatelessWidget {
       ),
       home: const CustomNavigationBar(),
     );
+  }
+
+  /// Fetches a file that launched the app from a cold start, if any.
+  Future<void> checkInitialFile() async {
+    final path = await openWithApp.getInitialFile();
+    if (path != null) openImport(path);
+  }
+
+  /// Pushes the import view for the .tallee file at [path].
+  void openImport(String path) {
+    final navigator = navigatorKey.currentState;
+    if (navigator == null) return;
+    navigator.push(
+      adaptivePageRoute(
+        settings: RouteSettings(name: path),
+        fullscreenDialog: true,
+        builder: (_) =>
+            ImportFileView(filePath: path, messengerKey: scaffoldMessengerKey),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    fileSubscription?.cancel();
+    super.dispose();
   }
 }

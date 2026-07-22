@@ -28,7 +28,7 @@ InlineSpan buildPlayerNameCountSpan(
       : countStyle?.color;
 
   final resolvedMainStyle =
-      (mainStyle ?? const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))
+      (mainStyle ?? const TextStyle(fontSize: 14, fontWeight: FontWeight.w500))
           .copyWith(color: mainColor);
   final resolvedCountStyle =
       (countStyle ?? const TextStyle(fontSize: 14, fontWeight: FontWeight.w500))
@@ -79,7 +79,7 @@ Widget buildUnitNameWidget(
         style:
             mainStyle ??
             const TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
               color: CustomTheme.textColor,
             ),
@@ -119,7 +119,7 @@ Widget _buildPairGameNameWidget(
   List<bool> highlighted = const [],
 }) {
   final resolvedMainStyle =
-      mainStyle ?? const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+      mainStyle ?? const TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
 
   final resolvedCountStyle =
       countStyle ??

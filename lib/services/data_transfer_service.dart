@@ -27,11 +27,22 @@ class DataTransferService {
   /// Returns the JSON string representation of the data in normalized format.
   static Future<String> getAppDataAsJson(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final matches = await db.matchDao.getAllMatches();
+
+    final matches = await db.matchDao.getAllMatches(includeDeletedPlayer: true);
     final groups = await db.groupDao.getAllGroups();
-    final players = await db.playerDao.getAllPlayers();
+    final players = await db.playerDao.getAllPlayers(
+      includeDeletedPlayer: true,
+    );
     final games = await db.gameDao.getAllGames();
     final statistics = await db.statisticDao.getAllStatistics();
+
+    if (matches.isEmpty &&
+        groups.isEmpty &&
+        players.isEmpty &&
+        games.isEmpty &&
+        statistics.isEmpty) {
+      return '';
+    }
 
     final Map<String, dynamic> jsonMap = {
       'players': players.map((player) => player.toJson()).toList(),
@@ -56,7 +67,7 @@ class DataTransferService {
     try {
       final bytes = Uint8List.fromList(utf8.encode(jsonString));
       final path = await FilePicker.saveFile(
-        fileName: '$fileName.json',
+        fileName: '$fileName.tallee',
         bytes: bytes,
       );
 
@@ -72,44 +83,99 @@ class DataTransferService {
     }
   }
 
-  /// Imports data from a selected JSON file into the database.
-  static Future<ImportResult> importData(BuildContext context) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-
-    final path = await FilePicker.pickFiles(
+  /// Opens the file picker and returns the path of the selected `.tallee`
+  /// file, or `null` if the picker was cancelled or no path is available.
+  static Future<String?> pickImportFilePath() async {
+    final result = await FilePicker.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: ['json'],
+      allowedExtensions: ['tallee'],
     );
 
-    if (path == null || path.files.isEmpty) {
-      return ImportResult.canceled;
+    if (result == null || result.files.isEmpty) {
+      return null;
     }
 
-    try {
-      final jsonString = await _readFileContent(path.files.single);
-      if (jsonString == null) return ImportResult.fileReadError;
+    return result.files.single.path;
+  }
 
+  /// Reads and validates a .tallee file at [filePath].
+  /// Returns `(ImportResult, jsonString)`.
+  /// If validation fails, `jsonString` is `null`.
+  static Future<(ImportResult, String?)> getDataFromPath(
+    String filePath,
+  ) async {
+    final file = File(filePath);
+    final exists = await file.exists();
+    if (!exists) {
+      return (ImportResult.fileNotFound, null);
+    }
+
+    final String jsonString;
+    try {
+      jsonString = await file.readAsString();
+    } on Exception catch (e, stack) {
+      print('[getDataFromPath] Failed to read file');
+      print('[getDataFromPath] $e');
+      print(stack);
+      return (ImportResult.fileReadError, null);
+    }
+
+    final (status, _) = await _validateJson(jsonString);
+    if (status != ImportResult.success) {
+      return (status, null);
+    }
+
+    return (ImportResult.success, jsonString);
+  }
+
+  /// Validates [jsonString] against the schema and the content length rules.
+  ///
+  /// Returns the decoded map on success, or an error status with a `null` map
+  /// when validation fails or the JSON is malformed.
+  static Future<(ImportResult, Map<String, dynamic>?)> _validateJson(
+    String jsonString,
+  ) async {
+    try {
       final isValid = await validateJsonSchema(jsonString);
-      if (!isValid) return ImportResult.invalidSchema;
+      if (!isValid) return (ImportResult.invalidSchema, null);
 
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
       if (!validateContent(decoded)) {
-        return ImportResult.invalidData;
+        return (ImportResult.invalidData, null);
       }
 
-      await importDataToDatabase(db, decoded);
-
-      return ImportResult.success;
+      return (ImportResult.success, decoded);
     } on FormatException catch (e, stack) {
-      print('[importData] FormatException');
-      print('[importData] $e');
+      print('[validateJson] FormatException');
+      print('[validateJson] $e');
       print(stack);
-      return ImportResult.formatException;
+      return (ImportResult.formatException, null);
     } on Exception catch (e, stack) {
-      print('[importData] Exception');
-      print('[importData] $e');
+      print('[validateJson] Exception');
+      print('[validateJson] $e');
+      print(stack);
+      return (ImportResult.unknownException, null);
+    }
+  }
+
+  /// Validates the given [jsonString] and writes its content to the database.
+  static Future<ImportResult> commitImport(
+    AppDatabase db,
+    String jsonString,
+  ) async {
+    final (status, decoded) = await _validateJson(jsonString);
+    if (status != ImportResult.success || decoded == null) {
+      return status;
+    }
+
+    try {
+      await importDataToDatabase(db, decoded);
+      return ImportResult.success;
+    } on Exception catch (e, stack) {
+      print('[commitImport] Failed to write data');
+      print('[commitImport] $e');
       print(stack);
       return ImportResult.unknownException;
     }
@@ -300,8 +366,16 @@ class DataTransferService {
         ),
       );
 
+      // Drop score entries that reference players which are not part of the
+      // imported data. This keeps referential integrity and prevents foreign
+      // key violations when importing inconsistent or legacy files.
+      scores.removeWhere((playerId, _) => !playersMap.containsKey(playerId));
+
       // Link attributes to objects
-      final game = gamesMap[gameId] ?? getFallbackGame();
+      final game = ArgumentError.checkNotNull(
+        gamesMap[gameId],
+        'game for id $gameId',
+      );
       final group = groupId != null ? groupsMap[groupId] : null;
 
       final playerIds = (map['playerIds'] as List<dynamic>? ?? [])
@@ -385,20 +459,9 @@ class DataTransferService {
     }).toList();
   }
 
-  /// Creates a fallback game when the referenced game is not found.
-  @visibleForTesting
-  static Game getFallbackGame() {
-    return Game(
-      name: 'Unknown',
-      ruleset: Ruleset.singleWinner,
-      description: '',
-      color: AppColor.blue,
-      icon: '',
-    );
-  }
-
   /// Helper method to read file content from either bytes or path
-  static Future<String?> _readFileContent(PlatformFile file) async {
+  @visibleForTesting
+  static Future<String?> readFileContent(PlatformFile file) async {
     if (file.bytes != null) return utf8.decode(file.bytes!);
     if (file.path != null) return await File(file.path!).readAsString();
     return null;

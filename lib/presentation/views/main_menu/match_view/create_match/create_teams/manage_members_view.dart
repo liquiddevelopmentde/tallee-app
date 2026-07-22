@@ -75,9 +75,15 @@ class _ManageMembersViewState extends State<ManageMembersView> {
                 return ReorderableDelayedDragStartListener(
                   key: ValueKey('player_${player.id}'),
                   index: index,
-                  child: TextIconListTile(
-                    player: player,
-                    icon: Icons.drag_handle,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    child: TextIconListTile(
+                      player: player,
+                      icon: Icons.drag_handle,
+                    ),
                   ),
                 );
               },
