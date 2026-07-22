@@ -223,6 +223,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get export_data => 'Export data';
 
   @override
+  String get file_couldnt_be_accessed => 'The file could not be accessed';
+
+  @override
   String get filter => 'Filter';
 
   @override
@@ -257,6 +260,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get import_data => 'Import data';
+
+  @override
+  String get import_preview_description =>
+      'The following data will be imported';
 
   @override
   String get info => 'Info';
@@ -336,6 +343,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_data_available => 'No data available';
+
+  @override
+  String get no_data_to_export => 'No data to export';
 
   @override
   String get no_games_created_yet => 'No games created yet';

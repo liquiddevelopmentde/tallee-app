@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -104,6 +106,65 @@ void main() {
     return context;
   }
 
+  // Builds a schema-valid .tallee json string from the test entities.
+  String buildJson() => json.encode({
+    'players': [
+      {
+        'id': testPlayer1.id,
+        'name': testPlayer1.name,
+        'description': testPlayer1.description,
+        'createdAt': testPlayer1.createdAt.toIso8601String(),
+        'deleted': false,
+      },
+      {
+        'id': testPlayer2.id,
+        'name': testPlayer2.name,
+        'description': testPlayer2.description,
+        'createdAt': testPlayer2.createdAt.toIso8601String(),
+        'deleted': false,
+      },
+    ],
+    'games': [
+      {
+        'id': testGame.id,
+        'name': testGame.name,
+        'ruleset': testGame.ruleset.name,
+        'description': testGame.description,
+        'color': testGame.color.name,
+        'icon': testGame.icon,
+        'createdAt': testGame.createdAt.toIso8601String(),
+      },
+    ],
+    'groups': [
+      {
+        'id': testGroup.id,
+        'name': testGroup.name,
+        'description': testGroup.description,
+        'memberIds': [testPlayer1.id, testPlayer2.id],
+        'createdAt': testGroup.createdAt.toIso8601String(),
+      },
+    ],
+    'matches': [
+      {
+        'id': testMatch.id,
+        'name': testMatch.name,
+        'gameId': testGame.id,
+        'groupId': testGroup.id,
+        'playerIds': [testPlayer1.id, testPlayer2.id],
+        'notes': testMatch.notes,
+        'scores': {
+          testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
+          testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
+        },
+        'createdAt': testMatch.createdAt.toIso8601String(),
+        'endedAt': null,
+        'isTeamMatch': false,
+        'teams': null,
+      },
+    ],
+    'statistics': <dynamic>[],
+  });
+
   group('DataTransferService Tests', () {
     testWidgets('deleteAllData()', (tester) async {
       await database.playerDao.addPlayer(player: testPlayer1);
@@ -172,21 +233,11 @@ void main() {
           expect(matches.length, 1);
         });
 
-        testWidgets('Exporting empty data works correctly', (tester) async {
+        testWidgets('Exporting empty returns empty string', (tester) async {
           final ctx = await getContext(tester);
           final jsonString = await DataTransferService.getAppDataAsJson(ctx);
 
-          final decoded = json.decode(jsonString) as Map<String, dynamic>;
-
-          final players = decoded['players'] as List<dynamic>;
-          final games = decoded['games'] as List<dynamic>;
-          final groups = decoded['groups'] as List<dynamic>;
-          final matches = decoded['matches'] as List<dynamic>;
-
-          expect(players, isEmpty);
-          expect(games, isEmpty);
-          expect(groups, isEmpty);
-          expect(matches, isEmpty);
+          expect(jsonString, isEmpty);
         });
       });
 
@@ -809,17 +860,18 @@ void main() {
         expect(matches, isEmpty);
       });
 
-      test('parseMatchesFromJson() creates unknown game for missing game', () {
+      test('parseMatchesFromJson() throws exception for missing game', () {
         final playerById = {testPlayer1.id: testPlayer1};
         final gameById = <String, Game>{};
         final groupById = <String, Group>{};
+        const gameId = 'game-id';
 
         final jsonMap = {
           'matches': [
             {
               'id': testMatch.id,
               'name': testMatch.name,
-              'gameId': 'non-existent-game-id',
+              'gameId': gameId,
               'playerIds': [testPlayer1.id],
               'isTeamMatch': false,
               'teams': null,
@@ -830,16 +882,21 @@ void main() {
           ],
         };
 
-        final matches = DataTransferService.parseMatchesFromJson(
-          jsonMap,
-          gameById,
-          groupById,
-          playerById,
+        expect(
+          () => DataTransferService.parseMatchesFromJson(
+            jsonMap,
+            gameById,
+            groupById,
+            playerById,
+          ),
+          throwsA(
+            isA<ArgumentError>().having(
+              (e) => e.toString(),
+              'message',
+              contains(gameId),
+            ),
+          ),
         );
-
-        expect(matches.length, 1);
-        expect(matches[0].game.name, 'Unknown');
-        expect(matches[0].game.ruleset, Ruleset.singleWinner);
       });
 
       test('parseMatchesFromJson() handles null group', () {
@@ -1431,7 +1488,7 @@ void main() {
       });
     });
 
-    group('validateContent() works correctly', () {
+    group('validateContent()', () {
       test('validateContent() returns true for valid data', () {
         final validData = {
           'players': [
@@ -1515,6 +1572,126 @@ void main() {
           ],
         };
         expect(DataTransferService.validateContent(data), isFalse);
+      });
+    });
+
+    group('readFileContent()', () {
+      test('returns decoded string when bytes are present', () async {
+        const content = '{"players": []}';
+        final file = PlatformFile(
+          name: 'data.tallee',
+          size: content.length,
+          bytes: Uint8List.fromList(utf8.encode(content)),
+        );
+
+        final result = await DataTransferService.readFileContent(file);
+
+        expect(result, content);
+      });
+
+      test('reads from path when bytes are null', () async {
+        const content = '{"games": []}';
+        final tempFile = File(
+          '${Directory.systemTemp.path}/read_file_content_test.tallee',
+        );
+        await tempFile.writeAsString(content);
+        addTearDown(() async {
+          if (tempFile.existsSync()) await tempFile.delete();
+        });
+
+        final file = PlatformFile(
+          name: 'data.tallee',
+          size: content.length,
+          path: tempFile.path,
+        );
+
+        final result = await DataTransferService.readFileContent(file);
+
+        expect(result, content);
+      });
+
+      test('returns null when both bytes and path are null', () async {
+        final file = PlatformFile(name: 'data.tallee', size: 0);
+
+        final result = await DataTransferService.readFileContent(file);
+
+        expect(result, isNull);
+      });
+    });
+
+    group('commitImport()', () {
+      test('returns success and writes data for valid json', () async {
+        final result = await DataTransferService.commitImport(
+          database,
+          buildJson(),
+        );
+
+        expect(result, ImportResult.success);
+        expect(await database.playerDao.getPlayerCount(), greaterThan(0));
+        expect(await database.gameDao.getGameCount(), greaterThan(0));
+        expect(await database.groupDao.getGroupCount(), greaterThan(0));
+        expect(await database.matchDao.getMatchCount(), greaterThan(0));
+      });
+
+      test(
+        'returns invalidSchema and writes nothing for invalid json',
+        () async {
+          final result = await DataTransferService.commitImport(
+            database,
+            '{"players": "not a list"}',
+          );
+
+          expect(result, ImportResult.invalidSchema);
+          expect(await database.playerDao.getPlayerCount(), 0);
+          expect(await database.matchDao.getMatchCount(), 0);
+        },
+      );
+
+      test('returns invalidSchema for malformed json', () async {
+        final result = await DataTransferService.commitImport(
+          database,
+          'not-json',
+        );
+
+        expect(result, ImportResult.invalidSchema);
+      });
+    });
+
+    group('getDataFromPath()', () {
+      test('returns fileNotFound when the file does not exist', () async {
+        final missingPath = '${Directory.systemTemp.path}/missing.tallee';
+
+        final result = await DataTransferService.getDataFromPath(missingPath);
+
+        expect(result.$1, ImportResult.fileNotFound);
+        expect(result.$2, isNull);
+      });
+
+      test('returns success and json for a valid file', () async {
+        final validJson = buildJson();
+        final file = File('${Directory.systemTemp.path}/data.tallee');
+        await file.writeAsString(validJson);
+        addTearDown(() async {
+          if (file.existsSync()) await file.delete();
+        });
+
+        final result = await DataTransferService.getDataFromPath(file.path);
+
+        expect(result.$1, ImportResult.success);
+        expect(result.$2, validJson);
+      });
+
+      test('returns invalidSchema and null json for an invalid file', () async {
+        final file = File('${Directory.systemTemp.path}/invalid.tallee');
+        await file.writeAsString('{"players": "not a list"}');
+        addTearDown(() async {
+          if (file.existsSync()) await file.delete();
+        });
+
+        final result = await DataTransferService.getDataFromPath(file.path);
+
+        expect(result.$1, ImportResult.invalidSchema);
+        expect(result.$2, isNull);
       });
     });
   });
