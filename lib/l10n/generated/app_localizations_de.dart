@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -44,6 +43,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get choose_group => 'Gruppe wählen';
+
+  @override
+  String get choose_scopes => 'Bereiche wählen';
+
+  @override
+  String get choose_timeframes => 'Zeiträume wählen';
+
+  @override
+  String get choose_types => 'Typen wählen';
 
   @override
   String get classifier => 'Klassifikator';
@@ -176,10 +184,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleted => 'Gelöscht';
 
   @override
-  String get no_statistics_with_filter =>
-      'Keine Statistiken mit den ausgewählten Filteroptionen';
-
-  @override
   String get description => 'Beschreibung';
 
   @override
@@ -187,15 +191,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get drag_to_set_placement => 'Ziehen um Platzierung zu setzen';
-
-  @override
-  String get choose_timeframes => 'Zeiträume wählen';
-
-  @override
-  String get choose_scopes => 'Bereiche wählen';
-
-  @override
-  String get choose_types => 'Typen wählen';
 
   @override
   String get edit_game => 'Spielvorlage bearbeiten';
@@ -398,6 +393,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_statistics_created_yet => 'Noch keine Statistiken erstellt';
+
+  @override
+  String get no_statistics_with_filter =>
+      'Keine Statistiken mit den ausgewählten Filteroptionen';
 
   @override
   String get no_teams_available => 'Keine Teams verfügbar';

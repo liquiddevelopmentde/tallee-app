@@ -170,6 +170,24 @@ abstract class AppLocalizations {
   /// **'Choose Group'**
   String get choose_group;
 
+  /// No description provided for @choose_scopes.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Scopes'**
+  String get choose_scopes;
+
+  /// No description provided for @choose_timeframes.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Timeframes'**
+  String get choose_timeframes;
+
+  /// No description provided for @choose_types.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Types'**
+  String get choose_types;
+
   /// No description provided for @classifier.
   ///
   /// In en, this message translates to:
@@ -398,12 +416,6 @@ abstract class AppLocalizations {
   /// **'Deleted'**
   String get deleted;
 
-  /// No description provided for @no_statistics_with_filter.
-  ///
-  /// In en, this message translates to:
-  /// **'No statistics with the selected filter'**
-  String get no_statistics_with_filter;
-
   /// No description provided for @description.
   ///
   /// In en, this message translates to:
@@ -421,24 +433,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Drag to set placement'**
   String get drag_to_set_placement;
-
-  /// No description provided for @choose_timeframes.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose Timeframes'**
-  String get choose_timeframes;
-
-  /// No description provided for @choose_scopes.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose Scopes'**
-  String get choose_scopes;
-
-  /// No description provided for @choose_types.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose Types'**
-  String get choose_types;
 
   /// No description provided for @edit_game.
   ///
@@ -829,6 +823,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No statistics created yet'**
   String get no_statistics_created_yet;
+
+  /// No description provided for @no_statistics_with_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'No statistics with the selected filter'**
+  String get no_statistics_with_filter;
 
   /// No description provided for @no_teams_available.
   ///

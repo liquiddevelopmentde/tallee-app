@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -44,6 +43,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get choose_group => 'Choose Group';
+
+  @override
+  String get choose_scopes => 'Choose Scopes';
+
+  @override
+  String get choose_timeframes => 'Choose Timeframes';
+
+  @override
+  String get choose_types => 'Choose Types';
 
   @override
   String get classifier => 'Classifier';
@@ -176,10 +184,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleted => 'Deleted';
 
   @override
-  String get no_statistics_with_filter =>
-      'No statistics with the selected filter';
-
-  @override
   String get description => 'Description';
 
   @override
@@ -187,15 +191,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get drag_to_set_placement => 'Drag to set placement';
-
-  @override
-  String get choose_timeframes => 'Choose Timeframes';
-
-  @override
-  String get choose_scopes => 'Choose Scopes';
-
-  @override
-  String get choose_types => 'Choose Types';
 
   @override
   String get edit_game => 'Edit Game';
@@ -397,6 +392,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_statistics_created_yet => 'No statistics created yet';
+
+  @override
+  String get no_statistics_with_filter =>
+      'No statistics with the selected filter';
 
   @override
   String get no_teams_available => 'No teams available';

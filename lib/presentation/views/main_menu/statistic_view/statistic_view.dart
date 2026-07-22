@@ -20,6 +20,7 @@ import 'package:tallee/presentation/views/main_menu/statistic_view/create_statis
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/cards/text_chip.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
@@ -98,13 +99,13 @@ class _StatisticsViewState extends State<StatisticsView> {
                                           spacing: 10,
                                           children: [
                                             // All
-                                            FilterChip(
+                                            TextChip(
                                               text: loc.all,
                                               onTap: () => resetFilter(),
                                             ),
 
                                             // Groups
-                                            FilterChip(
+                                            TextChip(
                                               text: loc.groups,
                                               count: filteredGroups.length,
                                               onTap: () async {
@@ -130,7 +131,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             ),
 
                                             // Games
-                                            FilterChip(
+                                            TextChip(
                                               text: loc.games,
                                               count: filteredGames.length,
                                               onTap: () async {
@@ -156,7 +157,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             ),
 
                                             // Type
-                                            FilterChip(
+                                            TextChip(
                                               text: loc.type,
                                               count:
                                                   filteredStatisticTypes.length,
@@ -193,7 +194,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             ),
 
                                             // Timeframe
-                                            FilterChip(
+                                            TextChip(
                                               text: loc.timeframe,
                                               count: filteredTimeframes.length,
                                               onTap: () async {
@@ -227,7 +228,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             ),
 
                                             // Scope
-                                            FilterChip(
+                                            TextChip(
                                               text: loc.scope,
                                               count: filteredStatisticScopes
                                                   .length,
@@ -566,44 +567,5 @@ class _StatisticsViewState extends State<StatisticsView> {
     }
 
     return true;
-  }
-}
-
-class FilterChip extends StatefulWidget {
-  const FilterChip({
-    super.key,
-    required this.text,
-    this.count = 0,
-    required this.onTap,
-  });
-
-  final String text;
-  final int count;
-  final VoidCallback onTap;
-
-  @override
-  State<FilterChip> createState() => _FilterChipState();
-}
-
-class _FilterChipState extends State<FilterChip> {
-  @override
-  Widget build(BuildContext context) {
-    final text = widget.text + (widget.count > 0 ? ' (${widget.count})' : '');
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: CustomTheme.onBoxColor,
-          border: Border.all(
-            color: CustomTheme.hintColor,
-            width: 2,
-            strokeAlign: BorderSide.strokeAlignInside,
-          ),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Text(text),
-      ),
-    );
   }
 }
