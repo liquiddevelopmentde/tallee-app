@@ -233,21 +233,11 @@ void main() {
           expect(matches.length, 1);
         });
 
-        testWidgets('Exporting empty data works correctly', (tester) async {
+        testWidgets('Exporting empty returns empty string', (tester) async {
           final ctx = await getContext(tester);
           final jsonString = await DataTransferService.getAppDataAsJson(ctx);
 
-          final decoded = json.decode(jsonString) as Map<String, dynamic>;
-
-          final players = decoded['players'] as List<dynamic>;
-          final games = decoded['games'] as List<dynamic>;
-          final groups = decoded['groups'] as List<dynamic>;
-          final matches = decoded['matches'] as List<dynamic>;
-
-          expect(players, isEmpty);
-          expect(games, isEmpty);
-          expect(groups, isEmpty);
-          expect(matches, isEmpty);
+          expect(jsonString, isEmpty);
         });
       });
 
