@@ -12,6 +12,9 @@
   "cancel": "Abbrechen",
   "choose_game": "Spielvorlage wählen",
   "choose_group": "Gruppe wählen",
+  "choose_scopes": "Bereiche wählen",
+  "choose_timeframes": "Zeiträume wählen",
+  "choose_types": "Typen wählen",
   "classifier": "Klassifikator",
   "classifier_description": "Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.",
   "click_another_player_to_create_a_pair": "Klicke einen weiteren Spieler an, um ein Paar zu erstellen",
@@ -57,10 +60,6 @@
       }
     }
   },
-  "choose_timeframes": "Zeiträume wählen",
-  "choose_scopes": "Bereiche wählen",
-  "choose_types": "Typen wählen",
-  "no_statistics_with_filter": "Keine Statistiken mit den ausgewählten Filteroptionen",
   "delete_group": "Gruppe löschen",
   "delete_group_warning_details": "Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.",
   "delete_match": "Spiel löschen",
@@ -136,6 +135,7 @@
   "no_players_selected": "Keine Spieler:innen ausgewählt",
   "no_results_entered_yet": "Noch keine Ergebnisse eingetragen",
   "no_statistics_created_yet": "Noch keine Statistiken erstellt",
+  "no_statistics_with_filter": "Keine Statistiken mit den ausgewählten Filteroptionen",
   "no_teams_available": "Keine Teams verfügbar",
   "none": "Kein",
   "none_group": "Keine",
