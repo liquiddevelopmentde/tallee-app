@@ -82,7 +82,7 @@ class _ImportFileViewState extends State<ImportFileView> {
                     child: Column(
                       spacing: 10,
                       children: [
-                        // Playes
+                        // Players
                         SettingsListTile(
                           icon: Icons.person_rounded,
                           title: loc.players,
