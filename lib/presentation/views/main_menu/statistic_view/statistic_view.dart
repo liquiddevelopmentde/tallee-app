@@ -70,7 +70,163 @@ class _StatisticsViewState extends State<StatisticsView> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                buildFilterBar(context),
+                Container(
+                  margin: CustomTheme.tileMargin,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            spacing: 10,
+                            children: [
+                              // All
+                              FilterChip(
+                                text: loc.all,
+                                onTap: () {
+                                  setState(() {
+                                    filteredGroups = [];
+                                    filteredGames = [];
+                                    filteredStatisticTypes = [];
+                                    filteredStatisticScopes = [];
+                                    filteredTimeframes = [];
+                                  });
+                                  filterStatistics();
+                                },
+                              ),
+
+                              // Groups
+                              FilterChip(
+                                text: loc.groups,
+                                count: filteredGroups.length,
+                                onTap: () async {
+                                  final result = await Navigator.of(context)
+                                      .push(
+                                        adaptivePageRoute(
+                                          fullscreenDialog: true,
+                                          builder: (context) => ChooseGroupView(
+                                            groups: groups,
+                                            enableMultiSelection: true,
+                                          ),
+                                        ),
+                                      );
+                                  setState(() {
+                                    filteredGroups = result ?? [];
+                                  });
+                                  filterStatistics();
+                                },
+                              ),
+
+                              // Games
+                              FilterChip(
+                                text: loc.games,
+                                count: filteredGames.length,
+                                onTap: () async {
+                                  final result = await Navigator.of(context)
+                                      .push(
+                                        adaptivePageRoute(
+                                          fullscreenDialog: true,
+                                          builder: (context) => ChooseGameView(
+                                            games: games,
+                                            enableMultiSelection: true,
+                                          ),
+                                        ),
+                                      );
+                                  setState(() {
+                                    filteredGames = result ?? [];
+                                  });
+                                  filterStatistics();
+                                },
+                              ),
+
+                              // Type
+                              FilterChip(
+                                text: loc.type,
+                                count: filteredStatisticTypes.length,
+                                onTap: () async {
+                                  final result = await Navigator.of(context)
+                                      .push(
+                                        adaptivePageRoute(
+                                          fullscreenDialog: true,
+                                          builder: (context) =>
+                                              const ChooseEnumView<
+                                                StatisticType
+                                              >(
+                                                enumValue: StatisticType.values,
+                                                enableMultiSelection: true,
+                                              ),
+                                        ),
+                                      );
+                                  setState(() {
+                                    filteredStatisticTypes =
+                                        List<StatisticType>.from(
+                                          result ?? const <StatisticType>[],
+                                        );
+                                  });
+                                  filterStatistics();
+                                },
+                              ),
+
+                              // Timeframe
+                              FilterChip(
+                                text: loc.timeframe,
+                                count: filteredTimeframes.length,
+                                onTap: () async {
+                                  final result = await Navigator.of(context)
+                                      .push(
+                                        adaptivePageRoute(
+                                          fullscreenDialog: true,
+                                          builder: (context) =>
+                                              const ChooseEnumView<Timeframe>(
+                                                enumValue: Timeframe.values,
+                                                enableMultiSelection: true,
+                                              ),
+                                        ),
+                                      );
+                                  setState(() {
+                                    filteredTimeframes = List<Timeframe>.from(
+                                      result ?? const <Timeframe>[],
+                                    );
+                                  });
+                                  filterStatistics();
+                                },
+                              ),
+
+                              // Scope
+                              FilterChip(
+                                text: loc.scope,
+                                count: filteredStatisticScopes.length,
+                                onTap: () async {
+                                  final result = await Navigator.of(context)
+                                      .push(
+                                        adaptivePageRoute(
+                                          fullscreenDialog: true,
+                                          builder: (context) =>
+                                              const ChooseEnumView<
+                                                StatisticScope
+                                              >(
+                                                enumValue:
+                                                    StatisticScope.values,
+                                                enableMultiSelection: true,
+                                              ),
+                                        ),
+                                      );
+                                  setState(() {
+                                    filteredStatisticScopes =
+                                        List<StatisticScope>.from(
+                                          result ?? const <StatisticScope>[],
+                                        );
+                                  });
+                                  filterStatistics();
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Expanded(
                   child: AppSkeleton(
                     enabled: isLoading,
@@ -203,160 +359,6 @@ class _StatisticsViewState extends State<StatisticsView> {
           ],
         );
       },
-    );
-  }
-
-  /// Builds the filter bar displayed above the statistics list.
-  ///
-  /// This is currently a layout placeholder: the chips are purely visual and
-  /// do not filter the underlying statistics yet. The bar lives outside the
-  /// [ReorderableListView] so it stays fixed while the list scrolls.
-  Widget buildFilterBar(BuildContext context) {
-    final loc = AppLocalizations.of(context);
-
-    return Container(
-      margin: CustomTheme.tileMargin,
-      child: Row(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                spacing: 10,
-                children: [
-                  // All
-                  FilterChip(
-                    text: loc.all,
-                    onTap: () {
-                      setState(() {
-                        filteredGroups = [];
-                        filteredGames = [];
-                        filteredStatisticTypes = [];
-                        filteredStatisticScopes = [];
-                        filteredTimeframes = [];
-                      });
-                      filterStatistics();
-                    },
-                  ),
-
-                  // Groups
-                  FilterChip(
-                    text: loc.groups,
-                    count: filteredGroups.length,
-                    onTap: () async {
-                      final result = await Navigator.of(context).push(
-                        adaptivePageRoute(
-                          fullscreenDialog: true,
-                          builder: (context) => ChooseGroupView(
-                            groups: groups,
-                            enableMultiSelection: true,
-                          ),
-                        ),
-                      );
-                      setState(() {
-                        filteredGroups = result ?? [];
-                      });
-                      filterStatistics();
-                    },
-                  ),
-
-                  // Games
-                  FilterChip(
-                    text: loc.games,
-                    count: filteredGames.length,
-                    onTap: () async {
-                      final result = await Navigator.of(context).push(
-                        adaptivePageRoute(
-                          fullscreenDialog: true,
-                          builder: (context) => ChooseGameView(
-                            games: games,
-                            enableMultiSelection: true,
-                          ),
-                        ),
-                      );
-                      setState(() {
-                        filteredGames = result ?? [];
-                      });
-                      filterStatistics();
-                    },
-                  ),
-
-                  // Type
-                  FilterChip(
-                    text: loc.type,
-                    count: filteredStatisticTypes.length,
-                    onTap: () async {
-                      final result = await Navigator.of(context).push(
-                        adaptivePageRoute(
-                          fullscreenDialog: true,
-                          builder: (context) =>
-                              const ChooseEnumView<StatisticType>(
-                                enumValue: StatisticType.values,
-                                enableMultiSelection: true,
-                              ),
-                        ),
-                      );
-                      setState(() {
-                        filteredStatisticTypes = List<StatisticType>.from(
-                          result ?? const <StatisticType>[],
-                        );
-                      });
-                      filterStatistics();
-                    },
-                  ),
-
-                  // Timeframe
-                  FilterChip(
-                    text: loc.timeframe,
-                    count: filteredTimeframes.length,
-                    onTap: () async {
-                      final result = await Navigator.of(context).push(
-                        adaptivePageRoute(
-                          fullscreenDialog: true,
-                          builder: (context) => const ChooseEnumView<Timeframe>(
-                            enumValue: Timeframe.values,
-                            enableMultiSelection: true,
-                          ),
-                        ),
-                      );
-                      setState(() {
-                        filteredTimeframes = List<Timeframe>.from(
-                          result ?? const <Timeframe>[],
-                        );
-                      });
-                      filterStatistics();
-                    },
-                  ),
-
-                  // Scope
-                  FilterChip(
-                    text: loc.scope,
-                    count: filteredStatisticScopes.length,
-                    onTap: () async {
-                      final result = await Navigator.of(context).push(
-                        adaptivePageRoute(
-                          fullscreenDialog: true,
-                          builder: (context) =>
-                              const ChooseEnumView<StatisticScope>(
-                                enumValue: StatisticScope.values,
-                                enableMultiSelection: true,
-                              ),
-                        ),
-                      );
-                      setState(() {
-                        filteredStatisticScopes = List<StatisticScope>.from(
-                          result ?? const <StatisticScope>[],
-                        );
-                      });
-                      filterStatistics();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
