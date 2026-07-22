@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -94,7 +95,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_group => 'Create Group';
 
   @override
-  String get create_match => 'Create match';
+  String get create_match => 'Create Match';
 
   @override
   String get create_new_group => 'Create new group';
