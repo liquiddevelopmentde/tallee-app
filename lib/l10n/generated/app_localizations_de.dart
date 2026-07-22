@@ -337,9 +337,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get members => 'Mitglieder';
 
   @override
-  String get no_data_to_export => 'Keine Daten zum exportieren';
-
-  @override
   String get multiple_winners => 'Mehrere Gewinner:innen';
 
   @override
@@ -348,6 +345,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_data_available => 'Keine Daten verfügbar';
+
+  @override
+  String get no_data_to_export => 'Keine Daten zum exportieren';
 
   @override
   String get no_games_created_yet => 'Noch keine Spielvorlagen erstellt';
