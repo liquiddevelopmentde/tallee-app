@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -223,6 +224,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get export_data => 'Daten exportieren';
 
   @override
+  String get file_couldnt_be_accessed =>
+      'Die Datei konnte nicht geöffnet werden';
+
+  @override
   String get filter => 'Filter';
 
   @override
@@ -257,6 +262,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get import_data => 'Daten importieren';
+
+  @override
+  String get import_preview_description =>
+      'Die folgenden Daten werden importiert';
 
   @override
   String get info => 'Info';
@@ -336,6 +345,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_data_available => 'Keine Daten verfügbar';
+
+  @override
+  String get no_data_to_export => 'Keine Daten zum exportieren';
 
   @override
   String get no_games_created_yet => 'Noch keine Spielvorlagen erstellt';

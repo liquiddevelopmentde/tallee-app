@@ -11,6 +11,50 @@ String getPointLabel(AppLocalizations loc, int points) {
   }
 }
 
+/// Translates a [ImportResult] enum value to its corresponding localized string.
+String translateImportResultToString(
+  ImportResult importResult,
+  BuildContext context,
+) {
+  final loc = AppLocalizations.of(context);
+  switch (importResult) {
+    case ImportResult.success:
+      return loc.data_successfully_imported;
+    case ImportResult.invalidSchema:
+      return loc.invalid_schema;
+    case ImportResult.invalidData:
+      return loc.names_or_descriptions_too_long;
+    case ImportResult.fileReadError:
+      return loc.error_reading_file;
+    case ImportResult.fileNotFound:
+      return loc.file_couldnt_be_accessed;
+    case ImportResult.canceled:
+      return loc.import_canceled;
+    case ImportResult.formatException:
+      return loc.format_exception;
+    case ImportResult.unknownException:
+      return loc.unknown_exception;
+  }
+}
+
+/// Translates a [ExportResult] enum value to its corresponding localized string.
+String translateExportResultToString(
+  ExportResult exportResult,
+  BuildContext context,
+) {
+  final loc = AppLocalizations.of(context);
+  switch (exportResult) {
+    case ExportResult.success:
+      return loc.data_successfully_exported;
+    case ExportResult.noData:
+      return loc.no_data_to_export;
+    case ExportResult.canceled:
+      return loc.export_canceled;
+    case ExportResult.unknownException:
+      return loc.unknown_exception;
+  }
+}
+
 /// Translates a [Ruleset] enum value to its corresponding localized string.
 String translateRulesetToString(Ruleset ruleset, BuildContext context) {
   final loc = AppLocalizations.of(context);
