@@ -6,12 +6,13 @@ import 'package:pinput/pinput.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_players_view.dart';
 import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/services/match_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
+
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_games_view.dart';
 
 class EnterTokenView extends StatefulWidget {
   const EnterTokenView({super.key});
@@ -191,9 +192,7 @@ class _EnterTokenViewState extends State<EnterTokenView> {
       });
 
       Navigator.of(context).push(
-        adaptivePageRoute(
-          builder: (context) => AssociatePlayersView(match: match),
-        ),
+        adaptivePageRoute(builder: (_) => AssociateGamesView(match: match)),
       );
     } catch (error) {
       if (!mounted) return;

@@ -8,13 +8,21 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_groups_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/single_player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/tiles/associate_player_tile.dart';
+import 'package:tallee/services/match_share_service.dart';
 
 class AssociatePlayersView extends StatefulWidget {
-  const AssociatePlayersView({super.key, required this.match});
+  const AssociatePlayersView({
+    super.key,
+    required this.match,
+    this.associatedGame,
+  });
 
   final Match match;
+
+  final Game? associatedGame;
 
   @override
   State<AssociatePlayersView> createState() => _AssociatePlayersViewState();
@@ -107,6 +115,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                             builder: (context) => AssociateGroupsView(
                               match: widget.match,
                               associations: associations,
+                              associatedGame: widget.associatedGame,
                             ),
                           ),
                         );
@@ -121,7 +130,38 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   }
 
   Future<void> _saveMatch() async {
-    return;
+    final db = Provider.of<AppDatabase>(context, listen: false);
+
+    // Filter null values and cast to Map<String, Player>
+    final playerAssociations = <String, Player>{};
+    for (var entry in associations.entries) {
+      if (entry.value != null) {
+        playerAssociations[entry.key] = entry.value!;
+      }
+    }
+
+    try {
+      await MatchShareService().saveImportedMatch(
+        db: db,
+        importedMatch: widget.match,
+        playerAssociations: playerAssociations,
+        associatedGame: widget.associatedGame,
+        associatedGroup: null,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(CustomSnackBar(message: 'Match saved successfully!'));
+
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(CustomSnackBar(message: e.toString()));
+    }
   }
 
   Future<Player?> _showPlayerSelectionSheet(Player? currentSelection) async {

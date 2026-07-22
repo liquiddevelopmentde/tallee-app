@@ -10,6 +10,7 @@ import 'package:json_schema/json_schema.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tallee/core/constants.dart';
+import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
@@ -113,6 +114,71 @@ class MatchShareService {
       bytes: fileBytes,
     );
     // TODO: add locs
+  }
+
+  /// Maps imported match data to local entities and saves it to the database.
+  Future<void> saveImportedMatch({
+    required AppDatabase db,
+    required Match importedMatch,
+    required Map<String, Player> playerAssociations,
+    required Game? associatedGame,
+    required Group? associatedGroup,
+  }) async {
+    // 1. Map players to local ones
+    final localPlayers = importedMatch.players
+        .map((p) => playerAssociations[p.id]!)
+        .toList();
+
+    // 2. Map scores to local player IDs
+    final localScores = importedMatch.scores.map((
+      importedPlayerId,
+      scoreEntry,
+    ) {
+      final localPlayer = playerAssociations[importedPlayerId]!;
+      return MapEntry(localPlayer.id, scoreEntry);
+    });
+
+    // 3. Map teams and their members to local ones
+    final localTeams = importedMatch.teams?.map((team) {
+      final teamMembers = team.members
+          .map((m) => playerAssociations[m.id]!)
+          .toList();
+      return team.copyWith(members: teamMembers);
+    }).toList();
+
+    // 4. Ensure group exists
+    Group? localGroup = associatedGroup;
+    if (importedMatch.group != null && localGroup == null) {
+      final newGroupMembers = importedMatch.group!.members
+          .map((m) => playerAssociations[m.id]!)
+          .toList();
+      localGroup = Group(
+        name: importedMatch.group!.name,
+        description: importedMatch.group!.description,
+        members: newGroupMembers,
+      );
+      await db.groupDao.addGroup(group: localGroup);
+    }
+
+    // 5. Ensure game exists
+    Game localGame = associatedGame ?? importedMatch.game;
+    if (associatedGame == null) {
+      // Create new game if not associated with an existing one
+      await db.gameDao.addGame(game: localGame);
+    }
+
+    final localMatch = importedMatch.copyWith(
+      game: localGame,
+      players: localPlayers,
+      scores: localScores,
+      teams: localTeams,
+      group: localGroup,
+    );
+
+    final success = await db.matchDao.addMatch(match: localMatch);
+    if (!success) {
+      throw MatchAlreadyExistsException();
+    }
   }
 
   Future<(ImportResult, Match?, String)> chooseFileToImport() async {

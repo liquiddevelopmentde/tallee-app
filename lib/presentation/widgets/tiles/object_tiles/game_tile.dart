@@ -14,6 +14,7 @@ class GameTile extends StatelessWidget {
   /// - [isHighlighted]: A boolean to determine if the tile should be highlighted.
   /// - [badgeText]: Optional text to display in a badge on the right side of the title.
   /// - [badgeColor]: Optional color for the badge background.
+  /// - [borderColor]: Optional color for the highlight border. If null, [badgeColor] or orange is used.
   const GameTile({
     super.key,
     required this.title,
@@ -24,6 +25,7 @@ class GameTile extends StatelessWidget {
     this.isHighlighted = false,
     this.badgeText,
     this.badgeColor,
+    this.borderColor,
   });
 
   final String title;
@@ -42,6 +44,8 @@ class GameTile extends StatelessWidget {
 
   final Color? badgeColor;
 
+  final Color? borderColor;
+
   @override
   Widget build(BuildContext context) {
     final badgeTextColor = badgeColor != null
@@ -49,6 +53,7 @@ class GameTile extends StatelessWidget {
         : Colors.white;
 
     final gameColor = badgeColor ?? getColorFromAppColor(AppColor.orange);
+    final highlightBorderColor = borderColor ?? gameColor;
 
     return GestureDetector(
       onTap: () async {
@@ -70,7 +75,7 @@ class GameTile extends StatelessWidget {
             ? CustomTheme.standardBoxDecoration
             : CustomTheme.highlightedBoxDecoration.copyWith(
                 border: Border.all(
-                  color: gameColor.withValues(alpha: 0.9),
+                  color: highlightBorderColor.withValues(alpha: 0.9),
                   width: 2,
                   strokeAlign: BorderSide.strokeAlignCenter,
                 ),

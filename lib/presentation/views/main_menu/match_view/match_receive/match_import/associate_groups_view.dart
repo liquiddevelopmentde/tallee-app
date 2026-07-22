@@ -3,20 +3,26 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/single_group_selection_widget.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
+import 'package:tallee/services/match_share_service.dart';
 
 class AssociateGroupsView extends StatefulWidget {
   const AssociateGroupsView({
     required this.match,
     required this.associations,
+    this.associatedGame,
     super.key,
   });
 
   final Match match;
 
   final Map<String, Player?> associations;
+
+  final Game? associatedGame;
 
   @override
   State<AssociateGroupsView> createState() => _AssociateGroupsViewState();
@@ -107,37 +113,47 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                 return FadeTransition(opacity: animation, child: child);
               },
               child: associatedGroup == null
-                  ? Container(
-                      key: const ValueKey('no_association'),
-                      margin: CustomTheme.tileMargin,
-                      height: 150,
-                      decoration: CustomTheme.standardBoxDecoration.copyWith(
-                        border: Border.all(
-                          color: Colors.orange.withAlpha(150),
-                          width: 1,
+                  ? GestureDetector(
+                      onTap: _showGroupSelectionSheet,
+                      child: Container(
+                        key: const ValueKey('no_association'),
+                        margin: CustomTheme.tileMargin,
+                        height: 150,
+                        decoration: CustomTheme.standardBoxDecoration.copyWith(
+                          border: Border.all(
+                            color: Colors.orange.withAlpha(150),
+                            width: 1,
+                          ),
                         ),
-                      ),
-                      child: const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.group_add,
-                              size: 35,
-                              color: Colors.orange,
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              'No matching local group found.\nA new group will be created.',
-                              style: TextStyle(
-                                color: CustomTheme.textColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                overflow: TextOverflow.visible,
+                        child: const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.group_add,
+                                size: 35,
+                                color: Colors.orange,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                              SizedBox(height: 5),
+                              Text(
+                                'No matching local group found.\nA new group will be created.',
+                                style: TextStyle(
+                                  color: CustomTheme.textColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  overflow: TextOverflow.visible,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                'Tap to choose existing',
+                                style: TextStyle(
+                                  color: CustomTheme.hintColor,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     )
@@ -162,7 +178,38 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
   }
 
   Future<void> _saveMatch() async {
-    return;
+    final db = Provider.of<AppDatabase>(context, listen: false);
+
+    // Filter null values and cast to Map<String, Player>
+    final playerAssociations = <String, Player>{};
+    for (var entry in widget.associations.entries) {
+      if (entry.value != null) {
+        playerAssociations[entry.key] = entry.value!;
+      }
+    }
+
+    try {
+      await MatchShareService().saveImportedMatch(
+        db: db,
+        importedMatch: widget.match,
+        playerAssociations: playerAssociations,
+        associatedGame: widget.associatedGame,
+        associatedGroup: associatedGroup,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(CustomSnackBar(message: 'Match saved successfully!'));
+
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(CustomSnackBar(message: e.toString()));
+    }
   }
 
   Future<void> _showGroupSelectionSheet() async {
@@ -183,23 +230,12 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
 
     if (!mounted) return;
 
-    final selected = await showModalBottomSheet<Group>(
-      context: context,
-      backgroundColor: CustomTheme.backgroundColor,
-      builder: (context) {
-        return SingleGroupSelectionWidget(
-          onChanged: (group) async {
-            await Future.delayed(const Duration(milliseconds: 400));
-            if (!context.mounted) return;
-            Navigator.of(context).pop(group);
-          },
-          onGroupCreated: () {
-            _autoAssociateGroup();
-          },
-          availableGroups: validGroups,
-          initialSelectedGroup: associatedGroup,
-        );
-      },
+    final selected = await Navigator.push<Group>(
+      context,
+      adaptivePageRoute(
+        builder: (context) =>
+            ChooseGroupView(groups: validGroups, initialGroup: associatedGroup),
+      ),
     );
 
     if (selected != null) {

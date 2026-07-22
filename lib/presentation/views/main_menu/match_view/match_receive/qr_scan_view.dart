@@ -5,7 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_players_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_games_view.dart';
 import 'package:tallee/services/match_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
@@ -130,7 +130,7 @@ class _QrScanViewState extends State<QrScanView> {
 
       await Navigator.of(context).push(
         adaptivePageRoute(
-          builder: (context) => AssociatePlayersView(match: loadedMatch),
+          builder: (_) => AssociateGamesView(match: loadedMatch),
         ),
       );
 

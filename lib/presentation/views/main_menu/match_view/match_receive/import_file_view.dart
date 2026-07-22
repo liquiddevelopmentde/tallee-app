@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_players_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_games_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/services/match_share_service.dart';
 
@@ -119,7 +119,7 @@ class _ImportFileViewState extends State<ImportFileView> {
                       Navigator.push(
                         context,
                         adaptivePageRoute(
-                          builder: (_) => AssociatePlayersView(match: data.$2!),
+                          builder: (_) => AssociateGamesView(match: data.$2!),
                         ),
                       );
                     }
