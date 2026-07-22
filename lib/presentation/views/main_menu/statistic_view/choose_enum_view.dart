@@ -210,6 +210,8 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
     });
   }
 
+  /// Calls the correct translation function depending on the enum.
+  /// Returns the localized string translation of the value
   String getValName(T value, BuildContext context) {
     if (value is StatisticScope) {
       return translateScopeToString(value, context);
@@ -222,6 +224,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
     }
   }
 
+  /// Returns the correct view title depending on the enum.
   String getTitle(T value, AppLocalizations loc) {
     if (value is StatisticScope) {
       return loc.choose_scopes;
