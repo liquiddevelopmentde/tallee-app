@@ -56,7 +56,6 @@
       }
     }
   },
-  "no_data_to_export": "Keine Daten zum exportieren",
   "delete_group": "Gruppe löschen",
   "delete_group_warning_details": "Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.",
   "delete_match": "Spiel löschen",
@@ -120,6 +119,7 @@
   "multiple_winners": "Mehrere Gewinner:innen",
   "names_or_descriptions_too_long": "Die Daten enthalten zu lange Namen oder Beschreibungen.",
   "no_data_available": "Keine Daten verfügbar",
+  "no_data_to_export": "Keine Daten zum exportieren",
   "no_games_created_yet": "Noch keine Spielvorlagen erstellt",
   "no_groups_created_yet": "Noch keine Gruppen erstellt",
   "no_license_text_available": "Kein Lizenztext verfügbar",
