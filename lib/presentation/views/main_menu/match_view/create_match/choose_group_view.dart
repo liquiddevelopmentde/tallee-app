@@ -19,19 +19,19 @@ import 'package:tallee/presentation/widgets/top_centered_message.dart';
 class ChooseGroupView extends StatefulWidget {
   /// A view that allows the user to choose a group from a list of groups.
   /// - [groups]: A list of available groups to choose from
-  /// - [initialGroup]: The initially selected group
+  /// - [initialGroups]: The initially selected group
   /// - [statistic]: Optional statistic payload for choosing groups for a statistic
   /// - [enableMultiSelection]: Whether multiple groups can be selected
   const ChooseGroupView({
     super.key,
     required this.groups,
-    this.initialGroup,
+    this.initialGroups,
     this.statistic,
     this.enableMultiSelection = false,
   });
 
   final List<Group> groups;
-  final Group? initialGroup;
+  final List<Group>? initialGroups;
   final Statistic? statistic;
   final bool enableMultiSelection;
 
@@ -42,8 +42,8 @@ class ChooseGroupView extends StatefulWidget {
 class _ChooseGroupViewState extends State<ChooseGroupView> {
   final TextEditingController controller = TextEditingController();
 
-  List<Group> selectedGroups = [];
   late final List<Group> filteredGroups;
+  late List<Group> selectedGroups;
 
   // If selecting multiple is possible
   late bool enableMultiSelection;
@@ -51,6 +51,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
   @override
   void initState() {
     filteredGroups = [...widget.groups];
+    selectedGroups = widget.initialGroups ?? [];
     enableMultiSelection =
         widget.enableMultiSelection || widget.statistic != null;
     super.initState();

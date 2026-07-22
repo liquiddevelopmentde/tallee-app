@@ -18,12 +18,12 @@ class ChooseEnumView<T extends Enum> extends StatefulWidget {
   const ChooseEnumView({
     super.key,
     required this.enumValue,
-    this.initialEnum,
+    this.initialEnums,
     this.enableMultiSelection = false,
   });
 
   final List<T> enumValue;
-  final T? initialEnum;
+  final List<T>? initialEnums;
   final bool enableMultiSelection;
 
   @override
@@ -33,16 +33,13 @@ class ChooseEnumView<T extends Enum> extends StatefulWidget {
 class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
   final TextEditingController controller = TextEditingController();
 
-  List<T> selectedValues = [];
   late final List<T> filteredValues;
-
-  // If selecting multiple is possible
-  late bool enableMultiSelection;
+  late List<T> selectedValues;
 
   @override
   void initState() {
     filteredValues = [...widget.enumValue];
-    enableMultiSelection = widget.enableMultiSelection;
+    selectedValues = widget.initialEnums ?? [];
     super.initState();
   }
 
@@ -141,7 +138,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                             );
                           } else {
                             // In single select mode only allow one item
-                            if (!enableMultiSelection) {
+                            if (!isMultiSelect) {
                               selectedValues.clear();
                             }
                             selectedValues.add(filteredValues[index]);
@@ -149,7 +146,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                         });
 
                         // Navigate back to create match view instantly
-                        if (!enableMultiSelection) {
+                        if (!isMultiSelect) {
                           await Future.delayed(
                             Constants.MINIMUM_SKELETON_DURATION,
                           ).then((_) {
@@ -173,8 +170,10 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
     );
   }
 
+  bool get isMultiSelect => widget.enableMultiSelection;
+
   Object? get popResult {
-    if (enableMultiSelection) return selectedValues;
+    if (isMultiSelect) return selectedValues;
     return selectedValues.isEmpty ? null : selectedValues.first;
   }
 

@@ -98,13 +98,13 @@ class _StatisticsViewState extends State<StatisticsView> {
                                         child: Row(
                                           spacing: 10,
                                           children: [
-                                            // All
+                                            // All Chip
                                             TextChip(
                                               text: loc.all,
                                               onTap: () => resetFilter(),
                                             ),
 
-                                            // Groups
+                                            // Groups Chip
                                             TextChip(
                                               text: loc.groups,
                                               count: filteredGroups.length,
@@ -118,6 +118,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                         builder: (context) =>
                                                             ChooseGroupView(
                                                               groups: groups,
+                                                              initialGroups:
+                                                                  filteredGroups,
                                                               enableMultiSelection:
                                                                   true,
                                                             ),
@@ -130,7 +132,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               },
                                             ),
 
-                                            // Games
+                                            // Games Chip
                                             TextChip(
                                               text: loc.games,
                                               count: filteredGames.length,
@@ -144,6 +146,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                         builder: (context) =>
                                                             ChooseGameView(
                                                               games: games,
+                                                              initialGames:
+                                                                  filteredGames,
                                                               enableMultiSelection:
                                                                   true,
                                                             ),
@@ -156,7 +160,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               },
                                             ),
 
-                                            // Type
+                                            // Type Chip
                                             TextChip(
                                               text: loc.type,
                                               count:
@@ -169,12 +173,15 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                       adaptivePageRoute(
                                                         fullscreenDialog: true,
                                                         builder: (context) =>
-                                                            const ChooseEnumView<
+                                                            ChooseEnumView<
                                                               StatisticType
                                                             >(
                                                               enumValue:
                                                                   StatisticType
                                                                       .values,
+
+                                                              initialEnums:
+                                                                  filteredStatisticTypes,
                                                               enableMultiSelection:
                                                                   true,
                                                             ),
@@ -193,7 +200,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               },
                                             ),
 
-                                            // Timeframe
+                                            // Timeframe Chip
                                             TextChip(
                                               text: loc.timeframe,
                                               count: filteredTimeframes.length,
@@ -205,12 +212,15 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                       adaptivePageRoute(
                                                         fullscreenDialog: true,
                                                         builder: (context) =>
-                                                            const ChooseEnumView<
+                                                            ChooseEnumView<
                                                               Timeframe
                                                             >(
                                                               enumValue:
                                                                   Timeframe
                                                                       .values,
+
+                                                              initialEnums:
+                                                                  filteredTimeframes,
                                                               enableMultiSelection:
                                                                   true,
                                                             ),
@@ -232,6 +242,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               text: loc.scope,
                                               count: filteredStatisticScopes
                                                   .length,
+
                                               onTap: () async {
                                                 final result =
                                                     await Navigator.of(
@@ -240,12 +251,14 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                       adaptivePageRoute(
                                                         fullscreenDialog: true,
                                                         builder: (context) =>
-                                                            const ChooseEnumView<
+                                                            ChooseEnumView<
                                                               StatisticScope
                                                             >(
                                                               enumValue:
                                                                   StatisticScope
                                                                       .values,
+                                                              initialEnums:
+                                                                  filteredStatisticScopes,
                                                               enableMultiSelection:
                                                                   true,
                                                             ),

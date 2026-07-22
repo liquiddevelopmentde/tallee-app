@@ -26,14 +26,14 @@ class ChooseGameView extends StatefulWidget {
   const ChooseGameView({
     super.key,
     required this.games,
-    this.initialGame,
+    this.initialGames,
     this.onGamesUpdated,
     this.statistic,
     this.enableMultiSelection = false,
   });
 
   final List<Game> games;
-  final Game? initialGame;
+  final List<Game>? initialGames;
   final VoidCallback? onGamesUpdated;
   final Statistic? statistic;
   final bool enableMultiSelection;
@@ -66,7 +66,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     db = Provider.of<AppDatabase>(context, listen: false);
     fetchGameCounts();
 
-    selectedGames = widget.initialGame != null ? [widget.initialGame!] : [];
+    selectedGames = widget.initialGames ?? [];
     // Start with all games visible
     filteredGames = List<Game>.from(games);
 
