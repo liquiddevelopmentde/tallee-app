@@ -70,15 +70,22 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         title: Text(loc.match_profile),
         actions: [
           HapticIconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                adaptivePageRoute(
-                  builder: (context) => MatchShareView(match: match),
-                  fullscreenDialog: true,
-                ),
-              );
-            },
-            icon: const Icon(Icons.share),
+            onPressed: match.mvp.isNotEmpty || match.mvt.isNotEmpty
+                ? () {
+                    Navigator.of(context).push(
+                      adaptivePageRoute(
+                        builder: (context) => MatchShareView(match: match),
+                        fullscreenDialog: true,
+                      ),
+                    );
+                  }
+                : null,
+            icon: Icon(
+              Icons.share,
+              color: match.mvp.isNotEmpty || match.mvt.isNotEmpty
+                  ? Colors.white
+                  : Colors.white.withAlpha(150),
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.delete),

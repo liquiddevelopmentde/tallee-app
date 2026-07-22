@@ -29,6 +29,7 @@ class CreateGameView extends StatefulWidget {
     required this.onGameChanged,
     this.gameToEdit,
     this.matchCount = 0,
+    this.requiredRuleset,
   });
 
   /// Callback to invoke when the game is created or edited
@@ -38,6 +39,8 @@ class CreateGameView extends StatefulWidget {
   final Game? gameToEdit;
 
   final int matchCount;
+
+  final Ruleset? requiredRuleset;
 
   @override
   State<CreateGameView> createState() => _CreateGameViewState();
@@ -74,6 +77,9 @@ class _CreateGameViewState extends State<CreateGameView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
+    if (widget.requiredRuleset != null) {
+      selectedRuleset = widget.requiredRuleset;
+    }
     _gameNameController.addListener(() => setState(() {}));
   }
 
@@ -201,7 +207,25 @@ class _CreateGameViewState extends State<CreateGameView> {
               if (!isEditMode())
                 ChooseTile(
                   title: loc.ruleset,
-                  trailing: getRulesetDropdown(loc),
+                  trailing: widget.requiredRuleset != null
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 8,
+                            children: [
+                              Icon(getRulesetIcon(selectedRuleset!), size: 16),
+                              Text(
+                                translateRulesetToString(
+                                  selectedRuleset!,
+                                  context,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
+                          ),
+                        )
+                      : getRulesetDropdown(loc),
                 ),
 
               // Choose color tile

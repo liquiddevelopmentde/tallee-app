@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/app_color_utils.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -78,6 +78,10 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
             GameTile(
               title: widget.match.game.name,
               description: widget.match.game.description,
+              subtitle: translateRulesetToString(
+                widget.match.game.ruleset,
+                context,
+              ),
             ),
             const Icon(Icons.arrow_downward, size: 30),
             const SizedBox(height: 10),
@@ -87,10 +91,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                   (Widget? currentChild, List<Widget> previousChildren) {
                     return Stack(
                       alignment: Alignment.topCenter,
-                      children: <Widget>[
-                        ...previousChildren,
-                        if (currentChild != null) currentChild,
-                      ],
+                      children: <Widget>[...previousChildren, ?currentChild],
                     );
                   },
               transitionBuilder: (Widget child, Animation<double> animation) {
@@ -144,6 +145,10 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                       key: ValueKey(associatedGame!.id),
                       title: associatedGame!.name,
                       description: associatedGame!.description,
+                      subtitle: translateRulesetToString(
+                        associatedGame!.ruleset,
+                        context,
+                      ),
                       onTap: _showGameSelectionSheet,
                       isHighlighted: true,
                       badgeColor: getColorFromAppColor(associatedGame!.color),
@@ -185,8 +190,11 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
     final selected = await Navigator.push<Game>(
       context,
       adaptivePageRoute(
-        builder: (context) =>
-            ChooseGameView(games: filteredGames, initialGame: associatedGame),
+        builder: (context) => ChooseGameView(
+          games: filteredGames,
+          initialGame: associatedGame,
+          requiredRuleset: widget.match.game.ruleset,
+        ),
       ),
     );
 

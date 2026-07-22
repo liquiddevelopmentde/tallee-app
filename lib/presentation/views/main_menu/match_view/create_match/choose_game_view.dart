@@ -29,6 +29,7 @@ class ChooseGameView extends StatefulWidget {
     this.initialGame,
     this.onGamesUpdated,
     this.statistic,
+    this.requiredRuleset,
   });
 
   final List<Game> games;
@@ -39,6 +40,8 @@ class ChooseGameView extends StatefulWidget {
   final VoidCallback? onGamesUpdated;
 
   final Statistic? statistic;
+
+  final Ruleset? requiredRuleset;
 
   @override
   State<ChooseGameView> createState() => _ChooseGameViewState();
@@ -100,6 +103,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 context,
                 adaptivePageRoute(
                   builder: (context) => CreateGameView(
+                    requiredRuleset: widget.requiredRuleset,
                     onGameChanged: () {
                       widget.onGamesUpdated?.call();
                     },
@@ -107,6 +111,11 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 ),
               );
               if (result != null && result.game != null) {
+                if (widget.requiredRuleset != null &&
+                    result.game.ruleset != widget.requiredRuleset) {
+                  return;
+                }
+
                 setState(() {
                   games.insert(0, result.game);
                   games.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
