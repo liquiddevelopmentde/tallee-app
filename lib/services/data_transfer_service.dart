@@ -27,6 +27,7 @@ class DataTransferService {
   /// Returns the JSON string representation of the data in normalized format.
   static Future<String> getAppDataAsJson(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
+
     final matches = await db.matchDao.getAllMatches(includeDeletedPlayer: true);
     final groups = await db.groupDao.getAllGroups();
     final players = await db.playerDao.getAllPlayers(
@@ -34,6 +35,14 @@ class DataTransferService {
     );
     final games = await db.gameDao.getAllGames();
     final statistics = await db.statisticDao.getAllStatistics();
+
+    if (matches.isEmpty &&
+        groups.isEmpty &&
+        players.isEmpty &&
+        games.isEmpty &&
+        statistics.isEmpty) {
+      return '';
+    }
 
     final Map<String, dynamic> jsonMap = {
       'players': players.map((player) => player.toJson()).toList(),
@@ -74,28 +83,20 @@ class DataTransferService {
     }
   }
 
-  /// Opens the file picker and imports data from a selected .tallee file into the database.
-  static Future<ImportResult> importDataFromFiles(BuildContext context) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-
-    final path = await FilePicker.pickFiles(
+  /// Opens the file picker and returns the path of the selected `.tallee`
+  /// file, or `null` if the picker was cancelled or no path is available.
+  static Future<String?> pickImportFilePath() async {
+    final result = await FilePicker.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
       allowedExtensions: ['tallee'],
     );
 
-    if (path == null) {
-      return ImportResult.canceled;
+    if (result == null || result.files.isEmpty) {
+      return null;
     }
 
-    if (path.files.isEmpty) {
-      return ImportResult.invalidData;
-    }
-
-    final jsonString = await readFileContent(path.files.single);
-    if (jsonString == null) return ImportResult.fileReadError;
-
-    return commitImport(db, jsonString);
+    return result.files.single.path;
   }
 
   /// Reads and validates a .tallee file at [filePath].

@@ -710,6 +710,12 @@ abstract class AppLocalizations {
   /// **'Members'**
   String get members;
 
+  /// No description provided for @no_data_to_export.
+  ///
+  /// In en, this message translates to:
+  /// **'No data to export'**
+  String get no_data_to_export;
+
   /// No description provided for @multiple_winners.
   ///
   /// In en, this message translates to:

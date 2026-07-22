@@ -116,6 +116,8 @@
   "matches_won": "Matches won",
   "member": "Member",
   "members": "Members",
+  "no_data_to_export": "No data to export",
+
   "multiple_winners": "Multiple Winners",
   "names_or_descriptions_too_long": "The data contains names or descriptions that are too long.",
   "no_data_available": "No data available",

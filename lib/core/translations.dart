@@ -37,6 +37,24 @@ String translateImportResultToString(
   }
 }
 
+/// Translates a [ExportResult] enum value to its corresponding localized string.
+String translateExportResultToString(
+  ExportResult exportResult,
+  BuildContext context,
+) {
+  final loc = AppLocalizations.of(context);
+  switch (exportResult) {
+    case ExportResult.success:
+      return loc.data_successfully_exported;
+    case ExportResult.noData:
+      return loc.no_data_to_export;
+    case ExportResult.canceled:
+      return loc.export_canceled;
+    case ExportResult.unknownException:
+      return loc.unknown_exception;
+  }
+}
+
 /// Translates a [Ruleset] enum value to its corresponding localized string.
 String translateRulesetToString(Ruleset ruleset, BuildContext context) {
   final loc = AppLocalizations.of(context);

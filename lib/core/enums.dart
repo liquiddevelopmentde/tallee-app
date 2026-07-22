@@ -27,7 +27,8 @@ enum ImportResult {
 /// - [ExportResult.success]: The export operation was successful.
 /// - [ExportResult.canceled]: The export operation was canceled by the user.
 /// - [ExportResult.unknownException]: An exception occurred during export.
-enum ExportResult { success, canceled, unknownException }
+/// - [ExportResult.noData]: There is no data to export.
+enum ExportResult { success, canceled, unknownException, noData }
 
 /// Different rulesets available for games
 /// - [Ruleset.highestScore]: The player with the highest score wins.

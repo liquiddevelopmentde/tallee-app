@@ -21,20 +21,15 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.
 import 'package:tallee/services/data_transfer_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
 
-/// A page shown when the app is opened by a `.tallee` file.
-///
-/// It parses the file, shows how many entities it contains and lets the user
-/// confirm or reject the import. On completion it pops itself and reports the
-/// outcome through a snackbar shown via [messengerKey].
+/// A page shown when the app opens a `.tallee` file
+/// - [filePath]: Path to the file
+/// - [messengerKey]: Optional key to a [ScaffoldMessenger] that should show
+/// the result snackbar. If not provided, the result is returned via [Navigator.pop].
 class ImportFileView extends StatefulWidget {
-  const ImportFileView({
-    super.key,
-    required this.filePath,
-    required this.messengerKey,
-  });
+  const ImportFileView({super.key, required this.filePath, this.messengerKey});
 
   final String filePath;
-  final GlobalKey<ScaffoldMessengerState> messengerKey;
+  final GlobalKey<ScaffoldMessengerState>? messengerKey;
 
   @override
   State<ImportFileView> createState() => _ImportFileViewState();
@@ -341,27 +336,33 @@ class _ImportFileViewState extends State<ImportFileView> {
     finishImport(importResult: ImportResult.canceled);
   }
 
-  /// Pops the page and shows a snackbar describing [importResult].
+  /// Pops the page and reports the [importResult] to the caller.
+  /// When a messengerKey was provided, the result snackbar is shown.
+  /// Else the result is returned via pop()
   Future<void> finishImport({required ImportResult importResult}) async {
     if (!mounted) return;
 
-    final message = translateImportResultToString(importResult, context);
-
     if (importResult == ImportResult.success) {
+      // Refresh on success
       Provider.of<DataRefreshProvider>(context, listen: false).refresh();
     }
 
-    Navigator.of(context).maybePop();
+    Navigator.of(context).maybePop(importResult);
 
-    if (importResult == ImportResult.success) {
-      await HapticFeedback.successNotification();
-    } else if (importResult != ImportResult.canceled) {
-      await HapticFeedback.errorNotification();
+    final messengerKey = widget.messengerKey;
+    final message = translateImportResultToString(importResult, context);
+
+    // Show snackbar with haptic feedback
+    if (messengerKey != null) {
+      if (importResult == ImportResult.success) {
+        await HapticFeedback.successNotification();
+      } else if (importResult != ImportResult.canceled) {
+        await HapticFeedback.errorNotification();
+      }
+
+      messengerKey.currentState
+        ?..hideCurrentSnackBar()
+        ..showSnackBar(CustomSnackBar(message: message));
     }
-
-    final messenger = widget.messengerKey.currentState;
-    messenger
-      ?..hideCurrentSnackBar()
-      ..showSnackBar(CustomSnackBar(message: message));
   }
 }
