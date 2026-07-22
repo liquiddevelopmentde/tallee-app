@@ -56,7 +56,10 @@ jobs:
           flutter --version
 
       - name: Run tests
-        run: flutter test
+        run: |
+          touch .env
+          flutter test
+          
 
   untranslated_localizations:
     name: 'Check for untranslated localizations'
