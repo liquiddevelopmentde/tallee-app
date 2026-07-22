@@ -1,6 +1,7 @@
 {
   "@@locale": "de",
   "add_team": "Team hinzufügen",
+  "all": "Alle",
   "all_players": "Alle Spieler:innen",
   "all_players_selected": "Alle Spieler:innen ausgewählt",
   "all_time": "Gesamter Zeitraum",
@@ -56,6 +57,7 @@
       }
     }
   },
+  "no_statistics_with_filter": "Keine Statistiken mit den ausgewählten Filteroptionen",
   "delete_group": "Gruppe löschen",
   "delete_group_warning_details": "Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.",
   "delete_match": "Spiel löschen",
@@ -182,6 +184,7 @@
   "total_matches": "Spiele insgesamt",
   "total_score": "Punktzahl insgesamt",
   "total_wins": "Siege insgesamt",
+  "type": "Typ",
   "unknown_exception": "Unbekannter Fehler (siehe Konsole)",
   "winner": "Gewinner:in",
   "winners": "Gewinner:innen",

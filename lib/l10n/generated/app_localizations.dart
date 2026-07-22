@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'Add Team'**
   String get add_team;
 
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
   /// No description provided for @all_players.
   ///
   /// In en, this message translates to:
@@ -391,6 +397,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deleted'**
   String get deleted;
+
+  /// No description provided for @no_statistics_with_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'No statistics with the selected filter'**
+  String get no_statistics_with_filter;
 
   /// No description provided for @description.
   ///
@@ -1105,6 +1117,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total wins'**
   String get total_wins;
+
+  /// No description provided for @type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
 
   /// No description provided for @unknown_exception.
   ///

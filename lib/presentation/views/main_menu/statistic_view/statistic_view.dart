@@ -12,6 +12,9 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
+import 'package:tallee/presentation/views/main_menu/statistic_view/choose_item_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/create_statistic_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
@@ -29,13 +32,22 @@ class StatisticsView extends StatefulWidget {
 
 class _StatisticsViewState extends State<StatisticsView> {
   bool isLoading = true;
-  List<Match> matches = const [];
-  List<Player> players = const [];
-  List<Statistic> statistics = const [];
+  int selectedFilterIndex = 0;
+  List<Match> matches = [];
+  List<Player> players = [];
+  List<Group> groups = [];
+  List<Game> games = [];
+  List<Statistic> statistics = [];
   List<Widget> statisticTiles = List.generate(
     4,
     (index) => buildSkeletonStatisticTile(),
   );
+
+  List<Game> filteredGames = [];
+  List<Group> filteredGroups = [];
+  List<StatisticType> filteredStatisticTypes = [];
+  List<StatisticScope> filteredStatisticScopes = [];
+  List<Timeframe> filteredTimeframes = [];
 
   @override
   void initState() {
@@ -55,86 +67,107 @@ class _StatisticsViewState extends State<StatisticsView> {
         return Stack(
           alignment: Alignment.center,
           children: [
-            AppSkeleton(
-              enabled: isLoading,
-              fixLayoutBuilder: true,
-              alignment: Alignment.topCenter,
-              child: Visibility(
-                visible: statisticTiles.isNotEmpty,
-                replacement: Center(
-                  child: TopCenteredMessage(
-                    icon: Icons.info,
-                    title: loc.info,
-                    message: loc.no_statistics_created_yet,
-                  ),
-                ),
-                child: ReorderableListView.builder(
-                  padding: CustomTheme.listViewPadding(context),
-                  proxyDecorator: (child, index, animation) {
-                    return AnimatedBuilder(
-                      animation: animation,
-                      child: child,
-                      builder: (context, child) {
-                        final t = Curves.easeOut.transform(animation.value);
-                        const tileMargin = CustomTheme.tileMargin;
-                        return Transform.scale(
-                          scale: 1.0 + (0.02 * t),
-                          child: Material(
-                            color: Colors.transparent,
-                            elevation: 8 * t,
-                            borderRadius: BorderRadius.circular(12),
-                            child: Stack(
-                              children: [
-                                ?child,
-                                Positioned(
-                                  left: tileMargin.left,
-                                  right: tileMargin.right,
-                                  top: tileMargin.top,
-                                  bottom: tileMargin.bottom,
-                                  child: IgnorePointer(
-                                    child: AnimatedOpacity(
-                                      duration: const Duration(
-                                        milliseconds: 100,
-                                      ),
-                                      opacity: 1 * t,
-                                      child: DecoratedBox(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withAlpha(15),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                buildFilterBar(context),
+                Expanded(
+                  child: AppSkeleton(
+                    enabled: isLoading,
+                    fixLayoutBuilder: true,
+                    alignment: Alignment.topCenter,
+                    child: Visibility(
+                      visible: statisticTiles.isNotEmpty,
+                      replacement: Visibility(
+                        visible: statistics.isNotEmpty,
+                        replacement: Center(
+                          child: TopCenteredMessage(
+                            icon: Icons.info,
+                            title: loc.info,
+                            message: loc.no_statistics_created_yet,
+                          ),
+                        ),
+                        child: Center(
+                          child: TopCenteredMessage(
+                            icon: Icons.info,
+                            title: loc.info,
+                            message: loc.no_statistics_with_filter,
+                          ),
+                        ),
+                      ),
+                      child: ReorderableListView.builder(
+                        padding: CustomTheme.listViewPadding(context),
+                        proxyDecorator: (child, index, animation) {
+                          return AnimatedBuilder(
+                            animation: animation,
+                            child: child,
+                            builder: (context, child) {
+                              final t = Curves.easeOut.transform(
+                                animation.value,
+                              );
+                              const tileMargin = CustomTheme.tileMargin;
+                              return Transform.scale(
+                                scale: 1.0 + (0.02 * t),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  elevation: 8 * t,
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Stack(
+                                    children: [
+                                      ?child,
+                                      Positioned(
+                                        left: tileMargin.left,
+                                        right: tileMargin.right,
+                                        top: tileMargin.top,
+                                        bottom: tileMargin.bottom,
+                                        child: IgnorePointer(
+                                          child: AnimatedOpacity(
+                                            duration: const Duration(
+                                              milliseconds: 100,
+                                            ),
+                                            opacity: 1 * t,
+                                            child: DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white.withAlpha(
+                                                  15,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  onReorderItem: (oldIndex, newIndex) {
-                    setState(() {
-                      final stat = statistics.removeAt(oldIndex);
-                      statistics.insert(newIndex, stat);
-                      statisticTiles = statistics
-                          .map(
-                            (stat) => buildStatisticTile(
-                              context: context,
-                              statistic: stat,
-                            ),
-                          )
-                          .toList();
-                    });
-                  },
-                  itemCount: statisticTiles.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return statisticTiles[index];
-                  },
+                              );
+                            },
+                          );
+                        },
+                        onReorderItem: (oldIndex, newIndex) {
+                          setState(() {
+                            final stat = statistics.removeAt(oldIndex);
+                            statistics.insert(newIndex, stat);
+                            statisticTiles = statistics
+                                .map(
+                                  (stat) => buildStatisticTile(
+                                    context: context,
+                                    statistic: stat,
+                                  ),
+                                )
+                                .toList();
+                          });
+                        },
+                        itemCount: statisticTiles.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return statisticTiles[index];
+                        },
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom + 20,
@@ -173,6 +206,158 @@ class _StatisticsViewState extends State<StatisticsView> {
     );
   }
 
+  /// Builds the filter bar displayed above the statistics list.
+  ///
+  /// This is currently a layout placeholder: the chips are purely visual and
+  /// do not filter the underlying statistics yet. The bar lives outside the
+  /// [ReorderableListView] so it stays fixed while the list scrolls.
+  Widget buildFilterBar(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
+    return Container(
+      margin: CustomTheme.tileMargin,
+      child: Row(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                spacing: 10,
+                children: [
+                  // All
+                  FilterChip(
+                    text: loc.all,
+                    onTap: () {
+                      setState(() {
+                        filteredGroups = [];
+                        filteredGames = [];
+                        filteredStatisticTypes = [];
+                        filteredStatisticScopes = [];
+                        filteredTimeframes = [];
+                      });
+                      filterStatistics();
+                    },
+                  ),
+
+                  // Groups
+                  FilterChip(
+                    text: loc.groups,
+                    count: filteredGroups.length,
+                    onTap: () async {
+                      final result = await Navigator.of(context).push(
+                        adaptivePageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) => ChooseGroupView(
+                            groups: groups,
+                            enableMultiSelection: true,
+                          ),
+                        ),
+                      );
+                      setState(() {
+                        filteredGroups = result ?? [];
+                      });
+                      filterStatistics();
+                    },
+                  ),
+
+                  // Games
+                  FilterChip(
+                    text: loc.games,
+                    count: filteredGames.length,
+                    onTap: () async {
+                      final result = await Navigator.of(context).push(
+                        adaptivePageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) => ChooseGameView(
+                            games: games,
+                            enableMultiSelection: true,
+                          ),
+                        ),
+                      );
+                      setState(() {
+                        filteredGames = result ?? [];
+                      });
+                      filterStatistics();
+                    },
+                  ),
+
+                  // Type
+                  FilterChip(
+                    text: loc.type,
+                    count: filteredStatisticTypes.length,
+                    onTap: () async {
+                      final result = await Navigator.of(context).push(
+                        adaptivePageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) => const ChooseItemView(
+                            items: StatisticType.values,
+                            enableMultiSelection: true,
+                          ),
+                        ),
+                      );
+                      setState(() {
+                        filteredStatisticTypes = List<StatisticType>.from(
+                          result ?? const <StatisticType>[],
+                        );
+                      });
+                      filterStatistics();
+                    },
+                  ),
+
+                  // Timeframe
+                  FilterChip(
+                    text: loc.timeframe,
+                    count: filteredTimeframes.length,
+                    onTap: () async {
+                      final result = await Navigator.of(context).push(
+                        adaptivePageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) => const ChooseItemView(
+                            items: Timeframe.values,
+                            enableMultiSelection: true,
+                          ),
+                        ),
+                      );
+                      setState(() {
+                        filteredTimeframes = List<Timeframe>.from(
+                          result ?? const <Timeframe>[],
+                        );
+                      });
+                      filterStatistics();
+                    },
+                  ),
+
+                  // Scope
+                  FilterChip(
+                    text: loc.scope,
+                    count: filteredStatisticScopes.length,
+                    onTap: () async {
+                      final result = await Navigator.of(context).push(
+                        adaptivePageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) => const ChooseItemView(
+                            items: StatisticScope.values,
+                            enableMultiSelection: true,
+                          ),
+                        ),
+                      );
+                      setState(() {
+                        filteredStatisticScopes = List<StatisticScope>.from(
+                          result ?? const <StatisticScope>[],
+                        );
+                      });
+                      filterStatistics();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Loads all statistics, matches, and players from the database
   Future<void> loadStatistics(BuildContext context) async {
     setState(() {
@@ -185,6 +370,8 @@ class _StatisticsViewState extends State<StatisticsView> {
       db.statisticDao.getAllStatistics(),
       db.matchDao.getAllMatches(),
       db.playerDao.getAllPlayers(),
+      db.groupDao.getAllGroups(),
+      db.gameDao.getAllGames(),
       Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
     ]);
 
@@ -194,6 +381,8 @@ class _StatisticsViewState extends State<StatisticsView> {
       ..sort((stat1, stat2) => stat2.createdAt.compareTo(stat1.createdAt));
     matches = results[1] as List<Match>;
     players = results[2] as List<Player>;
+    groups = results[3] as List<Group>;
+    games = results[4] as List<Game>;
 
     setState(() {
       statisticTiles = statistics
@@ -285,6 +474,94 @@ class _StatisticsViewState extends State<StatisticsView> {
       selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
       selectedGroups: [Group(name: 'Group 1', members: [])],
       displayCount: 5,
+    );
+  }
+
+  // Filtering the statistics
+  void filterStatistics() {
+    final filtered = statistics.where(matchesActiveFilters).toList();
+
+    setState(() {
+      statisticTiles = filtered
+          .map((stat) => buildStatisticTile(context: context, statistic: stat))
+          .toList();
+    });
+  }
+
+  /// Whether [statistic] satisfies all currently active filters.
+  bool matchesActiveFilters(Statistic statistic) {
+    if (filteredStatisticTypes.isNotEmpty &&
+        !filteredStatisticTypes.contains(statistic.type)) {
+      return false;
+    }
+
+    if (filteredTimeframes.isNotEmpty &&
+        !filteredTimeframes.contains(statistic.timeframe)) {
+      return false;
+    }
+
+    if (filteredStatisticScopes.isNotEmpty &&
+        !statistic.scopes.any(filteredStatisticScopes.contains)) {
+      return false;
+    }
+
+    if (filteredGroups.isNotEmpty) {
+      final groupIds =
+          statistic.selectedGroups?.map((group) => group.id).toSet() ??
+          const <String>{};
+      if (!filteredGroups.any((group) => groupIds.contains(group.id))) {
+        return false;
+      }
+    }
+
+    if (filteredGames.isNotEmpty) {
+      final gameIds =
+          statistic.selectedGames?.map((game) => game.id).toSet() ??
+          const <String>{};
+      if (!filteredGames.any((game) => gameIds.contains(game.id))) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+}
+
+class FilterChip extends StatefulWidget {
+  const FilterChip({
+    super.key,
+    required this.text,
+    this.count = 0,
+    required this.onTap,
+  });
+
+  final String text;
+  final int count;
+  final VoidCallback onTap;
+
+  @override
+  State<FilterChip> createState() => _FilterChipState();
+}
+
+class _FilterChipState extends State<FilterChip> {
+  @override
+  Widget build(BuildContext context) {
+    final text = widget.text + (widget.count > 0 ? ' (${widget.count})' : '');
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: CustomTheme.onBoxColor,
+          border: Border.all(
+            color: CustomTheme.hintColor,
+            width: 2,
+            strokeAlign: BorderSide.strokeAlignInside,
+          ),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(text),
+      ),
     );
   }
 }

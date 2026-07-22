@@ -1,6 +1,7 @@
 {
   "@@locale": "en",
   "add_team": "Add Team",
+  "all": "All",
   "all_players": "All players",
   "all_players_selected": "All players selected",
   "all_time": "All time",
@@ -63,6 +64,7 @@
   "delete_player_warning_details": "This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.",
   "delete_statistic": "Delete statistic",
   "deleted": "Deleted",
+  "no_statistics_with_filter": "No statistics with the selected filter",
   "description": "Description",
   "displayed_entries": "Displayed entries",
   "drag_to_set_placement": "Drag to set placement",
@@ -191,6 +193,7 @@
   "total_matches": "Total matches",
   "total_score": "Total score",
   "total_wins": "Total wins",
+  "type": "Type",
   "unknown_exception": "Unknown Exception (see console)",
   "winner": "Winner",
   "winners": "Winners",

@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -10,6 +11,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get add_team => 'Team hinzufügen';
+
+  @override
+  String get all => 'Alle';
 
   @override
   String get all_players => 'Alle Spieler:innen';
@@ -170,6 +174,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get deleted => 'Gelöscht';
+
+  @override
+  String get no_statistics_with_filter =>
+      'Keine Statistiken mit den ausgewählten Filteroptionen';
 
   @override
   String get description => 'Beschreibung';
@@ -542,6 +550,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get total_wins => 'Siege insgesamt';
+
+  @override
+  String get type => 'Typ';
 
   @override
   String get unknown_exception => 'Unbekannter Fehler (siehe Konsole)';

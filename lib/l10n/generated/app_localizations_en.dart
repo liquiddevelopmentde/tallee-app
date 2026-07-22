@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -10,6 +11,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get add_team => 'Add Team';
+
+  @override
+  String get all => 'All';
 
   @override
   String get all_players => 'All players';
@@ -170,6 +174,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleted => 'Deleted';
+
+  @override
+  String get no_statistics_with_filter =>
+      'No statistics with the selected filter';
 
   @override
   String get description => 'Description';
@@ -540,6 +548,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get total_wins => 'Total wins';
+
+  @override
+  String get type => 'Type';
 
   @override
   String get unknown_exception => 'Unknown Exception (see console)';
