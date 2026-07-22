@@ -23,10 +23,13 @@ class AssociatePlayersView extends StatefulWidget {
 class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   final Map<String, Player?> associations = {};
 
+  List<Player> get playersToAssociate =>
+      widget.match.group?.members ?? widget.match.players;
+
   @override
   void initState() {
     super.initState();
-    for (var player in widget.match.players) {
+    for (var player in playersToAssociate) {
       associations[player.id] = null;
     }
     _autoAssociatePlayers();
@@ -34,9 +37,10 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
   @override
   Widget build(BuildContext context) {
-    final remainingCount =
-        widget.match.players.length -
-        associations.values.where((p) => p != null).length;
+    final players = playersToAssociate;
+    final remainingCount = players
+        .where((player) => associations[player.id] == null)
+        .length;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Associate Players'), centerTitle: true),
@@ -66,9 +70,9 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
             const SizedBox(height: 5),
             Expanded(
               child: ListView.builder(
-                itemCount: widget.match.players.length,
+                itemCount: players.length,
                 itemBuilder: (context, index) {
-                  final player = widget.match.players[index];
+                  final player = players[index];
                   final associatedPlayer = associations[player.id];
                   return AssociatePlayerTile(
                     player: player,
@@ -163,7 +167,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     setState(() {
       final usedLocalPlayerIds = <String>{};
 
-      for (var importedPlayer in widget.match.players) {
+      for (var importedPlayer in playersToAssociate) {
         final match = allPlayers.where((localPlayer) {
           return !usedLocalPlayerIds.contains(localPlayer.id) &&
               localPlayer.name.toLowerCase() ==

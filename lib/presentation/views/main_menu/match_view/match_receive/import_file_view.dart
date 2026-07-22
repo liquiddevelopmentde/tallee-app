@@ -39,20 +39,12 @@ class _ImportFileViewState extends State<ImportFileView> {
                   successfulImport = true;
                   dottedBorderColor = Colors.green;
                 });
-                print(data.$1);
-                print(data.$2);
-                print(data.$3);
-                print(data.$2!.players.length);
-                print(data.$2!.teams!.length);
               } else {
                 successfulImport = false;
                 if (data.$1 != ImportResult.canceled) {
                   setState(() {
                     dottedBorderColor = Colors.red;
                   });
-                  print(data.$1);
-                  print(data.$2);
-                  print(data.$3);
                 } else {
                   setState(() {
                     dottedBorderColor = CustomTheme.boxBorderColor;
@@ -77,9 +69,27 @@ class _ImportFileViewState extends State<ImportFileView> {
                   color: CustomTheme.boxColor,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
-                child: !successfulImport
-                    ? chooseMatchFile()
-                    : displaySelectedFile(data.$3, data.$2!),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 150),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: ScaleTransition(
+                            scale: animation.drive(
+                              Tween<double>(
+                                begin: 0.95,
+                                end: 1.0,
+                              ).chain(CurveTween(curve: Curves.easeOut)),
+                            ),
+                            child: child,
+                          ),
+                        );
+                      },
+                  child: !successfulImport
+                      ? chooseMatchFile()
+                      : displaySelectedFile(data.$3, data.$2!),
+                ),
               ),
             ),
           ),
@@ -123,6 +133,7 @@ class _ImportFileViewState extends State<ImportFileView> {
 
   Widget chooseMatchFile() {
     return Column(
+      key: const ValueKey('choose_match_file'),
       children: [
         const Icon(Icons.file_present, size: 50),
         const SizedBox(height: 20),
@@ -146,6 +157,7 @@ class _ImportFileViewState extends State<ImportFileView> {
 
   Widget displaySelectedFile(String filename, Match match) {
     return Column(
+      key: const ValueKey('display_selected_file'),
       children: [
         fileTile(filename, match),
         const SizedBox(height: 20),

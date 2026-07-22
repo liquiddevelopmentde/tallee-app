@@ -39,9 +39,17 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
 
     final importedGroup = widget.match.group;
     if (importedGroup != null) {
+      final mappedLocalPlayerIds = importedGroup.members
+          .map((m) => widget.associations[m.id]?.id)
+          .whereType<String>()
+          .toSet();
+
+      if (mappedLocalPlayerIds.length != importedGroup.members.length) return;
+
       final match = allGroups.where((localGroup) {
-        return localGroup.name.toLowerCase() ==
-            importedGroup.name.toLowerCase();
+        final localMemberIds = localGroup.members.map((m) => m.id).toSet();
+        return localMemberIds.length == mappedLocalPlayerIds.length &&
+            localMemberIds.containsAll(mappedLocalPlayerIds);
       }).firstOrNull;
 
       if (match != null) {
@@ -59,7 +67,27 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
         appBar: AppBar(title: const Text('Associate Group')),
         body: Column(
           children: [
-            const SizedBox(height: 20),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                margin: CustomTheme.standardMargin,
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                decoration: BoxDecoration(
+                  color: CustomTheme.primaryColor,
+                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                ),
+                child: Text(
+                  associatedGroup != null
+                      ? 'Group associated'
+                      : 'New group will be created',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 5),
             GroupTile(group: widget.match.group!, playersClickable: false),
             const Icon(Icons.arrow_downward, size: 30),
             const SizedBox(height: 10),
@@ -69,43 +97,47 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                   (Widget? currentChild, List<Widget> previousChildren) {
                     return Stack(
                       alignment: Alignment.topCenter,
-                      children: <Widget>[...previousChildren, ?currentChild],
+                      children: <Widget>[
+                        ...previousChildren,
+                        if (currentChild != null) currentChild,
+                      ],
                     );
                   },
               transitionBuilder: (Widget child, Animation<double> animation) {
                 return FadeTransition(opacity: animation, child: child);
               },
               child: associatedGroup == null
-                  ? GestureDetector(
-                      onTap: _showGroupSelectionSheet,
-                      child: Container(
-                        key: const ValueKey('tap_to_associate'),
-                        margin: CustomTheme.tileMargin,
-                        height: 150,
-                        decoration: CustomTheme.standardBoxDecoration.copyWith(
-                          border: Border.all(
-                            color: Colors.red.withAlpha(150),
-                            width: 1,
-                          ),
+                  ? Container(
+                      key: const ValueKey('no_association'),
+                      margin: CustomTheme.tileMargin,
+                      height: 150,
+                      decoration: CustomTheme.standardBoxDecoration.copyWith(
+                        border: Border.all(
+                          color: Colors.orange.withAlpha(150),
+                          width: 1,
                         ),
-                        child: const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.people, size: 35),
-                              SizedBox(height: 5),
-                              Text(
-                                'Tap to associate a group.',
-                                style: TextStyle(
-                                  color: CustomTheme.textColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  overflow: TextOverflow.visible,
-                                ),
-                                textAlign: TextAlign.center,
+                      ),
+                      child: const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.group_add,
+                              size: 35,
+                              color: Colors.orange,
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              'No matching local group found.\nA new group will be created.',
+                              style: TextStyle(
+                                color: CustomTheme.textColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                overflow: TextOverflow.visible,
                               ),
-                            ],
-                          ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
                       ),
                     )
@@ -121,7 +153,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
             BottomAnimatedButton(
               buttonText: 'Save match',
               sizeRelativeToWidth: 0.95,
-              onPressed: associatedGroup != null ? _saveMatch : null,
+              onPressed: _saveMatch,
             ),
           ],
         ),
@@ -134,6 +166,23 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
   }
 
   Future<void> _showGroupSelectionSheet() async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final allGroups = await db.groupDao.getAllGroups();
+
+    final importedGroup = widget.match.group!;
+    final mappedLocalPlayerIds = importedGroup.members
+        .map((m) => widget.associations[m.id]?.id)
+        .whereType<String>()
+        .toSet();
+
+    final validGroups = allGroups.where((localGroup) {
+      final localMemberIds = localGroup.members.map((m) => m.id).toSet();
+      return localMemberIds.length == mappedLocalPlayerIds.length &&
+          localMemberIds.containsAll(mappedLocalPlayerIds);
+    }).toList();
+
+    if (!mounted) return;
+
     final selected = await showModalBottomSheet<Group>(
       context: context,
       backgroundColor: CustomTheme.backgroundColor,
@@ -147,6 +196,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
           onGroupCreated: () {
             _autoAssociateGroup();
           },
+          availableGroups: validGroups,
           initialSelectedGroup: associatedGroup,
         );
       },
