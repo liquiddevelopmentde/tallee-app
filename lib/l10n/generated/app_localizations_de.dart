@@ -189,6 +189,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get drag_to_set_placement => 'Ziehen um Platzierung zu setzen';
 
   @override
+  String get choose_timeframes => 'Zeiträume wählen';
+
+  @override
+  String get choose_scopes => 'Bereiche wählen';
+
+  @override
+  String get choose_types => 'Typen wählen';
+
+  @override
   String get edit_game => 'Spielvorlage bearbeiten';
 
   @override

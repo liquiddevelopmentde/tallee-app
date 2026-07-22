@@ -189,6 +189,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drag_to_set_placement => 'Drag to set placement';
 
   @override
+  String get choose_timeframes => 'Choose Timeframes';
+
+  @override
+  String get choose_scopes => 'Choose Scopes';
+
+  @override
+  String get choose_types => 'Choose Types';
+
+  @override
   String get edit_game => 'Edit Game';
 
   @override

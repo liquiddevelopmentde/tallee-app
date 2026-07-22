@@ -14,7 +14,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
-import 'package:tallee/presentation/views/main_menu/statistic_view/choose_item_view.dart';
+import 'package:tallee/presentation/views/main_menu/statistic_view/choose_enum_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/create_statistic_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
@@ -289,10 +289,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                       final result = await Navigator.of(context).push(
                         adaptivePageRoute(
                           fullscreenDialog: true,
-                          builder: (context) => const ChooseItemView(
-                            items: StatisticType.values,
-                            enableMultiSelection: true,
-                          ),
+                          builder: (context) =>
+                              const ChooseEnumView<StatisticType>(
+                                enumValue: StatisticType.values,
+                                enableMultiSelection: true,
+                              ),
                         ),
                       );
                       setState(() {
@@ -312,8 +313,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                       final result = await Navigator.of(context).push(
                         adaptivePageRoute(
                           fullscreenDialog: true,
-                          builder: (context) => const ChooseItemView(
-                            items: Timeframe.values,
+                          builder: (context) => const ChooseEnumView<Timeframe>(
+                            enumValue: Timeframe.values,
                             enableMultiSelection: true,
                           ),
                         ),
@@ -335,10 +336,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                       final result = await Navigator.of(context).push(
                         adaptivePageRoute(
                           fullscreenDialog: true,
-                          builder: (context) => const ChooseItemView(
-                            items: StatisticScope.values,
-                            enableMultiSelection: true,
-                          ),
+                          builder: (context) =>
+                              const ChooseEnumView<StatisticScope>(
+                                enumValue: StatisticScope.values,
+                                enableMultiSelection: true,
+                              ),
                         ),
                       );
                       setState(() {

@@ -57,6 +57,9 @@
       }
     }
   },
+  "choose_timeframes": "Zeiträume wählen",
+  "choose_scopes": "Bereiche wählen",
+  "choose_types": "Typen wählen",
   "no_statistics_with_filter": "Keine Statistiken mit den ausgewählten Filteroptionen",
   "delete_group": "Gruppe löschen",
   "delete_group_warning_details": "Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.",
