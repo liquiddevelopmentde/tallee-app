@@ -263,7 +263,7 @@ abstract class AppLocalizations {
   /// No description provided for @create_match.
   ///
   /// In en, this message translates to:
-  /// **'Create match'**
+  /// **'Create Match'**
   String get create_match;
 
   /// No description provided for @create_new_group.

@@ -95,7 +95,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_group => 'Create Group';
 
   @override
-  String get create_match => 'Create match';
+  String get create_match => 'Create Match';
 
   @override
   String get create_new_group => 'Create new group';
