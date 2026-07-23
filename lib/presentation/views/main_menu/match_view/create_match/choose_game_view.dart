@@ -198,6 +198,20 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                             selectedGames.add(filteredGames[index]);
                           }
                         });
+
+                        // Navigate back to create match view instantly
+                        if (!enableMultiSelection) {
+                          await Future.delayed(
+                            Constants.MINIMUM_SKELETON_DURATION,
+                          ).then((_) {
+                            if (!context.mounted) return;
+                            Navigator.of(context).pop(
+                              selectedGames.isEmpty
+                                  ? null
+                                  : selectedGames.first,
+                            );
+                          });
+                        }
                       },
                       onLongPress: () async {
                         final result = await Navigator.push(

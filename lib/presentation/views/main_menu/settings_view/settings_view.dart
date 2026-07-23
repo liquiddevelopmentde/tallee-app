@@ -7,9 +7,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/import_file_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licenses_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
@@ -52,6 +55,7 @@ class _SettingsViewState extends State<SettingsView> {
             backgroundColor: CustomTheme.backgroundColor,
             body: SingleChildScrollView(
               child: Column(
+                spacing: 10,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -85,36 +89,13 @@ class _SettingsViewState extends State<SettingsView> {
                     title: loc.export_data,
                     icon: Icons.upload,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () async {
-                      final String json =
-                          await DataTransferService.getAppDataAsJson(
-                            scaffoldMessengerContext,
-                          );
-                      final result = await DataTransferService.exportData(
-                        json,
-                        'tallee-data',
-                      );
-                      if (!scaffoldMessengerContext.mounted) return;
-                      showExportSnackBar(
-                        context: scaffoldMessengerContext,
-                        result: result,
-                      );
-                    },
+                    onPressed: () => handleExport(scaffoldMessengerContext),
                   ),
                   SettingsListTile(
                     title: loc.import_data,
                     icon: Icons.download,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () async {
-                      final result = await DataTransferService.importData(
-                        scaffoldMessengerContext,
-                      );
-                      if (!scaffoldMessengerContext.mounted) return;
-                      showImportSnackBar(
-                        context: scaffoldMessengerContext,
-                        result: result,
-                      );
-                    },
+                    onPressed: () => handleImport(scaffoldMessengerContext),
                   ),
                   SettingsListTile(
                     title: 'Online Sharing',
@@ -167,39 +148,8 @@ class _SettingsViewState extends State<SettingsView> {
                     title: loc.delete_all_data,
                     icon: Icons.delete,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () {
-                      showDialog<bool>(
-                        context: context,
-                        builder: (context) => CustomAlertDialog(
-                          title: '${loc.delete_all_data}?',
-                          content: Text(
-                            loc.this_cannot_be_undone,
-                            overflow: TextOverflow.visible,
-                          ),
-                          actions: [
-                            CustomDialogAction(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              text: loc.delete,
-                            ),
-                            CustomDialogAction(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              buttonType: ButtonType.secondary,
-                              text: loc.cancel,
-                            ),
-                          ],
-                        ),
-                      ).then((confirmed) {
-                        if (confirmed == true && context.mounted) {
-                          DataTransferService.deleteAllData(context);
-                          showSnackbar(
-                            context: scaffoldMessengerContext,
-                            message: AppLocalizations.of(
-                              context,
-                            ).data_successfully_deleted,
-                          );
-                        }
-                      });
-                    },
+                    onPressed: () =>
+                        showDeleteDialog(scaffoldMessengerContext, loc),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -336,37 +286,18 @@ class _SettingsViewState extends State<SettingsView> {
           );
         }
       case ImportResult.invalidSchema:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.invalid_schema);
-        }
       case ImportResult.invalidData:
+      case ImportResult.fileReadError:
+      case ImportResult.fileNotFound:
+      case ImportResult.canceled:
+      case ImportResult.formatException:
+      case ImportResult.unknownException:
         await HapticFeedback.errorNotification();
         if (context.mounted) {
           showSnackbar(
             context: context,
-            message: loc.names_or_descriptions_too_long,
+            message: translateImportResultToString(result, context),
           );
-        }
-      case ImportResult.fileReadError:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.error_reading_file);
-        }
-      case ImportResult.canceled:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.import_canceled);
-        }
-      case ImportResult.formatException:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.format_exception);
-        }
-      case ImportResult.unknownException:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.unknown_exception);
         }
     }
   }
@@ -390,14 +321,14 @@ class _SettingsViewState extends State<SettingsView> {
           );
         }
       case ExportResult.canceled:
-        await HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(context: context, message: loc.export_canceled);
-        }
       case ExportResult.unknownException:
+      case ExportResult.noData:
         await HapticFeedback.errorNotification();
         if (context.mounted) {
-          showSnackbar(context: context, message: loc.unknown_exception);
+          showSnackbar(
+            context: context,
+            message: translateExportResultToString(result, context),
+          );
         }
     }
   }
@@ -426,5 +357,82 @@ class _SettingsViewState extends State<SettingsView> {
   Future<void> saveStoredSharingConsent(bool consent) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('shareConsent', consent);
+  }
+
+  void handleExport(BuildContext scaffoldMessengerContext) async {
+    final String json = await DataTransferService.getAppDataAsJson(
+      scaffoldMessengerContext,
+    );
+
+    ExportResult result;
+
+    if (json.isEmpty) {
+      result = ExportResult.noData;
+    } else {
+      result = await DataTransferService.exportData(json, 'data');
+    }
+    if (!scaffoldMessengerContext.mounted) return;
+    showExportSnackBar(context: scaffoldMessengerContext, result: result);
+  }
+
+  void handleImport(BuildContext scaffoldMessengerContext) async {
+    final path = await DataTransferService.pickImportFilePath();
+
+    if (path == null) {
+      if (!scaffoldMessengerContext.mounted) return;
+      showImportSnackBar(
+        context: scaffoldMessengerContext,
+        result: ImportResult.canceled,
+      );
+      return;
+    }
+
+    if (!scaffoldMessengerContext.mounted) return;
+    final result = await Navigator.of(scaffoldMessengerContext)
+        .push<ImportResult>(
+          adaptivePageRoute<ImportResult>(
+            fullscreenDialog: true,
+            builder: (_) => ImportFileView(filePath: path),
+          ),
+        );
+
+    if (result == null) return;
+    if (!scaffoldMessengerContext.mounted) return;
+    showImportSnackBar(context: scaffoldMessengerContext, result: result);
+  }
+
+  void showDeleteDialog(
+    BuildContext scaffoldMessengerContext,
+    AppLocalizations loc,
+  ) {
+    showDialog<bool>(
+      context: context,
+      builder: (context) => CustomAlertDialog(
+        title: '${loc.delete_all_data}?',
+        content: Text(
+          loc.this_cannot_be_undone,
+          overflow: TextOverflow.visible,
+        ),
+        actions: [
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(true),
+            text: loc.delete,
+          ),
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(false),
+            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+          ),
+        ],
+      ),
+    ).then((confirmed) {
+      if (confirmed == true && mounted && scaffoldMessengerContext.mounted) {
+        DataTransferService.deleteAllData(context);
+        showSnackbar(
+          context: scaffoldMessengerContext,
+          message: AppLocalizations.of(context).data_successfully_deleted,
+        );
+      }
+    });
   }
 }

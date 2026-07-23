@@ -9,14 +9,18 @@ import 'package:flutter/material.dart';
 Route<T> adaptivePageRoute<T>({
   required Widget Function(BuildContext) builder,
   bool fullscreenDialog = false,
+  RouteSettings? settings,
 }) {
   if (Platform.isIOS) {
     return CupertinoPageRoute<T>(
+      settings: settings,
       builder: builder,
       fullscreenDialog: fullscreenDialog,
     );
   }
   return MaterialPageRoute<T>(
+    settings: settings,
+
     builder: builder,
     fullscreenDialog: fullscreenDialog,
   );

@@ -488,6 +488,12 @@ abstract class AppLocalizations {
   /// **'Export data'**
   String get export_data;
 
+  /// No description provided for @file_couldnt_be_accessed.
+  ///
+  /// In en, this message translates to:
+  /// **'The file could not be accessed'**
+  String get file_couldnt_be_accessed;
+
   /// No description provided for @filter.
   ///
   /// In en, this message translates to:
@@ -565,6 +571,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Import data'**
   String get import_data;
+
+  /// No description provided for @import_preview_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The following data will be imported'**
+  String get import_preview_description;
 
   /// No description provided for @info.
   ///
@@ -733,6 +745,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No data available'**
   String get no_data_available;
+
+  /// No description provided for @no_data_to_export.
+  ///
+  /// In en, this message translates to:
+  /// **'No data to export'**
+  String get no_data_to_export;
 
   /// No description provided for @no_games_created_yet.
   ///

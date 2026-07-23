@@ -257,8 +257,10 @@ class _MultiplePlayerSelectionWidgetState
                   message: _getInfoText(context),
                   fullscreen: false,
                 ),
-                child: ListView.builder(
+                child: ListView.separated(
                   itemCount: suggestedPlayers.length,
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const SizedBox(height: 10),
                   itemBuilder: (BuildContext context, int index) {
                     final player = suggestedPlayers[index];
                     return TextIconListTile(

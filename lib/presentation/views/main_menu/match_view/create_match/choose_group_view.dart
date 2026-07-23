@@ -122,7 +122,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                       isHighlighted: selectedGroups.any(
                         (group) => group.id == filteredGroups[index].id,
                       ),
-                      onTap: () {
+                      onTap: () async {
                         setState(() {
                           if (selectedGroups.contains(filteredGroups[index])) {
                             selectedGroups.removeWhere(
@@ -136,6 +136,20 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                             selectedGroups.add(filteredGroups[index]);
                           }
                         });
+
+                        // Navigate back to create match view instantly
+                        if (!enableMultiSelection) {
+                          await Future.delayed(
+                            Constants.MINIMUM_SKELETON_DURATION,
+                          ).then((_) {
+                            if (!context.mounted) return;
+                            Navigator.of(context).pop(
+                              selectedGroups.isEmpty
+                                  ? null
+                                  : selectedGroups.first,
+                            );
+                          });
+                        }
                       },
                     );
                   },
