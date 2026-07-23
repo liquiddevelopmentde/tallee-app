@@ -7,6 +7,7 @@ class SharedPreferencesService {
   static const String filteredTimeframesKey = 'filtered_timeframes';
   static const String filteredStatisticTypesKey = 'filtered_statistic_types';
   static const String filteredStatisticScopesKey = 'filtered_statistic_scopes';
+  static const String showFavouritesKey = 'show_favourites';
 
   static Future<void> deleteAllFilteredPreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -15,6 +16,28 @@ class SharedPreferencesService {
     await prefs.remove(filteredTimeframesKey);
     await prefs.remove(filteredStatisticTypesKey);
     await prefs.remove(filteredStatisticScopesKey);
+    await prefs.remove(showFavouritesKey);
+  }
+
+  static Future<void> setAllFiltersEmpty() async {
+    await setFilteredGroups([]);
+    await setFilteredGames([]);
+    await setFilteredTimeframes([]);
+    await setFilteredStatisticTypes([]);
+    await setFilteredStatisticScopes([]);
+  }
+
+  static Future<void> setShowFavourites(bool showFavourites) async {
+    print('set showFavourites to: $showFavourites');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(showFavouritesKey, showFavourites);
+  }
+
+  static Future<bool> getShowFavourites() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final val = prefs.getBool(showFavouritesKey) ?? false;
+    print('get showFavourites: $val');
+    return val;
   }
 
   static Future<void> setFilteredGroups(List<Group> groups) async {
