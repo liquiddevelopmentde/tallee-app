@@ -200,7 +200,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
       adaptivePageRoute(
         builder: (context) => ChooseGameView(
           games: filteredGames,
-          initialGame: associatedGame,
+          initialGames: [?associatedGame],
           requiredRuleset: widget.match.game.ruleset,
         ),
       ),
