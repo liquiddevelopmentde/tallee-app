@@ -74,4 +74,12 @@ class Player {
     'deleted': deleted,
     'nameCount': nameCount,
   };
+
+  Map<String, dynamic> toNormalizedJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'name': name,
+    'description': description,
+    'deleted': deleted,
+  };
 }

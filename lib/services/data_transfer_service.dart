@@ -34,7 +34,7 @@ class DataTransferService {
     final statistics = await db.statisticDao.getAllStatistics();
 
     final Map<String, dynamic> jsonMap = {
-      'players': players.map((player) => player.toJson()).toList(),
+      'players': players.map((player) => player.toNormalizedJson()).toList(),
       'groups': groups.map((group) => group.toNormalizedJson()).toList(),
       'games': games.map((game) => game.toJson()).toList(),
       'matches': matches.map((match) => match.toNormalizedJson()).toList(),

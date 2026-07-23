@@ -90,6 +90,9 @@
               },
               "deleted": {
                 "type": "boolean"
+              },
+              "nameCount": {
+                "type": "number"
               }
             },
             "required": [
@@ -97,7 +100,8 @@
               "createdAt",
               "name",
               "description",
-              "deleted"
+              "deleted",
+              "nameCount"
             ]
           }
         }
@@ -130,6 +134,9 @@
           },
           "deleted": {
             "type": "boolean"
+          },
+          "nameCount": {
+            "type": "number"
           }
         },
         "required": [
@@ -137,7 +144,8 @@
           "createdAt",
           "name",
           "description",
-          "deleted"
+          "deleted",
+          "nameCount"
         ]
       }
     },
@@ -223,6 +231,9 @@
                 },
                 "deleted": {
                   "type": "boolean"
+                },
+                "nameCount": {
+                  "type": "number"
                 }
               },
               "required": [
@@ -230,7 +241,8 @@
                 "createdAt",
                 "name",
                 "description",
-                "deleted"
+                "deleted",
+                "nameCount"
               ]
             },
             "minItems": 1

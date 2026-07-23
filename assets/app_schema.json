@@ -21,9 +21,6 @@
           },
           "deleted": {
             "type": "boolean"
-          },
-          "nameCount": {
-            "type": "number"
           }
         },
         "additionalProperties": false,
@@ -32,8 +29,7 @@
           "createdAt",
           "name",
           "description",
-          "deleted",
-          "nameCount"
+          "deleted"
         ]
       }
     },
