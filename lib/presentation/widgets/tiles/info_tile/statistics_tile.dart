@@ -62,7 +62,7 @@ class StatisticsTile extends StatelessWidget {
     return InfoTile(
       leadingIcon: Icon(icon),
       title: title,
-      trailingIcon: isFavourite ? const Icon(Icons.star) : null,
+      trailingIcon: isFavourite ? const Icon(Icons.favorite) : null,
       width: width ?? MediaQuery.sizeOf(context).width * 0.95,
       margin: margin ?? CustomTheme.tileMargin,
       content: Padding(

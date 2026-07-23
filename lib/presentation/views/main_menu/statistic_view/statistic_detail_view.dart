@@ -72,8 +72,8 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
         actions: [
           HapticIconButton(
             icon: isFavourite
-                ? const Icon(Icons.star)
-                : const Icon(Icons.star_border),
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_border),
             onPressed: () {
               setState(() {
                 isFavourite = !isFavourite;
