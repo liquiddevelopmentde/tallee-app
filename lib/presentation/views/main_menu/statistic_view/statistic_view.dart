@@ -22,6 +22,7 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/text_chip.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
 
 class StatisticsView extends StatefulWidget {
   /// A view that displays player statistics
@@ -128,7 +129,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               setState(() {
                                                 filteredGroups = result ?? [];
                                               });
-                                              filterStatistics();
+                                              SharedPreferencesService.setFilteredGroups(
+                                                filteredGroups,
+                                              );
+                                              createFilteredStatisticTiles();
                                             },
                                           ),
 
@@ -157,7 +161,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               setState(() {
                                                 filteredGames = result ?? [];
                                               });
-                                              filterStatistics();
+                                              SharedPreferencesService.setFilteredGames(
+                                                filteredGames,
+                                              );
+                                              createFilteredStatisticTiles();
                                             },
                                           ),
 
@@ -190,6 +197,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                           ),
                                                     ),
                                                   );
+
                                               setState(() {
                                                 filteredStatisticTypes =
                                                     List<StatisticType>.from(
@@ -199,7 +207,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                           >[],
                                                     );
                                               });
-                                              filterStatistics();
+                                              SharedPreferencesService.setFilteredStatisticTypes(
+                                                filteredStatisticTypes,
+                                              );
+                                              createFilteredStatisticTiles();
                                             },
                                           ),
 
@@ -237,7 +248,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                           const <Timeframe>[],
                                                     );
                                               });
-                                              filterStatistics();
+                                              SharedPreferencesService.setFilteredTimeframes(
+                                                filteredTimeframes,
+                                              );
+                                              createFilteredStatisticTiles();
                                             },
                                           ),
 
@@ -278,7 +292,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                           >[],
                                                     );
                                               });
-                                              filterStatistics();
+                                              SharedPreferencesService.setFilteredStatisticScopes(
+                                                filteredStatisticScopes,
+                                              );
+                                              createFilteredStatisticTiles();
                                             },
                                           ),
                                         ],
@@ -407,15 +424,24 @@ class _StatisticsViewState extends State<StatisticsView> {
       filteredStatisticScopes.isEmpty &&
       filteredTimeframes.isEmpty;
 
-  void resetFilter() {
-    setState(() {
-      filteredGroups = [];
-      filteredGames = [];
-      filteredStatisticTypes = [];
-      filteredStatisticScopes = [];
-      filteredTimeframes = [];
-    });
-    filterStatistics();
+  /// A placeholder tile with mock data for the loading state.
+  static Widget buildSkeletonStatisticTile() {
+    final count = 4 + Random().nextInt(5); // 4..8
+    final values = <(Player, num)>[
+      for (var i = 0; i < count; i++)
+        (Player(name: 'Player ${i + 1}'), count - i),
+    ];
+
+    return StatisticsTile(
+      key: ValueKey('statistic_skeleton_${Random().nextInt(10000)}'),
+      icon: Icons.bar_chart,
+      title: 'Skeleton title',
+      values: values,
+      barColor: getRandomAppColorValue(),
+      selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
+      selectedGroups: [Group(name: 'Group 1', members: [])],
+      displayCount: 5,
+    );
   }
 
   /// Loads all statistics and needed data from the database
@@ -444,36 +470,33 @@ class _StatisticsViewState extends State<StatisticsView> {
     groups = results[3] as List<Group>;
     games = results[4] as List<Game>;
 
+    await loadFilterData();
+
     setState(() {
-      statisticTiles = statistics
-          .map((stat) => buildStatisticTile(context: context, statistic: stat))
-          .toList();
+      createFilteredStatisticTiles();
       isLoading = false;
     });
   }
 
-  /// Refreshes a statistic by its ID, either updating it or removing it if
-  /// it was deleted
-  Future<void> refreshStatistic(String statId) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    final newStat = await db.statisticDao.getStatisticById(statisticId: statId);
-    if (newStat == null) {
-      // If the statistic was deleted, remove it from the list
-      statistics = statistics.where((stat) => stat.id != statId).toList();
-    } else {
-      // else update it
-      final index = statistics.indexWhere((stat) => stat.id == statId);
-      if (index == -1) {
-        return;
-      } else {
-        statistics[index] = newStat;
-      }
-    }
-    setState(() {
-      statisticTiles = statistics
-          .map((stat) => buildStatisticTile(context: context, statistic: stat))
-          .toList();
-    });
+  /// Loads the filter data from shared preferences and applies it to the current data
+  Future<void> loadFilterData() async {
+    final filters = await Future.wait([
+      SharedPreferencesService.getFilteredGroups(),
+      SharedPreferencesService.getFilteredGames(),
+      SharedPreferencesService.getFilteredStatisticTypes(),
+      SharedPreferencesService.getFilteredStatisticScopes(),
+      SharedPreferencesService.getFilteredTimeframes(),
+    ]);
+
+    filteredGroups = groups
+        .where((group) => filters[0].contains(group.id))
+        .toList();
+    filteredGames = games
+        .where((game) => filters[1].contains(game.id))
+        .toList();
+    filteredStatisticTypes = filters[2].cast<StatisticType>();
+    filteredStatisticScopes = filters[3].cast<StatisticScope>();
+    filteredTimeframes = filters[4].cast<Timeframe>();
   }
 
   /// Builds a [StatisticTile] for a given statistic.
@@ -517,34 +540,36 @@ class _StatisticsViewState extends State<StatisticsView> {
     );
   }
 
-  /// A placeholder tile with mock data for the loading state.
-  static Widget buildSkeletonStatisticTile() {
-    final count = 4 + Random().nextInt(5); // 4..8
-    final values = <(Player, num)>[
-      for (var i = 0; i < count; i++)
-        (Player(name: 'Player ${i + 1}'), count - i),
-    ];
-
-    return StatisticsTile(
-      key: ValueKey('statistic_skeleton_${Random().nextInt(10000)}'),
-      icon: Icons.bar_chart,
-      title: 'Skeleton title',
-      values: values,
-      barColor: getRandomAppColorValue(),
-      selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
-      selectedGroups: [Group(name: 'Group 1', members: [])],
-      displayCount: 5,
-    );
-  }
-
-  // Filtering the statistics
-  void filterStatistics() {
+  // Create the statistic tiles based on the active filters
+  void createFilteredStatisticTiles() {
     final filtered = statistics.where(matchesActiveFilters).toList();
 
     setState(() {
       statisticTiles = filtered
           .map((stat) => buildStatisticTile(context: context, statistic: stat))
           .toList();
+    });
+  }
+
+  /// Refreshes a statistic by its ID, either updating it or removing it if
+  /// it was deleted
+  Future<void> refreshStatistic(String statId) async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final newStat = await db.statisticDao.getStatisticById(statisticId: statId);
+    if (newStat == null) {
+      // If the statistic was deleted, remove it from the list
+      statistics = statistics.where((stat) => stat.id != statId).toList();
+    } else {
+      // else update it
+      final index = statistics.indexWhere((stat) => stat.id == statId);
+      if (index == -1) {
+        return;
+      } else {
+        statistics[index] = newStat;
+      }
+    }
+    setState(() {
+      createFilteredStatisticTiles();
     });
   }
 
@@ -584,5 +609,17 @@ class _StatisticsViewState extends State<StatisticsView> {
     }
 
     return true;
+  }
+
+  Future<void> resetFilter() async {
+    setState(() {
+      filteredGroups = [];
+      filteredGames = [];
+      filteredStatisticTypes = [];
+      filteredStatisticScopes = [];
+      filteredTimeframes = [];
+    });
+    SharedPreferencesService.deleteAllFilteredPreferences();
+    createFilteredStatisticTiles();
   }
 }
