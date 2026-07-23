@@ -398,6 +398,30 @@ abstract class AppLocalizations {
   /// **'Delete player?'**
   String get delete_player;
 
+  /// No description provided for @search_for_scopes.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for scopes'**
+  String get search_for_scopes;
+
+  /// No description provided for @search_for_timeframes.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for timeframes'**
+  String get search_for_timeframes;
+
+  /// No description provided for @search_for_types.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for types'**
+  String get search_for_types;
+
+  /// No description provided for @search_for_games.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for games'**
+  String get search_for_games;
+
   /// No description provided for @delete_player_warning_details.
   ///
   /// In en, this message translates to:

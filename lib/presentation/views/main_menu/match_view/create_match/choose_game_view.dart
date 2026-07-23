@@ -131,7 +131,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: CustomSearchBar(
                 controller: searchBarController,
-                hintText: loc.game_name,
+                hintText: loc.search_for_games,
                 onChanged: (value) {
                   applySearchFilter(value);
                 },

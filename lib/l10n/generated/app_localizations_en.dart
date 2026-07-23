@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -172,6 +173,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete_player => 'Delete player?';
+
+  @override
+  String get search_for_scopes => 'Search for scopes';
+
+  @override
+  String get search_for_timeframes => 'Search for timeframes';
+
+  @override
+  String get search_for_types => 'Search for types';
+
+  @override
+  String get search_for_games => 'Search for games';
 
   @override
   String get delete_player_warning_details =>

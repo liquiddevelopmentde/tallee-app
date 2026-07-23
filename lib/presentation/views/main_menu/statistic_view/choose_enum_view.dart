@@ -64,7 +64,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: CustomSearchBar(
                 controller: controller,
-                hintText: loc.search_for_groups,
+                hintText: getHintText(widget.enumValue.first, loc),
                 onChanged: (query) {
                   setState(() {
                     filterValues(query);
@@ -231,6 +231,18 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
       return loc.choose_types;
     } else if (value is Timeframe) {
       return loc.choose_timeframes;
+    } else {
+      return '';
+    }
+  }
+
+  String getHintText(T value, AppLocalizations loc) {
+    if (value is StatisticScope) {
+      return loc.search_for_scopes;
+    } else if (value is StatisticType) {
+      return loc.search_for_types;
+    } else if (value is Timeframe) {
+      return loc.search_for_timeframes;
     } else {
       return '';
     }
