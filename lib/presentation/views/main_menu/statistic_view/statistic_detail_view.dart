@@ -36,6 +36,7 @@ class StatisticDetailView extends StatefulWidget {
 
 class _StatisticDetailViewState extends State<StatisticDetailView> {
   late int displayCount;
+  late bool isFavourite;
   Timer? timer;
   bool showHighlighting = false;
 
@@ -43,6 +44,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   void initState() {
     super.initState();
     displayCount = min(widget.statistic.displayCount, widget.values.length);
+    isFavourite = widget.statistic.isFavourite;
   }
 
   @override
@@ -62,12 +64,23 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(loc.statistic),
         leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios_new),
           onPressed: () => updateCount(),
         ),
         actions: [
+          HapticIconButton(
+            icon: isFavourite
+                ? const Icon(Icons.star)
+                : const Icon(Icons.star_border),
+            onPressed: () {
+              setState(() {
+                isFavourite = !isFavourite;
+              });
+              markAsFavourite(context);
+            },
+          ),
           HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () =>
@@ -110,6 +123,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
           child: Column(
             children: [
               StatisticsTile(
+                isFavourite: widget.statistic.isFavourite,
                 margin: EdgeInsets.zero,
                 icon: widget.icon,
                 title: title,
@@ -125,7 +139,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
               const SizedBox(height: 12),
 
               InfoTile(
-                icon: Icons.filter_alt,
+                leadingIcon: const Icon(Icons.filter_alt),
                 width: MediaQuery.sizeOf(context).width * 0.95,
                 title: loc.filter,
                 content: Column(
@@ -326,5 +340,11 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   void dispose() {
     timer?.cancel();
     super.dispose();
+  }
+
+  void markAsFavourite(BuildContext context) async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    await db.statisticDao.updateIsFavourite(widget.statistic.id, isFavourite);
+    widget.refreshStatistic(widget.statistic.id);
   }
 }

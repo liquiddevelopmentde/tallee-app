@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -233,6 +234,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get export_data => 'Daten exportieren';
+
+  @override
+  String get favourites => 'Favoriten';
 
   @override
   String get file_couldnt_be_accessed =>
@@ -516,6 +520,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get single_winner => 'Ein:e Gewinner:in';
+
+  @override
+  String get statistic => 'Statistik';
 
   @override
   String get statistics => 'Statistiken';

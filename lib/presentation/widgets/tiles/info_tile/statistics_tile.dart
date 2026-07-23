@@ -16,9 +16,16 @@ class StatisticsTile extends StatelessWidget {
   /// A tile widget that displays statistical data using horizontal bars.
   /// - [icon]: The icon displayed next to the title.
   /// - [title]: The title text displayed on the tile.
-  /// - [width]: The width of the tile.
   /// - [values]: A list of tuples containing labels and their corresponding numeric values.
   /// - [barColor]: The color of the bars representing the values.
+  /// - [displayCount]:  The number of top values to display in the bar chart.
+  /// - [isFavourite]: Whether the statistic is marked as a favourite.
+  /// - [margin]: Optional margin for the tile.
+  /// - [width]: Optional width of the tile.
+  /// - [selectedGroups]: Optional list of selected groups to display in the subtitle.
+  /// - [selectedGames]: Optional list of selected games to display in the subtitle.
+  /// - [showAllValues]: Whether to show all values or limit to [displayCount].
+  /// - [showDisplayCountHighlighting]: Whether to highlight entries that exceed the display count.
   const StatisticsTile({
     super.key,
     required this.icon,
@@ -26,6 +33,7 @@ class StatisticsTile extends StatelessWidget {
     required this.values,
     required this.barColor,
     required this.displayCount,
+    required this.isFavourite,
     this.margin,
     this.width,
     this.selectedGroups,
@@ -34,28 +42,16 @@ class StatisticsTile extends StatelessWidget {
     this.showDisplayCountHighlighting = false,
   });
 
-  /// The icon displayed next to the title.
   final IconData icon;
-
-  /// The title text displayed on the tile.
   final String title;
-
+  final bool isFavourite;
   final EdgeInsets? margin;
-
-  /// The width of the tile.
   final double? width;
-
-  /// A list of tuples containing labels and their corresponding numeric values.
   final List<(Player, num)> values;
-
-  /// The color of the bars representing the values.
   final Color barColor;
-
-  // statistic data
   final int displayCount;
   final List<Group>? selectedGroups;
   final List<Game>? selectedGames;
-
   final bool showAllValues;
   final bool showDisplayCountHighlighting;
 
@@ -64,9 +60,10 @@ class StatisticsTile extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     return InfoTile(
-      width: width ?? MediaQuery.sizeOf(context).width * 0.95,
+      leadingIcon: Icon(icon),
       title: title,
-      icon: icon,
+      trailingIcon: isFavourite ? const Icon(Icons.star) : null,
+      width: width ?? MediaQuery.sizeOf(context).width * 0.95,
       margin: margin ?? CustomTheme.tileMargin,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),

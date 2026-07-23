@@ -101,5 +101,5 @@ class Statistic {
       selectedGroups = null,
       selectedGames = null,
       displayCount = json['displayCount'],
-      isFavourite = json['isFavourite'];
+      isFavourite = json['isFavourite'] ?? false;
 }
