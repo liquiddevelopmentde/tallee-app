@@ -26,19 +26,17 @@ class ChooseGameView extends StatefulWidget {
   const ChooseGameView({
     super.key,
     required this.games,
-    this.initialGame,
+    this.initialGames,
     this.onGamesUpdated,
     this.statistic,
+    this.enableMultiSelection = false,
   });
 
   final List<Game> games;
-
-  /// The id of the initially selected game
-  final Game? initialGame;
-
+  final List<Game>? initialGames;
   final VoidCallback? onGamesUpdated;
-
   final Statistic? statistic;
+  final bool enableMultiSelection;
 
   @override
   State<ChooseGameView> createState() => _ChooseGameViewState();
@@ -61,18 +59,20 @@ class _ChooseGameViewState extends State<ChooseGameView> {
       widget.games..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
 
   // If selecting multiple is possible
-  bool enableMultiSelection = false;
+  late bool enableMultiSelection;
 
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
     fetchGameCounts();
 
-    selectedGames = widget.initialGame != null ? [widget.initialGame!] : [];
+    selectedGames = widget.initialGames ?? [];
     // Start with all games visible
     filteredGames = List<Game>.from(games);
 
-    enableMultiSelection = widget.statistic != null;
+    enableMultiSelection =
+        widget.enableMultiSelection || widget.statistic != null;
+    print(enableMultiSelection);
 
     super.initState();
   }
@@ -84,36 +84,31 @@ class _ChooseGameViewState extends State<ChooseGameView> {
       backgroundColor: CustomTheme.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: HapticIconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.of(
-              context,
-            ).pop(selectedGames.isEmpty ? null : selectedGames.first);
-          },
-        ),
         actions: [
-          HapticIconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () async {
-              final result = await Navigator.push(
-                context,
-                adaptivePageRoute(
-                  builder: (context) => CreateGameView(
-                    onGameChanged: () {
-                      widget.onGamesUpdated?.call();
-                    },
+          Visibility(
+            visible: !enableMultiSelection,
+            child: HapticIconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  adaptivePageRoute(
+                    builder: (context) => CreateGameView(
+                      onGameChanged: () {
+                        widget.onGamesUpdated?.call();
+                      },
+                    ),
                   ),
-                ),
-              );
-              if (result != null && result.game != null) {
-                setState(() {
-                  games.insert(0, result.game);
-                  games.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-                });
-                refreshFromSource();
-              }
-            },
+                );
+                if (result != null && result.game != null) {
+                  setState(() {
+                    games.insert(0, result.game);
+                    games.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+                  });
+                  refreshFromSource();
+                }
+              },
+            ),
           ),
         ],
 
@@ -127,7 +122,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
           if (didPop) {
             return;
           }
-          Navigator.of(context).pop(widget.initialGame);
+          Navigator.of(context).pop(popResult);
         },
         child: Column(
           children: [
@@ -136,7 +131,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: CustomSearchBar(
                 controller: searchBarController,
-                hintText: loc.game_name,
+                hintText: loc.search_for_games,
                 onChanged: (value) {
                   applySearchFilter(value);
                 },
@@ -265,6 +260,12 @@ class _ChooseGameViewState extends State<ChooseGameView> {
         ),
       ),
     );
+  }
+
+  Object? get popResult {
+    if (widget.statistic != null) return null;
+    if (enableMultiSelection) return selectedGames;
+    return selectedGames.isEmpty ? null : selectedGames.first;
   }
 
   /// Fetches the usage count for all games and stores it in [gameCounts].

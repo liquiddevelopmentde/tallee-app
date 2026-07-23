@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'Add Team'**
   String get add_team;
 
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
   /// No description provided for @all_players.
   ///
   /// In en, this message translates to:
@@ -163,6 +169,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose Group'**
   String get choose_group;
+
+  /// No description provided for @choose_scopes.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Scopes'**
+  String get choose_scopes;
+
+  /// No description provided for @choose_timeframes.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Timeframes'**
+  String get choose_timeframes;
+
+  /// No description provided for @choose_types.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Types'**
+  String get choose_types;
 
   /// No description provided for @classifier.
   ///
@@ -800,6 +824,12 @@ abstract class AppLocalizations {
   /// **'No statistics created yet'**
   String get no_statistics_created_yet;
 
+  /// No description provided for @no_statistics_with_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'No statistics with the selected filter'**
+  String get no_statistics_with_filter;
+
   /// No description provided for @no_teams_available.
   ///
   /// In en, this message translates to:
@@ -908,6 +938,12 @@ abstract class AppLocalizations {
   /// **'Choose which games or players are included in the calculation.'**
   String get scope_description;
 
+  /// No description provided for @search_for_games.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for games'**
+  String get search_for_games;
+
   /// No description provided for @search_for_groups.
   ///
   /// In en, this message translates to:
@@ -919,6 +955,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search for players'**
   String get search_for_players;
+
+  /// No description provided for @search_for_scopes.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for scopes'**
+  String get search_for_scopes;
+
+  /// No description provided for @search_for_timeframes.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for timeframes'**
+  String get search_for_timeframes;
+
+  /// No description provided for @search_for_types.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for types'**
+  String get search_for_types;
 
   /// No description provided for @select_a_classifier.
   ///
@@ -1105,6 +1159,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total wins'**
   String get total_wins;
+
+  /// No description provided for @type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
 
   /// No description provided for @unknown_exception.
   ///
