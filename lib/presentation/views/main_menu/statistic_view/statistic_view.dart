@@ -101,12 +101,15 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             // All Chip
                                             TextChip(
                                               text: loc.all,
+                                              activated: noFilterActivated,
                                               onTap: () => resetFilter(),
                                             ),
 
                                             // Groups Chip
                                             TextChip(
                                               text: loc.groups,
+                                              activated:
+                                                  filteredGroups.isNotEmpty,
                                               count: filteredGroups.length,
                                               onTap: () async {
                                                 final result =
@@ -136,6 +139,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             TextChip(
                                               text: loc.games,
                                               count: filteredGames.length,
+                                              activated:
+                                                  filteredGames.isNotEmpty,
                                               onTap: () async {
                                                 final result =
                                                     await Navigator.of(
@@ -165,6 +170,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               text: loc.type,
                                               count:
                                                   filteredStatisticTypes.length,
+                                              activated: filteredStatisticTypes
+                                                  .isNotEmpty,
                                               onTap: () async {
                                                 final result =
                                                     await Navigator.of(
@@ -204,6 +211,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             TextChip(
                                               text: loc.timeframe,
                                               count: filteredTimeframes.length,
+                                              activated:
+                                                  filteredTimeframes.isNotEmpty,
                                               onTap: () async {
                                                 final result =
                                                     await Navigator.of(
@@ -242,7 +251,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               text: loc.scope,
                                               count: filteredStatisticScopes
                                                   .length,
-
+                                              activated: filteredStatisticScopes
+                                                  .isNotEmpty,
                                               onTap: () async {
                                                 final result =
                                                     await Navigator.of(
@@ -402,6 +412,13 @@ class _StatisticsViewState extends State<StatisticsView> {
       },
     );
   }
+
+  bool get noFilterActivated =>
+      filteredGroups.isEmpty &&
+      filteredGames.isEmpty &&
+      filteredStatisticTypes.isEmpty &&
+      filteredStatisticScopes.isEmpty &&
+      filteredTimeframes.isEmpty;
 
   void resetFilter() {
     setState(() {
