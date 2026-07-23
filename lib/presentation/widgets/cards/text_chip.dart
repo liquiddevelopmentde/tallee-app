@@ -37,7 +37,7 @@ class _TextChipState extends State<TextChip> {
           color: CustomTheme.onBoxColor,
           border: Border.all(
             color: widget.activated
-                ? CustomTheme.textColor.withAlpha(100)
+                ? CustomTheme.primaryColor
                 : CustomTheme.textColor,
             width: 2,
             strokeAlign: BorderSide.strokeAlignInside,
