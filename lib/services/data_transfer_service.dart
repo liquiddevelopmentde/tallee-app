@@ -309,10 +309,13 @@ class DataTransferService {
       final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
           .cast<String>();
 
-      final members = memberIds
-          .map((id) => playerById[id])
-          .whereType<Player>()
-          .toList();
+      final members = memberIds.map((id) {
+        final player = playerById[id];
+        if (player == null) {
+          throw ArgumentError('Player with ID $id not found in import data');
+        }
+        return player;
+      }).toList();
 
       return Group.fromNormalizedJson(map, members);
     }).toList();
@@ -329,10 +332,13 @@ class DataTransferService {
       final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
           .cast<String>();
 
-      final members = memberIds
-          .map((id) => playerById[id])
-          .whereType<Player>()
-          .toList();
+      final members = memberIds.map((id) {
+        final player = playerById[id];
+        if (player == null) {
+          throw ArgumentError('Player with ID $id not found in import data');
+        }
+        return player;
+      }).toList();
 
       return Team.fromNormalizedJson(map, members);
     }).toList();
@@ -356,12 +362,23 @@ class DataTransferService {
           .cast<String>();
       final teamsJson = (map['teams'] as List<dynamic>?) ?? [];
 
-      final game = gamesMap[gameId] ?? getFallbackGame();
+      final game = gamesMap[gameId];
+      if (game == null) {
+        throw ArgumentError('Game with ID $gameId not found in import data');
+      }
+
       final group = groupId != null ? groupsMap[groupId] : null;
-      final players = playerIds
-          .map((id) => playersMap[id])
-          .whereType<Player>()
-          .toList();
+      if (groupId != null && group == null) {
+        throw ArgumentError('Group with ID $groupId not found in import data');
+      }
+
+      final players = playerIds.map((id) {
+        final player = playersMap[id];
+        if (player == null) {
+          throw ArgumentError('Player with ID $id not found in import data');
+        }
+        return player;
+      }).toList();
       final teams = parseTeamsFromJson(teamsJson, playersMap);
 
       return Match.fromNormalizedJson(
@@ -390,14 +407,21 @@ class DataTransferService {
       final selectedGroupIds = (map['selectedGroups'] as List<dynamic>? ?? [])
           .cast<String>();
 
-      final selectedGames = selectedGameIds
-          .map((id) => gamesMap[id])
-          .whereType<Game>()
-          .toList();
-      final selectedGroups = selectedGroupIds
-          .map((id) => groupsMap[id])
-          .whereType<Group>()
-          .toList();
+      final selectedGames = selectedGameIds.map((id) {
+        final game = gamesMap[id];
+        if (game == null) {
+          throw ArgumentError('Game with ID $id not found in import data');
+        }
+        return game;
+      }).toList();
+
+      final selectedGroups = selectedGroupIds.map((id) {
+        final group = groupsMap[id];
+        if (group == null) {
+          throw ArgumentError('Group with ID $id not found in import data');
+        }
+        return group;
+      }).toList();
 
       return Statistic(
         id: map['id'] as String,

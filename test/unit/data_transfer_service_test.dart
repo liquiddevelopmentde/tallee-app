@@ -728,7 +728,7 @@ void main() {
         expect(groups, isEmpty);
       });
 
-      test('parseGroupsFromJson() ignores invalid player ids', () {
+      test('parseGroupsFromJson() throws exception for invalid player ids', () {
         final playerById = {testPlayer1.id: testPlayer1};
 
         final jsonMap = {
@@ -743,14 +743,16 @@ void main() {
           ],
         };
 
-        final groups = DataTransferService.parseGroupsFromJson(
-          jsonMap,
-          playerById,
+        expect(
+          () => DataTransferService.parseGroupsFromJson(jsonMap, playerById),
+          throwsA(
+            isA<ArgumentError>().having(
+              (e) => e.toString(),
+              'message',
+              contains('invalid-id'),
+            ),
+          ),
         );
-
-        expect(groups.length, 1);
-        expect(groups[0].members.length, 1);
-        expect(groups[0].members[0].id, testPlayer1.id);
       });
 
       test('parseTeamsFromJson()', () {
@@ -1025,29 +1027,42 @@ void main() {
         expect(stats, isEmpty);
       });
 
-      test('parseStatsFromJson() ignores invalid game/group ids', () {
-        final jsonMap = {
-          'statistics': [
-            {
-              'id': testStatistic.id,
-              'createdAt': testStatistic.createdAt.toIso8601String(),
-              'type': testStatistic.type.toString(),
-              'scopes': testStatistic.scopes.map((s) => s.toString()).toList(),
-              'timeframe': testStatistic.timeframe.toString(),
-              'color': testStatistic.color.toString(),
-              'selectedGroups': ['unknown-group-id'],
-              'selectedGames': ['unknown-game-id'],
-              'displayCount': testStatistic.displayCount,
-            },
-          ],
-        };
+      test(
+        'parseStatsFromJson() throws exception for invalid game/group ids',
+        () {
+          final jsonMap = {
+            'statistics': [
+              {
+                'id': testStatistic.id,
+                'createdAt': testStatistic.createdAt.toIso8601String(),
+                'type': testStatistic.type.toString(),
+                'scopes': testStatistic.scopes
+                    .map((s) => s.toString())
+                    .toList(),
+                'timeframe': testStatistic.timeframe.toString(),
+                'color': testStatistic.color.toString(),
+                'selectedGroups': ['unknown-group-id'],
+                'selectedGames': ['unknown-game-id'],
+                'displayCount': testStatistic.displayCount,
+              },
+            ],
+          };
 
-        final stats = DataTransferService.parseStatsFromJson(jsonMap, {}, {});
-
-        expect(stats.length, 1);
-        expect(stats[0].selectedGames, isNull);
-        expect(stats[0].selectedGroups, isNull);
-      });
+          expect(
+            () => DataTransferService.parseStatsFromJson(jsonMap, {}, {}),
+            throwsA(
+              isA<ArgumentError>().having(
+                (e) => e.toString(),
+                'message',
+                anyOf(
+                  contains('unknown-group-id'),
+                  contains('unknown-game-id'),
+                ),
+              ),
+            ),
+          );
+        },
+      );
 
       test('validateJsonSchema() works correctly', () async {
         final validJson = json.encode({
