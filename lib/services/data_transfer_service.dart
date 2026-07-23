@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
 
 class DataTransferService {
   /// Deletes all data from the database.
@@ -21,6 +22,7 @@ class DataTransferService {
     await db.groupDao.deleteAllGroups();
     await db.gameDao.deleteAllGames();
     await db.playerDao.deleteAllPlayers();
+    await SharedPreferencesService.deleteAllFilteredPreferences();
   }
 
   /// Retrieves all application data and converts it to a JSON string.

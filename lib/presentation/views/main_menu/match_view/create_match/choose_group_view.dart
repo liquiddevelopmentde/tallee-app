@@ -19,22 +19,21 @@ import 'package:tallee/presentation/widgets/top_centered_message.dart';
 class ChooseGroupView extends StatefulWidget {
   /// A view that allows the user to choose a group from a list of groups.
   /// - [groups]: A list of available groups to choose from
-  /// - [initialGroup]: The initially selected group
+  /// - [initialGroups]: The initially selected group
+  /// - [statistic]: Optional statistic payload for choosing groups for a statistic
+  /// - [enableMultiSelection]: Whether multiple groups can be selected
   const ChooseGroupView({
     super.key,
     required this.groups,
-    this.initialGroup,
+    this.initialGroups,
     this.statistic,
+    this.enableMultiSelection = false,
   });
 
-  /// A list of available groups to choose from
   final List<Group> groups;
-
-  /// The ID of the initially selected group
-  final Group? initialGroup;
-
-  /// Optional statistic payload for choosing groups for a statistic
+  final List<Group>? initialGroups;
   final Statistic? statistic;
+  final bool enableMultiSelection;
 
   @override
   State<ChooseGroupView> createState() => _ChooseGroupViewState();
@@ -43,16 +42,18 @@ class ChooseGroupView extends StatefulWidget {
 class _ChooseGroupViewState extends State<ChooseGroupView> {
   final TextEditingController controller = TextEditingController();
 
-  List<Group> selectedGroups = [];
   late final List<Group> filteredGroups;
+  late List<Group> selectedGroups;
 
   // If selecting multiple is possible
-  bool enableMultiSelection = false;
+  late bool enableMultiSelection;
 
   @override
   void initState() {
     filteredGroups = [...widget.groups];
-    enableMultiSelection = widget.statistic != null;
+    selectedGroups = widget.initialGroups ?? [];
+    enableMultiSelection =
+        widget.enableMultiSelection || widget.statistic != null;
     super.initState();
   }
 
@@ -62,15 +63,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        leading: HapticIconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.of(context).pop(popResult);
-          },
-        ),
-        title: Text(loc.choose_group),
-      ),
+      appBar: AppBar(title: Text(loc.choose_group)),
       body: PopScope(
         // This fixes that the Android Back Gesture didn't return the
         // selectedGroupId and therefore the selected Group wasn't saved
@@ -183,6 +176,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
 
   Object? get popResult {
     if (widget.statistic != null) return null;
+    if (enableMultiSelection) return selectedGroups;
     return selectedGroups.isEmpty ? null : selectedGroups.first;
   }
 

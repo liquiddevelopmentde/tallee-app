@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add_team => 'Add Team';
 
   @override
+  String get all => 'All';
+
+  @override
   String get all_players => 'All players';
 
   @override
@@ -40,6 +43,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get choose_group => 'Choose Group';
+
+  @override
+  String get choose_scopes => 'Choose Scopes';
+
+  @override
+  String get choose_timeframes => 'Choose Timeframes';
+
+  @override
+  String get choose_types => 'Choose Types';
 
   @override
   String get classifier => 'Classifier';
@@ -395,6 +407,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_statistics_created_yet => 'No statistics created yet';
 
   @override
+  String get no_statistics_with_filter =>
+      'No statistics with the selected filter';
+
+  @override
   String get no_teams_available => 'No teams available';
 
   @override
@@ -453,10 +469,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose which games or players are included in the calculation.';
 
   @override
+  String get search_for_games => 'Search for games';
+
+  @override
   String get search_for_groups => 'Search for groups';
 
   @override
   String get search_for_players => 'Search for players';
+
+  @override
+  String get search_for_scopes => 'Search for scopes';
+
+  @override
+  String get search_for_timeframes => 'Search for timeframes';
+
+  @override
+  String get search_for_types => 'Search for types';
 
   @override
   String get select_a_classifier => 'Select a classifier';
@@ -559,6 +587,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get total_wins => 'Total wins';
+
+  @override
+  String get type => 'Type';
 
   @override
   String get unknown_exception => 'Unknown Exception (see console)';

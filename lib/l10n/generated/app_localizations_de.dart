@@ -12,6 +12,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get add_team => 'Team hinzufügen';
 
   @override
+  String get all => 'Alle';
+
+  @override
   String get all_players => 'Alle Spieler:innen';
 
   @override
@@ -40,6 +43,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get choose_group => 'Gruppe wählen';
+
+  @override
+  String get choose_scopes => 'Bereiche wählen';
+
+  @override
+  String get choose_timeframes => 'Zeiträume wählen';
+
+  @override
+  String get choose_types => 'Typen wählen';
 
   @override
   String get classifier => 'Klassifikator';
@@ -396,6 +408,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_statistics_created_yet => 'Noch keine Statistiken erstellt';
 
   @override
+  String get no_statistics_with_filter =>
+      'Keine Statistiken mit den ausgewählten Filteroptionen';
+
+  @override
   String get no_teams_available => 'Keine Teams verfügbar';
 
   @override
@@ -454,10 +470,22 @@ class AppLocalizationsDe extends AppLocalizations {
       'Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.';
 
   @override
+  String get search_for_games => 'Nach Spielvorlagen suchen';
+
+  @override
   String get search_for_groups => 'Nach Gruppen suchen';
 
   @override
   String get search_for_players => 'Nach Spieler:innen suchen';
+
+  @override
+  String get search_for_scopes => 'Nach Bereichen suchen';
+
+  @override
+  String get search_for_timeframes => 'Nach Zeiträumen suchen';
+
+  @override
+  String get search_for_types => 'Nach Typen suchen';
 
   @override
   String get select_a_classifier => 'Klassifikator auswählen';
@@ -561,6 +589,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get total_wins => 'Siege insgesamt';
+
+  @override
+  String get type => 'Typ';
 
   @override
   String get unknown_exception => 'Unbekannter Fehler (siehe Konsole)';

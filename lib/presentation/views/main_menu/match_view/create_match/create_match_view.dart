@@ -238,7 +238,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       adaptivePageRoute(
         builder: (context) => ChooseGameView(
           games: games,
-          initialGame: selectedGame,
+          initialGames: [?selectedGame],
           onGamesUpdated: widget.onMatchesUpdated,
         ),
       ),
@@ -255,7 +255,10 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   Future<void> onChoosingGroup() async {
     final oldGroup = selectedGroup;
     final newGroup = await Navigator.of(context).push<Group?>(
-      adaptivePageRoute(builder: (context) => ChooseGroupView(groups: groups)),
+      adaptivePageRoute(
+        builder: (context) =>
+            ChooseGroupView(groups: groups, initialGroups: [?oldGroup]),
+      ),
     );
 
     if (newGroup?.id == oldGroup?.id) return;
