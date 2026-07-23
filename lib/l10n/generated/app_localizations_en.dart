@@ -175,18 +175,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_player => 'Delete player?';
 
   @override
-  String get search_for_scopes => 'Search for scopes';
-
-  @override
-  String get search_for_timeframes => 'Search for timeframes';
-
-  @override
-  String get search_for_types => 'Search for types';
-
-  @override
-  String get search_for_games => 'Search for games';
-
-  @override
   String get delete_player_warning_details =>
       'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.';
 
@@ -466,10 +454,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose which games or players are included in the calculation.';
 
   @override
+  String get search_for_games => 'Search for games';
+
+  @override
   String get search_for_groups => 'Search for groups';
 
   @override
   String get search_for_players => 'Search for players';
+
+  @override
+  String get search_for_scopes => 'Search for scopes';
+
+  @override
+  String get search_for_timeframes => 'Search for timeframes';
+
+  @override
+  String get search_for_types => 'Search for types';
 
   @override
   String get select_a_classifier => 'Select a classifier';

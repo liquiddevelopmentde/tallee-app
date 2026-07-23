@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/data_transfer_service.dart';
@@ -26,6 +27,7 @@ void main() {
   final fakeClock = Clock(() => fixedDate);
 
   setUp(() {
+    SharedPreferences.setMockInitialValues({});
     database = AppDatabase(
       DatabaseConnection(
         NativeDatabase.memory(),

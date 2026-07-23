@@ -175,18 +175,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_player => 'Spieler:in löschen';
 
   @override
-  String get search_for_scopes => 'Nach Bereichen suchen';
-
-  @override
-  String get search_for_timeframes => 'Nach Zeiträumen suchen';
-
-  @override
-  String get search_for_types => 'Nach Typen suchen';
-
-  @override
-  String get search_for_games => 'Nach Spielvorlagen suchen';
-
-  @override
   String get delete_player_warning_details =>
       'Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.';
 
@@ -467,10 +455,22 @@ class AppLocalizationsDe extends AppLocalizations {
       'Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.';
 
   @override
+  String get search_for_games => 'Nach Spielvorlagen suchen';
+
+  @override
   String get search_for_groups => 'Nach Gruppen suchen';
 
   @override
   String get search_for_players => 'Nach Spieler:innen suchen';
+
+  @override
+  String get search_for_scopes => 'Nach Bereichen suchen';
+
+  @override
+  String get search_for_timeframes => 'Nach Zeiträumen suchen';
+
+  @override
+  String get search_for_types => 'Nach Typen suchen';
 
   @override
   String get select_a_classifier => 'Klassifikator auswählen';
