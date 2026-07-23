@@ -123,7 +123,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
           child: Column(
             children: [
               StatisticsTile(
-                isFavourite: widget.statistic.isFavourite,
+                isFavourite: false,
                 margin: EdgeInsets.zero,
                 icon: widget.icon,
                 title: title,
