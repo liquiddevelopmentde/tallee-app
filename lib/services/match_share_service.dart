@@ -126,7 +126,6 @@ class MatchShareService {
     required Group? associatedGroup,
   }) async {
     // Helper to get local player or fall back to imported one if missing
-    // (though UI ensures all are associated)
     Player getLocalPlayer(Player imported) =>
         playerAssociations[imported.id] ?? imported;
 

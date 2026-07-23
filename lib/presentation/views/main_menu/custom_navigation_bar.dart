@@ -62,11 +62,16 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         scrolledUnderElevation: 0,
         leading: currentIndex == 0
             ? IconButton(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  await Navigator.push(
                     context,
                     adaptivePageRoute(builder: (_) => const MatchReceiveView()),
                   );
+                  if (mounted) {
+                    setState(() {
+                      tabKeyCount++;
+                    });
+                  }
                 },
                 icon: const Icon(Icons.qr_code_scanner),
               )
