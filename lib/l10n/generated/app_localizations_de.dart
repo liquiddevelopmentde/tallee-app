@@ -241,6 +241,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get group => 'Gruppe';
 
   @override
+  String get group_associated => 'Gruppe verknüpft';
+
+  @override
   String get group_name => 'Gruppenname';
 
   @override
@@ -304,6 +307,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get manage_members => 'Mitglieder bearbeiten';
 
   @override
+  String get match_already_exists => 'Spiel existiert bereits';
+
+  @override
   String get match_in_progress => 'Spiel läuft...';
 
   @override
@@ -335,6 +341,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die Daten enthalten zu lange Namen oder Beschreibungen.';
 
   @override
+  String get new_group_will_be_created => 'Neue Gruppe wird erstellt';
+
+  @override
   String get no_data_available => 'Keine Daten verfügbar';
 
   @override
@@ -351,6 +360,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_matches_played_yet => 'Noch kein Spiel gespielt';
+
+  @override
+  String get no_matching_local_group_found =>
+      'Keine passende lokale Gruppe gefunden. Eine neue Gruppe wird erstellt.';
 
   @override
   String get no_players_available => 'Keine Spieler:innen verfügbar';
@@ -420,6 +433,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get save_changes => 'Änderungen speichern';
 
   @override
+  String get save_match_button => 'Spiel speichern';
+
+  @override
   String get scope => 'Bereich';
 
   @override
@@ -487,6 +503,9 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get tap_to_choose_existing => 'Tippen zum manuellen Auswählen';
+
+  @override
   String get team => 'Team';
 
   @override
@@ -549,4 +568,184 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Gestern um';
+
+  @override
+  String get match_share => 'Match teilen';
+
+  @override
+  String get qr_code_expired => 'QR-Code abgelaufen';
+
+  @override
+  String get token_expired => 'Token expired';
+
+  @override
+  String expires_in(String time) {
+    return 'Läuft ab in $time';
+  }
+
+  @override
+  String get scan_qr_code_instruction =>
+      'Scanne den QR-Code mit einer anderen Tallee-Instanz, um das Match zu teilen.';
+
+  @override
+  String get online_sharing_disabled => 'Online-Teilen ist deaktiviert';
+
+  @override
+  String get go_to_settings_to_enable =>
+      'Gehe in die Einstellungen, um es manuell zu aktivieren.';
+
+  @override
+  String get open_settings => 'Einstellungen öffnen';
+
+  @override
+  String get send_code_instruction =>
+      'Sende diesen Code an eine Person, die ebenfalls Tallee hat, um das aktuelle Match zu teilen.';
+
+  @override
+  String get copy_code => 'Code kopieren';
+
+  @override
+  String get code_copied => 'Code in die Zwischenablage kopiert';
+
+  @override
+  String share_match_text(String code) {
+    return 'Hier sind die Match-Daten für unser Spiel! Gib den Code $code in Tallee ein.';
+  }
+
+  @override
+  String get share_match_title => 'Tallee Match teilen';
+
+  @override
+  String get file_share_instruction =>
+      'Match-Daten manuell in einer Datei teilen für eine vollständige lokale Übertragung.';
+
+  @override
+  String get save_file => 'Datei speichern';
+
+  @override
+  String player_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Spieler:innen',
+      one: '1 Spieler:in',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get network_error =>
+      'Netzwerkfehler. Bitte überprüfe deine Verbindung.';
+
+  @override
+  String server_error(int statusCode) {
+    return 'Serverfehler: $statusCode';
+  }
+
+  @override
+  String get parsing_error =>
+      'Fehler beim Verarbeiten der Daten. Bitte versuche es später erneut.';
+
+  @override
+  String get unexpected_error => 'Ein unerwarteter Fehler ist aufgetreten.';
+
+  @override
+  String get retry => 'Wiederholen';
+
+  @override
+  String get online_sharing_title => 'Online-Teilen';
+
+  @override
+  String get online_sharing_consent_text =>
+      'Damit andere dein Match laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Share-Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du Online-Teilen aktivieren?';
+
+  @override
+  String get enable => 'Aktivieren';
+
+  @override
+  String get disable => 'Deaktivieren';
+
+  @override
+  String get match_receive => 'Match empfangen';
+
+  @override
+  String get scan_qr_receive_instruction =>
+      'Scanne den QR-Code einer anderen Tallee-Instanz, um das Match zu empfangen.';
+
+  @override
+  String get loading_match => 'Lade Match...';
+
+  @override
+  String get invalid_qr_code => 'Dieser QR-Code ist ungültig oder abgelaufen.';
+
+  @override
+  String get qr_code_parsing_error =>
+      'Der gescannte Code enthält keine gültigen Match-Daten.';
+
+  @override
+  String error_loading_match(String error) {
+    return 'Fehler beim Laden: $error';
+  }
+
+  @override
+  String get input_token_instruction =>
+      'Gib einen Match-Share-Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.';
+
+  @override
+  String get invalid_token => 'Ungültiger Token.';
+
+  @override
+  String get import_match => 'Match importieren';
+
+  @override
+  String get share_token_format_info =>
+      'Share-Token bestehen aus 6 alphanumerischen Zeichen.';
+
+  @override
+  String get choose_match_file => 'Match-Datei auswählen';
+
+  @override
+  String get tap_to_browse => 'Tippen zum Durchsuchen';
+
+  @override
+  String get successfully_processed_file => 'Datei erfolgreich verarbeitet';
+
+  @override
+  String get tap_import_to_continue =>
+      'Tippe auf Match importieren, um fortzufahren';
+
+  @override
+  String get import_file_instruction =>
+      'Wähle eine Match-Datei (.tallee), die aus einem Tallee-Match-Share exportiert wurde, um die Daten zu importieren.';
+
+  @override
+  String here_is_shared_match(String matchName) {
+    return 'Hier ist das geteilte Match \"$matchName\"';
+  }
+
+  @override
+  String get choose_where_to_save =>
+      'Wähle aus, wo du dein Match speichern möchtest:';
+
+  @override
+  String get associate_players => 'Spieler:innen verknüpfen';
+
+  @override
+  String get remaining => 'verbleibend';
+
+  @override
+  String get all_players_associated => 'Alle Spieler:innen verknüpft';
+
+  @override
+  String get associate_game => 'Spielvorlage verknüpfen';
+
+  @override
+  String get game_associated => 'Spielvorlage verknüpft';
+
+  @override
+  String get no_matching_local_game_found =>
+      'Keine passende lokale Spielvorlage gefunden. Eine neue wird erstellt.';
+
+  @override
+  String get associate_group => 'Gruppe verknüpfen';
 }

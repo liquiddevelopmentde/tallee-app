@@ -5,14 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_games_view.dart';
 import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/services/match_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
-
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_games_view.dart';
 
 class EnterTokenView extends StatefulWidget {
   const EnterTokenView({super.key});
@@ -42,6 +42,7 @@ class _EnterTokenViewState extends State<EnterTokenView> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final defaultPinTheme = PinTheme(
       height: 60,
       width: 45,
@@ -87,14 +88,15 @@ class _EnterTokenViewState extends State<EnterTokenView> {
                   horizontal: 20,
                   vertical: 20,
                 ),
-                child: const Text(
-                  'Input a match share token another person created using Tallee to import the match.',
-                  style: TextStyle(
+                child: Text(
+                  loc.input_token_instruction,
+                  style: const TextStyle(
                     color: CustomTheme.textColor,
                     fontSize: 16,
                     overflow: TextOverflow.visible,
                   ),
                   textAlign: TextAlign.center,
+                  softWrap: true,
                 ),
               ),
             ],
@@ -127,7 +129,7 @@ class _EnterTokenViewState extends State<EnterTokenView> {
               ],
               onCompleted: (pin) => print(pin),
               forceErrorState: !validToken,
-              errorText: 'Invalid token.',
+              errorText: loc.invalid_token,
             ),
           ),
           const SizedBox(height: 50),
@@ -135,7 +137,7 @@ class _EnterTokenViewState extends State<EnterTokenView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ApiActionAnimatedButton(
-                text: 'Import match',
+                text: loc.import_match,
                 icon: Icons.cloud_download,
                 onPressed: validateToken(tokenInputFieldController.text)
                     ? () async {
@@ -161,14 +163,15 @@ class _EnterTokenViewState extends State<EnterTokenView> {
             width: double.infinity,
             margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: const Text(
-              'Share tokens consist of 6 alphanumeric characters.',
-              style: TextStyle(
+            child: Text(
+              loc.share_token_format_info,
+              style: const TextStyle(
                 color: CustomTheme.textColor,
                 fontSize: 14,
                 overflow: TextOverflow.visible,
               ),
               textAlign: TextAlign.center,
+              softWrap: true,
             ),
           ),
         ],
@@ -197,9 +200,10 @@ class _EnterTokenViewState extends State<EnterTokenView> {
     } catch (error) {
       if (!mounted) return;
 
+      final loc = AppLocalizations.of(context);
       String errorMessage;
       if (error is NetworkException) {
-        errorMessage = 'Network error. Please check your connection.';
+        errorMessage = loc.network_error;
       } else if (error is ServerException) {
         if (error.statusCode == 404 || error.statusCode == 410) {
           setState(() {
@@ -207,12 +211,12 @@ class _EnterTokenViewState extends State<EnterTokenView> {
           });
           errorMessage = '';
         } else {
-          errorMessage = 'Server error: ${error.statusCode}';
+          errorMessage = loc.server_error(error.statusCode);
         }
       } else if (error is ParsingException) {
-        errorMessage = 'Data parsing error. Please try again later.';
+        errorMessage = loc.parsing_error;
       } else {
-        errorMessage = 'An unexpected error occurred.';
+        errorMessage = loc.unexpected_error;
       }
 
       if (errorMessage.isNotEmpty) {

@@ -241,6 +241,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get group => 'Group';
 
   @override
+  String get group_associated => 'Group associated';
+
+  @override
   String get group_name => 'Group name';
 
   @override
@@ -304,6 +307,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manage_members => 'Manage Members';
 
   @override
+  String get match_already_exists => 'Match already exists';
+
+  @override
   String get match_in_progress => 'Match in progress...';
 
   @override
@@ -335,6 +341,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'The data contains names or descriptions that are too long.';
 
   @override
+  String get new_group_will_be_created => 'New group will be created';
+
+  @override
   String get no_data_available => 'No data available';
 
   @override
@@ -351,6 +360,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_matches_played_yet => 'No games played yet';
+
+  @override
+  String get no_matching_local_group_found =>
+      'No matching local group found.\nA new group will be created.';
 
   @override
   String get no_players_available => 'No players available';
@@ -420,6 +433,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save_changes => 'Save Changes';
 
   @override
+  String get save_match_button => 'Save match';
+
+  @override
   String get scope => 'Scope';
 
   @override
@@ -487,6 +503,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tap_to_choose_existing => 'Tap to choose existing';
+
+  @override
   String get team => 'Team';
 
   @override
@@ -548,4 +567,180 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Yesterday at';
+
+  @override
+  String get match_share => 'Match Share';
+
+  @override
+  String get qr_code_expired => 'QR Code expired';
+
+  @override
+  String get token_expired => 'Token expired';
+
+  @override
+  String expires_in(String time) {
+    return 'Expires in $time';
+  }
+
+  @override
+  String get scan_qr_code_instruction =>
+      'Scan the qr code with another Tallee instance to share the match.';
+
+  @override
+  String get online_sharing_disabled => 'Online sharing is disabled';
+
+  @override
+  String get go_to_settings_to_enable =>
+      'Go to the settings to manually enable it.';
+
+  @override
+  String get open_settings => 'Open Settings';
+
+  @override
+  String get send_code_instruction =>
+      'Send this code to a person who also has Tallee to share the current match.';
+
+  @override
+  String get copy_code => 'Copy Code';
+
+  @override
+  String get code_copied => 'Code copied to clipboard';
+
+  @override
+  String share_match_text(String code) {
+    return 'Here is the match data for our game! Enter code $code in Tallee.';
+  }
+
+  @override
+  String get share_match_title => 'Tallee Match Share';
+
+  @override
+  String get file_share_instruction =>
+      'Manually share the match data in a file for full local transfer.';
+
+  @override
+  String get save_file => 'Save File';
+
+  @override
+  String player_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Players',
+      one: '1 Player',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get network_error => 'Network error. Please check your connection.';
+
+  @override
+  String server_error(int statusCode) {
+    return 'Server error: $statusCode';
+  }
+
+  @override
+  String get parsing_error => 'Data parsing error. Please try again later.';
+
+  @override
+  String get unexpected_error => 'An unexpected error occurred.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get online_sharing_title => 'Online Sharing';
+
+  @override
+  String get online_sharing_consent_text =>
+      'To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?';
+
+  @override
+  String get enable => 'Enable';
+
+  @override
+  String get disable => 'Disable';
+
+  @override
+  String get match_receive => 'Match Receive';
+
+  @override
+  String get scan_qr_receive_instruction =>
+      'Scan the QR code of another Tallee instance to receive the match.';
+
+  @override
+  String get loading_match => 'Loading match...';
+
+  @override
+  String get invalid_qr_code => 'This QR code is invalid or expired.';
+
+  @override
+  String get qr_code_parsing_error =>
+      'The scanned code does not contain valid match data.';
+
+  @override
+  String error_loading_match(String error) {
+    return 'Error loading match: $error';
+  }
+
+  @override
+  String get input_token_instruction =>
+      'Input a match share token another person created using Tallee to import the match.';
+
+  @override
+  String get invalid_token => 'Invalid token.';
+
+  @override
+  String get import_match => 'Import match';
+
+  @override
+  String get share_token_format_info =>
+      'Share tokens consist of 6 alphanumeric characters.';
+
+  @override
+  String get choose_match_file => 'Choose Match File';
+
+  @override
+  String get tap_to_browse => 'Tap to browse';
+
+  @override
+  String get successfully_processed_file => 'Successfully processed file';
+
+  @override
+  String get tap_import_to_continue => 'Tap import match to continue';
+
+  @override
+  String get import_file_instruction =>
+      'Select a match file (.tallee) exported from Tallee match share to import the data.';
+
+  @override
+  String here_is_shared_match(String matchName) {
+    return 'Here is the shared match \"$matchName\"';
+  }
+
+  @override
+  String get choose_where_to_save => 'Choose where to save your match:';
+
+  @override
+  String get associate_players => 'Associate Players';
+
+  @override
+  String get remaining => 'remaining';
+
+  @override
+  String get all_players_associated => 'All players associated';
+
+  @override
+  String get associate_game => 'Associate Game';
+
+  @override
+  String get game_associated => 'Game associated';
+
+  @override
+  String get no_matching_local_game_found =>
+      'No matching local game found.\nA new game will be created.';
+
+  @override
+  String get associate_group => 'Associate Group';
 }

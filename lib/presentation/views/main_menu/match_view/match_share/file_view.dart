@@ -4,6 +4,7 @@ import 'dart:core' hide Match;
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/match.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/services/match_share_service.dart';
 
@@ -29,6 +30,7 @@ class _FileViewState extends State<FileView> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -40,14 +42,15 @@ class _FileViewState extends State<FileView> {
               width: double.infinity,
               margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: const Text(
-                'Manually share the match data in a file for full local transfer.',
-                style: TextStyle(
+              child: Text(
+                loc.file_share_instruction,
+                style: const TextStyle(
                   color: CustomTheme.textColor,
                   fontSize: 16,
                   overflow: TextOverflow.visible,
                 ),
                 textAlign: TextAlign.center,
+                softWrap: true,
               ),
             ),
           ],
@@ -91,7 +94,7 @@ class _FileViewState extends State<FileView> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          '${widget.match.players.length} Players',
+                          loc.player_count(widget.match.players.length),
                           style: const TextStyle(
                             fontSize: 14,
                             color: CustomTheme.textColor,
@@ -110,17 +113,24 @@ class _FileViewState extends State<FileView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FloatingAnimatedButton(
-              text: 'Save File',
+              text: loc.save_file,
               icon: Icons.save,
               onPressed: () {
-                MatchShareService().saveMatchToCustomLocation(widget.match);
+                MatchShareService().saveMatchToCustomLocation(
+                  widget.match,
+                  dialogTitle: loc.choose_where_to_save,
+                );
               },
             ),
             const SizedBox(width: 5),
             FloatingAnimatedButton(
               icon: Icons.share,
               onPressed: () {
-                MatchShareService().shareMatchAsFile(widget.match);
+                MatchShareService().shareMatchAsFile(
+                  widget.match,
+                  text: loc.here_is_shared_match(widget.match.name),
+                  title: loc.share_match_title,
+                );
               },
             ),
           ],

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_games_view.dart';
 import 'package:tallee/services/match_share_service.dart';
@@ -32,6 +33,7 @@ class _QrScanViewState extends State<QrScanView> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: Column(
@@ -82,7 +84,7 @@ class _QrScanViewState extends State<QrScanView> {
                             ),
                           ),
                         ),
-                        statusErrorOverlay(),
+                        statusErrorOverlay(loc),
                       ],
                     );
                   },
@@ -98,14 +100,15 @@ class _QrScanViewState extends State<QrScanView> {
               borderRadius: CustomTheme.standardBorderRadiusAll,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: const Text(
-              'Scanne den QR-Code einer anderen Tallee-Instanz, um das Match zu empfangen.',
+            child: Text(
+              loc.scan_qr_receive_instruction,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: CustomTheme.textColor,
                 fontSize: 14,
                 overflow: TextOverflow.visible,
               ),
+              softWrap: true,
             ),
           ),
         ],
@@ -142,18 +145,19 @@ class _QrScanViewState extends State<QrScanView> {
     } catch (error) {
       if (!mounted) return;
 
-      String message = 'Ein unerwarteter Fehler ist aufgetreten.';
+      final loc = AppLocalizations.of(context);
+      String message = loc.unexpected_error;
 
       if (error is NetworkException) {
-        message = 'Netzwerkfehler. Bitte Internetverbindung prüfen.';
+        message = loc.network_error;
       } else if (error is ServerException) {
         message = (error.statusCode == 404 || error.statusCode == 410)
-            ? 'Dieser QR-Code ist ungültig oder abgelaufen.'
-            : 'Serverfehler (${error.statusCode}).';
+            ? loc.invalid_qr_code
+            : loc.server_error(error.statusCode);
       } else if (error is ParsingException) {
-        message = 'Der gescannte Code enthält keine gültigen Match-Daten.';
+        message = loc.qr_code_parsing_error;
       } else {
-        message = 'Fehler beim Laden: ${error.toString()}';
+        message = loc.error_loading_match(error.toString());
       }
 
       setState(() => _errorMessage = message);
@@ -169,7 +173,7 @@ class _QrScanViewState extends State<QrScanView> {
     }
   }
 
-  Widget statusErrorOverlay() {
+  Widget statusErrorOverlay(AppLocalizations loc) {
     return Positioned.fill(
       child: AnimatedOpacity(
         opacity: _isProcessing ? 1.0 : 0.0,
@@ -190,9 +194,9 @@ class _QrScanViewState extends State<QrScanView> {
                       strokeWidth: 4,
                     ),
                     const SizedBox(height: 15),
-                    const Text(
-                      'Lade Match...',
-                      style: TextStyle(
+                    Text(
+                      loc.loading_match,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
@@ -211,7 +215,9 @@ class _QrScanViewState extends State<QrScanView> {
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
+                        overflow: TextOverflow.visible,
                       ),
+                      softWrap: true,
                     ),
                   ],
                 ],

@@ -85,6 +85,7 @@
   "game_name": "Spielvorlagenname",
   "games": "Spielvorlagen",
   "group": "Gruppe",
+  "group_associated": "Gruppe verknüpft",
   "group_name": "Gruppenname",
   "group_profile": "Gruppenprofil",
   "groups": "Gruppen",
@@ -106,6 +107,7 @@
   "loser": "Verlierer:in",
   "lowest_score": "Niedrigste Punkte",
   "manage_members": "Mitglieder bearbeiten",
+  "match_already_exists": "Spiel existiert bereits",
   "match_in_progress": "Spiel läuft...",
   "match_name": "Spieltitel",
   "match_profile": "Spielprofil",
@@ -116,12 +118,14 @@
   "members": "Mitglieder",
   "multiple_winners": "Mehrere Gewinner:innen",
   "names_or_descriptions_too_long": "Die Daten enthalten zu lange Namen oder Beschreibungen.",
+  "new_group_will_be_created": "Neue Gruppe wird erstellt",
   "no_data_available": "Keine Daten verfügbar",
   "no_games_created_yet": "Noch keine Spielvorlagen erstellt",
   "no_groups_created_yet": "Noch keine Gruppen erstellt",
   "no_license_text_available": "Kein Lizenztext verfügbar",
   "no_matches_created_yet": "Noch keine Spiele erstellt",
   "no_matches_played_yet": "Noch kein Spiel gespielt",
+  "no_matching_local_group_found": "Keine passende lokale Gruppe gefunden. Eine neue Gruppe wird erstellt.",
   "no_players_available": "Keine Spieler:innen verfügbar",
   "no_players_created_yet": "Noch keine Spieler:in erstellt",
   "no_players_found_with_that_name": "Keine Spieler:in mit diesem Namen gefunden",
@@ -144,6 +148,7 @@
   "results": "Ergebnisse",
   "ruleset": "Regelwerk",
   "save_changes": "Änderungen speichern",
+  "save_match_button": "Spiel speichern",
   "scope": "Bereich",
   "scope_description": "Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.",
   "search_for_groups": "Nach Gruppen suchen",
@@ -165,6 +170,7 @@
   "single_winner": "Ein:e Gewinner:in",
   "statistics": "Statistiken",
   "successfully_added_player": "Spieler:in {playerName} erfolgreich hinzugefügt",
+  "tap_to_choose_existing": "Tippen zum manuellen Auswählen",
   "team": "Team",
   "team_match": "Teamspiel",
   "teams": "Teams",
@@ -184,5 +190,96 @@
   "winners": "Gewinner:innen",
   "winrate": "Siegquote",
   "worst_score": "Schlechteste Punktzahl",
-  "yesterday_at": "Gestern um"
+  "yesterday_at": "Gestern um",
+  "match_share": "Match teilen",
+  "qr_code_expired": "QR-Code abgelaufen",
+  "token_expired": "Token expired",
+  "expires_in": "Läuft ab in {time}",
+  "@expires_in": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "scan_qr_code_instruction": "Scanne den QR-Code mit einer anderen Tallee-Instanz, um das Match zu teilen.",
+  "online_sharing_disabled": "Online-Teilen ist deaktiviert",
+  "go_to_settings_to_enable": "Gehe in die Einstellungen, um es manuell zu aktivieren.",
+  "open_settings": "Einstellungen öffnen",
+  "send_code_instruction": "Sende diesen Code an eine Person, die ebenfalls Tallee hat, um das aktuelle Match zu teilen.",
+  "copy_code": "Code kopieren",
+  "code_copied": "Code in die Zwischenablage kopiert",
+  "share_match_text": "Hier sind die Match-Daten für unser Spiel! Gib den Code {code} in Tallee ein.",
+  "@share_match_text": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "share_match_title": "Tallee Match teilen",
+  "file_share_instruction": "Match-Daten manuell in einer Datei teilen für eine vollständige lokale Übertragung.",
+  "save_file": "Datei speichern",
+  "player_count": "{count, plural, =1{1 Spieler:in} other{{count} Spieler:innen}}",
+  "@player_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "network_error": "Netzwerkfehler. Bitte überprüfe deine Verbindung.",
+  "server_error": "Serverfehler: {statusCode}",
+  "@server_error": {
+    "placeholders": {
+      "statusCode": {
+        "type": "int"
+      }
+    }
+  },
+  "parsing_error": "Fehler beim Verarbeiten der Daten. Bitte versuche es später erneut.",
+  "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten.",
+  "retry": "Wiederholen",
+  "online_sharing_title": "Online-Teilen",
+  "online_sharing_consent_text": "Damit andere dein Match laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Share-Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du Online-Teilen aktivieren?",
+  "enable": "Aktivieren",
+  "disable": "Deaktivieren",
+  "match_receive": "Match empfangen",
+  "scan_qr_receive_instruction": "Scanne den QR-Code einer anderen Tallee-Instanz, um das Match zu empfangen.",
+  "loading_match": "Lade Match...",
+  "invalid_qr_code": "Dieser QR-Code ist ungültig oder abgelaufen.",
+  "qr_code_parsing_error": "Der gescannte Code enthält keine gültigen Match-Daten.",
+  "error_loading_match": "Fehler beim Laden: {error}",
+  "@error_loading_match": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "input_token_instruction": "Gib einen Match-Share-Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.",
+  "invalid_token": "Ungültiger Token.",
+  "import_match": "Match importieren",
+  "share_token_format_info": "Share-Token bestehen aus 6 alphanumerischen Zeichen.",
+  "choose_match_file": "Match-Datei auswählen",
+  "tap_to_browse": "Tippen zum Durchsuchen",
+  "successfully_processed_file": "Datei erfolgreich verarbeitet",
+  "tap_import_to_continue": "Tippe auf Match importieren, um fortzufahren",
+  "import_file_instruction": "Wähle eine Match-Datei (.tallee), die aus einem Tallee-Match-Share exportiert wurde, um die Daten zu importieren.",
+  "here_is_shared_match": "Hier ist das geteilte Match \"{matchName}\"",
+  "@here_is_shared_match": {
+    "placeholders": {
+      "matchName": {
+        "type": "String"
+      }
+    }
+  },
+  "choose_where_to_save": "Wähle aus, wo du dein Match speichern möchtest:",
+  "associate_players": "Spieler:innen verknüpfen",
+  "remaining": "verbleibend",
+  "all_players_associated": "Alle Spieler:innen verknüpft",
+  "associate_game": "Spielvorlage verknüpfen",
+  "game_associated": "Spielvorlage verknüpft",
+  "no_matching_local_game_found": "Keine passende lokale Spielvorlage gefunden. Eine neue wird erstellt.",
+  "associate_group": "Gruppe verknüpfen"
 }

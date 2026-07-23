@@ -38,14 +38,23 @@ class TopCenteredMessage extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              overflow: TextOverflow.visible,
+            ),
             textAlign: TextAlign.center,
+            softWrap: true,
           ),
           if (message != null)
             Text(
               message!,
-              style: const TextStyle(fontSize: 16),
+              style: const TextStyle(
+                fontSize: 16,
+                overflow: TextOverflow.visible,
+              ),
               textAlign: TextAlign.center,
+              softWrap: true,
             ),
         ],
       ),

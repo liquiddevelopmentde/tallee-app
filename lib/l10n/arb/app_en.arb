@@ -85,6 +85,7 @@
   "game_name": "Game Name",
   "games": "Games",
   "group": "Group",
+  "group_associated": "Group associated",
   "group_name": "Group name",
   "group_profile": "Group Profile",
   "groups": "Groups",
@@ -106,6 +107,7 @@
   "loser": "Loser",
   "lowest_score": "Lowest Score",
   "manage_members": "Manage Members",
+  "match_already_exists": "Match already exists",
   "match_in_progress": "Match in progress...",
   "match_name": "Match name",
   "match_profile": "Match Profile",
@@ -116,12 +118,14 @@
   "members": "Members",
   "multiple_winners": "Multiple Winners",
   "names_or_descriptions_too_long": "The data contains names or descriptions that are too long.",
+  "new_group_will_be_created": "New group will be created",
   "no_data_available": "No data available",
   "no_games_created_yet": "No games created yet",
   "no_groups_created_yet": "No groups created yet",
   "no_license_text_available": "No license text available",
   "no_matches_created_yet": "No matches created yet",
   "no_matches_played_yet": "No games played yet",
+  "no_matching_local_group_found": "No matching local group found.\nA new group will be created.",
   "no_players_available": "No players available",
   "no_players_created_yet": "No players created yet",
   "no_players_found_with_that_name": "No players found with that name",
@@ -144,6 +148,7 @@
   "results": "Results",
   "ruleset": "Ruleset",
   "save_changes": "Save Changes",
+  "save_match_button": "Save match",
   "scope": "Scope",
   "scope_description": "Choose which games or players are included in the calculation.",
   "search_for_groups": "Search for groups",
@@ -174,6 +179,7 @@
       }
     }
   },
+  "tap_to_choose_existing": "Tap to choose existing",
   "team": "Team",
   "team_match": "Team Match",
   "teams": "Teams",
@@ -193,5 +199,96 @@
   "winners": "Winners",
   "winrate": "Winrate",
   "worst_score": "Worst score",
-  "yesterday_at": "Yesterday at"
+  "yesterday_at": "Yesterday at",
+  "match_share": "Match Share",
+  "qr_code_expired": "QR Code expired",
+  "token_expired": "Token expired",
+  "expires_in": "Expires in {time}",
+  "@expires_in": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "scan_qr_code_instruction": "Scan the qr code with another Tallee instance to share the match.",
+  "online_sharing_disabled": "Online sharing is disabled",
+  "go_to_settings_to_enable": "Go to the settings to manually enable it.",
+  "open_settings": "Open Settings",
+  "send_code_instruction": "Send this code to a person who also has Tallee to share the current match.",
+  "copy_code": "Copy Code",
+  "code_copied": "Code copied to clipboard",
+  "share_match_text": "Here is the match data for our game! Enter code {code} in Tallee.",
+  "@share_match_text": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "share_match_title": "Tallee Match Share",
+  "file_share_instruction": "Manually share the match data in a file for full local transfer.",
+  "save_file": "Save File",
+  "player_count": "{count, plural, =1{1 Player} other{{count} Players}}",
+  "@player_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "network_error": "Network error. Please check your connection.",
+  "server_error": "Server error: {statusCode}",
+  "@server_error": {
+    "placeholders": {
+      "statusCode": {
+        "type": "int"
+      }
+    }
+  },
+  "parsing_error": "Data parsing error. Please try again later.",
+  "unexpected_error": "An unexpected error occurred.",
+  "retry": "Retry",
+  "online_sharing_title": "Online Sharing",
+  "online_sharing_consent_text": "To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?",
+  "enable": "Enable",
+  "disable": "Disable",
+  "match_receive": "Match Receive",
+  "scan_qr_receive_instruction": "Scan the QR code of another Tallee instance to receive the match.",
+  "loading_match": "Loading match...",
+  "invalid_qr_code": "This QR code is invalid or expired.",
+  "qr_code_parsing_error": "The scanned code does not contain valid match data.",
+  "error_loading_match": "Error loading match: {error}",
+  "@error_loading_match": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "input_token_instruction": "Input a match share token another person created using Tallee to import the match.",
+  "invalid_token": "Invalid token.",
+  "import_match": "Import match",
+  "share_token_format_info": "Share tokens consist of 6 alphanumeric characters.",
+  "choose_match_file": "Choose Match File",
+  "tap_to_browse": "Tap to browse",
+  "successfully_processed_file": "Successfully processed file",
+  "tap_import_to_continue": "Tap import match to continue",
+  "import_file_instruction": "Select a match file (.tallee) exported from Tallee match share to import the data.",
+  "here_is_shared_match": "Here is the shared match \"{matchName}\"",
+  "@here_is_shared_match": {
+    "placeholders": {
+      "matchName": {
+        "type": "String"
+      }
+    }
+  },
+  "choose_where_to_save": "Choose where to save your match:",
+  "associate_players": "Associate Players",
+  "remaining": "remaining",
+  "all_players_associated": "All players associated",
+  "associate_game": "Associate Game",
+  "game_associated": "Game associated",
+  "no_matching_local_game_found": "No matching local game found.\nA new game will be created.",
+  "associate_group": "Associate Group"
 }

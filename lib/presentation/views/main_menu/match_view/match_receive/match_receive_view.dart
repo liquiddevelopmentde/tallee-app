@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/enter_token_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file_view.dart';
@@ -27,14 +28,12 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: const Text('Match Receive View'),
-          centerTitle: true,
-        ),
+        appBar: AppBar(title: Text(loc.match_receive), centerTitle: true),
         body: Column(
           children: [
             Padding(

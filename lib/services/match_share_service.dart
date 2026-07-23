@@ -85,23 +85,25 @@ class MatchShareService {
     }
   }
 
-  Future<void> shareMatchAsFile(Match match) async {
+  Future<void> shareMatchAsFile(
+    Match match, {
+    required String text,
+    required String title,
+  }) async {
     String formattedMatchName = match.name.replaceAll(' ', '_');
     var filename = '$formattedMatchName.tallee';
     final temp = await getTemporaryDirectory();
     final path = '${temp.path}/$filename';
     File(path).writeAsString(jsonEncode(match));
     await SharePlus.instance.share(
-      ShareParams(
-        text: 'Here is the shared match "${match.name}"',
-        title: 'Tallee Match Share',
-        files: [XFile(path)],
-      ),
+      ShareParams(text: text, title: title, files: [XFile(path)]),
     );
-    //TODO: add locs
   }
 
-  Future<void> saveMatchToCustomLocation(Match match) async {
+  Future<void> saveMatchToCustomLocation(
+    Match match, {
+    required String dialogTitle,
+  }) async {
     String formattedMatchName = match.name.replaceAll(' ', '_');
     var filename = '$formattedMatchName.tallee';
 
@@ -109,11 +111,10 @@ class MatchShareService {
     Uint8List fileBytes = utf8.encode(jsonString);
 
     await FilePicker.saveFile(
-      dialogTitle: 'Choose where to save your match:',
+      dialogTitle: dialogTitle,
       fileName: filename,
       bytes: fileBytes,
     );
-    // TODO: add locs
   }
 
   /// Maps imported match data to local entities and saves it to the database.
@@ -124,25 +125,29 @@ class MatchShareService {
     required Game? associatedGame,
     required Group? associatedGroup,
   }) async {
+    // Helper to get local player or fall back to imported one if missing
+    // (though UI ensures all are associated)
+    Player getLocalPlayer(Player imported) =>
+        playerAssociations[imported.id] ?? imported;
+
     // 1. Map players to local ones
-    final localPlayers = importedMatch.players
-        .map((p) => playerAssociations[p.id]!)
-        .toList();
+    final localPlayers = importedMatch.players.map(getLocalPlayer).toList();
 
     // 2. Map scores to local player IDs
     final localScores = importedMatch.scores.map((
       importedPlayerId,
       scoreEntry,
     ) {
-      final localPlayer = playerAssociations[importedPlayerId]!;
+      final localPlayer = playerAssociations[importedPlayerId];
+      if (localPlayer == null) {
+        return MapEntry(importedPlayerId, scoreEntry);
+      }
       return MapEntry(localPlayer.id, scoreEntry);
     });
 
     // 3. Map teams and their members to local ones
     final localTeams = importedMatch.teams?.map((team) {
-      final teamMembers = team.members
-          .map((m) => playerAssociations[m.id]!)
-          .toList();
+      final teamMembers = team.members.map(getLocalPlayer).toList();
       return team.copyWith(members: teamMembers);
     }).toList();
 
@@ -150,7 +155,7 @@ class MatchShareService {
     Group? localGroup = associatedGroup;
     if (importedMatch.group != null && localGroup == null) {
       final newGroupMembers = importedMatch.group!.members
-          .map((m) => playerAssociations[m.id]!)
+          .map(getLocalPlayer)
           .toList();
       localGroup = Group(
         name: importedMatch.group!.name,

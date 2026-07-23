@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/core/constants.dart';
@@ -80,11 +81,13 @@ class _MatchShareViewState extends State<MatchShareView>
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(title: const Text('Match Share'), centerTitle: true),
+        appBar: AppBar(title: Text(loc.match_share), centerTitle: true),
         body: Column(
           children: [
             Padding(
@@ -217,21 +220,22 @@ class _MatchShareViewState extends State<MatchShareView>
               return;
             }
 
+            final loc = AppLocalizations.of(context);
             String errorMessage;
 
             if (error is NetworkException) {
-              errorMessage = 'Network error. Please check your connection.';
+              errorMessage = loc.network_error;
             } else if (error is ServerException) {
-              errorMessage = 'Server error: ${error.statusCode}';
+              errorMessage = loc.server_error(error.statusCode);
             } else if (error is ParsingException) {
-              errorMessage = 'Data parsing error. Please try again later.';
+              errorMessage = loc.parsing_error;
             } else {
-              errorMessage = 'An unexpected error occurred.';
+              errorMessage = loc.unexpected_error;
             }
             _scaffoldMessengerKey.currentState?.showSnackBar(
               CustomSnackBar(
                 message: errorMessage,
-                actionText: 'Retry',
+                actionText: loc.retry,
                 onActionTap: () {
                   _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
                   initSharingView(storedSharingConsent);
@@ -255,21 +259,22 @@ class _MatchShareViewState extends State<MatchShareView>
   }
 
   Future<bool?> showConsentDialog() {
+    final loc = AppLocalizations.of(context);
     return showDialog(
       context: context,
       builder: (context) => CustomAlertDialog(
-        title: 'Online Sharing',
-        content: const Text(
-          'To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?',
+        title: loc.online_sharing_title,
+        content: Text(
+          loc.online_sharing_consent_text,
           overflow: TextOverflow.visible,
         ),
         actions: [
           CustomDialogAction(
-            text: 'Enable',
+            text: loc.enable,
             onPressed: () => Navigator.of(context).pop(true),
           ),
           CustomDialogAction(
-            text: 'Disable',
+            text: loc.disable,
             buttonType: ButtonType.secondary,
             onPressed: () => Navigator.of(context).pop(false),
           ),

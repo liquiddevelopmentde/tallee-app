@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
@@ -29,6 +30,7 @@ class TokenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final double progress = secondsRemaining / totalSeconds;
     final int minutes = secondsRemaining ~/ 60;
     final int seconds = secondsRemaining % 60;
@@ -39,14 +41,14 @@ class TokenView extends StatelessWidget {
     return !serverSharingEnabled
         ? Column(
             children: [
-              const TopCenteredMessage(
-                title: 'Online sharing is disabled',
-                message: 'Go to the settings to manually enable it.',
+              TopCenteredMessage(
+                title: loc.online_sharing_disabled,
+                message: loc.go_to_settings_to_enable,
                 icon: Icons.close,
               ),
               const SizedBox(height: 20),
               FloatingAnimatedButton(
-                text: 'Open Settings',
+                text: loc.open_settings,
                 icon: Icons.settings,
                 onPressed: () async {
                   await Navigator.push(
@@ -76,14 +78,15 @@ class TokenView extends StatelessWidget {
                       horizontal: 20,
                       vertical: 20,
                     ),
-                    child: const Text(
-                      'Send this code to a person who also has Tallee to share the current match.',
-                      style: TextStyle(
+                    child: Text(
+                      loc.send_code_instruction,
+                      style: const TextStyle(
                         color: CustomTheme.textColor,
                         fontSize: 16,
                         overflow: TextOverflow.visible,
                       ),
                       textAlign: TextAlign.center,
+                      softWrap: true,
                     ),
                   ),
                 ],
@@ -126,20 +129,24 @@ class TokenView extends StatelessWidget {
               const SizedBox(height: 20),
               Text(
                 minutes == 0 && seconds == 0
-                    ? 'Code expired'
-                    : 'Expires in ${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                    ? loc.token_expired
+                    : loc.expires_in(
+                        '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                      ),
                 style: const TextStyle(
                   color: CustomTheme.textColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
+                  overflow: TextOverflow.visible,
                 ),
+                softWrap: true,
               ),
               const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   FloatingAnimatedButton(
-                    text: 'Copy Code',
+                    text: loc.copy_code,
                     onPressed: isLoading
                         ? null
                         : () {
@@ -148,9 +155,7 @@ class TokenView extends StatelessWidget {
                             ).then((_) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  CustomSnackBar(
-                                    message: 'Code copied to clipboard',
-                                  ),
+                                  CustomSnackBar(message: loc.code_copied),
                                 );
                               }
                             });
@@ -164,10 +169,9 @@ class TokenView extends StatelessWidget {
                         : () {
                             SharePlus.instance.share(
                               ShareParams(
-                                text:
-                                    'Here is the match data for our game! Enter code $displayCode in Tallee.',
-                                title: 'Tallee Match Share',
-                                subject: 'Tallee Match Share',
+                                text: loc.share_match_text(displayCode),
+                                title: loc.share_match_title,
+                                subject: loc.share_match_title,
                               ),
                             );
                           },

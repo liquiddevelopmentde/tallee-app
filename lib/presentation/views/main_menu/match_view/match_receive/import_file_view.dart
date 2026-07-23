@@ -5,6 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/match.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_games_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
@@ -26,6 +27,7 @@ class _ImportFileViewState extends State<ImportFileView> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Column(
       children: [
         const SizedBox(height: 50),
@@ -87,8 +89,8 @@ class _ImportFileViewState extends State<ImportFileView> {
                         );
                       },
                   child: !successfulImport
-                      ? chooseMatchFile()
-                      : displaySelectedFile(data.$3, data.$2!),
+                      ? chooseMatchFile(loc)
+                      : displaySelectedFile(loc, data.$3, data.$2!),
                 ),
               ),
             ),
@@ -98,13 +100,14 @@ class _ImportFileViewState extends State<ImportFileView> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40),
           child: Text(
-            'Select a match file (.tallee) exported from Tallee match share to import the data.',
+            loc.import_file_instruction,
             overflow: TextOverflow.visible,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: CustomTheme.textColor.withAlpha(225),
               fontSize: 14,
             ),
+            softWrap: true,
           ),
         ),
         const SizedBox(height: 40),
@@ -112,7 +115,7 @@ class _ImportFileViewState extends State<ImportFileView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FloatingAnimatedButton(
-              text: 'Import match',
+              text: loc.import_match,
               icon: Icons.file_download,
               onPressed: successfulImport
                   ? () {
@@ -131,55 +134,71 @@ class _ImportFileViewState extends State<ImportFileView> {
     );
   }
 
-  Widget chooseMatchFile() {
+  Widget chooseMatchFile(AppLocalizations loc) {
     return Column(
       key: const ValueKey('choose_match_file'),
       children: [
         const Icon(Icons.file_present, size: 50),
         const SizedBox(height: 20),
-        const Text(
-          'Choose Match File',
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+        Text(
+          loc.choose_match_file,
+          style: const TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w500,
+            overflow: TextOverflow.visible,
+          ),
+          softWrap: true,
         ),
         const SizedBox(height: 5),
         Text(
-          'Tap to browse',
+          loc.tap_to_browse,
           style: TextStyle(
             color: CustomTheme.textColor.withAlpha(180),
             fontSize: 16,
             overflow: TextOverflow.visible,
           ),
           textAlign: TextAlign.center,
+          softWrap: true,
         ),
       ],
     );
   }
 
-  Widget displaySelectedFile(String filename, Match match) {
+  Widget displaySelectedFile(
+    AppLocalizations loc,
+    String filename,
+    Match match,
+  ) {
     return Column(
       key: const ValueKey('display_selected_file'),
       children: [
-        fileTile(filename, match),
+        fileTile(loc, filename, match),
         const SizedBox(height: 20),
-        const Text(
-          'Successfully processed file',
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+        Text(
+          loc.successfully_processed_file,
+          style: const TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w500,
+            overflow: TextOverflow.visible,
+          ),
+          softWrap: true,
         ),
         const SizedBox(height: 5),
         Text(
-          'Tap import match, to continue',
+          loc.tap_import_to_continue,
           style: TextStyle(
             color: CustomTheme.textColor.withAlpha(180),
             fontSize: 16,
             overflow: TextOverflow.visible,
           ),
           textAlign: TextAlign.center,
+          softWrap: true,
         ),
       ],
     );
   }
 
-  Widget fileTile(String filename, Match match) {
+  Widget fileTile(AppLocalizations loc, String filename, Match match) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -219,7 +238,11 @@ class _ImportFileViewState extends State<ImportFileView> {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      '${match.players.isNotEmpty ? match.players.length : match.teams!.length} Players',
+                      loc.player_count(
+                        match.players.isNotEmpty
+                            ? match.players.length
+                            : match.teams!.length,
+                      ),
                       style: const TextStyle(
                         fontSize: 14,
                         color: CustomTheme.textColor,

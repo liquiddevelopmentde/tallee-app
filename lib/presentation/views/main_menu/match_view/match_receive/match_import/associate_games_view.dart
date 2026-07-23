@@ -4,6 +4,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_players_view.dart';
@@ -49,9 +50,10 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text('Associate Game'), centerTitle: true),
+        appBar: AppBar(title: Text(loc.associate_game), centerTitle: true),
         body: Column(
           children: [
             Align(
@@ -65,12 +67,14 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                 ),
                 child: Text(
                   associatedGame != null
-                      ? 'Game associated'
-                      : 'New game will be created',
+                      ? loc.game_associated
+                      : loc.new_group_will_be_created,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
+                    overflow: TextOverflow.visible,
                   ),
+                  softWrap: true,
                 ),
               ),
             ),
@@ -110,31 +114,35 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                             width: 1,
                           ),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.add_box,
                                 size: 35,
                                 color: Colors.orange,
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               Text(
-                                'No matching local game found.\nA new game will be created.',
-                                style: TextStyle(
+                                loc.no_matching_local_game_found,
+                                style: const TextStyle(
                                   color: CustomTheme.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
+                                  overflow: TextOverflow.visible,
                                 ),
                                 textAlign: TextAlign.center,
+                                softWrap: true,
                               ),
                               Text(
-                                'Tap to choose existing',
-                                style: TextStyle(
+                                loc.tap_to_choose_existing,
+                                style: const TextStyle(
                                   color: CustomTheme.hintColor,
                                   fontSize: 14,
+                                  overflow: TextOverflow.visible,
                                 ),
+                                softWrap: true,
                               ),
                             ],
                           ),
@@ -157,7 +165,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
             ),
             const Spacer(),
             BottomAnimatedButton(
-              buttonText: 'Confirm',
+              buttonText: loc.confirm,
               sizeRelativeToWidth: 0.95,
               onPressed: () {
                 Navigator.of(context).push(

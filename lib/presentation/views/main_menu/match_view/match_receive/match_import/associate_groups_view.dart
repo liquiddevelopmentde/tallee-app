@@ -3,12 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
 import 'package:tallee/services/match_share_service.dart';
+import 'package:tallee/services/share_exceptions.dart';
 
 class AssociateGroupsView extends StatefulWidget {
   const AssociateGroupsView({
@@ -68,9 +70,10 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text('Associate Group')),
+        appBar: AppBar(title: Text(loc.associate_group)),
         body: Column(
           children: [
             Align(
@@ -84,8 +87,8 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                 ),
                 child: Text(
                   associatedGroup != null
-                      ? 'Group associated'
-                      : 'New group will be created',
+                      ? loc.group_associated
+                      : loc.new_group_will_be_created,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -122,19 +125,19 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                             width: 1,
                           ),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.group_add,
                                 size: 35,
                                 color: Colors.orange,
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               Text(
-                                'No matching local group found.\nA new group will be created.',
-                                style: TextStyle(
+                                loc.no_matching_local_group_found,
+                                style: const TextStyle(
                                   color: CustomTheme.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -143,8 +146,8 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                'Tap to choose existing',
-                                style: TextStyle(
+                                loc.tap_to_choose_existing,
+                                style: const TextStyle(
                                   color: CustomTheme.hintColor,
                                   fontSize: 14,
                                 ),
@@ -164,7 +167,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
             ),
             const Spacer(),
             BottomAnimatedButton(
-              buttonText: 'Save match',
+              buttonText: loc.save_match_button,
               sizeRelativeToWidth: 0.95,
               onPressed: _saveMatch,
             ),
@@ -176,6 +179,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
 
   Future<void> _saveMatch() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
+    final loc = AppLocalizations.of(context);
 
     // Filter null values and cast to Map<String, Player>
     final playerAssociations = <String, Player>{};
@@ -193,20 +197,27 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
         associatedGame: widget.associatedGame,
         associatedGroup: associatedGroup,
       );
-
+    } on MatchAlreadyExistsException {
       if (!mounted) return;
-
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(CustomSnackBar(message: 'Match saved successfully!'));
-
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      ).showSnackBar(CustomSnackBar(message: loc.match_already_exists));
+      return;
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(CustomSnackBar(message: e.toString()));
+      ).showSnackBar(CustomSnackBar(message: loc.unexpected_error));
+      return;
     }
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
+
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   Future<void> _showGroupSelectionSheet() async {

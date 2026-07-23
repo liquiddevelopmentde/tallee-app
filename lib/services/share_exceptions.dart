@@ -9,7 +9,4 @@ class ServerException extends MatchShareException {
 
 class ParsingException extends MatchShareException {}
 
-class MatchAlreadyExistsException extends MatchShareException {
-  @override
-  String toString() => 'Match already exists';
-}
+class MatchAlreadyExistsException extends MatchShareException {}

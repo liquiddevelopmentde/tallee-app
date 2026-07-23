@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
@@ -37,6 +38,7 @@ class QrCodeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final double progress = secondsRemaining / totalSeconds;
     final int minutes = secondsRemaining ~/ 60;
     final int seconds = secondsRemaining % 60;
@@ -44,14 +46,14 @@ class QrCodeView extends StatelessWidget {
     return !serverSharingEnabled
         ? Column(
             children: [
-              const TopCenteredMessage(
-                title: 'Online sharing is disabled',
-                message: 'Go to the settings to manually enable it.',
+              TopCenteredMessage(
+                title: loc.online_sharing_disabled,
+                message: loc.go_to_settings_to_enable,
                 icon: Icons.close,
               ),
               const SizedBox(height: 20),
               FloatingAnimatedButton(
-                text: 'Open Settings',
+                text: loc.open_settings,
                 icon: Icons.settings,
                 onPressed: () async {
                   await Navigator.push(
@@ -119,13 +121,17 @@ class QrCodeView extends StatelessWidget {
               ),
               Text(
                 minutes == 0 && seconds == 0
-                    ? 'QR Code expired'
-                    : 'Expires in ${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                    ? loc.qr_code_expired
+                    : loc.expires_in(
+                        '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                      ),
                 style: const TextStyle(
                   color: CustomTheme.textColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
+                  overflow: TextOverflow.visible,
                 ),
+                softWrap: true,
               ),
               const SizedBox(height: 20),
               Container(
@@ -140,14 +146,15 @@ class QrCodeView extends StatelessWidget {
                 ),
                 margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                child: const Text(
-                  'Scan the qr code with another Tallee instance to share the match.',
-                  style: TextStyle(
+                child: Text(
+                  loc.scan_qr_code_instruction,
+                  style: const TextStyle(
                     color: CustomTheme.textColor,
                     fontSize: 14,
                     overflow: TextOverflow.visible,
                   ),
                   textAlign: TextAlign.center,
+                  softWrap: true,
                 ),
               ),
             ],

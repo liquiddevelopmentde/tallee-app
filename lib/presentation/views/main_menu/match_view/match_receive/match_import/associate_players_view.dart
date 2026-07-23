@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_groups_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
@@ -12,6 +13,7 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/single_player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/tiles/associate_player_tile.dart';
 import 'package:tallee/services/match_share_service.dart';
+import 'package:tallee/services/share_exceptions.dart';
 
 class AssociatePlayersView extends StatefulWidget {
   const AssociatePlayersView({
@@ -31,8 +33,32 @@ class AssociatePlayersView extends StatefulWidget {
 class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   final Map<String, Player?> associations = {};
 
-  List<Player> get playersToAssociate =>
-      widget.match.group?.members ?? widget.match.players;
+  List<Player> get playersToAssociate {
+    final Map<String, Player> allUniquePlayers = {};
+
+    // Add all players who played the match
+    for (final player in widget.match.players) {
+      allUniquePlayers[player.id] = player;
+    }
+
+    // Add all members of the associated group
+    if (widget.match.group != null) {
+      for (final player in widget.match.group!.members) {
+        allUniquePlayers[player.id] = player;
+      }
+    }
+
+    // Add all members of teams
+    if (widget.match.teams != null) {
+      for (final team in widget.match.teams!) {
+        for (final player in team.members) {
+          allUniquePlayers[player.id] = player;
+        }
+      }
+    }
+
+    return allUniquePlayers.values.toList();
+  }
 
   @override
   void initState() {
@@ -45,13 +71,14 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final players = playersToAssociate;
     final remainingCount = players
         .where((player) => associations[player.id] == null)
         .length;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Associate Players'), centerTitle: true),
+      appBar: AppBar(title: Text(loc.associate_players), centerTitle: true),
       body: SafeArea(
         child: Column(
           children: [
@@ -66,12 +93,14 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                 ),
                 child: Text(
                   remainingCount != 0
-                      ? '$remainingCount remaining'
-                      : 'All players associated',
+                      ? '$remainingCount ${loc.remaining}'
+                      : loc.all_players_associated,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
+                    overflow: TextOverflow.visible,
                   ),
+                  softWrap: true,
                 ),
               ),
             ),
@@ -103,7 +132,9 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
               ),
             ),
             BottomAnimatedButton(
-              buttonText: widget.match.group == null ? 'Save match' : 'Confirm',
+              buttonText: widget.match.group == null
+                  ? loc.save_match_button
+                  : loc.confirm,
               sizeRelativeToWidth: 0.95,
               onPressed: remainingCount == 0
                   ? () async {
@@ -148,20 +179,29 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
         associatedGame: widget.associatedGame,
         associatedGroup: null,
       );
-
+    } on MatchAlreadyExistsException {
       if (!mounted) return;
-
+      final loc = AppLocalizations.of(context);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(CustomSnackBar(message: 'Match saved successfully!'));
-
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      ).showSnackBar(CustomSnackBar(message: loc.match_already_exists));
+      return;
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(CustomSnackBar(message: e.toString()));
+      return;
     }
+
+    if (!mounted) return;
+
+    final loc = AppLocalizations.of(context);
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
+
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   Future<Player?> _showPlayerSelectionSheet(Player? currentSelection) async {
