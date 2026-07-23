@@ -69,25 +69,22 @@ class _StatisticsViewState extends State<StatisticsView> {
         return Stack(
           alignment: Alignment.center,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: AppSkeleton(
-                    enabled: isLoading,
-                    fixLayoutBuilder: true,
-                    alignment: Alignment.topCenter,
-                    child: statistics.isEmpty && !isLoading
-                        ? Center(
-                            child: TopCenteredMessage(
-                              icon: Icons.info,
-                              title: loc.info,
-                              message: loc.no_statistics_created_yet,
-                            ),
-                          )
-                        : ReorderableListView.builder(
-                            padding: CustomTheme.listViewPadding(context),
-                            header: Skeleton.keep(
+            AppSkeleton(
+              enabled: isLoading,
+              fixLayoutBuilder: true,
+              alignment: Alignment.topCenter,
+              child: statistics.isEmpty && !isLoading
+                  ? Center(
+                      child: TopCenteredMessage(
+                        icon: Icons.info,
+                        title: loc.info,
+                        message: loc.no_statistics_created_yet,
+                      ),
+                    )
+                  : ReorderableListView.builder(
+                      padding: CustomTheme.listViewPadding(context),
+                      header: statistics.isEmpty && !isLoading
+                          ? Skeleton.keep(
                               child: Container(
                                 margin: CustomTheme.tileMargin,
                                 child: Row(
@@ -293,88 +290,81 @@ class _StatisticsViewState extends State<StatisticsView> {
                                   ],
                                 ),
                               ),
-                            ),
-                            footer: statisticTiles.isEmpty && !isLoading
-                                ? Padding(
-                                    padding: const EdgeInsets.only(top: 20),
-                                    child: TopCenteredMessage(
-                                      icon: Icons.info,
-                                      title: loc.info,
-                                      message: loc.no_statistics_with_filter,
-                                    ),
-                                  )
-                                : null,
-                            proxyDecorator: (child, index, animation) {
-                              return AnimatedBuilder(
-                                animation: animation,
-                                child: child,
-                                builder: (context, child) {
-                                  final t = Curves.easeOut.transform(
-                                    animation.value,
-                                  );
-                                  const tileMargin = CustomTheme.tileMargin;
-                                  return Transform.scale(
-                                    scale: 1.0 + (0.02 * t),
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      elevation: 8 * t,
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Stack(
-                                        children: [
-                                          ?child,
-                                          Positioned(
-                                            left: tileMargin.left,
-                                            right: tileMargin.right,
-                                            top: tileMargin.top,
-                                            bottom: tileMargin.bottom,
-                                            child: IgnorePointer(
-                                              child: AnimatedOpacity(
-                                                duration: const Duration(
-                                                  milliseconds: 100,
-                                                ),
-                                                opacity: 1 * t,
-                                                child: DecoratedBox(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white
-                                                        .withAlpha(15),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          12,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
+                            )
+                          : null,
+                      footer: statisticTiles.isEmpty && !isLoading
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: TopCenteredMessage(
+                                icon: Icons.info,
+                                title: loc.info,
+                                message: loc.no_statistics_with_filter,
+                              ),
+                            )
+                          : null,
+                      proxyDecorator: (child, index, animation) {
+                        return AnimatedBuilder(
+                          animation: animation,
+                          child: child,
+                          builder: (context, child) {
+                            final t = Curves.easeOut.transform(animation.value);
+                            const tileMargin = CustomTheme.tileMargin;
+                            return Transform.scale(
+                              scale: 1.0 + (0.02 * t),
+                              child: Material(
+                                color: Colors.transparent,
+                                elevation: 8 * t,
+                                borderRadius: BorderRadius.circular(12),
+                                child: Stack(
+                                  children: [
+                                    ?child,
+                                    Positioned(
+                                      left: tileMargin.left,
+                                      right: tileMargin.right,
+                                      top: tileMargin.top,
+                                      bottom: tileMargin.bottom,
+                                      child: IgnorePointer(
+                                        child: AnimatedOpacity(
+                                          duration: const Duration(
+                                            milliseconds: 100,
+                                          ),
+                                          opacity: 1 * t,
+                                          child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white.withAlpha(15),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
                                             ),
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
-                                  );
-                                },
-                              );
-                            },
-                            onReorderItem: (oldIndex, newIndex) {
-                              setState(() {
-                                final stat = statistics.removeAt(oldIndex);
-                                statistics.insert(newIndex, stat);
-                                statisticTiles = statistics
-                                    .map(
-                                      (stat) => buildStatisticTile(
-                                        context: context,
-                                        statistic: stat,
-                                      ),
-                                    )
-                                    .toList();
-                              });
-                            },
-                            itemCount: statisticTiles.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return statisticTiles[index];
-                            },
-                          ),
-                  ),
-                ),
-              ],
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      onReorderItem: (oldIndex, newIndex) {
+                        setState(() {
+                          final stat = statistics.removeAt(oldIndex);
+                          statistics.insert(newIndex, stat);
+                          statisticTiles = statistics
+                              .map(
+                                (stat) => buildStatisticTile(
+                                  context: context,
+                                  statistic: stat,
+                                ),
+                              )
+                              .toList();
+                        });
+                      },
+                      itemCount: statisticTiles.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return statisticTiles[index];
+                      },
+                    ),
             ),
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom + 20,
