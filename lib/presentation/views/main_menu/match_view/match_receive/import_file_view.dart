@@ -176,6 +176,7 @@ class _ImportFileViewState extends State<ImportFileView> {
         const SizedBox(height: 20),
         Text(
           loc.successfully_processed_file,
+          textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.w500,
