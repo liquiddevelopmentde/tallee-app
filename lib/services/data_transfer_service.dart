@@ -456,8 +456,8 @@ class DataTransferService {
         ),
         selectedGroups: selectedGroups.isEmpty ? null : selectedGroups,
         selectedGames: selectedGames.isEmpty ? null : selectedGames,
-        displayCount: map['displayCount'] as int? ?? 5,
-        isFavourite: map['isFavourite'] as bool? ?? false,
+        displayCount: map['displayCount'],
+        isFavourite: map['isFavourite'],
       );
     }).toList();
   }

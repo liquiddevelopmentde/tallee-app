@@ -983,6 +983,7 @@ void main() {
               'selectedGroups': [testGroup.id],
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
             },
           ],
         };
@@ -1039,6 +1040,7 @@ void main() {
               'selectedGroups': ['unknown-group-id'],
               'selectedGames': ['unknown-game-id'],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
             },
           ],
         };
