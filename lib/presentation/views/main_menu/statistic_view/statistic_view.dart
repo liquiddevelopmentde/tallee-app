@@ -420,7 +420,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                           context,
                           listen: false,
                         );
-                        db.statisticDao.updatePosition(statistics);
+                        db.statisticDao.updatePosition(statistics: statistics);
                       },
                       itemCount: statisticTiles.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -600,7 +600,7 @@ class _StatisticsViewState extends State<StatisticsView> {
         .map((stat) => stat.copyWith(position: statistics.indexOf(stat)))
         .toList();
     final db = Provider.of<AppDatabase>(context, listen: false);
-    db.statisticDao.updatePosition(statistics);
+    db.statisticDao.updatePosition(statistics: statistics);
     updateStatisticTiles();
   }
 

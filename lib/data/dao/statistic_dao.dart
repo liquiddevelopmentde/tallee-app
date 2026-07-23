@@ -172,10 +172,10 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
     return rowsUpdated > 0;
   }
 
-  Future<void> updatePosition(List<Statistic> stats) async {
+  Future<void> updatePosition({required List<Statistic> statistics}) async {
     await db.transaction(() async {
-      for (int i = 0; i < stats.length; i++) {
-        final stat = stats[i];
+      for (int i = 0; i < statistics.length; i++) {
+        final stat = statistics[i];
         await (update(statisticTable)..where((tbl) => tbl.id.equals(stat.id)))
             .write(StatisticTableCompanion(position: Value(i)));
       }
