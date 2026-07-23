@@ -11,9 +11,10 @@ class InfoTile extends StatefulWidget {
   /// - [width]: Optional width for the tile.
   const InfoTile({
     super.key,
+    required this.leadingIcon,
     required this.title,
-    required this.icon,
     required this.content,
+    this.trailingIcon,
     this.padding,
     this.margin,
     this.height,
@@ -21,27 +22,14 @@ class InfoTile extends StatefulWidget {
     this.horizontalAlignment = CrossAxisAlignment.center,
   });
 
-  /// The title text displayed on the tile.
+  final Icon leadingIcon;
   final String title;
-
-  /// The icon displayed next to the title.
-  final IconData icon;
-
-  /// The content widget displayed below the title.
+  final Widget? trailingIcon;
   final Widget content;
-
-  /// Optional padding for the tile content.
   final EdgeInsets? padding;
-
   final EdgeInsets? margin;
-
-  /// Optional height for the tile.
   final double? height;
-
-  /// Optional width for the tile.
   final double? width;
-
-  /// The main axis alignment for the content.
   final CrossAxisAlignment horizontalAlignment;
 
   @override
@@ -62,16 +50,23 @@ class _InfoTileState extends State<InfoTile> {
         crossAxisAlignment: widget.horizontalAlignment,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(widget.icon),
-              const SizedBox(width: 5),
-              Text(
-                widget.title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  widget.leadingIcon,
+                  const SizedBox(width: 5),
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
+              if (widget.trailingIcon != null) widget.trailingIcon!,
             ],
           ),
           const SizedBox(height: 10),
