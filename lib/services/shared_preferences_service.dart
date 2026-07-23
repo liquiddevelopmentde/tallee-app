@@ -28,16 +28,13 @@ class SharedPreferencesService {
   }
 
   static Future<void> setShowFavourites(bool showFavourites) async {
-    print('set showFavourites to: $showFavourites');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool(showFavouritesKey, showFavourites);
   }
 
   static Future<bool> getShowFavourites() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final val = prefs.getBool(showFavouritesKey) ?? false;
-    print('get showFavourites: $val');
-    return val;
+    return prefs.getBool(showFavouritesKey) ?? false;
   }
 
   static Future<void> setFilteredGroups(List<Group> groups) async {
