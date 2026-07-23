@@ -286,6 +286,9 @@
           },
           "isFavourite": {
             "type": "boolean"
+          },
+          "position": {
+            "type": "number"
           }
         },
         "additionalProperties": false,
@@ -297,7 +300,8 @@
           "timeframe",
           "color",
           "displayCount",
-          "isFavourite"
+          "isFavourite",
+          "position"
         ]
       }
     }

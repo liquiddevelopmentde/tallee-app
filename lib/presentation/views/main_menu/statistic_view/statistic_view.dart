@@ -130,7 +130,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                           SharedPreferencesService.setShowFavourites(
                                             showOnlyFavourites,
                                           ),
-                                          createFilteredStatisticTiles(),
+                                          updateStatisticTiles(),
                                         },
                                       ),
                                     ),
@@ -167,7 +167,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                           SharedPreferencesService.setFilteredGroups(
                                             filteredGroups,
                                           );
-                                          createFilteredStatisticTiles();
+                                          updateStatisticTiles();
                                         },
                                       ),
                                     ),
@@ -204,7 +204,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                           SharedPreferencesService.setFilteredGames(
                                             filteredGames,
                                           );
-                                          createFilteredStatisticTiles();
+                                          updateStatisticTiles();
                                         },
                                       ),
                                     ),
@@ -250,7 +250,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                           SharedPreferencesService.setFilteredStatisticTypes(
                                             filteredStatisticTypes,
                                           );
-                                          createFilteredStatisticTiles();
+                                          updateStatisticTiles();
                                         },
                                       ),
                                     ),
@@ -293,7 +293,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                           SharedPreferencesService.setFilteredTimeframes(
                                             filteredTimeframes,
                                           );
-                                          createFilteredStatisticTiles();
+                                          updateStatisticTiles();
                                         },
                                       ),
                                     ),
@@ -338,7 +338,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                           SharedPreferencesService.setFilteredStatisticScopes(
                                             filteredStatisticScopes,
                                           );
-                                          createFilteredStatisticTiles();
+                                          updateStatisticTiles();
                                         },
                                       ),
                                     ),
@@ -416,6 +416,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                               )
                               .toList();
                         });
+                        final db = Provider.of<AppDatabase>(
+                          context,
+                          listen: false,
+                        );
+                        db.statisticDao.updatePosition(statistics);
                       },
                       itemCount: statisticTiles.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -434,20 +439,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                   await navigator.push<Statistic>(
                     adaptivePageRoute(
                       builder: (context) => CreateStatisticView(
-                        onStatisticCreated: (newStats) {
-                          if (!mounted) return;
-                          setState(() {
-                            statistics = [...newStats, ...statistics];
-                            statisticTiles = statistics
-                                .map(
-                                  (stat) => buildStatisticTile(
-                                    context: context,
-                                    statistic: stat,
-                                  ),
-                                )
-                                .toList();
-                          });
-                        },
+                        onStatisticCreated: (newStats) =>
+                            onStatisticsCreated(newStats),
                       ),
                     ),
                   );
@@ -509,7 +502,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     if (!mounted) return;
 
     statistics = results[0] as List<Statistic>
-      ..sort((stat1, stat2) => stat2.createdAt.compareTo(stat1.createdAt));
+      ..sort((a, b) => a.position.compareTo(b.position));
     matches = results[1] as List<Match>;
     players = results[2] as List<Player>;
     groups = results[3] as List<Group>;
@@ -518,7 +511,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     await loadFilterData();
 
     setState(() {
-      createFilteredStatisticTiles();
+      updateStatisticTiles();
       isLoading = false;
     });
   }
@@ -589,14 +582,26 @@ class _StatisticsViewState extends State<StatisticsView> {
   }
 
   // Create the statistic tiles based on the active filters
-  void createFilteredStatisticTiles() {
-    final filtered = statistics.where(matchesActiveFilters).toList();
+  void updateStatisticTiles() {
+    final displayedStats = statistics.where(matchesActiveFilters).toList()
+      ..sort((a, b) => a.position.compareTo(b.position));
 
     setState(() {
-      statisticTiles = filtered
+      statisticTiles = displayedStats
           .map((stat) => buildStatisticTile(context: context, statistic: stat))
           .toList();
     });
+  }
+
+  /// Adds the new statistic, updates the positions of all statistics and updates the tiles.
+  void onStatisticsCreated(List<Statistic> newStats) {
+    statistics = [...newStats, ...statistics];
+    statistics = statistics
+        .map((stat) => stat.copyWith(position: statistics.indexOf(stat)))
+        .toList();
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    db.statisticDao.updatePosition(statistics);
+    updateStatisticTiles();
   }
 
   /// Refreshes a statistic by its ID, either updating it or removing it if
@@ -616,9 +621,7 @@ class _StatisticsViewState extends State<StatisticsView> {
         statistics[index] = newStat;
       }
     }
-    setState(() {
-      createFilteredStatisticTiles();
-    });
+    updateStatisticTiles();
   }
 
   /// Whether [statistic] satisfies all currently active filters.
@@ -675,7 +678,7 @@ class _StatisticsViewState extends State<StatisticsView> {
       await resetFavourites();
     }
     SharedPreferencesService.setAllFiltersEmpty();
-    createFilteredStatisticTiles();
+    updateStatisticTiles();
   }
 
   Future<void> resetFavourites() async {

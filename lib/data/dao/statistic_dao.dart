@@ -22,6 +22,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         color: statistic.color,
         displayCount: Value(statistic.displayCount),
         isFavourite: Value(statistic.isFavourite),
+        position: Value(statistic.position),
       ),
       mode: InsertMode.insertOrReplace,
     );
@@ -65,6 +66,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
                 color: s.color,
                 displayCount: Value(s.displayCount),
                 isFavourite: Value(s.isFavourite),
+                position: Value(s.position),
               ),
             )
             .toList(),
@@ -117,6 +119,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         createdAt: row.createdAt,
         color: row.color,
         isFavourite: row.isFavourite,
+        position: row.position,
       );
     }
     return null;
@@ -143,6 +146,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
           createdAt: row.createdAt,
           color: row.color,
           isFavourite: row.isFavourite,
+          position: row.position,
         );
       }),
     );
@@ -166,6 +170,16 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
             .write(StatisticTableCompanion(isFavourite: Value(isFavourite)));
 
     return rowsUpdated > 0;
+  }
+
+  Future<void> updatePosition(List<Statistic> stats) async {
+    await db.transaction(() async {
+      for (int i = 0; i < stats.length; i++) {
+        final stat = stats[i];
+        await (update(statisticTable)..where((tbl) => tbl.id.equals(stat.id)))
+            .write(StatisticTableCompanion(position: Value(i)));
+      }
+    });
   }
 
   /* Delete */
