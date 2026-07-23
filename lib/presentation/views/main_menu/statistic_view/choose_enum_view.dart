@@ -29,12 +29,10 @@ class ChooseEnumView<T extends Enum> extends StatefulWidget {
 class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
   final TextEditingController controller = TextEditingController();
 
-  late final List<T> filteredValues;
   late List<T> selectedValues;
 
   @override
   void initState() {
-    filteredValues = [...widget.enumValue];
     selectedValues = widget.initialEnums ?? [];
     super.initState();
   }
@@ -54,92 +52,90 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
           }
           Navigator.of(context).pop(popResult);
         },
-        child: Expanded(
-          child: Visibility(
-            visible: filteredValues.isNotEmpty,
-            replacement: TopCenteredMessage(
-              icon: Icons.info,
-              title: loc.info,
-              message: AppLocalizations.of(
-                context,
-              ).there_is_no_group_matching_your_search,
+        child: Visibility(
+          visible: widget.enumValue.isNotEmpty,
+          replacement: TopCenteredMessage(
+            icon: Icons.info,
+            title: loc.info,
+            message: AppLocalizations.of(
+              context,
+            ).there_is_no_group_matching_your_search,
+          ),
+          child: ListView.separated(
+            padding: const EdgeInsets.only(
+              bottom: 85,
+              top: 10,
+              right: 10,
+              left: 10,
             ),
-            child: ListView.separated(
-              padding: const EdgeInsets.only(
-                bottom: 85,
-                top: 10,
-                right: 10,
-                left: 10,
-              ),
-              itemCount: filteredValues.length,
-              separatorBuilder: (BuildContext context, int index) =>
-                  const SizedBox(height: 10),
-              itemBuilder: (BuildContext context, int index) {
-                bool isHighlighted = selectedValues.any(
-                  (item) => item == filteredValues[index],
-                );
+            itemCount: widget.enumValue.length,
+            separatorBuilder: (BuildContext context, int index) =>
+                const SizedBox(height: 10),
+            itemBuilder: (BuildContext context, int index) {
+              bool isHighlighted = selectedValues.any(
+                (item) => item == widget.enumValue[index],
+              );
 
-                return GestureDetector(
-                  child: AnimatedContainer(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color: CustomTheme.boxColor,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: CustomTheme.boxBorderColor,
-                        width: 2,
-                      ),
-                    ),
-                    duration: const Duration(milliseconds: 150),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          getValName(filteredValues[index], context),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Icon(
-                          Icons.check,
-                          color: isHighlighted
-                              ? CustomTheme.textColor
-                              : Colors.transparent,
-                        ),
-                      ],
+              return GestureDetector(
+                child: AnimatedContainer(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: CustomTheme.boxColor,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: CustomTheme.boxBorderColor,
+                      width: 2,
                     ),
                   ),
-                  onTap: () async {
-                    setState(() {
-                      if (selectedValues.contains(filteredValues[index])) {
-                        selectedValues.removeWhere(
-                          (val) => val == filteredValues[index],
-                        );
-                      } else {
-                        // In single select mode only allow one item
-                        if (!isMultiSelect) {
-                          selectedValues.clear();
-                        }
-                        selectedValues.add(filteredValues[index]);
+                  duration: const Duration(milliseconds: 150),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        getValName(widget.enumValue[index], context),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Icon(
+                        Icons.check,
+                        color: isHighlighted
+                            ? CustomTheme.textColor
+                            : Colors.transparent,
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () async {
+                  setState(() {
+                    if (selectedValues.contains(widget.enumValue[index])) {
+                      selectedValues.removeWhere(
+                        (val) => val == widget.enumValue[index],
+                      );
+                    } else {
+                      // In single select mode only allow one item
+                      if (!isMultiSelect) {
+                        selectedValues.clear();
                       }
-                    });
-
-                    // Navigate back to create match view instantly
-                    if (!isMultiSelect) {
-                      await Future.delayed(
-                        Constants.MINIMUM_SKELETON_DURATION,
-                      ).then((_) {
-                        if (!context.mounted) return;
-                        Navigator.of(context).pop(
-                          selectedValues.isEmpty ? null : selectedValues.first,
-                        );
-                      });
+                      selectedValues.add(widget.enumValue[index]);
                     }
-                  },
-                );
-              },
-            ),
+                  });
+
+                  // Navigate back to create match view instantly
+                  if (!isMultiSelect) {
+                    await Future.delayed(
+                      Constants.MINIMUM_SKELETON_DURATION,
+                    ).then((_) {
+                      if (!context.mounted) return;
+                      Navigator.of(context).pop(
+                        selectedValues.isEmpty ? null : selectedValues.first,
+                      );
+                    });
+                  }
+                },
+              );
+            },
           ),
         ),
       ),
