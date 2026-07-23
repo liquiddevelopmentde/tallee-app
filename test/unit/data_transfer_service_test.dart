@@ -1127,6 +1127,7 @@ void main() {
               'selectedGroups': null,
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
             },
             {
               'id': testStatistic.id,
@@ -1138,6 +1139,7 @@ void main() {
               'selectedGroups': [testGroup.id],
               'selectedGames': null,
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
             },
             {
               'id': testStatistic.id,
@@ -1149,6 +1151,7 @@ void main() {
               'selectedGroups': [testGroup.id],
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
             },
           ],
         });
@@ -1227,6 +1230,7 @@ void main() {
                 'selectedGroups': [testGroup.id],
                 'selectedGames': [testGame.id],
                 'displayCount': testStatistic.displayCount,
+                'isFavourite': testStatistic.isFavourite,
               },
               {
                 'id': testStatistic.id,
@@ -1238,6 +1242,7 @@ void main() {
                 'selectedGroups': null,
                 'selectedGames': [testGame.id],
                 'displayCount': testStatistic.displayCount,
+                'isFavourite': testStatistic.isFavourite,
               },
               {
                 'id': testStatistic.id,
@@ -1249,6 +1254,7 @@ void main() {
                 'selectedGroups': [testGroup.id],
                 'selectedGames': null,
                 'displayCount': testStatistic.displayCount,
+                'isFavourite': testStatistic.isFavourite,
               },
             ],
           });
