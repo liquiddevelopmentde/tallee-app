@@ -21,6 +21,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         timeframe: statistic.timeframe,
         color: statistic.color,
         displayCount: Value(statistic.displayCount),
+        isFavourite: Value(statistic.isFavourite),
       ),
       mode: InsertMode.insertOrReplace,
     );
@@ -63,6 +64,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
                 timeframe: s.timeframe,
                 color: s.color,
                 displayCount: Value(s.displayCount),
+                isFavourite: Value(s.isFavourite),
               ),
             )
             .toList(),
@@ -114,6 +116,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         id: row.id,
         createdAt: row.createdAt,
         color: row.color,
+        isFavourite: row.isFavourite,
       );
     }
     return null;
@@ -139,6 +142,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
           id: row.id,
           createdAt: row.createdAt,
           color: row.color,
+          isFavourite: row.isFavourite,
         );
       }),
     );
@@ -151,6 +155,15 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         await (update(statisticTable)
               ..where((tbl) => tbl.id.equals(statisticId)))
             .write(StatisticTableCompanion(displayCount: Value(displayCount)));
+
+    return rowsUpdated > 0;
+  }
+
+  Future<bool> updateIsFavourite(String statisticId, bool isFavourite) async {
+    final rowsUpdated =
+        await (update(statisticTable)
+              ..where((tbl) => tbl.id.equals(statisticId)))
+            .write(StatisticTableCompanion(isFavourite: Value(isFavourite)));
 
     return rowsUpdated > 0;
   }
