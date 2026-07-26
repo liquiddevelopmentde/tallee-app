@@ -119,13 +119,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                         activated: showOnlyFavourites,
                                         onTap: () => {
                                           setState(() {
-                                            showOnlyFavourites =
-                                                !showOnlyFavourites;
-                                            if (showOnlyFavourites) {
-                                              resetFilter(
-                                                includeFavourites: false,
-                                              );
-                                            }
+                                            showOnlyFavourites = true;
+                                            resetFilter(
+                                              includeFavourites: false,
+                                            );
                                           }),
                                           SharedPreferencesService.setShowFavourites(
                                             showOnlyFavourites,
