@@ -143,8 +143,8 @@ Widget _buildPairGameNameWidget(
         const SizedBox(width: 5),
       ],
       if (team.members.length > 1) ...[
-        RichText(
-          text: TextSpan(
+        Text.rich(
+          TextSpan(
             style: const TextStyle(color: CustomTheme.textColor),
             children: [
               buildPlayerNameCountSpan(

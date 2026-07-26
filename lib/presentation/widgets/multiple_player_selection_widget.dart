@@ -210,6 +210,7 @@ class _MultiplePlayerSelectionWidgetState
                   isPairingMode
                       ? loc.click_another_player_to_create_a_pair
                       : loc.selected_players,
+                  overflow: TextOverflow.visible,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
