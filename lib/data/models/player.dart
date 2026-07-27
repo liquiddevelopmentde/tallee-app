@@ -52,10 +52,12 @@ class Player {
           createdAt == other.createdAt &&
           name == other.name &&
           nameCount == other.nameCount &&
-          description == other.description;
+          description == other.description &&
+          deleted == other.deleted;
 
   @override
-  int get hashCode => Object.hash(id, createdAt, name, nameCount, description);
+  int get hashCode =>
+      Object.hash(id, createdAt, name, nameCount, description, deleted);
 
   Player.fromJson(Map<String, dynamic> json)
     : id = json['id'],
