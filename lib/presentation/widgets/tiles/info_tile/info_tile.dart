@@ -11,10 +11,10 @@ class InfoTile extends StatefulWidget {
   /// - [width]: Optional width for the tile.
   const InfoTile({
     super.key,
-    required this.leadingIcon,
+    required this.leadingWidget,
     required this.title,
     required this.content,
-    this.trailingIcon,
+    this.trailingWidget,
     this.padding,
     this.margin,
     this.height,
@@ -22,9 +22,9 @@ class InfoTile extends StatefulWidget {
     this.horizontalAlignment = CrossAxisAlignment.center,
   });
 
-  final Icon leadingIcon;
+  final Icon leadingWidget;
   final String title;
-  final Widget? trailingIcon;
+  final Widget? trailingWidget;
   final Widget content;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
@@ -55,7 +55,7 @@ class _InfoTileState extends State<InfoTile> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  widget.leadingIcon,
+                  widget.leadingWidget,
                   const SizedBox(width: 5),
                   Text(
                     widget.title,
@@ -66,7 +66,7 @@ class _InfoTileState extends State<InfoTile> {
                   ),
                 ],
               ),
-              if (widget.trailingIcon != null) widget.trailingIcon!,
+              if (widget.trailingWidget != null) widget.trailingWidget!,
             ],
           ),
           const SizedBox(height: 10),

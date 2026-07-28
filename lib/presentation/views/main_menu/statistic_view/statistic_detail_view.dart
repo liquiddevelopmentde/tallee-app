@@ -139,7 +139,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
               const SizedBox(height: 12),
 
               InfoTile(
-                leadingIcon: const Icon(Icons.filter_alt),
+                leadingWidget: const Icon(Icons.filter_alt),
                 width: MediaQuery.sizeOf(context).width * 0.95,
                 title: loc.filter,
                 content: Column(

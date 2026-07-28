@@ -60,9 +60,9 @@ class StatisticsTile extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     return InfoTile(
-      leadingIcon: Icon(icon),
+      leadingWidget: Icon(icon),
       title: title,
-      trailingIcon: isFavourite ? const Icon(Icons.favorite) : null,
+      trailingWidget: isFavourite ? const Icon(Icons.favorite) : null,
       width: width ?? MediaQuery.sizeOf(context).width * 0.95,
       margin: margin ?? CustomTheme.tileMargin,
       content: Padding(

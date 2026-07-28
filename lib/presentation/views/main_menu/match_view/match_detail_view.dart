@@ -169,7 +169,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   // Teams or Pairs
                   InfoTile(
                     title: match.isTeamMatch ? loc.teams : loc.players,
-                    leadingIcon: Icon(
+                    leadingWidget: Icon(
                       match.isTeamMatch ? Icons.scoreboard : Icons.people,
                     ),
                     horizontalAlignment: CrossAxisAlignment.start,
@@ -221,7 +221,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   // Players
                   InfoTile(
                     title: loc.players,
-                    leadingIcon: const Icon(Icons.people),
+                    leadingWidget: const Icon(Icons.people),
                     horizontalAlignment: CrossAxisAlignment.start,
                     content: match.players.isNotEmpty
                         ? Wrap(
@@ -260,7 +260,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 // Game
                 InfoTile(
                   title: loc.game,
-                  leadingIcon: const Icon(RpgAwesome.clovers_card),
+                  leadingWidget: const Icon(RpgAwesome.clovers_card),
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -282,7 +282,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 // Results
                 InfoTile(
                   title: loc.results,
-                  leadingIcon: const Icon(Icons.emoji_events),
+                  leadingWidget: const Icon(Icons.emoji_events),
                   content: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 4,

@@ -137,7 +137,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 const SizedBox(height: 20),
                 InfoTile(
                   title: loc.members,
-                  leadingIcon: const Icon(Icons.people),
+                  leadingWidget: const Icon(Icons.people),
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: Wrap(
                     alignment: WrapAlignment.start,
