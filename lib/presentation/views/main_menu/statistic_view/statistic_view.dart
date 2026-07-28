@@ -667,11 +667,11 @@ class _StatisticsViewState extends State<StatisticsView> {
       filteredStatisticTypes = [];
       filteredStatisticScopes = [];
       filteredTimeframes = [];
+      if (includeFavourites) showOnlyFavourites = false;
     });
-    if (includeFavourites) {
-      await resetFavourites();
-    }
-    SharedPreferencesService.setAllFiltersEmpty();
+    SharedPreferencesService.deleteAllFilters(
+      includeFavourites: includeFavourites,
+    );
     createFilteredStatisticTiles();
   }
 
