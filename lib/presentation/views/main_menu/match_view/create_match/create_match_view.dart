@@ -95,8 +95,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final buttonText = isEditMode() ? loc.save_changes : loc.create_match;
-    final viewTitle = isEditMode() ? loc.edit_match : loc.create_new_match;
+    final buttonText = isEditMode ? loc.save_changes : loc.create_match;
+    final viewTitle = isEditMode ? loc.edit_match : loc.create_new_match;
 
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
@@ -119,7 +119,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               ),
 
               // Game selection tile.
-              if (!isEditMode())
+              if (!isEditMode)
                 ChooseTile(
                   title: loc.game,
                   trailing: selectedGame == null
@@ -137,7 +137,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 onPressed: () async => onChoosingGroup(),
               ),
 
-              if (!isEditMode())
+              if (!isEditMode)
                 ChooseTile(
                   title: loc.team_match,
                   trailing: Switch.adaptive(
@@ -193,8 +193,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     );
   }
 
-  bool isEditMode() => widget.matchToEdit != null;
-  bool isPrefillMode() => widget.matchToPrefill != null;
+  bool get isEditMode => widget.matchToEdit != null;
+  bool get isPrefillMode => widget.matchToPrefill != null;
 
   void loadData() {
     db = Provider.of<AppDatabase>(context, listen: false);
@@ -212,20 +212,16 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
 
       // If a match is provided, prefill the fields
-      if (isEditMode() || isPrefillMode()) {
-        prefillMatchDetails(isEditMode());
+      if (isEditMode || isPrefillMode) {
+        prefillMatchDetails();
       }
     });
   }
 
   // If a match was provided to the view, this method prefills the input fields
-  void prefillMatchDetails(bool editMode) {
+  void prefillMatchDetails() {
     final Match match;
-    if (editMode) {
-      match = widget.matchToEdit!;
-    } else {
-      match = widget.matchToPrefill!;
-    }
+    isEditMode ? match = widget.matchToEdit! : match = widget.matchToPrefill!;
 
     setState(() {
       matchNameController.text = match.name;
@@ -358,7 +354,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// If a match is being edited, updates the match in the database.
   /// Otherwise, creates a new match and navigates to the MatchResultView.
   void submitButtonNavigation(BuildContext context) async {
-    if (isEditMode()) {
+    if (isEditMode) {
       await updateMatch();
       if (context.mounted) {
         Navigator.pop(context);
