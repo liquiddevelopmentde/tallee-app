@@ -580,7 +580,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         adaptivePageRoute(
           fullscreenDialog: true,
           builder: (context) => CreateMatchView(
-            matchToEdit: match,
+            matchToPrefill: match,
+            editMode: true,
             onMatchUpdated: onMatchUpdated,
           ),
         ),

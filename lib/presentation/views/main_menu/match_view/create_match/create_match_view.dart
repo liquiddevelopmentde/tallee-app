@@ -19,13 +19,13 @@ import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 class CreateMatchView extends StatefulWidget {
   /// A view that allows creating a new match
   /// - [onWinnerChanged]: Optional callback invoked when the winner is changed
-  /// - [matchToEdit]: An optional match to prefill the fields for editing.
-  /// - [matchToPrefill]: An optional match to prefill the fields for creating a match with the same settings
+  /// - [editMode]: a bool which sets the view to edit mode
+  /// - [matchToPrefill]: An optional match to prefill the fields
   /// - [onMatchUpdated]: Optional callback invoked when the match is updated (only in
   const CreateMatchView({
     super.key,
     this.onWinnerChanged,
-    this.matchToEdit,
+    this.editMode = false,
     this.matchToPrefill,
     this.onMatchUpdated,
     this.onMatchesUpdated,
@@ -38,7 +38,7 @@ class CreateMatchView extends StatefulWidget {
   final void Function(Match)? onMatchUpdated;
 
   /// An optional match to prefill the fields for editing.
-  final Match? matchToEdit;
+  final bool editMode;
 
   /// An optional match to prefill the fields for creating a match with the same settings
   final Match? matchToPrefill;
@@ -95,8 +95,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final buttonText = isEditMode ? loc.save_changes : loc.create_match;
-    final viewTitle = isEditMode ? loc.edit_match : loc.create_new_match;
+    final buttonText = widget.editMode ? loc.save_changes : loc.create_match;
+    final viewTitle = widget.editMode ? loc.edit_match : loc.create_new_match;
 
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
@@ -119,7 +119,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               ),
 
               // Game selection tile.
-              if (!isEditMode)
+              if (!widget.editMode)
                 ChooseTile(
                   title: loc.game,
                   trailing: selectedGame == null
@@ -137,7 +137,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 onPressed: () async => onChoosingGroup(),
               ),
 
-              if (!isEditMode)
+              if (!widget.editMode)
                 ChooseTile(
                   title: loc.team_match,
                   trailing: Switch.adaptive(
@@ -193,9 +193,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     );
   }
 
-  bool get isEditMode => widget.matchToEdit != null;
-  bool get isPrefillMode => widget.matchToPrefill != null;
-
   void loadData() {
     db = Provider.of<AppDatabase>(context, listen: false);
 
@@ -212,7 +209,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
 
       // If a match is provided, prefill the fields
-      if (isEditMode || isPrefillMode) {
+      if (widget.matchToPrefill != null) {
         prefillMatchDetails();
       }
     });
@@ -220,8 +217,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
   // If a match was provided to the view, this method prefills the input fields
   void prefillMatchDetails() {
-    final Match match;
-    isEditMode ? match = widget.matchToEdit! : match = widget.matchToPrefill!;
+    final Match match = widget.matchToPrefill!;
 
     setState(() {
       matchNameController.text = match.name;
@@ -354,7 +350,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// If a match is being edited, updates the match in the database.
   /// Otherwise, creates a new match and navigates to the MatchResultView.
   void submitButtonNavigation(BuildContext context) async {
-    if (isEditMode) {
+    if (widget.editMode) {
       await updateMatch();
       if (context.mounted) {
         Navigator.pop(context);
@@ -398,47 +394,47 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// Updates the existing match in the database.
   Future<void> updateMatch() async {
     final updatedMatch = Match(
-      id: widget.matchToEdit!.id,
+      id: widget.matchToPrefill!.id,
       name: matchNameController.text.isEmpty
           ? (hintText ?? '')
           : matchNameController.text.trim(),
       group: selectedGroup,
       players: selectedPlayers,
       game: selectedGame!,
-      createdAt: widget.matchToEdit!.createdAt,
-      endedAt: widget.matchToEdit!.endedAt,
-      notes: widget.matchToEdit!.notes,
+      createdAt: widget.matchToPrefill!.createdAt,
+      endedAt: widget.matchToPrefill!.endedAt,
+      notes: widget.matchToPrefill!.notes,
     );
 
-    if (widget.matchToEdit!.name != updatedMatch.name) {
+    if (widget.matchToPrefill!.name != updatedMatch.name) {
       await db.matchDao.updateMatchName(
-        matchId: widget.matchToEdit!.id,
+        matchId: widget.matchToPrefill!.id,
         name: updatedMatch.name,
       );
     }
 
-    if (widget.matchToEdit!.group?.id != updatedMatch.group?.id) {
+    if (widget.matchToPrefill!.group?.id != updatedMatch.group?.id) {
       await db.matchDao.updateMatchGroup(
-        matchId: widget.matchToEdit!.id,
+        matchId: widget.matchToPrefill!.id,
         groupId: updatedMatch.group?.id,
       );
     }
 
     // Add players who are in updatedMatch but not in the original match
     for (var player in updatedMatch.players) {
-      if (!widget.matchToEdit!.players.any((p) => p.id == player.id)) {
+      if (!widget.matchToPrefill!.players.any((p) => p.id == player.id)) {
         await db.playerMatchDao.addPlayerToMatch(
-          matchId: widget.matchToEdit!.id,
+          matchId: widget.matchToPrefill!.id,
           playerId: player.id,
         );
       }
     }
 
     // Remove players who are in the original match but not in updatedMatch
-    for (var player in widget.matchToEdit!.players) {
+    for (var player in widget.matchToPrefill!.players) {
       if (!updatedMatch.players.any((p) => p.id == player.id)) {
         await db.playerMatchDao.removePlayerFromMatch(
-          matchId: widget.matchToEdit!.id,
+          matchId: widget.matchToPrefill!.id,
           playerId: player.id,
         );
       }
