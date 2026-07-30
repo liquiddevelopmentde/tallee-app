@@ -20,11 +20,13 @@ class CreateMatchView extends StatefulWidget {
   /// A view that allows creating a new match
   /// - [onWinnerChanged]: Optional callback invoked when the winner is changed
   /// - [matchToEdit]: An optional match to prefill the fields for editing.
+  /// - [matchToPrefill]: An optional match to prefill the fields for creating a match with the same settings
   /// - [onMatchUpdated]: Optional callback invoked when the match is updated (only in
   const CreateMatchView({
     super.key,
     this.onWinnerChanged,
     this.matchToEdit,
+    this.matchToPrefill,
     this.onMatchUpdated,
     this.onMatchesUpdated,
   });
@@ -37,6 +39,9 @@ class CreateMatchView extends StatefulWidget {
 
   /// An optional match to prefill the fields for editing.
   final Match? matchToEdit;
+
+  /// An optional match to prefill the fields for creating a match with the same settings
+  final Match? matchToPrefill;
 
   @override
   State<CreateMatchView> createState() => _CreateMatchViewState();
@@ -189,6 +194,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   }
 
   bool isEditMode() => widget.matchToEdit != null;
+  bool isPrefillMode() => widget.matchToPrefill != null;
 
   void loadData() {
     db = Provider.of<AppDatabase>(context, listen: false);
@@ -206,31 +212,39 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
 
       // If a match is provided, prefill the fields
-      if (isEditMode()) {
-        prefillMatchDetails();
+      if (isEditMode() || isPrefillMode()) {
+        prefillMatchDetails(isEditMode());
       }
     });
   }
 
   // If a match was provided to the view, this method prefills the input fields
-  void prefillMatchDetails() {
-    final match = widget.matchToEdit!;
-    matchNameController.text = match.name;
-    selectedPlayers = match.players;
-    selectedGame = match.game;
-    isTeamMatch = match.isTeamMatch;
-
-    if (match.teams != null && match.teams!.isNotEmpty) {
-      selectedUnits = match.teams!;
+  void prefillMatchDetails(bool editMode) {
+    final Match match;
+    if (editMode) {
+      match = widget.matchToEdit!;
     } else {
-      selectedUnits = selectedPlayers
-          .map((p) => Team(name: '', members: [p]))
-          .toList();
+      match = widget.matchToPrefill!;
     }
 
-    if (match.group != null) {
-      selectedGroup = match.group;
-    }
+    setState(() {
+      matchNameController.text = match.name;
+      selectedPlayers = match.players;
+      selectedGame = match.game;
+      isTeamMatch = match.isTeamMatch;
+
+      if (match.teams != null && match.teams!.isNotEmpty) {
+        selectedUnits = match.teams!;
+      } else {
+        selectedUnits = selectedPlayers
+            .map((p) => Team(name: '', members: [p]))
+            .toList();
+      }
+
+      if (match.group != null) {
+        selectedGroup = match.group;
+      }
+    });
   }
 
   Future<void> onChoosingGame() async {
@@ -351,6 +365,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       }
     } else {
       final match = await createMatch();
+      widget.onMatchesUpdated?.call();
 
       final hasPairs = selectedUnits.any((u) => u.members.length > 1);
 

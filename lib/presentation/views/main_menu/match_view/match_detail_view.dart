@@ -69,6 +69,18 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         title: Text(loc.match_profile),
         actions: [
           HapticIconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () => Navigator.of(context).pushReplacement(
+              adaptivePageRoute(
+                builder: (context) => CreateMatchView(
+                  matchToPrefill: widget.match,
+                  onWinnerChanged: widget.onMatchUpdate,
+                  onMatchesUpdated: widget.onMatchUpdate,
+                ),
+              ),
+            ),
+          ),
+          HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
               showDialog<bool>(
