@@ -8,6 +8,7 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    SharedPreferencesService.resetCache();
   });
 
   group('SharedPreferencesService', () {
@@ -42,7 +43,7 @@ void main() {
         Timeframe.allTime,
       ]);
 
-      await SharedPreferencesService.deleteAllFilteredPreferences();
+      await SharedPreferencesService.deleteAllFilters(includeFavourites: false);
 
       final filteredGroups = await SharedPreferencesService.getFilteredGroups();
       final filteredGames = await SharedPreferencesService.getFilteredGames();

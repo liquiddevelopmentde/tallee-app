@@ -13,7 +13,7 @@ class DetailTile extends StatelessWidget {
     final loc = AppLocalizations.of(context);
     return InfoTile(
       title: loc.statistics,
-      leadingIcon: const Icon(Icons.bar_chart),
+      leadingWidget: const Icon(Icons.bar_chart),
       content: Column(
         children: [
           for (final (label, value) in rows)
