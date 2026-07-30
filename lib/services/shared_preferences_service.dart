@@ -1,16 +1,23 @@
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/data/models/models.dart';
 
 class SharedPreferencesService {
   static SharedPreferences? _prefs;
 
-  static Future<SharedPreferences> _getInstance() async {
-    return _prefs ??= await SharedPreferences.getInstance();
+  /// Loads and caches the [SharedPreferences] instance.
+  static Future<void> init() async {
+    _prefs ??= await SharedPreferences.getInstance();
   }
 
-  @visibleForTesting
-  static void resetCache() => _prefs = null;
+  static SharedPreferences get _instance {
+    final prefs = _prefs;
+    if (prefs == null) {
+      throw StateError(
+        'SharedPreferencesService.init() must be called before use.',
+      );
+    }
+    return prefs;
+  }
 
   static const String filteredGroupsKey = 'filtered_groups';
   static const String filteredGamesKey = 'filtered_games';
@@ -19,64 +26,54 @@ class SharedPreferencesService {
   static const String filteredStatisticScopesKey = 'filtered_statistic_scopes';
   static const String showFavouritesKey = 'show_favourites';
 
-  static Future<void> deleteAllFilters({
-    required bool includeFavourites,
-  }) async {
-    final SharedPreferences prefs = await _getInstance();
-    await prefs.remove(filteredGroupsKey);
-    await prefs.remove(filteredGamesKey);
-    await prefs.remove(filteredTimeframesKey);
-    await prefs.remove(filteredStatisticTypesKey);
-    await prefs.remove(filteredStatisticScopesKey);
+  static void deleteAllFilters({required bool includeFavourites}) {
+    final SharedPreferences prefs = _instance;
+    prefs.remove(filteredGroupsKey);
+    prefs.remove(filteredGamesKey);
+    prefs.remove(filteredTimeframesKey);
+    prefs.remove(filteredStatisticTypesKey);
+    prefs.remove(filteredStatisticScopesKey);
     if (includeFavourites) {
-      await prefs.remove(showFavouritesKey);
+      prefs.remove(showFavouritesKey);
     }
   }
 
-  static Future<void> setShowFavourites(bool showFavourites) async {
-    final SharedPreferences prefs = await _getInstance();
-    await prefs.setBool(showFavouritesKey, showFavourites);
+  static void setShowFavourites(bool showFavourites) {
+    _instance.setBool(showFavouritesKey, showFavourites);
   }
 
-  static Future<bool> getShowFavourites() async {
-    final SharedPreferences prefs = await _getInstance();
-    return prefs.getBool(showFavouritesKey) ?? false;
+  static bool getShowFavourites() {
+    return _instance.getBool(showFavouritesKey) ?? false;
   }
 
-  static Future<void> setFilteredGroups(List<Group> groups) async {
-    final SharedPreferences prefs = await _getInstance();
+  static void setFilteredGroups(List<Group> groups) {
     final List<String> groupJsonList = groups.map((group) => group.id).toList();
-    await prefs.setStringList(filteredGroupsKey, groupJsonList);
+    _instance.setStringList(filteredGroupsKey, groupJsonList);
   }
 
-  static Future<List<String>> getFilteredGroups() async {
-    final SharedPreferences prefs = await _getInstance();
-    return prefs.getStringList(filteredGroupsKey) ?? [];
+  static List<String> getFilteredGroups() {
+    return _instance.getStringList(filteredGroupsKey) ?? [];
   }
 
-  static Future<void> setFilteredGames(List<Game> games) async {
-    final SharedPreferences prefs = await _getInstance();
+  static void setFilteredGames(List<Game> games) {
     final List<String> gameJsonList = games.map((game) => game.id).toList();
-    await prefs.setStringList(filteredGamesKey, gameJsonList);
+    _instance.setStringList(filteredGamesKey, gameJsonList);
   }
 
-  static Future<List<String>> getFilteredGames() async {
-    final SharedPreferences prefs = await _getInstance();
-    return prefs.getStringList(filteredGamesKey) ?? [];
+  static List<String> getFilteredGames() {
+    return _instance.getStringList(filteredGamesKey) ?? [];
   }
 
-  static Future<void> setFilteredTimeframes(List<Timeframe> timeframes) async {
-    final SharedPreferences prefs = await _getInstance();
+  static void setFilteredTimeframes(List<Timeframe> timeframes) {
     final List<String> timeframeJsonList = timeframes
         .map((timeframe) => timeframe.toString())
         .toList();
-    await prefs.setStringList(filteredTimeframesKey, timeframeJsonList);
+    _instance.setStringList(filteredTimeframesKey, timeframeJsonList);
   }
 
-  static Future<List<Timeframe>> getFilteredTimeframes() async {
-    final SharedPreferences prefs = await _getInstance();
+  static List<Timeframe> getFilteredTimeframes() {
     final List<String> timeframeStringList =
-        prefs.getStringList(filteredTimeframesKey) ?? [];
+        _instance.getStringList(filteredTimeframesKey) ?? [];
     return timeframeStringList
         .map(
           (timeframeString) => Timeframe.values.firstWhere(
@@ -87,20 +84,16 @@ class SharedPreferencesService {
         .toList();
   }
 
-  static Future<void> setFilteredStatisticTypes(
-    List<StatisticType> types,
-  ) async {
-    final SharedPreferences prefs = await _getInstance();
+  static void setFilteredStatisticTypes(List<StatisticType> types) {
     final List<String> typeJsonList = types
         .map((type) => type.toString())
         .toList();
-    await prefs.setStringList(filteredStatisticTypesKey, typeJsonList);
+    _instance.setStringList(filteredStatisticTypesKey, typeJsonList);
   }
 
-  static Future<List<StatisticType>> getFilteredStatisticTypes() async {
-    final SharedPreferences prefs = await _getInstance();
+  static List<StatisticType> getFilteredStatisticTypes() {
     final List<String> typeStringList =
-        prefs.getStringList(filteredStatisticTypesKey) ?? [];
+        _instance.getStringList(filteredStatisticTypesKey) ?? [];
     return typeStringList
         .map(
           (typeString) => StatisticType.values.firstWhere(
@@ -111,20 +104,16 @@ class SharedPreferencesService {
         .toList();
   }
 
-  static Future<void> setFilteredStatisticScopes(
-    List<StatisticScope> scopes,
-  ) async {
-    final SharedPreferences prefs = await _getInstance();
+  static void setFilteredStatisticScopes(List<StatisticScope> scopes) {
     final List<String> scopeJsonList = scopes
         .map((scope) => scope.name.toString())
         .toList();
-    await prefs.setStringList(filteredStatisticScopesKey, scopeJsonList);
+    _instance.setStringList(filteredStatisticScopesKey, scopeJsonList);
   }
 
-  static Future<List<StatisticScope>> getFilteredStatisticScopes() async {
-    final SharedPreferences prefs = await _getInstance();
+  static List<StatisticScope> getFilteredStatisticScopes() {
     final List<String> scopeStringList =
-        prefs.getStringList(filteredStatisticScopesKey) ?? [];
+        _instance.getStringList(filteredStatisticScopesKey) ?? [];
     return scopeStringList
         .map(
           (scopeString) => StatisticScope.values.firstWhere(

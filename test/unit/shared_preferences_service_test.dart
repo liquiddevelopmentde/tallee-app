@@ -6,9 +6,9 @@ import 'package:tallee/services/shared_preferences_service.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    SharedPreferencesService.resetCache();
+    await SharedPreferencesService.init();
   });
 
   group('SharedPreferencesService', () {
@@ -24,35 +24,35 @@ void main() {
         ruleset: Ruleset.highestScore,
       );
 
-      await SharedPreferencesService.setFilteredGames([game1, game2]);
+      SharedPreferencesService.setFilteredGames([game1, game2]);
 
-      await SharedPreferencesService.setFilteredStatisticScopes([
+      SharedPreferencesService.setFilteredStatisticScopes([
         StatisticScope.allPlayers,
         StatisticScope.selectedGroups,
       ]);
 
-      await SharedPreferencesService.setFilteredStatisticTypes([
+      SharedPreferencesService.setFilteredStatisticTypes([
         StatisticType.totalMatches,
         StatisticType.totalWins,
         StatisticType.bestScore,
       ]);
 
-      await SharedPreferencesService.setFilteredTimeframes([
+      SharedPreferencesService.setFilteredTimeframes([
         Timeframe.last7Days,
         Timeframe.last30Days,
         Timeframe.allTime,
       ]);
 
-      await SharedPreferencesService.deleteAllFilters(includeFavourites: false);
+      SharedPreferencesService.deleteAllFilters(includeFavourites: false);
 
-      final filteredGroups = await SharedPreferencesService.getFilteredGroups();
-      final filteredGames = await SharedPreferencesService.getFilteredGames();
+      final filteredGroups = SharedPreferencesService.getFilteredGroups();
+      final filteredGames = SharedPreferencesService.getFilteredGames();
       final filteredScopes =
-          await SharedPreferencesService.getFilteredStatisticScopes();
+          SharedPreferencesService.getFilteredStatisticScopes();
       final filteredTypes =
-          await SharedPreferencesService.getFilteredStatisticTypes();
+          SharedPreferencesService.getFilteredStatisticTypes();
       final filteredTimeframes =
-          await SharedPreferencesService.getFilteredTimeframes();
+          SharedPreferencesService.getFilteredTimeframes();
 
       expect(filteredGroups, isEmpty);
       expect(filteredGames, isEmpty);
@@ -72,13 +72,13 @@ void main() {
         name: 'Game 2',
         ruleset: Ruleset.highestScore,
       );
-      await SharedPreferencesService.setFilteredGames([game1, game2]);
+      SharedPreferencesService.setFilteredGames([game1, game2]);
 
       final group1 = Group(id: 'group1', name: 'Group 1', members: []);
       final group2 = Group(id: 'group2', name: 'Group 2', members: []);
-      await SharedPreferencesService.setFilteredGroups([group1, group2]);
+      SharedPreferencesService.setFilteredGroups([group1, group2]);
 
-      final filteredGames = await SharedPreferencesService.getFilteredGames();
+      final filteredGames = SharedPreferencesService.getFilteredGames();
       expect(filteredGames, [game1.id, game2.id]);
     });
 
@@ -86,19 +86,19 @@ void main() {
       final group1 = Group(id: 'group1', name: 'Group 1', members: []);
       final group2 = Group(id: 'group2', name: 'Group 2', members: []);
 
-      await SharedPreferencesService.setFilteredGroups([group1, group2]);
-      final filteredGroups = await SharedPreferencesService.getFilteredGroups();
+      SharedPreferencesService.setFilteredGroups([group1, group2]);
+      final filteredGroups = SharedPreferencesService.getFilteredGroups();
       expect(filteredGroups, [group1.id, group2.id]);
     });
 
     test('Get and set filtered statistic scopes works correctly', () async {
-      await SharedPreferencesService.setFilteredStatisticScopes([
+      SharedPreferencesService.setFilteredStatisticScopes([
         StatisticScope.allPlayers,
         StatisticScope.selectedGroups,
       ]);
 
       final filteredScopes =
-          await SharedPreferencesService.getFilteredStatisticScopes();
+          SharedPreferencesService.getFilteredStatisticScopes();
 
       expect(filteredScopes, [
         StatisticScope.allPlayers,
@@ -107,14 +107,14 @@ void main() {
     });
 
     test('Get and set filtered statistic types works correctly', () async {
-      await SharedPreferencesService.setFilteredStatisticTypes([
+      SharedPreferencesService.setFilteredStatisticTypes([
         StatisticType.totalMatches,
         StatisticType.totalWins,
         StatisticType.bestScore,
       ]);
 
       final filteredTypes =
-          await SharedPreferencesService.getFilteredStatisticTypes();
+          SharedPreferencesService.getFilteredStatisticTypes();
 
       expect(filteredTypes, [
         StatisticType.totalMatches,
@@ -124,14 +124,14 @@ void main() {
     });
 
     test('Get and set filtered timeframes works correctly', () async {
-      await SharedPreferencesService.setFilteredTimeframes([
+      SharedPreferencesService.setFilteredTimeframes([
         Timeframe.last7Days,
         Timeframe.last30Days,
         Timeframe.allTime,
       ]);
 
       final filteredTimeframes =
-          await SharedPreferencesService.getFilteredTimeframes();
+          SharedPreferencesService.getFilteredTimeframes();
 
       expect(filteredTimeframes, [
         Timeframe.last7Days,
