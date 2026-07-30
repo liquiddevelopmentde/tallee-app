@@ -7,7 +7,6 @@ import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/icon_utils.dart';
-import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
@@ -473,15 +472,18 @@ class _StatisticsViewState extends State<StatisticsView> {
         (Player(name: 'Player ${i + 1}'), count - i),
     ];
 
-    return StatisticsTile(
-      key: ValueKey('statistic_skeleton_${Random().nextInt(10000)}'),
-      isFavourite: false,
-      icon: Icons.bar_chart,
-      title: 'Skeleton title',
-      values: values,
-      barColor: getRandomAppColorValue(),
+    Statistic skeletonStatistic = Statistic(
+      type: StatisticType.totalWins,
+      scopes: [StatisticScope.allPlayers],
+      color: getRandomAppColor(),
       selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
       selectedGroups: [Group(name: 'Group 1', members: [])],
+    );
+
+    return StatisticsTile(
+      key: ValueKey('statistic_skeleton_${Random().nextInt(10000)}'),
+      statistic: skeletonStatistic,
+      values: values,
       displayCount: 5,
     );
   }
@@ -573,14 +575,10 @@ class _StatisticsViewState extends State<StatisticsView> {
         );
       },
       child: StatisticsTile(
-        icon: getStatisticIcon(type: statistic.type),
-        title: translateStatisticTypeToString(statistic.type, context),
+        statistic: statistic,
         values: values,
-        barColor: getColorFromAppColor(statistic.color),
         displayCount: statistic.displayCount,
-        selectedGroups: statistic.selectedGroups,
-        selectedGames: statistic.selectedGames,
-        isFavourite: statistic.isFavourite,
+        onStatisticChanged: refreshStatistic,
       ),
     );
   }
@@ -596,22 +594,21 @@ class _StatisticsViewState extends State<StatisticsView> {
     });
   }
 
-  /// Refreshes a statistic by its ID, either updating it or removing it if
+  /// Refreshes a statistic by the [statisticId], either updating it or removing it if
   /// it was deleted
-  Future<void> refreshStatistic(String statId) async {
+  Future<void> refreshStatistic(String statisticId) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final newStat = await db.statisticDao.getStatisticById(statisticId: statId);
+    final newStat = await db.statisticDao.getStatisticById(
+      statisticId: statisticId,
+    );
     if (newStat == null) {
       // If the statistic was deleted, remove it from the list
-      statistics = statistics.where((stat) => stat.id != statId).toList();
+      statistics = statistics.where((stat) => stat.id != statisticId).toList();
     } else {
       // else update it
-      final index = statistics.indexWhere((stat) => stat.id == statId);
-      if (index == -1) {
-        return;
-      } else {
-        statistics[index] = newStat;
-      }
+      final index = statistics.indexWhere((stat) => stat.id == statisticId);
+      if (index == -1) return;
+      statistics[index] = newStat;
     }
     setState(() {
       createFilteredStatisticTiles();

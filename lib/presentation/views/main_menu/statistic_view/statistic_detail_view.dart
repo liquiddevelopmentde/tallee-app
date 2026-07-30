@@ -50,10 +50,6 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final title = translateStatisticTypeToString(
-      widget.statistic.type,
-      context,
-    );
     const style = TextStyle(fontWeight: FontWeight.bold);
     const divider = Divider(
       height: 12,
@@ -74,12 +70,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
             icon: isFavourite
                 ? const Icon(Icons.favorite)
                 : const Icon(Icons.favorite_border),
-            onPressed: () {
-              setState(() {
-                isFavourite = !isFavourite;
-              });
-              markAsFavourite(context);
-            },
+            onPressed: () => toggleIsFavourite(context),
           ),
           HapticIconButton(
             icon: const Icon(Icons.delete),
@@ -123,15 +114,10 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
           child: Column(
             children: [
               StatisticsTile(
-                isFavourite: false,
+                statistic: widget.statistic,
                 margin: EdgeInsets.zero,
-                icon: widget.icon,
-                title: title,
                 width: MediaQuery.sizeOf(context).width * 0.95,
                 values: widget.values,
-                barColor: widget.barColor,
-                selectedGroups: widget.statistic.selectedGroups,
-                selectedGames: widget.statistic.selectedGames,
                 displayCount: displayCount,
                 showAllValues: true,
                 showDisplayCountHighlighting: showHighlighting,
@@ -329,6 +315,19 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
     if (mounted) Navigator.of(context).pop(displayCount);
   }
 
+  void toggleIsFavourite(BuildContext context) async {
+    final updatedIsFavourite = !isFavourite;
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    await db.statisticDao.updateIsFavourite(
+      widget.statistic.id,
+      updatedIsFavourite,
+    );
+    widget.refreshStatistic(widget.statistic.id);
+    setState(() {
+      isFavourite = updatedIsFavourite;
+    });
+  }
+
   void deleteStatistic() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     await db.statisticDao.deleteStatistic(widget.statistic.id);
@@ -340,11 +339,5 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   void dispose() {
     timer?.cancel();
     super.dispose();
-  }
-
-  void markAsFavourite(BuildContext context) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    await db.statisticDao.updateIsFavourite(widget.statistic.id, isFavourite);
-    widget.refreshStatistic(widget.statistic.id);
   }
 }
