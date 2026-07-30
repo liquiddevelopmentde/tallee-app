@@ -311,7 +311,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       selectedGroup = newGroup;
       selectedUnits = updatedUnits;
       selectedPlayers = selectedUnits.expand((u) => u.members).toList();
-      isTeamMatch = selectedUnits.any((u) => u.members.length > 1);
+      isTeamMatch |= selectedUnits.any((u) => u.members.length > 1);
     });
   }
 
