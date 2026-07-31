@@ -7,7 +7,6 @@ import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/icon_utils.dart';
-import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
@@ -53,6 +52,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   List<StatisticType> filteredStatisticTypes = [];
   List<StatisticScope> filteredStatisticScopes = [];
   List<Timeframe> filteredTimeframes = [];
+  bool showOnlyFavourites = false;
 
   @override
   void initState() {
@@ -101,7 +101,33 @@ class _StatisticsViewState extends State<StatisticsView> {
                                       child: TextChip(
                                         text: isLoading ? 'skeleton' : loc.all,
                                         activated: noFilterActivated,
-                                        onTap: () => resetFilter(),
+                                        onTap: () => {
+                                          showOnlyFavourites = false,
+                                          SharedPreferencesService.setShowFavourites(
+                                            false,
+                                          ),
+                                          resetFilter(includeFavourites: true),
+                                        },
+                                      ),
+                                    ),
+
+                                    // Favourites chip
+                                    Skeleton.unite(
+                                      child: TextChip(
+                                        text: loc.favourites,
+                                        activated: showOnlyFavourites,
+                                        onTap: () => {
+                                          setState(() {
+                                            showOnlyFavourites = true;
+                                            resetFilter(
+                                              includeFavourites: false,
+                                            );
+                                          }),
+                                          SharedPreferencesService.setShowFavourites(
+                                            showOnlyFavourites,
+                                          ),
+                                          createFilteredStatisticTiles(),
+                                        },
                                       ),
                                     ),
 
@@ -130,6 +156,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               );
                                           setState(() {
                                             filteredGroups = result ?? [];
+                                            if (filteredGroups.isNotEmpty) {
+                                              resetFavourites();
+                                            }
                                           });
                                           SharedPreferencesService.setFilteredGroups(
                                             filteredGroups,
@@ -164,6 +193,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               );
                                           setState(() {
                                             filteredGames = result ?? [];
+                                            if (filteredGames.isNotEmpty) {
+                                              resetFavourites();
+                                            }
                                           });
                                           SharedPreferencesService.setFilteredGames(
                                             filteredGames,
@@ -206,6 +238,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                   result ??
                                                       const <StatisticType>[],
                                                 );
+                                            if (filteredStatisticTypes
+                                                .isNotEmpty) {
+                                              resetFavourites();
+                                            }
                                           });
                                           SharedPreferencesService.setFilteredStatisticTypes(
                                             filteredStatisticTypes,
@@ -246,6 +282,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                 List<Timeframe>.from(
                                                   result ?? const <Timeframe>[],
                                                 );
+                                            if (filteredTimeframes.isNotEmpty) {
+                                              resetFavourites();
+                                            }
                                           });
                                           SharedPreferencesService.setFilteredTimeframes(
                                             filteredTimeframes,
@@ -287,6 +326,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                   result ??
                                                       const <StatisticScope>[],
                                                 );
+                                            if (filteredStatisticScopes
+                                                .isNotEmpty) {
+                                              resetFavourites();
+                                            }
                                           });
                                           SharedPreferencesService.setFilteredStatisticScopes(
                                             filteredStatisticScopes,
@@ -369,6 +412,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                               )
                               .toList();
                         });
+                        final db = Provider.of<AppDatabase>(
+                          context,
+                          listen: false,
+                        );
+                        db.statisticDao.updatePosition(statistics: statistics);
                       },
                       itemCount: statisticTiles.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -387,20 +435,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                   await navigator.push<Statistic>(
                     adaptivePageRoute(
                       builder: (context) => CreateStatisticView(
-                        onStatisticCreated: (newStats) {
-                          if (!mounted) return;
-                          setState(() {
-                            statistics = [...newStats, ...statistics];
-                            statisticTiles = statistics
-                                .map(
-                                  (stat) => buildStatisticTile(
-                                    context: context,
-                                    statistic: stat,
-                                  ),
-                                )
-                                .toList();
-                          });
-                        },
+                        onStatisticCreated: (newStats) =>
+                            onStatisticsCreated(newStats),
                       ),
                     ),
                   );
@@ -418,7 +454,8 @@ class _StatisticsViewState extends State<StatisticsView> {
       filteredGames.isEmpty &&
       filteredStatisticTypes.isEmpty &&
       filteredStatisticScopes.isEmpty &&
-      filteredTimeframes.isEmpty;
+      filteredTimeframes.isEmpty &&
+      !showOnlyFavourites;
 
   /// A placeholder tile with mock data for the loading state.
   static Widget buildSkeletonStatisticTile() {
@@ -428,14 +465,18 @@ class _StatisticsViewState extends State<StatisticsView> {
         (Player(name: 'Player ${i + 1}'), count - i),
     ];
 
-    return StatisticsTile(
-      key: ValueKey('statistic_skeleton_${Random().nextInt(10000)}'),
-      icon: Icons.bar_chart,
-      title: 'Skeleton title',
-      values: values,
-      barColor: getRandomAppColorValue(),
+    Statistic skeletonStatistic = Statistic(
+      type: StatisticType.totalWins,
+      scopes: [StatisticScope.allPlayers],
+      color: getRandomAppColor(),
       selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
       selectedGroups: [Group(name: 'Group 1', members: [])],
+    );
+
+    return StatisticsTile(
+      key: ValueKey('statistic_skeleton_${Random().nextInt(10000)}'),
+      statistic: skeletonStatistic,
+      values: values,
       displayCount: 5,
     );
   }
@@ -460,13 +501,13 @@ class _StatisticsViewState extends State<StatisticsView> {
     if (!mounted) return;
 
     statistics = results[0] as List<Statistic>
-      ..sort((stat1, stat2) => stat2.createdAt.compareTo(stat1.createdAt));
+      ..sort((a, b) => a.position.compareTo(b.position));
     matches = results[1] as List<Match>;
     players = results[2] as List<Player>;
     groups = results[3] as List<Group>;
     games = results[4] as List<Game>;
 
-    await loadFilterData();
+    loadFilterData();
 
     setState(() {
       createFilteredStatisticTiles();
@@ -475,24 +516,22 @@ class _StatisticsViewState extends State<StatisticsView> {
   }
 
   /// Loads the filter data from shared preferences and applies it to the current data
-  Future<void> loadFilterData() async {
-    final filters = await Future.wait([
-      SharedPreferencesService.getFilteredGroups(),
-      SharedPreferencesService.getFilteredGames(),
-      SharedPreferencesService.getFilteredStatisticTypes(),
-      SharedPreferencesService.getFilteredStatisticScopes(),
-      SharedPreferencesService.getFilteredTimeframes(),
-    ]);
+  void loadFilterData() {
+    final filteredGroupIds = SharedPreferencesService.getFilteredGroups();
+    final filteredGameIds = SharedPreferencesService.getFilteredGames();
 
     filteredGroups = groups
-        .where((group) => filters[0].contains(group.id))
+        .where((group) => filteredGroupIds.contains(group.id))
         .toList();
     filteredGames = games
-        .where((game) => filters[1].contains(game.id))
+        .where((game) => filteredGameIds.contains(game.id))
         .toList();
-    filteredStatisticTypes = filters[2].cast<StatisticType>();
-    filteredStatisticScopes = filters[3].cast<StatisticScope>();
-    filteredTimeframes = filters[4].cast<Timeframe>();
+    filteredStatisticTypes =
+        SharedPreferencesService.getFilteredStatisticTypes();
+    filteredStatisticScopes =
+        SharedPreferencesService.getFilteredStatisticScopes();
+    filteredTimeframes = SharedPreferencesService.getFilteredTimeframes();
+    showOnlyFavourites = SharedPreferencesService.getShowFavourites();
   }
 
   /// Builds a [StatisticTile] for a given statistic.
@@ -525,52 +564,62 @@ class _StatisticsViewState extends State<StatisticsView> {
         );
       },
       child: StatisticsTile(
-        icon: getStatisticIcon(type: statistic.type),
-        title: translateStatisticTypeToString(statistic.type, context),
+        statistic: statistic,
         values: values,
-        barColor: getColorFromAppColor(statistic.color),
         displayCount: statistic.displayCount,
-        selectedGroups: statistic.selectedGroups,
-        selectedGames: statistic.selectedGames,
+        onStatisticChanged: refreshStatistic,
       ),
     );
   }
 
   // Create the statistic tiles based on the active filters
   void createFilteredStatisticTiles() {
-    final filtered = statistics.where(matchesActiveFilters).toList();
+    final displayedStats = statistics.where(matchesActiveFilters).toList()
+      ..sort((a, b) => a.position.compareTo(b.position));
 
     setState(() {
-      statisticTiles = filtered
+      statisticTiles = displayedStats
           .map((stat) => buildStatisticTile(context: context, statistic: stat))
           .toList();
     });
   }
 
-  /// Refreshes a statistic by its ID, either updating it or removing it if
-  /// it was deleted
-  Future<void> refreshStatistic(String statId) async {
+  /// Adds the new statistic, updates the positions of all statistics and updates the tiles.
+  void onStatisticsCreated(List<Statistic> newStats) {
+    statistics = [...newStats, ...statistics];
+    statistics = statistics
+        .map((stat) => stat.copyWith(position: statistics.indexOf(stat)))
+        .toList();
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final newStat = await db.statisticDao.getStatisticById(statisticId: statId);
+    db.statisticDao.updatePosition(statistics: statistics);
+    createFilteredStatisticTiles();
+  }
+
+  /// Refreshes a statistic by the [statisticId], either updating it or removing it if
+  /// it was deleted
+  Future<void> refreshStatistic(String statisticId) async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final newStat = await db.statisticDao.getStatisticById(
+      statisticId: statisticId,
+    );
     if (newStat == null) {
       // If the statistic was deleted, remove it from the list
-      statistics = statistics.where((stat) => stat.id != statId).toList();
+      statistics = statistics.where((stat) => stat.id != statisticId).toList();
     } else {
       // else update it
-      final index = statistics.indexWhere((stat) => stat.id == statId);
-      if (index == -1) {
-        return;
-      } else {
-        statistics[index] = newStat;
-      }
+      final index = statistics.indexWhere((stat) => stat.id == statisticId);
+      if (index == -1) return;
+      statistics[index] = newStat;
     }
-    setState(() {
-      createFilteredStatisticTiles();
-    });
+    createFilteredStatisticTiles();
   }
 
   /// Whether [statistic] satisfies all currently active filters.
   bool matchesActiveFilters(Statistic statistic) {
+    if (showOnlyFavourites && !statistic.isFavourite) {
+      return false;
+    }
+
     if (filteredStatisticTypes.isNotEmpty &&
         !filteredStatisticTypes.contains(statistic.type)) {
       return false;
@@ -607,15 +656,25 @@ class _StatisticsViewState extends State<StatisticsView> {
     return true;
   }
 
-  Future<void> resetFilter() async {
+  Future<void> resetFilter({required bool includeFavourites}) async {
     setState(() {
       filteredGroups = [];
       filteredGames = [];
       filteredStatisticTypes = [];
       filteredStatisticScopes = [];
       filteredTimeframes = [];
+      if (includeFavourites) showOnlyFavourites = false;
     });
-    SharedPreferencesService.deleteAllFilteredPreferences();
+    SharedPreferencesService.deleteAllFilters(
+      includeFavourites: includeFavourites,
+    );
     createFilteredStatisticTiles();
+  }
+
+  Future<void> resetFavourites() async {
+    setState(() {
+      showOnlyFavourites = false;
+      SharedPreferencesService.setShowFavourites(false);
+    });
   }
 }

@@ -124,6 +124,8 @@ void main() {
         expect(fetched.timeframe, testStatistic1.timeframe);
         expect(fetched.color, testStatistic1.color);
         expect(fetched.displayCount, testStatistic1.displayCount);
+        expect(fetched.isFavourite, testStatistic1.isFavourite);
+        expect(fetched.position, testStatistic1.position);
       });
 
       test('Adding and fetching multiple statistics works correctly', () async {
@@ -152,10 +154,12 @@ void main() {
           expect(stat.timeframe, testStat.timeframe);
           expect(stat.color, testStat.color);
           expect(stat.displayCount, testStat.displayCount);
+          expect(stat.isFavourite, testStat.isFavourite);
+          expect(stat.position, testStat.position);
         }
       });
 
-      test('addGamesAsList() returns false for empty list', () async {
+      test('addStatisticsAsList() returns false for empty list', () async {
         final result = await database.statisticDao.addStatisticsAsList(
           statistics: [],
         );
@@ -192,14 +196,19 @@ void main() {
         expect(fetched.timeframe, testStatistic1.timeframe);
         expect(fetched.color, testStatistic1.color);
         expect(fetched.displayCount, testStatistic1.displayCount);
+        expect(fetched.isFavourite, testStatistic1.isFavourite);
+        expect(fetched.position, testStatistic1.position);
       });
 
-      test('getGameById() returns null for non-existent statistic', () async {
-        final fetched = await database.statisticDao.getStatisticById(
-          statisticId: 'non-existent-id',
-        );
-        expect(fetched, isNull);
-      });
+      test(
+        'getStatisticById() returns null for non-existent statistic',
+        () async {
+          final fetched = await database.statisticDao.getStatisticById(
+            statisticId: 'non-existent-id',
+          );
+          expect(fetched, isNull);
+        },
+      );
 
       test('getAllStatistics() works correctly', () async {
         await database.statisticDao.addStatisticsAsList(
@@ -245,6 +254,51 @@ void main() {
           expect(allStats, isEmpty);
         },
       );
+
+      test('updateIsFavourite() works correctly', () async {
+        await database.statisticDao.addStatistic(statistic: testStatistic1);
+
+        final updated = await database.statisticDao.updateIsFavourite(
+          testStatistic1.id,
+          true,
+        );
+        expect(updated, isTrue);
+
+        final fetched = await database.statisticDao.getStatisticById(
+          statisticId: testStatistic1.id,
+        );
+        expect(fetched!.isFavourite, isTrue);
+      });
+
+      test(
+        'updateIsFavourite() does nothing for non-existent statistic',
+        () async {
+          final updated = await database.statisticDao.updateIsFavourite(
+            'non-existent-id',
+            true,
+          );
+          expect(updated, isFalse);
+
+          final allStats = await database.statisticDao.getAllStatistics();
+          expect(allStats, isEmpty);
+        },
+      );
+
+      test('updatePosition() works correctly', () async {
+        await database.statisticDao.addStatisticsAsList(
+          statistics: [testStatistic1, testStatistic2, testStatistic3],
+        );
+
+        await database.statisticDao.updatePosition(
+          statistics: [testStatistic2, testStatistic3, testStatistic1],
+        );
+
+        final ordered = await database.statisticDao.getAllStatistics();
+        ordered.sort((a, b) => a.position.compareTo(b.position));
+        expect(ordered[0].id, testStatistic2.id);
+        expect(ordered[1].id, testStatistic3.id);
+        expect(ordered[2].id, testStatistic1.id);
+      });
     });
 
     group('DELETE', () {

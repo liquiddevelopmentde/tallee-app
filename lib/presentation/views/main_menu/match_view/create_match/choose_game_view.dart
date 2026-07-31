@@ -72,8 +72,6 @@ class _ChooseGameViewState extends State<ChooseGameView> {
 
     enableMultiSelection =
         widget.enableMultiSelection || widget.statistic != null;
-    print(enableMultiSelection);
-
     super.initState();
   }
 
