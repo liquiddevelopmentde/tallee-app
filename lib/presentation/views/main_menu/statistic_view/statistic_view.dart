@@ -507,7 +507,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     groups = results[3] as List<Group>;
     games = results[4] as List<Game>;
 
-    await loadFilterData();
+    loadFilterData();
 
     setState(() {
       createFilteredStatisticTiles();
@@ -516,26 +516,22 @@ class _StatisticsViewState extends State<StatisticsView> {
   }
 
   /// Loads the filter data from shared preferences and applies it to the current data
-  Future<void> loadFilterData() async {
-    final filters = await Future.wait([
-      SharedPreferencesService.getFilteredGroups(),
-      SharedPreferencesService.getFilteredGames(),
-      SharedPreferencesService.getFilteredStatisticTypes(),
-      SharedPreferencesService.getFilteredStatisticScopes(),
-      SharedPreferencesService.getFilteredTimeframes(),
-      SharedPreferencesService.getShowFavourites(),
-    ]);
+  void loadFilterData() {
+    final filteredGroupIds = SharedPreferencesService.getFilteredGroups();
+    final filteredGameIds = SharedPreferencesService.getFilteredGames();
 
     filteredGroups = groups
-        .where((group) => (filters[0] as List<String>).contains(group.id))
+        .where((group) => filteredGroupIds.contains(group.id))
         .toList();
     filteredGames = games
-        .where((game) => (filters[1] as List<String>).contains(game.id))
+        .where((game) => filteredGameIds.contains(game.id))
         .toList();
-    filteredStatisticTypes = filters[2] as List<StatisticType>;
-    filteredStatisticScopes = filters[3] as List<StatisticScope>;
-    filteredTimeframes = filters[4] as List<Timeframe>;
-    showOnlyFavourites = filters[5] as bool;
+    filteredStatisticTypes =
+        SharedPreferencesService.getFilteredStatisticTypes();
+    filteredStatisticScopes =
+        SharedPreferencesService.getFilteredStatisticScopes();
+    filteredTimeframes = SharedPreferencesService.getFilteredTimeframes();
+    showOnlyFavourites = SharedPreferencesService.getShowFavourites();
   }
 
   /// Builds a [StatisticTile] for a given statistic.
