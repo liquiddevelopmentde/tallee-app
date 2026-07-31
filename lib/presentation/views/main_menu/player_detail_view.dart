@@ -183,7 +183,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 if (!widget.player.deleted) ...[
                   InfoTile(
                     title: '${loc.groups} ($totalGroups)',
-                    icon: Icons.people,
+                    leadingWidget: const Icon(Icons.people),
                     horizontalAlignment: CrossAxisAlignment.start,
                     content: AppSkeleton(
                       enabled: isLoading,
@@ -227,7 +227,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Matches
                 InfoTile(
                   title: '${loc.matches} ($totalMatches)',
-                  icon: Icons.sports_esports,
+                  leadingWidget: const Icon(Icons.sports_esports),
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: AppSkeleton(
                     enabled: isLoading,

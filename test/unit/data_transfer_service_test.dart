@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/data_transfer_service.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
 
 void main() {
   late AppDatabase database;
@@ -28,6 +29,7 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    SharedPreferencesService.init();
     database = AppDatabase(
       DatabaseConnection(
         NativeDatabase.memory(),
@@ -626,7 +628,6 @@ void main() {
               'description': testPlayer2.description,
               'createdAt': testPlayer2.createdAt.toIso8601String(),
               'deleted': true,
-              'nameCount': 0,
             },
           ],
         };
@@ -986,6 +987,8 @@ void main() {
               'selectedGroups': [testGroup.id],
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
+              'position': testStatistic.position,
             },
           ],
         };
@@ -1046,6 +1049,8 @@ void main() {
                 'selectedGroups': ['unknown-group-id'],
                 'selectedGames': ['unknown-game-id'],
                 'displayCount': testStatistic.displayCount,
+                'isFavourite': testStatistic.isFavourite,
+                'position': testStatistic.position,
               },
             ],
           };
@@ -1143,6 +1148,8 @@ void main() {
               'selectedGroups': null,
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
+              'position': testStatistic.position,
             },
             {
               'id': testStatistic.id,
@@ -1154,6 +1161,8 @@ void main() {
               'selectedGroups': [testGroup.id],
               'selectedGames': null,
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
+              'position': testStatistic.position,
             },
             {
               'id': testStatistic.id,
@@ -1165,6 +1174,8 @@ void main() {
               'selectedGroups': [testGroup.id],
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
+              'position': testStatistic.position,
             },
           ],
         });
@@ -1243,6 +1254,8 @@ void main() {
                 'selectedGroups': [testGroup.id],
                 'selectedGames': [testGame.id],
                 'displayCount': testStatistic.displayCount,
+                'isFavourite': testStatistic.isFavourite,
+                'position': testStatistic.position,
               },
               {
                 'id': testStatistic.id,
@@ -1254,6 +1267,8 @@ void main() {
                 'selectedGroups': null,
                 'selectedGames': [testGame.id],
                 'displayCount': testStatistic.displayCount,
+                'isFavourite': testStatistic.isFavourite,
+                'position': testStatistic.position,
               },
               {
                 'id': testStatistic.id,
@@ -1265,6 +1280,8 @@ void main() {
                 'selectedGroups': [testGroup.id],
                 'selectedGames': null,
                 'displayCount': testStatistic.displayCount,
+                'isFavourite': testStatistic.isFavourite,
+                'position': testStatistic.position,
               },
             ],
           });
@@ -1285,8 +1302,6 @@ void main() {
                   'name': testPlayer1.name,
                   'description': testPlayer1.description,
                   'createdAt': testPlayer1.createdAt.toIso8601String(),
-                  'deleted': false,
-                  'nameCount': 0,
                 },
               ],
               'games': [],
@@ -1332,8 +1347,6 @@ void main() {
                   'name': testPlayer1.name,
                   'description': testPlayer1.description,
                   'createdAt': testPlayer1.createdAt.toIso8601String(),
-                  'deleted': false,
-                  'nameCount': 0,
                 },
               ],
               'games': [
@@ -1378,8 +1391,6 @@ void main() {
                   'name': testPlayer1.name,
                   'description': '',
                   'createdAt': fixedDate.toIso8601String(),
-                  'deleted': false,
-                  'nameCount': 0,
                 },
               ],
               'games': [
@@ -1444,8 +1455,6 @@ void main() {
                   'name': testPlayer1.name,
                   'description': '',
                   'createdAt': fixedDate.toIso8601String(),
-                  'deleted': false,
-                  'nameCount': 0,
                 },
               ],
               'games': [

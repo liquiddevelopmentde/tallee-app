@@ -21,6 +21,8 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         timeframe: statistic.timeframe,
         color: statistic.color,
         displayCount: Value(statistic.displayCount),
+        isFavourite: Value(statistic.isFavourite),
+        position: Value(statistic.position),
       ),
       mode: InsertMode.insertOrReplace,
     );
@@ -63,6 +65,8 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
                 timeframe: s.timeframe,
                 color: s.color,
                 displayCount: Value(s.displayCount),
+                isFavourite: Value(s.isFavourite),
+                position: Value(s.position),
               ),
             )
             .toList(),
@@ -114,6 +118,8 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         id: row.id,
         createdAt: row.createdAt,
         color: row.color,
+        isFavourite: row.isFavourite,
+        position: row.position,
       );
     }
     return null;
@@ -139,6 +145,8 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
           id: row.id,
           createdAt: row.createdAt,
           color: row.color,
+          isFavourite: row.isFavourite,
+          position: row.position,
         );
       }),
     );
@@ -153,6 +161,25 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
             .write(StatisticTableCompanion(displayCount: Value(displayCount)));
 
     return rowsUpdated > 0;
+  }
+
+  Future<bool> updateIsFavourite(String statisticId, bool isFavourite) async {
+    final rowsUpdated =
+        await (update(statisticTable)
+              ..where((tbl) => tbl.id.equals(statisticId)))
+            .write(StatisticTableCompanion(isFavourite: Value(isFavourite)));
+
+    return rowsUpdated > 0;
+  }
+
+  Future<void> updatePosition({required List<Statistic> statistics}) async {
+    await db.transaction(() async {
+      for (int i = 0; i < statistics.length; i++) {
+        final stat = statistics[i];
+        await (update(statisticTable)..where((tbl) => tbl.id.equals(stat.id)))
+            .write(StatisticTableCompanion(position: Value(i)));
+      }
+    });
   }
 
   /* Delete */

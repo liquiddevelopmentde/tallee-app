@@ -235,6 +235,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get export_data => 'Daten exportieren';
 
   @override
+  String get favourites => 'Favoriten';
+
+  @override
   String get file_couldnt_be_accessed =>
       'Die Datei konnte nicht geöffnet werden';
 
@@ -532,6 +535,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get single_winner => 'Ein:e Gewinner:in';
+
+  @override
+  String get statistic => 'Statistik';
 
   @override
   String get statistics => 'Statistiken';

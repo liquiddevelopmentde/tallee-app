@@ -283,6 +283,12 @@
           },
           "displayCount": {
             "type": "number"
+          },
+          "isFavourite": {
+            "type": "boolean"
+          },
+          "position": {
+            "type": "number"
           }
         },
         "additionalProperties": false,
@@ -293,7 +299,9 @@
           "scopes",
           "timeframe",
           "color",
-          "displayCount"
+          "displayCount",
+          "isFavourite",
+          "position"
         ]
       }
     }

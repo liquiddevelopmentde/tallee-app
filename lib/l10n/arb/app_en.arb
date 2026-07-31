@@ -83,6 +83,7 @@
   "error_reading_file": "Error reading file",
   "export_canceled": "Export canceled",
   "export_data": "Export data",
+  "favourites": "Favourites",
   "file_couldnt_be_accessed": "The file could not be accessed",
   "filter": "Filter",
   "format_exception": "Format Exception (see console)",
@@ -180,6 +181,7 @@
   "settings": "Settings",
   "single_loser": "Single Loser",
   "single_winner": "Single Winner",
+  "statistic": "Statistic",
   "statistics": "Statistics",
   "successfully_added_player": "Successfully added player {playerName}",
   "@successfully_added_player": {
