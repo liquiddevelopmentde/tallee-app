@@ -109,6 +109,30 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return scoresByPlayer;
   }
 
+  /// Retrieves scores for multiple matches in a single operation.
+  /// Returns a map where the key is the matchId and the value is a map of playerId -> ScoreEntry.
+  Future<Map<String, Map<String, ScoreEntry?>>> getScoresForMatches({
+    required List<String> matchIds,
+  }) async {
+    if (matchIds.isEmpty) return {};
+
+    final query = select(scoreEntryTable)
+      ..where((tbl) => tbl.matchId.isIn(matchIds));
+    final rows = await query.get();
+
+    final Map<String, Map<String, ScoreEntry?>> resultMap = {};
+    for (final row in rows) {
+      final score = ScoreEntry(
+        roundNumber: row.roundNumber,
+        score: row.score,
+        change: row.change,
+      );
+      resultMap.putIfAbsent(row.matchId, () => {})[row.playerId] = score;
+    }
+
+    return resultMap;
+  }
+
   /// Retrieves all scores for a specific player in a match.
   Future<List<ScoreEntry>> getAllPlayerScoresInMatch({
     required String playerId,
