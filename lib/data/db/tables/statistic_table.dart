@@ -9,7 +9,6 @@ class StatisticTable extends Table {
   TextColumn get color => textEnum<AppColor>()();
   IntColumn get displayCount => integer().withDefault(const Constant(5))();
   BoolColumn get isFavourite => boolean().withDefault(const Constant(false))();
-
   IntColumn get position => integer().withDefault(const Constant(0))();
 
   @override
