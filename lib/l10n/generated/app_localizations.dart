@@ -512,6 +512,12 @@ abstract class AppLocalizations {
   /// **'Export data'**
   String get export_data;
 
+  /// No description provided for @favourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourites'**
+  String get favourites;
+
   /// No description provided for @file_couldnt_be_accessed.
   ///
   /// In en, this message translates to:
@@ -1063,6 +1069,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Single Winner'**
   String get single_winner;
+
+  /// No description provided for @statistic.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistic'**
+  String get statistic;
 
   /// No description provided for @statistics.
   ///

@@ -17,6 +17,7 @@ class Statistic {
   final List<Group>? selectedGroups;
   final List<Game>? selectedGames;
   final int displayCount;
+  final bool isFavourite;
 
   Statistic({
     required this.type,
@@ -25,6 +26,7 @@ class Statistic {
     this.selectedGroups,
     this.selectedGames,
     this.displayCount = 5,
+    this.isFavourite = false,
     String? id,
     DateTime? createdAt,
     AppColor? color,
@@ -34,7 +36,7 @@ class Statistic {
 
   @override
   String toString() {
-    return 'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames)';
+    return 'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames, displayCount: $displayCount, isFavourite: $isFavourite)';
   }
 
   Statistic copyWith({
@@ -45,6 +47,7 @@ class Statistic {
     List<Group>? selectedGroups,
     List<Game>? selectedGames,
     int? displayCount,
+    bool? isFavourite,
   }) {
     return Statistic(
       id: id,
@@ -55,6 +58,7 @@ class Statistic {
       selectedGroups: selectedGroups ?? this.selectedGroups,
       selectedGames: selectedGames ?? this.selectedGames,
       displayCount: displayCount ?? this.displayCount,
+      isFavourite: isFavourite ?? this.isFavourite,
     );
   }
 
@@ -68,6 +72,7 @@ class Statistic {
     'selectedGroups': selectedGroups?.map((g) => g.id).toList(),
     'selectedGames': selectedGames?.map((g) => g.id).toList(),
     'displayCount': displayCount,
+    'isFavourite': isFavourite,
   };
 
   Statistic.fromJson(Map<String, dynamic> json)
@@ -95,5 +100,6 @@ class Statistic {
       ),
       selectedGroups = null,
       selectedGames = null,
-      displayCount = json['displayCount'];
+      displayCount = json['displayCount'],
+      isFavourite = json['isFavourite'] ?? false;
 }

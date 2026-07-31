@@ -8,6 +8,7 @@ class StatisticTable extends Table {
   TextColumn get timeframe => textEnum<Timeframe>()();
   TextColumn get color => textEnum<AppColor>()();
   IntColumn get displayCount => integer().withDefault(const Constant(5))();
+  BoolColumn get isFavourite => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
