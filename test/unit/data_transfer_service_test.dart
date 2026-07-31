@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/data_transfer_service.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
 
 void main() {
   late AppDatabase database;
@@ -28,6 +29,7 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    SharedPreferencesService.init();
     database = AppDatabase(
       DatabaseConnection(
         NativeDatabase.memory(),
@@ -983,6 +985,7 @@ void main() {
               'selectedGroups': [testGroup.id],
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
             },
           ],
         };
@@ -1039,6 +1042,7 @@ void main() {
               'selectedGroups': ['unknown-group-id'],
               'selectedGames': ['unknown-game-id'],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
             },
           ],
         };
@@ -1127,6 +1131,7 @@ void main() {
               'selectedGroups': null,
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
             },
             {
               'id': testStatistic.id,
@@ -1138,6 +1143,7 @@ void main() {
               'selectedGroups': [testGroup.id],
               'selectedGames': null,
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
             },
             {
               'id': testStatistic.id,
@@ -1149,6 +1155,7 @@ void main() {
               'selectedGroups': [testGroup.id],
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
+              'isFavourite': testStatistic.isFavourite,
             },
           ],
         });
@@ -1227,6 +1234,7 @@ void main() {
                 'selectedGroups': [testGroup.id],
                 'selectedGames': [testGame.id],
                 'displayCount': testStatistic.displayCount,
+                'isFavourite': testStatistic.isFavourite,
               },
               {
                 'id': testStatistic.id,
@@ -1238,6 +1246,7 @@ void main() {
                 'selectedGroups': null,
                 'selectedGames': [testGame.id],
                 'displayCount': testStatistic.displayCount,
+                'isFavourite': testStatistic.isFavourite,
               },
               {
                 'id': testStatistic.id,
@@ -1249,6 +1258,7 @@ void main() {
                 'selectedGroups': [testGroup.id],
                 'selectedGames': null,
                 'displayCount': testStatistic.displayCount,
+                'isFavourite': testStatistic.isFavourite,
               },
             ],
           });

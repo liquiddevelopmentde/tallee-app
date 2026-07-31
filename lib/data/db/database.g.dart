@@ -3017,6 +3017,21 @@ class $StatisticTableTable extends StatisticTable
     requiredDuringInsert: false,
     defaultValue: const Constant(5),
   );
+  static const VerificationMeta _isFavouriteMeta = const VerificationMeta(
+    'isFavourite',
+  );
+  @override
+  late final GeneratedColumn<bool> isFavourite = GeneratedColumn<bool>(
+    'is_favourite',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_favourite" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3025,6 +3040,7 @@ class $StatisticTableTable extends StatisticTable
     timeframe,
     color,
     displayCount,
+    isFavourite,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3057,6 +3073,15 @@ class $StatisticTableTable extends StatisticTable
         displayCount.isAcceptableOrUnknown(
           data['display_count']!,
           _displayCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_favourite')) {
+      context.handle(
+        _isFavouriteMeta,
+        isFavourite.isAcceptableOrUnknown(
+          data['is_favourite']!,
+          _isFavouriteMeta,
         ),
       );
     }
@@ -3099,6 +3124,10 @@ class $StatisticTableTable extends StatisticTable
         DriftSqlType.int,
         data['${effectivePrefix}display_count'],
       )!,
+      isFavourite: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_favourite'],
+      )!,
     );
   }
 
@@ -3123,6 +3152,7 @@ class StatisticTableData extends DataClass
   final Timeframe timeframe;
   final AppColor color;
   final int displayCount;
+  final bool isFavourite;
   const StatisticTableData({
     required this.id,
     required this.createdAt,
@@ -3130,6 +3160,7 @@ class StatisticTableData extends DataClass
     required this.timeframe,
     required this.color,
     required this.displayCount,
+    required this.isFavourite,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3152,6 +3183,7 @@ class StatisticTableData extends DataClass
       );
     }
     map['display_count'] = Variable<int>(displayCount);
+    map['is_favourite'] = Variable<bool>(isFavourite);
     return map;
   }
 
@@ -3163,6 +3195,7 @@ class StatisticTableData extends DataClass
       timeframe: Value(timeframe),
       color: Value(color),
       displayCount: Value(displayCount),
+      isFavourite: Value(isFavourite),
     );
   }
 
@@ -3184,6 +3217,7 @@ class StatisticTableData extends DataClass
         serializer.fromJson<String>(json['color']),
       ),
       displayCount: serializer.fromJson<int>(json['displayCount']),
+      isFavourite: serializer.fromJson<bool>(json['isFavourite']),
     );
   }
   @override
@@ -3202,6 +3236,7 @@ class StatisticTableData extends DataClass
         $StatisticTableTable.$convertercolor.toJson(color),
       ),
       'displayCount': serializer.toJson<int>(displayCount),
+      'isFavourite': serializer.toJson<bool>(isFavourite),
     };
   }
 
@@ -3212,6 +3247,7 @@ class StatisticTableData extends DataClass
     Timeframe? timeframe,
     AppColor? color,
     int? displayCount,
+    bool? isFavourite,
   }) => StatisticTableData(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -3219,6 +3255,7 @@ class StatisticTableData extends DataClass
     timeframe: timeframe ?? this.timeframe,
     color: color ?? this.color,
     displayCount: displayCount ?? this.displayCount,
+    isFavourite: isFavourite ?? this.isFavourite,
   );
   StatisticTableData copyWithCompanion(StatisticTableCompanion data) {
     return StatisticTableData(
@@ -3230,6 +3267,9 @@ class StatisticTableData extends DataClass
       displayCount: data.displayCount.present
           ? data.displayCount.value
           : this.displayCount,
+      isFavourite: data.isFavourite.present
+          ? data.isFavourite.value
+          : this.isFavourite,
     );
   }
 
@@ -3241,14 +3281,22 @@ class StatisticTableData extends DataClass
           ..write('type: $type, ')
           ..write('timeframe: $timeframe, ')
           ..write('color: $color, ')
-          ..write('displayCount: $displayCount')
+          ..write('displayCount: $displayCount, ')
+          ..write('isFavourite: $isFavourite')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, createdAt, type, timeframe, color, displayCount);
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    type,
+    timeframe,
+    color,
+    displayCount,
+    isFavourite,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3258,7 +3306,8 @@ class StatisticTableData extends DataClass
           other.type == this.type &&
           other.timeframe == this.timeframe &&
           other.color == this.color &&
-          other.displayCount == this.displayCount);
+          other.displayCount == this.displayCount &&
+          other.isFavourite == this.isFavourite);
 }
 
 class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
@@ -3268,6 +3317,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
   final Value<Timeframe> timeframe;
   final Value<AppColor> color;
   final Value<int> displayCount;
+  final Value<bool> isFavourite;
   final Value<int> rowid;
   const StatisticTableCompanion({
     this.id = const Value.absent(),
@@ -3276,6 +3326,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     this.timeframe = const Value.absent(),
     this.color = const Value.absent(),
     this.displayCount = const Value.absent(),
+    this.isFavourite = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   StatisticTableCompanion.insert({
@@ -3285,6 +3336,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     required Timeframe timeframe,
     required AppColor color,
     this.displayCount = const Value.absent(),
+    this.isFavourite = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
@@ -3298,6 +3350,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Expression<String>? timeframe,
     Expression<String>? color,
     Expression<int>? displayCount,
+    Expression<bool>? isFavourite,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3307,6 +3360,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       if (timeframe != null) 'timeframe': timeframe,
       if (color != null) 'color': color,
       if (displayCount != null) 'display_count': displayCount,
+      if (isFavourite != null) 'is_favourite': isFavourite,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3318,6 +3372,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Value<Timeframe>? timeframe,
     Value<AppColor>? color,
     Value<int>? displayCount,
+    Value<bool>? isFavourite,
     Value<int>? rowid,
   }) {
     return StatisticTableCompanion(
@@ -3327,6 +3382,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       timeframe: timeframe ?? this.timeframe,
       color: color ?? this.color,
       displayCount: displayCount ?? this.displayCount,
+      isFavourite: isFavourite ?? this.isFavourite,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3358,6 +3414,9 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     if (displayCount.present) {
       map['display_count'] = Variable<int>(displayCount.value);
     }
+    if (isFavourite.present) {
+      map['is_favourite'] = Variable<bool>(isFavourite.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3373,6 +3432,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
           ..write('timeframe: $timeframe, ')
           ..write('color: $color, ')
           ..write('displayCount: $displayCount, ')
+          ..write('isFavourite: $isFavourite, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -7951,6 +8011,7 @@ typedef $$StatisticTableTableCreateCompanionBuilder =
       required Timeframe timeframe,
       required AppColor color,
       Value<int> displayCount,
+      Value<bool> isFavourite,
       Value<int> rowid,
     });
 typedef $$StatisticTableTableUpdateCompanionBuilder =
@@ -7961,6 +8022,7 @@ typedef $$StatisticTableTableUpdateCompanionBuilder =
       Value<Timeframe> timeframe,
       Value<AppColor> color,
       Value<int> displayCount,
+      Value<bool> isFavourite,
       Value<int> rowid,
     });
 
@@ -8092,6 +8154,11 @@ class $$StatisticTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get isFavourite => $composableBuilder(
+    column: $table.isFavourite,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> statisticScopeTableRefs(
     Expression<bool> Function($$StatisticScopeTableTableFilterComposer f) f,
   ) {
@@ -8206,6 +8273,11 @@ class $$StatisticTableTableOrderingComposer
     column: $table.displayCount,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get isFavourite => $composableBuilder(
+    column: $table.isFavourite,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$StatisticTableTableAnnotationComposer
@@ -8234,6 +8306,11 @@ class $$StatisticTableTableAnnotationComposer
 
   GeneratedColumn<int> get displayCount => $composableBuilder(
     column: $table.displayCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isFavourite => $composableBuilder(
+    column: $table.isFavourite,
     builder: (column) => column,
   );
 
@@ -8356,6 +8433,7 @@ class $$StatisticTableTableTableManager
                 Value<Timeframe> timeframe = const Value.absent(),
                 Value<AppColor> color = const Value.absent(),
                 Value<int> displayCount = const Value.absent(),
+                Value<bool> isFavourite = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion(
                 id: id,
@@ -8364,6 +8442,7 @@ class $$StatisticTableTableTableManager
                 timeframe: timeframe,
                 color: color,
                 displayCount: displayCount,
+                isFavourite: isFavourite,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -8374,6 +8453,7 @@ class $$StatisticTableTableTableManager
                 required Timeframe timeframe,
                 required AppColor color,
                 Value<int> displayCount = const Value.absent(),
+                Value<bool> isFavourite = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion.insert(
                 id: id,
@@ -8382,6 +8462,7 @@ class $$StatisticTableTableTableManager
                 timeframe: timeframe,
                 color: color,
                 displayCount: displayCount,
+                isFavourite: isFavourite,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

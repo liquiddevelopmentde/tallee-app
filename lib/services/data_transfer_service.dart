@@ -22,7 +22,7 @@ class DataTransferService {
     await db.groupDao.deleteAllGroups();
     await db.gameDao.deleteAllGames();
     await db.playerDao.deleteAllPlayers();
-    await SharedPreferencesService.deleteAllFilteredPreferences();
+    SharedPreferencesService.deleteAllFilters(includeFavourites: true);
   }
 
   /// Retrieves all application data and converts it to a JSON string.
@@ -456,7 +456,8 @@ class DataTransferService {
         ),
         selectedGroups: selectedGroups.isEmpty ? null : selectedGroups,
         selectedGames: selectedGames.isEmpty ? null : selectedGames,
-        displayCount: map['displayCount'] as int? ?? 5,
+        displayCount: map['displayCount'],
+        isFavourite: map['isFavourite'],
       );
     }).toList();
   }

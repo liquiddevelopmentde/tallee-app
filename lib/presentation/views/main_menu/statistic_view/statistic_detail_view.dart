@@ -36,6 +36,7 @@ class StatisticDetailView extends StatefulWidget {
 
 class _StatisticDetailViewState extends State<StatisticDetailView> {
   late int displayCount;
+  late bool isFavourite;
   Timer? timer;
   bool showHighlighting = false;
 
@@ -43,15 +44,12 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   void initState() {
     super.initState();
     displayCount = min(widget.statistic.displayCount, widget.values.length);
+    isFavourite = widget.statistic.isFavourite;
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final title = translateStatisticTypeToString(
-      widget.statistic.type,
-      context,
-    );
     const style = TextStyle(fontWeight: FontWeight.bold);
     const divider = Divider(
       height: 12,
@@ -62,12 +60,18 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(loc.statistic),
         leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios_new),
           onPressed: () => updateCount(),
         ),
         actions: [
+          HapticIconButton(
+            icon: isFavourite
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_border),
+            onPressed: () => toggleIsFavourite(context),
+          ),
           HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () =>
@@ -110,14 +114,10 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
           child: Column(
             children: [
               StatisticsTile(
+                statistic: widget.statistic,
                 margin: EdgeInsets.zero,
-                icon: widget.icon,
-                title: title,
                 width: MediaQuery.sizeOf(context).width * 0.95,
                 values: widget.values,
-                barColor: widget.barColor,
-                selectedGroups: widget.statistic.selectedGroups,
-                selectedGames: widget.statistic.selectedGames,
                 displayCount: displayCount,
                 showAllValues: true,
                 showDisplayCountHighlighting: showHighlighting,
@@ -125,7 +125,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
               const SizedBox(height: 12),
 
               InfoTile(
-                icon: Icons.filter_alt,
+                leadingWidget: const Icon(Icons.filter_alt),
                 width: MediaQuery.sizeOf(context).width * 0.95,
                 title: loc.filter,
                 content: Column(
@@ -313,6 +313,19 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
     await db.statisticDao.updateDisplayCount(widget.statistic.id, displayCount);
     await widget.refreshStatistic(widget.statistic.id);
     if (mounted) Navigator.of(context).pop(displayCount);
+  }
+
+  void toggleIsFavourite(BuildContext context) async {
+    final updatedIsFavourite = !isFavourite;
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    await db.statisticDao.updateIsFavourite(
+      widget.statistic.id,
+      updatedIsFavourite,
+    );
+    widget.refreshStatistic(widget.statistic.id);
+    setState(() {
+      isFavourite = updatedIsFavourite;
+    });
   }
 
   void deleteStatistic() async {

@@ -2,79 +2,115 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
-import 'package:tallee/core/app_color_utils.dart';
+import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 
-class StatisticsTile extends StatelessWidget {
+class StatisticsTile extends StatefulWidget {
   /// A tile widget that displays statistical data using horizontal bars.
   /// - [icon]: The icon displayed next to the title.
-  /// - [title]: The title text displayed on the tile.
-  /// - [width]: The width of the tile.
   /// - [values]: A list of tuples containing labels and their corresponding numeric values.
-  /// - [barColor]: The color of the bars representing the values.
+  /// - [displayCount]:  The number of top values to display in the bar chart.
+  /// - [margin]: Optional margin for the tile.
+  /// - [width]: Optional width of the tile.
+  /// - [showAllValues]: Whether to show all values or limit to [displayCount].
+  /// - [showDisplayCountHighlighting]: Whether to highlight entries that exceed the display count.
   const StatisticsTile({
     super.key,
-    required this.icon,
-    required this.title,
+    required this.statistic,
     required this.values,
-    required this.barColor,
     required this.displayCount,
     this.margin,
     this.width,
-    this.selectedGroups,
-    this.selectedGames,
     this.showAllValues = false,
     this.showDisplayCountHighlighting = false,
+    this.onStatisticChanged,
   });
 
-  /// The icon displayed next to the title.
-  final IconData icon;
-
-  /// The title text displayed on the tile.
-  final String title;
-
-  final EdgeInsets? margin;
-
-  /// The width of the tile.
-  final double? width;
-
-  /// A list of tuples containing labels and their corresponding numeric values.
+  final Statistic statistic;
   final List<(Player, num)> values;
-
-  /// The color of the bars representing the values.
-  final Color barColor;
-
-  // statistic data
   final int displayCount;
-  final List<Group>? selectedGroups;
-  final List<Game>? selectedGames;
-
+  final EdgeInsets? margin;
+  final double? width;
   final bool showAllValues;
   final bool showDisplayCountHighlighting;
+  final ValueChanged<String>? onStatisticChanged;
+
+  @override
+  State<StatisticsTile> createState() => _StatisticsTileState();
+}
+
+class _StatisticsTileState extends State<StatisticsTile> {
+  late bool isFavourite;
+  late Color barColor;
+  late List<Group>? selectedGroups;
+  late List<Game>? selectedGames;
+  late IconData icon;
+
+  @override
+  void initState() {
+    isFavourite = widget.statistic.isFavourite;
+    barColor = getColorFromAppColor(widget.statistic.color);
+    selectedGames = widget.statistic.selectedGames;
+    selectedGroups = widget.statistic.selectedGroups;
+    icon = getStatisticIcon(type: widget.statistic.type);
+
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant StatisticsTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.statistic != widget.statistic) {
+      isFavourite = widget.statistic.isFavourite;
+      barColor = getColorFromAppColor(widget.statistic.color);
+      selectedGames = widget.statistic.selectedGames;
+      selectedGroups = widget.statistic.selectedGroups;
+      icon = getStatisticIcon(type: widget.statistic.type);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final title = translateStatisticTypeToString(
+      widget.statistic.type,
+      context,
+    );
 
     return InfoTile(
-      width: width ?? MediaQuery.sizeOf(context).width * 0.95,
+      leadingWidget: Icon(icon),
       title: title,
-      icon: icon,
-      margin: margin ?? CustomTheme.tileMargin,
+      trailingWidget: Visibility(
+        // Only show in statistic view
+        visible: !widget.showAllValues,
+        child: HapticIconButton(
+          padding: EdgeInsets.zero,
+          icon: isFavourite
+              ? const Icon(Icons.favorite)
+              : const Icon(Icons.favorite_border),
+          onPressed: () => toggleFavourite(),
+        ),
+      ),
+      width: widget.width ?? MediaQuery.sizeOf(context).width * 0.95,
+      margin: widget.margin ?? CustomTheme.tileMargin,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
           children: [
             Visibility(
               visible:
-                  values.isNotEmpty && values.any((entry) => entry.$2 != 0),
+                  widget.values.isNotEmpty &&
+                  widget.values.any((entry) => entry.$2 != 0),
 
               // No data available message
               replacement: Center(
@@ -88,10 +124,12 @@ class StatisticsTile extends StatelessWidget {
                   final maxBarWidth = constraints.maxWidth * 0.8;
 
                   // If displayCount wasnt provided, take all values
-                  final valuesShown = showAllValues
-                      ? values.length
-                      : min(values.length, displayCount);
-                  final displayValues = values.take(valuesShown).toList();
+                  final valuesShown = widget.showAllValues
+                      ? widget.values.length
+                      : min(widget.values.length, widget.displayCount);
+                  final displayValues = widget.values
+                      .take(valuesShown)
+                      .toList();
                   // Maximum to scale bars
                   final maxVal = displayValues.isNotEmpty
                       ? displayValues.fold<num>(
@@ -117,11 +155,12 @@ class StatisticsTile extends StatelessWidget {
                         );
 
                         /// Whether this entry is part of the "overflow" that exceeds the display count
-                        final isOverflowEntry = index >= displayCount;
+                        final isOverflowEntry = index >= widget.displayCount;
 
                         /// Whether to apply highlighting for entries that exceed the display count
                         final isHighlightedOverflow =
-                            isOverflowEntry && showDisplayCountHighlighting;
+                            isOverflowEntry &&
+                            widget.showDisplayCountHighlighting;
 
                         /// Adjust bar color for highlighted overflow entries
                         final barClr = isHighlightedOverflow
@@ -131,7 +170,7 @@ class StatisticsTile extends StatelessWidget {
                         const textLeftPadding = 4.0;
 
                         return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                          padding: const EdgeInsets.symmetric(vertical: 2),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -259,6 +298,19 @@ class StatisticsTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> toggleFavourite() async {
+    final updatedIsFavourite = !isFavourite;
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    await db.statisticDao.updateIsFavourite(
+      widget.statistic.id,
+      updatedIsFavourite,
+    );
+    setState(() {
+      isFavourite = updatedIsFavourite;
+    });
+    widget.onStatisticChanged?.call(widget.statistic.id);
   }
 
   String formatValue(num value) {
