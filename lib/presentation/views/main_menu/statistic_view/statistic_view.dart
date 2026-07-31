@@ -412,6 +412,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                               )
                               .toList();
                         });
+                        final db = Provider.of<AppDatabase>(
+                          context,
+                          listen: false,
+                        );
+                        db.statisticDao.updatePosition(statistics: statistics);
                       },
                       itemCount: statisticTiles.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -430,20 +435,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                   await navigator.push<Statistic>(
                     adaptivePageRoute(
                       builder: (context) => CreateStatisticView(
-                        onStatisticCreated: (newStats) {
-                          if (!mounted) return;
-                          setState(() {
-                            statistics = [...newStats, ...statistics];
-                            statisticTiles = statistics
-                                .map(
-                                  (stat) => buildStatisticTile(
-                                    context: context,
-                                    statistic: stat,
-                                  ),
-                                )
-                                .toList();
-                          });
-                        },
+                        onStatisticCreated: (newStats) =>
+                            onStatisticsCreated(newStats),
                       ),
                     ),
                   );
@@ -508,7 +501,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     if (!mounted) return;
 
     statistics = results[0] as List<Statistic>
-      ..sort((stat1, stat2) => stat2.createdAt.compareTo(stat1.createdAt));
+      ..sort((a, b) => a.position.compareTo(b.position));
     matches = results[1] as List<Match>;
     players = results[2] as List<Player>;
     groups = results[3] as List<Group>;
@@ -581,13 +574,25 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   // Create the statistic tiles based on the active filters
   void createFilteredStatisticTiles() {
-    final filtered = statistics.where(matchesActiveFilters).toList();
+    final displayedStats = statistics.where(matchesActiveFilters).toList()
+      ..sort((a, b) => a.position.compareTo(b.position));
 
     setState(() {
-      statisticTiles = filtered
+      statisticTiles = displayedStats
           .map((stat) => buildStatisticTile(context: context, statistic: stat))
           .toList();
     });
+  }
+
+  /// Adds the new statistic, updates the positions of all statistics and updates the tiles.
+  void onStatisticsCreated(List<Statistic> newStats) {
+    statistics = [...newStats, ...statistics];
+    statistics = statistics
+        .map((stat) => stat.copyWith(position: statistics.indexOf(stat)))
+        .toList();
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    db.statisticDao.updatePosition(statistics: statistics);
+    createFilteredStatisticTiles();
   }
 
   /// Refreshes a statistic by the [statisticId], either updating it or removing it if
@@ -606,9 +611,7 @@ class _StatisticsViewState extends State<StatisticsView> {
       if (index == -1) return;
       statistics[index] = newStat;
     }
-    setState(() {
-      createFilteredStatisticTiles();
-    });
+    createFilteredStatisticTiles();
   }
 
   /// Whether [statistic] satisfies all currently active filters.

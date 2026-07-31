@@ -18,6 +18,7 @@ class Statistic {
   final List<Game>? selectedGames;
   final int displayCount;
   final bool isFavourite;
+  final int position;
 
   Statistic({
     required this.type,
@@ -27,6 +28,7 @@ class Statistic {
     this.selectedGames,
     this.displayCount = 5,
     this.isFavourite = false,
+    this.position = 0,
     String? id,
     DateTime? createdAt,
     AppColor? color,
@@ -48,6 +50,7 @@ class Statistic {
     List<Game>? selectedGames,
     int? displayCount,
     bool? isFavourite,
+    int? position,
   }) {
     return Statistic(
       id: id,
@@ -59,6 +62,7 @@ class Statistic {
       selectedGames: selectedGames ?? this.selectedGames,
       displayCount: displayCount ?? this.displayCount,
       isFavourite: isFavourite ?? this.isFavourite,
+      position: position ?? this.position,
     );
   }
 
@@ -73,6 +77,7 @@ class Statistic {
     'selectedGames': selectedGames?.map((g) => g.id).toList(),
     'displayCount': displayCount,
     'isFavourite': isFavourite,
+    'position': position,
   };
 
   Statistic.fromJson(Map<String, dynamic> json)
@@ -101,5 +106,6 @@ class Statistic {
       selectedGroups = null,
       selectedGames = null,
       displayCount = json['displayCount'],
-      isFavourite = json['isFavourite'] ?? false;
+      isFavourite = json['isFavourite'],
+      position = json['position'];
 }

@@ -986,6 +986,7 @@ void main() {
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
+              'position': testStatistic.position,
             },
           ],
         };
@@ -1043,6 +1044,7 @@ void main() {
               'selectedGames': ['unknown-game-id'],
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
+              'position': testStatistic.position,
             },
           ],
         };
@@ -1132,6 +1134,7 @@ void main() {
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
+              'position': testStatistic.position,
             },
             {
               'id': testStatistic.id,
@@ -1144,6 +1147,7 @@ void main() {
               'selectedGames': null,
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
+              'position': testStatistic.position,
             },
             {
               'id': testStatistic.id,
@@ -1156,6 +1160,7 @@ void main() {
               'selectedGames': [testGame.id],
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
+              'position': testStatistic.position,
             },
           ],
         });
@@ -1235,6 +1240,7 @@ void main() {
                 'selectedGames': [testGame.id],
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
+                'position': testStatistic.position,
               },
               {
                 'id': testStatistic.id,
@@ -1247,6 +1253,7 @@ void main() {
                 'selectedGames': [testGame.id],
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
+                'position': testStatistic.position,
               },
               {
                 'id': testStatistic.id,
@@ -1259,6 +1266,7 @@ void main() {
                 'selectedGames': null,
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
+                'position': testStatistic.position,
               },
             ],
           });
