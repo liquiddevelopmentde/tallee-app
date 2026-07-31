@@ -37,7 +37,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   late final List<Team> allTeams;
 
   /// Flag to indicate if the save button should be enabled
-  bool canSave = false;
+  late bool canSave;
 
   /// Currently selected player(s)/team(s) (winner / loser)
   Player? selectedPlayer;
@@ -66,6 +66,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
     ruleset = widget.match.game.ruleset;
+    canSave = rulesetSupportsDragBehaviour();
 
     initData();
     super.initState();
@@ -117,17 +118,34 @@ class _MatchResultViewState extends State<MatchResultView> {
                     if (ruleset == Ruleset.multipleWinners)
                       MultiplePlayerSelection(
                         match: widget.match,
-                        onPlayersSelected: (List<Player> players) =>
-                            selectedPlayers = players,
-                        onTeamsSelected: (List<Team> teams) =>
-                            selectedTeams = teams,
+                        onPlayersSelected: (List<Player> players) {
+                          selectedPlayers = players;
+                          setState(() {
+                            canSave = players.isNotEmpty;
+                          });
+                        },
+                        onTeamsSelected: (List<Team> teams) {
+                          selectedTeams = teams;
+                          setState(() {
+                            canSave = teams.isNotEmpty;
+                          });
+                        },
                       )
                     else
                       SinglePlayerSelection(
                         match: widget.match,
-                        onPlayerSelected: (Player? player) =>
-                            selectedPlayer = player,
-                        onTeamSelected: (Team? team) => selectedTeam = team,
+                        onPlayerSelected: (Player? player) {
+                          selectedPlayer = player;
+                          setState(() {
+                            canSave = player != null;
+                          });
+                        },
+                        onTeamSelected: (Team? team) {
+                          selectedTeam = team;
+                          setState(() {
+                            canSave = team != null;
+                          });
+                        },
                       ),
 
                   // Show score entry
