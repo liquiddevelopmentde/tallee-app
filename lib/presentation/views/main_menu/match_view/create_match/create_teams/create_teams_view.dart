@@ -14,12 +14,12 @@ class CreateTeamsView extends StatefulWidget {
   const CreateTeamsView({
     super.key,
     required this.match,
-    this.matchToPrefill,
+    this.previousMatch,
     this.onWinnerChanged,
   });
 
   final Match match;
-  final Match? matchToPrefill;
+  final Match? previousMatch;
   final VoidCallback? onWinnerChanged;
 
   @override
@@ -31,9 +31,9 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
 
   List<Player> get matchPlayers => widget.match.players;
 
-  List<Player> get prefillMatchPlayers => widget.matchToPrefill?.players ?? [];
+  List<Player> get prefillMatchPlayers => widget.previousMatch?.players ?? [];
 
-  List<Team> get prefillMatchTeams => widget.matchToPrefill?.teams ?? [];
+  List<Team> get prefillMatchTeams => widget.previousMatch?.teams ?? [];
 
   late List<Team> teams;
   late List<TextEditingController> nameController;
@@ -44,16 +44,16 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     super.didChangeDependencies();
     final loc = AppLocalizations.of(context);
 
-    final bool teamsLogicallyPossible =
+    final bool areTeamsLogicallyPossible =
         prefillMatchPlayers.length >= prefillMatchTeams.length;
 
-    if (teamsLogicallyPossible &&
-        widget.matchToPrefill?.teams != null &&
-        widget.matchToPrefill!.teams!.isNotEmpty) {
+    if (areTeamsLogicallyPossible &&
+        widget.previousMatch?.teams != null &&
+        widget.previousMatch!.teams!.isNotEmpty) {
       final matchPlayerIds = matchPlayers.map((p) => p.id).toSet();
 
       // Use prefilled teams, exclude players that are not in the matches players anymore
-      teams = widget.matchToPrefill!.teams!.map((team) {
+      teams = widget.previousMatch!.teams!.map((team) {
         return team.copyWith(
           members: team.members
               .where((member) => matchPlayerIds.contains(member.id))
@@ -135,7 +135,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                   icon: Icons.arrow_forward_sharp,
                   onPressed: teams.length >= 2
                       ? () {
-                          _finalizeTeams();
+                          finalizeTeams();
 
                           final match = widget.match.copyWith(teams: teams);
 
@@ -218,7 +218,14 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     });
   }
 
-  void _finalizeTeams() {
+  /// Finalizes the team creation by assigning any players that are currently
+  /// not part of a team to the available teams.
+  ///
+  /// If new teams have been created (those not present in [previousMatch]),
+  /// the unassigned players are distributed among these new teams to fill them
+  /// up evenly. If no new teams exist, players are distributed among all
+  /// existing teams, maintaining a balanced member count across teams.
+  void finalizeTeams() {
     final prefillTeamIds = prefillMatchTeams.map((t) => t.id).toSet();
     final allMatchPlayers = widget.match.players;
     final assignedPlayerIds = teams
