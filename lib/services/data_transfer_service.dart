@@ -458,6 +458,7 @@ class DataTransferService {
         selectedGames: selectedGames.isEmpty ? null : selectedGames,
         displayCount: map['displayCount'],
         isFavourite: map['isFavourite'],
+        position: map['position'],
       );
     }).toList();
   }
