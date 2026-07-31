@@ -225,7 +225,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       selectedGame = match.game;
       isTeamMatch = match.isTeamMatch;
 
-      if (match.teams != null && match.teams!.isNotEmpty) {
+      if (match.teams != null &&
+          match.teams!.isNotEmpty &&
+          !match.isTeamMatch) {
         selectedUnits = match.teams!;
       } else {
         selectedUnits = selectedPlayers
@@ -368,6 +370,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
             adaptivePageRoute(
               builder: (context) => CreateTeamsView(
                 match: match,
+                matchToPrefill: widget.matchToPrefill,
                 onWinnerChanged: widget.onWinnerChanged,
               ),
             ),
