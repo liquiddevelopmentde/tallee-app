@@ -121,6 +121,10 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     final rows = await query.get();
 
     final Map<String, Map<String, ScoreEntry?>> resultMap = {};
+    for (final id in matchIds) {
+      resultMap[id] = {};
+    }
+
     for (final row in rows) {
       final score = ScoreEntry(
         roundNumber: row.roundNumber,

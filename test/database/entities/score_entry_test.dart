@@ -258,6 +258,44 @@ void main() {
         expect(scores.isEmpty, isTrue);
       });
 
+      test('getScoresForMatches() works correctly', () async {
+        ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
+        ScoreEntry entry2 = ScoreEntry(roundNumber: 1, score: 20, change: 20);
+        await database.scoreEntryDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          entry: entry1,
+        );
+        await database.scoreEntryDao.addScore(
+          playerId: testPlayer2.id,
+          matchId: testMatch2.id,
+          entry: entry2,
+        );
+
+        final result = await database.scoreEntryDao.getScoresForMatches(
+          matchIds: [testMatch1.id, testMatch2.id],
+        );
+
+        expect(result.length, 2);
+        expect(result[testMatch1.id]![testPlayer1.id]!.score, 10);
+        expect(result[testMatch2.id]![testPlayer2.id]!.score, 20);
+      });
+
+      test('getScoresForMatches() returns empty map for empty input', () async {
+        final result = await database.scoreEntryDao.getScoresForMatches(
+          matchIds: [],
+        );
+        expect(result, isEmpty);
+      });
+
+      test('getScoresForMatches() initializes empty maps for matches with no scores', () async {
+        final result = await database.scoreEntryDao.getScoresForMatches(
+          matchIds: [testMatch1.id],
+        );
+        expect(result.containsKey(testMatch1.id), isTrue);
+        expect(result[testMatch1.id], isEmpty);
+      });
+
       test('getAllPlayerScoresInMatch() works correctly', () async {
         ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
         ScoreEntry entry2 = ScoreEntry(roundNumber: 2, score: 25, change: 15);
