@@ -56,7 +56,7 @@ class TextIconListTile extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 12.5),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   buildUnitNameWidget(

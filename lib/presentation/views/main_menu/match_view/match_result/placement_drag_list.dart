@@ -51,7 +51,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
   @override
   Widget build(BuildContext context) {
     final double rowHeight = isTeamMatch ? 85 : 60;
-    final double badgeSize = isTeamMatch ? 65 : 50;
+    final double badgeSize = rowHeight - 7;
 
     return Expanded(
       child: Row(
@@ -73,7 +73,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
               },
             ),
           ),
-
+          const SizedBox(width: 4),
           useTeamLogic
               ? Expanded(
                   child: ReorderableListView.builder(
