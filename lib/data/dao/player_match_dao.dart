@@ -130,10 +130,9 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     final Map<String, List<Player>> resultMap = {};
     for (final row in rows) {
       final player = playersMap[row.playerId];
-      if (player != null) {
-        if (includeDeletedPlayer || !player.deleted) {
-          resultMap.putIfAbsent(row.matchId, () => []).add(player);
-        }
+      if (player == null) continue;
+      if (includeDeletedPlayer || !player.deleted) {
+        resultMap.putIfAbsent(row.matchId, () => []).add(player);
       }
     }
 
