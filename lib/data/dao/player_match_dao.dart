@@ -107,7 +107,7 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     return players;
   }
 
-  /// Retrieves players for multiple matches in a single operation.
+  /// Retrieves all [Player]s for the passed [matchIds] matches in a single operation.
   /// Returns a map where the key is the matchId and the value is the list of players.
   Future<Map<String, List<Player>>> getPlayersForMatches({
     required List<String> matchIds,
