@@ -32,6 +32,9 @@ class CustomCheckboxListTile extends StatelessWidget {
         child: Row(
           children: [
             Checkbox(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
               value: value,
               onChanged: (bool? v) async {
                 await HapticFeedback.selectionClick();
