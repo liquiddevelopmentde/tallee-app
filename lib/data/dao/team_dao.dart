@@ -142,6 +142,85 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     return teams;
   }
 
+  /// Retrieves teams for multiple matches in a single operation.
+  /// Returns a map where the key is the matchId and the value is the list of teams.
+  Future<Map<String, List<Team>>> getTeamsForMatches({
+    required List<String> matchIds,
+  }) async {
+    if (matchIds.isEmpty) return {};
+
+    final playerMatchQuery = select(db.playerMatchTable)
+      ..where((pm) => pm.matchId.isIn(matchIds) & pm.teamId.isNotNull());
+    final playerMatches = await playerMatchQuery.get();
+
+    if (playerMatches.isEmpty) return {};
+
+    final Map<String, Set<String>> matchToTeamIds = {};
+    final Set<String> allTeamIds = {};
+
+    for (final pm in playerMatches) {
+      if (pm.teamId != null) {
+        matchToTeamIds.putIfAbsent(pm.matchId, () => {}).add(pm.teamId!);
+        allTeamIds.add(pm.teamId!);
+      }
+    }
+
+    if (allTeamIds.isEmpty) return {};
+
+    final teamRows = await (select(
+      teamTable,
+    )..where((t) => t.id.isIn(allTeamIds.toList()))).get();
+
+    // Batch fetch members for all these teams
+    final allPlayerMatchesForTeams = await (select(
+      db.playerMatchTable,
+    )..where((tbl) => tbl.teamId.isIn(allTeamIds.toList()))).get();
+
+    final allPlayerIds = allPlayerMatchesForTeams
+        .map((pm) => pm.playerId)
+        .toSet()
+        .toList();
+    final allPlayersList = await db.playerDao.getPlayersByIds(
+      playerIds: allPlayerIds,
+    );
+    final playersMap = {for (final p in allPlayersList) p.id: p};
+
+    final Map<String, List<Player>> teamIdToMembers = {};
+    for (final pm in allPlayerMatchesForTeams) {
+      if (pm.teamId != null) {
+        final player = playersMap[pm.playerId];
+        if (player != null) {
+          teamIdToMembers.putIfAbsent(pm.teamId!, () => []).add(player);
+        }
+      }
+    }
+
+    for (final members in teamIdToMembers.values) {
+      members.sort(
+        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+      );
+    }
+
+    final Map<String, Team> teamMap = {};
+    for (final row in teamRows) {
+      teamMap[row.id] = Team(
+        id: row.id,
+        name: row.name,
+        createdAt: row.createdAt,
+        color: row.color,
+        score: row.score,
+        members: teamIdToMembers[row.id] ?? [],
+      );
+    }
+
+    final Map<String, List<Team>> resultMap = {};
+    matchToTeamIds.forEach((matchId, teamIds) {
+      resultMap[matchId] = teamIds.map((id) => teamMap[id]!).toList();
+    });
+
+    return resultMap;
+  }
+
   /// Retrieves a [Team] by its [teamId], including its members.
   Future<Team> getTeamById({required String teamId}) async {
     final query = select(teamTable)..where((t) => t.id.equals(teamId));

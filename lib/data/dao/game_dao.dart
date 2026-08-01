@@ -115,6 +115,26 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     );
   }
 
+  /// Retrieves multiple [Game]s by their [gameIds].
+  Future<List<Game>> getGamesByIds({required List<String> gameIds}) async {
+    if (gameIds.isEmpty) return [];
+    final query = select(gameTable)..where((g) => g.id.isIn(gameIds));
+    final result = await query.get();
+    return result
+        .map(
+          (row) => Game(
+            id: row.id,
+            name: row.name,
+            ruleset: row.ruleset,
+            description: row.description,
+            color: row.color,
+            icon: row.icon,
+            createdAt: row.createdAt,
+          ),
+        )
+        .toList();
+  }
+
   /* Update */
 
   /// Updates the name of the game with the given [gameId] to [name].
