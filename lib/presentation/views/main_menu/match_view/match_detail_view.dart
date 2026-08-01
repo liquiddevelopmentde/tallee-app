@@ -69,6 +69,38 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         title: Text(loc.match_profile),
         actions: [
           HapticIconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () {
+              final cleanMatch = Match(
+                name: widget.match.name,
+                game: widget.match.game,
+                players: widget.match.players,
+                group: widget.match.group,
+                isTeamMatch: widget.match.isTeamMatch,
+                notes: widget.match.notes,
+                teams: widget.match.teams
+                    ?.map(
+                      (t) => Team(
+                        name: t.name,
+                        color: t.color,
+                        members: t.members,
+                      ),
+                    )
+                    .toList(),
+              );
+
+              Navigator.of(context).pushReplacement(
+                adaptivePageRoute(
+                  builder: (context) => CreateMatchView(
+                    matchToPrefill: cleanMatch,
+                    onWinnerChanged: widget.onMatchUpdate,
+                    onMatchesUpdated: widget.onMatchUpdate,
+                  ),
+                ),
+              );
+            },
+          ),
+          HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
               showDialog<bool>(
@@ -570,7 +602,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         adaptivePageRoute(
           fullscreenDialog: true,
           builder: (context) => CreateMatchView(
-            matchToEdit: match,
+            matchToPrefill: match,
+            editMode: true,
             onMatchUpdated: onMatchUpdated,
           ),
         ),
