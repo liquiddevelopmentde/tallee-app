@@ -42,8 +42,8 @@ class _ManageMembersViewState extends State<ManageMembersView> {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
 
-    // only redistribute if no players have been assigned yet
     final hasAssignedPlayers = teams.any((t) => t.members.isNotEmpty);
+    print(hasAssignedPlayers);
     if (!hasAssignedPlayers) {
       redistributePlayers();
     }

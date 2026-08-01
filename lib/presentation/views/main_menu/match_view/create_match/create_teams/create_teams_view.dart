@@ -135,7 +135,9 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                   icon: Icons.arrow_forward_sharp,
                   onPressed: teams.length >= 2
                       ? () {
-                          finalizeTeams();
+                          if (widget.previousMatch != null) {
+                            finalizeTeams();
+                          }
 
                           final match = widget.match.copyWith(teams: teams);
 

@@ -70,15 +70,35 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         actions: [
           HapticIconButton(
             icon: const Icon(Icons.copy),
-            onPressed: () => Navigator.of(context).pushReplacement(
-              adaptivePageRoute(
-                builder: (context) => CreateMatchView(
-                  matchToPrefill: widget.match,
-                  onWinnerChanged: widget.onMatchUpdate,
-                  onMatchesUpdated: widget.onMatchUpdate,
+            onPressed: () {
+              final cleanMatch = Match(
+                name: widget.match.name,
+                game: widget.match.game,
+                players: widget.match.players,
+                group: widget.match.group,
+                isTeamMatch: widget.match.isTeamMatch,
+                notes: widget.match.notes,
+                teams: widget.match.teams
+                    ?.map(
+                      (t) => Team(
+                        name: t.name,
+                        color: t.color,
+                        members: t.members,
+                      ),
+                    )
+                    .toList(),
+              );
+
+              Navigator.of(context).pushReplacement(
+                adaptivePageRoute(
+                  builder: (context) => CreateMatchView(
+                    matchToPrefill: cleanMatch,
+                    onWinnerChanged: widget.onMatchUpdate,
+                    onMatchesUpdated: widget.onMatchUpdate,
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
           HapticIconButton(
             icon: const Icon(Icons.delete),

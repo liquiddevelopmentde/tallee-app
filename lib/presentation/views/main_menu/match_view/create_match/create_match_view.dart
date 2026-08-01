@@ -370,7 +370,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
             adaptivePageRoute(
               builder: (context) => CreateTeamsView(
                 match: match,
-                matchToPrefill: widget.matchToPrefill,
+                previousMatch: widget.matchToPrefill,
                 onWinnerChanged: widget.onWinnerChanged,
               ),
             ),
