@@ -55,7 +55,7 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
               onChanged: (Team? team) async {
                 setState(() {
                   selectedTeam = team;
-                  widget.onTeamSelected?.call(team);
+                  widget.onTeamSelected?.call(selectedTeam);
                 });
               },
               child: ListView.builder(
@@ -80,7 +80,7 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
                           // If no assign the newly tapped player to the selected player.
                           (selectedTeam = team);
                         }
-                        widget.onTeamSelected?.call(team);
+                        widget.onTeamSelected?.call(selectedTeam);
                       });
                     },
                   );
@@ -91,6 +91,7 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
               groupValue: selectedPlayer,
               onChanged: (Player? player) => setState(() {
                 selectedPlayer = player;
+                widget.onPlayerSelected?.call(selectedPlayer);
               }),
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
@@ -113,9 +114,9 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
                           selectedPlayer = null;
                         } else {
                           // If no assign the newly tapped player to the selected player.
-                          (selectedPlayer = player);
+                          selectedPlayer = player;
                         }
-                        widget.onPlayerSelected?.call(player);
+                        widget.onPlayerSelected?.call(selectedPlayer);
                       });
                     },
                   );
