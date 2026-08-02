@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
 
 class SplashView extends StatefulWidget {
@@ -9,7 +10,8 @@ class SplashView extends StatefulWidget {
   State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
+class _SplashViewState extends State<SplashView>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
@@ -27,12 +29,13 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEF681F),
-      body: SizedBox.expand(
+      backgroundColor: CustomTheme.primaryColor,
+      body: Center(
         child: Lottie.asset(
           'assets/logo-animation.json',
           controller: _controller,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
+          frameRate: FrameRate.max,
           onLoaded: (composition) {
             _controller
               ..duration = composition.duration
