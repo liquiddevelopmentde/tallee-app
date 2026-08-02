@@ -233,6 +233,35 @@ void main() {
           expect(players, isEmpty);
         },
       );
+
+      test('getPlayersForMatches() works correctly', () async {
+        final match2 = Match(
+          name: 'Match 2',
+          game: testGame,
+          players: [testPlayer1, testPlayer3],
+        );
+        await database.matchDao.addMatch(match: testMatch1);
+        await database.matchDao.addMatch(match: match2);
+
+        final result = await database.playerMatchDao.getPlayersForMatches(
+          matchIds: [testMatch1.id, match2.id],
+        );
+
+        expect(result.length, 2);
+        expect(result[testMatch1.id]!.length, testMatch1.players.length);
+        expect(result[match2.id]!.length, match2.players.length);
+
+        final match1PlayerIds =
+            result[testMatch1.id]!.map((p) => p.id).toSet();
+        expect(match1PlayerIds, containsAll(testMatch1.players.map((p) => p.id)));
+      });
+
+      test('getPlayersForMatches() returns empty map for empty input', () async {
+        final result = await database.playerMatchDao.getPlayersForMatches(
+          matchIds: [],
+        );
+        expect(result, isEmpty);
+      });
     });
 
     group('UPDATE', () {

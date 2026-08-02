@@ -205,6 +205,26 @@ void main() {
           );
         },
       );
+
+      test('getPlayersByIds() works correctly', () async {
+        await database.playerDao.addPlayersAsList(
+          players: [testPlayer1, testPlayer2, testPlayer3, testPlayer4],
+        );
+
+        final result = await database.playerDao.getPlayersByIds(
+          playerIds: [testPlayer1.id, testPlayer3.id],
+        );
+
+        expect(result.length, 2);
+        final ids = result.map((p) => p.id).toSet();
+        expect(ids, containsAll([testPlayer1.id, testPlayer3.id]));
+        expect(ids, isNot(contains(testPlayer2.id)));
+      });
+
+      test('getPlayersByIds() returns empty list for empty input', () async {
+        final result = await database.playerDao.getPlayersByIds(playerIds: []);
+        expect(result, isEmpty);
+      });
     });
 
     group('UPDATE', () {

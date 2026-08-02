@@ -1,5 +1,5 @@
 import 'package:clock/clock.dart';
-import 'package:drift/drift.dart' hide isNull;
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/data/db/database.dart';
@@ -226,6 +226,36 @@ void main() {
 
         final allGroups = await database.groupDao.getAllGroups();
         expect(allGroups.length, 1);
+      });
+
+      test('getGroupsByIds() works correctly', () async {
+        await database.groupDao.addGroupsAsList(
+          groups: [testGroup1, testGroup2],
+        );
+
+        final result = await database.groupDao.getGroupsByIds(
+          groupIds: [testGroup1.id, testGroup2.id],
+        );
+
+        expect(result.length, 2);
+        final resultMap = {for (final g in result) g.id: g};
+
+        expect(resultMap[testGroup1.id], isNotNull);
+        expect(
+          resultMap[testGroup1.id]!.members,
+          unorderedEquals(testGroup1.members),
+        );
+
+        expect(resultMap[testGroup2.id], isNotNull);
+        expect(
+          resultMap[testGroup2.id]!.members,
+          unorderedEquals(testGroup2.members),
+        );
+      });
+
+      test('getGroupsByIds() returns empty list for empty input', () async {
+        final result = await database.groupDao.getGroupsByIds(groupIds: []);
+        expect(result, isEmpty);
       });
     });
 

@@ -276,35 +276,9 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final query = select(matchTable);
     final result = await query.get();
 
-    return Future.wait(
-      result.map((row) async {
-        final game = await db.gameDao.getGameById(gameId: row.gameId);
-
-        Group? group;
-        if (row.groupId != null) {
-          group = await db.groupDao.getGroupById(groupId: row.groupId!);
-        }
-
-        final players = await db.playerMatchDao.getPlayersOfMatch(
-          matchId: row.id,
-          includeDeletedPlayer: includeDeletedPlayer,
-        );
-
-        final scores = await db.scoreEntryDao.getAllMatchScores(
-          matchId: row.id,
-        );
-
-        final teams = await _getMatchTeams(matchId: row.id);
-
-        return _buildMatchFromRow(
-          row: row,
-          game: game,
-          players: players,
-          group: group,
-          scores: scores,
-          teams: teams,
-        );
-      }),
+    return _fetchRelationsForMatches(
+      result,
+      includeDeletedPlayer: includeDeletedPlayer,
     );
   }
 
@@ -319,29 +293,11 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final query = select(matchTable)..where((g) => g.id.equals(matchId));
     final row = await query.getSingle();
 
-    final game = await db.gameDao.getGameById(gameId: row.gameId);
+    final matches = await _fetchRelationsForMatches([
+      row,
+    ], includeDeletedPlayer: includeDeletedPlayer);
 
-    Group? group;
-    if (row.groupId != null) {
-      group = await db.groupDao.getGroupById(groupId: row.groupId!);
-    }
-
-    final players = await db.playerMatchDao.getPlayersOfMatch(
-      matchId: matchId,
-      includeDeletedPlayer: includeDeletedPlayer,
-    );
-
-    final scores = await db.scoreEntryDao.getAllMatchScores(matchId: matchId);
-
-    final teams = await _getMatchTeams(matchId: matchId);
-    return _buildMatchFromRow(
-      row: row,
-      game: game,
-      players: players,
-      teams: teams,
-      group: group,
-      scores: scores,
-    );
+    return matches.first;
   }
 
   /// Retrieves the number of matches associated with a specific game.
@@ -369,34 +325,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
               ..orderBy([(tbl) => OrderingTerm.desc(tbl.createdAt)]))
             .get();
 
-    return Future.wait(
-      result.map((row) async {
-        final game = await db.gameDao.getGameById(gameId: row.gameId);
-
-        Group? group;
-        if (row.groupId != null) {
-          group = await db.groupDao.getGroupById(groupId: row.groupId!);
-        }
-
-        final players = await db.playerMatchDao.getPlayersOfMatch(
-          matchId: row.id,
-          includeDeletedPlayer: true,
-        );
-        final scores = await db.scoreEntryDao.getAllMatchScores(
-          matchId: row.id,
-        );
-        final teams = await _getMatchTeams(matchId: row.id);
-
-        return _buildMatchFromRow(
-          row: row,
-          game: game,
-          players: players,
-          group: group,
-          scores: scores,
-          teams: teams,
-        );
-      }),
-    );
+    return _fetchRelationsForMatches(result, includeDeletedPlayer: true);
   }
 
   /// Retrieves all matches associated with the given [groupId].
@@ -405,47 +334,54 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final query = select(matchTable)..where((m) => m.groupId.equals(groupId));
     final result = await query.get();
 
-    return Future.wait(
-      result.map((row) async {
-        final game = await db.gameDao.getGameById(gameId: row.gameId);
-        final group = await db.groupDao.getGroupById(groupId: groupId);
-        final players = await db.playerMatchDao.getPlayersOfMatch(
-          matchId: row.id,
-        );
-        final teams = await _getMatchTeams(matchId: row.id);
-
-        return _buildMatchFromRow(
-          row: row,
-          game: game,
-          players: players,
-          group: group,
-          teams: teams,
-        );
-      }),
-    );
+    return _fetchRelationsForMatches(result);
   }
 
-  /// Helper method to retrieve teams for a specific match
-  Future<List<Team>?> _getMatchTeams({required String matchId}) async {
-    // Get all unique team IDs from PlayerMatchTable for this match
-    final playerMatchQuery = select(db.playerMatchTable)
-      ..where((tbl) => tbl.matchId.equals(matchId) & tbl.teamId.isNotNull());
-    final playerMatches = await playerMatchQuery.get();
+  /// Batch fetches all related entities for a list of match rows.
+  Future<List<Match>> _fetchRelationsForMatches(
+    List<MatchTableData> rows, {
+    bool includeDeletedPlayer = false,
+  }) async {
+    if (rows.isEmpty) return [];
 
-    if (playerMatches.isEmpty) return null;
-
-    final teamIds = playerMatches
-        .map((pm) => pm.teamId)
+    final matchIds = rows.map((r) => r.id).toList();
+    final gameIds = rows.map((r) => r.gameId).toSet().toList();
+    final groupIds = rows
+        .map((r) => r.groupId)
         .whereType<String>()
         .toSet()
         .toList();
 
-    // Fetch all teams
-    final teams = await Future.wait(
-      teamIds.map((teamId) => db.teamDao.getTeamById(teamId: teamId)),
+    // Bulk Fetch all relations
+    final gamesList = await db.gameDao.getGamesByIds(gameIds: gameIds);
+    final gamesMap = {for (final g in gamesList) g.id: g};
+
+    final groupsList = await db.groupDao.getGroupsByIds(groupIds: groupIds);
+    final groupsMap = {for (final g in groupsList) g.id: g};
+
+    final playersMap = await db.playerMatchDao.getPlayersForMatches(
+      matchIds: matchIds,
+      includeDeletedPlayer: includeDeletedPlayer,
     );
 
-    return teams;
+    final scoresMap = await db.scoreEntryDao.getScoresForMatches(
+      matchIds: matchIds,
+    );
+
+    final teamsMap = await db.teamDao.getTeamsForMatches(matchIds: matchIds);
+
+    return rows.map((row) {
+      final game = gamesMap[row.gameId];
+
+      return _buildMatchFromRow(
+        row: row,
+        game: game!,
+        players: playersMap[row.id] ?? [],
+        group: row.groupId != null ? groupsMap[row.groupId] : null,
+        scores: scoresMap[row.id] ?? {},
+        teams: teamsMap[row.id],
+      );
+    }).toList();
   }
 
   /* Update */

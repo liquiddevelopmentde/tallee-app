@@ -11,9 +11,15 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/team_creation_tile.dart';
 
 class CreateTeamsView extends StatefulWidget {
-  const CreateTeamsView({super.key, required this.match, this.onWinnerChanged});
+  const CreateTeamsView({
+    super.key,
+    required this.match,
+    this.previousMatch,
+    this.onWinnerChanged,
+  });
 
   final Match match;
+  final Match? previousMatch;
   final VoidCallback? onWinnerChanged;
 
   @override
@@ -22,7 +28,12 @@ class CreateTeamsView extends StatefulWidget {
 
 class _CreateTeamsViewState extends State<CreateTeamsView> {
   final Random random = Random();
+
   List<Player> get matchPlayers => widget.match.players;
+
+  List<Player> get prefillMatchPlayers => widget.previousMatch?.players ?? [];
+
+  List<Team> get prefillMatchTeams => widget.previousMatch?.teams ?? [];
 
   late List<Team> teams;
   late List<TextEditingController> nameController;
@@ -33,18 +44,44 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     super.didChangeDependencies();
     final loc = AppLocalizations.of(context);
 
-    // Init the teams
-    teams = List.generate(
-      initialTeamCount,
-      (index) => Team(
-        name: '${loc.team} ${index + 1}',
-        color: getTeamColor(index),
-        members: [],
-      ),
-    );
+    final bool areTeamsLogicallyPossible =
+        prefillMatchPlayers.length >= prefillMatchTeams.length;
+
+    if (areTeamsLogicallyPossible &&
+        widget.previousMatch?.teams != null &&
+        widget.previousMatch!.teams!.isNotEmpty) {
+      final matchPlayerIds = matchPlayers.map((p) => p.id).toSet();
+
+      // Use prefilled teams, exclude players that are not in the matches players anymore
+      teams = widget.previousMatch!.teams!.map((team) {
+        return team.copyWith(
+          members: team.members
+              .where((member) => matchPlayerIds.contains(member.id))
+              .toList(),
+        );
+      }).toList();
+    } else {
+      // Init the teams/reset teams
+      teams = List.generate(
+        initialTeamCount,
+        (index) => Team(
+          name: '${loc.team} ${index + 1}',
+          color: getTeamColor(index),
+          members: [],
+        ),
+      );
+    }
 
     // Init the controllers
     nameController = teams.map(getNewController).toList();
+  }
+
+  @override
+  void dispose() {
+    for (final c in nameController) {
+      c.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -98,6 +135,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                   icon: Icons.arrow_forward_sharp,
                   onPressed: teams.length >= 2
                       ? () {
+                          if (widget.previousMatch != null) finalizeTeams();
                           final match = widget.match.copyWith(teams: teams);
                           Navigator.push(
                             context,
@@ -178,11 +216,49 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     });
   }
 
-  @override
-  void dispose() {
-    for (final c in nameController) {
-      c.dispose();
+  /// Finalizes the team creation by assigning any players that are currently
+  /// not part of a team to the available teams.
+  ///
+  /// If new teams have been created (those not present in [previousMatch]),
+  /// the unassigned players are distributed among these new teams to fill them
+  /// up evenly. If no new teams exist, players are distributed among all
+  /// existing teams, maintaining a balanced member count across teams.
+  void finalizeTeams() {
+    final prefillTeamIds = prefillMatchTeams.map((t) => t.id).toSet();
+    final allMatchPlayers = widget.match.players;
+    final assignedPlayerIds = teams
+        .expand((t) => t.members)
+        .map((m) => m.id)
+        .toSet();
+    final unassignedPlayers = allMatchPlayers
+        .where((p) => !assignedPlayerIds.contains(p.id))
+        .toList();
+    if (unassignedPlayers.isNotEmpty) {
+      final newTeams = teams
+          .where((t) => !prefillTeamIds.contains(t.id))
+          .toList();
+
+      if (newTeams.isNotEmpty) {
+        for (final player in unassignedPlayers) {
+          final targetTeam = newTeams.reduce(
+            (a, b) => a.members.length <= b.members.length ? a : b,
+          );
+          final teamIndex = teams.indexWhere((t) => t.id == targetTeam.id);
+          teams[teamIndex] = teams[teamIndex].copyWith(
+            members: [...teams[teamIndex].members, player],
+          );
+        }
+      } else {
+        for (final player in unassignedPlayers) {
+          final targetTeam = teams.reduce(
+            (a, b) => a.members.length <= b.members.length ? a : b,
+          );
+          final teamIndex = teams.indexOf(targetTeam);
+          teams[teamIndex] = teams[teamIndex].copyWith(
+            members: [...teams[teamIndex].members, player],
+          );
+        }
+      }
     }
-    super.dispose();
   }
 }
