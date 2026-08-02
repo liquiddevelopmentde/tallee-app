@@ -240,6 +240,31 @@ void main() {
           throwsA(isA<StateError>()),
         );
       });
+
+      test('getTeamsForMatches() works correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+        await database.matchDao.addMatch(match: testMatch2);
+
+        final result = await database.teamDao.getTeamsForMatches(
+          matchIds: [testMatch1.id, testMatch2.id],
+        );
+
+        expect(result.length, 2);
+        expect(result[testMatch1.id]!.length, 2);
+        expect(result[testMatch2.id]!.length, 2);
+
+        // Verify members are also loaded (batched)
+        for (final teams in result.values) {
+          for (final team in teams) {
+            expect(team.members, isNotEmpty);
+          }
+        }
+      });
+
+      test('getTeamsForMatches() returns empty map for empty input', () async {
+        final result = await database.teamDao.getTeamsForMatches(matchIds: []);
+        expect(result, isEmpty);
+      });
     });
 
     group('UPDATED', () {

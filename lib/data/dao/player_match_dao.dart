@@ -107,6 +107,44 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     return players;
   }
 
+  /// Retrieves all [Player]s for the passed [matchIds] matches in a single operation.
+  /// Returns a map where the key is the matchId and the value is the list of players.
+  Future<Map<String, List<Player>>> getPlayersForMatches({
+    required List<String> matchIds,
+    bool includeDeletedPlayer = false,
+  }) async {
+    if (matchIds.isEmpty) return {};
+
+    final query = select(playerMatchTable)
+      ..where((tbl) => tbl.matchId.isIn(matchIds));
+    final rows = await query.get();
+
+    if (rows.isEmpty) return {};
+
+    final playerIds = rows.map((r) => r.playerId).toSet().toList();
+    final playersList = await db.playerDao.getPlayersByIds(
+      playerIds: playerIds,
+    );
+    final playersMap = {for (final p in playersList) p.id: p};
+
+    final Map<String, List<Player>> resultMap = {};
+    for (final row in rows) {
+      final player = playersMap[row.playerId];
+      if (player == null) continue;
+      if (includeDeletedPlayer || !player.deleted) {
+        resultMap.putIfAbsent(row.matchId, () => []).add(player);
+      }
+    }
+
+    for (final players in resultMap.values) {
+      players.sort(
+        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+      );
+    }
+
+    return resultMap;
+  }
+
   /* Updated */
 
   /// Updates the team for a player in a match.

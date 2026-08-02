@@ -188,6 +188,26 @@ void main() {
         count = await database.gameDao.getGameCount();
         expect(count, 1);
       });
+
+      test('getGamesByIds() works correctly', () async {
+        await database.gameDao.addGamesAsList(
+          games: [testGame1, testGame2, testGame3],
+        );
+
+        final result = await database.gameDao.getGamesByIds(
+          gameIds: [testGame1.id, testGame3.id],
+        );
+
+        expect(result.length, 2);
+        final ids = result.map((g) => g.id).toSet();
+        expect(ids, containsAll([testGame1.id, testGame3.id]));
+        expect(ids, isNot(contains(testGame2.id)));
+      });
+
+      test('getGamesByIds() returns empty list for empty input', () async {
+        final result = await database.gameDao.getGamesByIds(gameIds: []);
+        expect(result, isEmpty);
+      });
     });
 
     group('UPDATE', () {

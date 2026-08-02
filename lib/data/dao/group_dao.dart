@@ -176,6 +176,28 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     );
   }
 
+  /// Retrieves multiple [Group]s by their [groupIds], including their members.
+  Future<List<Group>> getGroupsByIds({required List<String> groupIds}) async {
+    if (groupIds.isEmpty) return [];
+    final query = select(groupTable)..where((g) => g.id.isIn(groupIds));
+    final result = await query.get();
+
+    return Future.wait(
+      result.map((row) async {
+        final members = await db.playerGroupDao.getPlayersOfGroup(
+          groupId: row.id,
+        );
+        return Group(
+          id: row.id,
+          name: row.name,
+          description: row.description,
+          members: members,
+          createdAt: row.createdAt,
+        );
+      }),
+    );
+  }
+
   /// Retrieves the number of groups in the database.
   Future<int> getGroupCount() async {
     final count =
