@@ -2996,6 +2996,28 @@ class $StatisticTableTable extends StatisticTable
         type: DriftSqlType.string,
         requiredDuringInsert: true,
       ).withConverter<Timeframe>($StatisticTableTable.$convertertimeframe);
+  static const VerificationMeta _startDateMeta = const VerificationMeta(
+    'startDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
+    'start_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endDateMeta = const VerificationMeta(
+    'endDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>(
+    'end_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<AppColor, String> color =
       GeneratedColumn<String>(
@@ -3050,6 +3072,8 @@ class $StatisticTableTable extends StatisticTable
     createdAt,
     type,
     timeframe,
+    startDate,
+    endDate,
     color,
     displayCount,
     isFavourite,
@@ -3079,6 +3103,18 @@ class $StatisticTableTable extends StatisticTable
       );
     } else if (isInserting) {
       context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('start_date')) {
+      context.handle(
+        _startDateMeta,
+        startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta),
+      );
+    }
+    if (data.containsKey('end_date')) {
+      context.handle(
+        _endDateMeta,
+        endDate.isAcceptableOrUnknown(data['end_date']!, _endDateMeta),
+      );
     }
     if (data.containsKey('display_count')) {
       context.handle(
@@ -3133,6 +3169,14 @@ class $StatisticTableTable extends StatisticTable
           data['${effectivePrefix}timeframe'],
         )!,
       ),
+      startDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_date'],
+      ),
+      endDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_date'],
+      ),
       color: $StatisticTableTable.$convertercolor.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -3173,6 +3217,8 @@ class StatisticTableData extends DataClass
   final DateTime createdAt;
   final StatisticType type;
   final Timeframe timeframe;
+  final DateTime? startDate;
+  final DateTime? endDate;
   final AppColor color;
   final int displayCount;
   final bool isFavourite;
@@ -3182,6 +3228,8 @@ class StatisticTableData extends DataClass
     required this.createdAt,
     required this.type,
     required this.timeframe,
+    this.startDate,
+    this.endDate,
     required this.color,
     required this.displayCount,
     required this.isFavourite,
@@ -3202,6 +3250,12 @@ class StatisticTableData extends DataClass
         $StatisticTableTable.$convertertimeframe.toSql(timeframe),
       );
     }
+    if (!nullToAbsent || startDate != null) {
+      map['start_date'] = Variable<DateTime>(startDate);
+    }
+    if (!nullToAbsent || endDate != null) {
+      map['end_date'] = Variable<DateTime>(endDate);
+    }
     {
       map['color'] = Variable<String>(
         $StatisticTableTable.$convertercolor.toSql(color),
@@ -3219,6 +3273,12 @@ class StatisticTableData extends DataClass
       createdAt: Value(createdAt),
       type: Value(type),
       timeframe: Value(timeframe),
+      startDate: startDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startDate),
+      endDate: endDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endDate),
       color: Value(color),
       displayCount: Value(displayCount),
       isFavourite: Value(isFavourite),
@@ -3240,6 +3300,8 @@ class StatisticTableData extends DataClass
       timeframe: $StatisticTableTable.$convertertimeframe.fromJson(
         serializer.fromJson<String>(json['timeframe']),
       ),
+      startDate: serializer.fromJson<DateTime?>(json['startDate']),
+      endDate: serializer.fromJson<DateTime?>(json['endDate']),
       color: $StatisticTableTable.$convertercolor.fromJson(
         serializer.fromJson<String>(json['color']),
       ),
@@ -3260,6 +3322,8 @@ class StatisticTableData extends DataClass
       'timeframe': serializer.toJson<String>(
         $StatisticTableTable.$convertertimeframe.toJson(timeframe),
       ),
+      'startDate': serializer.toJson<DateTime?>(startDate),
+      'endDate': serializer.toJson<DateTime?>(endDate),
       'color': serializer.toJson<String>(
         $StatisticTableTable.$convertercolor.toJson(color),
       ),
@@ -3274,6 +3338,8 @@ class StatisticTableData extends DataClass
     DateTime? createdAt,
     StatisticType? type,
     Timeframe? timeframe,
+    Value<DateTime?> startDate = const Value.absent(),
+    Value<DateTime?> endDate = const Value.absent(),
     AppColor? color,
     int? displayCount,
     bool? isFavourite,
@@ -3283,6 +3349,8 @@ class StatisticTableData extends DataClass
     createdAt: createdAt ?? this.createdAt,
     type: type ?? this.type,
     timeframe: timeframe ?? this.timeframe,
+    startDate: startDate.present ? startDate.value : this.startDate,
+    endDate: endDate.present ? endDate.value : this.endDate,
     color: color ?? this.color,
     displayCount: displayCount ?? this.displayCount,
     isFavourite: isFavourite ?? this.isFavourite,
@@ -3294,6 +3362,8 @@ class StatisticTableData extends DataClass
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       type: data.type.present ? data.type.value : this.type,
       timeframe: data.timeframe.present ? data.timeframe.value : this.timeframe,
+      startDate: data.startDate.present ? data.startDate.value : this.startDate,
+      endDate: data.endDate.present ? data.endDate.value : this.endDate,
       color: data.color.present ? data.color.value : this.color,
       displayCount: data.displayCount.present
           ? data.displayCount.value
@@ -3312,6 +3382,8 @@ class StatisticTableData extends DataClass
           ..write('createdAt: $createdAt, ')
           ..write('type: $type, ')
           ..write('timeframe: $timeframe, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate, ')
           ..write('color: $color, ')
           ..write('displayCount: $displayCount, ')
           ..write('isFavourite: $isFavourite, ')
@@ -3326,6 +3398,8 @@ class StatisticTableData extends DataClass
     createdAt,
     type,
     timeframe,
+    startDate,
+    endDate,
     color,
     displayCount,
     isFavourite,
@@ -3339,6 +3413,8 @@ class StatisticTableData extends DataClass
           other.createdAt == this.createdAt &&
           other.type == this.type &&
           other.timeframe == this.timeframe &&
+          other.startDate == this.startDate &&
+          other.endDate == this.endDate &&
           other.color == this.color &&
           other.displayCount == this.displayCount &&
           other.isFavourite == this.isFavourite &&
@@ -3350,6 +3426,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
   final Value<DateTime> createdAt;
   final Value<StatisticType> type;
   final Value<Timeframe> timeframe;
+  final Value<DateTime?> startDate;
+  final Value<DateTime?> endDate;
   final Value<AppColor> color;
   final Value<int> displayCount;
   final Value<bool> isFavourite;
@@ -3360,6 +3438,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     this.createdAt = const Value.absent(),
     this.type = const Value.absent(),
     this.timeframe = const Value.absent(),
+    this.startDate = const Value.absent(),
+    this.endDate = const Value.absent(),
     this.color = const Value.absent(),
     this.displayCount = const Value.absent(),
     this.isFavourite = const Value.absent(),
@@ -3371,6 +3451,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     required DateTime createdAt,
     required StatisticType type,
     required Timeframe timeframe,
+    this.startDate = const Value.absent(),
+    this.endDate = const Value.absent(),
     required AppColor color,
     this.displayCount = const Value.absent(),
     this.isFavourite = const Value.absent(),
@@ -3386,6 +3468,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Expression<DateTime>? createdAt,
     Expression<String>? type,
     Expression<String>? timeframe,
+    Expression<DateTime>? startDate,
+    Expression<DateTime>? endDate,
     Expression<String>? color,
     Expression<int>? displayCount,
     Expression<bool>? isFavourite,
@@ -3397,6 +3481,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       if (createdAt != null) 'created_at': createdAt,
       if (type != null) 'type': type,
       if (timeframe != null) 'timeframe': timeframe,
+      if (startDate != null) 'start_date': startDate,
+      if (endDate != null) 'end_date': endDate,
       if (color != null) 'color': color,
       if (displayCount != null) 'display_count': displayCount,
       if (isFavourite != null) 'is_favourite': isFavourite,
@@ -3410,6 +3496,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Value<DateTime>? createdAt,
     Value<StatisticType>? type,
     Value<Timeframe>? timeframe,
+    Value<DateTime?>? startDate,
+    Value<DateTime?>? endDate,
     Value<AppColor>? color,
     Value<int>? displayCount,
     Value<bool>? isFavourite,
@@ -3421,6 +3509,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       createdAt: createdAt ?? this.createdAt,
       type: type ?? this.type,
       timeframe: timeframe ?? this.timeframe,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
       color: color ?? this.color,
       displayCount: displayCount ?? this.displayCount,
       isFavourite: isFavourite ?? this.isFavourite,
@@ -3447,6 +3537,12 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       map['timeframe'] = Variable<String>(
         $StatisticTableTable.$convertertimeframe.toSql(timeframe.value),
       );
+    }
+    if (startDate.present) {
+      map['start_date'] = Variable<DateTime>(startDate.value);
+    }
+    if (endDate.present) {
+      map['end_date'] = Variable<DateTime>(endDate.value);
     }
     if (color.present) {
       map['color'] = Variable<String>(
@@ -3475,6 +3571,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
           ..write('createdAt: $createdAt, ')
           ..write('type: $type, ')
           ..write('timeframe: $timeframe, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate, ')
           ..write('color: $color, ')
           ..write('displayCount: $displayCount, ')
           ..write('isFavourite: $isFavourite, ')
@@ -8055,6 +8153,8 @@ typedef $$StatisticTableTableCreateCompanionBuilder =
       required DateTime createdAt,
       required StatisticType type,
       required Timeframe timeframe,
+      Value<DateTime?> startDate,
+      Value<DateTime?> endDate,
       required AppColor color,
       Value<int> displayCount,
       Value<bool> isFavourite,
@@ -8067,6 +8167,8 @@ typedef $$StatisticTableTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<StatisticType> type,
       Value<Timeframe> timeframe,
+      Value<DateTime?> startDate,
+      Value<DateTime?> endDate,
       Value<AppColor> color,
       Value<int> displayCount,
       Value<bool> isFavourite,
@@ -8190,6 +8292,16 @@ class $$StatisticTableTableFilterComposer
         column: $table.timeframe,
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
+
+  ColumnFilters<DateTime> get startDate => $composableBuilder(
+    column: $table.startDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endDate => $composableBuilder(
+    column: $table.endDate,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<AppColor, AppColor, String> get color =>
       $composableBuilder(
@@ -8317,6 +8429,16 @@ class $$StatisticTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get startDate => $composableBuilder(
+    column: $table.startDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endDate => $composableBuilder(
+    column: $table.endDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get color => $composableBuilder(
     column: $table.color,
     builder: (column) => ColumnOrderings(column),
@@ -8358,6 +8480,12 @@ class $$StatisticTableTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<Timeframe, String> get timeframe =>
       $composableBuilder(column: $table.timeframe, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startDate =>
+      $composableBuilder(column: $table.startDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endDate =>
+      $composableBuilder(column: $table.endDate, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<AppColor, String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
@@ -8492,6 +8620,8 @@ class $$StatisticTableTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<StatisticType> type = const Value.absent(),
                 Value<Timeframe> timeframe = const Value.absent(),
+                Value<DateTime?> startDate = const Value.absent(),
+                Value<DateTime?> endDate = const Value.absent(),
                 Value<AppColor> color = const Value.absent(),
                 Value<int> displayCount = const Value.absent(),
                 Value<bool> isFavourite = const Value.absent(),
@@ -8502,6 +8632,8 @@ class $$StatisticTableTableTableManager
                 createdAt: createdAt,
                 type: type,
                 timeframe: timeframe,
+                startDate: startDate,
+                endDate: endDate,
                 color: color,
                 displayCount: displayCount,
                 isFavourite: isFavourite,
@@ -8514,6 +8646,8 @@ class $$StatisticTableTableTableManager
                 required DateTime createdAt,
                 required StatisticType type,
                 required Timeframe timeframe,
+                Value<DateTime?> startDate = const Value.absent(),
+                Value<DateTime?> endDate = const Value.absent(),
                 required AppColor color,
                 Value<int> displayCount = const Value.absent(),
                 Value<bool> isFavourite = const Value.absent(),
@@ -8524,6 +8658,8 @@ class $$StatisticTableTableTableManager
                 createdAt: createdAt,
                 type: type,
                 timeframe: timeframe,
+                startDate: startDate,
+                endDate: endDate,
                 color: color,
                 displayCount: displayCount,
                 isFavourite: isFavourite,
