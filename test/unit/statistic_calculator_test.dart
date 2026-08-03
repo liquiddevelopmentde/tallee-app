@@ -301,6 +301,65 @@ void main() {
       expect(values.single.$2, 1);
     });
 
+    test('Filters matches by custom timeframe (inclusive)', () {
+      final startDate = DateTime(2023, 1, 10);
+      final endDate = DateTime(2023, 1, 20);
+
+      final matches = [
+        buildMatch(
+          name: 'too early',
+          game: testGame1,
+          players: [testPlayer1],
+          scores: {testPlayer1: 10},
+          endedAt: DateTime(2023, 1, 9, 23, 59),
+        ),
+        buildMatch(
+          name: 'start day',
+          game: testGame1,
+          players: [testPlayer1],
+          scores: {testPlayer1: 10},
+          endedAt: DateTime(2023, 1, 10, 0, 0),
+        ),
+        buildMatch(
+          name: 'middle',
+          game: testGame1,
+          players: [testPlayer1],
+          scores: {testPlayer1: 10},
+          endedAt: DateTime(2023, 1, 15),
+        ),
+        buildMatch(
+          name: 'end day',
+          game: testGame1,
+          players: [testPlayer1],
+          scores: {testPlayer1: 10},
+          endedAt: DateTime(2023, 1, 20, 23, 59),
+        ),
+        buildMatch(
+          name: 'too late',
+          game: testGame1,
+          players: [testPlayer1],
+          scores: {testPlayer1: 10},
+          endedAt: DateTime(2023, 1, 21, 0, 0),
+        ),
+      ];
+
+      final statistic = Statistic(
+        type: StatisticType.totalMatches,
+        scopes: [StatisticScope.allPlayers],
+        timeframe: Timeframe.custom,
+        startDate: startDate,
+        endDate: endDate,
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: matches,
+        players: [testPlayer1],
+      );
+
+      expect(values.single.$2, 3);
+    });
+
     test('Sorts worst score ascending', () {
       final matches = [
         buildMatch(
