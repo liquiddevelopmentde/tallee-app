@@ -260,6 +260,18 @@
           "timeframe": {
             "type": "string"
           },
+          "startDate": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endDate": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "color": {
             "type": "string"
           },

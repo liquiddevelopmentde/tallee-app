@@ -78,7 +78,9 @@ void main() {
       testStatistic = Statistic(
         type: StatisticType.totalScore,
         scopes: [StatisticScope.selectedGames, StatisticScope.selectedGroups],
-        timeframe: Timeframe.last30Days,
+        timeframe: Timeframe.custom,
+        startDate: DateTime(2025, 1, 1),
+        endDate: DateTime(2025, 1, 31),
         color: AppColor.yellow,
         selectedGames: [testGame],
         selectedGroups: [testGroup],
@@ -382,6 +384,14 @@ void main() {
           expect(
             statData['selectedGroups'],
             containsAll(testStatistic.selectedGroups!.map((g) => g.id)),
+          );
+          expect(
+            statData['startDate'],
+            testStatistic.startDate!.toIso8601String(),
+          );
+          expect(
+            statData['endDate'],
+            testStatistic.endDate!.toIso8601String(),
           );
         });
 
@@ -981,6 +991,8 @@ void main() {
               'type': testStatistic.type.name,
               'scopes': testStatistic.scopes.map((s) => s.name).toList(),
               'timeframe': testStatistic.timeframe.name,
+              'startDate': testStatistic.startDate?.toIso8601String(),
+              'endDate': testStatistic.endDate?.toIso8601String(),
               'color': testStatistic.color.name,
               'selectedGroups': [testGroup.id],
               'selectedGames': [testGame.id],
@@ -1003,6 +1015,8 @@ void main() {
         expect(stats[0].timeframe, testStatistic.timeframe);
         expect(stats[0].color, testStatistic.color);
         expect(stats[0].displayCount, testStatistic.displayCount);
+        expect(stats[0].startDate, testStatistic.startDate);
+        expect(stats[0].endDate, testStatistic.endDate);
         expect(stats[0].selectedGames, isNotNull);
         expect(stats[0].selectedGames!.map((g) => g.id), contains(testGame.id));
         expect(stats[0].selectedGroups, isNotNull);
@@ -1129,6 +1143,8 @@ void main() {
               'type': testStatistic.type.name,
               'scopes': testStatistic.scopes.map((s) => s.name).toList(),
               'timeframe': testStatistic.timeframe.name,
+              'startDate': testStatistic.startDate?.toIso8601String(),
+              'endDate': testStatistic.endDate?.toIso8601String(),
               'color': testStatistic.color.name,
               'selectedGroups': null,
               'selectedGames': [testGame.id],
@@ -1142,6 +1158,8 @@ void main() {
               'type': testStatistic.type.name,
               'scopes': testStatistic.scopes.map((s) => s.name).toList(),
               'timeframe': testStatistic.timeframe.name,
+              'startDate': testStatistic.startDate?.toIso8601String(),
+              'endDate': testStatistic.endDate?.toIso8601String(),
               'color': testStatistic.color.name,
               'selectedGroups': [testGroup.id],
               'selectedGames': null,
@@ -1155,6 +1173,8 @@ void main() {
               'type': testStatistic.type.name,
               'scopes': testStatistic.scopes.map((s) => s.name).toList(),
               'timeframe': testStatistic.timeframe.name,
+              'startDate': testStatistic.startDate?.toIso8601String(),
+              'endDate': testStatistic.endDate?.toIso8601String(),
               'color': testStatistic.color.name,
               'selectedGroups': [testGroup.id],
               'selectedGames': [testGame.id],
