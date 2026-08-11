@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
@@ -162,10 +163,14 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                         children: [
                           Text(loc.timeframe, style: style),
                           Text(
-                            translateTimeframeToString(
-                              widget.statistic.timeframe,
-                              context,
-                            ),
+                            widget.statistic.timeframe == Timeframe.custom &&
+                                    widget.statistic.startDate != null &&
+                                    widget.statistic.endDate != null
+                                ? '${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.startDate!)} - ${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.endDate!)}'
+                                : translateTimeframeToString(
+                                    widget.statistic.timeframe,
+                                    context,
+                                  ),
                             textAlign: TextAlign.end,
                           ),
                         ],
