@@ -548,6 +548,32 @@ void main() {
         final allMatches = await database.matchDao.getAllMatches();
         expect(allMatches, isEmpty);
       });
+
+      test('updateMatchCreatedAt() works correctly', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        DateTime newCreatedAt = DateTime(2020, 1, 1, 12, 0, 0);
+        await database.matchDao.updateMatchCreatedAt(
+          matchId: testMatch1.id,
+          createdAt: newCreatedAt,
+        );
+
+        final fetchedMatch = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(fetchedMatch.createdAt, newCreatedAt);
+      });
+
+      test('updateMatchCreatedAt() does nothing for non-existent match', () async {
+        final updated = await database.matchDao.updateMatchCreatedAt(
+          matchId: 'non-existing-id',
+          createdAt: DateTime.now(),
+        );
+        expect(updated, isFalse);
+
+        final allMatches = await database.matchDao.getAllMatches();
+        expect(allMatches, isEmpty);
+      });
     });
 
     group('DELETE', () {
