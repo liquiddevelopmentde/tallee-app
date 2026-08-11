@@ -463,6 +463,19 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     return rowsAffected > 0;
   }
 
+  /// Updates the createdAt timestamp of the match with the given [matchId].
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> updateMatchCreatedAt({
+    required String matchId,
+    required DateTime createdAt,
+  }) async {
+    final query = update(matchTable)..where((tbl) => tbl.id.equals(matchId));
+    final rowsAffected = await query.write(
+      MatchTableCompanion(createdAt: Value(createdAt)),
+    );
+    return rowsAffected > 0;
+  }
+
   /* Delete */
 
   /// Deletes the match with the given [matchId] from the database and purges
