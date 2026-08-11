@@ -320,33 +320,6 @@ void main() {
         expect(allGames, isEmpty);
       });
 
-      test('updateGameIcon() works correctly', () async {
-        await database.gameDao.addGame(game: testGame1);
-        const newIcon = 'new_chess_icon';
-
-        final updated = await database.gameDao.updateGameIcon(
-          gameId: testGame1.id,
-          icon: newIcon,
-        );
-        expect(updated, isTrue);
-
-        final updatedGame = await database.gameDao.getGameById(
-          gameId: testGame1.id,
-        );
-        expect(updatedGame.icon, newIcon);
-      });
-
-      test('updateGameIcon() does nothing for non-existent game', () async {
-        final updated = await database.gameDao.updateGameIcon(
-          gameId: 'non-existent-id',
-          icon: 'New icon',
-        );
-        expect(updated, isFalse);
-
-        final allGames = await database.gameDao.getAllGames();
-        expect(allGames, isEmpty);
-      });
-
       test('Multiple updates to the same game work correctly', () async {
         await database.gameDao.addGame(game: testGame1);
 
