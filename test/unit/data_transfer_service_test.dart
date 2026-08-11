@@ -47,7 +47,6 @@ void main() {
         ruleset: Ruleset.singleWinner,
         description: 'Strategic board game',
         color: AppColor.blue,
-        icon: 'chess_icon',
       );
 
       testGroup = Group(
@@ -135,7 +134,6 @@ void main() {
         'ruleset': testGame.ruleset.name,
         'description': testGame.description,
         'color': testGame.color.name,
-        'icon': testGame.icon,
         'createdAt': testGame.createdAt.toIso8601String(),
       },
     ],
@@ -278,7 +276,6 @@ void main() {
           expect(gameData['ruleset'], testGame.ruleset.name);
           expect(gameData['description'], testGame.description);
           expect(gameData['color'], testGame.color.name);
-          expect(gameData['icon'], testGame.icon);
         });
 
         testWidgets('Group data is correct', (tester) async {
@@ -543,19 +540,16 @@ void main() {
               name: 'Red Game',
               ruleset: Ruleset.singleWinner,
               color: AppColor.red,
-              icon: 'icon',
             ),
             Game(
               name: 'Blue Game',
               ruleset: Ruleset.singleWinner,
               color: AppColor.blue,
-              icon: 'icon',
             ),
             Game(
               name: 'Green Game',
               ruleset: Ruleset.singleWinner,
               color: AppColor.green,
-              icon: 'icon',
             ),
           ];
 
@@ -579,19 +573,16 @@ void main() {
               name: 'Highest Score Game',
               ruleset: Ruleset.highestScore,
               color: AppColor.blue,
-              icon: 'icon',
             ),
             Game(
               name: 'Lowest Score Game',
               ruleset: Ruleset.lowestScore,
               color: AppColor.blue,
-              icon: 'icon',
             ),
             Game(
               name: 'Single Winner',
               ruleset: Ruleset.singleWinner,
               color: AppColor.blue,
-              icon: 'icon',
             ),
           ];
 
@@ -662,7 +653,6 @@ void main() {
               'ruleset': testGame.ruleset.name,
               'description': testGame.description,
               'color': testGame.color.name,
-              'icon': testGame.icon,
               'createdAt': testGame.createdAt.toIso8601String(),
             },
           ],
@@ -1074,7 +1064,6 @@ void main() {
               'ruleset': testGame.ruleset.name,
               'description': testGame.description,
               'color': testGame.color.name,
-              'icon': testGame.icon,
               'createdAt': testGame.createdAt.toIso8601String(),
             },
           ],
@@ -1197,7 +1186,6 @@ void main() {
                 'ruleset': testGame.ruleset.name,
                 'description': testGame.description,
                 'color': testGame.color.name,
-                'icon': testGame.icon,
                 'createdAt': testGame.createdAt.toIso8601String(),
               },
             ],
@@ -1341,7 +1329,6 @@ void main() {
                   'ruleset': testGame.ruleset.name,
                   'description': testGame.description,
                   'color': testGame.color.name,
-                  'icon': testGame.icon,
                   'createdAt': testGame.createdAt.toIso8601String(),
                 },
               ],

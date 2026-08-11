@@ -55,9 +55,6 @@
           },
           "color": {
             "type": "string"
-          },
-          "icon": {
-            "type": "string"
           }
         },
         "additionalProperties": false,
@@ -67,8 +64,7 @@
           "name",
           "ruleset",
           "description",
-          "color",
-          "icon"
+          "color"
         ]
       }
     },

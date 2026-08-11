@@ -29,7 +29,6 @@ void main() {
         ruleset: Ruleset.singleWinner,
         description: 'A classic strategy game',
         color: AppColor.blue,
-        icon: 'chess_icon',
       );
       testGame2 = Game(
         id: 'game2',
@@ -37,7 +36,6 @@ void main() {
         ruleset: Ruleset.multipleWinners,
         description: 'Card game with multiple winners',
         color: AppColor.red,
-        icon: 'poker_icon',
       );
       testGame3 = Game(
         id: 'game3',
@@ -45,7 +43,6 @@ void main() {
         ruleset: Ruleset.highestScore,
         description: 'A board game about real estate',
         color: AppColor.orange,
-        icon: '',
       );
     });
   });
@@ -66,7 +63,6 @@ void main() {
         expect(game.ruleset, testGame1.ruleset);
         expect(game.description, testGame1.description);
         expect(game.color, testGame1.color);
-        expect(game.icon, testGame1.icon);
         expect(game.createdAt, testGame1.createdAt);
       });
 
@@ -95,7 +91,6 @@ void main() {
           expect(game.description, testGame.description);
           expect(game.ruleset, testGame.ruleset);
           expect(game.color, testGame.color);
-          expect(game.icon, testGame.icon);
         }
       });
 
@@ -125,7 +120,6 @@ void main() {
             ruleset: Ruleset.multipleWinners,
             description: 'Description with émojis 🎮🎲',
             color: AppColor.purple,
-            icon: '',
           );
           await database.gameDao.addGame(game: specialGame);
 
@@ -148,7 +142,6 @@ void main() {
         expect(game.ruleset, testGame1.ruleset);
         expect(game.description, testGame1.description);
         expect(game.color, testGame1.color);
-        expect(game.icon, testGame1.icon);
       });
 
       test('getGameById() throws exception for non-existent game', () async {
@@ -352,7 +345,6 @@ void main() {
 
         // Staying the same
         expect(updatedGame.ruleset, testGame1.ruleset);
-        expect(updatedGame.icon, testGame1.icon);
       });
     });
     group('DELETE', () {

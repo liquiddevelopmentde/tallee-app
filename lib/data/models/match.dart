@@ -116,7 +116,6 @@ class Match {
         ruleset: Ruleset.singleWinner,
         description: '',
         color: AppColor.blue,
-        icon: '',
       ),
       group = null,
       players = [],
