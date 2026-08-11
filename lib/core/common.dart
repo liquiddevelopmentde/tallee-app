@@ -1,8 +1,18 @@
+import 'package:clock/clock.dart';
 import 'package:tallee/data/models/models.dart';
 
 export 'app_color_utils.dart';
 export 'icon_utils.dart';
 export 'translations.dart';
+
+/// Returns true if the given [date] is today.
+bool isToday(DateTime date) {
+  final now = clock.now();
+  return date.year == now.year && date.month == now.month && date.day == now.day;
+}
+
+/// Returns null if the given [date] is today, otherwise returns the date.
+DateTime? nullIfToday(DateTime date) => isToday(date) ? null : date;
 
 /// Counts how many players in the [match] are not part of the group
 ///
