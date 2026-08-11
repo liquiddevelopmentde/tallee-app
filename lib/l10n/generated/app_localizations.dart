@@ -212,6 +212,18 @@ abstract class AppLocalizations {
   /// **'Color'**
   String get color;
 
+  /// No description provided for @creation_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Creation date'**
+  String get creation_date;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
   /// No description provided for @color_blue.
   ///
   /// In en, this message translates to:

@@ -19,6 +19,8 @@
   "classifier_description": "Choose which metric is calculated and shown in this statistic.",
   "click_another_player_to_create_a_pair": "Click another player to create a pair",
   "color": "Color",
+  "creation_date": "Creation date",
+  "today": "Today",
   "color_blue": "Blue",
   "color_green": "Green",
   "color_orange": "Orange",

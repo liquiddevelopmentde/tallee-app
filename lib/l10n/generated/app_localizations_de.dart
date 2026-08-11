@@ -68,6 +68,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get color => 'Farbe';
 
   @override
+  String get creation_date => 'Erstellungsdatum';
+
+  @override
+  String get today => 'Heute';
+
+  @override
   String get color_blue => 'Blau';
 
   @override

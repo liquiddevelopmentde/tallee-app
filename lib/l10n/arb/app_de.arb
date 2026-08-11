@@ -19,6 +19,8 @@
   "classifier_description": "Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.",
   "click_another_player_to_create_a_pair": "Klicke einen weiteren Spieler an, um ein Paar zu erstellen",
   "color": "Farbe",
+  "creation_date": "Erstellungsdatum",
+  "today": "Heute",
   "color_blue": "Blau",
   "color_green": "Grün",
   "color_orange": "Orange",
