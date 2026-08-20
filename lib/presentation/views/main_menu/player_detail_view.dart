@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -300,6 +301,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             content: TextInputField(
                               controller: nameController,
                               hintText: loc.set_name,
+                              maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
                               onChanged: (_) => setDialogState(() {}),
                             ),
                             actions: [
