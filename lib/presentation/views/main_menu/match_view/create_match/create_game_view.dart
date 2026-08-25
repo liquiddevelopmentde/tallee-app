@@ -118,6 +118,7 @@ class _CreateGameViewState extends State<CreateGameView> {
 
     return ScaffoldMessenger(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(isEditing ? loc.edit_game : loc.create_game),
           actions: [
