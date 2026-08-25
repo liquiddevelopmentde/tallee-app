@@ -167,7 +167,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                     color: CustomTheme.textColor,
                   ),
                   textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
                 const SizedBox(height: 5),
