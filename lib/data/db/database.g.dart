@@ -792,15 +792,6 @@ class $GameTableTable extends GameTable
         type: DriftSqlType.string,
         requiredDuringInsert: true,
       ).withConverter<AppColor>($GameTableTable.$convertercolor);
-  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
-  @override
-  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
-    'icon',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -809,7 +800,6 @@ class $GameTableTable extends GameTable
     ruleset,
     description,
     color,
-    icon,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -855,14 +845,6 @@ class $GameTableTable extends GameTable
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
-    if (data.containsKey('icon')) {
-      context.handle(
-        _iconMeta,
-        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_iconMeta);
-    }
     return context;
   }
 
@@ -900,10 +882,6 @@ class $GameTableTable extends GameTable
           data['${effectivePrefix}color'],
         )!,
       ),
-      icon: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}icon'],
-      )!,
     );
   }
 
@@ -925,7 +903,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
   final Ruleset ruleset;
   final String description;
   final AppColor color;
-  final String icon;
   const GameTableData({
     required this.id,
     required this.createdAt,
@@ -933,7 +910,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     required this.ruleset,
     required this.description,
     required this.color,
-    required this.icon,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -952,7 +928,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
         $GameTableTable.$convertercolor.toSql(color),
       );
     }
-    map['icon'] = Variable<String>(icon);
     return map;
   }
 
@@ -964,7 +939,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       ruleset: Value(ruleset),
       description: Value(description),
       color: Value(color),
-      icon: Value(icon),
     );
   }
 
@@ -984,7 +958,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       color: $GameTableTable.$convertercolor.fromJson(
         serializer.fromJson<String>(json['color']),
       ),
-      icon: serializer.fromJson<String>(json['icon']),
     );
   }
   @override
@@ -1001,7 +974,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       'color': serializer.toJson<String>(
         $GameTableTable.$convertercolor.toJson(color),
       ),
-      'icon': serializer.toJson<String>(icon),
     };
   }
 
@@ -1012,7 +984,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     Ruleset? ruleset,
     String? description,
     AppColor? color,
-    String? icon,
   }) => GameTableData(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -1020,7 +991,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     ruleset: ruleset ?? this.ruleset,
     description: description ?? this.description,
     color: color ?? this.color,
-    icon: icon ?? this.icon,
   );
   GameTableData copyWithCompanion(GameTableCompanion data) {
     return GameTableData(
@@ -1032,7 +1002,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
           ? data.description.value
           : this.description,
       color: data.color.present ? data.color.value : this.color,
-      icon: data.icon.present ? data.icon.value : this.icon,
     );
   }
 
@@ -1044,15 +1013,14 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
           ..write('name: $name, ')
           ..write('ruleset: $ruleset, ')
           ..write('description: $description, ')
-          ..write('color: $color, ')
-          ..write('icon: $icon')
+          ..write('color: $color')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode =>
-      Object.hash(id, createdAt, name, ruleset, description, color, icon);
+      Object.hash(id, createdAt, name, ruleset, description, color);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1062,8 +1030,7 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
           other.name == this.name &&
           other.ruleset == this.ruleset &&
           other.description == this.description &&
-          other.color == this.color &&
-          other.icon == this.icon);
+          other.color == this.color);
 }
 
 class GameTableCompanion extends UpdateCompanion<GameTableData> {
@@ -1073,7 +1040,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
   final Value<Ruleset> ruleset;
   final Value<String> description;
   final Value<AppColor> color;
-  final Value<String> icon;
   final Value<int> rowid;
   const GameTableCompanion({
     this.id = const Value.absent(),
@@ -1082,7 +1048,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     this.ruleset = const Value.absent(),
     this.description = const Value.absent(),
     this.color = const Value.absent(),
-    this.icon = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   GameTableCompanion.insert({
@@ -1092,15 +1057,13 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     required Ruleset ruleset,
     required String description,
     required AppColor color,
-    required String icon,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
        name = Value(name),
        ruleset = Value(ruleset),
        description = Value(description),
-       color = Value(color),
-       icon = Value(icon);
+       color = Value(color);
   static Insertable<GameTableData> custom({
     Expression<String>? id,
     Expression<DateTime>? createdAt,
@@ -1108,7 +1071,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     Expression<String>? ruleset,
     Expression<String>? description,
     Expression<String>? color,
-    Expression<String>? icon,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1118,7 +1080,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
       if (ruleset != null) 'ruleset': ruleset,
       if (description != null) 'description': description,
       if (color != null) 'color': color,
-      if (icon != null) 'icon': icon,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1130,7 +1091,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     Value<Ruleset>? ruleset,
     Value<String>? description,
     Value<AppColor>? color,
-    Value<String>? icon,
     Value<int>? rowid,
   }) {
     return GameTableCompanion(
@@ -1140,7 +1100,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
       ruleset: ruleset ?? this.ruleset,
       description: description ?? this.description,
       color: color ?? this.color,
-      icon: icon ?? this.icon,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1170,9 +1129,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
         $GameTableTable.$convertercolor.toSql(color.value),
       );
     }
-    if (icon.present) {
-      map['icon'] = Variable<String>(icon.value);
-    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1188,7 +1144,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
           ..write('ruleset: $ruleset, ')
           ..write('description: $description, ')
           ..write('color: $color, ')
-          ..write('icon: $icon, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5485,7 +5440,6 @@ typedef $$GameTableTableCreateCompanionBuilder =
       required Ruleset ruleset,
       required String description,
       required AppColor color,
-      required String icon,
       Value<int> rowid,
     });
 typedef $$GameTableTableUpdateCompanionBuilder =
@@ -5496,7 +5450,6 @@ typedef $$GameTableTableUpdateCompanionBuilder =
       Value<Ruleset> ruleset,
       Value<String> description,
       Value<AppColor> color,
-      Value<String> icon,
       Value<int> rowid,
     });
 
@@ -5588,11 +5541,6 @@ class $$GameTableTableFilterComposer
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
 
-  ColumnFilters<String> get icon => $composableBuilder(
-    column: $table.icon,
-    builder: (column) => ColumnFilters(column),
-  );
-
   Expression<bool> matchTableRefs(
     Expression<bool> Function($$MatchTableTableFilterComposer f) f,
   ) {
@@ -5682,11 +5630,6 @@ class $$GameTableTableOrderingComposer
     column: $table.color,
     builder: (column) => ColumnOrderings(column),
   );
-
-  ColumnOrderings<String> get icon => $composableBuilder(
-    column: $table.icon,
-    builder: (column) => ColumnOrderings(column),
-  );
 }
 
 class $$GameTableTableAnnotationComposer
@@ -5717,9 +5660,6 @@ class $$GameTableTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<AppColor, String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
-
-  GeneratedColumn<String> get icon =>
-      $composableBuilder(column: $table.icon, builder: (column) => column);
 
   Expression<T> matchTableRefs<T extends Object>(
     Expression<T> Function($$MatchTableTableAnnotationComposer a) f,
@@ -5810,7 +5750,6 @@ class $$GameTableTableTableManager
                 Value<Ruleset> ruleset = const Value.absent(),
                 Value<String> description = const Value.absent(),
                 Value<AppColor> color = const Value.absent(),
-                Value<String> icon = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => GameTableCompanion(
                 id: id,
@@ -5819,7 +5758,6 @@ class $$GameTableTableTableManager
                 ruleset: ruleset,
                 description: description,
                 color: color,
-                icon: icon,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -5830,7 +5768,6 @@ class $$GameTableTableTableManager
                 required Ruleset ruleset,
                 required String description,
                 required AppColor color,
-                required String icon,
                 Value<int> rowid = const Value.absent(),
               }) => GameTableCompanion.insert(
                 id: id,
@@ -5839,7 +5776,6 @@ class $$GameTableTableTableManager
                 ruleset: ruleset,
                 description: description,
                 color: color,
-                icon: icon,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

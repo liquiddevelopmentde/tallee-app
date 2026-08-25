@@ -42,13 +42,11 @@ void main() {
       name: 'Game A',
       ruleset: Ruleset.highestScore,
       color: AppColor.blue,
-      icon: '',
     );
     testGame2 = Game(
       name: 'Game B',
       ruleset: Ruleset.singleWinner,
       color: AppColor.green,
-      icon: '',
     );
 
     testGroup = Group(name: 'Group AB', members: [testPlayer1, testPlayer2]);
@@ -156,13 +154,11 @@ void main() {
         name: 'Score Game',
         ruleset: Ruleset.highestScore,
         color: AppColor.purple,
-        icon: '',
       );
       final winnerOnlyGame = Game(
         name: 'Winner Game',
         ruleset: Ruleset.singleWinner,
         color: AppColor.orange,
-        icon: '',
       );
 
       final matches = [
@@ -427,7 +423,6 @@ void main() {
         name: 'Single Loser',
         ruleset: Ruleset.singleLoser,
         color: AppColor.red,
-        icon: '',
       );
 
       final matches = [
