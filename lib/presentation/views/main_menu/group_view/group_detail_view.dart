@@ -125,6 +125,18 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                if (group.description.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      group.description,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: CustomTheme.hintColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 const SizedBox(height: 5),
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(group.createdAt)}',
