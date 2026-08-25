@@ -69,4 +69,5 @@ enum Timeframe {
   last180Days,
   lastYear,
   allTime,
+  custom,
 }

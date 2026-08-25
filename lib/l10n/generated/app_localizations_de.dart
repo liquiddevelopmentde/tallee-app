@@ -57,6 +57,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get classifier => 'Klassifikator';
 
   @override
+  String get custom => 'Benutzerdefiniert';
+
+  @override
   String get classifier_description =>
       'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
 

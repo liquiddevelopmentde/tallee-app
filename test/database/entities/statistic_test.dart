@@ -57,14 +57,12 @@ void main() {
         ruleset: Ruleset.singleWinner,
         description: 'A test game',
         color: AppColor.blue,
-        icon: '',
       );
       testGame2 = Game(
         name: 'Test Game 2',
         ruleset: Ruleset.highestScore,
         description: 'Another test game',
         color: AppColor.red,
-        icon: '',
       );
       testStatistic1 = Statistic(
         type: StatisticType.totalWins,
