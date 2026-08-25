@@ -66,6 +66,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   );
 
   TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
@@ -78,6 +79,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   @override
   void dispose() {
     nameController.dispose();
+    descriptionController.dispose();
     super.dispose();
   }
 
@@ -158,6 +160,20 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     ),
                   ),
                 ),
+
+                // Description
+                if (player.description.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      player.description,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: CustomTheme.hintColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
 
                 // Deleted state
                 if (widget.player.deleted) ...[
@@ -292,17 +308,32 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   icon: Icons.edit,
                   onPressed: () async {
                     nameController.text = player.name;
+                    descriptionController.text = player.description;
                     showDialog<bool>(
                       context: context,
                       builder: (context) => StatefulBuilder(
                         builder: (context, setDialogState) {
                           return CustomAlertDialog(
                             title: loc.edit_name,
-                            content: TextInputField(
-                              controller: nameController,
-                              hintText: loc.set_name,
-                              maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
-                              onChanged: (_) => setDialogState(() {}),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextInputField(
+                                  controller: nameController,
+                                  hintText: loc.set_name,
+                                  maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
+                                  onChanged: (_) => setDialogState(() {}),
+                                ),
+                                const SizedBox(height: 10),
+                                TextInputField(
+                                  controller: descriptionController,
+                                  hintText: loc.description,
+                                  maxLength:
+                                      Constants.MAX_PLAYER_DESCRIPTION_LENGTH,
+                                  minLines: 3,
+                                  maxLines: 3,
+                                ),
+                              ],
                             ),
                             actions: [
                               CustomDialogAction(
@@ -324,8 +355,13 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     ).then((confirmed) async {
                       if (confirmed! && context.mounted) {
                         final newName = nameController.text.trim();
+                        final newDescription = descriptionController.text
+                            .trim();
 
-                        if (newName != player.name) {
+                        final bool nameChanged = newName != player.name;
+                        int? newNameCount;
+
+                        if (nameChanged) {
                           final fetchedPlayerNameCount = await db.playerDao
                               .getNameCount(name: newName);
                           await db.playerDao.updatePlayerName(
@@ -333,14 +369,26 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             name: newName,
                           );
                           widget.onPlayerNameUpdated.call();
+                          // If there is already a player with the same name,
+                          // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
+                          newNameCount = fetchedPlayerNameCount == 0
+                              ? 0
+                              : fetchedPlayerNameCount + 1;
+                        }
+                        if (newDescription != player.description) {
+                          await db.playerDao.updatePlayerDescription(
+                            playerId: player.id,
+                            description: newDescription,
+                          );
+                          widget.onPlayerNameUpdated.call();
+                        }
+                        if (nameChanged ||
+                            newDescription != player.description) {
                           setState(() {
                             player = player.copyWith(
-                              name: newName,
-                              // If there is already a player with the same name,
-                              // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
-                              nameCount: fetchedPlayerNameCount == 0
-                                  ? 0
-                                  : fetchedPlayerNameCount + 1,
+                              name: nameChanged ? newName : null,
+                              nameCount: newNameCount,
+                              description: newDescription,
                             );
                           });
                         }

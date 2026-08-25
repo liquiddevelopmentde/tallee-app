@@ -25,4 +25,10 @@ class Constants {
 
   /// Maximum length for game descriptions
   static const int MAX_GAME_DESCRIPTION_LENGTH = 256;
+
+  /// Maximum length for player descriptions
+  static const int MAX_PLAYER_DESCRIPTION_LENGTH = 256;
+
+  /// Maximum length for group descriptions
+  static const int MAX_GROUP_DESCRIPTION_LENGTH = 256;
 }
