@@ -218,6 +218,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                   maxLines: 6,
                   maxLength: Constants.MAX_GAME_DESCRIPTION_LENGTH,
                   showCounterText: true,
+                  textInputAction: TextInputAction.done,
                 ),
               ),
 
