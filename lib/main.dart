@@ -9,7 +9,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/import_file_view.dart';
-import 'package:tallee/presentation/views/splash_view.dart';
+import 'package:tallee/presentation/views/splash_screen.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
