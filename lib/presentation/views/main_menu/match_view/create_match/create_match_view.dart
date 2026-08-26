@@ -527,7 +527,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   Future<void> updateMatch() async {
     final originalMatch = widget.matchToPrefill!;
     final newCreatedAt = selectedCreationDate ?? originalMatch.createdAt;
-    ;
     DateTime? newEndedAt = originalMatch.endedAt;
 
     if (newEndedAt != null && newEndedAt.isBefore(newCreatedAt)) {
