@@ -186,6 +186,7 @@ class _CreateGameViewState extends State<CreateGameView> {
           ],
         ),
         body: SafeArea(
+          maintainBottomViewPadding: true,
           child: Column(
             children: [
               // Game name input field

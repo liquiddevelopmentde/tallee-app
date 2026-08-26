@@ -127,6 +127,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
         ],
       ),
       body: SafeArea(
+        maintainBottomViewPadding: true,
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -287,7 +288,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
             // Edit player button
             if (!widget.player.deleted)
               Positioned(
-                bottom: MediaQuery.paddingOf(context).bottom,
+                bottom: MediaQuery.viewPaddingOf(context).bottom,
                 child: FloatingAnimatedButton(
                   text: loc.edit_player,
                   icon: Icons.edit,

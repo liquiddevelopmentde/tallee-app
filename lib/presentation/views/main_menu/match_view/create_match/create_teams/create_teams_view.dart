@@ -128,7 +128,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
 
           // Button row
           Positioned(
-            bottom: MediaQuery.paddingOf(context).bottom + 20,
+            bottom: MediaQuery.viewPaddingOf(context).bottom + 20,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
