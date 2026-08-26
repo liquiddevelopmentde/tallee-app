@@ -1,7 +1,7 @@
 name: Renovate
 on:
   schedule:
-    - cron: '0 10 * * 5'
+    - cron: '0 10 1,15 * *'
 
 jobs:
   renovate:
@@ -9,34 +9,20 @@ jobs:
     container:
       image: node:20-bookworm
     steps:
-      # ensures only runs on the first Friday of the month
-      - name: Check first Friday of month
-        id: check
-        run: |
-          if [ "$(date +%d)" -le 07 ]; then
-            echo "run=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "Not the first Friday of the month — skipping Renovate."
-          fi
-
       - name: Checkout
-        if: steps.check.outputs.run == 'true'
         uses: actions/checkout@v4
 
       - name: Upgrade git
-        if: steps.check.outputs.run == 'true'
         run: |
           apt-get update
           apt-get install -y git
           git --version
 
       - name: Run Renovate
-        if: steps.check.outputs.run == 'true'
         env:
           RENOVATE_TOKEN: ${{ secrets.BOT_TOKEN }}
           RENOVATE_PLATFORM: gitea
-          RENOVATE_ENDPOINT: https://git.yannick-weigert.de
+          RENOVATE_ENDPOINT: https://git.yannick-weigert.com
           RENOVATE_REPOSITORIES: liquid-development/game-tracker
           RENOVATE_GIT_AUTHOR: "Gitea Actions <actions@yannick-weigert.de>"
           RENOVATE_CONFIG_FILE: renovate.json
