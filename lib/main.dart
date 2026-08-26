@@ -112,7 +112,7 @@ class _TalleeState extends State<Tallee> {
           },
         ),
       ),
-      home: const SplashView(),
+      home: const SplashScreen(),
     );
   }
 
