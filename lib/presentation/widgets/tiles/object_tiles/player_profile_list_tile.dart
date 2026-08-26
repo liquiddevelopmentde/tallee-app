@@ -46,7 +46,7 @@ class PlayerProfileListTile extends StatelessWidget {
             ),
           ),
 
-          // Description
+          // Count
           Container(
             decoration: BoxDecoration(
               color: backgroundColor.withAlpha(180),
