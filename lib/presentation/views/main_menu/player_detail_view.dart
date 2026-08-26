@@ -86,6 +86,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(loc.player_profile),
         actions: [
