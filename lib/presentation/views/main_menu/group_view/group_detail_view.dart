@@ -186,7 +186,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
               ],
             ),
             Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom,
+              bottom: MediaQuery.viewPaddingOf(context).bottom,
               child: FloatingAnimatedButton(
                 text: loc.edit_group,
                 icon: Icons.edit,

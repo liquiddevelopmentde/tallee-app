@@ -3,6 +3,7 @@ import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -161,11 +162,12 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 Text(
                   match.name,
                   style: const TextStyle(
-                    fontSize: 28,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: CustomTheme.textColor,
                   ),
                   textAlign: TextAlign.center,
+                  maxLines: 2,
                 ),
                 const SizedBox(height: 5),
 
@@ -326,7 +328,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
               ],
             ),
             Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom,
+              bottom: MediaQuery.viewPaddingOf(context).bottom,
               child: Row(
                 spacing: 8,
                 children: [
@@ -618,6 +620,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
             return CustomAlertDialog(
               title: loc.edit_name,
               content: TextInputField(
+                maxLength: Constants.MAX_MATCH_NAME_LENGTH,
                 controller: nameController,
                 hintText: loc.set_name,
                 onChanged: (_) => setDialogState(() {}),

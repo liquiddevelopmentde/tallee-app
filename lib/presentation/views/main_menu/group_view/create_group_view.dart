@@ -81,6 +81,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
           ),
         ),
         body: SafeArea(
+          maintainBottomViewPadding: true,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
