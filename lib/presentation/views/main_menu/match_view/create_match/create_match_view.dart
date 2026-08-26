@@ -142,7 +142,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               ),
 
               // Creation date selection tile.
-              if (!widget.editMode)
+              if (widget.editMode)
                 ChooseTile(
                   title: loc.creation_date,
                   trailing: selectedCreationDate == null
@@ -526,7 +526,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// Updates the existing match in the database.
   Future<void> updateMatch() async {
     final originalMatch = widget.matchToPrefill!;
-    final newCreatedAt = selectedCreationDate ?? clock.now();
+    final newCreatedAt = selectedCreationDate ?? originalMatch.createdAt;
+    ;
     DateTime? newEndedAt = originalMatch.endedAt;
 
     if (newEndedAt != null && newEndedAt.isBefore(newCreatedAt)) {
