@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -52,6 +54,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   List<Player> selectedPlayers = [];
   List<Group> selectedGroups = [];
   Timeframe selectedTimeframe = Timeframe.allTime;
+  DateTime? selectedStartDate;
+  DateTime? selectedEndDate;
   // null -> random color
   AppColor? selectedColor;
 
@@ -139,10 +143,61 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                             ),
                           ),
                       ],
-                      onChanged: (timeframe) {
+                      selectedItemBuilder: (context) {
+                        return [
+                          for (final timeframe in Timeframe.values)
+                            timeframe == Timeframe.custom &&
+                                    selectedStartDate != null &&
+                                    selectedEndDate != null
+                                ? Text(
+                                    '${DateFormat.yMd(Localizations.localeOf(context).toString()).format(selectedStartDate!)} - ${DateFormat.yMd(Localizations.localeOf(context).toString()).format(selectedEndDate!)}',
+                                    style: const TextStyle(
+                                      color: CustomTheme.textColor,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                : Text(
+                                    translateTimeframeToString(
+                                      timeframe,
+                                      context,
+                                    ),
+                                    style: const TextStyle(
+                                      color: CustomTheme.textColor,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                        ];
+                      },
+                      onChanged: (timeframe) async {
                         if (timeframe == null) return;
-                        selectedTimeframeNotifier.value = timeframe;
-                        setState(() => selectedTimeframe = timeframe);
+                        if (timeframe == Timeframe.custom) {
+                          // allow the dropdown menu to close first to avoid navigation collision
+                          await Future.delayed(Duration.zero);
+                          if (!mounted) return;
+
+                          final results = await _showCustomTimeframePicker();
+
+                          if (results != null &&
+                              results.length >= 2 &&
+                              results[0] != null &&
+                              results[1] != null) {
+                            selectedTimeframeNotifier.value = timeframe;
+                            setState(() {
+                              selectedTimeframe = timeframe;
+                              selectedStartDate = results[0];
+                              selectedEndDate = results[1];
+                            });
+                          }
+                        } else {
+                          selectedTimeframeNotifier.value = timeframe;
+                          setState(() {
+                            selectedTimeframe = timeframe;
+                            selectedStartDate = null;
+                            selectedEndDate = null;
+                          });
+                        }
                       },
                     ),
 
@@ -338,8 +393,122 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     type: type,
     scopes: selectedScope,
     timeframe: selectedTimeframe,
+    startDate: selectedStartDate,
+    endDate: selectedEndDate,
     color: selectedColor ?? getRandomAppColor(),
   );
+
+  Future<List<DateTime?>?> _showCustomTimeframePicker() async {
+    return showDialog<List<DateTime?>>(
+      context: context,
+      builder: (context) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            splashFactory: NoSplash.splashFactory,
+            textButtonTheme: TextButtonThemeData(
+              style: ButtonStyle(
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
+              ),
+            ),
+            colorScheme: const ColorScheme.dark(
+              primary: CustomTheme.primaryColor,
+              onPrimary: CustomTheme.textColor,
+              surface: CustomTheme.boxColor,
+              onSurface: CustomTheme.textColor,
+            ),
+          ),
+          child: Dialog(
+            backgroundColor: CustomTheme.boxColor,
+            surfaceTintColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: const BorderSide(color: CustomTheme.boxBorderColor),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              height: 450,
+              child: SfDateRangePicker(
+                backgroundColor: CustomTheme.boxColor,
+                showNavigationArrow: true,
+                headerStyle: const DateRangePickerHeaderStyle(
+                  textAlign: TextAlign.center,
+                  backgroundColor: Colors.transparent,
+                  textStyle: TextStyle(
+                    color: CustomTheme.textColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                monthCellStyle: const DateRangePickerMonthCellStyle(
+                  textStyle: TextStyle(
+                    color: CustomTheme.textColor,
+                    fontSize: 16,
+                  ),
+                  todayTextStyle: TextStyle(
+                    color: CustomTheme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  leadingDatesTextStyle: TextStyle(
+                    color: CustomTheme.hintColor,
+                    fontSize: 16,
+                  ),
+                  trailingDatesTextStyle: TextStyle(
+                    color: CustomTheme.hintColor,
+                    fontSize: 16,
+                  ),
+                ),
+                yearCellStyle: const DateRangePickerYearCellStyle(
+                  textStyle: TextStyle(
+                    color: CustomTheme.textColor,
+                    fontSize: 16,
+                  ),
+                  todayTextStyle: TextStyle(
+                    color: CustomTheme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                monthViewSettings: const DateRangePickerMonthViewSettings(
+                  viewHeaderStyle: DateRangePickerViewHeaderStyle(
+                    textStyle: TextStyle(
+                      color: CustomTheme.textColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  firstDayOfWeek: 1,
+                ),
+                selectionMode: DateRangePickerSelectionMode.range,
+                selectionColor: CustomTheme.primaryColor,
+                startRangeSelectionColor: CustomTheme.primaryColor,
+                endRangeSelectionColor: CustomTheme.primaryColor,
+                rangeSelectionColor: CustomTheme.primaryColor.withValues(
+                  alpha: 0.15,
+                ),
+                selectionTextStyle: const TextStyle(
+                  color: CustomTheme.textColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                rangeTextStyle: const TextStyle(
+                  color: CustomTheme.textColor,
+                  fontSize: 16,
+                ),
+                showActionButtons: true,
+                onSubmit: (value) {
+                  if (value is PickerDateRange) {
+                    Navigator.pop(context, [value.startDate, value.endDate]);
+                  }
+                },
+                onCancel: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget buildColorCircle() {
     final segmentColors = [

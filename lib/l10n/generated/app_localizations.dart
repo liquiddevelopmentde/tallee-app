@@ -194,6 +194,12 @@ abstract class AppLocalizations {
   /// **'Classifier'**
   String get classifier;
 
+  /// No description provided for @custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get custom;
+
   /// No description provided for @classifier_description.
   ///
   /// In en, this message translates to:

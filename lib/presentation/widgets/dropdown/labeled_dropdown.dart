@@ -27,6 +27,7 @@ class LabeledDropdown<T> extends StatelessWidget {
     required ValueListenable<T> this.valueListenable,
     required void Function(T?) this.onChanged,
     this.enabled = true,
+    this.selectedItemBuilder,
   }) : isMultiSelect = false,
        multiValueListenable = null,
        onItemTap = null;
@@ -43,7 +44,8 @@ class LabeledDropdown<T> extends StatelessWidget {
     this.enabled = true,
   }) : isMultiSelect = true,
        valueListenable = null,
-       onChanged = null;
+       onChanged = null,
+       selectedItemBuilder = null;
 
   /// The bold section title.
   final String title;
@@ -74,6 +76,9 @@ class LabeledDropdown<T> extends StatelessWidget {
 
   /// Called with the tapped value in multi-select mode.
   final void Function(T)? onItemTap;
+
+  /// Optional builder for the selected item(s) shown in the button.
+  final DropdownButtonBuilder? selectedItemBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -203,6 +208,7 @@ class LabeledDropdown<T> extends StatelessWidget {
                     iconStyleData: iconStyle,
                     dropdownStyleData: dropdownStyle,
                     menuItemStyleData: menuStyle,
+                    selectedItemBuilder: selectedItemBuilder,
                   ),
           ),
         ),

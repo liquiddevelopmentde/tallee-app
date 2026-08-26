@@ -57,6 +57,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get classifier => 'Classifier';
 
   @override
+  String get custom => 'Custom';
+
+  @override
   String get classifier_description =>
       'Choose which metric is calculated and shown in this statistic.';
 
