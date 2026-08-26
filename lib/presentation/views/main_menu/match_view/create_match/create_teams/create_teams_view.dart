@@ -39,6 +39,8 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
   late List<TextEditingController> nameController;
   final int initialTeamCount = 2;
 
+  late List<FocusNode> focusNodes = [];
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -72,6 +74,8 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       );
     }
 
+    focusNodes = List.generate(teams.length, (index) => FocusNode());
+
     // Init the controllers
     nameController = teams.map(getNewController).toList();
   }
@@ -80,6 +84,9 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
   void dispose() {
     for (final c in nameController) {
       c.dispose();
+    }
+    for (final f in focusNodes) {
+      f.dispose();
     }
     super.dispose();
   }
@@ -109,6 +116,11 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                       teams[index] = teams[index].copyWith(color: color);
                     });
                   },
+                  focusNode: focusNodes[index],
+                  textInputAction: index == teams.length - 1
+                      ? TextInputAction.done
+                      : TextInputAction.next,
+                  onSubmitted: (_) => focusNextTile(index),
                 );
               },
             ),
@@ -157,6 +169,16 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     );
   }
 
+  /// Moves the keyboard focus to the next team tile. If the current tile is the
+  /// last one, the focus is dropped and the keyboard is dismissed instead.
+  void focusNextTile(int index) {
+    if (index < focusNodes.length - 1) {
+      focusNodes[index + 1].requestFocus();
+    } else {
+      focusNodes[index].unfocus();
+    }
+  }
+
   /// Creates a new team with a default name and color based on the current number
   Team getNewTeam() {
     final loc = AppLocalizations.of(context);
@@ -186,6 +208,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       final newTeam = getNewTeam();
       teams.add(newTeam);
       nameController.add(getNewController(newTeam));
+      focusNodes.add(FocusNode());
     });
   }
 
@@ -198,6 +221,8 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       teams.removeAt(index);
       final removedController = nameController.removeAt(index);
       removedController.dispose();
+      final removedFocusNode = focusNodes.removeAt(index);
+      removedFocusNode.dispose();
 
       // Update index-based team names and default colors
       for (int i = 0; i < nameController.length; i++) {
