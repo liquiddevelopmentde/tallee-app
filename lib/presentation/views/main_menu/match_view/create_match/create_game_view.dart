@@ -118,6 +118,7 @@ class _CreateGameViewState extends State<CreateGameView> {
 
     return ScaffoldMessenger(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(isEditing ? loc.edit_game : loc.create_game),
           actions: [
@@ -185,6 +186,7 @@ class _CreateGameViewState extends State<CreateGameView> {
           ],
         ),
         body: SafeArea(
+          maintainBottomViewPadding: true,
           child: Column(
             children: [
               // Game name input field
@@ -217,6 +219,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                   maxLines: 6,
                   maxLength: Constants.MAX_GAME_DESCRIPTION_LENGTH,
                   showCounterText: true,
+                  textInputAction: TextInputAction.done,
                 ),
               ),
 

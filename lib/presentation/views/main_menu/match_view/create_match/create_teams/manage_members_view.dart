@@ -92,7 +92,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
             ),
           ),
           Positioned(
-            bottom: MediaQuery.of(context).padding.bottom + 20,
+            bottom: MediaQuery.of(context).viewPadding.bottom + 20,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
