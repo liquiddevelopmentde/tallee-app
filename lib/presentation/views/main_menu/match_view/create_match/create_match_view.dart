@@ -142,17 +142,18 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               ),
 
               // Creation date selection tile.
-              ChooseTile(
-                title: loc.creation_date,
-                trailing: selectedCreationDate == null
-                    ? Text(loc.today)
-                    : Text(
-                        DateFormat.yMMMd(
-                          Localizations.localeOf(context).toString(),
-                        ).format(selectedCreationDate!),
-                      ),
-                onPressed: () async => onCreationDateSelection(),
-              ),
+              if (!widget.editMode)
+                ChooseTile(
+                  title: loc.creation_date,
+                  trailing: selectedCreationDate == null
+                      ? Text(loc.today)
+                      : Text(
+                          DateFormat.yMMMd(
+                            Localizations.localeOf(context).toString(),
+                          ).format(selectedCreationDate!),
+                        ),
+                  onPressed: () async => onCreationDateSelection(),
+                ),
 
               // Team match switch
               if (!widget.editMode)
