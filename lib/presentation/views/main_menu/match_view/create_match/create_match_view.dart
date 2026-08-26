@@ -622,4 +622,15 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     }
     return match;
   }
+
+  /// Returns true if the given [date] is today.
+  bool isToday(DateTime date) {
+    final now = clock.now();
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
+  }
+
+  /// Returns null if the given [date] is today, otherwise returns the date.
+  DateTime? nullIfToday(DateTime date) => isToday(date) ? null : date;
 }
