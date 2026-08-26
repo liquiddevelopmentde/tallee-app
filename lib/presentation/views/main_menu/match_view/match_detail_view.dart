@@ -328,7 +328,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
               ],
             ),
             Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom,
+              bottom: MediaQuery.viewPaddingOf(context).bottom,
               child: Row(
                 spacing: 8,
                 children: [

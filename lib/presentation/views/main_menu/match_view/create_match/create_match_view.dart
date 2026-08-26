@@ -109,6 +109,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         backgroundColor: CustomTheme.backgroundColor,
         appBar: AppBar(title: Text(viewTitle)),
         body: SafeArea(
+          maintainBottomViewPadding: true,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

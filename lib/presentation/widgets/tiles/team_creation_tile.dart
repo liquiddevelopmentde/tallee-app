@@ -16,17 +16,19 @@ class TeamCreationTile extends StatefulWidget {
     required this.hintText,
     this.onDelete,
     this.onColorSelection,
+    this.focusNode,
+    this.textInputAction,
+    this.onSubmitted,
   });
 
   final AppColor color;
-
   final TextEditingController controller;
-
   final String hintText;
-
   final VoidCallback? onDelete;
-
   final ValueChanged<AppColor>? onColorSelection;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onSubmitted;
 
   @override
   State<TeamCreationTile> createState() => _TeamCreationTileState();
@@ -69,6 +71,9 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                             controller: widget.controller,
                             hintText: widget.hintText,
                             maxLength: Constants.MAX_TEAM_NAME_LENGTH,
+                            focusNode: widget.focusNode,
+                            textInputAction: widget.textInputAction,
+                            onSubmitted: widget.onSubmitted,
                           ),
                         ),
                         HapticIconButton(
