@@ -8,7 +8,6 @@ class GameTable extends Table {
   TextColumn get ruleset => textEnum<Ruleset>()();
   TextColumn get description => text()();
   TextColumn get color => textEnum<AppColor>()();
-  TextColumn get icon => text()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

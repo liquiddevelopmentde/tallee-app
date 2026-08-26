@@ -55,9 +55,6 @@
           },
           "color": {
             "type": "string"
-          },
-          "icon": {
-            "type": "string"
           }
         },
         "additionalProperties": false,
@@ -67,8 +64,7 @@
           "name",
           "ruleset",
           "description",
-          "color",
-          "icon"
+          "color"
         ]
       }
     },
@@ -259,6 +255,18 @@
           },
           "timeframe": {
             "type": "string"
+          },
+          "startDate": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endDate": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "color": {
             "type": "string"

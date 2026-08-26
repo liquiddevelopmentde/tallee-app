@@ -24,7 +24,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
           ruleset: game.ruleset,
           description: game.description,
           color: game.color,
-          icon: game.icon,
           createdAt: game.createdAt,
         ),
         mode: InsertMode.insertOrReplace,
@@ -50,7 +49,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
                 ruleset: game.ruleset,
                 description: game.description,
                 color: game.color,
-                icon: game.icon,
                 createdAt: game.createdAt,
               ),
             )
@@ -93,7 +91,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
             ruleset: row.ruleset,
             description: row.description,
             color: row.color,
-            icon: row.icon,
             createdAt: row.createdAt,
           ),
         )
@@ -110,7 +107,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
       ruleset: row.ruleset,
       description: row.description,
       color: row.color,
-      icon: row.icon,
       createdAt: row.createdAt,
     );
   }
@@ -128,7 +124,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
             ruleset: row.ruleset,
             description: row.description,
             color: row.color,
-            icon: row.icon,
             createdAt: row.createdAt,
           ),
         )
@@ -181,18 +176,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     final rowsAffected =
         await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
           GameTableCompanion(color: Value(color)),
-        );
-    return rowsAffected > 0;
-  }
-
-  /// Updates the icon of the game with the given [gameId].
-  Future<bool> updateGameIcon({
-    required String gameId,
-    required String icon,
-  }) async {
-    final rowsAffected =
-        await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
-          GameTableCompanion(icon: Value(icon)),
         );
     return rowsAffected > 0;
   }

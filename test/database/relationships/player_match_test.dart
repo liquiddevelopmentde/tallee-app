@@ -39,7 +39,6 @@ void main() {
         ruleset: Ruleset.singleWinner,
         description: 'A test game',
         color: AppColor.blue,
-        icon: '',
       );
       testMatch1 = Match(
         name: 'Test Match with Players',
@@ -251,17 +250,22 @@ void main() {
         expect(result[testMatch1.id]!.length, testMatch1.players.length);
         expect(result[match2.id]!.length, match2.players.length);
 
-        final match1PlayerIds =
-            result[testMatch1.id]!.map((p) => p.id).toSet();
-        expect(match1PlayerIds, containsAll(testMatch1.players.map((p) => p.id)));
+        final match1PlayerIds = result[testMatch1.id]!.map((p) => p.id).toSet();
+        expect(
+          match1PlayerIds,
+          containsAll(testMatch1.players.map((p) => p.id)),
+        );
       });
 
-      test('getPlayersForMatches() returns empty map for empty input', () async {
-        final result = await database.playerMatchDao.getPlayersForMatches(
-          matchIds: [],
-        );
-        expect(result, isEmpty);
-      });
+      test(
+        'getPlayersForMatches() returns empty map for empty input',
+        () async {
+          final result = await database.playerMatchDao.getPlayersForMatches(
+            matchIds: [],
+          );
+          expect(result, isEmpty);
+        },
+      );
     });
 
     group('UPDATE', () {
