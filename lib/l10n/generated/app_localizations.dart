@@ -1286,6 +1286,12 @@ abstract class AppLocalizations {
   /// **'Online sharing is disabled'**
   String get online_sharing_disabled;
 
+  /// No description provided for @online_sharing_enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Online sharing is enabled'**
+  String get online_sharing_enabled;
+
   /// No description provided for @go_to_settings_to_enable.
   ///
   /// In en, this message translates to:

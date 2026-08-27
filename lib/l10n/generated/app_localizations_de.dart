@@ -639,6 +639,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get online_sharing_disabled => 'Online-Teilen ist deaktiviert';
 
   @override
+  String get online_sharing_enabled => 'Online-Teilen ist aktiviert';
+
+  @override
   String get go_to_settings_to_enable =>
       'Gehe in die Einstellungen, um es manuell zu aktivieren.';
 

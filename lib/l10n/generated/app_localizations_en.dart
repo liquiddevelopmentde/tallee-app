@@ -637,6 +637,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get online_sharing_disabled => 'Online sharing is disabled';
 
   @override
+  String get online_sharing_enabled => 'Online sharing is enabled';
+
+  @override
   String get go_to_settings_to_enable =>
       'Go to the settings to manually enable it.';
 
