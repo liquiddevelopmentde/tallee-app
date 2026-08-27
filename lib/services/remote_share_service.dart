@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:json_schema/json_schema.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -87,7 +88,7 @@ class RemoteShareService {
     required String text,
     required String title,
   }) async {
-    String formattedMatchName = match.name.replaceAll(' ', '_');
+    String formattedMatchName = match.name.toSafeFilename();
     var filename = '$formattedMatchName.tallee';
     final temp = await getTemporaryDirectory();
     final path = '${temp.path}/$filename';
@@ -101,7 +102,7 @@ class RemoteShareService {
     Match match, {
     required String dialogTitle,
   }) async {
-    String formattedMatchName = match.name.replaceAll(' ', '_');
+    String formattedMatchName = match.name.toSafeFilename();
     var filename = '$formattedMatchName.tallee';
 
     String jsonString = jsonEncode(match.toJson());

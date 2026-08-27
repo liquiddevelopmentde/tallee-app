@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -23,7 +24,7 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
 
   @override
   void initState() {
-    formattedMatchName = widget.match.name.replaceAll(' ', '_');
+    formattedMatchName = widget.match.name.toSafeFilename();
     fileSize = calculateFileSize(widget.match);
     super.initState();
   }

@@ -3,6 +3,7 @@ import 'dart:core' hide Match;
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -220,7 +221,7 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${match.name.replaceAll('.tallee', '').replaceAll(' ', '_')}.tallee',
+                  '${match.name.toSafeFilename()}.tallee',
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
