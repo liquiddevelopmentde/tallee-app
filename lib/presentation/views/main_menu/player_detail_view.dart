@@ -86,6 +86,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(loc.player_profile),
         actions: [
@@ -126,6 +127,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
         ],
       ),
       body: SafeArea(
+        maintainBottomViewPadding: true,
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -286,7 +288,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
             // Edit player button
             if (!widget.player.deleted)
               Positioned(
-                bottom: MediaQuery.paddingOf(context).bottom,
+                bottom: MediaQuery.viewPaddingOf(context).bottom,
                 child: FloatingAnimatedButton(
                   text: loc.edit_player,
                   icon: Icons.edit,

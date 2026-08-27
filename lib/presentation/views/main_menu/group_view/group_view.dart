@@ -77,6 +77,7 @@ class _GroupViewState extends State<GroupView> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: CustomTheme.backgroundColor,
       body: Stack(
         alignment: Alignment.center,

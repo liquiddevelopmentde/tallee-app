@@ -100,6 +100,7 @@ class _MatchViewState extends State<MatchView> {
 
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
         children: [
