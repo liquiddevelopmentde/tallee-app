@@ -116,7 +116,7 @@ class _EnterTokenViewState extends State<EnterTokenView> {
               disabledPinTheme: disabledPinTheme,
               pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
               showCursor: false,
-              animationCurve: Curves.decelerate,
+              animationCurve: Curves.fastOutSlowIn,
               animationDuration: const Duration(milliseconds: 200),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
@@ -127,7 +127,6 @@ class _EnterTokenViewState extends State<EnterTokenView> {
                   ),
                 ),
               ],
-              onCompleted: (pin) => print(pin),
               forceErrorState: !validToken,
               errorText: loc.invalid_token,
             ),
