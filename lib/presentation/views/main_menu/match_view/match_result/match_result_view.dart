@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -118,33 +119,37 @@ class _MatchResultViewState extends State<MatchResultView> {
                     if (ruleset == Ruleset.multipleWinners)
                       MultiplePlayerSelection(
                         match: widget.match,
-                        onPlayersSelected: (List<Player> players) {
+                        onPlayersSelected: (List<Player> players) async {
                           selectedPlayers = players;
                           setState(() {
                             canSave = players.isNotEmpty;
                           });
+                          await HapticFeedback.selectionClick();
                         },
-                        onTeamsSelected: (List<Team> teams) {
+                        onTeamsSelected: (List<Team> teams) async {
                           selectedTeams = teams;
                           setState(() {
                             canSave = teams.isNotEmpty;
                           });
+                          await HapticFeedback.selectionClick();
                         },
                       )
                     else
                       SinglePlayerSelection(
                         match: widget.match,
-                        onPlayerSelected: (Player? player) {
+                        onPlayerSelected: (Player? player) async {
                           selectedPlayer = player;
                           setState(() {
                             canSave = player != null;
                           });
+                          await HapticFeedback.selectionClick();
                         },
-                        onTeamSelected: (Team? team) {
+                        onTeamSelected: (Team? team) async {
                           selectedTeam = team;
                           setState(() {
                             canSave = team != null;
                           });
+                          await HapticFeedback.selectionClick();
                         },
                       ),
 
