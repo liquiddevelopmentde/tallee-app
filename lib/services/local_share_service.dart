@@ -457,18 +457,6 @@ class LocalShareService {
     }).toList();
   }
 
-  /// Creates a fallback game when the referenced game is not found.
-  @visibleForTesting
-  static Game getFallbackGame() {
-    return Game(
-      name: 'Unknown',
-      ruleset: Ruleset.singleWinner,
-      description: '',
-      color: AppColor.blue,
-      icon: '',
-    );
-  }
-
   /// Helper method to read file content from either bytes or path
   @visibleForTesting
   static Future<String?> readFileContent(PlatformFile file) async {
