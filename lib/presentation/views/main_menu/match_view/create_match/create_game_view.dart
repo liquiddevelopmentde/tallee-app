@@ -40,6 +40,8 @@ class CreateGameView extends StatefulWidget {
 
   final int matchCount;
 
+  /// An optional ruleset used to enforce a specific game type.
+  /// This is used during match sharing to ensure the game is compatible with the shared data.
   final Ruleset? requiredRuleset;
 
   @override

@@ -39,6 +39,8 @@ class ChooseGameView extends StatefulWidget {
   final Statistic? statistic;
   final bool enableMultiSelection;
 
+  /// An optional ruleset used to enforce a specific game type.
+  /// This is used during match sharing to ensure the game is compatible with the shared data.
   final Ruleset? requiredRuleset;
 
   @override
