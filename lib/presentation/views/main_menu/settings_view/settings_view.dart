@@ -18,7 +18,7 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
-import 'package:tallee/services/data_transfer_service.dart';
+import 'package:tallee/services/local_share_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -360,7 +360,7 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   void handleExport(BuildContext scaffoldMessengerContext) async {
-    final String json = await DataTransferService.getAppDataAsJson(
+    final String json = await LocalShareService.getAppDataAsJson(
       scaffoldMessengerContext,
     );
 
@@ -369,14 +369,14 @@ class _SettingsViewState extends State<SettingsView> {
     if (json.isEmpty) {
       result = ExportResult.noData;
     } else {
-      result = await DataTransferService.exportData(json, 'data');
+      result = await LocalShareService.exportData(json, 'data');
     }
     if (!scaffoldMessengerContext.mounted) return;
     showExportSnackBar(context: scaffoldMessengerContext, result: result);
   }
 
   void handleImport(BuildContext scaffoldMessengerContext) async {
-    final path = await DataTransferService.pickImportFilePath();
+    final path = await LocalShareService.pickImportFilePath();
 
     if (path == null) {
       if (!scaffoldMessengerContext.mounted) return;
@@ -427,7 +427,7 @@ class _SettingsViewState extends State<SettingsView> {
       ),
     ).then((confirmed) {
       if (confirmed == true && mounted && scaffoldMessengerContext.mounted) {
-        DataTransferService.deleteAllData(context);
+        LocalShareService.deleteAllData(context);
         showSnackbar(
           context: scaffoldMessengerContext,
           message: AppLocalizations.of(context).data_successfully_deleted,

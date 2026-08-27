@@ -14,7 +14,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
-class MatchShareService {
+class RemoteShareService {
   Future<String> getShareToken(Match match) async {
     try {
       final response = await http.post(

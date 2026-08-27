@@ -9,7 +9,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
-import 'package:tallee/services/match_share_service.dart';
+import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
 class AssociateGroupsView extends StatefulWidget {
@@ -161,7 +161,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
     }
 
     try {
-      await MatchShareService().saveImportedMatch(
+      await RemoteShareService().saveImportedMatch(
         db: db,
         importedMatch: widget.match,
         playerAssociations: playerAssociations,

@@ -16,7 +16,7 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
-import 'package:tallee/services/data_transfer_service.dart';
+import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
 
 /// A page shown when the app opens a `.tallee` file
@@ -305,7 +305,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
   /// Loads the import data from the file path and updates the loading/state values.
   Future<void> loadData() async {
     setState(() => isLoading = true);
-    final result = await DataTransferService.getDataFromPath(widget.filePath);
+    final result = await LocalShareService.getDataFromPath(widget.filePath);
 
     if (!mounted) return;
 
@@ -326,7 +326,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     if (jsonString == null) return;
 
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final result = await DataTransferService.commitImport(db, jsonString);
+    final result = await LocalShareService.commitImport(db, jsonString);
 
     if (!mounted) return;
     finishImport(importResult: result);

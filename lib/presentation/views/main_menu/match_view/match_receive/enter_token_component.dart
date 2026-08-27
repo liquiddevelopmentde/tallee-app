@@ -11,7 +11,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_receive/dat
 import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
-import 'package:tallee/services/match_share_service.dart';
+import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
 class EnterTokenComponent extends StatefulWidget {
@@ -189,7 +189,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       setState(() {
         validToken = true;
       });
-      final loadedMatch = await MatchShareService().getMatchByToken(
+      final loadedMatch = await RemoteShareService().getMatchByToken(
         tokenInputFieldController.text,
       );
       if (!mounted) return;

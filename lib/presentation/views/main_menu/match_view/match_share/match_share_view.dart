@@ -13,7 +13,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_share/save_
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/token_component.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
-import 'package:tallee/services/match_share_service.dart';
+import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
 class MatchShareView extends StatefulWidget {
@@ -183,7 +183,7 @@ class _MatchShareViewState extends State<MatchShareView>
 
     if (hasStoredSharingConsent) {
       Future.wait([
-            MatchShareService().getShareToken(widget.match),
+            RemoteShareService().getShareToken(widget.match),
             Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
           ])
           .then((results) {

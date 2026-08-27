@@ -11,9 +11,9 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_groups_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
-import 'package:tallee/presentation/widgets/tiles/associate_player_tile.dart';
 import 'package:tallee/presentation/widgets/player_selection_widget.dart';
-import 'package:tallee/services/match_share_service.dart';
+import 'package:tallee/presentation/widgets/tiles/associate_player_tile.dart';
+import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
 class AssociatePlayersView extends StatefulWidget {
@@ -146,7 +146,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     }
 
     try {
-      await MatchShareService().saveImportedMatch(
+      await RemoteShareService().saveImportedMatch(
         db: db,
         importedMatch: widget.match,
         playerAssociations: playerAssociations,

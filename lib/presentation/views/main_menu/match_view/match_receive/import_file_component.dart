@@ -9,7 +9,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
-import 'package:tallee/services/match_share_service.dart';
+import 'package:tallee/services/remote_share_service.dart';
 
 class ImportFileComponent extends StatefulWidget {
   const ImportFileComponent({super.key});
@@ -35,7 +35,7 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
           padding: CustomTheme.standardMargin.copyWith(left: 25, right: 25),
           child: GestureDetector(
             onTap: () async {
-              data = await MatchShareService().chooseFileToImport();
+              data = await RemoteShareService().chooseFileToImport();
               if (data.$1 == ImportResult.success) {
                 setState(() {
                   successfulImport = true;

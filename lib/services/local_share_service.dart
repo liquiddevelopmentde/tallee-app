@@ -11,7 +11,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 
-class DataTransferService {
+class LocalShareService {
   /// Deletes all data from the database.
   static Future<void> deleteAllData(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);

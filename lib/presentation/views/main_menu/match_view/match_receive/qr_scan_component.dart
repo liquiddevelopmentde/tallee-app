@@ -8,7 +8,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
 import 'package:tallee/presentation/widgets/qr_scanner_overlay_shape.dart';
-import 'package:tallee/services/match_share_service.dart';
+import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
 class QrScanComponent extends StatefulWidget {
@@ -129,7 +129,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
     await Future.delayed(Constants.MINIMUM_SKELETON_DURATION);
 
     try {
-      final loadedMatch = await MatchShareService().getMatchByToken(token);
+      final loadedMatch = await RemoteShareService().getMatchByToken(token);
       if (!mounted) return;
 
       await Navigator.of(context).push(

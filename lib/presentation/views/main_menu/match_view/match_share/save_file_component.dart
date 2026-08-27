@@ -6,7 +6,7 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
-import 'package:tallee/services/match_share_service.dart';
+import 'package:tallee/services/remote_share_service.dart';
 
 class SaveFileComponent extends StatefulWidget {
   final Match match;
@@ -116,7 +116,7 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
               text: loc.save_file,
               icon: Icons.save,
               onPressed: () {
-                MatchShareService().saveMatchToCustomLocation(
+                RemoteShareService().saveMatchToCustomLocation(
                   widget.match,
                   dialogTitle: loc.choose_where_to_save,
                 );
@@ -126,7 +126,7 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
             FloatingAnimatedButton(
               icon: Icons.share,
               onPressed: () {
-                MatchShareService().shareMatchAsFile(
+                RemoteShareService().shareMatchAsFile(
                   widget.match,
                   text: loc.here_is_shared_match(widget.match.name),
                   title: loc.share_match_title,
