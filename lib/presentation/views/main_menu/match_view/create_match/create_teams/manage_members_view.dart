@@ -69,8 +69,42 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               onReorderEnd: (int index) async {
                 await HapticFeedback.selectionClick();
               },
-              proxyDecorator: (child, index, animation) =>
-                  Material(type: MaterialType.transparency, child: child),
+              proxyDecorator: (child, index, animation) {
+                return AnimatedBuilder(
+                  animation: animation,
+                  builder: (context, _) {
+                    // Fade the white overlay in as the drag lifts off.
+                    final t = Curves.easeInOut.transform(animation.value);
+                    return Material(
+                      type: MaterialType.transparency,
+                      child: Stack(
+                        children: [
+                          child,
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 4,
+                                ),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(
+                                      alpha: 0.10 * t,
+                                    ),
+                                    borderRadius:
+                                        CustomTheme.standardBorderRadiusAll,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
               itemBuilder: (context, index) {
                 final teamIndex = teamIndexForFlat(index);
                 final memberIndex = memberIndexForFlat(index, teamIndex);
