@@ -19,15 +19,16 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     if (!await playerExists(playerId: player.id)) {
       final int nameCount = await _processNameCount(name: player.name);
 
-      final rowData = PlayerTableCompanion.insert(
-        id: player.id,
-        name: player.name,
-        description: player.description,
-        createdAt: player.createdAt,
-        nameCount: Value(nameCount),
+      await into(playerTable).insert(
+        PlayerTableCompanion.insert(
+          id: player.id,
+          name: player.name,
+          description: player.description,
+          createdAt: player.createdAt,
+          nameCount: Value(nameCount),
+        ),
       );
 
-      await into(playerTable).insert(rowData, mode: InsertMode.insertOrReplace);
       return true;
     }
     return false;
