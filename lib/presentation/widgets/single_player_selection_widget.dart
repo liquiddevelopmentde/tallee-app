@@ -47,7 +47,7 @@ class _SinglePlayerSelectionWidgetState
   bool isLoading = true;
 
   /// Future that loads all players from the database.
-  late Future<List<Player>> _allPlayersFuture;
+  late Future<List<Player>> allPlayersFuture;
 
   /// The complete list of all available players.
   List<Player> allPlayers = [];
@@ -193,12 +193,12 @@ class _SinglePlayerSelectionWidgetState
   /// Loads the list of players from the database or uses the provided available players.
   /// Sets the loading state and updates the player lists accordingly.
   void loadPlayerList() {
-    _allPlayersFuture = Future.wait([
+    allPlayersFuture = Future.wait([
       db.playerDao.getAllPlayers(),
       Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
     ]).then((results) => results[0] as List<Player>);
 
-    _allPlayersFuture.then((loadedPlayers) {
+    allPlayersFuture.then((loadedPlayers) {
       if (!mounted) return;
       setState(() {
         // If a list of available players is provided (even if empty), use that list.
