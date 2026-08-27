@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/match.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/file_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/qr_code_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/token_view.dart';
@@ -56,20 +56,6 @@ class _MatchShareViewState extends State<MatchShareView>
     _tabController = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initSharingView();
-    });
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted) {
-        setState(() {
-          if (_secondsRemaining > 0) {
-            _secondsRemaining--;
-          } else {
-            _timer!.cancel();
-          }
-        });
-      }
     });
   }
 
@@ -210,7 +196,7 @@ class _MatchShareViewState extends State<MatchShareView>
                   errorCorrectLevel: QrErrorCorrectLevel.H,
                 );
                 qrImage = QrImage(qrCode);
-                _startTimer();
+                startTimer();
                 isLoading = false;
               });
             }
@@ -281,5 +267,19 @@ class _MatchShareViewState extends State<MatchShareView>
         ],
       ),
     );
+  }
+
+  void startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() {
+          if (_secondsRemaining > 0) {
+            _secondsRemaining--;
+          } else {
+            _timer!.cancel();
+          }
+        });
+      }
+    });
   }
 }
