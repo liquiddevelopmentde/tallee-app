@@ -8,9 +8,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/local_dev_http_overrides.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/preview_import_data.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
@@ -22,7 +22,7 @@ import 'package:tallee/state/match_search_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (kDebugMode) HttpOverrides.global = LocalDevHttpOverrides();
+  if (kDebugMode) HttpOverrides.global = SelfSignedCertHttpOverrides();
 
   await dotenv.load();
   await SharedPreferencesService.init();

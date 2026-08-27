@@ -1,9 +1,8 @@
 import 'dart:io';
 
-/// Diese Klasse erlaubt es, SSL-Zertifikatsprüfungen zu umgehen.
-/// Dies ist für die lokale Entwicklung nützlich, wenn mit selbstsignierten
-/// Zertifikaten gearbeitet wird.
-class LocalDevHttpOverrides extends HttpOverrides {
+/// Bypasses SSL certificate validation.
+/// Only for local development with self-signed certificates.
+class SelfSignedCertHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
