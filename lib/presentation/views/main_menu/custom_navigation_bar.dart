@@ -53,6 +53,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       ),
     ];
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(

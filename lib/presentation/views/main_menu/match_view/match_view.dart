@@ -99,6 +99,7 @@ class _MatchViewState extends State<MatchView> {
 
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -199,7 +200,7 @@ class _MatchViewState extends State<MatchView> {
             ],
           ),
           Positioned(
-            bottom: MediaQuery.viewPaddingOf(context).bottom + 20,
+            bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: FloatingAnimatedButton(
               text: loc.create_match,
               icon: RpgAwesome.clovers_card,

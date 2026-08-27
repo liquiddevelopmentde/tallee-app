@@ -77,6 +77,7 @@ class _GroupViewState extends State<GroupView> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: CustomTheme.backgroundColor,
       body: Stack(
         alignment: Alignment.center,
@@ -178,7 +179,7 @@ class _GroupViewState extends State<GroupView> {
             ],
           ),
           Positioned(
-            bottom: MediaQuery.viewPaddingOf(context).bottom + 20,
+            bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: FloatingAnimatedButton(
               text: loc.create_group,
               icon: Icons.group_add,
