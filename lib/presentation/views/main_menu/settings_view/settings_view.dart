@@ -392,7 +392,7 @@ class _SettingsViewState extends State<SettingsView> {
         .push<ImportResult>(
           adaptivePageRoute<ImportResult>(
             fullscreenDialog: true,
-            builder: (_) => PreviewImportData(filePath: path),
+            builder: (_) => PreviewImportDataView(filePath: path),
           ),
         );
 

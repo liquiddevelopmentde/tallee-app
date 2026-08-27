@@ -138,7 +138,7 @@ class _TalleeState extends State<Tallee> {
       adaptivePageRoute(
         settings: RouteSettings(name: path),
         fullscreenDialog: true,
-        builder: (_) => PreviewImportData(
+        builder: (_) => PreviewImportDataView(
           filePath: path,
           messengerKey: scaffoldMessengerKey,
         ),
