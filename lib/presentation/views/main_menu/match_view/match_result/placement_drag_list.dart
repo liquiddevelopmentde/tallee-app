@@ -195,24 +195,28 @@ class _PlacementDragListState extends State<PlacementDragList> {
         animation: animation,
         child: child,
         builder: (context, child) {
-          final alpha = (Curves.easeInOut.transform(animation.value) * 40)
-              .toInt();
-          return Stack(
-            children: [
-              child!,
-              Positioned.fill(
-                left: useTeamLogic ? 4 : 0,
-                right: useTeamLogic ? 4 : 0,
-                top: 4,
-                bottom: 4,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(alpha),
-                    borderRadius: CustomTheme.standardBorderRadiusAll,
+          final t = Curves.easeInOut.transform(animation.value);
+          return Material(
+            type: MaterialType.transparency,
+            child: Stack(
+              children: [
+                child!,
+                Positioned.fill(
+                  left: useTeamLogic ? 4 : 0,
+                  right: useTeamLogic ? 4 : 0,
+                  top: 4,
+                  bottom: 4,
+                  child: IgnorePointer(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15 * t),
+                        borderRadius: CustomTheme.standardBorderRadiusAll,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       );

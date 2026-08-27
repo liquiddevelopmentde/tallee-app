@@ -73,7 +73,6 @@ class _ManageMembersViewState extends State<ManageMembersView> {
                 return AnimatedBuilder(
                   animation: animation,
                   builder: (context, _) {
-                    // Fade the white overlay in as the drag lifts off.
                     final t = Curves.easeInOut.transform(animation.value);
                     return Material(
                       type: MaterialType.transparency,
