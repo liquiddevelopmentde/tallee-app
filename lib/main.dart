@@ -9,8 +9,8 @@ import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/local_dev_http_overrides.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/local_dev_http_overrides.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/import_file_view.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
@@ -22,9 +22,7 @@ import 'package:tallee/state/match_search_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (kDebugMode) {
-    HttpOverrides.global = LocalDevHttpOverrides();
-  }
+  if (kDebugMode) HttpOverrides.global = LocalDevHttpOverrides();
 
   await dotenv.load();
   await SharedPreferencesService.init();
