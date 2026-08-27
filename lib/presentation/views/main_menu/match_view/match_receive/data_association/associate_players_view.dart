@@ -11,8 +11,8 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_groups_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
-import 'package:tallee/presentation/widgets/single_player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/tiles/associate_player_tile.dart';
+import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/services/match_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
@@ -196,8 +196,8 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
       context: context,
       backgroundColor: CustomTheme.backgroundColor,
       builder: (context) {
-        return SinglePlayerSelectionWidget(
-          onChanged: (player) async {
+        return PlayerSelectionWidget.single(
+          onSingleChanged: (player) async {
             await Future.delayed(const Duration(milliseconds: 400));
             if (!context.mounted) return;
             Navigator.of(context).pop(player);

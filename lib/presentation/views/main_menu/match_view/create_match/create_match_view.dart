@@ -12,7 +12,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/create_teams_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/multiple_player_selection_widget.dart';
+import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 
@@ -158,12 +158,12 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
               // Player selection widget.
               Expanded(
-                child: MultiplePlayerSelectionWidget(
+                child: PlayerSelectionWidget.multiple(
                   key: ValueKey(selectedGroup?.id ?? 'no_group'),
                   initialSelectedUnits: selectedUnits,
                   pairingEnabled: !isTeamMatch,
                   onPlayerCreated: () => widget.onMatchesUpdated?.call(),
-                  onChanged: (players, units) {
+                  onMultipleChanged: (players, units) {
                     setState(() {
                       selectedPlayers = players;
                       selectedUnits = units;
