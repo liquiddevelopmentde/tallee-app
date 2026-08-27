@@ -25,146 +25,98 @@ class ApiActionAnimatedButton extends StatefulWidget {
 
   @override
   State<ApiActionAnimatedButton> createState() =>
-      _ApiActionAnimatedButtonState();
+      ApiActionAnimatedButtonState();
 }
 
-class _ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
+class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late AnimationController _disabledAnimationController;
+  late AnimationController animationController;
+  late AnimationController disabledAnimationController;
 
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _disabledScaleAnimation;
+  late Animation<double> scaleAnimation;
+  late Animation<double> disabledScaleAnimation;
 
-  ApiButtonState _buttonState = ApiButtonState.idle;
+  ApiButtonState buttonState = ApiButtonState.idle;
 
   @override
   void initState() {
     super.initState();
 
-    _animationController = AnimationController(
+    animationController = AnimationController(
       duration: const Duration(milliseconds: 100),
       vsync: this,
     );
 
-    _disabledAnimationController = AnimationController(
+    disabledAnimationController = AnimationController(
       duration: const Duration(milliseconds: 100),
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
     );
 
-    _disabledScaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+    disabledScaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
       CurvedAnimation(
-        parent: _disabledAnimationController,
+        parent: disabledAnimationController,
         curve: Curves.easeInOut,
       ),
     );
   }
 
-  Future<void> _handlePress() async {
-    if (widget.onPressed == null) return;
-    if (_buttonState != ApiButtonState.idle) return;
-
-    await HapticFeedback.selectionClick();
-    _animationController.forward();
-    await Future.delayed(const Duration(milliseconds: 100));
-    _animationController.reverse();
-
-    setState(() {
-      _buttonState = ApiButtonState.loading;
-    });
-
-    try {
-      await widget.onPressed!();
-
-      if (mounted) {
-        setState(() {
-          _buttonState = ApiButtonState.success;
-        });
-        await HapticFeedback.heavyImpact();
-
-        await Future.delayed(const Duration(seconds: 2));
-        if (mounted) {
-          setState(() {
-            _buttonState = ApiButtonState.idle;
-          });
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _buttonState = ApiButtonState.error;
-        });
-
-        await HapticFeedback.heavyImpact();
-
-        await Future.delayed(const Duration(seconds: 2));
-        if (mounted) {
-          setState(() {
-            _buttonState = ApiButtonState.idle;
-          });
-        }
-      }
-    }
-  }
-
-  Color _getBackgroundColor() {
-    if (widget.onPressed == null) return Colors.grey;
-    if (_buttonState == ApiButtonState.loading) return Colors.grey[200]!;
-    return Colors.white;
+  @override
+  void dispose() {
+    animationController.dispose();
+    disabledAnimationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScaleTransition(
-      scale: widget.onPressed == null
-          ? _disabledScaleAnimation
-          : _scaleAnimation,
+      scale: widget.onPressed == null ? disabledScaleAnimation : scaleAnimation,
       child: GestureDetector(
         onTapDown: (_) {
           if (widget.onPressed == null) {
-            _disabledAnimationController.forward();
-          } else if (_buttonState == ApiButtonState.idle) {
-            _animationController.forward();
+            disabledAnimationController.forward();
+          } else if (buttonState == ApiButtonState.idle) {
+            animationController.forward();
           }
         },
         onTapUp: (_) {
           if (widget.onPressed == null) {
-            _disabledAnimationController.reverse();
+            disabledAnimationController.reverse();
           } else {
-            _handlePress();
+            handlePress();
           }
         },
         onTapCancel: () {
           if (widget.onPressed == null) {
-            _disabledAnimationController.reverse();
-          } else if (_buttonState == ApiButtonState.idle) {
-            _animationController.reverse();
+            disabledAnimationController.reverse();
+          } else if (buttonState == ApiButtonState.idle) {
+            animationController.reverse();
           }
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           decoration: BoxDecoration(
-            color: _getBackgroundColor(),
+            color: getBackgroundColor(),
             borderRadius: BorderRadius.circular(30),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          child: _buildContent(),
+          child: buildContent(),
         ),
       ),
     );
   }
 
-  Widget _buildContent() {
+  Widget buildContent() {
     return Stack(
       alignment: Alignment.center,
       children: [
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: _buttonState == ApiButtonState.idle ? 1.0 : 0.0,
+          opacity: buttonState == ApiButtonState.idle ? 1.0 : 0.0,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -187,7 +139,7 @@ class _ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
 
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: _buttonState == ApiButtonState.loading ? 1.0 : 0.0,
+          opacity: buttonState == ApiButtonState.loading ? 1.0 : 0.0,
           child: const SizedBox(
             width: 26,
             height: 26,
@@ -199,23 +151,69 @@ class _ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
         ),
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: _buttonState == ApiButtonState.success ? 1.0 : 0.0,
+          opacity: buttonState == ApiButtonState.success ? 1.0 : 0.0,
           child: const Icon(Icons.check, size: 26, color: Colors.green),
         ),
 
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: _buttonState == ApiButtonState.error ? 1.0 : 0.0,
+          opacity: buttonState == ApiButtonState.error ? 1.0 : 0.0,
           child: const Icon(Icons.close, size: 26, color: Colors.red),
         ),
       ],
     );
   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    _disabledAnimationController.dispose();
-    super.dispose();
+  Future<void> handlePress() async {
+    if (widget.onPressed == null) return;
+    if (buttonState != ApiButtonState.idle) return;
+
+    await HapticFeedback.selectionClick();
+    animationController.forward();
+    await Future.delayed(const Duration(milliseconds: 100));
+    animationController.reverse();
+
+    setState(() {
+      buttonState = ApiButtonState.loading;
+    });
+
+    try {
+      await widget.onPressed!();
+
+      if (mounted) {
+        setState(() {
+          buttonState = ApiButtonState.success;
+        });
+        await HapticFeedback.heavyImpact();
+
+        await Future.delayed(const Duration(seconds: 2));
+        if (mounted) {
+          setState(() {
+            buttonState = ApiButtonState.idle;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          buttonState = ApiButtonState.error;
+        });
+
+        await HapticFeedback.heavyImpact();
+
+        await Future.delayed(const Duration(seconds: 2));
+        if (mounted) {
+          setState(() {
+            buttonState = ApiButtonState.idle;
+          });
+        }
+      }
+    }
+  }
+
+  Color getBackgroundColor() {
+    if (widget.onPressed == null) return Colors.grey;
+    if (buttonState == ApiButtonState.loading) return Colors.grey[200]!;
+    return Colors.white;
   }
 }
