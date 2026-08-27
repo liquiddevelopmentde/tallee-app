@@ -30,7 +30,13 @@ class _EnterTokenViewState extends State<EnterTokenView> {
 
   @override
   void initState() {
-    tokenInputFieldController.addListener(() => setState(() {}));
+    tokenInputFieldController.addListener(() {
+      if (!validToken) {
+        setState(() => validToken = true);
+      } else {
+        setState(() {});
+      }
+    });
     super.initState();
   }
 
@@ -190,7 +196,6 @@ class _EnterTokenViewState extends State<EnterTokenView> {
 
       setState(() {
         match = loadedMatch;
-        validToken = true;
       });
 
       Navigator.of(context).push(
