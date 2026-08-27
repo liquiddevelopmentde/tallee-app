@@ -150,27 +150,27 @@ class _MatchShareViewState extends State<MatchShareView>
 
   void initSharingView([bool? initialSharingConsent]) async {
     isLoading = true;
-    late bool? storedSharingConsent;
+    late bool? hasStoredSharingConsent;
 
     if (initialSharingConsent == null) {
-      storedSharingConsent = await getStoredSharingConsent();
-      if (storedSharingConsent == null) {
+      hasStoredSharingConsent = await getStoredSharingConsent();
+      if (hasStoredSharingConsent == null) {
         bool? userDecision = await showConsentDialog();
         if (userDecision != null) {
           await saveStoredSharingConsent(userDecision);
-          storedSharingConsent = userDecision;
+          hasStoredSharingConsent = userDecision;
         } else {
           // if the user closed popup without selecting an option, set decision
           // temporarily to false and ask again next time
-          storedSharingConsent = false;
+          hasStoredSharingConsent = false;
         }
       }
     } else {
-      storedSharingConsent = initialSharingConsent;
+      hasStoredSharingConsent = initialSharingConsent;
     }
 
     setState(() {
-      storedSharingConsent == true
+      hasStoredSharingConsent!
           ? serverSharingEnabled = true
           : serverSharingEnabled = false;
     });
@@ -181,7 +181,7 @@ class _MatchShareViewState extends State<MatchShareView>
       _tabController.animateTo(2);
     }
 
-    if (storedSharingConsent) {
+    if (hasStoredSharingConsent) {
       Future.wait([
             MatchShareService().getShareToken(widget.match),
             Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
@@ -224,7 +224,7 @@ class _MatchShareViewState extends State<MatchShareView>
                 actionText: loc.retry,
                 onActionTap: () {
                   _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-                  initSharingView(storedSharingConsent);
+                  initSharingView(hasStoredSharingConsent);
                 },
               ),
             );
@@ -235,13 +235,13 @@ class _MatchShareViewState extends State<MatchShareView>
   /// Returns null when the key is not set, so user wasn't asked yet
   Future<bool?> getStoredSharingConsent() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool? shareConsent = prefs.getBool('shareConsent');
-    return shareConsent;
+    final bool? hasStoredSharingConsent = prefs.getBool('shareConsent');
+    return hasStoredSharingConsent;
   }
 
-  Future<void> saveStoredSharingConsent(bool consent) async {
+  Future<void> saveStoredSharingConsent(bool hasSharingConsent) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('shareConsent', consent);
+    await prefs.setBool('shareConsent', hasSharingConsent);
   }
 
   Future<bool?> showConsentDialog() {

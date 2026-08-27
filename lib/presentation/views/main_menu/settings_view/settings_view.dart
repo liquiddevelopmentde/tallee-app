@@ -354,9 +354,9 @@ class _SettingsViewState extends State<SettingsView> {
     });
   }
 
-  Future<void> saveStoredSharingConsent(bool consent) async {
+  Future<void> saveStoredSharingConsent(bool hasSharingConsent) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('shareConsent', consent);
+    await prefs.setBool('shareConsent', hasSharingConsent);
   }
 
   void handleExport(BuildContext scaffoldMessengerContext) async {
