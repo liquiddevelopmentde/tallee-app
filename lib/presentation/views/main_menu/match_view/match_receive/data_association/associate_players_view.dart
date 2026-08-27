@@ -2,6 +2,7 @@ import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -223,8 +224,8 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
       for (var importedPlayer in playersToAssociate) {
         final match = allPlayers.where((localPlayer) {
           return !usedLocalPlayerIds.contains(localPlayer.id) &&
-              localPlayer.name.toLowerCase() ==
-                  importedPlayer.name.toLowerCase() &&
+              localPlayer.name.compareIgnoringCaseTo(importedPlayer.name) ==
+                  0 &&
               localPlayer.nameCount == importedPlayer.nameCount;
         }).firstOrNull;
 
