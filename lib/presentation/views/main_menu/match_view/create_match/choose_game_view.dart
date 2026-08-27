@@ -23,6 +23,7 @@ class ChooseGameView extends StatefulWidget {
   /// - [initialGame]: The initially selected game
   /// - [onGamesUpdated]: Optional callback invoked when the games are updated
   /// - [statistic]: Optional statistic payload for choosing groups for a statistic
+  /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
   const ChooseGameView({
     super.key,
     required this.games,
@@ -38,9 +39,6 @@ class ChooseGameView extends StatefulWidget {
   final VoidCallback? onGamesUpdated;
   final Statistic? statistic;
   final bool enableMultiSelection;
-
-  /// An optional ruleset used to enforce a specific game type.
-  /// This is used during match sharing to ensure the game is compatible with the shared data.
   final Ruleset? requiredRuleset;
 
   @override

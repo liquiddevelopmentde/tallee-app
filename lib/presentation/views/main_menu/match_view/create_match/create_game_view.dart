@@ -23,6 +23,7 @@ import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 /// A stateful widget for creating or editing a game.
 /// - [gameToEdit] An optional game to prefill the fields
 /// - [onGameChanged] Callback to invoke when the game is created or edited
+/// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
 class CreateGameView extends StatefulWidget {
   const CreateGameView({
     super.key,
@@ -40,8 +41,6 @@ class CreateGameView extends StatefulWidget {
 
   final int matchCount;
 
-  /// An optional ruleset used to enforce a specific game type.
-  /// This is used during match sharing to ensure the game is compatible with the shared data.
   final Ruleset? requiredRuleset;
 
   @override
