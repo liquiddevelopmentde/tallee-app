@@ -36,36 +36,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
   @override
   void initState() {
     super.initState();
-    _autoAssociateGroup();
-  }
-
-  Future<void> _autoAssociateGroup() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    final allGroups = await db.groupDao.getAllGroups();
-
-    if (!mounted) return;
-
-    final importedGroup = widget.match.group;
-    if (importedGroup != null) {
-      final mappedLocalPlayerIds = importedGroup.members
-          .map((m) => widget.associations[m.id]?.id)
-          .whereType<String>()
-          .toSet();
-
-      if (mappedLocalPlayerIds.length != importedGroup.members.length) return;
-
-      final match = allGroups.where((localGroup) {
-        final localMemberIds = localGroup.members.map((m) => m.id).toSet();
-        return localMemberIds.length == mappedLocalPlayerIds.length &&
-            localMemberIds.containsAll(mappedLocalPlayerIds);
-      }).firstOrNull;
-
-      if (match != null) {
-        setState(() {
-          associatedGroup = match;
-        });
-      }
-    }
+    autoAssociateGroup();
   }
 
   @override
@@ -169,7 +140,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
             BottomAnimatedButton(
               buttonText: loc.save_match_button,
               sizeRelativeToWidth: 0.95,
-              onPressed: _saveMatch,
+              onPressed: saveMatch,
             ),
           ],
         ),
@@ -177,7 +148,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
     );
   }
 
-  Future<void> _saveMatch() async {
+  Future<void> saveMatch() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final loc = AppLocalizations.of(context);
 
@@ -252,6 +223,35 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
       setState(() {
         associatedGroup = selected;
       });
+    }
+  }
+
+  Future<void> autoAssociateGroup() async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final allGroups = await db.groupDao.getAllGroups();
+
+    if (!mounted) return;
+
+    final importedGroup = widget.match.group;
+    if (importedGroup != null) {
+      final mappedLocalPlayerIds = importedGroup.members
+          .map((m) => widget.associations[m.id]?.id)
+          .whereType<String>()
+          .toSet();
+
+      if (mappedLocalPlayerIds.length != importedGroup.members.length) return;
+
+      final match = allGroups.where((localGroup) {
+        final localMemberIds = localGroup.members.map((m) => m.id).toSet();
+        return localMemberIds.length == mappedLocalPlayerIds.length &&
+            localMemberIds.containsAll(mappedLocalPlayerIds);
+      }).firstOrNull;
+
+      if (match != null) {
+        setState(() {
+          associatedGroup = match;
+        });
+      }
     }
   }
 }

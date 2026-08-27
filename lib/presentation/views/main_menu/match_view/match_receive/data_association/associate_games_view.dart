@@ -26,26 +26,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
   @override
   void initState() {
     super.initState();
-    _autoAssociateGame();
-  }
-
-  Future<void> _autoAssociateGame() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    final allGames = await db.gameDao.getAllGames();
-
-    if (!mounted) return;
-
-    final importedGame = widget.match.game;
-    final match = allGames.where((localGame) {
-      return localGame.name.toLowerCase() == importedGame.name.toLowerCase() &&
-          localGame.ruleset == importedGame.ruleset;
-    }).firstOrNull;
-
-    if (match != null) {
-      setState(() {
-        associatedGame = match;
-      });
-    }
+    autoAssociateGame();
   }
 
   @override
@@ -103,7 +84,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
               },
               child: associatedGame == null
                   ? GestureDetector(
-                      onTap: _showGameSelectionSheet,
+                      onTap: showGameSelectionSheet,
                       child: Container(
                         key: const ValueKey('no_association'),
                         margin: CustomTheme.tileMargin,
@@ -157,7 +138,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                         associatedGame!.ruleset,
                         context,
                       ),
-                      onTap: _showGameSelectionSheet,
+                      onTap: showGameSelectionSheet,
                       isHighlighted: true,
                       badgeColor: getColorFromAppColor(associatedGame!.color),
                       borderColor: Colors.green.withAlpha(150),
@@ -184,7 +165,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
     );
   }
 
-  Future<void> _showGameSelectionSheet() async {
+  Future<void> showGameSelectionSheet() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final allGames = await db.gameDao.getAllGames();
 
@@ -209,6 +190,25 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
     if (selected != null) {
       setState(() {
         associatedGame = selected;
+      });
+    }
+  }
+
+  Future<void> autoAssociateGame() async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final allGames = await db.gameDao.getAllGames();
+
+    if (!mounted) return;
+
+    final importedGame = widget.match.game;
+    final match = allGames.where((localGame) {
+      return localGame.name.toLowerCase() == importedGame.name.toLowerCase() &&
+          localGame.ruleset == importedGame.ruleset;
+    }).firstOrNull;
+
+    if (match != null) {
+      setState(() {
+        associatedGame = match;
       });
     }
   }

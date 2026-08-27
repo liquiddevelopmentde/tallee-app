@@ -33,40 +33,13 @@ class AssociatePlayersView extends StatefulWidget {
 class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   final Map<String, Player?> associations = {};
 
-  List<Player> get playersToAssociate {
-    final Map<String, Player> allUniquePlayers = {};
-
-    // Add all players who played the match
-    for (final player in widget.match.players) {
-      allUniquePlayers[player.id] = player;
-    }
-
-    // Add all members of the associated group
-    if (widget.match.group != null) {
-      for (final player in widget.match.group!.members) {
-        allUniquePlayers[player.id] = player;
-      }
-    }
-
-    // Add all members of teams
-    if (widget.match.teams != null) {
-      for (final team in widget.match.teams!) {
-        for (final player in team.members) {
-          allUniquePlayers[player.id] = player;
-        }
-      }
-    }
-
-    return allUniquePlayers.values.toList();
-  }
-
   @override
   void initState() {
     super.initState();
     for (var player in playersToAssociate) {
       associations[player.id] = null;
     }
-    _autoAssociatePlayers();
+    autoAssociatePlayers();
   }
 
   @override
@@ -118,7 +91,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                         ? Colors.green.withAlpha(150)
                         : Colors.red.withAlpha(150),
                     onTap: () async {
-                      final selectedPlayer = await _showPlayerSelectionSheet(
+                      final selectedPlayer = await showPlayerSelectionSheet(
                         associatedPlayer,
                       );
                       if (selectedPlayer != null) {
@@ -204,7 +177,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  Future<Player?> _showPlayerSelectionSheet(Player? currentSelection) async {
+  Future<Player?> showPlayerSelectionSheet(Player? currentSelection) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final allPlayers = await db.playerDao.getAllPlayers();
     final associatedPlayerIds = associations.values
@@ -229,7 +202,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
             Navigator.of(context).pop(player);
           },
           onPlayerCreated: () {
-            _autoAssociatePlayers();
+            autoAssociatePlayers();
           },
           availablePlayers: availablePlayers,
           initialSelectedPlayer: currentSelection,
@@ -238,7 +211,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     );
   }
 
-  Future<void> _autoAssociatePlayers() async {
+  Future<void> autoAssociatePlayers() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final allPlayers = await db.playerDao.getAllPlayers();
 
@@ -261,5 +234,32 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
         }
       }
     });
+  }
+
+  List<Player> get playersToAssociate {
+    final Map<String, Player> allUniquePlayers = {};
+
+    // Add all players who played the match
+    for (final player in widget.match.players) {
+      allUniquePlayers[player.id] = player;
+    }
+
+    // Add all members of the associated group
+    if (widget.match.group != null) {
+      for (final player in widget.match.group!.members) {
+        allUniquePlayers[player.id] = player;
+      }
+    }
+
+    // Add all members of teams
+    if (widget.match.teams != null) {
+      for (final team in widget.match.teams!) {
+        for (final player in team.members) {
+          allUniquePlayers[player.id] = player;
+        }
+      }
+    }
+
+    return allUniquePlayers.values.toList();
   }
 }
