@@ -11,9 +11,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
-import 'package:tallee/services/share_exceptions.dart';
 
 class RemoteShareService {
   Future<String> getShareToken(Match match) async {
