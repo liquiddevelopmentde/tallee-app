@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 
 class TextChip extends StatefulWidget {
@@ -50,7 +51,10 @@ class _TextChipState extends State<TextChip> {
           isPressed = false;
         });
       },
-      onTap: widget.onTap,
+      onTap: () async {
+        widget.onTap();
+        await HapticFeedback.selectionClick();
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
