@@ -145,10 +145,10 @@ class _PlacementDragListState extends State<PlacementDragList> {
                       });
                     },
                     onReorderStart: (int index) async {
-                      await HapticFeedback.selectionClick();
+                      await HapticFeedback.heavyImpact();
                     },
                     onReorderEnd: (int index) async {
-                      await HapticFeedback.successNotification();
+                      await HapticFeedback.selectionClick();
                     },
                     itemCount: itemCount,
                     itemBuilder: (context, index) {
