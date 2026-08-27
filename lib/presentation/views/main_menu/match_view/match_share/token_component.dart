@@ -10,8 +10,8 @@ import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dar
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
-class TokenView extends StatelessWidget {
-  const TokenView({
+class TokenComponent extends StatelessWidget {
+  const TokenComponent({
     super.key,
     required this.secondsRemaining,
     required this.totalSeconds,

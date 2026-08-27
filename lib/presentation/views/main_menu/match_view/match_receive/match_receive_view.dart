@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/enter_token_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/qr_scan_view.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/enter_token_component.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file_component.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/qr_scan_component.dart';
 
 class MatchReceiveView extends StatefulWidget {
   const MatchReceiveView({super.key});
@@ -78,9 +78,9 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
               child: TabBarView(
                 controller: _tabController,
                 children: const [
-                  QrScanView(),
-                  EnterTokenView(),
-                  ImportFileView(),
+                  QrScanComponent(),
+                  EnterTokenComponent(),
+                  ImportFileComponent(),
                 ],
               ),
             ),

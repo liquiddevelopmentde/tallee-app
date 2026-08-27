@@ -9,8 +9,8 @@ import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
-class QrCodeView extends StatelessWidget {
-  const QrCodeView({
+class QrCodeComponent extends StatelessWidget {
+  const QrCodeComponent({
     super.key,
     required this.qrImage,
     required this.isLoading,

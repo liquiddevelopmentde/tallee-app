@@ -11,14 +11,14 @@ import 'package:tallee/presentation/widgets/qr_scanner_overlay_shape.dart';
 import 'package:tallee/services/match_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
-class QrScanView extends StatefulWidget {
-  const QrScanView({super.key});
+class QrScanComponent extends StatefulWidget {
+  const QrScanComponent({super.key});
 
   @override
-  State<QrScanView> createState() => _QrScanViewState();
+  State<QrScanComponent> createState() => _QrScanComponentState();
 }
 
-class _QrScanViewState extends State<QrScanView> {
+class _QrScanComponentState extends State<QrScanComponent> {
   final MobileScannerController controller = MobileScannerController(
     formats: [BarcodeFormat.qrCode],
   );

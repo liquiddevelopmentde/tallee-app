@@ -14,14 +14,14 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/services/match_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
 
-class EnterTokenView extends StatefulWidget {
-  const EnterTokenView({super.key});
+class EnterTokenComponent extends StatefulWidget {
+  const EnterTokenComponent({super.key});
 
   @override
-  State<EnterTokenView> createState() => _EnterTokenViewState();
+  State<EnterTokenComponent> createState() => _EnterTokenComponentState();
 }
 
-class _EnterTokenViewState extends State<EnterTokenView> {
+class _EnterTokenComponentState extends State<EnterTokenComponent> {
   TextEditingController tokenInputFieldController = TextEditingController();
 
   late Match match;

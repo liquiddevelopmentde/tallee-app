@@ -11,14 +11,14 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_receive/dat
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/services/match_share_service.dart';
 
-class ImportFileView extends StatefulWidget {
-  const ImportFileView({super.key});
+class ImportFileComponent extends StatefulWidget {
+  const ImportFileComponent({super.key});
 
   @override
-  State<ImportFileView> createState() => _ImportFileViewState();
+  State<ImportFileComponent> createState() => _ImportFileComponentState();
 }
 
-class _ImportFileViewState extends State<ImportFileView> {
+class _ImportFileComponentState extends State<ImportFileComponent> {
   bool successfulImport = false;
 
   Color dottedBorderColor = CustomTheme.boxBorderColor;

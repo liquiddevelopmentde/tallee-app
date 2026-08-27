@@ -8,16 +8,16 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/services/match_share_service.dart';
 
-class FileView extends StatefulWidget {
+class SaveFileComponent extends StatefulWidget {
   final Match match;
 
-  const FileView({required this.match, super.key});
+  const SaveFileComponent({required this.match, super.key});
 
   @override
-  State<FileView> createState() => _FileViewState();
+  State<SaveFileComponent> createState() => _SaveFileComponentState();
 }
 
-class _FileViewState extends State<FileView> {
+class _SaveFileComponentState extends State<SaveFileComponent> {
   late String formattedMatchName;
   late double fileSize;
 

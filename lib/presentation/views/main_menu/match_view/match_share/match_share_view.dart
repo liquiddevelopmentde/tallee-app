@@ -8,9 +8,9 @@ import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_share/file_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_share/qr_code_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_share/token_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_share/qr_code_component.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_share/save_file_component.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_share/token_component.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/services/match_share_service.dart';
@@ -118,7 +118,7 @@ class _MatchShareViewState extends State<MatchShareView>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  QrCodeView(
+                  QrCodeComponent(
                     qrImage: qrImage,
                     isLoading: isLoading,
                     secondsRemaining: _secondsRemaining,
@@ -128,7 +128,7 @@ class _MatchShareViewState extends State<MatchShareView>
                       initSharingView();
                     },
                   ),
-                  TokenView(
+                  TokenComponent(
                     secondsRemaining: _secondsRemaining,
                     totalSeconds: _totalSeconds,
                     shareToken: shareToken,
@@ -138,7 +138,7 @@ class _MatchShareViewState extends State<MatchShareView>
                       initSharingView();
                     },
                   ),
-                  FileView(match: widget.match),
+                  SaveFileComponent(match: widget.match),
                 ],
               ),
             ),
