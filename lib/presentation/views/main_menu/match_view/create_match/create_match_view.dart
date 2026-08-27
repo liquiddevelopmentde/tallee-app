@@ -12,6 +12,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/create_teams_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/custom_switch.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
@@ -21,7 +22,7 @@ class CreateMatchView extends StatefulWidget {
   /// - [onWinnerChanged]: Optional callback invoked when the winner is changed
   /// - [editMode]: a bool which sets the view to edit mode
   /// - [matchToPrefill]: An optional match to prefill the fields
-  /// - [onMatchUpdated]: Optional callback invoked when the match is updated (only in
+  /// - [onMatchUpdated]: Optional callback invoked when the match is updated
   const CreateMatchView({
     super.key,
     this.onWinnerChanged,
@@ -141,8 +142,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               if (!widget.editMode)
                 ChooseTile(
                   title: loc.team_match,
-                  trailing: Switch.adaptive(
-                    activeTrackColor: CustomTheme.primaryColor,
+                  trailing: CustomSwitch(
                     padding: const EdgeInsets.symmetric(vertical: -15),
                     value: isTeamMatch,
                     onChanged: (value) => setState(() {
