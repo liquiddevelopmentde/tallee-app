@@ -191,7 +191,7 @@ class TokenComponent extends StatelessWidget {
       child: Text(
         char,
         style: const TextStyle(
-          fontSize: 35, //war mal 45
+          fontSize: 35,
           fontWeight: FontWeight.w400,
           color: CustomTheme.textColor,
         ),
