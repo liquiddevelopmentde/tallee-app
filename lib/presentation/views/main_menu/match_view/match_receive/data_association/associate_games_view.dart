@@ -7,7 +7,7 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_players_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_players_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
 

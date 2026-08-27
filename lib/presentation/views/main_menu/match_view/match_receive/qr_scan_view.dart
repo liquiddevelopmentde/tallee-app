@@ -6,7 +6,7 @@ import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_games_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
 import 'package:tallee/services/match_share_service.dart';
 import 'package:tallee/services/share_exceptions.dart';
 

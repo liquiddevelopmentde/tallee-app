@@ -7,7 +7,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_import/associate_groups_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_groups_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/single_player_selection_widget.dart';
