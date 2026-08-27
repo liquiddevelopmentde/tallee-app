@@ -269,6 +269,43 @@ class RemoteShareService {
       return false;
     }
 
+    // Validate game
+    final game = decoded['game'] as Map<String, dynamic>?;
+    if (game != null) {
+      final gameName = game['name'] as String?;
+      if (gameName != null &&
+          gameName.length > Constants.MAX_GAME_NAME_LENGTH) {
+        return false;
+      }
+      final gameDesc = game['description'] as String?;
+      if (gameDesc != null &&
+          gameDesc.length > Constants.MAX_GAME_DESCRIPTION_LENGTH) {
+        return false;
+      }
+    }
+
+    // Validate players
+    final players = decoded['players'] as List<dynamic>?;
+    if (players != null) {
+      for (final p in players) {
+        final playerName = p['name'] as String?;
+        if (playerName != null &&
+            playerName.length > Constants.MAX_PLAYER_NAME_LENGTH) {
+          return false;
+        }
+      }
+    }
+
+    // Validate group
+    final group = decoded['group'] as Map<String, dynamic>?;
+    if (group != null) {
+      final groupName = group['name'] as String?;
+      if (groupName != null &&
+          groupName.length > Constants.MAX_GROUP_NAME_LENGTH) {
+        return false;
+      }
+    }
+
     // Validate teams
     final teams = decoded['teams'] as List<dynamic>?;
     if (teams != null) {
