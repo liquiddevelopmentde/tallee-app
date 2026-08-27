@@ -122,7 +122,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                               children: getGroupsFromData
                                   .map(
                                     (group) => TextIconListTile(
-                                      text: group['name'] as String? ?? '',
+                                      text: group['name'],
                                       description:
                                           '${memberCountForGroup(group['id'] as String?).toString()} ${loc.members}',
                                     ),
