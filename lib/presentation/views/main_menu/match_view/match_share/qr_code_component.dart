@@ -1,10 +1,9 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_share/countdown_painter.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -160,39 +159,4 @@ class QrCodeComponent extends StatelessWidget {
 
     return QrImage(qrCode);
   }
-}
-
-class CountdownPainter extends CustomPainter {
-  final double progress;
-  final Color color;
-
-  CountdownPainter({required this.progress, required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 4
-      ..style = PaintingStyle.stroke
-      ..strokeCap = ui.StrokeCap.round;
-
-    final path = ui.Path();
-
-    final rect = Rect.fromLTWH(2, 2, size.width - 4, size.height - 4);
-    const double radius = CustomTheme.standardBorderRadius - 2;
-
-    path.addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(radius)));
-
-    final metrics = path.computeMetrics().toList();
-    if (metrics.isEmpty) return;
-
-    final metric = metrics.first;
-    final extractPath = metric.extractPath(0, metric.length * progress);
-
-    canvas.drawPath(extractPath, paint);
-  }
-
-  @override
-  bool shouldRepaint(CountdownPainter oldDelegate) =>
-      oldDelegate.progress != progress;
 }
