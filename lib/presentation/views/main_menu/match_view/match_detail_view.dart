@@ -120,7 +120,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   : Colors.white.withAlpha(150),
             ),
           ),
-          IconButton(
+          HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
               showDialog<bool>(
