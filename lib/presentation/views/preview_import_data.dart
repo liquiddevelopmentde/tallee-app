@@ -23,17 +23,21 @@ import 'package:tallee/state/data_refresh_provider.dart';
 /// - [filePath]: Path to the file
 /// - [messengerKey]: Optional key to a [ScaffoldMessenger] that should show
 /// the result snackbar. If not provided, the result is returned via [Navigator.pop].
-class ImportFileView extends StatefulWidget {
-  const ImportFileView({super.key, required this.filePath, this.messengerKey});
+class PreviewImportData extends StatefulWidget {
+  const PreviewImportData({
+    super.key,
+    required this.filePath,
+    this.messengerKey,
+  });
 
   final String filePath;
   final GlobalKey<ScaffoldMessengerState>? messengerKey;
 
   @override
-  State<ImportFileView> createState() => _ImportFileViewState();
+  State<PreviewImportData> createState() => _PreviewImportDataState();
 }
 
-class _ImportFileViewState extends State<ImportFileView> {
+class _PreviewImportDataState extends State<PreviewImportData> {
   bool isLoading = true;
   String? jsonString;
 

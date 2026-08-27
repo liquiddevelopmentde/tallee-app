@@ -12,8 +12,8 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/import_file_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licenses_view.dart';
+import 'package:tallee/presentation/views/preview_import_data.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
@@ -392,7 +392,7 @@ class _SettingsViewState extends State<SettingsView> {
         .push<ImportResult>(
           adaptivePageRoute<ImportResult>(
             fullscreenDialog: true,
-            builder: (_) => ImportFileView(filePath: path),
+            builder: (_) => PreviewImportData(filePath: path),
           ),
         );
 
