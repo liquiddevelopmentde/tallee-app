@@ -27,15 +27,6 @@ class QrCodeView extends StatelessWidget {
   final bool serverSharingEnabled;
   final VoidCallback onOnlineSharingPrefChanged;
 
-  QrImage loadingStateQr() {
-    final qrCode = QrCode.fromData(
-      data: 'NOT_READY_YET',
-      errorCorrectLevel: QrErrorCorrectLevel.H,
-    );
-
-    return QrImage(qrCode);
-  }
-
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
@@ -159,6 +150,15 @@ class QrCodeView extends StatelessWidget {
               ),
             ],
           );
+  }
+
+  QrImage loadingStateQr() {
+    final qrCode = QrCode.fromData(
+      data: 'NOT_READY_YET',
+      errorCorrectLevel: QrErrorCorrectLevel.H,
+    );
+
+    return QrImage(qrCode);
   }
 }
 
