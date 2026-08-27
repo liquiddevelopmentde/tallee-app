@@ -55,13 +55,10 @@ class RemoteShareService {
 
       final Map<String, dynamic> data = jsonDecode(response.body);
 
-      print(data['payload']);
-
       if (!data.containsKey('payload')) {
         throw ParsingException();
       }
 
-      print(Match.fromJson(data['payload']));
       return Match.fromJson(data['payload']);
     } on SocketException catch (e) {
       print(e);
