@@ -228,6 +228,7 @@
   },
   "scan_qr_code_instruction": "Scan the qr code with another Tallee instance to share the match.",
   "online_sharing_disabled": "Online sharing is disabled",
+  "online_sharing_enabled": "Online sharing is enabled",
   "go_to_settings_to_enable": "Go to the settings to manually enable it.",
   "open_settings": "Open Settings",
   "send_code_instruction": "Send this code to a person who also has Tallee to share the current match.",

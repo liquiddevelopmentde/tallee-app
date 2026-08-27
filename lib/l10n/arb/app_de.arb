@@ -219,6 +219,7 @@
   },
   "scan_qr_code_instruction": "Scanne den QR-Code mit einer anderen Tallee-Instanz, um das Match zu teilen.",
   "online_sharing_disabled": "Online-Teilen ist deaktiviert",
+  "online_sharing_enabled": "Online-Teilen ist aktiviert",
   "go_to_settings_to_enable": "Gehe in die Einstellungen, um es manuell zu aktivieren.",
   "open_settings": "Einstellungen öffnen",
   "send_code_instruction": "Sende diesen Code an eine Person, die ebenfalls Tallee hat, um das aktuelle Match zu teilen.",

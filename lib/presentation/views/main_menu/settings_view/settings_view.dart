@@ -98,21 +98,21 @@ class _SettingsViewState extends State<SettingsView> {
                     onPressed: () => handleImport(scaffoldMessengerContext),
                   ),
                   SettingsListTile(
-                    title: 'Online Sharing',
+                    title: loc.online_sharing_title,
                     icon: Icons.cloud,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
                     onPressed: () async {
                       showDialog(
                         context: context,
                         builder: (context) => CustomAlertDialog(
-                          title: 'Online Sharing',
-                          content: const Text(
-                            'To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?',
+                          title: loc.online_sharing_title,
+                          content: Text(
+                            loc.online_sharing_consent_text,
                             overflow: TextOverflow.visible,
                           ),
                           actions: [
                             CustomDialogAction(
-                              text: 'Enable',
+                              text: loc.enable,
                               onPressed: () async {
                                 await saveStoredSharingConsent(true);
                                 if (context.mounted) {
@@ -121,7 +121,7 @@ class _SettingsViewState extends State<SettingsView> {
                               },
                             ),
                             CustomDialogAction(
-                              text: 'Disable',
+                              text: loc.disable,
                               buttonType: ButtonType.secondary,
                               onPressed: () async {
                                 await saveStoredSharingConsent(false);
@@ -137,8 +137,8 @@ class _SettingsViewState extends State<SettingsView> {
                           showSnackbar(
                             context: scaffoldMessengerContext,
                             message: confirmed
-                                ? 'Successfully enabled online Sharing.'
-                                : 'Successfully disabled online Sharing.',
+                                ? loc.online_sharing_enabled
+                                : loc.online_sharing_disabled,
                           );
                         }
                       });
