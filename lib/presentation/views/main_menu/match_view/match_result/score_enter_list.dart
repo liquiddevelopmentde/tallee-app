@@ -30,6 +30,7 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
   late List<Team> allTeams;
 
   late List<TextEditingController> controller;
+  late List<FocusNode> focusNodes;
   Map<dynamic, int?> scores = {};
 
   bool canSave = false;
@@ -57,6 +58,7 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
 
     // Init controlelrs
     controller = List.generate(entryLength, (index) => TextEditingController());
+    focusNodes = List.generate(entryLength, (index) => FocusNode());
     applyScoresToControllers(widget.initialScores);
 
     for (final c in controller) {
@@ -72,6 +74,18 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
     super.didUpdateWidget(oldWidget);
     scores = widget.initialScores;
     applyScoresToControllers(scores);
+  }
+
+  @override
+  void dispose() {
+    for (final c in controller) {
+      c.removeListener(onTextEnter);
+      c.dispose();
+    }
+    for (final f in focusNodes) {
+      f.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -92,6 +106,11 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
                           allTeams[index],
                           isTeamMatch: false,
                         ),
+                  focusNode: focusNodes[index],
+                  textInputAction: index == allTeams.length - 1
+                      ? TextInputAction.done
+                      : TextInputAction.next,
+                  onSubmitted: (_) => focusNextTile(index),
                   horizontalPadding: 0,
                   controller: controller[index],
                   onChanged: (String text) {
@@ -120,6 +139,12 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
                     ),
                   ),
                   controller: controller[index],
+                  focusNode: focusNodes[index],
+                  textInputAction: index == allPlayers.length - 1
+                      ? TextInputAction.done
+                      : TextInputAction.next,
+                  onSubmitted: (_) => focusNextTile(index),
+                  horizontalPadding: 0,
                   onChanged: (String text) {
                     final score = text.isEmpty ? null : int.tryParse(text);
                     scores[allPlayers[index]] = score;
@@ -135,6 +160,16 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
               },
             ),
     );
+  }
+
+  /// Moves the keyboard focus to the next team tile. If the current tile is the
+  /// last one, the focus is dropped and the keyboard is dismissed instead.
+  void focusNextTile(int index) {
+    if (index < focusNodes.length - 1) {
+      focusNodes[index + 1].requestFocus();
+    } else {
+      focusNodes[index].unfocus();
+    }
   }
 
   void applyScoresToControllers(Map<dynamic, int?> newScores) {
@@ -164,14 +199,5 @@ class _ScoreEnterListState extends State<ScoreEnterList> {
     if (suppressListener) return;
     canSave = controller.every((c) => c.text.isNotEmpty);
     widget.onCanSaveChanged?.call(canSave);
-  }
-
-  @override
-  void dispose() {
-    for (final c in controller) {
-      c.removeListener(onTextEnter);
-      c.dispose();
-    }
-    super.dispose();
   }
 }
