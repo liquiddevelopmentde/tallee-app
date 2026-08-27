@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
@@ -12,7 +13,6 @@ import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.d
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/services/remote_share_service.dart';
-import 'package:tallee/services/share_exceptions.dart';
 
 class EnterTokenComponent extends StatefulWidget {
   const EnterTokenComponent({super.key});

@@ -6,6 +6,7 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/qr_code_component.dart';
@@ -14,7 +15,6 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_share/token
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/services/remote_share_service.dart';
-import 'package:tallee/services/share_exceptions.dart';
 
 class MatchShareView extends StatefulWidget {
   const MatchShareView({super.key, required this.match});

@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
 import 'package:tallee/presentation/widgets/qr_scanner_overlay_shape.dart';
 import 'package:tallee/services/remote_share_service.dart';
-import 'package:tallee/services/share_exceptions.dart';
 
 class QrScanComponent extends StatefulWidget {
   const QrScanComponent({super.key});

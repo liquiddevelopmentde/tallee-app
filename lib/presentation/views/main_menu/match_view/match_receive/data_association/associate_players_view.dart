@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -14,7 +15,6 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/tiles/associate_player_tile.dart';
 import 'package:tallee/services/remote_share_service.dart';
-import 'package:tallee/services/share_exceptions.dart';
 
 class AssociatePlayersView extends StatefulWidget {
   const AssociatePlayersView({
