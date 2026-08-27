@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 
 class AssociatePlayerTile extends StatefulWidget {
@@ -27,6 +28,8 @@ class AssociatePlayerTile extends StatefulWidget {
 class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     return AnimatedContainer(
       decoration: CustomTheme.standardBoxDecoration.copyWith(
         border: Border.all(
@@ -85,8 +88,8 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                             ),
                           )
                         else
-                          const Text(
-                            'None',
+                          Text(
+                            loc.none,
                             style: TextStyle(fontSize: 17),
                             textAlign: TextAlign.right,
                           ),
