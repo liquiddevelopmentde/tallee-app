@@ -2,6 +2,7 @@ import 'dart:core' hide Match;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:provider/provider.dart';
@@ -62,6 +63,12 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               buildDefaultDragHandles: false,
               itemCount: allItemsCount,
               onReorderItem: onReorderItem,
+              onReorderStart: (int index) async {
+                await HapticFeedback.heavyImpact();
+              },
+              onReorderEnd: (int index) async {
+                await HapticFeedback.selectionClick();
+              },
               proxyDecorator: (child, index, animation) =>
                   Material(type: MaterialType.transparency, child: child),
               itemBuilder: (context, index) {

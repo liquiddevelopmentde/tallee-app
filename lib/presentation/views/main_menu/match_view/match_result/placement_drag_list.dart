@@ -1,6 +1,7 @@
 import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/edge_blocked_bouncing_scroll_physics.dart';
@@ -89,6 +90,12 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         allTeams.insert(newIndex, team);
                       });
                     },
+                    onReorderStart: (int index) async {
+                      await HapticFeedback.heavyImpact();
+                    },
+                    onReorderEnd: (int index) async {
+                      await HapticFeedback.selectionClick();
+                    },
                     itemCount: itemCount,
                     itemBuilder: (context, index) {
                       return SizedBox(
@@ -136,6 +143,12 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         final Player item = allPlayers.removeAt(oldIndex);
                         allPlayers.insert(newIndex, item);
                       });
+                    },
+                    onReorderStart: (int index) async {
+                      await HapticFeedback.selectionClick();
+                    },
+                    onReorderEnd: (int index) async {
+                      await HapticFeedback.successNotification();
                     },
                     itemCount: itemCount,
                     itemBuilder: (context, index) {
