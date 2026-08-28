@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result/multiple_player_selection.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result/placement_drag_list.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result/single_player_selection.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
-import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
+import 'package:tallee/presentation/widgets/cards/team_card.dart';
+import 'package:tallee/presentation/widgets/tiles/match_result_view/match_result_list_tile.dart';
 
 class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
@@ -33,8 +31,8 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   late final Ruleset ruleset;
 
-  late final List<Player> allPlayers;
-  late final List<Team> allTeams;
+  late List<Player> allPlayers;
+  late List<Team> allTeams;
 
   /// Flag to indicate if the save button should be enabled
   late bool canSave;
@@ -62,12 +60,16 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool rulesetSupportsDragBehaviour() => ruleset == Ruleset.placement;
 
+  /// Number of participating units (players or teams).
+  int get unitCount => useTeamLogic ? allTeams.length : allPlayers.length;
+
+  dynamic getUnit(int index) => useTeamLogic ? allTeams[index] : allPlayers[index];
+
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
     ruleset = widget.match.game.ruleset;
-    canSave =
-        rulesetSupportsDragBehaviour() || rulesetSupportsScoreEntry();
+    canSave = rulesetSupportsDragBehaviour() || rulesetSupportsScoreEntry();
 
     initData();
     super.initState();
@@ -92,90 +94,32 @@ class _MatchResultViewState extends State<MatchResultView> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              decoration: BoxDecoration(
-                color: CustomTheme.boxColor,
-                border: Border.all(color: CustomTheme.boxBorderColor),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    getTitleForRuleset(loc),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Show player selection
-                  if (rulesetSupportsPlayerSelection())
-                    if (ruleset == Ruleset.multipleWinners)
-                      MultiplePlayerSelection(
-                        match: widget.match,
-                        onPlayersSelected: (List<Player> players) {
-                          selectedPlayers = players;
-                          setState(() {
-                            canSave = players.isNotEmpty;
-                          });
-                        },
-                        onTeamsSelected: (List<Team> teams) {
-                          selectedTeams = teams;
-                          setState(() {
-                            canSave = teams.isNotEmpty;
-                          });
-                        },
-                      )
-                    else
-                      SinglePlayerSelection(
-                        match: widget.match,
-                        onPlayerSelected: (Player? player) {
-                          selectedPlayer = player;
-                          setState(() {
-                            canSave = player != null;
-                          });
-                        },
-                        onTeamSelected: (Team? team) {
-                          selectedTeam = team;
-                          setState(() {
-                            canSave = team != null;
-                          });
-                        },
-                      ),
-
-                  // Show live score entry
-                  if (rulesetSupportsScoreEntry()) buildLiveScoreList(),
-
-                  // Show draggable placement list
-                  if (rulesetSupportsDragBehaviour())
-                    PlacementDragList(
-                      match: widget.match,
-                      onPlayerOrderChanged: (List<Player> players) =>
-                          allPlayers = players,
-                      onTeamOrderChanged: (List<Team> teams) =>
-                          allTeams = teams,
-                    ),
-                ],
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                getTitleForRuleset(loc),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: CustomTheme.hintColor,
+                ),
               ),
             ),
           ),
+          Expanded(child: _buildContent()),
 
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
             child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Finish Button
-                  BottomAnimatedButton(
-                    sizeRelativeToWidth: 0.95,
-                    buttonText: loc.finish_match,
-                    onPressed: canSave
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Finish Button
+                BottomAnimatedButton(
+                  sizeRelativeToWidth: 0.95,
+                  buttonText: loc.finish_match,
+                  onPressed: canSave
                       ? () async {
                           final ending = DateTime.now();
                           await db.matchDao.updateMatchEndedAt(
@@ -196,60 +140,203 @@ class _MatchResultViewState extends State<MatchResultView> {
     );
   }
 
-  /// Builds the live score stepper list for score-based rulesets.
-  Widget buildLiveScoreList() {
-    if (useTeamLogic) {
-      final teams = [...?widget.match.teams]
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-      return Expanded(
-        child: ListView.builder(
-          itemCount: teams.length,
-          itemBuilder: (context, index) {
-            final team = teams[index];
-            return LiveEditListTile(
-              title: buildUnitNameWidget(
-                team,
-                isTeamMatch: widget.match.isTeamMatch,
-                rowAlignment: MainAxisAlignment.center,
-                mainStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              onChanged: (value) => setState(() {
-                scores[team] = value;
-              }),
-              value: scores[team] ?? 0,
-              color: isTeamMatch ? getColorFromAppColor(team.color) : null,
-            );
-          },
-        ),
-      );
+  /// Builds the unified participant list for the current ruleset.
+  Widget _buildContent() {
+    if (rulesetSupportsPlayerSelection()) {
+      return _buildSelectionList();
+    } else if (rulesetSupportsScoreEntry()) {
+      return _buildScoreList();
+    } else {
+      return _buildPlacementList();
     }
+  }
 
-    final players = [...widget.match.players]
-      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-    return Expanded(
-      child: ListView.builder(
-        itemCount: players.length,
-        itemBuilder: (context, index) {
-          final player = players[index];
-          return LiveEditListTile(
-            title: buildUnitNameWidget(
-              player,
+  /// Builds a unified tile for a participant.
+  Widget _buildTile({
+    required dynamic unit,
+    bool selected = false,
+    VoidCallback? onTap,
+    Widget? leading,
+    Widget? trailing,
+  }) {
+    return MatchResultListTile(
+      key: ValueKey(unit.id),
+      selected: selected,
+      onTap: onTap,
+      leading: leading,
+      trailing: trailing,
+      child: useTeamLogic && isTeamMatch
+          ? TeamCard(team: unit as Team, maxChars: 24)
+          : buildUnitNameWidget(
+              unit,
+              isTeamMatch: false,
               mainStyle: const TextStyle(
-                fontWeight: FontWeight.bold,
                 fontSize: 16,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            onChanged: (value) => setState(() {
-              scores[player] = value;
-            }),
-            value: scores[player] ?? 0,
-          );
-        },
-      ),
     );
+  }
+
+  /// Builds the selection list for winner/loser/multiple-winner rulesets.
+  Widget _buildSelectionList() {
+    return ListView.builder(
+      padding: const EdgeInsets.only(bottom: 8),
+      itemCount: unitCount,
+      itemBuilder: (context, index) {
+        final unit = getUnit(index);
+        final selected = _isSelected(unit);
+        return _buildTile(
+          unit: unit,
+          selected: selected,
+          onTap: () => _toggleSelection(unit),
+          trailing: Icon(
+            selected
+                ? Icons.check_circle_rounded
+                : Icons.radio_button_unchecked_rounded,
+            size: 24,
+            color: selected ? CustomTheme.primaryColor : CustomTheme.hintColor,
+          ),
+        );
+      },
+    );
+  }
+
+  /// Builds the score stepper list for score-based rulesets.
+  Widget _buildScoreList() {
+    return ListView.builder(
+      padding: const EdgeInsets.only(bottom: 8),
+      itemCount: unitCount,
+      itemBuilder: (context, index) {
+        final unit = getUnit(index);
+        return _buildTile(
+          unit: unit,
+          trailing: _buildStepper(unit),
+        );
+      },
+    );
+  }
+
+  /// Builds the stepper control for adjusting a participant's score.
+  Widget _buildStepper(dynamic unit) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _StepButton(
+          icon: Icons.remove_rounded,
+          onTap: () => _adjustScore(unit, -1),
+          onLongPress: () => _adjustScore(unit, -10),
+        ),
+        SizedBox(
+          width: 64,
+          child: Text(
+            '${scores[unit] ?? 0}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          ),
+        ),
+        _StepButton(
+          icon: Icons.add_rounded,
+          onTap: () => _adjustScore(unit, 1),
+          onLongPress: () => _adjustScore(unit, 10),
+        ),
+      ],
+    );
+  }
+
+  void _adjustScore(dynamic unit, int delta) {
+    setState(() {
+      scores[unit] = (scores[unit] ?? 0) + delta;
+    });
+  }
+
+  /// Builds the draggable placement list for the placement ruleset.
+  Widget _buildPlacementList() {
+    return ReorderableListView.builder(
+      padding: const EdgeInsets.only(bottom: 8),
+      buildDefaultDragHandles: false,
+      onReorderItem: _onReorder,
+      itemCount: unitCount,
+      itemBuilder: (context, index) {
+        final unit = getUnit(index);
+        return _buildTile(
+          unit: unit,
+          leading: _placementBadge(index),
+          trailing: ReorderableDragStartListener(
+            index: index,
+            child: const Icon(Icons.drag_handle, color: CustomTheme.hintColor),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _placementBadge(int index) => Container(
+        width: 32,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: CustomTheme.boxBorderColor,
+          borderRadius: CustomTheme.standardBorderRadiusAll,
+        ),
+        child: Text(
+          '${index + 1}',
+          style: const TextStyle(
+            color: CustomTheme.textColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+          ),
+        ),
+      );
+
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      if (useTeamLogic) {
+        final team = allTeams.removeAt(oldIndex);
+        allTeams.insert(newIndex, team);
+      } else {
+        final player = allPlayers.removeAt(oldIndex);
+        allPlayers.insert(newIndex, player);
+      }
+    });
+  }
+
+  bool _isSelected(dynamic unit) {
+    if (ruleset == Ruleset.multipleWinners) {
+      return useTeamLogic
+          ? selectedTeams.contains(unit)
+          : selectedPlayers.contains(unit);
+    }
+    return useTeamLogic ? selectedTeam == unit : selectedPlayer == unit;
+  }
+
+  void _toggleSelection(dynamic unit) {
+    setState(() {
+      if (ruleset == Ruleset.multipleWinners) {
+        if (useTeamLogic) {
+          if (selectedTeams.contains(unit)) {
+            selectedTeams.remove(unit);
+          } else {
+            selectedTeams.add(unit as Team);
+          }
+        } else {
+          if (selectedPlayers.contains(unit)) {
+            selectedPlayers.remove(unit);
+          } else {
+            selectedPlayers.add(unit as Player);
+          }
+        }
+        canSave = (useTeamLogic ? selectedTeams : selectedPlayers).isNotEmpty;
+      } else {
+        if (useTeamLogic) {
+          selectedTeam = selectedTeam == unit ? null : unit as Team;
+          canSave = selectedTeam != null;
+        } else {
+          selectedPlayer = selectedPlayer == unit ? null : unit as Player;
+          canSave = selectedPlayer != null;
+        }
+      }
+    });
   }
 
   void initData() {
@@ -416,5 +503,44 @@ class _MatchResultViewState extends State<MatchResultView> {
       default:
         return loc.enter_points;
     }
+  }
+}
+
+/// A small circular stepper button styled to match the app's dark theme.
+class _StepButton extends StatelessWidget {
+  const _StepButton({
+    required this.icon,
+    required this.onTap,
+    this.onLongPress,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+  final VoidCallback? onLongPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        await HapticFeedback.selectionClick();
+        onTap();
+      },
+      onLongPress: onLongPress == null
+          ? null
+          : () async {
+              await HapticFeedback.selectionClick();
+              onLongPress!();
+            },
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: CustomTheme.boxColor,
+          border: Border.all(color: CustomTheme.boxBorderColor),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Icon(icon, size: 20, color: CustomTheme.textColor),
+      ),
+    );
   }
 }
