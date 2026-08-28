@@ -88,11 +88,13 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                             ),
                           )
                         else
-                          Text(
+                          const Icon(Icons.add, color: Colors.red),
+                        /*Text(
                             loc.none,
                             style: const TextStyle(fontSize: 17),
                             textAlign: TextAlign.right,
                           ),
+                           */
                       ],
                     ),
                   ),

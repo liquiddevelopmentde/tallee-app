@@ -8,5 +8,3 @@ class ServerException extends MatchShareException {
 }
 
 class ParsingException extends MatchShareException {}
-
-class MatchAlreadyExistsException extends MatchShareException {}

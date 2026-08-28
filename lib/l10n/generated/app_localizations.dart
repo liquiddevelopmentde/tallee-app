@@ -782,6 +782,12 @@ abstract class AppLocalizations {
   /// **'Tap the game to choose a different one'**
   String get tap_to_choose_different_game;
 
+  /// No description provided for @tap_to_choose_different_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the group to choose a different one'**
+  String get tap_to_choose_different_group;
+
   /// No description provided for @no_data_available.
   ///
   /// In en, this message translates to:

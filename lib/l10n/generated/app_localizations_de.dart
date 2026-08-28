@@ -374,6 +374,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Tippe die Spielvorlage an, um eine andere auszuwählen';
 
   @override
+  String get tap_to_choose_different_group =>
+      'Tippe die Gruppe an, um eine andere auszuwählen';
+
+  @override
   String get no_data_available => 'Keine Daten verfügbar';
 
   @override

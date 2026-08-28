@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -53,7 +52,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                 margin: CustomTheme.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
-                  color: CustomTheme.primaryColor,
+                  color: associatedGroup == null ? Colors.orange : Colors.green,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
                 child: Text(
@@ -90,6 +89,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                         key: const ValueKey('no_association'),
                         margin: CustomTheme.tileMargin,
                         height: 150,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: CustomTheme.standardBoxDecoration.copyWith(
                           border: Border.all(
                             color: Colors.orange.withAlpha(150),
@@ -136,6 +136,16 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                       playersClickable: false,
                     ),
             ),
+            SizedBox(height: 2),
+            Text(
+              loc.tap_to_choose_different_group,
+              style: const TextStyle(
+                color: CustomTheme.hintColor,
+                fontSize: 14,
+                overflow: TextOverflow.visible,
+              ),
+              softWrap: true,
+            ),
             const Spacer(),
             BottomAnimatedButton(
               buttonText: loc.save_match_button,
@@ -168,12 +178,6 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
         associatedGame: widget.associatedGame,
         associatedGroup: associatedGroup,
       );
-    } on MatchAlreadyExistsException {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(CustomSnackBar(message: loc.match_already_exists));
-      return;
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(

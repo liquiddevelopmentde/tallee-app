@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -33,6 +32,7 @@ class AssociatePlayersView extends StatefulWidget {
 
 class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   final Map<String, Player?> associations = {};
+  List<Player>? _cachedAllPlayers;
 
   @override
   void initState() {
@@ -62,7 +62,11 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                 margin: CustomTheme.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
-                  color: CustomTheme.primaryColor,
+                  color: remainingCount == 0
+                      ? Colors.green
+                      : remainingCount == players.length
+                      ? Colors.red
+                      : Colors.orange,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
                 child: Text(
@@ -153,13 +157,6 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
         associatedGame: widget.associatedGame,
         associatedGroup: null,
       );
-    } on MatchAlreadyExistsException {
-      if (!mounted) return;
-      final loc = AppLocalizations.of(context);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(CustomSnackBar(message: loc.match_already_exists));
-      return;
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -180,7 +177,8 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
   Future<Player?> showPlayerSelectionSheet(Player? currentSelection) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final allPlayers = await db.playerDao.getAllPlayers();
+    _cachedAllPlayers ??= await db.playerDao.getAllPlayers();
+    final allPlayers = _cachedAllPlayers!;
     final associatedPlayerIds = associations.values
         .where((p) => p != null && p.id != currentSelection?.id)
         .map((p) => p!.id)
@@ -203,6 +201,9 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
             Navigator.of(context).pop(player);
           },
           onPlayerCreated: () {
+            setState(() {
+              _cachedAllPlayers = null;
+            });
             autoAssociatePlayers();
           },
           availablePlayers: availablePlayers,
@@ -214,7 +215,8 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
   Future<void> autoAssociatePlayers() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final allPlayers = await db.playerDao.getAllPlayers();
+    _cachedAllPlayers = await db.playerDao.getAllPlayers();
+    final allPlayers = _cachedAllPlayers!;
 
     if (!mounted) return;
 

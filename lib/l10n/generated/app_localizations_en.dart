@@ -373,6 +373,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tap the game to choose a different one';
 
   @override
+  String get tap_to_choose_different_group =>
+      'Tap the group to choose a different one';
+
+  @override
   String get no_data_available => 'No data available';
 
   @override

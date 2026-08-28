@@ -134,7 +134,24 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       }
     }
 
-    loadPlayerList();
+    if (widget.availablePlayers != null) {
+      initializeWithAvailablePlayers();
+    } else {
+      suggestedPlayers = skeletonData;
+      loadPlayerList();
+    }
+  }
+
+  void initializeWithAvailablePlayers() {
+    allPlayers = [...widget.availablePlayers!];
+    allPlayers.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+
+    if (widget.mode == SelectionMode.single) {
+      suggestedPlayers = [...allPlayers];
+    } else {
+      initializeMultipleSelection(allPlayers);
+    }
+    isLoading = false;
   }
 
   @override

@@ -128,6 +128,7 @@
   "new_group_will_be_created": "New group will be created",
   "new_game_will_be_created": "New game will be created",
   "tap_to_choose_different_game": "Tap the game to choose a different one",
+  "tap_to_choose_different_group": "Tap the group to choose a different one",
   "no_data_available": "No data available",
   "no_data_to_export": "No data to export",
   "no_games_created_yet": "No games created yet",

@@ -14,6 +14,7 @@ import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:uuid/uuid.dart';
 
 class RemoteShareService {
   Future<String> getShareToken(Match match) async {
@@ -170,6 +171,7 @@ class RemoteShareService {
     }
 
     final localMatch = importedMatch.copyWith(
+      id: const Uuid().v4(),
       game: localGame,
       players: localPlayers,
       scores: localScores,
@@ -177,10 +179,7 @@ class RemoteShareService {
       group: localGroup,
     );
 
-    final success = await db.matchDao.addMatch(match: localMatch);
-    if (!success) {
-      throw MatchAlreadyExistsException();
-    }
+    await db.matchDao.addMatch(match: localMatch);
   }
 
   Future<(ImportResult, Match?, String)> chooseFileToImport() async {
