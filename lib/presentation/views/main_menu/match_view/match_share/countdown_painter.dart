@@ -13,7 +13,7 @@ class CountdownPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
-      ..strokeWidth = 4
+      ..strokeWidth = 7
       ..style = PaintingStyle.stroke
       ..strokeCap = ui.StrokeCap.round;
 
