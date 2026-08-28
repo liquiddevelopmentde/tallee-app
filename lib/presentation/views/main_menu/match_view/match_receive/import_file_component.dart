@@ -90,8 +90,8 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
                         );
                       },
                   child: !successfulImport
-                      ? chooseMatchFile(loc)
-                      : displaySelectedFile(loc, data.$3, data.$2!),
+                      ? ChooseMatchFile(loc: loc)
+                      : DisplaySelectedFile(loc: loc, match: data.$2!),
                 ),
               ),
             ),
@@ -134,8 +134,15 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
       ],
     );
   }
+}
 
-  Widget chooseMatchFile(AppLocalizations loc) {
+class ChooseMatchFile extends StatelessWidget {
+  const ChooseMatchFile({required this.loc, super.key});
+
+  final AppLocalizations loc;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       key: const ValueKey('choose_match_file'),
       children: [
@@ -164,16 +171,24 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
       ],
     );
   }
+}
 
-  Widget displaySelectedFile(
-    AppLocalizations loc,
-    String filename,
-    Match match,
-  ) {
+class DisplaySelectedFile extends StatelessWidget {
+  const DisplaySelectedFile({
+    required this.loc,
+    required this.match,
+    super.key,
+  });
+
+  final AppLocalizations loc;
+  final Match match;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       key: const ValueKey('display_selected_file'),
       children: [
-        fileTile(loc, filename, match),
+        FileTile(loc: loc, match: match),
         const SizedBox(height: 20),
         Text(
           loc.successfully_processed_file,
@@ -199,8 +214,16 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
       ],
     );
   }
+}
 
-  Widget fileTile(AppLocalizations loc, String filename, Match match) {
+class FileTile extends StatelessWidget {
+  const FileTile({required this.loc, required this.match, super.key});
+
+  final AppLocalizations loc;
+  final Match match;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
