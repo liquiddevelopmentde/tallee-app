@@ -13,6 +13,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
@@ -355,10 +356,15 @@ class _MatchViewState extends State<MatchView> {
         Navigator.push(
           context,
           adaptivePageRoute(
-            builder: (context) => MatchDetailView(
-              match: match,
-              onMatchUpdate: loadMatches,
-            ),
+            builder: (context) => match.endedAt == null
+                ? MatchResultView(
+                    match: match,
+                    onWinnerChanged: () async => loadMatches(),
+                  )
+                : MatchDetailView(
+                    match: match,
+                    onMatchUpdate: loadMatches,
+                  ),
           ),
         );
       },
