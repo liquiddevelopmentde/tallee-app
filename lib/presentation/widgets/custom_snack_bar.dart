@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 
 class CustomSnackBar extends SnackBar {
   CustomSnackBar({
     Key? key,
     required String message,
-    String? actionText,
+    IconData? actionIcon,
     VoidCallback? onActionTap,
   }) : this._internal(
          key: key,
          message: message,
-         actionText: actionText,
+         actionIcon: actionIcon,
          onActionTap: onActionTap,
          duration: const Duration(milliseconds: 5000),
          proxy: ProxyAnimation(),
@@ -20,7 +21,7 @@ class CustomSnackBar extends SnackBar {
     super.key,
     required String message,
     required this.proxy,
-    this.actionText,
+    this.actionIcon,
     this.onActionTap,
     super.duration,
   }) : super(
@@ -31,13 +32,13 @@ class CustomSnackBar extends SnackBar {
          content: _AnimatedContent(
            message: message,
            animation: proxy,
-           actionText: actionText,
+           actionIcon: actionIcon,
            onActionTap: onActionTap,
          ),
        );
 
   final ProxyAnimation proxy;
-  final String? actionText;
+  final IconData? actionIcon;
   final VoidCallback? onActionTap;
 
   @override
@@ -48,7 +49,7 @@ class CustomSnackBar extends SnackBar {
     return CustomSnackBar._internal(
       key: key ?? fallbackKey,
       message: animatedContent.message,
-      actionText: animatedContent.actionText,
+      actionIcon: animatedContent.actionIcon,
       onActionTap: animatedContent.onActionTap,
       duration: duration,
       proxy: proxy,
@@ -60,12 +61,12 @@ class _AnimatedContent extends StatelessWidget {
   const _AnimatedContent({
     required this.message,
     required this.animation,
-    this.actionText,
+    this.actionIcon,
     this.onActionTap,
   });
 
   final String message;
-  final String? actionText;
+  final IconData? actionIcon;
   final VoidCallback? onActionTap;
   final Animation<double> animation;
 
@@ -104,7 +105,7 @@ class _AnimatedContent extends StatelessWidget {
                     message,
                     overflow: TextOverflow.visible,
                     textWidthBasis: TextWidthBasis.longestLine,
-                    textAlign: actionText != null
+                    textAlign: actionIcon != null
                         ? TextAlign.left
                         : TextAlign.center,
                     style: const TextStyle(
@@ -115,18 +116,16 @@ class _AnimatedContent extends StatelessWidget {
                   ),
                 ),
 
-                if (onActionTap != null && actionText != null) ...[
-                  const SizedBox(width: 16),
-                  GestureDetector(
-                    onTap: onActionTap,
-                    child: Text(
-                      actionText!,
-                      style: const TextStyle(
-                        color: CustomTheme.primaryColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
+                if (onActionTap != null && actionIcon != null) ...[
+                  const SizedBox(width: 12),
+                  HapticIconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      actionIcon!,
+                      color: CustomTheme.textColor,
+                      size: 20,
                     ),
+                    onPressed: onActionTap,
                   ),
                 ],
               ],

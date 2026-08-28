@@ -221,7 +221,7 @@ class _MatchShareViewState extends State<MatchShareView>
             _scaffoldMessengerKey.currentState?.showSnackBar(
               CustomSnackBar(
                 message: errorMessage,
-                actionText: loc.retry,
+                actionIcon: Icons.refresh,
                 onActionTap: () {
                   _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
                   initSharingView(hasStoredSharingConsent);
