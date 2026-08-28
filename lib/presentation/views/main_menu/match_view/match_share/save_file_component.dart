@@ -115,7 +115,7 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
           children: [
             FloatingAnimatedButton(
               text: loc.save_file,
-              icon: Icons.save,
+              icon: Icons.folder,
               onPressed: () {
                 RemoteShareService().saveMatchToCustomLocation(
                   widget.match,
