@@ -1,8 +1,17 @@
+import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
+
 /// Button types used for styling the [CustomWidthButton]
 /// - [ButtonType.primary]: Primary button style.
 /// - [ButtonType.secondary]: Secondary button style.
 /// - [ButtonType.tertiary]: Tertiary button style.
 enum ButtonType { primary, secondary, tertiary }
+
+/// States for the [ApiActionAnimatedButton] that triggers API calls
+/// - [ApiButtonState.idle]: Initial state, button is ready to be pressed.
+/// - [ApiButtonState.loading]: API call is in progress.
+/// - [ApiButtonState.success]: API call completed successfully.
+/// - [ApiButtonState.error]: API call failed.
+enum ApiButtonState { idle, loading, success, error }
 
 /// Result types for import operations in the [SettingsView]
 /// - [ImportResult.success]: The import operation was successful.

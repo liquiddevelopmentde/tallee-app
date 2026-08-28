@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-enum ApiButtonState { idle, loading, success, error }
+import 'package:tallee/core/enums.dart';
 
 class ApiActionAnimatedButton extends StatefulWidget {
   /// A button specifically designed for asynchronous requests.
