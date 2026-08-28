@@ -10,6 +10,7 @@ class SettingsListTile extends StatefulWidget {
   /// - [suffixWidget]: An optional widget displayed on the right side of the tile.
   /// - [onPressed]: The callback invoked when the tile is tapped.
   /// - [expandedContent]: A widget revealed below the tile when it is tapped.
+  /// - [description]: An optional description shown in the tile.
   const SettingsListTile({
     super.key,
     required this.icon,
@@ -17,10 +18,12 @@ class SettingsListTile extends StatefulWidget {
     this.suffixWidget,
     this.onPressed,
     this.expandedContent,
+    this.description,
   });
 
   final IconData icon;
   final String title;
+  final String? description;
   final Widget? suffixWidget;
   final VoidCallback? onPressed;
   final Widget? expandedContent;
@@ -33,6 +36,8 @@ class _SettingsListTileState extends State<SettingsListTile> {
   bool isExpanded = false;
 
   bool get canExpand => widget.expandedContent != null;
+
+  bool get hasDescription => widget.description != null;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +52,8 @@ class _SettingsListTileState extends State<SettingsListTile> {
             decoration: CustomTheme.standardBoxDecoration,
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -86,6 +93,18 @@ class _SettingsListTileState extends State<SettingsListTile> {
                     ),
                   ],
                 ),
+
+                if (hasDescription) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.description!,
+                    overflow: TextOverflow.visible,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: CustomTheme.hintColor,
+                    ),
+                  ),
+                ],
 
                 // expanded content
                 if (canExpand)
