@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -597,7 +599,8 @@ class _ScoreInputState extends State<_ScoreInput> {
 }
 
 /// A small circular stepper button styled to match the app's dark theme.
-class _StepButton extends StatelessWidget {
+/// Holding it repeats [onLongPress] every 500ms.
+class _StepButton extends StatefulWidget {
   const _StepButton({
     required this.icon,
     required this.onTap,
@@ -609,18 +612,48 @@ class _StepButton extends StatelessWidget {
   final VoidCallback? onLongPress;
 
   @override
+  State<_StepButton> createState() => _StepButtonState();
+}
+
+class _StepButtonState extends State<_StepButton> {
+  Timer? _repeatTimer;
+
+  @override
+  void dispose() {
+    _repeatTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startRepeat() {
+    _stopRepeat();
+    widget.onLongPress?.call();
+    _repeatTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+      widget.onLongPress?.call();
+    });
+  }
+
+  void _stopRepeat() {
+    _repeatTimer?.cancel();
+    _repeatTimer = null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
         await HapticFeedback.selectionClick();
-        onTap();
+        widget.onTap();
       },
-      onLongPress: onLongPress == null
+      onLongPressStart: widget.onLongPress == null
           ? null
-          : () async {
-              await HapticFeedback.selectionClick();
-              onLongPress!();
+          : (_) {
+              HapticFeedback.selectionClick();
+              _startRepeat();
             },
+      onLongPressEnd: widget.onLongPress == null
+          ? null
+          : (_) => _stopRepeat(),
+      onLongPressCancel: widget.onLongPress == null ? null : _stopRepeat,
       child: Container(
         width: 40,
         height: 40,
@@ -629,7 +662,7 @@ class _StepButton extends StatelessWidget {
           border: Border.all(color: CustomTheme.boxBorderColor),
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Icon(icon, size: 20, color: CustomTheme.textColor),
+        child: Icon(widget.icon, size: 20, color: CustomTheme.textColor),
       ),
     );
   }
