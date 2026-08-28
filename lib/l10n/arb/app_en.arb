@@ -264,7 +264,6 @@
   },
   "parsing_error": "Data parsing error. Please try again later.",
   "unexpected_error": "An unexpected error occurred.",
-  "retry": "Retry",
   "online_sharing_title": "Online Sharing",
   "online_sharing_consent_text": "To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?",
   "enable": "Enable",

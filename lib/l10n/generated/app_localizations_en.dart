@@ -697,9 +697,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unexpected_error => 'An unexpected error occurred.';
 
   @override
-  String get retry => 'Retry';
-
-  @override
   String get online_sharing_title => 'Online Sharing';
 
   @override

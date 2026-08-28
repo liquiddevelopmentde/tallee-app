@@ -701,9 +701,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get unexpected_error => 'Ein unerwarteter Fehler ist aufgetreten.';
 
   @override
-  String get retry => 'Wiederholen';
-
-  @override
   String get online_sharing_title => 'Online-Teilen';
 
   @override

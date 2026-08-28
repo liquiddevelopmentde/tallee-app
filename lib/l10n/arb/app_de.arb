@@ -255,7 +255,6 @@
   },
   "parsing_error": "Fehler beim Verarbeiten der Daten. Bitte versuche es später erneut.",
   "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten.",
-  "retry": "Wiederholen",
   "online_sharing_title": "Online-Teilen",
   "online_sharing_consent_text": "Damit andere dein Match laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Share-Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du Online-Teilen aktivieren?",
   "enable": "Aktivieren",

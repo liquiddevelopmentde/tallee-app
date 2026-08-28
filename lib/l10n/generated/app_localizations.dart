@@ -1376,12 +1376,6 @@ abstract class AppLocalizations {
   /// **'An unexpected error occurred.'**
   String get unexpected_error;
 
-  /// No description provided for @retry.
-  ///
-  /// In en, this message translates to:
-  /// **'Retry'**
-  String get retry;
-
   /// No description provided for @online_sharing_title.
   ///
   /// In en, this message translates to:
