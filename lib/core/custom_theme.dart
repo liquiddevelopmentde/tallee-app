@@ -57,8 +57,11 @@ class CustomTheme {
     bottom: 10,
   );
 
+  /// Bottom padding for scrollable lists so the last item can scroll clear of
+  /// the floating action button and the bottom navigation bar (which the body
+  /// extends behind via [Scaffold.extendBody]).
   static EdgeInsets listViewPadding(BuildContext context) =>
-      EdgeInsets.only(bottom: MediaQuery.viewPaddingOf(context).bottom + 70);
+      EdgeInsets.only(bottom: MediaQuery.viewPaddingOf(context).bottom + 190);
 
   // ==================== Decorations ====================
   static BoxDecoration standardBoxDecoration = BoxDecoration(
