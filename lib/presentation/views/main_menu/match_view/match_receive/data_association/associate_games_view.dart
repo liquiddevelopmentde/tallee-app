@@ -67,6 +67,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                 widget.match.game.ruleset,
                 context,
               ),
+              badgeColor: getColorFromAppColor(widget.match.game.color),
             ),
             const Icon(Icons.arrow_downward, size: 30),
             const SizedBox(height: 10),
