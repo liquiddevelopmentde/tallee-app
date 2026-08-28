@@ -11,6 +11,9 @@ class PlayerTile extends StatelessWidget {
     this.onIconTap,
     this.onTileTap,
     this.backgroundColor,
+    this.leading,
+    this.nameColor,
+    this.borderColor,
   });
 
   final Player player;
@@ -18,6 +21,9 @@ class PlayerTile extends StatelessWidget {
   final VoidCallback? onIconTap;
   final VoidCallback? onTileTap;
   final Color? backgroundColor;
+  final Widget? leading;
+  final Color? nameColor;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,19 @@ class PlayerTile extends StatelessWidget {
       onIconTap: onIconTap,
       onTileTap: onTileTap,
       backgroundColor: backgroundColor,
-      content: buildUnitNameWidget(player, highlighted: [player.deleted]),
+      leading: leading,
+      borderColor: borderColor,
+      content: buildUnitNameWidget(
+        player,
+        highlighted: [player.deleted],
+        mainStyle: nameColor == null
+            ? null
+            : TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: nameColor,
+              ),
+      ),
     );
   }
 }

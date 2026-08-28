@@ -10,15 +10,35 @@ class TeamCard extends StatelessWidget {
     super.key,
     required this.team,
     this.compact = false,
+    this.subtle = false,
     this.width = double.infinity,
     this.margin,
     this.showDragHandle = false,
     this.maxChars,
+    this.leading,
+    this.backgroundColor,
+    this.nameColor,
+    this.borderColor,
   });
 
   final Team team;
 
   final bool compact;
+
+  /// Tones down the team color accent for use in subtle tile contexts.
+  final bool subtle;
+
+  /// Optional widget shown before the team name, e.g. a winner crown.
+  final Widget? leading;
+
+  /// Optional background override, e.g. a winner highlight.
+  final Color? backgroundColor;
+
+  /// Optional color for the team name.
+  final Color? nameColor;
+
+  /// Optional colored border drawn inside the card.
+  final Color? borderColor;
 
   final double width;
 
@@ -34,24 +54,42 @@ class TeamCard extends StatelessWidget {
     int shownPlayerAmount = getShownPlayerAmount();
 
     if (compact) {
+      final accentColor = subtle
+          ? teamColor.withAlpha(60)
+          : teamColor;
+      final fillColor = subtle
+          ? teamColor.withAlpha(12)
+          : teamColor.withAlpha(50);
+
       return Container(
         width: width,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: teamColor.withAlpha(50),
+          color: backgroundColor ?? fillColor,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: teamColor, width: 2),
+          border: Border.all(
+            color: borderColor ?? accentColor,
+            width: subtle ? 1 : 2,
+            strokeAlign: BorderSide.strokeAlignInside,
+          ),
         ),
         child: Row(
           children: [
+            if (leading != null) ...[
+              leading!,
+              const SizedBox(width: 6),
+            ],
             Expanded(
               child: buildUnitNameWidget(
                 team,
                 isTeamMatch: true,
-                mainStyle: const TextStyle(
+                mainStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: nameColor ??
+                      (subtle
+                          ? CustomTheme.textColor.withAlpha(200)
+                          : Colors.white),
                 ),
               ),
             ),
@@ -59,17 +97,23 @@ class TeamCard extends StatelessWidget {
             Container(
               width: 1,
               height: 14,
-              color: Colors.white.withValues(alpha: 0.35),
+              color: Colors.white.withValues(alpha: subtle ? 0.2 : 0.35),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.people_alt_rounded, size: 14, color: Colors.white),
+            const Icon(
+              Icons.people_alt_rounded,
+              size: 14,
+              color: Colors.white,
+            ),
             const SizedBox(width: 4),
             Text(
               '${team.members.length}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: subtle
+                    ? CustomTheme.textColor.withAlpha(200)
+                    : Colors.white,
               ),
             ),
           ],

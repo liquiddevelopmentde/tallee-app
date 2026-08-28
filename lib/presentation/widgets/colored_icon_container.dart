@@ -15,6 +15,7 @@ class ColoredIconContainer extends StatelessWidget {
     this.iconSize = 28,
     this.margin,
     this.padding,
+    this.color = CustomTheme.primaryColor,
   });
 
   /// The icon to be displayed inside the container.
@@ -32,6 +33,9 @@ class ColoredIconContainer extends StatelessWidget {
   /// Optional padding inside the container.
   final EdgeInsetsGeometry? padding;
 
+  /// Tint color for the container background and icon.
+  final Color color;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -42,13 +46,13 @@ class ColoredIconContainer extends StatelessWidget {
           margin: margin,
           padding: padding,
           decoration: BoxDecoration(
-            color: CustomTheme.primaryColor.withAlpha(40),
+            color: color.withAlpha(40),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
             icon,
             size: iconSize,
-            color: CustomTheme.primaryColor.withBlue(40),
+            color: color,
           ),
         ),
       ],

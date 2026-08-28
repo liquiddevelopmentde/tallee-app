@@ -352,23 +352,25 @@ class _MatchViewState extends State<MatchView> {
     return MatchTile(
       onPlayerEdited: loadMatches,
       width: MediaQuery.sizeOf(context).width * 0.95,
-      onTap: () async {
-        Navigator.push(
-          context,
-          adaptivePageRoute(
-            builder: (context) => match.endedAt == null
-                ? MatchResultView(
-                    match: match,
-                    onWinnerChanged: () async => loadMatches(),
-                  )
-                : MatchDetailView(
-                    match: match,
-                    onMatchUpdate: loadMatches,
-                  ),
-          ),
-        );
-      },
+      onTap: () => _openMatchDetail(match),
       match: match,
+    );
+  }
+
+  void _openMatchDetail(Match match) {
+    Navigator.push(
+      context,
+      adaptivePageRoute(
+        builder: (context) => match.endedAt == null
+            ? MatchResultView(
+                match: match,
+                onWinnerChanged: () async => loadMatches(),
+              )
+            : MatchDetailView(
+                match: match,
+                onMatchUpdate: loadMatches,
+              ),
+      ),
     );
   }
 

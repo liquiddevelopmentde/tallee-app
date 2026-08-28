@@ -21,6 +21,8 @@ class TextIconTile extends StatelessWidget {
     this.pairIconLeft = false,
     this.onTileTap,
     this.highlighted = false,
+    this.leading,
+    this.borderColor,
   });
 
   final Widget content;
@@ -31,12 +33,20 @@ class TextIconTile extends StatelessWidget {
   final VoidCallback? onTileTap;
   final bool highlighted;
 
+  /// Optional widget shown before the content, e.g. a winner crown.
+  final Widget? leading;
+
+  /// Optional colored border drawn inside the tile.
+  final Color? borderColor;
+
   @override
   Widget build(BuildContext context) {
     final iconEnabled = onIconTap != null && icon != null;
-    final backgroundColor = highlighted
-        ? CustomTheme.onBoxColor.withAlpha((140).round())
-        : CustomTheme.onBoxColor;
+    final resolvedBackgroundColor =
+        backgroundColor ??
+        (highlighted
+            ? CustomTheme.onBoxColor.withAlpha((140).round())
+            : CustomTheme.onBoxColor);
 
     return GestureDetector(
       onTap: onTileTap,
@@ -44,13 +54,24 @@ class TextIconTile extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: backgroundColor,
+          color: resolvedBackgroundColor,
           borderRadius: BorderRadius.circular(12),
+          border: borderColor == null
+              ? null
+              : Border.all(
+                  color: borderColor!,
+                  width: 1.0,
+                  strokeAlign: BorderSide.strokeAlignInside,
+                ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (leading != null) ...<Widget>[
+              leading!,
+              const SizedBox(width: 4),
+            ],
             if (iconEnabled) const SizedBox(width: 3),
             Flexible(child: content),
             if (iconEnabled) ...<Widget>[
