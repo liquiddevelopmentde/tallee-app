@@ -90,7 +90,7 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                         else
                           Text(
                             loc.none,
-                            style: TextStyle(fontSize: 17),
+                            style: const TextStyle(fontSize: 17),
                             textAlign: TextAlign.right,
                           ),
                       ],
