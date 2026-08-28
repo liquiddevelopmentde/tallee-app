@@ -80,6 +80,7 @@ class TextIconListTile extends StatelessWidget {
                         fontSize: 12,
                         color: CustomTheme.textColor.withAlpha(100),
                       ),
+                      overflow: TextOverflow.clip,
                     ),
                 ],
               ),

@@ -148,7 +148,11 @@ class GameTile extends StatelessWidget {
             // Description
             if (description.isNotEmpty) ...[
               const SizedBox(height: 4),
-              Text(description, style: const TextStyle(fontSize: 14)),
+              Text(
+                description,
+                style: const TextStyle(fontSize: 14),
+                overflow: TextOverflow.clip,
+              ),
               const SizedBox(height: 2.5),
             ],
           ],

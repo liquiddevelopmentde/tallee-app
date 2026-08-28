@@ -174,6 +174,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                         color: CustomTheme.hintColor,
                       ),
                       textAlign: TextAlign.center,
+                      overflow: TextOverflow.clip,
                     ),
                   ),
 
@@ -330,7 +331,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                 TextInputField(
                                   controller: descriptionController,
                                   hintText: loc.description,
-                                  maxLength:
+maxLength:
                                       Constants.MAX_PLAYER_DESCRIPTION_LENGTH,
                                   minLines: 3,
                                   maxLines: 3,
