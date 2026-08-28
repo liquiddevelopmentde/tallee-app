@@ -85,7 +85,10 @@ class _QrScanComponentState extends State<QrScanComponent> {
                             ),
                           ),
                         ),
-                        statusErrorOverlay(loc),
+                        StatusErrorOverlay(
+                          isProcessing: _isProcessing,
+                          errorMessage: _errorMessage,
+                        ),
                       ],
                     );
                   },
@@ -173,15 +176,28 @@ class _QrScanComponentState extends State<QrScanComponent> {
       }
     }
   }
+}
 
-  Widget statusErrorOverlay(AppLocalizations loc) {
+class StatusErrorOverlay extends StatelessWidget {
+  final bool isProcessing;
+  final String? errorMessage;
+
+  const StatusErrorOverlay({
+    super.key,
+    required this.isProcessing,
+    this.errorMessage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Positioned.fill(
       child: AnimatedOpacity(
-        opacity: _isProcessing ? 1.0 : 0.0,
+        opacity: isProcessing ? 1.0 : 0.0,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         child: IgnorePointer(
-          ignoring: !_isProcessing,
+          ignoring: !isProcessing,
           child: Container(
             color: Colors.black.withValues(alpha: 0.7),
             padding: const EdgeInsets.all(20),
@@ -189,7 +205,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (_errorMessage == null) ...[
+                  if (errorMessage == null) ...[
                     const CircularProgressIndicator(
                       color: CustomTheme.primaryColor,
                       strokeWidth: 4,
@@ -210,7 +226,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      _errorMessage!,
+                      errorMessage!,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white,
