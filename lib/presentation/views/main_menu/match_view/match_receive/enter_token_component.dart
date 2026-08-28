@@ -26,13 +26,13 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
 
   late Match match;
 
-  bool validToken = true;
+  bool? isTokenValid;
 
   @override
   void initState() {
     tokenInputFieldController.addListener(() {
-      if (!validToken) {
-        setState(() => validToken = true);
+      if (isTokenValid == false) {
+        setState(() => isTokenValid = null);
       } else {
         setState(() {});
       }
@@ -133,7 +133,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
                   ),
                 ),
               ],
-              forceErrorState: !validToken,
+              forceErrorState: isTokenValid == false,
               errorText: loc.invalid_token,
             ),
           ),
@@ -186,9 +186,6 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
 
   Future<void> handleApiMatchRequest(String token) async {
     try {
-      setState(() {
-        validToken = true;
-      });
       final loadedMatch = await RemoteShareService().getMatchByToken(
         tokenInputFieldController.text,
       );
@@ -211,7 +208,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       } else if (error is ServerException) {
         if (error.statusCode == 404 || error.statusCode == 410) {
           setState(() {
-            validToken = false;
+            isTokenValid = false;
           });
           errorMessage = '';
         } else {
