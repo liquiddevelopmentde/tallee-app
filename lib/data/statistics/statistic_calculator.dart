@@ -149,7 +149,6 @@ class StatisticCalculator {
       case Ruleset.lowestScore:
         return true;
       case Ruleset.singleWinner:
-      case Ruleset.multipleWinners:
       case Ruleset.placement:
       case Ruleset.singleLoser:
         return false;

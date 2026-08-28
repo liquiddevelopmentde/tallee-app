@@ -64,11 +64,9 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
     case Ruleset.lowestScore:
       return loc.lowest_score;
     case Ruleset.singleWinner:
-      return loc.single_winner;
+      return loc.select_winners;
     case Ruleset.singleLoser:
-      return loc.single_loser;
-    case Ruleset.multipleWinners:
-      return loc.multiple_winners;
+      return loc.select_losers;
     case Ruleset.placement:
       return loc.placement;
   }

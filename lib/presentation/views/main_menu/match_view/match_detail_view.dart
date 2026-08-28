@@ -392,10 +392,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     final ruleset = match.game.ruleset;
 
     if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
-      final label = ruleset == Ruleset.singleWinner
-          ? loc.winner
-          : ruleset == Ruleset.singleLoser
-          ? loc.loser
+      final label = ruleset == Ruleset.singleLoser
+          ? loc.losers
           : loc.winners;
 
       return [
@@ -553,8 +551,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   // Returns if the result can be displayed in a single row
   bool isSingleRowResult() {
     return match.game.ruleset == Ruleset.singleWinner ||
-        match.game.ruleset == Ruleset.singleLoser ||
-        match.game.ruleset == Ruleset.multipleWinners;
+        match.game.ruleset == Ruleset.singleLoser;
   }
 
   String getPlacementText(BuildContext context, int rank) {

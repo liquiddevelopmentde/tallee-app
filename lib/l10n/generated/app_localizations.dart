@@ -698,6 +698,12 @@ abstract class AppLocalizations {
   /// **'Loser'**
   String get loser;
 
+  /// No description provided for @losers.
+  ///
+  /// In en, this message translates to:
+  /// **'Losers'**
+  String get losers;
+
   /// No description provided for @lowest_score.
   ///
   /// In en, this message translates to:
@@ -757,12 +763,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Members'**
   String get members;
-
-  /// No description provided for @multiple_winners.
-  ///
-  /// In en, this message translates to:
-  /// **'Multiple Winners'**
-  String get multiple_winners;
 
   /// No description provided for @names_or_descriptions_too_long.
   ///
@@ -1040,6 +1040,12 @@ abstract class AppLocalizations {
   /// **'Select Loser'**
   String get select_loser;
 
+  /// No description provided for @select_losers.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Losers'**
+  String get select_losers;
+
   /// No description provided for @select_the_filtered_timeframe.
   ///
   /// In en, this message translates to:
@@ -1088,17 +1094,11 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
-  /// No description provided for @single_loser.
+  /// No description provided for @start_a_match.
   ///
   /// In en, this message translates to:
-  /// **'Single Loser'**
-  String get single_loser;
-
-  /// No description provided for @single_winner.
-  ///
-  /// In en, this message translates to:
-  /// **'Single Winner'**
-  String get single_winner;
+  /// **'Start a match'**
+  String get start_a_match;
 
   /// No description provided for @statistic.
   ///

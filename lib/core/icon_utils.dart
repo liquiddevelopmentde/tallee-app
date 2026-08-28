@@ -10,7 +10,6 @@ IconData getRulesetIcon(Ruleset ruleset) {
     case Ruleset.lowestScore:
       return Icons.arrow_downward;
     case Ruleset.singleWinner:
-    case Ruleset.multipleWinners:
       return Icons.emoji_events;
     case Ruleset.singleLoser:
       return Icons.sentiment_dissatisfied;

@@ -33,13 +33,11 @@ enum ExportResult { success, canceled, unknownException, noData }
 /// Different rulesets available for games
 /// - [Ruleset.highestScore]: The player with the highest score wins.
 /// - [Ruleset.lowestScore]: The player with the lowest score wins.
-/// - [Ruleset.singleWinner]: The match is won by a single player.
-/// - [Ruleset.singleLoser]: The match has a single loser.
-/// - [Ruleset.multipleWinners]: Multiple players can be winners.
+/// - [Ruleset.singleWinner]: One or more players can be winners.
+/// - [Ruleset.singleLoser]: One or more players can be losers.
 /// - [Ruleset.placement]: The player with the highest placement wins.
 enum Ruleset {
   singleWinner,
-  multipleWinners,
   highestScore,
   lowestScore,
   placement,

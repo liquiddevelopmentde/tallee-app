@@ -330,6 +330,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loser => 'Verlierer:in';
 
   @override
+  String get losers => 'Verlierer:innen';
+
+  @override
   String get lowest_score => 'Niedrigste Punkte';
 
   @override
@@ -358,9 +361,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get members => 'Mitglieder';
-
-  @override
-  String get multiple_winners => 'Mehrere Gewinner:innen';
 
   @override
   String get names_or_descriptions_too_long =>
@@ -505,6 +505,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get select_loser => 'Verlierer:in wählen';
 
   @override
+  String get select_losers => 'Verlierer:innen wählen';
+
+  @override
   String get select_the_filtered_timeframe =>
       'Wähle einen Zeitraum, nach dem gefiltert werden soll.';
 
@@ -530,10 +533,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings => 'Einstellungen';
 
   @override
-  String get single_loser => 'Ein:e Verlierer:in';
-
-  @override
-  String get single_winner => 'Ein:e Gewinner:in';
+  String get start_a_match => 'Ein Spiel starten';
 
   @override
   String get statistic => 'Statistik';

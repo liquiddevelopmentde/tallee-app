@@ -912,8 +912,8 @@ class $GameTableTable extends GameTable
     return $GameTableTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<Ruleset, String, String> $converterruleset =
-      const EnumNameConverter<Ruleset>(Ruleset.values);
+  static TypeConverter<Ruleset, String> $converterruleset =
+      const RulesetConverter();
   static JsonTypeConverter2<AppColor, String, String> $convertercolor =
       const EnumNameConverter<AppColor>(AppColor.values);
 }
@@ -977,9 +977,7 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       id: serializer.fromJson<String>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       name: serializer.fromJson<String>(json['name']),
-      ruleset: $GameTableTable.$converterruleset.fromJson(
-        serializer.fromJson<String>(json['ruleset']),
-      ),
+      ruleset: serializer.fromJson<Ruleset>(json['ruleset']),
       description: serializer.fromJson<String>(json['description']),
       color: $GameTableTable.$convertercolor.fromJson(
         serializer.fromJson<String>(json['color']),
@@ -994,9 +992,7 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       'id': serializer.toJson<String>(id),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'name': serializer.toJson<String>(name),
-      'ruleset': serializer.toJson<String>(
-        $GameTableTable.$converterruleset.toJson(ruleset),
-      ),
+      'ruleset': serializer.toJson<Ruleset>(ruleset),
       'description': serializer.toJson<String>(description),
       'color': serializer.toJson<String>(
         $GameTableTable.$convertercolor.toJson(color),

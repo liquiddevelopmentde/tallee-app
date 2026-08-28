@@ -414,6 +414,25 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     return await removeAllTeamScores(matchId: matchId);
   }
 
+  /// Sets multiple teams as losers of the match with the given [matchId] by
+  /// assigning a score of 0 to each team.
+  /// Returns `true` if all scores were updated successfully, `false` otherwise.
+  Future<bool> setLoserTeams({
+    required List<Team> losers,
+    required String matchId,
+  }) async {
+    // Reset all team scores.
+    await removeAllTeamScores(matchId: matchId);
+    for (final team in losers) {
+      await _deleteAllScoresForMembersOfTeam(teamId: team.id, matchId: matchId);
+    }
+
+    for (final team in losers) {
+      await updateTeamScore(teamId: team.id, matchId: matchId, score: 0);
+    }
+    return true;
+  }
+
   /// Sets the placements for the teams in the match with the given [matchId] by assigning scores based on their order in the [teams] list.
   /// Returns `true` if all scores were updated successfully, `false` otherwise.
   Future<bool> setTeamPlacements({

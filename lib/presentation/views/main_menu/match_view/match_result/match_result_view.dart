@@ -40,8 +40,6 @@ class _MatchResultViewState extends State<MatchResultView> {
   late bool canSave;
 
   /// Currently selected player(s)/team(s) (winner / loser)
-  Player? selectedPlayer;
-  Team? selectedTeam;
   List<Player> selectedPlayers = [];
   List<Team> selectedTeams = [];
 
@@ -53,9 +51,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   bool get isTeamMatch => widget.match.isTeamMatch;
 
   bool rulesetSupportsPlayerSelection() =>
-      ruleset == Ruleset.singleWinner ||
-      ruleset == Ruleset.singleLoser ||
-      ruleset == Ruleset.multipleWinners;
+      ruleset == Ruleset.singleWinner || ruleset == Ruleset.singleLoser;
 
   bool rulesetSupportsScoreEntry() =>
       ruleset == Ruleset.lowestScore || ruleset == Ruleset.highestScore;
@@ -341,41 +337,26 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
   }
 
-  bool _isSelected(dynamic unit) {
-    if (ruleset == Ruleset.multipleWinners) {
-      return useTeamLogic
-          ? selectedTeams.contains(unit)
-          : selectedPlayers.contains(unit);
-    }
-    return useTeamLogic ? selectedTeam == unit : selectedPlayer == unit;
-  }
+  bool _isSelected(dynamic unit) => useTeamLogic
+      ? selectedTeams.contains(unit)
+      : selectedPlayers.contains(unit);
 
   void _toggleSelection(dynamic unit) {
     setState(() {
-      if (ruleset == Ruleset.multipleWinners) {
-        if (useTeamLogic) {
-          if (selectedTeams.contains(unit)) {
-            selectedTeams.remove(unit);
-          } else {
-            selectedTeams.add(unit as Team);
-          }
+      if (useTeamLogic) {
+        if (selectedTeams.contains(unit)) {
+          selectedTeams.remove(unit);
         } else {
-          if (selectedPlayers.contains(unit)) {
-            selectedPlayers.remove(unit);
-          } else {
-            selectedPlayers.add(unit as Player);
-          }
+          selectedTeams.add(unit as Team);
         }
-        canSave = (useTeamLogic ? selectedTeams : selectedPlayers).isNotEmpty;
       } else {
-        if (useTeamLogic) {
-          selectedTeam = selectedTeam == unit ? null : unit as Team;
-          canSave = selectedTeam != null;
+        if (selectedPlayers.contains(unit)) {
+          selectedPlayers.remove(unit);
         } else {
-          selectedPlayer = selectedPlayer == unit ? null : unit as Player;
-          canSave = selectedPlayer != null;
+          selectedPlayers.add(unit as Player);
         }
       }
+      canSave = (useTeamLogic ? selectedTeams : selectedPlayers).isNotEmpty;
     });
     _persistSelection();
   }
@@ -383,18 +364,15 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Persists the current winner/loser selection to the database.
   Future<void> _persistSelection() async {
     if (ruleset == Ruleset.singleWinner) {
-      await handleWinner();
-    } else if (ruleset == Ruleset.singleLoser) {
-      await handleLoser();
-    } else if (ruleset == Ruleset.multipleWinners) {
       await handleWinners();
+    } else if (ruleset == Ruleset.singleLoser) {
+      await handleLosers();
     }
   }
 
   void initData() {
     if (widget.match.useTeamLogic) {
       allTeams = widget.match.teams ?? [];
-      selectedTeam = widget.match.mvt.firstOrNull;
       selectedTeams = widget.match.mvt;
 
       scores = Map.fromEntries(
@@ -402,7 +380,6 @@ class _MatchResultViewState extends State<MatchResultView> {
       );
     } else {
       allPlayers = widget.match.players;
-      selectedPlayer = widget.match.mvp.firstOrNull;
       selectedPlayers = widget.match.mvp;
 
       scores = Map.fromEntries(
@@ -410,29 +387,6 @@ class _MatchResultViewState extends State<MatchResultView> {
           (player) => MapEntry(player, widget.match.scores[player.id]?.score),
         ),
       );
-    }
-  }
-
-  /// Handles saving or removing the (single) winner in the database.
-  Future<bool> handleWinner() async {
-    if (useTeamLogic) {
-      if (selectedTeam == null) {
-        return await db.teamDao.removeWinnerTeam(matchId: widget.match.id);
-      } else {
-        return await db.teamDao.setWinnerTeam(
-          matchId: widget.match.id,
-          teamId: selectedTeam!.id,
-        );
-      }
-    } else {
-      if (selectedPlayer == null) {
-        return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
-      } else {
-        return await db.scoreEntryDao.setWinner(
-          matchId: widget.match.id,
-          playerId: selectedPlayer!.id,
-        );
-      }
     }
   }
 
@@ -460,24 +414,24 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
   }
 
-  /// Handles saving or removing the loser in the database.
-  Future<bool> handleLoser() async {
+  /// Handles saving the (multiple) losers to the database.
+  Future<bool> handleLosers() async {
     if (useTeamLogic) {
-      if (selectedTeam == null) {
+      if (selectedTeams.isEmpty) {
         return await db.teamDao.removeLoserTeam(matchId: widget.match.id);
       } else {
-        return await db.teamDao.setLoserTeam(
+        return await db.teamDao.setLoserTeams(
           matchId: widget.match.id,
-          teamId: selectedTeam!.id,
+          losers: selectedTeams.toList(),
         );
       }
     } else {
-      if (selectedPlayer == null) {
+      if (selectedPlayers.isEmpty) {
         return await db.scoreEntryDao.removeLoser(matchId: widget.match.id);
       } else {
-        return await db.scoreEntryDao.setLoser(
+        return await db.scoreEntryDao.setLosers(
           matchId: widget.match.id,
-          playerId: selectedPlayer!.id,
+          losers: selectedPlayers.toList(),
         );
       }
     }
@@ -486,13 +440,11 @@ class _MatchResultViewState extends State<MatchResultView> {
   String getTitleForRuleset(AppLocalizations loc) {
     switch (ruleset) {
       case Ruleset.singleWinner:
-        return loc.select_winner;
+        return loc.select_winners;
       case Ruleset.singleLoser:
-        return loc.select_loser;
+        return loc.select_losers;
       case Ruleset.placement:
         return loc.drag_to_set_placement;
-      case Ruleset.multipleWinners:
-        return loc.select_winners;
       default:
         return loc.enter_points;
     }

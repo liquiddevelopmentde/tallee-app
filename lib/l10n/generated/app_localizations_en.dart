@@ -329,6 +329,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loser => 'Loser';
 
   @override
+  String get losers => 'Losers';
+
+  @override
   String get lowest_score => 'Lowest Score';
 
   @override
@@ -357,9 +360,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get members => 'Members';
-
-  @override
-  String get multiple_winners => 'Multiple Winners';
 
   @override
   String get names_or_descriptions_too_long =>
@@ -504,6 +504,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_loser => 'Select Loser';
 
   @override
+  String get select_losers => 'Select Losers';
+
+  @override
   String get select_the_filtered_timeframe =>
       'Select the timeframe you want to filter by.';
 
@@ -529,10 +532,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get single_loser => 'Single Loser';
-
-  @override
-  String get single_winner => 'Single Winner';
+  String get start_a_match => 'Start a match';
 
   @override
   String get statistic => 'Statistic';

@@ -34,8 +34,8 @@ void main() {
       testGame2 = Game(
         id: 'game2',
         name: 'Poker',
-        ruleset: Ruleset.multipleWinners,
-        description: 'Card game with multiple winners',
+        ruleset: Ruleset.singleLoser,
+        description: 'Card game with losers',
         color: AppColor.red,
         icon: 'poker_icon',
       );
@@ -122,7 +122,7 @@ void main() {
         () async {
           final specialGame = Game(
             name: 'Game\'s & "Special" <Name>',
-            ruleset: Ruleset.multipleWinners,
+            ruleset: Ruleset.singleWinner,
             description: 'Description with émojis 🎮🎲',
             color: AppColor.purple,
             icon: '',
@@ -136,6 +136,18 @@ void main() {
           expect(fetchedGame.description, 'Description with émojis 🎮🎲');
         },
       );
+
+      test('legacy multipleWinners ruleset is loaded as singleWinner', () async {
+        await database.customStatement(
+          '''INSERT INTO game_table
+(id, created_at, name, ruleset, description, color, icon) VALUES
+('legacy1', 0, 'Legacy Game',
+'multipleWinners', '', 'red', '')''',
+        );
+
+        final game = await database.gameDao.getGameById(gameId: 'legacy1');
+        expect(game.ruleset, Ruleset.singleWinner);
+      });
     });
 
     group('READ', () {

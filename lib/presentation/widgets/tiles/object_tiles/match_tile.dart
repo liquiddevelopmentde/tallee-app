@@ -374,9 +374,10 @@ class _MatchTileState extends State<MatchTile> {
     );
 
     final namesToRender =
-        ruleset == Ruleset.multipleWinners ||
-            ruleset == Ruleset.highestScore ||
-            ruleset == Ruleset.lowestScore
+        ruleset == Ruleset.highestScore ||
+            ruleset == Ruleset.lowestScore ||
+            ruleset == Ruleset.singleWinner ||
+            ruleset == Ruleset.singleLoser
         ? players
         : [players.first];
 
@@ -469,7 +470,6 @@ class _MatchTileState extends State<MatchTile> {
 
     switch (widget.match.game.ruleset) {
       case Ruleset.singleWinner:
-      case Ruleset.multipleWinners:
         return Icon(icon, size: 20, color: Colors.amber);
       case Ruleset.singleLoser:
         return Icon(icon, size: 20, color: Colors.blue);

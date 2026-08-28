@@ -162,13 +162,10 @@ class Match {
         return _getPlayersWithLowestScore();
 
       case Ruleset.singleWinner:
-        return _getPlayersWithHighestScore().take(1).toList();
+        return _getPlayersWithHighestScore().toList();
 
       case Ruleset.singleLoser:
-        return _getPlayersWithLowestScore().take(1).toList();
-
-      case Ruleset.multipleWinners:
-        return _getPlayersWithHighestScore().toList();
+        return _getPlayersWithLowestScore().toList();
 
       case Ruleset.placement:
         return _getPlayersWithHighestScore().take(1).toList();
@@ -221,13 +218,10 @@ class Match {
         return _getLowestScoreTeam();
 
       case Ruleset.singleWinner:
-        return _getHighestScoreTeam().take(1).toList();
+        return _getHighestScoreTeam().toList();
 
       case Ruleset.singleLoser:
-        return _getLowestScoreTeam().take(1).toList();
-
-      case Ruleset.multipleWinners:
-        return _getHighestScoreTeam();
+        return _getLowestScoreTeam().toList();
 
       case Ruleset.placement:
         return _getHighestScoreTeam().take(1).toList();

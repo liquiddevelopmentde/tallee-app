@@ -412,13 +412,40 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   /// Returns `true` if the loser was removed, `false` if there are multiple
   /// scores or if the loser cannot be removed.
   Future<bool> removeLoser({required String matchId}) async {
-    final scores = await getAllMatchScores(matchId: matchId);
+    return await deleteAllScoresForMatch(matchId: matchId);
+  }
 
-    if (scores.length > 1) {
-      return false;
-    } else {
-      return await deleteAllScoresForMatch(matchId: matchId);
-    }
+  /// Sets the losers for a match.
+  ///
+  /// Returns `true` if more than 0 rows were affected
+  Future<bool> setLosers({
+    required List<Player> losers,
+    required String matchId,
+  }) async {
+    // Clear previous losers if exists
+    await deleteAllScoresForMatch(matchId: matchId);
+
+    if (losers.isEmpty) return false;
+
+    await batch((batch) {
+      batch.insertAll(
+        scoreEntryTable,
+        losers
+            .map(
+              (player) => ScoreEntryTableCompanion.insert(
+                playerId: player.id,
+                matchId: matchId,
+                roundNumber: 0,
+                score: 0,
+                change: 0,
+              ),
+            )
+            .toList(),
+        mode: InsertMode.insertOrReplace,
+      );
+    });
+
+    return true;
   }
 
   /* placement handling */
