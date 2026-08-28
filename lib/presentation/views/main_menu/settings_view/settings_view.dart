@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -15,10 +14,12 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licenses_view.dart';
 import 'package:tallee/presentation/views/preview_import_data.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/local_share_service.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -38,10 +39,13 @@ class _SettingsViewState extends State<SettingsView> {
     buildNumber: 'n.A.',
   );
 
+  bool isOnlineSharingEnabled = false;
+
   @override
   void initState() {
     super.initState();
     _initPackageInfo();
+    loadSettings();
   }
 
   @override
@@ -100,49 +104,16 @@ class _SettingsViewState extends State<SettingsView> {
                   SettingsListTile(
                     title: loc.online_sharing_title,
                     icon: Icons.cloud,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () async {
-                      showDialog(
-                        context: context,
-                        builder: (context) => CustomAlertDialog(
-                          title: loc.online_sharing_title,
-                          content: Text(
-                            loc.online_sharing_consent_text,
-                            overflow: TextOverflow.visible,
-                          ),
-                          actions: [
-                            CustomDialogAction(
-                              text: loc.enable,
-                              onPressed: () async {
-                                await saveStoredSharingConsent(true);
-                                if (context.mounted) {
-                                  Navigator.of(context).pop(true);
-                                }
-                              },
-                            ),
-                            CustomDialogAction(
-                              text: loc.disable,
-                              buttonType: ButtonType.secondary,
-                              onPressed: () async {
-                                await saveStoredSharingConsent(false);
-                                if (context.mounted) {
-                                  Navigator.of(context).pop(false);
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ).then((confirmed) {
-                        if (context.mounted) {
-                          showSnackbar(
-                            context: scaffoldMessengerContext,
-                            message: confirmed
-                                ? loc.online_sharing_enabled
-                                : loc.online_sharing_disabled,
-                          );
-                        }
-                      });
-                    },
+                    suffixWidget: CustomAdaptiveSwitch(
+                      value: isOnlineSharingEnabled,
+                      onChanged: (value) async {
+                        setState(() {
+                          isOnlineSharingEnabled = value;
+                        });
+                        await SharedPreferencesService.setSharingConsent(value);
+                      },
+                    ),
+                    onPressed: null,
                   ),
                   SettingsListTile(
                     title: loc.delete_all_data,
@@ -354,11 +325,6 @@ class _SettingsViewState extends State<SettingsView> {
     });
   }
 
-  Future<void> saveStoredSharingConsent(bool hasSharingConsent) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('shareConsent', hasSharingConsent);
-  }
-
   void handleExport(BuildContext scaffoldMessengerContext) async {
     final String json = await LocalShareService.getAppDataAsJson(
       scaffoldMessengerContext,
@@ -433,6 +399,13 @@ class _SettingsViewState extends State<SettingsView> {
           message: AppLocalizations.of(context).data_successfully_deleted,
         );
       }
+    });
+  }
+
+  Future<void> loadSettings() async {
+    final onlineSharing = SharedPreferencesService.getStoredSharingConsent();
+    setState(() {
+      isOnlineSharingEnabled = onlineSharing;
     });
   }
 }

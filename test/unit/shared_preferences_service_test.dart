@@ -82,6 +82,17 @@ void main() {
       expect(filteredGames, [game1.id, game2.id]);
     });
 
+    test('Get and set sharing consent works correctly', () async {
+      // initially null
+      expect(SharedPreferencesService.getStoredSharingConsent(), isNull);
+
+      await SharedPreferencesService.setSharingConsent(true);
+      expect(SharedPreferencesService.getStoredSharingConsent(), isTrue);
+
+      await SharedPreferencesService.setSharingConsent(false);
+      expect(SharedPreferencesService.getStoredSharingConsent(), isFalse);
+    });
+
     test('Get and set filtered groups works correctly', () async {
       final group1 = Group(id: 'group1', name: 'Group 1', members: []);
       final group2 = Group(id: 'group2', name: 'Group 2', members: []);

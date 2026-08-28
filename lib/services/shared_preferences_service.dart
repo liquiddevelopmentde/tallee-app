@@ -25,6 +25,7 @@ class SharedPreferencesService {
   static const String filteredStatisticTypesKey = 'filtered_statistic_types';
   static const String filteredStatisticScopesKey = 'filtered_statistic_scopes';
   static const String showFavouritesKey = 'show_favourites';
+  static const String sharingConsentKey = 'share_consent';
 
   static void deleteAllFilters({required bool includeFavourites}) {
     final SharedPreferences prefs = _instance;
@@ -36,6 +37,15 @@ class SharedPreferencesService {
     if (includeFavourites) {
       prefs.remove(showFavouritesKey);
     }
+  }
+
+  /// Returns false when the key is not set
+  static bool getStoredSharingConsent() {
+    return _instance.getBool(sharingConsentKey) ?? false;
+  }
+
+  static Future<void> setSharingConsent(bool hasSharingConsent) async {
+    await _instance.setBool(sharingConsentKey, hasSharingConsent);
   }
 
   static void setShowFavourites(bool showFavourites) {

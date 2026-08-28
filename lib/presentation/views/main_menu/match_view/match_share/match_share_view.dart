@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/share_exceptions.dart';
@@ -15,6 +14,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_share/token
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/services/remote_share_service.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
 
 class MatchShareView extends StatefulWidget {
   const MatchShareView({super.key, required this.match});
@@ -153,11 +153,12 @@ class _MatchShareViewState extends State<MatchShareView>
     late bool? hasStoredSharingConsent;
 
     if (initialSharingConsent == null) {
-      hasStoredSharingConsent = await getStoredSharingConsent();
+      hasStoredSharingConsent =
+          SharedPreferencesService.getStoredSharingConsent();
       if (hasStoredSharingConsent == null) {
         bool? userDecision = await showConsentDialog();
         if (userDecision != null) {
-          await saveStoredSharingConsent(userDecision);
+          await SharedPreferencesService.setSharingConsent(userDecision);
           hasStoredSharingConsent = userDecision;
         } else {
           // if the user closed popup without selecting an option, set decision
@@ -230,18 +231,6 @@ class _MatchShareViewState extends State<MatchShareView>
             );
           });
     }
-  }
-
-  /// Returns null when the key is not set, so user wasn't asked yet
-  Future<bool?> getStoredSharingConsent() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool? hasStoredSharingConsent = prefs.getBool('shareConsent');
-    return hasStoredSharingConsent;
-  }
-
-  Future<void> saveStoredSharingConsent(bool hasSharingConsent) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('shareConsent', hasSharingConsent);
   }
 
   Future<bool?> showConsentDialog() {
