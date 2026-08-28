@@ -2,37 +2,37 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/data/models/models.dart';
 
 void main() {
+  late Player testPlayer1;
+  late Player testPlayer2;
+  late Game testGame;
+  late Group testGroup;
+  late Match testMatch;
+
+  setUp(() {
+    testPlayer1 = Player(name: 'Alice', id: 'p1');
+    testPlayer2 = Player(name: 'Bob', id: 'p2');
+    testGame = Game(name: 'Chess', ruleset: Ruleset.singleWinner, id: 'g1');
+    testGroup = Group(
+      name: 'Monday Night',
+      members: [testPlayer1, testPlayer2],
+      id: 'gr1',
+    );
+    testMatch = Match(
+      name: 'Final Match',
+      game: testGame,
+      players: [testPlayer1, testPlayer2],
+      group: testGroup,
+      id: 'm1',
+      scores: {'p1': ScoreEntry(score: 10)},
+      teams: [
+        Team(name: 'Team A', members: [testPlayer1], id: 't1'),
+      ],
+    );
+  });
+
   group('Serialization Symmetry Tests', () {
-    late Player player1;
-    late Player player2;
-    late Game game;
-    late Group group;
-    late Match match;
-
-    setUp(() {
-      player1 = Player(name: 'Alice', id: 'p1');
-      player2 = Player(name: 'Bob', id: 'p2');
-      game = Game(name: 'Chess', ruleset: Ruleset.singleWinner, id: 'g1');
-      group = Group(
-        name: 'Monday Night',
-        members: [player1, player2],
-        id: 'gr1',
-      );
-      match = Match(
-        name: 'Final Match',
-        game: game,
-        players: [player1, player2],
-        group: group,
-        id: 'm1',
-        scores: {'p1': ScoreEntry(score: 10)},
-        teams: [
-          Team(name: 'Team A', members: [player1], id: 't1'),
-        ],
-      );
-    });
-
     test('Match Normalized Symmetry', () {
-      final json = match.toNormalizedJson();
+      final json = testMatch.toNormalizedJson();
 
       // Verify IDs are used in the normalized JSON
       expect(json['gameId'], 'g1');
@@ -41,41 +41,44 @@ void main() {
 
       final reconstructed = Match.fromNormalizedJson(
         json,
-        game: game,
-        group: group,
-        players: [player1, player2],
+        game: testGame,
+        group: testGroup,
+        players: [testPlayer1, testPlayer2],
         teams: [
-          Team.fromNormalizedJson(json['teams'][0], [player1]),
+          Team.fromNormalizedJson(json['teams'][0], [testPlayer1]),
         ],
       );
 
-      expect(reconstructed.id, match.id);
-      expect(reconstructed.name, match.name);
-      expect(reconstructed.game.id, game.id);
-      expect(reconstructed.group?.id, group.id);
+      expect(reconstructed.id, testMatch.id);
+      expect(reconstructed.name, testMatch.name);
+      expect(reconstructed.game.id, testGame.id);
+      expect(reconstructed.group?.id, testGroup.id);
       expect(reconstructed.players.length, 2);
       expect(reconstructed.teams?[0].id, 't1');
       expect(reconstructed.scores['p1']?.score, 10);
     });
 
     test('Group Normalized Symmetry', () {
-      final json = group.toNormalizedJson();
+      final json = testGroup.toNormalizedJson();
       expect(json['memberIds'], containsAll(['p1', 'p2']));
 
-      final reconstructed = Group.fromNormalizedJson(json, [player1, player2]);
+      final reconstructed = Group.fromNormalizedJson(json, [
+        testPlayer1,
+        testPlayer2,
+      ]);
 
-      expect(reconstructed.id, group.id);
-      expect(reconstructed.name, group.name);
+      expect(reconstructed.id, testGroup.id);
+      expect(reconstructed.name, testGroup.name);
       expect(reconstructed.members.length, 2);
       expect(reconstructed.members[0].id, 'p1');
     });
 
     test('Team Normalized Symmetry', () {
-      final team = match.teams![0];
+      final team = testMatch.teams![0];
       final json = team.toNormalizedJson();
       expect(json['memberIds'], contains('p1'));
 
-      final reconstructed = Team.fromNormalizedJson(json, [player1]);
+      final reconstructed = Team.fromNormalizedJson(json, [testPlayer1]);
 
       expect(reconstructed.id, team.id);
       expect(reconstructed.name, team.name);
