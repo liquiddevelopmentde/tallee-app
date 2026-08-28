@@ -122,8 +122,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               disabledPinTheme: disabledPinTheme,
               pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
               showCursor: false,
-              animationCurve: Curves.fastOutSlowIn,
-              animationDuration: const Duration(milliseconds: 200),
+              animationCurve: Curves.easeInOutCubic,
+              animationDuration: const Duration(milliseconds: 100),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
                 TextInputFormatter.withFunction(
