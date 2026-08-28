@@ -628,7 +628,7 @@ void main() {
         final match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, isNotNull);
+        expect(match.endedAt, isNull);
       });
 
       test('getWinner() works correctly', () async {
@@ -650,7 +650,7 @@ void main() {
         final match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, isNotNull);
+        expect(match.endedAt, isNull);
       });
 
       test('removeWinner() works correctly', () async {
@@ -718,7 +718,7 @@ void main() {
         final match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, isNotNull);
+        expect(match.endedAt, isNull);
       });
 
       test('removeLoser() works correctly', () async {

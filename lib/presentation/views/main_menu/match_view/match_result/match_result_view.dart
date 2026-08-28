@@ -128,8 +128,8 @@ class _MatchResultViewState extends State<MatchResultView> {
                             matchId: widget.match.id,
                             endedAt: ending,
                           );
-                          await handleSaving();
                           if (!context.mounted) return;
+                          widget.onWinnerChanged?.call();
                           Navigator.pop(context);
                         }
                       : null,
@@ -233,9 +233,7 @@ class _MatchResultViewState extends State<MatchResultView> {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: _ScoreInput(
             score: scores[unit] ?? 0,
-            onChanged: (value) => setState(() {
-              scores[unit] = value;
-            }),
+            onChanged: (value) => _setScore(unit, value),
           ),
         ),
         _StepButton(
@@ -248,9 +246,32 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   void _adjustScore(dynamic unit, int delta) {
+    _setScore(unit, (scores[unit] ?? 0) + delta);
+  }
+
+  /// Updates a participant's score and persists it to the database.
+  void _setScore(dynamic unit, int value) {
     setState(() {
-      scores[unit] = (scores[unit] ?? 0) + delta;
+      scores[unit] = value;
     });
+    _persistScore(unit);
+  }
+
+  Future<void> _persistScore(dynamic unit) async {
+    final score = scores[unit] ?? 0;
+    if (useTeamLogic) {
+      await db.teamDao.updateTeamScore(
+        matchId: widget.match.id,
+        teamId: (unit as Team).id,
+        score: score,
+      );
+    } else {
+      await db.scoreEntryDao.addScore(
+        matchId: widget.match.id,
+        playerId: (unit as Player).id,
+        entry: ScoreEntry(roundNumber: 0, score: score, change: 0),
+      );
+    }
   }
 
   /// Builds the draggable placement list for the placement ruleset.
@@ -302,6 +323,22 @@ class _MatchResultViewState extends State<MatchResultView> {
         allPlayers.insert(newIndex, player);
       }
     });
+    _persistPlacement();
+  }
+
+  /// Persists the current placement order to the database.
+  Future<void> _persistPlacement() async {
+    if (useTeamLogic) {
+      await db.teamDao.setTeamPlacements(
+        matchId: widget.match.id,
+        teams: allTeams,
+      );
+    } else {
+      await db.scoreEntryDao.setPlacements(
+        matchId: widget.match.id,
+        players: allPlayers,
+      );
+    }
   }
 
   bool _isSelected(dynamic unit) {
@@ -340,6 +377,18 @@ class _MatchResultViewState extends State<MatchResultView> {
         }
       }
     });
+    _persistSelection();
+  }
+
+  /// Persists the current winner/loser selection to the database.
+  Future<void> _persistSelection() async {
+    if (ruleset == Ruleset.singleWinner) {
+      await handleWinner();
+    } else if (ruleset == Ruleset.singleLoser) {
+      await handleLoser();
+    } else if (ruleset == Ruleset.multipleWinners) {
+      await handleWinners();
+    }
   }
 
   void initData() {
@@ -362,25 +411,6 @@ class _MatchResultViewState extends State<MatchResultView> {
         ),
       );
     }
-  }
-
-  /// Handles saving or removing the winner in the database
-  /// based on the current selection.
-  Future<void> handleSaving() async {
-    if (ruleset == Ruleset.singleWinner) {
-      await handleWinner();
-    } else if (ruleset == Ruleset.singleLoser) {
-      await handleLoser();
-    } else if (ruleset == Ruleset.lowestScore ||
-        ruleset == Ruleset.highestScore) {
-      await handleScores();
-    } else if (ruleset == Ruleset.placement) {
-      await handlePlacement();
-    } else if (ruleset == Ruleset.multipleWinners) {
-      await handleWinners();
-    }
-
-    widget.onWinnerChanged?.call();
   }
 
   /// Handles saving or removing the (single) winner in the database.
@@ -450,46 +480,6 @@ class _MatchResultViewState extends State<MatchResultView> {
           playerId: selectedPlayer!.id,
         );
       }
-    }
-  }
-
-  /// Handles saving the scores for each player in the database.
-  Future<void> handleScores() async {
-    if (useTeamLogic) {
-      for (int i = 0; i < allTeams.length; i++) {
-        final team = allTeams[i];
-        final score = scores[team] ?? 0;
-        await db.teamDao.updateTeamScore(
-          matchId: widget.match.id,
-          teamId: allTeams[i].id,
-          score: score,
-        );
-      }
-    } else {
-      for (int i = 0; i < allPlayers.length; i++) {
-        final player = allPlayers[i];
-        final score = scores[player] ?? 0;
-        await db.scoreEntryDao.addScore(
-          matchId: widget.match.id,
-          playerId: allPlayers[i].id,
-          entry: ScoreEntry(roundNumber: 0, score: score, change: 0),
-        );
-      }
-    }
-  }
-
-  /// Handles saving the placement for each player in the database.
-  Future<void> handlePlacement() async {
-    if (useTeamLogic) {
-      await db.teamDao.setTeamPlacements(
-        matchId: widget.match.id,
-        teams: allTeams,
-      );
-    } else {
-      await db.scoreEntryDao.setPlacements(
-        matchId: widget.match.id,
-        players: allPlayers,
-      );
     }
   }
 

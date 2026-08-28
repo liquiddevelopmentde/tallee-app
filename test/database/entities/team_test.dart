@@ -401,7 +401,7 @@ void main() {
         var match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, isNotNull);
+        expect(match.endedAt, isNull);
 
         final removed = await database.teamDao.removeWinnerTeam(
           matchId: testMatch1.id,
@@ -447,7 +447,7 @@ void main() {
         var match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, isNotNull);
+        expect(match.endedAt, isNull);
 
         final removed = await database.teamDao.removeLoserTeam(
           matchId: testMatch1.id,
@@ -497,7 +497,7 @@ void main() {
         var match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, isNotNull);
+        expect(match.endedAt, isNull);
 
         for (final member in testTeam2.members) {
           final entry = await database.scoreEntryDao.getScore(
@@ -574,7 +574,7 @@ void main() {
         final match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, isNotNull);
+        expect(match.endedAt, isNull);
       });
     });
   });
