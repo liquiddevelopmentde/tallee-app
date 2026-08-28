@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result/live_edit_view.dart';
+import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/multiple_player_selection.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/placement_drag_list.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result/score_enter_list.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/single_player_selection.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 
 class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
@@ -66,7 +66,8 @@ class _MatchResultViewState extends State<MatchResultView> {
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
     ruleset = widget.match.game.ruleset;
-    canSave = rulesetSupportsDragBehaviour();
+    canSave =
+        rulesetSupportsDragBehaviour() || rulesetSupportsScoreEntry();
 
     initData();
     super.initState();
@@ -148,16 +149,8 @@ class _MatchResultViewState extends State<MatchResultView> {
                         },
                       ),
 
-                  // Show score entry
-                  if (rulesetSupportsScoreEntry())
-                    ScoreEnterList(
-                      match: widget.match,
-                      initialScores: scores,
-                      onScoreChanged: (Map<dynamic, int?> newScores) =>
-                          scores = newScores,
-                      onCanSaveChanged: (bool canSave) =>
-                          setState(() => this.canSave = canSave),
-                    ),
+                  // Show live score entry
+                  if (rulesetSupportsScoreEntry()) buildLiveScoreList(),
 
                   // Show draggable placement list
                   if (rulesetSupportsDragBehaviour())
@@ -176,34 +169,13 @@ class _MatchResultViewState extends State<MatchResultView> {
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Live Edit Mode Button
-                if (rulesetSupportsScoreEntry()) ...[
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Finish Button
                   BottomAnimatedButton(
                     sizeRelativeToWidth: 0.95,
-                    buttonText: loc.live_edit_mode,
-                    buttonType: ButtonType.secondary,
-                    onPressed: () => Navigator.push(
-                      context,
-                      adaptivePageRoute(
-                        fullscreenDialog: true,
-                        builder: (context) => LiveEditView(
-                          initialScores: scores,
-                          match: widget.match,
-                          onScoresChanged: (Map<dynamic, int?> newScores) =>
-                              onScoresChanged(newScores),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-
-                // Save Changes Button
-                BottomAnimatedButton(
-                  sizeRelativeToWidth: 0.95,
-                  buttonText: loc.save_changes,
-                  onPressed: canSave
+                    buttonText: loc.finish_match,
+                    onPressed: canSave
                       ? () async {
                           final ending = DateTime.now();
                           await db.matchDao.updateMatchEndedAt(
@@ -224,21 +196,60 @@ class _MatchResultViewState extends State<MatchResultView> {
     );
   }
 
-  /// Callback function to handle score changes from the LiveEditView / ScoreEnterList
-  void onScoresChanged(Map<dynamic, int?> newScores) {
-    // Update the map
-    scores = Map<dynamic, int?>.from(newScores);
+  /// Builds the live score stepper list for score-based rulesets.
+  Widget buildLiveScoreList() {
+    if (useTeamLogic) {
+      final teams = [...?widget.match.teams]
+        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      return Expanded(
+        child: ListView.builder(
+          itemCount: teams.length,
+          itemBuilder: (context, index) {
+            final team = teams[index];
+            return LiveEditListTile(
+              title: buildUnitNameWidget(
+                team,
+                isTeamMatch: widget.match.isTeamMatch,
+                rowAlignment: MainAxisAlignment.center,
+                mainStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              onChanged: (value) => setState(() {
+                scores[team] = value;
+              }),
+              value: scores[team] ?? 0,
+              color: isTeamMatch ? getColorFromAppColor(team.color) : null,
+            );
+          },
+        ),
+      );
+    }
 
-    // update canSave state
-    final List<dynamic> units = useTeamLogic ? allTeams : allPlayers;
-    final isEveryUnitInScores = units.every(
-      (unit) => scores.containsKey(unit) && scores[unit] != null,
+    final players = [...widget.match.players]
+      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+    return Expanded(
+      child: ListView.builder(
+        itemCount: players.length,
+        itemBuilder: (context, index) {
+          final player = players[index];
+          return LiveEditListTile(
+            title: buildUnitNameWidget(
+              player,
+              mainStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            onChanged: (value) => setState(() {
+              scores[player] = value;
+            }),
+            value: scores[player] ?? 0,
+          );
+        },
+      ),
     );
-    final hasScores = scores.isNotEmpty;
-
-    setState(() {
-      canSave = hasScores && isEveryUnitInScores;
-    });
   }
 
   void initData() {

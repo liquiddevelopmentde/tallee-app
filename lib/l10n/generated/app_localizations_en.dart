@@ -244,6 +244,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filter => 'Filter';
 
   @override
+  String get finish_match => 'Finish';
+
+  @override
   String get format_exception => 'Format Exception (see console)';
 
   @override
@@ -309,9 +312,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenses => 'Licenses';
-
-  @override
-  String get live_edit_mode => 'Live Edit Mode';
 
   @override
   String get loading => 'Loading...';

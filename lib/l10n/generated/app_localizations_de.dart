@@ -245,6 +245,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get filter => 'Filter';
 
   @override
+  String get finish_match => 'Spiel beenden';
+
+  @override
   String get format_exception => 'Formatfehler (siehe Konsole)';
 
   @override
@@ -310,9 +313,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get licenses => 'Lizenzen';
-
-  @override
-  String get live_edit_mode => 'Live-Bearbeitungsmodus';
 
   @override
   String get loading => 'Lädt...';

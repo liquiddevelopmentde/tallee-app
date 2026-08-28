@@ -530,6 +530,12 @@ abstract class AppLocalizations {
   /// **'Filter'**
   String get filter;
 
+  /// No description provided for @finish_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get finish_match;
+
   /// No description provided for @format_exception.
   ///
   /// In en, this message translates to:
@@ -661,12 +667,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
-
-  /// No description provided for @live_edit_mode.
-  ///
-  /// In en, this message translates to:
-  /// **'Live Edit Mode'**
-  String get live_edit_mode;
 
   /// No description provided for @loading.
   ///

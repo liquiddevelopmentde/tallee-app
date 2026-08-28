@@ -110,7 +110,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                         }),
                       }
                     : null,
-                onLongPressed: () => _score > minScore
+                onLongPressed: () => _score < maxScore
                     ? {
                         setState(() {
                           _score += 10;
