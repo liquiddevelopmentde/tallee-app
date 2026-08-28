@@ -21,6 +21,7 @@ class ImportFileComponent extends StatefulWidget {
 
 class _ImportFileComponentState extends State<ImportFileComponent> {
   bool successfulImport = false;
+  ImportResult? lastResult;
 
   Color dottedBorderColor = CustomTheme.boxBorderColor;
 
@@ -37,6 +38,7 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
           child: GestureDetector(
             onTap: () async {
               data = await RemoteShareService().chooseFileToImport();
+              lastResult = data.$1;
               if (data.$1 == ImportResult.success) {
                 setState(() {
                   successfulImport = true;
@@ -90,7 +92,7 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
                         );
                       },
                   child: !successfulImport
-                      ? ChooseMatchFile(loc: loc)
+                      ? ChooseMatchFile(loc: loc, lastResult: lastResult)
                       : DisplaySelectedFile(loc: loc, match: data.$2!),
                 ),
               ),
@@ -137,25 +139,34 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
 }
 
 class ChooseMatchFile extends StatelessWidget {
-  const ChooseMatchFile({required this.loc, super.key});
+  const ChooseMatchFile({required this.loc, this.lastResult, super.key});
 
   final AppLocalizations loc;
+  final ImportResult? lastResult;
 
   @override
   Widget build(BuildContext context) {
+    String title = loc.choose_match_file;
+    if (lastResult != null &&
+        lastResult != ImportResult.success &&
+        lastResult != ImportResult.canceled) {
+      title = loc.match_import_failed;
+    }
+
     return Column(
       key: const ValueKey('choose_match_file'),
       children: [
         const Icon(Icons.file_present, size: 50),
         const SizedBox(height: 20),
         Text(
-          loc.choose_match_file,
+          title,
           style: const TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.w500,
             overflow: TextOverflow.visible,
           ),
           softWrap: true,
+          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 5),
         Text(

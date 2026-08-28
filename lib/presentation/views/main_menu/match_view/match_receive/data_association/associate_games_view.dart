@@ -37,28 +37,6 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
         appBar: AppBar(title: Text(loc.associate_game), centerTitle: true),
         body: Column(
           children: [
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                margin: CustomTheme.standardMargin,
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-                decoration: BoxDecoration(
-                  color: CustomTheme.primaryColor,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
-                ),
-                child: Text(
-                  associatedGame != null
-                      ? loc.game_associated
-                      : loc.new_group_will_be_created,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    overflow: TextOverflow.visible,
-                  ),
-                  softWrap: true,
-                ),
-              ),
-            ),
             const SizedBox(height: 10),
             GameTile(
               title: widget.match.game.name,
@@ -89,7 +67,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                       child: Container(
                         key: const ValueKey('no_association'),
                         margin: CustomTheme.tileMargin,
-                        height: 120,
+                        height: 138,
                         decoration: CustomTheme.standardBoxDecoration.copyWith(
                           border: Border.all(
                             color: Colors.orange.withAlpha(150),
@@ -144,6 +122,38 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                       badgeColor: getColorFromAppColor(associatedGame!.color),
                       borderColor: Colors.green.withAlpha(150),
                     ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                margin: CustomTheme.standardMargin,
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                decoration: BoxDecoration(
+                  color: associatedGame == null ? Colors.orange : Colors.green,
+                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                ),
+                child: Text(
+                  associatedGame != null
+                      ? loc.game_associated
+                      : loc.new_game_will_be_created,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    overflow: TextOverflow.visible,
+                  ),
+                  softWrap: true,
+                ),
+              ),
+            ),
+            SizedBox(height: 2),
+            Text(
+              loc.tap_to_choose_different_game,
+              style: const TextStyle(
+                color: CustomTheme.hintColor,
+                fontSize: 14,
+                overflow: TextOverflow.visible,
+              ),
+              softWrap: true,
             ),
             const Spacer(),
             BottomAnimatedButton(

@@ -770,6 +770,18 @@ abstract class AppLocalizations {
   /// **'New group will be created'**
   String get new_group_will_be_created;
 
+  /// No description provided for @new_game_will_be_created.
+  ///
+  /// In en, this message translates to:
+  /// **'New game will be created'**
+  String get new_game_will_be_created;
+
+  /// No description provided for @tap_to_choose_different_game.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the game to choose a different one'**
+  String get tap_to_choose_different_game;
+
   /// No description provided for @no_data_available.
   ///
   /// In en, this message translates to:
@@ -1459,6 +1471,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share tokens consist of 6 alphanumeric characters.'**
   String get share_token_format_info;
+
+  /// No description provided for @match_import_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Match import failed'**
+  String get match_import_failed;
+
+  /// No description provided for @file_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'File not found'**
+  String get file_not_found;
 
   /// No description provided for @choose_match_file.
   ///

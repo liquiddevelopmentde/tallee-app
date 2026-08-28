@@ -367,6 +367,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get new_group_will_be_created => 'Neue Gruppe wird erstellt';
 
   @override
+  String get new_game_will_be_created => 'Neue Spielvorlage wird erstellt';
+
+  @override
+  String get tap_to_choose_different_game =>
+      'Tippe die Spielvorlage an, um eine andere auszuwählen';
+
+  @override
   String get no_data_available => 'Keine Daten verfügbar';
 
   @override
@@ -748,6 +755,12 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get share_token_format_info =>
       'Share-Token bestehen aus 6 alphanumerischen Zeichen.';
+
+  @override
+  String get match_import_failed => 'Match-Import fehlgeschlagen';
+
+  @override
+  String get file_not_found => 'Datei nicht gefunden';
 
   @override
   String get choose_match_file => 'Match-Datei auswählen';

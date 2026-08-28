@@ -366,6 +366,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get new_group_will_be_created => 'New group will be created';
 
   @override
+  String get new_game_will_be_created => 'New game will be created';
+
+  @override
+  String get tap_to_choose_different_game =>
+      'Tap the game to choose a different one';
+
+  @override
   String get no_data_available => 'No data available';
 
   @override
@@ -744,6 +751,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get share_token_format_info =>
       'Share tokens consist of 6 alphanumeric characters.';
+
+  @override
+  String get match_import_failed => 'Match import failed';
+
+  @override
+  String get file_not_found => 'File not found';
 
   @override
   String get choose_match_file => 'Choose Match File';
