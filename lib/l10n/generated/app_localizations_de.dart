@@ -115,6 +115,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get create_new_match => 'Neues Spiel erstellen';
 
   @override
+  String get create_player => 'Spieler:in erstellen';
+
+  @override
   String get create_statistic => 'Statistik erstellen';
 
   @override
@@ -430,6 +433,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get played_matches => 'Gespielte Spiele';
+
+  @override
+  String get player_name => 'Name der Spieler:in';
 
   @override
   String get player_profile => 'Spieler:in-Profil';

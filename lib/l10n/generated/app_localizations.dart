@@ -302,6 +302,12 @@ abstract class AppLocalizations {
   /// **'Create new match'**
   String get create_new_match;
 
+  /// No description provided for @create_player.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Player'**
+  String get create_player;
+
   /// No description provided for @create_statistic.
   ///
   /// In en, this message translates to:
@@ -895,6 +901,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Played Matches'**
   String get played_matches;
+
+  /// No description provided for @player_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Player name'**
+  String get player_name;
 
   /// No description provided for @player_profile.
   ///

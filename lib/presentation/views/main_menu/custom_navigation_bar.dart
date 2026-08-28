@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_popup/flutter_popup.dart';
+import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/create_player_view.dart';
+import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
@@ -74,6 +80,27 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                   ? const Icon(Icons.close)
                   : const Icon(Icons.search),
               onPressed: () => matchSearchProvider.toggleSearch(),
+            ),
+
+          if (currentIndex == 0) // Only in MatchView
+            CustomPopup(
+              key: const ValueKey('match_create_button'),
+              showArrow: true,
+              arrowColor: CustomTheme.boxBorderColor,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 0,
+                vertical: 10,
+              ),
+              barrierColor: Colors.transparent,
+              contentDecoration: CustomTheme.standardBoxDecoration,
+              onBeforePopup: () async {
+                await HapticFeedback.selectionClick();
+              },
+              content: _buildCreateMenu(loc),
+              child: const Padding(
+                padding: EdgeInsets.all(8),
+                child: Icon(Icons.add),
+              ),
             ),
 
           if (currentIndex == 1) // Only in GroupView
@@ -166,6 +193,85 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     setState(() {
       currentIndex = index;
     });
+  }
+
+  /// Builds the dropdown menu content for creating new entities.
+  Widget _buildCreateMenu(AppLocalizations loc) {
+    final items = <({IconData icon, String label, VoidCallback onTap})>[
+      (
+        icon: Icons.person_add,
+        label: loc.create_player,
+        onTap: () => _openCreateView(builder: (_) => const CreatePlayerView()),
+      ),
+      (
+        icon: Icons.group_add,
+        label: loc.create_group,
+        onTap: () => _openCreateView(builder: (_) => const CreateGroupView()),
+      ),
+      (
+        icon: RpgAwesome.clovers_card,
+        label: loc.create_match,
+        onTap: () => _openCreateView(builder: (_) => const CreateMatchView()),
+      ),
+      (
+        icon: Icons.videogame_asset_rounded,
+        label: loc.create_game,
+        onTap: () => _openCreateView(
+          builder: (_) => CreateGameView(onGameChanged: () {}),
+        ),
+      ),
+    ];
+
+    return SizedBox(
+      width: 220,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 4,
+        children: [
+          for (final item in items)
+            GestureDetector(
+              onTap: item.onTap,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  color: CustomTheme.textColor.withAlpha(20),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
+                  child: Row(
+                    spacing: 8,
+                    children: [
+                      Icon(item.icon, size: 16),
+                      Text(
+                        item.label,
+                        style: const TextStyle(
+                          color: CustomTheme.textColor,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// Closes the create dropdown, opens the create view built by [builder] and
+  /// refreshes the tab views so newly created data shows up.
+  Future<void> _openCreateView({required WidgetBuilder builder}) async {
+    Navigator.of(context).pop();
+    await Navigator.of(context).push(adaptivePageRoute(builder: builder));
+    if (mounted) {
+      Provider.of<DataRefreshProvider>(context, listen: false).refresh();
+    }
   }
 
   /// Returns the title of the current tab based on [currentIndex].

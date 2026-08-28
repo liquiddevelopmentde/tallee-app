@@ -115,6 +115,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_new_match => 'Create new match';
 
   @override
+  String get create_player => 'Create Player';
+
+  @override
   String get create_statistic => 'Create statistic';
 
   @override
@@ -429,6 +432,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get played_matches => 'Played Matches';
+
+  @override
+  String get player_name => 'Player name';
 
   @override
   String get player_profile => 'Player Profile';
