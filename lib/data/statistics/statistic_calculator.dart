@@ -241,8 +241,8 @@ class StatisticCalculator {
 
   /// Determines how many wins the player has in the given matches.
   ///
-  /// - Non-single-loser rulesets: MVP(s) get the win.
-  /// - Single loser ruleset: the MVP is the loser, everyone else wins.
+  /// - singleLooser: Every player except the mvp gets a win
+  /// - Other rulesets: The mvp gets a win
   static int _wins(Player p, List<Match> matches) => matches
       .where((m) => m.players.any((mp) => mp.id == p.id))
       .where((m) {
@@ -253,8 +253,8 @@ class StatisticCalculator {
 
   /// Determines how many losses the player has in the given matches.
   ///
-  /// - Single loser ruleset: the MVP is the loser.
-  /// - All other rulesets: MVP(s) get the win, everyone else gets a loss.
+  /// - singleLooser: The mvp is the loser
+  /// - Other rulesets: Everyone except mvp is the loser
   static int _losses(Player p, List<Match> matches) => matches
       .where((m) => m.players.any((mp) => mp.id == p.id))
       .where((m) {
