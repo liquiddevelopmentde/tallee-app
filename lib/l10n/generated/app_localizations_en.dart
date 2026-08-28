@@ -124,6 +124,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get created_on => 'Created on';
 
   @override
+  String get current => 'Current';
+
+  @override
   String get data => 'Data';
 
   @override
@@ -274,6 +277,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get highest_score => 'Highest Score';
 
   @override
+  String get history => 'History';
+
+  @override
   String get import_canceled => 'Import canceled';
 
   @override
@@ -373,6 +379,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_matches_created_yet => 'No matches created yet';
+
+  @override
+  String get no_matches_in_progress => 'No matches in progress';
 
   @override
   String get no_matches_played_yet => 'No games played yet';

@@ -64,6 +64,9 @@ class _MatchViewState extends State<MatchView> {
 
   late List<Match> filteredMatches = [...matches];
 
+  /// Selected tab index: 0 = current (in progress), 1 = history (past).
+  int _selectedTabIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -162,38 +165,38 @@ class _MatchViewState extends State<MatchView> {
                         message: loc.no_matches_created_yet,
                       ),
                     ),
-                    child: Visibility(
-                      visible: filteredMatches.isNotEmpty,
-                      replacement: Center(
-                        child: TopCenteredMessage(
-                          icon: Icons.info,
-                          title: loc.info,
-                          message: loc.there_is_no_match_matching_your_search,
-                        ),
-                      ),
-                      child: ListView.builder(
-                        padding: CustomTheme.listViewPadding(context),
-                        itemCount: filteredMatches.length,
-
-                        itemBuilder: (BuildContext context, int index) {
-                          return MatchTile(
-                            onPlayerEdited: loadMatches,
-                            width: MediaQuery.sizeOf(context).width * 0.95,
-                            onTap: () async {
-                              Navigator.push(
-                                context,
-                                adaptivePageRoute(
-                                  builder: (context) => MatchDetailView(
-                                    match: filteredMatches[index],
-                                    onMatchUpdate: loadMatches,
+                    child: Column(
+                      children: [
+                        _buildTabBar(loc),
+                        Expanded(
+                          child: Visibility(
+                            visible: filteredMatches.isNotEmpty,
+                            replacement: Center(
+                              child: TopCenteredMessage(
+                                icon: Icons.info,
+                                title: loc.info,
+                                message:
+                                    loc.there_is_no_match_matching_your_search,
+                              ),
+                            ),
+                            child: _selectedTabIndex == 0
+                                ? _buildTabList(
+                                    loc,
+                                    filteredMatches
+                                        .where((m) => m.endedAt == null)
+                                        .toList(),
+                                    loc.no_matches_in_progress,
+                                  )
+                                : _buildTabList(
+                                    loc,
+                                    filteredMatches
+                                        .where((m) => m.endedAt != null)
+                                        .toList(),
+                                    loc.no_matches_played_yet,
                                   ),
-                                ),
-                              );
-                            },
-                            match: filteredMatches[index],
-                          );
-                        },
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -264,11 +267,103 @@ class _MatchViewState extends State<MatchView> {
           }
         }
 
-        // Sort by score descending
-        scoredMatches.sort((a, b) => b.score.compareTo(a.score));
+        // Sort by score descending, keeping running matches on top.
+        scoredMatches.sort((a, b) {
+          final aRunning = a.match.endedAt == null;
+          final bRunning = b.match.endedAt == null;
+          if (aRunning != bRunning) return aRunning ? -1 : 1;
+          return b.score.compareTo(a.score);
+        });
         filteredMatches = scoredMatches.map((e) => e.match).toList();
       }
     });
+  }
+
+  Widget _buildTabBar(AppLocalizations loc) {
+    final tabs = [loc.current, loc.history];
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: CustomTheme.boxBorderColor),
+        ),
+      ),
+      child: Row(
+        children: [
+          for (int i = 0; i < tabs.length; i++)
+            Expanded(
+              child: InkWell(
+                onTap: () => setState(() => _selectedTabIndex = i),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    children: [
+                      Text(
+                        tabs[i],
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: _selectedTabIndex == i
+                              ? CustomTheme.primaryColor
+                              : CustomTheme.hintColor,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        height: 2,
+                        color: _selectedTabIndex == i
+                            ? CustomTheme.primaryColor
+                            : Colors.transparent,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabList(
+    AppLocalizations loc,
+    List<Match> tabMatches,
+    String emptyMessage,
+  ) {
+    if (tabMatches.isEmpty) {
+      return Center(
+        child: TopCenteredMessage(
+          icon: Icons.info,
+          title: loc.info,
+          message: emptyMessage,
+        ),
+      );
+    }
+    return ListView.builder(
+      padding: CustomTheme.listViewPadding(context),
+      itemCount: tabMatches.length,
+      itemBuilder: (BuildContext context, int index) =>
+          _buildMatchTile(tabMatches[index]),
+    );
+  }
+
+  Widget _buildMatchTile(Match match) {
+    return MatchTile(
+      onPlayerEdited: loadMatches,
+      width: MediaQuery.sizeOf(context).width * 0.95,
+      onTap: () async {
+        Navigator.push(
+          context,
+          adaptivePageRoute(
+            builder: (context) => MatchDetailView(
+              match: match,
+              onMatchUpdate: loadMatches,
+            ),
+          ),
+        );
+      },
+      match: match,
+    );
   }
 
   void _handleSearchToggle() {
@@ -292,7 +387,13 @@ class _MatchViewState extends State<MatchView> {
         setState(() {
           final loadedMatches = results[0] as List<Match>;
           matches = [...loadedMatches]
-            ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+            ..sort((a, b) {
+              // Running matches on top, then finished matches by creation date.
+              final aRunning = a.endedAt == null;
+              final bRunning = b.endedAt == null;
+              if (aRunning != bRunning) return aRunning ? -1 : 1;
+              return b.createdAt.compareTo(a.createdAt);
+            });
           if (searchBarController.text.isEmpty) {
             filteredMatches = [...matches];
           } else {

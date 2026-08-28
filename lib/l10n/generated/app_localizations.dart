@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'Created on'**
   String get created_on;
 
+  /// No description provided for @current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get current;
+
   /// No description provided for @data.
   ///
   /// In en, this message translates to:
@@ -590,6 +596,12 @@ abstract class AppLocalizations {
   /// **'Highest Score'**
   String get highest_score;
 
+  /// No description provided for @history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get history;
+
   /// No description provided for @import_canceled.
   ///
   /// In en, this message translates to:
@@ -787,6 +799,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No matches created yet'**
   String get no_matches_created_yet;
+
+  /// No description provided for @no_matches_in_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches in progress'**
+  String get no_matches_in_progress;
 
   /// No description provided for @no_matches_played_yet.
   ///
