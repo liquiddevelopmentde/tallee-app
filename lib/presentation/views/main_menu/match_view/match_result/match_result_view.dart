@@ -227,12 +227,13 @@ class _MatchResultViewState extends State<MatchResultView> {
           onTap: () => _adjustScore(unit, -1),
           onLongPress: () => _adjustScore(unit, -10),
         ),
-        SizedBox(
-          width: 64,
-          child: Text(
-            '${scores[unit] ?? 0}',
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: _ScoreInput(
+            score: scores[unit] ?? 0,
+            onChanged: (value) => setState(() {
+              scores[unit] = value;
+            }),
           ),
         ),
         _StepButton(
@@ -503,6 +504,95 @@ class _MatchResultViewState extends State<MatchResultView> {
       default:
         return loc.enter_points;
     }
+  }
+}
+
+/// An inline score input that shows the current score and reveals a cursor
+/// and number pad when tapped. Losing focus commits the entered value.
+class _ScoreInput extends StatefulWidget {
+  const _ScoreInput({required this.score, required this.onChanged});
+
+  final int score;
+  final ValueChanged<int> onChanged;
+
+  @override
+  State<_ScoreInput> createState() => _ScoreInputState();
+}
+
+class _ScoreInputState extends State<_ScoreInput> {
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: '${widget.score}');
+    _focusNode = FocusNode();
+    _controller.addListener(_onChanged);
+    _focusNode.addListener(() {
+      if (!_focusNode.hasFocus) {
+        final value = int.tryParse(_controller.text.trim());
+        if (value == null) {
+          _controller.text = '${widget.score}';
+        }
+      }
+    });
+  }
+
+  void _onChanged() {
+    final value = int.tryParse(_controller.text.trim());
+    if (value != null) {
+      widget.onChanged(value);
+    }
+  }
+
+  @override
+  void didUpdateWidget(_ScoreInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.score != oldWidget.score && !_focusNode.hasFocus) {
+      _controller.text = '${widget.score}';
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 64,
+      child: TextField(
+        controller: _controller,
+        focusNode: _focusNode,
+        textAlign: TextAlign.center,
+        keyboardType: const TextInputType.numberWithOptions(signed: true),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^-?\d*')),
+        ],
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        decoration: InputDecoration(
+          isDense: true,
+          filled: true,
+          fillColor: CustomTheme.boxColor,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 6,
+            horizontal: 4,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: CustomTheme.boxBorderColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: CustomTheme.primaryColor),
+          ),
+        ),
+      ),
+    );
   }
 }
 

@@ -12,6 +12,9 @@ class TextInputField extends StatelessWidget {
   /// - [minLines]: The minimum number of lines for the text input field. Defaults to 1.
   /// - [showCounterText]: Whether to show the counter text in the text input field. Defaults to false.
   /// - [textInputAction]: Optional action button shown on the keyboard.
+  /// - [keyboardType]: Optional keyboard type, e.g. for numeric input.
+  /// - [inputFormatters]: Optional input formatters applied to the field.
+  /// - [autofocus]: Whether the field should autofocus. Defaults to false.
   /// - [focusNode]: Optional focus node for managing focus of the text input field.
   /// - [onSubmitted]: Optional callback invoked when the user submits the field.
   const TextInputField({
@@ -24,6 +27,9 @@ class TextInputField extends StatelessWidget {
     this.minLines = 1,
     this.showCounterText = false,
     this.textInputAction,
+    this.keyboardType,
+    this.inputFormatters,
+    this.autofocus = false,
     this.focusNode,
     this.onSubmitted,
   });
@@ -36,6 +42,9 @@ class TextInputField extends StatelessWidget {
   final int? minLines;
   final bool showCounterText;
   final TextInputAction? textInputAction;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool autofocus;
   final FocusNode? focusNode;
   final ValueChanged<String>? onSubmitted;
 
@@ -46,6 +55,9 @@ class TextInputField extends StatelessWidget {
       onChanged: onChanged,
       onSubmitted: onSubmitted,
       textInputAction: textInputAction,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      autofocus: autofocus,
       maxLength: maxLength,
       maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
       maxLines: maxLines,
