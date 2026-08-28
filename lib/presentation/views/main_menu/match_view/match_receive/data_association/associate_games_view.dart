@@ -37,6 +37,28 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
         appBar: AppBar(title: Text(loc.associate_game), centerTitle: true),
         body: Column(
           children: [
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                margin: CustomTheme.standardMargin,
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                decoration: BoxDecoration(
+                  color: associatedGame == null ? Colors.orange : Colors.green,
+                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                ),
+                child: Text(
+                  associatedGame != null
+                      ? loc.game_associated
+                      : loc.new_game_will_be_created,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    overflow: TextOverflow.visible,
+                  ),
+                  softWrap: true,
+                ),
+              ),
+            ),
             const SizedBox(height: 10),
             GameTile(
               title: widget.match.game.name,
@@ -122,28 +144,6 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                       badgeColor: getColorFromAppColor(associatedGame!.color),
                       borderColor: Colors.green.withAlpha(150),
                     ),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                margin: CustomTheme.standardMargin,
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-                decoration: BoxDecoration(
-                  color: associatedGame == null ? Colors.orange : Colors.green,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
-                ),
-                child: Text(
-                  associatedGame != null
-                      ? loc.game_associated
-                      : loc.new_game_will_be_created,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    overflow: TextOverflow.visible,
-                  ),
-                  softWrap: true,
-                ),
-              ),
             ),
             SizedBox(height: 2),
             Text(
