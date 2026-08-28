@@ -3,15 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
-class GroupTile extends StatefulWidget {
-  /// A tile widget that displays information about a group, including its name and members.
+class GroupTile extends StatelessWidget {
+  /// A tile widget that displays a group with its name, member count and
+  /// members, following the same card style as the match tile.
   /// - [group]: The group data to be displayed.
   /// - [isHighlighted]: Whether the tile should be highlighted.
   /// - [onTap]: Callback function to be executed when the tile is tapped.
+  /// - [onPlayerChanged]: Callback when a member is renamed.
   const GroupTile({
     super.key,
     required this.group,
@@ -33,23 +37,23 @@ class GroupTile extends StatefulWidget {
   final VoidCallback? onPlayerChanged;
 
   @override
-  State<GroupTile> createState() => _GroupTileState();
-}
-
-class _GroupTileState extends State<GroupTile> {
-  @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final members = [...group.members]
+      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+    final memberCountText = group.members.length == 1
+        ? '${group.members.length} ${loc.member}'
+        : '${group.members.length} ${loc.members}';
+
     return GestureDetector(
       onTap: () async {
         await HapticFeedback.selectionClick();
-        if (widget.onTap != null) {
-          widget.onTap!.call();
-        }
+        onTap?.call();
       },
       child: AnimatedContainer(
         margin: CustomTheme.tileMargin,
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        decoration: widget.isHighlighted
+        padding: const EdgeInsets.all(12),
+        decoration: isHighlighted
             ? CustomTheme.highlightedBoxDecoration
             : CustomTheme.standardBoxDecoration,
         duration: const Duration(milliseconds: 150),
@@ -57,45 +61,54 @@ class _GroupTileState extends State<GroupTile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(
-                  child: Text(
-                    widget.group.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                const ColoredIconContainer(
+                  icon: Icons.group,
+                  containerSize: 44,
+                  iconSize: 24,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        group.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        memberCountText,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: CustomTheme.hintColor,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
-                Row(
-                  children: [
-                    Text(
-                      '${widget.group.members.length}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(width: 3),
-                    const Icon(Icons.group, size: 22),
-                  ],
+                const SizedBox(width: 8),
+                const Icon(
+                  Icons.chevron_right,
+                  size: 20,
+                  color: CustomTheme.hintColor,
                 ),
               ],
             ),
-            const SizedBox(height: 5),
-            Wrap(
-              alignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.start,
-              spacing: 12.0,
-              runSpacing: 8.0,
-              children: <Widget>[
-                for (var member in [
-                  ...widget.group.members,
-                ]..sort((a, b) => a.name.compareIgnoringCaseTo(b.name)))
-                  PlayerTile(
+
+            if (members.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: members.map((member) {
+                  return PlayerTile(
                     player: member,
                     onTileTap: () {
                       Navigator.push(
@@ -104,16 +117,16 @@ class _GroupTileState extends State<GroupTile> {
                           builder: (context) => PlayerDetailView(
                             player: member,
                             onPlayerNameUpdated: () {
-                              widget.onPlayerChanged?.call();
+                              onPlayerChanged?.call();
                             },
                           ),
                         ),
                       );
                     },
-                  ),
-              ],
-            ),
-            const SizedBox(height: 2.5),
+                  );
+                }).toList(),
+              ),
+            ],
           ],
         ),
       ),
