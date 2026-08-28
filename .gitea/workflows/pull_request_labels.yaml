@@ -1,7 +1,7 @@
 name: PR Workflow State
 on:
   pull_request:
-    types: [opened, review_requested, closed]
+    types: [opened, review_requested, review_request_removed, closed]
   pull_request_review:
     types: [submitted]
   pull_request_review_comment: {}
@@ -21,6 +21,7 @@ jobs:
       ACTION: ${{ github.event.action }}
       STATE: ${{ github.event.review.type }}
       MERGED: ${{ github.event.pull_request.merged }}
+      TITLE: ${{ github.event.pull_request.title }}
     steps:
       - name: Set workflow label
         run: |
@@ -32,6 +33,7 @@ jobs:
               case "$ACTION" in
                 opened)           TARGET="Workflow/In Progress" ;;
                 review_requested) TARGET="Workflow/Ready for Review" ;;
+                review_request_removed) TARGET="Workflow/In Progress" ;;
                 closed)           if [ "$MERGED" = "true" ]; then TARGET="Workflow/Merged"; fi ;;
               esac ;;
             pull_request_review)
@@ -45,6 +47,13 @@ jobs:
           esac
 
           [ -z "$TARGET" ] && { echo "no state change for $EVENT/$ACTION/$STATE"; exit 0; }
+
+          if [ "$EVENT" = "pull_request" ] && [ "$ACTION" = "review_requested" ]; then
+            NEW="$(printf '%s' "$TITLE" | sed -E 's/^WIP:[[:space:]]*//I')"
+            [ "$NEW" != "$TITLE" ] && \
+              curl -fsS -X PATCH -H "$AUTH" -H 'Content-Type: application/json' \
+                -d "{\"title\":\"$NEW\"}" "$API/repos/$REPO/pulls/$PR"
+          fi
 
           curl -fsS -H "$AUTH" "$API/repos/$REPO/labels" | python3 -c "import sys,json;d=json.load(sys.stdin);exit(0 if any(x['name']=='$TARGET' for x in d) else 1)" || \
             curl -fsS -X POST -H "$AUTH" -H 'Content-Type: application/json' \
