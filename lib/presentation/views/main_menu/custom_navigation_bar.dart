@@ -82,27 +82,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               onPressed: () => matchSearchProvider.toggleSearch(),
             ),
 
-          if (currentIndex == 0) // Only in MatchView
-            CustomPopup(
-              key: const ValueKey('match_create_button'),
-              showArrow: true,
-              arrowColor: CustomTheme.boxBorderColor,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 0,
-                vertical: 10,
-              ),
-              barrierColor: Colors.transparent,
-              contentDecoration: CustomTheme.standardBoxDecoration,
-              onBeforePopup: () async {
-                await HapticFeedback.selectionClick();
-              },
-              content: _buildCreateMenu(loc),
-              child: const Padding(
-                padding: EdgeInsets.all(8),
-                child: Icon(Icons.add),
-              ),
-            ),
-
           if (currentIndex == 1) // Only in GroupView
             HapticIconButton(
               key: ValueKey(
@@ -115,6 +94,26 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               ),
               onPressed: () => groupSearchProvider.toggleSearch(),
             ),
+
+          CustomPopup(
+            key: const ValueKey('match_create_button'),
+            showArrow: true,
+            arrowColor: CustomTheme.boxBorderColor,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 0,
+              vertical: 10,
+            ),
+            barrierColor: Colors.transparent,
+            contentDecoration: CustomTheme.standardBoxDecoration,
+            onBeforePopup: () async {
+              await HapticFeedback.selectionClick();
+            },
+            content: _buildCreateMenu(loc),
+            child: const Padding(
+              padding: EdgeInsets.all(8),
+              child: Icon(Icons.add),
+            ),
+          ),
 
           HapticIconButton(
             onPressed: () async {
