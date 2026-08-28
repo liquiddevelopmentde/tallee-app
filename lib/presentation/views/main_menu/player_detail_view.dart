@@ -334,6 +334,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                       Constants.MAX_PLAYER_DESCRIPTION_LENGTH,
                                   minLines: 3,
                                   maxLines: 3,
+                                  showCounterText: true,
                                 ),
                               ],
                             ),

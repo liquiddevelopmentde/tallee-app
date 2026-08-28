@@ -101,6 +101,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                   maxLength: Constants.MAX_GROUP_DESCRIPTION_LENGTH,
                   minLines: 3,
                   maxLines: 3,
+                  showCounterText: true,
                 ),
               ),
               Expanded(
