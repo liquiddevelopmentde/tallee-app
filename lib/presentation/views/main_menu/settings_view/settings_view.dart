@@ -405,7 +405,7 @@ class _SettingsViewState extends State<SettingsView> {
   Future<void> loadSettings() async {
     final onlineSharing = SharedPreferencesService.getStoredSharingConsent();
     setState(() {
-      isOnlineSharingEnabled = onlineSharing;
+      isOnlineSharingEnabled = onlineSharing ?? false;
     });
   }
 }

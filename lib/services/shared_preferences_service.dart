@@ -39,9 +39,9 @@ class SharedPreferencesService {
     }
   }
 
-  /// Returns false when the key is not set
-  static bool getStoredSharingConsent() {
-    return _instance.getBool(sharingConsentKey) ?? false;
+  /// Returns null when the key is not set, so user wasn't asked yet
+  static bool? getStoredSharingConsent() {
+    return _instance.getBool(sharingConsentKey);
   }
 
   static Future<void> setSharingConsent(bool hasSharingConsent) async {
