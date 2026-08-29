@@ -807,4 +807,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get associate_group => 'Associate Group';
+
+  @override
+  String get match_not_ended_share_warning =>
+      'Matches can only be shared once they have ended.';
 }

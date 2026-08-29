@@ -301,5 +301,6 @@
   "associate_game": "Spielvorlage verknüpfen",
   "game_associated": "Spielvorlage erfolgreich verknüpft",
   "no_matching_local_game_found": "Keine passende lokale Spielvorlage gefunden. Eine neue wird erstellt.",
-  "associate_group": "Gruppe verknüpfen"
+  "associate_group": "Gruppe verknüpfen",
+  "match_not_ended_share_warning": "Spiele können erst geteilt werden, wenn sie beendet wurden."
 }

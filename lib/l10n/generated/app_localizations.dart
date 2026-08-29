@@ -1573,6 +1573,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Associate Group'**
   String get associate_group;
+
+  /// No description provided for @match_not_ended_share_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Matches can only be shared once they have ended.'**
+  String get match_not_ended_share_warning;
 }
 
 class _AppLocalizationsDelegate

@@ -310,5 +310,6 @@
   "associate_game": "Associate Game",
   "game_associated": "Game successfully associated",
   "no_matching_local_game_found": "No matching local game found.\nA new game will be created.",
-  "associate_group": "Associate Group"
+  "associate_group": "Associate Group",
+  "match_not_ended_share_warning": "Matches can only be shared once they have ended."
 }

@@ -17,6 +17,7 @@ import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
@@ -103,19 +104,23 @@ class _MatchDetailViewState extends State<MatchDetailView> {
             },
           ),
           HapticIconButton(
-            onPressed: match.mvp.isNotEmpty || match.mvt.isNotEmpty
-                ? () {
-                    Navigator.of(context).push(
-                      adaptivePageRoute(
-                        builder: (context) => MatchShareView(match: match),
-                        fullscreenDialog: true,
-                      ),
-                    );
-                  }
-                : null,
+            onPressed: () {
+              if (match.endedAt != null) {
+                Navigator.of(context).push(
+                  adaptivePageRoute(
+                    builder: (context) => MatchShareView(match: match),
+                    fullscreenDialog: true,
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  CustomSnackBar(message: loc.match_not_ended_share_warning),
+                );
+              }
+            },
             icon: Icon(
               Icons.share,
-              color: match.mvp.isNotEmpty || match.mvt.isNotEmpty
+              color: match.endedAt != null
                   ? Colors.white
                   : Colors.white.withAlpha(150),
             ),

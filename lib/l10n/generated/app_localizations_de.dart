@@ -814,4 +814,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get associate_group => 'Gruppe verknüpfen';
+
+  @override
+  String get match_not_ended_share_warning =>
+      'Spiele können erst geteilt werden, wenn sie beendet wurden.';
 }
