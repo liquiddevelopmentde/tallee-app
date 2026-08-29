@@ -17,6 +17,7 @@
   "choose_types": "Choose Types",
   "classifier": "Classifier",
   "custom": "Custom",
+  "select_a_date_range": "Select a date range",
   "classifier_description": "Choose which metric is calculated and shown in this statistic.",
   "click_another_player_to_create_a_pair": "Click another player to create a pair",
   "color": "Color",
