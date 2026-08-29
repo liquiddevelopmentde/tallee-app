@@ -259,7 +259,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get group => 'Group';
 
   @override
-  String get group_associated => 'Group associated';
+  String get group_associated => 'Group successfully associated';
 
   @override
   String get group_name => 'Group name';
@@ -793,13 +793,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remaining => 'remaining';
 
   @override
-  String get all_players_associated => 'All players associated';
+  String get all_players_associated => 'All players successfully associated';
 
   @override
   String get associate_game => 'Associate Game';
 
   @override
-  String get game_associated => 'Game associated';
+  String get game_associated => 'Game successfully associated';
 
   @override
   String get no_matching_local_game_found =>

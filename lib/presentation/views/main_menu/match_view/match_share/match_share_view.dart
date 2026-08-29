@@ -115,31 +115,35 @@ class _MatchShareViewState extends State<MatchShareView>
               ),
             ),
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  QrCodeComponent(
-                    qrImage: qrImage,
-                    isLoading: isLoading,
-                    secondsRemaining: _secondsRemaining,
-                    totalSeconds: _totalSeconds,
-                    serverSharingEnabled: serverSharingEnabled,
-                    onOnlineSharingPrefChanged: () {
-                      initSharingView();
-                    },
-                  ),
-                  TokenComponent(
-                    secondsRemaining: _secondsRemaining,
-                    totalSeconds: _totalSeconds,
-                    shareToken: shareToken,
-                    isLoading: isLoading,
-                    serverSharingEnabled: serverSharingEnabled,
-                    onOnlineSharingPrefChanged: () {
-                      initSharingView();
-                    },
-                  ),
-                  SaveFileComponent(match: widget.match),
-                ],
+              child: SafeArea(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    QrCodeComponent(
+                      qrImage: qrImage,
+                      isLoading: isLoading,
+                      secondsRemaining: _secondsRemaining,
+                      totalSeconds: _totalSeconds,
+                      serverSharingEnabled: serverSharingEnabled,
+                      onOnlineSharingPrefChanged: () {
+                        initSharingView();
+                      },
+                      renewToken: renewToken,
+                    ),
+                    TokenComponent(
+                      secondsRemaining: _secondsRemaining,
+                      totalSeconds: _totalSeconds,
+                      shareToken: shareToken,
+                      isLoading: isLoading,
+                      serverSharingEnabled: serverSharingEnabled,
+                      onOnlineSharingPrefChanged: () {
+                        initSharingView();
+                      },
+                      renewToken: renewToken,
+                    ),
+                    SaveFileComponent(match: widget.match),
+                  ],
+                ),
               ),
             ),
           ],
@@ -270,5 +274,58 @@ class _MatchShareViewState extends State<MatchShareView>
         });
       }
     });
+  }
+
+  void renewToken() async {
+    setState(() {
+      isLoading = true;
+      _secondsRemaining = _totalSeconds;
+    });
+
+    try {
+      final newToken = await RemoteShareService().getShareToken(widget.match);
+      if (mounted) {
+        setState(() {
+          shareToken = newToken;
+          final qrCode = QrCode.fromData(
+            data: shareToken!,
+            errorCorrectLevel: QrErrorCorrectLevel.H,
+          );
+          qrImage = QrImage(qrCode);
+          isLoading = false;
+          _timer?.cancel();
+          startTimer();
+        });
+      }
+    } catch (error) {
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+
+      final loc = AppLocalizations.of(context);
+      String errorMessage;
+
+      if (error is NetworkException) {
+        errorMessage = loc.network_error;
+      } else if (error is ServerException) {
+        errorMessage = loc.server_error(error.statusCode);
+      } else if (error is ParsingException) {
+        errorMessage = loc.parsing_error;
+      } else {
+        errorMessage = loc.unexpected_error;
+      }
+      _scaffoldMessengerKey.currentState?.showSnackBar(
+        CustomSnackBar(
+          message: errorMessage,
+          actionIcon: Icons.refresh,
+          onActionTap: () {
+            _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+            renewToken();
+          },
+        ),
+      );
+    }
   }
 }

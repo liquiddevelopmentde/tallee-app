@@ -9,7 +9,7 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/services/remote_share_service.dart';
 
 class ImportFileComponent extends StatefulWidget {
@@ -113,13 +113,14 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
             softWrap: true,
           ),
         ),
-        const SizedBox(height: 40),
+        const Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FloatingAnimatedButton(
-              text: loc.import_match,
-              icon: Icons.file_download,
+            BottomAnimatedButton(
+              buttonText: loc.import_match,
+              sizeRelativeToWidth: 0.9,
+              //icon: Icons.file_download,
               onPressed: successfulImport
                   ? () {
                       Navigator.push(

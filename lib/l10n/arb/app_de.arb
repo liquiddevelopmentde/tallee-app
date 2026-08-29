@@ -91,7 +91,7 @@
   "game_name": "Spielvorlagenname",
   "games": "Spielvorlagen",
   "group": "Gruppe",
-  "group_associated": "Gruppe verknüpft",
+  "group_associated": "Gruppe erfolgreich verknüpft",
   "group_name": "Gruppenname",
   "group_profile": "Gruppenprofil",
   "groups": "Gruppen",
@@ -297,9 +297,9 @@
   "choose_where_to_save": "Wähle aus, wo du dein Match speichern möchtest:",
   "associate_players": "Spieler:innen verknüpfen",
   "remaining": "verbleibend",
-  "all_players_associated": "Alle Spieler:innen verknüpft",
+  "all_players_associated": "Alle Spieler:innen erfolgreich verknüpft",
   "associate_game": "Spielvorlage verknüpfen",
-  "game_associated": "Spielvorlage verknüpft",
+  "game_associated": "Spielvorlage erfolgreich verknüpft",
   "no_matching_local_game_found": "Keine passende lokale Spielvorlage gefunden. Eine neue wird erstellt.",
   "associate_group": "Gruppe verknüpfen"
 }

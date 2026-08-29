@@ -7,20 +7,33 @@ import 'package:tallee/core/enums.dart';
 class ApiActionAnimatedButton extends StatefulWidget {
   /// A button specifically designed for asynchronous requests.
   /// - [onPressed]: The async callback that triggers the API request. Pass `null` to disable the button.
-  /// - [icon]: The initial icon of the button.
-  /// - [text]: The initial text of the button.
+  /// - [text]: The text of the button.
+  /// - [buttonConstraints]: Optional constraints to control the button's size, only works if [sizeRelativeToWidth] is not provided.
+  /// - [sizeRelativeToWidth]: Optional size of the button relative to the width of the screen.
+  /// - [buttonType]: The type of the button, which determines its styling.
+  /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
   const ApiActionAnimatedButton({
     super.key,
     required this.onPressed,
-    required this.icon,
     this.text,
+    this.buttonConstraints,
+    this.sizeRelativeToWidth,
+    this.buttonType = ButtonType.primary,
+    this.isDestructive = false,
   });
 
   /// Expects a Future to handle the API request duration. If null, the button is disabled.
   final Future<void> Function()? onPressed;
 
-  final IconData icon;
   final String? text;
+
+  final BoxConstraints? buttonConstraints;
+
+  final double? sizeRelativeToWidth;
+
+  final ButtonType buttonType;
+
+  final bool isDestructive;
 
   @override
   State<ApiActionAnimatedButton> createState() =>
@@ -72,78 +85,86 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: widget.onPressed == null ? disabledScaleAnimation : scaleAnimation,
-      child: GestureDetector(
-        onTapDown: (_) {
-          if (widget.onPressed == null) {
-            disabledAnimationController.forward();
-          } else if (buttonState == ApiButtonState.idle) {
-            animationController.forward();
-          }
-        },
-        onTapUp: (_) {
-          if (widget.onPressed == null) {
-            disabledAnimationController.reverse();
-          } else {
-            handlePress();
-          }
-        },
-        onTapCancel: () {
-          if (widget.onPressed == null) {
-            disabledAnimationController.reverse();
-          } else if (buttonState == ApiButtonState.idle) {
-            animationController.reverse();
-          }
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          decoration: BoxDecoration(
-            color: getBackgroundColor(),
-            borderRadius: BorderRadius.circular(30),
+    final isDisabled = widget.onPressed == null;
+
+    return Center(
+      child: IgnorePointer(
+        ignoring: isDisabled,
+        child: Opacity(
+          opacity: isDisabled ? 0.4 : 1.0,
+          child: ScaleTransition(
+            scale: isDisabled ? disabledScaleAnimation : scaleAnimation,
+            child: GestureDetector(
+              onTapDown: (_) {
+                if (isDisabled) {
+                  disabledAnimationController.forward();
+                } else if (buttonState == ApiButtonState.idle) {
+                  animationController.forward();
+                }
+              },
+              onTapUp: (_) {
+                if (isDisabled) {
+                  disabledAnimationController.reverse();
+                } else {
+                  handlePress();
+                }
+              },
+              onTapCancel: () {
+                if (isDisabled) {
+                  disabledAnimationController.reverse();
+                } else if (buttonState == ApiButtonState.idle) {
+                  animationController.reverse();
+                }
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                constraints: widget.sizeRelativeToWidth == null
+                    ? widget.buttonConstraints
+                    : BoxConstraints(
+                        minWidth:
+                            MediaQuery.sizeOf(context).width *
+                            widget.sizeRelativeToWidth!,
+                        minHeight: 50,
+                      ),
+                decoration: _getButtonDecoration(),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: buildContent(),
+              ),
+            ),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          child: buildContent(),
         ),
       ),
     );
   }
 
   Widget buildContent() {
+    final textStyle = _getTextStyling();
+    final contentColor = textStyle.color ?? Colors.black;
+
     return Stack(
       alignment: Alignment.center,
       children: [
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: buttonState == ApiButtonState.idle ? 1.0 : 0.0,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(widget.icon, size: 26, color: Colors.black),
-              if (widget.text != null) ...[
-                const SizedBox(width: 7),
-                Text(
-                  widget.text!,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ],
+          child: Text(
+            widget.text ?? '',
+            style: textStyle,
+            textAlign: TextAlign.center,
           ),
         ),
-
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: buttonState == ApiButtonState.loading ? 1.0 : 0.0,
-          child: const SizedBox(
+          child: SizedBox(
             width: 26,
             height: 26,
             child: CircularProgressIndicator(
-              color: Colors.black,
+              color: contentColor,
               strokeWidth: 2.5,
             ),
           ),
@@ -153,7 +174,6 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
           opacity: buttonState == ApiButtonState.success ? 1.0 : 0.0,
           child: const Icon(Icons.check, size: 26, color: Colors.green),
         ),
-
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: buttonState == ApiButtonState.error ? 1.0 : 0.0,
@@ -185,12 +205,14 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
         });
         await HapticFeedback.heavyImpact();
 
-        await Future.delayed(const Duration(seconds: 2));
-        if (mounted) {
-          setState(() {
-            buttonState = ApiButtonState.idle;
-          });
-        }
+        // Fire and forget reset
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            setState(() {
+              buttonState = ApiButtonState.idle;
+            });
+          }
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -210,9 +232,40 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     }
   }
 
-  Color getBackgroundColor() {
-    if (widget.onPressed == null) return Colors.grey;
-    if (buttonState == ApiButtonState.loading) return Colors.grey[200]!;
-    return Colors.white;
+  TextStyle _getTextStyling() {
+    late Color textColor;
+    if (widget.buttonType == ButtonType.primary) {
+      textColor = widget.isDestructive ? Colors.white : Colors.black;
+    } else if (widget.buttonType == ButtonType.secondary) {
+      textColor = widget.isDestructive ? Colors.red : Colors.white;
+    } else {
+      textColor = widget.isDestructive ? Colors.red : Colors.white;
+    }
+
+    return TextStyle(
+      color: textColor,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  BoxDecoration _getButtonDecoration() {
+    if (widget.buttonType == ButtonType.primary) {
+      return BoxDecoration(
+        color: buttonState == ApiButtonState.loading
+            ? Colors.grey[200]
+            : (widget.isDestructive ? Colors.red : Colors.white),
+        borderRadius: BorderRadius.circular(12),
+      );
+    } else if (widget.buttonType == ButtonType.secondary) {
+      return BoxDecoration(
+        border: Border.all(
+          color: widget.isDestructive ? Colors.red : Colors.white,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      );
+    }
+    return const BoxDecoration();
   }
 }

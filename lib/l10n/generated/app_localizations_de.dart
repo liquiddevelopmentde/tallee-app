@@ -260,7 +260,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get group => 'Gruppe';
 
   @override
-  String get group_associated => 'Gruppe verknüpft';
+  String get group_associated => 'Gruppe erfolgreich verknüpft';
 
   @override
   String get group_name => 'Gruppenname';
@@ -799,13 +799,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get remaining => 'verbleibend';
 
   @override
-  String get all_players_associated => 'Alle Spieler:innen verknüpft';
+  String get all_players_associated =>
+      'Alle Spieler:innen erfolgreich verknüpft';
 
   @override
   String get associate_game => 'Spielvorlage verknüpfen';
 
   @override
-  String get game_associated => 'Spielvorlage verknüpft';
+  String get game_associated => 'Spielvorlage erfolgreich verknüpft';
 
   @override
   String get no_matching_local_game_found =>

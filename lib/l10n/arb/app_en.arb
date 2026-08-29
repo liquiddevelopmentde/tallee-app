@@ -91,7 +91,7 @@
   "game_name": "Game Name",
   "games": "Games",
   "group": "Group",
-  "group_associated": "Group associated",
+  "group_associated": "Group successfully associated",
   "group_name": "Group name",
   "group_profile": "Group Profile",
   "groups": "Groups",
@@ -306,9 +306,9 @@
   "choose_where_to_save": "Choose where to save your match:",
   "associate_players": "Associate Players",
   "remaining": "remaining",
-  "all_players_associated": "All players associated",
+  "all_players_associated": "All players successfully associated",
   "associate_game": "Associate Game",
-  "game_associated": "Game associated",
+  "game_associated": "Game successfully associated",
   "no_matching_local_game_found": "No matching local game found.\nA new game will be created.",
   "associate_group": "Associate Group"
 }

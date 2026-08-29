@@ -6,6 +6,7 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/countdown_painter.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class QrCodeComponent extends StatelessWidget {
@@ -17,6 +18,7 @@ class QrCodeComponent extends StatelessWidget {
     required this.totalSeconds,
     required this.serverSharingEnabled,
     required this.onOnlineSharingPrefChanged,
+    required this.renewToken,
   });
 
   final QrImage? qrImage;
@@ -25,6 +27,7 @@ class QrCodeComponent extends StatelessWidget {
   final int totalSeconds;
   final bool serverSharingEnabled;
   final VoidCallback onOnlineSharingPrefChanged;
+  final VoidCallback renewToken;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +87,10 @@ class QrCodeComponent extends StatelessWidget {
                           alignment: Alignment.center,
                           children: [
                             Opacity(
-                              opacity: (isLoading || qrImage == null)
+                              opacity:
+                                  (isLoading ||
+                                      qrImage == null ||
+                                      secondsRemaining == 0)
                                   ? 0.3
                                   : 1.0,
                               child: PrettyQrView(
@@ -100,6 +106,17 @@ class QrCodeComponent extends StatelessWidget {
                                 child: CircularProgressIndicator(
                                   color: CustomTheme.primaryColor,
                                   strokeWidth: 5,
+                                ),
+                              ),
+                            if (secondsRemaining == 0)
+                              Center(
+                                child: HapticIconButton(
+                                  icon: const Icon(
+                                    Icons.refresh,
+                                    color: CustomTheme.primaryColor,
+                                    size: 70,
+                                  ),
+                                  onPressed: renewToken,
                                 ),
                               ),
                           ],
@@ -123,7 +140,7 @@ class QrCodeComponent extends StatelessWidget {
                 ),
                 softWrap: true,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(

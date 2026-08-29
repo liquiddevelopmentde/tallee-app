@@ -75,13 +75,16 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
               ),
             ),
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: const [
-                  QrScanComponent(),
-                  EnterTokenComponent(),
-                  ImportFileComponent(),
-                ],
+              child: SafeArea(
+                maintainBottomViewPadding: true,
+                child: TabBarView(
+                  controller: _tabController,
+                  children: const [
+                    QrScanComponent(),
+                    EnterTokenComponent(),
+                    ImportFileComponent(),
+                  ],
+                ),
               ),
             ),
           ],

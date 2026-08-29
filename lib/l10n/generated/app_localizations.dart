@@ -563,7 +563,7 @@ abstract class AppLocalizations {
   /// No description provided for @group_associated.
   ///
   /// In en, this message translates to:
-  /// **'Group associated'**
+  /// **'Group successfully associated'**
   String get group_associated;
 
   /// No description provided for @group_name.
@@ -1547,7 +1547,7 @@ abstract class AppLocalizations {
   /// No description provided for @all_players_associated.
   ///
   /// In en, this message translates to:
-  /// **'All players associated'**
+  /// **'All players successfully associated'**
   String get all_players_associated;
 
   /// No description provided for @associate_game.
@@ -1559,7 +1559,7 @@ abstract class AppLocalizations {
   /// No description provided for @game_associated.
   ///
   /// In en, this message translates to:
-  /// **'Game associated'**
+  /// **'Game successfully associated'**
   String get game_associated;
 
   /// No description provided for @no_matching_local_game_found.

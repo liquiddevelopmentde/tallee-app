@@ -66,7 +66,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                 ),
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 10),
             GroupTile(group: widget.match.group!, playersClickable: false),
             const Icon(Icons.arrow_downward, size: 30),
             const SizedBox(height: 10),
@@ -89,7 +89,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                         key: const ValueKey('no_association'),
                         margin: CustomTheme.tileMargin,
                         height: 150,
-                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: CustomTheme.standardBoxDecoration.copyWith(
                           border: Border.all(
                             color: Colors.orange.withAlpha(150),
@@ -136,7 +136,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                       playersClickable: false,
                     ),
             ),
-            SizedBox(height: 2),
+            const SizedBox(height: 2),
             Text(
               loc.tap_to_choose_different_group,
               style: const TextStyle(

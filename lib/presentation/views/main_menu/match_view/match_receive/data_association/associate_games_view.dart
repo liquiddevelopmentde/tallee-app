@@ -145,7 +145,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                       borderColor: Colors.green.withAlpha(150),
                     ),
             ),
-            SizedBox(height: 2),
+            const SizedBox(height: 2),
             Text(
               loc.tap_to_choose_different_game,
               style: const TextStyle(

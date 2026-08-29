@@ -7,6 +7,7 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
@@ -19,6 +20,7 @@ class TokenComponent extends StatelessWidget {
     required this.isLoading,
     required this.serverSharingEnabled,
     required this.onOnlineSharingPrefChanged,
+    required this.renewToken,
   });
 
   final int secondsRemaining;
@@ -27,6 +29,7 @@ class TokenComponent extends StatelessWidget {
   final bool isLoading;
   final bool serverSharingEnabled;
   final VoidCallback onOnlineSharingPrefChanged;
+  final VoidCallback renewToken;
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +109,7 @@ class TokenComponent extends StatelessWidget {
                         Expanded(
                           child: charContainer(
                             chars.length > i ? chars[i] : ' ',
+                            secondsRemaining > 0,
                           ),
                         ),
                       ],
@@ -126,22 +130,36 @@ class TokenComponent extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              Text(
-                minutes == 0 && seconds == 0
-                    ? loc.token_expired
-                    : loc.expires_in(
-                        '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+              SizedBox(height: secondsRemaining == 0 ? 10 : 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    secondsRemaining == 0
+                        ? loc.token_expired
+                        : loc.expires_in(
+                            '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                          ),
+                    style: const TextStyle(
+                      color: CustomTheme.textColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      overflow: TextOverflow.visible,
+                    ),
+                    softWrap: true,
+                  ),
+                  if (secondsRemaining == 0)
+                    HapticIconButton(
+                      icon: const Icon(
+                        Icons.refresh,
+                        color: CustomTheme.primaryColor,
+                        size: 25,
                       ),
-                style: const TextStyle(
-                  color: CustomTheme.textColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  overflow: TextOverflow.visible,
-                ),
-                softWrap: true,
+                      onPressed: renewToken,
+                    ),
+                ],
               ),
-              const SizedBox(height: 30),
+              const Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -183,17 +201,19 @@ class TokenComponent extends StatelessWidget {
           );
   }
 
-  Widget charContainer(String char) {
+  Widget charContainer(String char, bool active) {
     return Container(
       alignment: Alignment.center,
       decoration: CustomTheme.standardBoxDecoration,
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Text(
         char,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 35,
           fontWeight: FontWeight.w400,
-          color: CustomTheme.textColor,
+          color: active
+              ? CustomTheme.textColor
+              : CustomTheme.textColor.withAlpha(100),
         ),
       ),
     );

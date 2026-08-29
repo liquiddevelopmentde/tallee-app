@@ -10,7 +10,6 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
 import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/services/remote_share_service.dart';
 
@@ -79,108 +78,85 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       decoration: BoxDecoration(border: Border.all(color: Colors.pink)),
     );
 
-    return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
-      child: Column(
-        children: [
-          const SizedBox(height: 50),
-          Column(
-            children: [
-              const Icon(Icons.cloud_download, size: 50),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
+    return Column(
+      children: [
+        const SizedBox(height: 50),
+        Column(
+          children: [
+            const Icon(Icons.cloud_download, size: 50),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Text(
+                loc.input_token_instruction,
+                style: const TextStyle(
+                  color: CustomTheme.textColor,
+                  fontSize: 16,
+                  overflow: TextOverflow.visible,
                 ),
-                child: Text(
-                  loc.input_token_instruction,
-                  style: const TextStyle(
-                    color: CustomTheme.textColor,
-                    fontSize: 16,
-                    overflow: TextOverflow.visible,
-                  ),
-                  textAlign: TextAlign.center,
-                  softWrap: true,
+                textAlign: TextAlign.center,
+                softWrap: true,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: Pinput(
+            controller: tokenInputFieldController,
+            length: 6,
+            keyboardType: TextInputType.text,
+            textCapitalization: TextCapitalization.characters,
+            hapticFeedbackType: HapticFeedbackType.selectionClick,
+            defaultPinTheme: defaultPinTheme,
+            focusedPinTheme: focusedPinTheme,
+            errorPinTheme: errorPinTheme,
+            disabledPinTheme: disabledPinTheme,
+            pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+            showCursor: false,
+            animationCurve: Curves.easeInOutCubic,
+            animationDuration: const Duration(milliseconds: 100),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+              TextInputFormatter.withFunction(
+                (oldValue, newValue) => TextEditingValue(
+                  text: newValue.text.toUpperCase(),
+                  selection: newValue.selection,
                 ),
               ),
             ],
+            forceErrorState: isTokenValid == false,
+            errorText: loc.invalid_token,
           ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            child: Pinput(
-              controller: tokenInputFieldController,
-              length: 6,
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.characters,
-              hapticFeedbackType: HapticFeedbackType.selectionClick,
-              defaultPinTheme: defaultPinTheme,
-              focusedPinTheme: focusedPinTheme,
-              errorPinTheme: errorPinTheme,
-              disabledPinTheme: disabledPinTheme,
-              pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-              showCursor: false,
-              animationCurve: Curves.easeInOutCubic,
-              animationDuration: const Duration(milliseconds: 100),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
-                TextInputFormatter.withFunction(
-                  (oldValue, newValue) => TextEditingValue(
-                    text: newValue.text.toUpperCase(),
-                    selection: newValue.selection,
-                  ),
-                ),
-              ],
-              forceErrorState: isTokenValid == false,
-              errorText: loc.invalid_token,
+        ),
+        Container(
+          width: double.infinity,
+          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: Text(
+            loc.share_token_format_info,
+            style: const TextStyle(
+              color: CustomTheme.textColor,
+              fontSize: 14,
+              overflow: TextOverflow.visible,
             ),
+            textAlign: TextAlign.center,
+            softWrap: true,
           ),
-          const SizedBox(height: 50),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ApiActionAnimatedButton(
-                text: loc.import_match,
-                icon: Icons.cloud_download,
-                onPressed: validateToken(tokenInputFieldController.text)
-                    ? () async {
-                        await handleApiMatchRequest(
-                          tokenInputFieldController.text,
-                        );
-                      }
-                    : null,
-              ),
-              const SizedBox(width: 5),
-              FloatingAnimatedButton(
-                onPressed: () async {
-                  ClipboardData? data = await Clipboard.getData('text/plain');
-                  if (data != null && validateToken(data.text)) {
-                    tokenInputFieldController.text = data.text!.toUpperCase();
-                  }
-                },
-                icon: Icons.paste,
-              ),
-            ],
-          ),
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Text(
-              loc.share_token_format_info,
-              style: const TextStyle(
-                color: CustomTheme.textColor,
-                fontSize: 14,
-                overflow: TextOverflow.visible,
-              ),
-              textAlign: TextAlign.center,
-              softWrap: true,
-            ),
-          ),
-        ],
-      ),
+        ),
+        const Spacer(),
+        ApiActionAnimatedButton(
+          text: loc.import_match,
+          sizeRelativeToWidth: 0.9,
+          onPressed: validateToken(tokenInputFieldController.text)
+              ? () async {
+                  await handleApiMatchRequest(tokenInputFieldController.text);
+                }
+              : null,
+        ),
+      ],
     );
   }
 

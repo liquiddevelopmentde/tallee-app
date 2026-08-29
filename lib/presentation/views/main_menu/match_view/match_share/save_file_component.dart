@@ -109,7 +109,7 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        const Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
