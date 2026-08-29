@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 
 class CustomAdaptiveSwitch extends StatefulWidget {
@@ -18,7 +19,10 @@ class _CustomAdaptiveSwitchState extends State<CustomAdaptiveSwitch> {
       activeTrackColor: CustomTheme.primaryColor,
       padding: const EdgeInsets.symmetric(vertical: -15),
       value: widget.value,
-      onChanged: widget.onChanged,
+      onChanged: (value) {
+        HapticFeedback.selectionClick();
+        widget.onChanged?.call(value);
+      },
     );
   }
 }
