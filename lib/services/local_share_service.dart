@@ -327,13 +327,12 @@ class LocalShareService {
       final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
           .cast<String>();
 
-      final members = memberIds.map((id) {
-        final player = playerById[id];
-        if (player == null) {
-          throw ArgumentError('Player with ID $id not found in import data');
-        }
-        return player;
-      }).toList();
+      // Ignore invalid member IDs (missing players) instead of throwing
+      final members = memberIds
+          .map((id) => playerById[id])
+          .where((p) => p != null)
+          .cast<Player>()
+          .toList();
 
       return Group.fromNormalizedJson(map, members);
     }).toList();
@@ -350,13 +349,12 @@ class LocalShareService {
       final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
           .cast<String>();
 
-      final members = memberIds.map((id) {
-        final player = playerById[id];
-        if (player == null) {
-          throw ArgumentError('Player with ID $id not found in import data');
-        }
-        return player;
-      }).toList();
+      // Ignore invalid member IDs (missing players) instead of throwing
+      final members = memberIds
+          .map((id) => playerById[id])
+          .where((p) => p != null)
+          .cast<Player>()
+          .toList();
 
       return Team.fromNormalizedJson(map, members);
     }).toList();
@@ -425,21 +423,18 @@ class LocalShareService {
       final selectedGroupIds = (map['selectedGroups'] as List<dynamic>? ?? [])
           .cast<String>();
 
-      final selectedGames = selectedGameIds.map((id) {
-        final game = gamesMap[id];
-        if (game == null) {
-          throw ArgumentError('Game with ID $id not found in import data');
-        }
-        return game;
-      }).toList();
+      // Ignore invalid selected game/group IDs instead of throwing
+      final selectedGames = selectedGameIds
+          .map((id) => gamesMap[id])
+          .where((g) => g != null)
+          .cast<Game>()
+          .toList();
 
-      final selectedGroups = selectedGroupIds.map((id) {
-        final group = groupsMap[id];
-        if (group == null) {
-          throw ArgumentError('Group with ID $id not found in import data');
-        }
-        return group;
-      }).toList();
+      final selectedGroups = selectedGroupIds
+          .map((id) => groupsMap[id])
+          .where((g) => g != null)
+          .cast<Group>()
+          .toList();
 
       return Statistic(
         id: map['id'] as String,
