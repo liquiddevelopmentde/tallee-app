@@ -2,154 +2,109 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/icon_utils.dart';
+import 'package:tallee/core/translations.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
+/// A tile that displays a game, following the same card style as the match
+/// and group tiles: a leading colored icon container, the game name with its
+/// ruleset below, and a trailing chevron.
 class GameTile extends StatelessWidget {
-  /// A list tile widget that displays a title and description, with optional highlighting and badge.
-  /// - [title]: The title text displayed on the tile.
-  /// - [subtitle]: An optional subtitle displayed under the title.
-  /// - [description]: The description text displayed below the title.
-  /// - [onTap]: The callback invoked when the tile is tapped.
-  /// - [onLongPress]: The callback invoked when the tile is tapped.
-  /// - [isHighlighted]: A boolean to determine if the tile should be highlighted.
-  /// - [badgeText]: Optional text to display in a badge on the right side of the title.
-  /// - [badgeColor]: Optional color for the badge background.
   const GameTile({
     super.key,
-    required this.title,
-    required this.description,
-    this.subtitle,
+    required this.game,
+    this.isHighlighted = false,
     this.onTap,
     this.onLongPress,
-    this.isHighlighted = false,
-    this.badgeText,
-    this.badgeColor,
   });
 
-  final String title;
+  /// The game data to be displayed.
+  final Game game;
 
-  final String? subtitle;
-
-  final String description;
-
-  final VoidCallback? onTap;
-
-  final VoidCallback? onLongPress;
-
+  /// Whether the tile should be highlighted.
   final bool isHighlighted;
 
-  final String? badgeText;
+  /// Callback function to be executed when the tile is tapped.
+  final VoidCallback? onTap;
 
-  final Color? badgeColor;
+  /// Callback function to be executed when the tile is long-pressed.
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
-    final badgeTextColor = badgeColor != null
-        ? (badgeColor!.computeLuminance() > 0.5 ? Colors.black : Colors.white)
-        : Colors.white;
-
-    final gameColor = badgeColor ?? getColorFromAppColor(AppColor.orange);
+    final gameColor = getColorFromAppColor(game.color);
 
     return GestureDetector(
       onTap: () async {
         await HapticFeedback.selectionClick();
-        if (onTap != null) {
-          onTap!.call();
-        }
+        onTap?.call();
       },
       onLongPress: () async {
         await HapticFeedback.heavyImpact();
-        if (onLongPress != null) {
-          onLongPress!.call();
-        }
+        onLongPress?.call();
       },
       child: AnimatedContainer(
         margin: CustomTheme.tileMargin,
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-        decoration: !isHighlighted
-            ? CustomTheme.standardBoxDecoration
-            : CustomTheme.highlightedBoxDecoration.copyWith(
+        padding: const EdgeInsets.all(12),
+        decoration: isHighlighted
+            ? CustomTheme.highlightedBoxDecoration.copyWith(
                 border: Border.all(
-                  color: gameColor.withValues(alpha: 0.9),
+                  color: gameColor,
                   width: 2,
                   strokeAlign: BorderSide.strokeAlignCenter,
                 ),
-              ),
+              )
+            : CustomTheme.standardBoxDecoration,
         duration: const Duration(milliseconds: 200),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            // Title
             Row(
-              spacing: 8,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 15,
-                  height: 15,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: gameColor,
+                ColoredIconContainer(
+                  icon: getRulesetIcon(game.ruleset),
+                  color: gameColor,
+                  containerSize: 44,
+                  iconSize: 24,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        game.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        translateRulesetToString(game.ruleset, context),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: CustomTheme.hintColor,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  title,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                const SizedBox(width: 8),
+                const Icon(
+                  Icons.chevron_right,
+                  size: 20,
+                  color: CustomTheme.hintColor,
                 ),
               ],
             ),
-
-            // Title
-            if (subtitle != null && subtitle!.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text(
-                subtitle!,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                softWrap: false,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: CustomTheme.hintColor,
-                ),
-              ),
-            ],
-
-            // Badge
-            if (badgeText != null) ...[
-              const SizedBox(height: 5),
-              Container(
-                constraints: const BoxConstraints(maxWidth: 250),
-                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
-                decoration: BoxDecoration(
-                  color: gameColor,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  badgeText!,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: TextStyle(
-                    color: badgeTextColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-
-            // Description
-            if (description.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text(description, style: const TextStyle(fontSize: 14)),
-              const SizedBox(height: 2.5),
+            if (game.description.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(game.description, style: const TextStyle(fontSize: 14)),
             ],
           ],
         ),

@@ -161,10 +161,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                   itemBuilder: (BuildContext context, int index) {
                     final game = filteredGames[index];
                     return GameTile(
-                      title: game.name,
-                      description: game.description,
-                      subtitle: translateRulesetToString(game.ruleset, context),
-                      badgeColor: getColorFromAppColor(game.color),
+                      game: game,
                       isHighlighted: selectedGames.any(
                         (selected) => selected.id == game.id,
                       ),
