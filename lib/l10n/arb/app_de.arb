@@ -278,7 +278,6 @@
   "import_match": "Match importieren",
   "share_token_format_info": "Share-Token bestehen aus 6 alphanumerischen Zeichen.",
   "match_import_failed": "Match-Import fehlgeschlagen",
-  "file_not_found": "Datei nicht gefunden",
   "choose_match_file": "Match-Datei auswählen",
   "tap_to_browse": "Tippen zum Durchsuchen",
   "successfully_processed_file": "Datei erfolgreich verarbeitet",
