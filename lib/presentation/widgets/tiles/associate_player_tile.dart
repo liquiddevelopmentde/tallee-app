@@ -3,11 +3,17 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 
+/// A Tile for matching a [player] to an [associatedPlayer]. This is used during the association process in the remote match sharing feature.
+///
+/// [player] - The player being matched.
+/// [onTap] - Called when the associated-player area is tapped.
+/// [associatedPlayer] - The player currently associated with [player], if any.
+/// [borderColor] - Optional override for the tile border color.
 class AssociatePlayerTile extends StatefulWidget {
   const AssociatePlayerTile({
     required this.player,
-    this.associatedPlayer,
     required this.onTap,
+    this.associatedPlayer,
     this.borderColor,
     super.key,
   });
