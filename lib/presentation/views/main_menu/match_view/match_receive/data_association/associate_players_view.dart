@@ -118,7 +118,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
               onPressed: remainingCount == 0
                   ? () async {
                       if (widget.match.group == null) {
-                        await _saveMatch();
+                        await saveMatch();
                       } else {
                         await Navigator.of(context).push(
                           adaptivePageRoute(
@@ -139,7 +139,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     );
   }
 
-  Future<void> _saveMatch() async {
+  Future<void> saveMatch() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
 
     // Filter null values and cast to Map<String, Player>
