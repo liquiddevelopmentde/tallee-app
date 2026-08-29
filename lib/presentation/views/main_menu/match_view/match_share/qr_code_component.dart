@@ -70,7 +70,9 @@ class QrCodeComponent extends StatelessWidget {
                 child: CustomPaint(
                   foregroundPainter: CountdownPainter(
                     progress: progress,
-                    color: CustomTheme.primaryColor,
+                    color: secondsRemaining != 0
+                        ? CustomTheme.primaryColor
+                        : Colors.transparent,
                   ),
                   child: Container(
                     decoration: BoxDecoration(
