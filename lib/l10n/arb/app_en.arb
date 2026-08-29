@@ -213,5 +213,18 @@
   "winners": "Winners",
   "winrate": "Winrate",
   "worst_score": "Worst score",
-  "yesterday_at": "Yesterday at"
+  "yesterday_at": "Yesterday at",
+  "ruleset_description": "How the game is decided.",
+  "color_description": "The accent color used for the game.",
+  "long_press_to_create_a_pair": "Long-press a selected player to create a pair",
+  "player_name_description": "The name shown for this player.",
+  "player_description_hint": "Optional notes about this player.",
+  "group_name_description": "A group is a collection of players.",
+  "players_description": "Search and pick the players taking part.",
+  "match_name_description": "The name of this match.",
+  "game_description": "The game being played.",
+  "group_description": "Played with this group.",
+  "team_match_description": "Play in teams instead of solo.",
+  "game_name_description": "The name of this game.",
+  "game_notes_description": "Optional notes or rules for this game."
 }

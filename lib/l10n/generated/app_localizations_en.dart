@@ -610,4 +610,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Yesterday at';
+
+  @override
+  String get ruleset_description => 'How the game is decided.';
+
+  @override
+  String get color_description => 'The accent color used for the game.';
+
+  @override
+  String get long_press_to_create_a_pair =>
+      'Long-press a selected player to create a pair';
+
+  @override
+  String get player_name_description => 'The name shown for this player.';
+
+  @override
+  String get player_description_hint => 'Optional notes about this player.';
+
+  @override
+  String get group_name_description => 'A group is a collection of players.';
+
+  @override
+  String get players_description => 'Search and pick the players taking part.';
+
+  @override
+  String get match_name_description => 'The name of this match.';
+
+  @override
+  String get game_description => 'The game being played.';
+
+  @override
+  String get group_description => 'Played with this group.';
+
+  @override
+  String get team_match_description => 'Play in teams instead of solo.';
+
+  @override
+  String get game_name_description => 'The name of this game.';
+
+  @override
+  String get game_notes_description => 'Optional notes or rules for this game.';
 }

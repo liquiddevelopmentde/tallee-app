@@ -63,18 +63,23 @@ class TextInputField extends StatelessWidget {
       maxLines: maxLines,
       minLines: minLines,
       focusNode: focusNode,
+      style: const TextStyle(fontSize: 14),
       decoration: InputDecoration(
         filled: true,
-        fillColor: CustomTheme.boxColor,
+        fillColor: CustomTheme.onBoxColor,
         hintText: hintText,
-        counterText: showCounterText ? null : '',
+        counter: showCounterText ? null : const SizedBox.shrink(),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 17,
+        ),
         enabledBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
+          borderSide: BorderSide.none,
         ),
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
+          borderSide: BorderSide.none,
         ),
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),

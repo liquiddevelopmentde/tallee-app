@@ -1243,6 +1243,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yesterday at'**
   String get yesterday_at;
+
+  /// No description provided for @ruleset_description.
+  ///
+  /// In en, this message translates to:
+  /// **'How the game is decided.'**
+  String get ruleset_description;
+
+  /// No description provided for @color_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The accent color used for the game.'**
+  String get color_description;
+
+  /// No description provided for @long_press_to_create_a_pair.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press a selected player to create a pair'**
+  String get long_press_to_create_a_pair;
+
+  /// No description provided for @player_name_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The name shown for this player.'**
+  String get player_name_description;
+
+  /// No description provided for @player_description_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional notes about this player.'**
+  String get player_description_hint;
+
+  /// No description provided for @group_name_description.
+  ///
+  /// In en, this message translates to:
+  /// **'A group is a collection of players.'**
+  String get group_name_description;
+
+  /// No description provided for @players_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Search and pick the players taking part.'**
+  String get players_description;
+
+  /// No description provided for @match_name_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The name of this match.'**
+  String get match_name_description;
+
+  /// No description provided for @game_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The game being played.'**
+  String get game_description;
+
+  /// No description provided for @group_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Played with this group.'**
+  String get group_description;
+
+  /// No description provided for @team_match_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Play in teams instead of solo.'**
+  String get team_match_description;
+
+  /// No description provided for @game_name_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The name of this game.'**
+  String get game_name_description;
+
+  /// No description provided for @game_notes_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional notes or rules for this game.'**
+  String get game_notes_description;
 }
 
 class _AppLocalizationsDelegate

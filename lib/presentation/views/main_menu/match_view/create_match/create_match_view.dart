@@ -12,9 +12,11 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/create_teams_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/dropdown/labeled_section.dart';
+import 'package:tallee/presentation/widgets/dropdown/labeled_value_tile.dart';
+import 'package:tallee/presentation/widgets/form_panel.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
-import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 
 class CreateMatchView extends StatefulWidget {
   /// A view that allows creating a new match
@@ -109,69 +111,138 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Match name input field.
-              Container(
-                margin: CustomTheme.tileMargin,
-                child: TextInputField(
-                  controller: matchNameController,
-                  hintText: hintText ?? '',
-                  maxLength: Constants.MAX_MATCH_NAME_LENGTH,
-                ),
-              ),
-
-              // Game selection tile.
-              if (!widget.editMode)
-                ChooseTile(
-                  title: loc.game,
-                  trailing: selectedGame == null
-                      ? Text(loc.none_group)
-                      : Text(selectedGame!.name),
-                  onPressed: () async => await onChoosingGame(),
-                ),
-
-              // Group selection tile.
-              ChooseTile(
-                title: loc.group,
-                trailing: selectedGroup == null
-                    ? Text(loc.none_group)
-                    : Text(selectedGroup!.name),
-                onPressed: () async => onChoosingGroup(),
-              ),
-
-              if (!widget.editMode)
-                ChooseTile(
-                  title: loc.team_match,
-                  trailing: Switch.adaptive(
-                    activeTrackColor: CustomTheme.primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: -15),
-                    value: isTeamMatch,
-                    onChanged: (value) => setState(() {
-                      isTeamMatch = value;
-                      // Always reset pairs to individual units when team match is active
-                      // or when explicitly disabled, to ensure a clean state.
-                      selectedUnits = selectedPlayers
-                          .map((p) => Team(name: '', members: [p]))
-                          .toList();
-                    }),
-                  ),
-                ),
-
-              // Player selection widget.
               Expanded(
-                child: PlayerSelection(
-                  key: ValueKey(selectedGroup?.id ?? 'no_group'),
-                  initialSelectedUnits: selectedUnits,
-                  pairingEnabled: !isTeamMatch,
-                  onPlayerCreated: () => widget.onMatchesUpdated?.call(),
-                  onChanged: (players, units) {
-                    setState(() {
-                      selectedPlayers = players;
-                      selectedUnits = units;
-                      // Do not auto-enable team match.
-                      // Pairs are handled internally via selectedUnits.
-                      removeGroupWhenNoMemberLeft();
-                    });
-                  },
+                child: FormPanel(
+                  child: Column(
+                    spacing: 15,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Match name input field.
+                      LabeledSection(
+                        title: loc.match_name,
+                        description: loc.match_name_description,
+                        control: TextInputField(
+                          controller: matchNameController,
+                          hintText: hintText ?? '',
+                          maxLength: Constants.MAX_MATCH_NAME_LENGTH,
+                          autofocus: true,
+                        ),
+                      ),
+
+                      if (!widget.editMode) ...[
+                        // Game + Group selection side by side.
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: LabeledSection(
+                                title: loc.game,
+                                description: loc.game_description,
+                                controlPadding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  8,
+                                  4,
+                                  8,
+                                ),
+                                control: LabeledValueTile(
+                                  value: selectedGame?.name ?? loc.none_group,
+                                  onTap: () async => await onChoosingGame(),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: LabeledSection(
+                                title: loc.group,
+                                description: loc.group_description,
+                                control: LabeledValueTile(
+                                  value: selectedGroup?.name ?? loc.none_group,
+                                  onTap: () async => onChoosingGroup(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // Team match toggle.
+                        Container(
+                          height: CustomTheme.controlHeight,
+                          margin: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          decoration: CustomTheme.controlBoxDecoration,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      loc.team_match,
+                                      style: const TextStyle(
+                                        color: CustomTheme.textColor,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Text(
+                                      loc.team_match_description,
+                                      style: const TextStyle(
+                                        color: CustomTheme.hintColor,
+                                        fontSize: 12,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Switch.adaptive(
+                                activeTrackColor: CustomTheme.primaryColor,
+                                value: isTeamMatch,
+                                onChanged: (value) => setState(() {
+                                  isTeamMatch = value;
+                                  // Always reset pairs to individual units when team match is active
+                                  // or when explicitly disabled, to ensure a clean state.
+                                  selectedUnits = selectedPlayers
+                                      .map((p) => Team(name: '', members: [p]))
+                                      .toList();
+                                }),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ] else
+                        // Group selection when editing.
+                        LabeledSection(
+                          title: loc.group,
+                          description: loc.group_description,
+                          control: LabeledValueTile(
+                            value: selectedGroup?.name ?? loc.none_group,
+                            onTap: () async => onChoosingGroup(),
+                          ),
+                        ),
+                      // Player selection widget.
+                      Expanded(
+                        child: PlayerSelection(
+                          key: ValueKey(selectedGroup?.id ?? 'no_group'),
+                          title: loc.players,
+                          description: loc.players_description,
+                          initialSelectedUnits: selectedUnits,
+                          pairingEnabled: !isTeamMatch,
+                          onPlayerCreated: () =>
+                              widget.onMatchesUpdated?.call(),
+                          onChanged: (players, units) {
+                            setState(() {
+                              selectedPlayers = players;
+                              selectedUnits = units;
+                              // Do not auto-enable team match.
+                              // Pairs are handled internally via selectedUnits.
+                              removeGroupWhenNoMemberLeft();
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 

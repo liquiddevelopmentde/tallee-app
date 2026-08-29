@@ -10,6 +10,8 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/dropdown/labeled_section.dart';
+import 'package:tallee/presentation/widgets/form_panel.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
@@ -80,23 +82,39 @@ class _CreateGroupViewState extends State<CreateGroupView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                margin: CustomTheme.standardMargin,
-                child: TextInputField(
-                  controller: _groupNameController,
-                  hintText: loc.group_name,
-                  maxLength: Constants.MAX_GROUP_NAME_LENGTH,
-                ),
-              ),
               Expanded(
-                child: PlayerSelection(
-                  initialSelectedPlayers: initialSelectedPlayers,
-                  onPlayerCreated: () => widget.onMembersChanged?.call(),
-                  onChanged: (players, units) {
-                    setState(() {
-                      selectedPlayers = [...players];
-                    });
-                  },
+                child: FormPanel(
+                  child: Column(
+                    spacing: 15,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabeledSection(
+                        title: loc.group_name,
+                        description: loc.group_name_description,
+                        control: TextInputField(
+                          controller: _groupNameController,
+                          hintText: loc.group_name,
+                          maxLength: Constants.MAX_GROUP_NAME_LENGTH,
+                          autofocus: true,
+                        ),
+                      ),
+                      // Player selection.
+                      Expanded(
+                        child: PlayerSelection(
+                          title: loc.players,
+                          description: loc.players_description,
+                          initialSelectedPlayers: initialSelectedPlayers,
+                          onPlayerCreated: () =>
+                              widget.onMembersChanged?.call(),
+                          onChanged: (players, units) {
+                            setState(() {
+                              selectedPlayers = [...players];
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Padding(

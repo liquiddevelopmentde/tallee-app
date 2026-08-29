@@ -11,6 +11,7 @@ import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/dropdown/labeled_section.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
@@ -34,6 +35,8 @@ class PlayerSelection extends StatefulWidget {
     this.pairingEnabled = true,
     required this.onChanged,
     this.onPlayerCreated,
+    this.title,
+    this.description,
   });
 
   /// An optional list of players to choose from. If null, all players from the database are used.
@@ -53,6 +56,12 @@ class PlayerSelection extends StatefulWidget {
 
   /// A callback function that is invoked when a player was created in this widget
   final VoidCallback? onPlayerCreated;
+
+  /// Section title shown above the search bar, matching the create view style.
+  final String? title;
+
+  /// Small description below the [title], matching the create view style.
+  final String? description;
 
   @override
   State<PlayerSelection> createState() => _PlayerSelectionState();
@@ -146,150 +155,188 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    return Container(
-      margin: CustomTheme.tileMargin,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      decoration: CustomTheme.standardBoxDecoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomSearchBar(
-            maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
-            controller: _searchBarController,
-            constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
-            hintText: loc.search_for_players,
-            trailingButtonShown: true,
-            trailingButtonicon: Icons.add_circle,
-            trailingButtonEnabled: _searchBarController.text.trim().isNotEmpty,
-            onTrailingButtonPressed: () async {
-              addNewPlayerFromSearch(context: context);
-            },
-            onChanged: (value) {
-              setState(() {
-                // Filters the list of suggested players based on the search input.
-                if (value.isEmpty) {
-                  // If the search is empty, it shows all unselected players.
-                  suggestedPlayers = allPlayers.where((player) {
-                    return !selectedPlayers.any((p) => p.id == player.id);
-                  }).toList();
-                } else {
-                  // If there is input, it filters by fuzzy match and ensures
-                  // that already selected players are excluded from the results.
-                  final List<({Player player, int score})> scoredPlayers = [];
-
-                  for (final player in allPlayers) {
-                    final bool isNotSelected = !selectedPlayers.any(
-                      (p) => p.id == player.id,
-                    );
-
-                    if (isNotSelected) {
-                      final score = weightedRatio(player.name, value);
-                      if (score >= Constants.FUZZY_SEARCH_THRESHOLD) {
-                        scoredPlayers.add((player: player, score: score));
-                      }
-                    }
-                  }
-
-                  // Sort by score descending
-                  scoredPlayers.sort((a, b) => b.score.compareTo(a.score));
-                  suggestedPlayers = scoredPlayers
-                      .map((e) => e.player)
-                      .toList();
-                }
-              });
-            },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.title != null)
+          SectionHeader(
+            title: widget.title!,
+            description: widget.description ?? '',
           ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomSearchBar(
+                  maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
+                  controller: _searchBarController,
+                  constraints: const BoxConstraints(
+                    maxHeight: 40,
+                    minHeight: 40,
+                  ),
+                  hintText: loc.search_for_players,
+                  trailingButtonShown: true,
+                  trailingButtonicon: Icons.add_circle,
+                  trailingButtonEnabled: _searchBarController.text
+                      .trim()
+                      .isNotEmpty,
+                  onTrailingButtonPressed: () async {
+                    addNewPlayerFromSearch(context: context);
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      // Filters the list of suggested players based on the search input.
+                      if (value.isEmpty) {
+                        // If the search is empty, it shows all unselected players.
+                        suggestedPlayers = allPlayers.where((player) {
+                          return !selectedPlayers.any((p) => p.id == player.id);
+                        }).toList();
+                      } else {
+                        // If there is input, it filters by fuzzy match and ensures
+                        // that already selected players are excluded from the results.
+                        final List<({Player player, int score})> scoredPlayers =
+                            [];
+
+                        for (final player in allPlayers) {
+                          final bool isNotSelected = !selectedPlayers.any(
+                            (p) => p.id == player.id,
+                          );
+
+                          if (isNotSelected) {
+                            final score = weightedRatio(player.name, value);
+                            if (score >= Constants.FUZZY_SEARCH_THRESHOLD) {
+                              scoredPlayers.add((player: player, score: score));
+                            }
+                          }
+                        }
+
+                        // Sort by score descending
+                        scoredPlayers.sort(
+                          (a, b) => b.score.compareTo(a.score),
+                        );
+                        suggestedPlayers = scoredPlayers
+                            .map((e) => e.player)
+                            .toList();
+                      }
+                    });
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                // Selected players as compact chips.
+                if (selectedUnits.isNotEmpty) ...[
+                  SizedBox(
+                    height: 38,
+                    child: AppSkeleton(
+                      enabled: isLoading,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            for (var unit in selectedUnits)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: buildUnitTile(unit),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+
+                // Pairing hint to make long-press pairing discoverable.
+                if (widget.pairingEnabled &&
+                    !isPairingMode &&
+                    selectedUnits.where((u) => u.members.length == 1).length >=
+                        2) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Text(
+                      loc.long_press_to_create_a_pair,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: CustomTheme.hintColor,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+
+                // Available players header.
+                Text(
                   isPairingMode
                       ? loc.click_another_player_to_create_a_pair
-                      : loc.selected_players,
-                  overflow: TextOverflow.visible,
+                      : '${loc.all_players} (${suggestedPlayers.length})',
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: isPairingMode ? CustomTheme.primaryColor : null,
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 50,
-            child: AppSkeleton(
-              enabled: isLoading,
-              child: selectedUnits.isEmpty
-                  ? Center(child: Text(loc.no_players_selected))
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          for (var unit in selectedUnits)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: buildUnitTile(unit),
+
+                const SizedBox(height: 10),
+
+                Expanded(
+                  child: AppSkeleton(
+                    enabled: isLoading,
+                    child: Visibility(
+                      visible: suggestedPlayers.isNotEmpty,
+                      replacement: TopCenteredMessage(
+                        icon: Icons.info,
+                        title: loc.info,
+                        message: _getInfoText(context),
+                        fullscreen: false,
+                      ),
+                      child: ListView.separated(
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        itemCount: suggestedPlayers.length,
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const SizedBox(height: 6),
+                        itemBuilder: (BuildContext context, int index) {
+                          final player = suggestedPlayers[index];
+                          return GestureDetector(
+                            onTap: () async {
+                              await HapticFeedback.selectionClick();
+                              setState(() {
+                                // If the player is not already selected
+                                if (!selectedPlayers.contains(player)) {
+                                  // Add player as a new unit
+                                  selectedUnits.insert(
+                                    0,
+                                    Team(name: '', members: [player]),
+                                  );
+                                  // Remove the player from the suggestedPlayers
+                                  suggestedPlayers.remove(player);
+                                  // Notify parent
+                                  widget.onChanged(
+                                    selectedPlayers,
+                                    selectedUnits,
+                                  );
+                                }
+                              });
+                            },
+                            child: TextIconListTile(
+                              player: player,
+                              icon: Icons.add,
                             ),
-                        ],
+                          );
+                        },
                       ),
                     ),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 10),
-          Text(
-            loc.all_players,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: AppSkeleton(
-              enabled: isLoading,
-              child: Visibility(
-                visible: suggestedPlayers.isNotEmpty,
-                replacement: TopCenteredMessage(
-                  icon: Icons.info,
-                  title: loc.info,
-                  message: _getInfoText(context),
-                  fullscreen: false,
-                ),
-                child: ListView.separated(
-                  itemCount: suggestedPlayers.length,
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const SizedBox(height: 10),
-                  itemBuilder: (BuildContext context, int index) {
-                    final player = suggestedPlayers[index];
-                    return TextIconListTile(
-                      player: player,
-                      icon: Icons.add,
-                      onPressed: () async {
-                        await HapticFeedback.selectionClick();
-                        setState(() {
-                          // If the player is not already selected
-                          if (!selectedPlayers.contains(player)) {
-                            // Add player as a new unit
-                            selectedUnits.insert(
-                              0,
-                              Team(name: '', members: [player]),
-                            );
-                            // Remove the player from the suggestedPlayers
-                            suggestedPlayers.remove(player);
-                            // Notify parent
-                            widget.onChanged(selectedPlayers, selectedUnits);
-                          }
-                        });
-                      },
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

@@ -51,6 +51,7 @@ class CustomTheme {
     horizontal: 12,
     vertical: 6,
   );
+
   static const EdgeInsets tileMargin = EdgeInsets.only(
     left: 12,
     right: 12,
@@ -64,6 +65,15 @@ class CustomTheme {
       EdgeInsets.only(bottom: MediaQuery.viewPaddingOf(context).bottom + 190);
 
   // ==================== Decorations ====================
+  /// Height of boxed form controls (dropdowns, value tiles, toggles).
+  static const double controlHeight = 54;
+
+  /// Decoration of boxed form controls sitting on a panel.
+  static const BoxDecoration controlBoxDecoration = BoxDecoration(
+    color: onBoxColor,
+    borderRadius: BorderRadius.all(Radius.circular(standardBorderRadius)),
+  );
+
   static BoxDecoration standardBoxDecoration = BoxDecoration(
     color: boxColor,
     border: Border.all(color: boxBorderColor),

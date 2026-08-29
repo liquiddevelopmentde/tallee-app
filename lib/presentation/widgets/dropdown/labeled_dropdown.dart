@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/widgets/dropdown/dropdown_option.dart';
+import 'package:tallee/presentation/widgets/dropdown/labeled_section.dart';
 
 export 'dropdown_option.dart';
 
@@ -79,134 +80,96 @@ class LabeledDropdown<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final listenable = multiValueListenable;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Header
-        Padding(
-          padding: const EdgeInsets.only(left: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                textAlign: TextAlign.start,
-                style: const TextStyle(
-                  color: CustomTheme.textColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  overflow: TextOverflow.visible,
+    return LabeledSection(
+      title: title,
+      description: description,
+      control: DropdownButtonHideUnderline(
+        child: isMultiSelect
+            ? DropdownButton2<T>(
+                isExpanded: true,
+                hint: Text(hintText, style: hintStyle),
+                multiValueListenable: listenable,
+                items: options
+                    .map(
+                      (option) => DropdownItem<T>(
+                        value: option.value,
+                        height: 44,
+                        closeOnTap: false,
+                        child: ValueListenableBuilder<List<T>>(
+                          valueListenable: listenable!,
+                          builder: (context, values, _) {
+                            final isSelected = values.contains(option.value);
+                            return Row(
+                              children: [
+                                Icon(
+                                  isSelected
+                                      ? Icons.check_box_outlined
+                                      : Icons.check_box_outline_blank,
+                                  color: CustomTheme.textColor,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(child: optionRow(option)),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                    .toList(),
+                onChanged: enabled
+                    ? (value) {
+                        if (value != null) onItemTap!(value);
+                      }
+                    : null,
+                selectedItemBuilder: (context) {
+                  return options
+                      .map(
+                        (_) => ValueListenableBuilder<List<T>>(
+                          valueListenable: listenable!,
+                          builder: (context, values, _) {
+                            final selectedLabels = options
+                                .where((o) => values.contains(o.value))
+                                .map((o) => o.label)
+                                .join(', ');
+                            return Text(
+                              selectedLabels,
+                              style: values.isEmpty ? hintStyle : headerStyle,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            );
+                          },
+                        ),
+                      )
+                      .toList();
+                },
+                buttonStyleData: buttonStyle,
+                iconStyleData: iconStyle,
+                dropdownStyleData: dropdownStyle,
+                menuItemStyleData: menuStyle,
+              )
+            : DropdownButton2<T>(
+                isExpanded: true,
+                hint: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(hintText, style: hintStyle),
                 ),
+                valueListenable: valueListenable,
+                items: options
+                    .map(
+                      (option) => DropdownItem<T>(
+                        value: option.value,
+                        height: 44,
+                        child: optionRow(option),
+                      ),
+                    )
+                    .toList(),
+                onChanged: enabled ? onChanged : null,
+                buttonStyleData: buttonStyle,
+                iconStyleData: iconStyle,
+                dropdownStyleData: dropdownStyle,
+                menuItemStyleData: menuStyle,
               ),
-              Text(
-                description,
-                textAlign: TextAlign.start,
-                softWrap: true,
-                style: const TextStyle(
-                  color: CustomTheme.textColor,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        // Dropdown
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: DropdownButtonHideUnderline(
-            child: isMultiSelect
-                ? DropdownButton2<T>(
-                    isExpanded: true,
-                    hint: Text(hintText, style: hintStyle),
-                    multiValueListenable: listenable,
-                    items: options
-                        .map(
-                          (option) => DropdownItem<T>(
-                            value: option.value,
-                            height: 44,
-                            closeOnTap: false,
-                            child: ValueListenableBuilder<List<T>>(
-                              valueListenable: listenable!,
-                              builder: (context, values, _) {
-                                final isSelected = values.contains(
-                                  option.value,
-                                );
-                                return Row(
-                                  children: [
-                                    Icon(
-                                      isSelected
-                                          ? Icons.check_box_outlined
-                                          : Icons.check_box_outline_blank,
-                                      color: CustomTheme.textColor,
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(child: optionRow(option)),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: enabled
-                        ? (value) {
-                            if (value != null) onItemTap!(value);
-                          }
-                        : null,
-                    selectedItemBuilder: (context) {
-                      return options
-                          .map(
-                            (_) => ValueListenableBuilder<List<T>>(
-                              valueListenable: listenable!,
-                              builder: (context, values, _) {
-                                final selectedLabels = options
-                                    .where((o) => values.contains(o.value))
-                                    .map((o) => o.label)
-                                    .join(', ');
-                                return Text(
-                                  selectedLabels,
-                                  style: values.isEmpty
-                                      ? hintStyle
-                                      : headerStyle,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                );
-                              },
-                            ),
-                          )
-                          .toList();
-                    },
-                    buttonStyleData: buttonStyle,
-                    iconStyleData: iconStyle,
-                    dropdownStyleData: dropdownStyle,
-                    menuItemStyleData: menuStyle,
-                  )
-                : DropdownButton2<T>(
-                    isExpanded: true,
-                    hint: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(hintText, style: hintStyle),
-                    ),
-                    valueListenable: valueListenable,
-                    items: options
-                        .map(
-                          (option) => DropdownItem<T>(
-                            value: option.value,
-                            height: 44,
-                            child: optionRow(option),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: enabled ? onChanged : null,
-                    buttonStyleData: buttonStyle,
-                    iconStyleData: iconStyle,
-                    dropdownStyleData: dropdownStyle,
-                    menuItemStyleData: menuStyle,
-                  ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -241,12 +204,9 @@ class LabeledDropdown<T> extends StatelessWidget {
   TextStyle get hintStyle =>
       const TextStyle(color: CustomTheme.hintColor, fontSize: 14);
 
-  ButtonStyleData get buttonStyle => ButtonStyleData(
-    height: 54,
-    decoration: BoxDecoration(
-      color: CustomTheme.onBoxColor,
-      borderRadius: BorderRadius.circular(12),
-    ),
+  ButtonStyleData get buttonStyle => const ButtonStyleData(
+    height: CustomTheme.controlHeight,
+    decoration: CustomTheme.controlBoxDecoration,
   );
 
   IconStyleData get iconStyle => const IconStyleData(

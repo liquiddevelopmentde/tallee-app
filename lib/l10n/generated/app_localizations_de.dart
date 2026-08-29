@@ -612,4 +612,49 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Gestern um';
+
+  @override
+  String get ruleset_description => 'Wie das Spiel entschieden wird.';
+
+  @override
+  String get color_description =>
+      'Die Akzentfarbe, die für das Spiel verwendet wird.';
+
+  @override
+  String get long_press_to_create_a_pair =>
+      'Drücke lange auf ein:e ausgewählte:n Spieler:in, um ein Paar zu erstellen';
+
+  @override
+  String get player_name_description =>
+      'Der Name, der für diese Person angezeigt wird.';
+
+  @override
+  String get player_description_hint => 'Optionale Notizen über diese Person.';
+
+  @override
+  String get group_name_description =>
+      'Eine Gruppe ist eine Sammlung von Personen.';
+
+  @override
+  String get players_description =>
+      'Suche und wähle die teilnehmenden Spieler:innen aus.';
+
+  @override
+  String get match_name_description => 'Der Titel dieses Spiels.';
+
+  @override
+  String get game_description => 'Die gespielte Spielvorlage.';
+
+  @override
+  String get group_description => 'Mit dieser Gruppe gespielt.';
+
+  @override
+  String get team_match_description => 'In Teams statt einzeln spielen.';
+
+  @override
+  String get game_name_description => 'Der Name dieser Spielvorlage.';
+
+  @override
+  String get game_notes_description =>
+      'Optionale Notizen oder Regeln für diese Spielvorlage.';
 }

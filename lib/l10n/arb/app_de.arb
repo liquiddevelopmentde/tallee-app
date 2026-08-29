@@ -204,5 +204,18 @@
   "winners": "Gewinner:innen",
   "winrate": "Siegquote",
   "worst_score": "Schlechteste Punktzahl",
-  "yesterday_at": "Gestern um"
+  "yesterday_at": "Gestern um",
+  "ruleset_description": "Wie das Spiel entschieden wird.",
+  "color_description": "Die Akzentfarbe, die für das Spiel verwendet wird.",
+  "long_press_to_create_a_pair": "Drücke lange auf ein:e ausgewählte:n Spieler:in, um ein Paar zu erstellen",
+  "player_name_description": "Der Name, der für diese Person angezeigt wird.",
+  "player_description_hint": "Optionale Notizen über diese Person.",
+  "group_name_description": "Eine Gruppe ist eine Sammlung von Personen.",
+  "players_description": "Suche und wähle die teilnehmenden Spieler:innen aus.",
+  "match_name_description": "Der Titel dieses Spiels.",
+  "game_description": "Die gespielte Spielvorlage.",
+  "group_description": "Mit dieser Gruppe gespielt.",
+  "team_match_description": "In Teams statt einzeln spielen.",
+  "game_name_description": "Der Name dieser Spielvorlage.",
+  "game_notes_description": "Optionale Notizen oder Regeln für diese Spielvorlage."
 }
