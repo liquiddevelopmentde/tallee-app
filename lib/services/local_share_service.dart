@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:json_schema/json_schema.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -139,7 +139,10 @@ class LocalShareService {
     String jsonString,
   ) async {
     try {
-      final isValid = await validateJsonSchema(jsonString);
+      final isValid = await validateJsonSchema(
+        jsonString,
+        'assets/app_schema.json',
+      );
       if (!isValid) return (ImportResult.invalidSchema, null);
 
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
@@ -265,21 +268,34 @@ class LocalShareService {
 
     // Wrap the entire import in a single transaction to ensure atomicity
     // and prevent foreign key constraint violations due to intermediate states.
+    print('[importDataToDatabase] START');
     await db.transaction(() async {
       // Order is important for foreign key constraints:
       // 1. Games & Players (no dependencies)
+      print('[importDataToDatabase] adding games');
       await db.gameDao.addGamesAsList(games: importedGames);
+      print('[importDataToDatabase] added games');
+
+      print('[importDataToDatabase] adding players');
       await db.playerDao.addPlayersAsList(players: importedPlayers);
+      print('[importDataToDatabase] added players');
 
       // 2. Groups (depend on players)
+      print('[importDataToDatabase] adding groups');
       await db.groupDao.addGroupsAsList(groups: importedGroups);
+      print('[importDataToDatabase] added groups');
 
       // 3. Matches (now handles its own games/players/groups internally but safely)
+      print('[importDataToDatabase] adding matches');
       await db.matchDao.addMatchesAsList(matches: importedMatches);
+      print('[importDataToDatabase] added matches');
 
       // 4. Statistics (depend on games and groups)
+      print('[importDataToDatabase] adding statistics');
       await db.statisticDao.addStatisticsAsList(statistics: importedStats);
+      print('[importDataToDatabase] added statistics');
     });
+    print('[importDataToDatabase] END');
   }
 
   /* Parsing Methods */
@@ -455,37 +471,5 @@ class LocalShareService {
         position: map['position'],
       );
     }).toList();
-  }
-
-  /// Helper method to read file content from either bytes or path
-  @visibleForTesting
-  static Future<String?> readFileContent(PlatformFile file) async {
-    if (file.bytes != null) return utf8.decode(file.bytes!);
-    if (file.path != null) return await File(file.path!).readAsString();
-    return null;
-  }
-
-  /// Validates the given JSON string against the schema
-  /// in `assets/app_schema.json`.
-  @visibleForTesting
-  static Future<bool> validateJsonSchema(String jsonString) async {
-    final String schemaString;
-
-    schemaString = await rootBundle.loadString('assets/app_schema.json');
-
-    try {
-      final schema = JsonSchema.create(json.decode(schemaString));
-      final jsonData = json.decode(jsonString);
-      final result = schema.validate(jsonData);
-
-      if (result.isValid) {
-        return true;
-      }
-      return false;
-    } catch (e, stack) {
-      print('[validateJsonSchema] $e');
-      print(stack);
-      return false;
-    }
   }
 }

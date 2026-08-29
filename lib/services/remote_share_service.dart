@@ -3,10 +3,8 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:json_schema/json_schema.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tallee/core/common.dart';
@@ -17,9 +15,14 @@ import 'package:tallee/data/models/models.dart';
 import 'package:uuid/uuid.dart';
 
 class RemoteShareService {
+  final http.Client httpClient;
+
+  RemoteShareService({http.Client? httpClient})
+    : httpClient = httpClient ?? http.Client();
+
   Future<String> getShareToken(Match match) async {
     try {
-      final response = await http.post(
+      final response = await httpClient.post(
         Uri.parse('${getApiBaseUrl()}/v1/shares/'),
         body: jsonEncode(match.toJson()),
         headers: {'Content-Type': 'application/json'},
@@ -47,7 +50,7 @@ class RemoteShareService {
 
   Future<Match> getMatchByToken(String token) async {
     try {
-      final response = await http.get(
+      final response = await httpClient.get(
         Uri.parse('${getApiBaseUrl()}/v1/shares/$token'),
       );
 
@@ -194,12 +197,15 @@ class RemoteShareService {
     }
 
     try {
-      final jsonString = await _readFileContent(path.files.single);
+      final jsonString = await readFileContent(path.files.single);
       if (jsonString == null) {
         return (ImportResult.fileReadError, null, path.files.single.name);
       }
 
-      final isValid = await validateJsonSchema(jsonString);
+      final isValid = await validateJsonSchema(
+        jsonString,
+        'assets/match_schema.json',
+      );
       if (!isValid) {
         return (ImportResult.invalidSchema, null, path.files.single.name);
       }
@@ -225,37 +231,6 @@ class RemoteShareService {
       print('[importData] $e');
       print(stack);
       return (ImportResult.unknownException, null, path.files.single.name);
-    }
-  }
-
-  /// Helper method to read file content from either bytes or path
-  static Future<String?> _readFileContent(PlatformFile file) async {
-    if (file.bytes != null) return utf8.decode(file.bytes!);
-    if (file.path != null) return await File(file.path!).readAsString();
-    return null;
-  }
-
-  /// Validates the given JSON string against the schema
-  /// in `assets/app_schema.json`.
-  @visibleForTesting
-  static Future<bool> validateJsonSchema(String jsonString) async {
-    final String schemaString;
-
-    schemaString = await rootBundle.loadString('assets/match_schema.json');
-
-    try {
-      final schema = JsonSchema.create(json.decode(schemaString));
-      final jsonData = json.decode(jsonString);
-      final result = schema.validate(jsonData);
-
-      if (result.isValid) {
-        return true;
-      }
-      return false;
-    } catch (e, stack) {
-      print('[validateJsonSchema] $e');
-      print(stack);
-      return false;
     }
   }
 
