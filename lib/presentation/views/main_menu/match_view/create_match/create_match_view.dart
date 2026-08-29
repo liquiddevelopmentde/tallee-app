@@ -380,7 +380,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       } else {
         // If it has pairs, we treat it as a team match but the teams are already set
         if (context.mounted) {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             adaptivePageRoute(
               fullscreenDialog: true,
@@ -389,6 +389,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 onWinnerChanged: widget.onWinnerChanged,
               ),
             ),
+            (route) => route.isFirst,
           );
         }
       }
