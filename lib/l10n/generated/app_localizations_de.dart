@@ -330,9 +330,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get manage_members => 'Mitglieder bearbeiten';
 
   @override
-  String get match_already_exists => 'Spiel existiert bereits';
-
-  @override
   String get match_in_progress => 'Spiel läuft...';
 
   @override
@@ -650,9 +647,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get online_sharing_disabled => 'Online-Teilen ist deaktiviert';
 
   @override
-  String get online_sharing_enabled => 'Online-Teilen ist aktiviert';
-
-  @override
   String get go_to_settings_to_enable =>
       'Gehe in die Einstellungen, um es manuell zu aktivieren.';
 
@@ -762,9 +756,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get match_import_failed => 'Match-Import fehlgeschlagen';
-
-  @override
-  String get file_not_found => 'Datei nicht gefunden';
 
   @override
   String get choose_match_file => 'Match-Datei auswählen';

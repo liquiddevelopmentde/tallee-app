@@ -698,12 +698,6 @@ abstract class AppLocalizations {
   /// **'Manage Members'**
   String get manage_members;
 
-  /// No description provided for @match_already_exists.
-  ///
-  /// In en, this message translates to:
-  /// **'Match already exists'**
-  String get match_already_exists;
-
   /// No description provided for @match_in_progress.
   ///
   /// In en, this message translates to:
@@ -1304,12 +1298,6 @@ abstract class AppLocalizations {
   /// **'Online sharing is disabled'**
   String get online_sharing_disabled;
 
-  /// No description provided for @online_sharing_enabled.
-  ///
-  /// In en, this message translates to:
-  /// **'Online sharing is enabled'**
-  String get online_sharing_enabled;
-
   /// No description provided for @go_to_settings_to_enable.
   ///
   /// In en, this message translates to:
@@ -1483,12 +1471,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Match import failed'**
   String get match_import_failed;
-
-  /// No description provided for @file_not_found.
-  ///
-  /// In en, this message translates to:
-  /// **'File not found'**
-  String get file_not_found;
 
   /// No description provided for @choose_match_file.
   ///

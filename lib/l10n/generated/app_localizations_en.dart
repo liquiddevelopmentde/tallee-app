@@ -329,9 +329,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manage_members => 'Manage Members';
 
   @override
-  String get match_already_exists => 'Match already exists';
-
-  @override
   String get match_in_progress => 'Match in progress...';
 
   @override
@@ -648,9 +645,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get online_sharing_disabled => 'Online sharing is disabled';
 
   @override
-  String get online_sharing_enabled => 'Online sharing is enabled';
-
-  @override
   String get go_to_settings_to_enable =>
       'Go to the settings to manually enable it.';
 
@@ -758,9 +752,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get match_import_failed => 'Match import failed';
-
-  @override
-  String get file_not_found => 'File not found';
 
   @override
   String get choose_match_file => 'Choose Match File';
