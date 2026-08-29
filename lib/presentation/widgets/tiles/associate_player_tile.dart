@@ -56,37 +56,42 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
             ),
           ),
           const Icon(Icons.keyboard_arrow_right),
+          const SizedBox(width: 4),
           Expanded(
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Spacer(),
-                GestureDetector(
-                  onTap: () async {
-                    widget.onTap.call();
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 6,
-                      horizontal: 6,
-                    ),
-                    decoration: CustomTheme.standardBoxDecoration.copyWith(
-                      color: CustomTheme.onBoxColor,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (widget.associatedPlayer != null)
-                          buildUnitNameWidget(
-                            widget.associatedPlayer!,
-                            mainStyle: const TextStyle(fontSize: 17),
-                            countStyle: TextStyle(
-                              fontSize: 15,
-                              color: CustomTheme.textColor.withAlpha(100),
-                            ),
-                          )
-                        else
-                          const Icon(Icons.add, color: Colors.red),
-                      ],
+                Flexible(
+                  child: GestureDetector(
+                    onTap: () async {
+                      widget.onTap.call();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 6,
+                        horizontal: 6,
+                      ),
+                      decoration: CustomTheme.standardBoxDecoration.copyWith(
+                        color: CustomTheme.onBoxColor,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (widget.associatedPlayer != null)
+                            Flexible(
+                              child: buildUnitNameWidget(
+                                widget.associatedPlayer!,
+                                mainStyle: const TextStyle(fontSize: 17),
+                                countStyle: TextStyle(
+                                  fontSize: 15,
+                                  color: CustomTheme.textColor.withAlpha(100),
+                                ),
+                              ),
+                            )
+                          else
+                            const Icon(Icons.add, color: Colors.red),
+                        ],
+                      ),
                     ),
                   ),
                 ),
