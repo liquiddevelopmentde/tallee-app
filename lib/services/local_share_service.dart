@@ -9,6 +9,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 
 class LocalShareService {
@@ -124,11 +125,12 @@ class LocalShareService {
     }
 
     final (status, _) = await _validateJson(jsonString);
-    if (status != ImportResult.success) {
+    if (status != ImportResult.success &&
+        status != ImportResult.singleMatchDetected) {
       return (status, null);
     }
 
-    return (ImportResult.success, jsonString);
+    return (status, jsonString);
   }
 
   /// Validates [jsonString] against the schema and the content length rules.
@@ -139,19 +141,38 @@ class LocalShareService {
     String jsonString,
   ) async {
     try {
-      final isValid = await validateJsonSchema(
+      final isValidAppSchema = await validateJsonSchema(
         jsonString,
         'assets/app_schema.json',
       );
-      if (!isValid) return (ImportResult.invalidSchema, null);
 
-      final decoded = json.decode(jsonString) as Map<String, dynamic>;
+      if (isValidAppSchema) {
+        final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
-      if (!validateContent(decoded)) {
-        return (ImportResult.invalidData, null);
+        if (!validateContent(decoded)) {
+          return (ImportResult.invalidData, null);
+        }
+
+        return (ImportResult.success, decoded);
       }
 
-      return (ImportResult.success, decoded);
+      // Check if it's a single match
+      final isValidMatchSchema = await validateJsonSchema(
+        jsonString,
+        'assets/match_schema.json',
+      );
+
+      if (isValidMatchSchema) {
+        final decoded = json.decode(jsonString) as Map<String, dynamic>;
+
+        if (!RemoteShareService.validateContent(decoded)) {
+          return (ImportResult.invalidData, null);
+        }
+
+        return (ImportResult.singleMatchDetected, null);
+      }
+
+      return (ImportResult.invalidSchema, null);
     } on FormatException catch (e, stack) {
       print('[validateJson] FormatException');
       print('[validateJson] $e');

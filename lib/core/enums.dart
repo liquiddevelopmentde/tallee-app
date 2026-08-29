@@ -30,6 +30,7 @@ enum ImportResult {
   invalidData,
   formatException,
   unknownException,
+  singleMatchDetected,
 }
 
 /// Result types for export operations in the [SettingsView]

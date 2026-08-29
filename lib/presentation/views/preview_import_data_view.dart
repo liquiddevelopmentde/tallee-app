@@ -309,7 +309,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
     if (!mounted) return;
 
-    if (result.$1 != ImportResult.success || result.$2 == null) {
+    if (result.$1 != ImportResult.success) {
       finishImport(importResult: result.$1);
       return;
     }
@@ -356,7 +356,8 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     if (messengerKey != null) {
       if (importResult == ImportResult.success) {
         await HapticFeedback.successNotification();
-      } else if (importResult != ImportResult.canceled) {
+      } else if (importResult != ImportResult.canceled &&
+          importResult != ImportResult.singleMatchDetected) {
         await HapticFeedback.errorNotification();
       }
 

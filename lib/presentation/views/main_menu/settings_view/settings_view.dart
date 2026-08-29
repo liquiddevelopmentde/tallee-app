@@ -11,8 +11,9 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licenses_view.dart';
-import 'package:tallee/presentation/views/preview_import_data.dart';
+import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
@@ -256,6 +257,8 @@ class _SettingsViewState extends State<SettingsView> {
             message: loc.data_successfully_imported,
           );
         }
+      case ImportResult.singleMatchDetected:
+        break;
       case ImportResult.invalidSchema:
       case ImportResult.invalidData:
       case ImportResult.fileReadError:
@@ -349,6 +352,21 @@ class _SettingsViewState extends State<SettingsView> {
       showImportSnackBar(
         context: scaffoldMessengerContext,
         result: ImportResult.canceled,
+      );
+      return;
+    }
+
+    if (!scaffoldMessengerContext.mounted) return;
+
+    // Pre-check the file type to avoid showing PreviewImportDataView for single matches
+    final (status, _) = await LocalShareService.getDataFromPath(path);
+
+    if (status == ImportResult.singleMatchDetected) {
+      if (!scaffoldMessengerContext.mounted) return;
+      Navigator.of(scaffoldMessengerContext).push(
+        adaptivePageRoute(
+          builder: (context) => MatchReceiveView(initialFilePath: path),
+        ),
       );
       return;
     }

@@ -13,7 +13,9 @@ import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart'
 import 'package:tallee/services/remote_share_service.dart';
 
 class ImportFileComponent extends StatefulWidget {
-  const ImportFileComponent({super.key});
+  const ImportFileComponent({super.key, this.initialFilePath});
+
+  final String? initialFilePath;
 
   @override
   State<ImportFileComponent> createState() => _ImportFileComponentState();
@@ -26,6 +28,33 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
   Color dottedBorderColor = CustomTheme.boxBorderColor;
 
   late (ImportResult, Match?, String) data;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialFilePath != null) {
+      loadInitialFile();
+    }
+  }
+
+  Future<void> loadInitialFile() async {
+    final result = await RemoteShareService().loadMatchFromFile(
+      widget.initialFilePath!,
+    );
+    if (mounted) {
+      setState(() {
+        data = result;
+        lastResult = data.$1;
+        if (data.$1 == ImportResult.success) {
+          successfulImport = true;
+          dottedBorderColor = Colors.green;
+        } else {
+          successfulImport = false;
+          dottedBorderColor = Colors.red;
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

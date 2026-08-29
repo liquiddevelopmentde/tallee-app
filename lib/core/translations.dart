@@ -34,6 +34,8 @@ String translateImportResultToString(
       return loc.format_exception;
     case ImportResult.unknownException:
       return loc.unknown_exception;
+    case ImportResult.singleMatchDetected:
+      return '';
   }
 }
 

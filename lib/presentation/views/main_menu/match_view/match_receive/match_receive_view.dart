@@ -7,7 +7,9 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_receive/imp
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/qr_scan_component.dart';
 
 class MatchReceiveView extends StatefulWidget {
-  const MatchReceiveView({super.key});
+  const MatchReceiveView({super.key, this.initialFilePath});
+
+  final String? initialFilePath;
 
   @override
   State<MatchReceiveView> createState() => _MatchReceiveViewViewState();
@@ -23,6 +25,9 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
+    if (widget.initialFilePath != null) {
+      _tabController.index = 2;
+    }
     super.initState();
   }
 
@@ -79,10 +84,12 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
                 maintainBottomViewPadding: true,
                 child: TabBarView(
                   controller: _tabController,
-                  children: const [
-                    QrScanComponent(),
-                    EnterTokenComponent(),
-                    ImportFileComponent(),
+                  children: [
+                    const QrScanComponent(),
+                    const EnterTokenComponent(),
+                    ImportFileComponent(
+                      initialFilePath: widget.initialFilePath,
+                    ),
                   ],
                 ),
               ),

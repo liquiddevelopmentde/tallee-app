@@ -8,12 +8,16 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/preview_import_data.dart';
+import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
+import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
+import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
@@ -57,6 +61,7 @@ class _TalleeState extends State<Tallee> {
   /// Receives .tallee files opened via the system.
   final OpenWithApp openWithApp = OpenWithApp();
   StreamSubscription<String>? fileSubscription;
+  String? _pendingImportPath;
 
   @override
   void initState() {
@@ -120,28 +125,60 @@ class _TalleeState extends State<Tallee> {
           },
         ),
       ),
-      home: const SplashScreen(),
+      home: SplashScreen(onFinished: _handleSplashFinished),
     );
+  }
+
+  void _handleSplashFinished() {
+    final navigator = navigatorKey.currentState;
+    if (navigator == null) return;
+
+    final path = _pendingImportPath;
+    _pendingImportPath = null;
+
+    navigator.pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const CustomNavigationBar(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+
+    if (path != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => openImport(path));
+    }
   }
 
   /// Fetches a file that launched the app from a cold start, if any.
   Future<void> checkInitialFile() async {
     final path = await openWithApp.getInitialFile();
-    if (path != null) openImport(path);
+    if (path != null) {
+      _pendingImportPath = path;
+    }
   }
 
   /// Pushes the import view for the .tallee file at [path].
-  void openImport(String path) {
+  void openImport(String path) async {
     final navigator = navigatorKey.currentState;
     if (navigator == null) return;
+
+    final (status, _) = await LocalShareService.getDataFromPath(path);
+
+    final route = status == ImportResult.singleMatchDetected
+        ? MatchReceiveView(initialFilePath: path)
+        : PreviewImportDataView(
+            filePath: path,
+            messengerKey: scaffoldMessengerKey,
+          );
+
     navigator.push(
       adaptivePageRoute(
         settings: RouteSettings(name: path),
         fullscreenDialog: true,
-        builder: (_) => PreviewImportDataView(
-          filePath: path,
-          messengerKey: scaffoldMessengerKey,
-        ),
+        builder: (_) => route,
       ),
     );
   }

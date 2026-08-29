@@ -10,6 +10,7 @@ import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart'
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
 import 'package:tallee/services/remote_share_service.dart';
+import 'package:tallee/state/data_refresh_provider.dart';
 
 class AssociateGroupsView extends StatefulWidget {
   const AssociateGroupsView({
@@ -187,6 +188,8 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
     }
 
     if (!mounted) return;
+
+    Provider.of<DataRefreshProvider>(context, listen: false).refresh();
 
     ScaffoldMessenger.of(
       context,

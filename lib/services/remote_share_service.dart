@@ -119,8 +119,46 @@ class RemoteShareService {
     );
   }
 
+  /// Loads a match from a given file path without opening a file picker.
+  Future<(ImportResult, Match?, String)> loadMatchFromFile(
+    String filePath,
+  ) async {
+    final file = File(filePath);
+    final fileName = file.path.split(Platform.pathSeparator).last;
+
+    try {
+      final jsonString = await file.readAsString();
+
+      final isValid = await validateJsonSchema(
+        jsonString,
+        'assets/match_schema.json',
+      );
+      if (!isValid) {
+        return (ImportResult.invalidSchema, null, fileName);
+      }
+
+      final decoded = json.decode(jsonString) as Map<String, dynamic>;
+
+      if (!validateContent(decoded)) {
+        return (ImportResult.invalidData, null, fileName);
+      }
+
+      return (ImportResult.success, Match.fromJson(decoded), fileName);
+    } on FormatException catch (e, stack) {
+      print('[loadMatchFromFile] FormatException');
+      print('[loadMatchFromFile] $e');
+      print(stack);
+      return (ImportResult.formatException, null, fileName);
+    } on Exception catch (e, stack) {
+      print('[loadMatchFromFile] Exception');
+      print('[loadMatchFromFile] $e');
+      print(stack);
+      return (ImportResult.unknownException, null, fileName);
+    }
+  }
+
   /// Maps imported match data to local entities and saves it to the database.
-  Future<void> saveImportedMatch({
+  Future<Match> saveImportedMatch({
     required AppDatabase db,
     required Match importedMatch,
     required Map<String, Player> playerAssociations,
@@ -183,6 +221,7 @@ class RemoteShareService {
     );
 
     await db.matchDao.addMatch(match: localMatch);
+    return localMatch;
   }
 
   Future<(ImportResult, Match?, String)> chooseFileToImport() async {
@@ -235,7 +274,6 @@ class RemoteShareService {
   }
 
   /// Validates field lengths against the defined constants.
-  @visibleForTesting
   static bool validateContent(Map<String, dynamic> decoded) {
     // Validate match name
     final name = decoded['name'] as String?;

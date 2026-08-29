@@ -14,6 +14,7 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/tiles/associate_player_tile.dart';
 import 'package:tallee/services/remote_share_service.dart';
+import 'package:tallee/state/data_refresh_provider.dart';
 
 class AssociatePlayersView extends StatefulWidget {
   const AssociatePlayersView({
@@ -166,6 +167,8 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     }
 
     if (!mounted) return;
+
+    Provider.of<DataRefreshProvider>(context, listen: false).refresh();
 
     final loc = AppLocalizations.of(context);
     ScaffoldMessenger.of(
