@@ -51,14 +51,14 @@ class GameTile extends StatelessWidget {
     final gameColor = badgeColor ?? getColorFromAppColor(AppColor.orange);
 
     return GestureDetector(
-      onTap: () async {
-        await HapticFeedback.selectionClick();
+      onTap: () {
+        HapticFeedback.selectionClick();
         if (onTap != null) {
           onTap!.call();
         }
       },
-      onLongPress: () async {
-        await HapticFeedback.heavyImpact();
+      onLongPress: () {
+        HapticFeedback.heavyImpact();
         if (onLongPress != null) {
           onLongPress!.call();
         }

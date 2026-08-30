@@ -40,8 +40,8 @@ class _GroupTileState extends State<GroupTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        await HapticFeedback.selectionClick();
+      onTap: () {
+        HapticFeedback.selectionClick();
         if (widget.onTap != null) {
           widget.onTap!.call();
         }

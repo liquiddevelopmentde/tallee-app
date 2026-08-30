@@ -29,10 +29,10 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   late final AppDatabase db;
 
   /// GlobalKey for ScaffoldMessenger to show snackbars
-  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   /// Controller for the group name input field
-  final _groupNameController = TextEditingController();
+  final groupNameController = TextEditingController();
 
   /// List of currently selected players
   List<Player> selectedPlayers = [];
@@ -45,20 +45,20 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
     if (widget.groupToEdit != null) {
-      _groupNameController.text = widget.groupToEdit!.name;
+      groupNameController.text = widget.groupToEdit!.name;
       setState(() {
         initialSelectedPlayers = widget.groupToEdit!.members;
         selectedPlayers = widget.groupToEdit!.members;
       });
     }
-    _groupNameController.addListener(() {
+    groupNameController.addListener(() {
       setState(() {});
     });
   }
 
   @override
   void dispose() {
-    _groupNameController.dispose();
+    groupNameController.dispose();
     super.dispose();
   }
 
@@ -66,7 +66,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return ScaffoldMessenger(
-      key: _scaffoldMessengerKey,
+      key: scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: CustomTheme.backgroundColor,
@@ -83,7 +83,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
               Container(
                 margin: CustomTheme.standardMargin,
                 child: TextInputField(
-                  controller: _groupNameController,
+                  controller: groupNameController,
                   hintText: loc.group_name,
                   maxLength: Constants.MAX_GROUP_NAME_LENGTH,
                 ),
@@ -108,10 +108,10 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                       : loc.edit_group,
                   buttonType: ButtonType.primary,
                   onPressed:
-                      (_groupNameController.text.isEmpty ||
+                      (groupNameController.text.isEmpty ||
                           (selectedPlayers.length < 2))
                       ? null
-                      : _saveGroup,
+                      : saveGroup,
                 ),
               ),
             ],
@@ -123,15 +123,15 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
   /// Saves the group by creating a new one or updating the existing one,
   /// depending on whether the widget  is in edit mode.
-  Future<void> _saveGroup() async {
+  Future<void> saveGroup() async {
     final loc = AppLocalizations.of(context);
     late bool success;
     Group? updatedGroup;
 
     if (widget.groupToEdit == null) {
-      success = await _createGroup();
+      success = await createGroup();
     } else {
-      final result = await _editGroup();
+      final result = await editGroup();
       success = result.$1;
       updatedGroup = result.$2;
     }
@@ -139,14 +139,14 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     if (!mounted) return;
 
     if (success) {
+      HapticFeedback.successNotification();
       widget.onMembersChanged?.call();
-      await HapticFeedback.successNotification();
       if (mounted) {
         Navigator.pop(context, updatedGroup);
       }
     } else {
       if (mounted) {
-        await HapticFeedback.errorNotification();
+        HapticFeedback.errorNotification();
       }
       showSnackbar(
         message: widget.groupToEdit == null
@@ -157,8 +157,8 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   }
 
   /// Handles creating a new group and returns whether the operation was successful.
-  Future<bool> _createGroup() async {
-    final groupName = _groupNameController.text.trim();
+  Future<bool> createGroup() async {
+    final groupName = groupNameController.text.trim();
 
     final success = await db.groupDao.addGroup(
       group: Group(name: groupName, members: selectedPlayers),
@@ -168,8 +168,8 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
   /// Handles editing an existing group and returns a tuple of
   /// (success, updatedGroup).
-  Future<(bool, Group?)> _editGroup() async {
-    final groupName = _groupNameController.text.trim();
+  Future<(bool, Group?)> editGroup() async {
+    final groupName = groupNameController.text.trim();
 
     Group? updatedGroup = Group(
       id: widget.groupToEdit!.id,
@@ -229,7 +229,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   ///
   /// [message] The message to display in the snackbar.
   void showSnackbar({required String message}) {
-    final messenger = _scaffoldMessengerKey.currentState;
+    final messenger = scaffoldMessengerKey.currentState;
     if (messenger != null) {
       messenger.hideCurrentSnackBar();
       messenger.showSnackBar(CustomSnackBar(message: message));

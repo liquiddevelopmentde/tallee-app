@@ -1,6 +1,7 @@
 import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/edge_blocked_bouncing_scroll_physics.dart';
@@ -89,6 +90,8 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         allTeams.insert(newIndex, team);
                       });
                     },
+                    onReorderStart: (_) => HapticFeedback.heavyImpact(),
+                    onReorderEnd: (_) => HapticFeedback.selectionClick(),
                     itemCount: itemCount,
                     itemBuilder: (context, index) {
                       return SizedBox(
@@ -137,6 +140,8 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         allPlayers.insert(newIndex, item);
                       });
                     },
+                    onReorderStart: (_) => HapticFeedback.heavyImpact(),
+                    onReorderEnd: (_) => HapticFeedback.selectionClick(),
                     itemCount: itemCount,
                     itemBuilder: (context, index) {
                       return SizedBox(
@@ -182,24 +187,28 @@ class _PlacementDragListState extends State<PlacementDragList> {
         animation: animation,
         child: child,
         builder: (context, child) {
-          final alpha = (Curves.easeInOut.transform(animation.value) * 40)
-              .toInt();
-          return Stack(
-            children: [
-              child!,
-              Positioned.fill(
-                left: useTeamLogic ? 4 : 0,
-                right: useTeamLogic ? 4 : 0,
-                top: 4,
-                bottom: 4,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(alpha),
-                    borderRadius: CustomTheme.standardBorderRadiusAll,
+          final t = Curves.easeInOut.transform(animation.value);
+          return Material(
+            type: MaterialType.transparency,
+            child: Stack(
+              children: [
+                child!,
+                Positioned.fill(
+                  left: useTeamLogic ? 4 : 0,
+                  right: useTeamLogic ? 4 : 0,
+                  top: 4,
+                  bottom: 4,
+                  child: IgnorePointer(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15 * t),
+                        borderRadius: CustomTheme.standardBorderRadiusAll,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       );
