@@ -37,9 +37,6 @@
         },
         "color": {
           "type": "string"
-        },
-        "icon": {
-          "type": "string"
         }
       },
       "required": [
@@ -48,9 +45,7 @@
         "name",
         "ruleset",
         "description",
-        "color",
-        "icon"
-      ]
+        "color"]
     },
     "group": {
       "type": [
