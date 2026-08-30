@@ -71,12 +71,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get color => 'Color';
 
   @override
-  String get creation_date => 'Creation date';
-
-  @override
-  String get today => 'Today';
-
-  @override
   String get color_blue => 'Blue';
 
   @override
@@ -131,6 +125,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get created_on => 'Created on';
+
+  @override
+  String get creation_date => 'Creation date';
 
   @override
   String get custom => 'Custom';
@@ -571,6 +568,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get timeframe => 'Timeframe';
+
+  @override
+  String get today => 'Today';
 
   @override
   String get today_at => 'Today at';

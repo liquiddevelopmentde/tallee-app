@@ -71,12 +71,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get color => 'Farbe';
 
   @override
-  String get creation_date => 'Erstellungsdatum';
-
-  @override
-  String get today => 'Heute';
-
-  @override
   String get color_blue => 'Blau';
 
   @override
@@ -131,6 +125,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get created_on => 'Erstellt am';
+
+  @override
+  String get creation_date => 'Erstellungsdatum';
 
   @override
   String get custom => 'Benutzerdefiniert';
@@ -573,6 +570,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get timeframe => 'Zeitraum';
+
+  @override
+  String get today => 'Heute';
 
   @override
   String get today_at => 'Heute um';
