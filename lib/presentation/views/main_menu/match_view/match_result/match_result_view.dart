@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -124,14 +123,12 @@ class _MatchResultViewState extends State<MatchResultView> {
                           setState(() {
                             canSave = players.isNotEmpty;
                           });
-                          HapticFeedback.selectionClick();
                         },
                         onTeamsSelected: (List<Team> teams) {
                           selectedTeams = teams;
                           setState(() {
                             canSave = teams.isNotEmpty;
                           });
-                          HapticFeedback.selectionClick();
                         },
                       )
                     else
@@ -142,14 +139,12 @@ class _MatchResultViewState extends State<MatchResultView> {
                           setState(() {
                             canSave = player != null;
                           });
-                          HapticFeedback.selectionClick();
                         },
                         onTeamSelected: (Team? team) {
                           selectedTeam = team;
                           setState(() {
                             canSave = team != null;
                           });
-                          HapticFeedback.selectionClick();
                         },
                       ),
 

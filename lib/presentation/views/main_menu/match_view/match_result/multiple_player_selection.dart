@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
@@ -68,6 +69,7 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
                       }
                       widget.onTeamsSelected?.call(selectedTeams);
                     });
+                    HapticFeedback.selectionClick();
                   },
                 );
               },
@@ -93,6 +95,7 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
                       }
                       widget.onPlayersSelected?.call(selectedPlayers);
                     });
+                    HapticFeedback.selectionClick();
                   },
                 );
               },
