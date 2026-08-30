@@ -113,7 +113,7 @@ class _SettingsListTileState extends State<SettingsListTile> {
 
   /// The widget ignores the onTap when [expandedContent] is provided
   Future<void> handleTap() async {
-    await HapticFeedback.selectionClick();
+    HapticFeedback.selectionClick();
     canExpand
         ? setState(() => isExpanded = !isExpanded)
         : widget.onPressed?.call();

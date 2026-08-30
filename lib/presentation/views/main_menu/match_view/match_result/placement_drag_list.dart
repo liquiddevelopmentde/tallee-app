@@ -91,10 +91,10 @@ class _PlacementDragListState extends State<PlacementDragList> {
                       });
                     },
                     onReorderStart: (int index) async {
-                      await HapticFeedback.heavyImpact();
+                      HapticFeedback.heavyImpact();
                     },
                     onReorderEnd: (int index) async {
-                      await HapticFeedback.selectionClick();
+                      HapticFeedback.selectionClick();
                     },
                     itemCount: itemCount,
                     itemBuilder: (context, index) {
@@ -145,10 +145,10 @@ class _PlacementDragListState extends State<PlacementDragList> {
                       });
                     },
                     onReorderStart: (int index) async {
-                      await HapticFeedback.heavyImpact();
+                      HapticFeedback.heavyImpact();
                     },
                     onReorderEnd: (int index) async {
-                      await HapticFeedback.selectionClick();
+                      HapticFeedback.selectionClick();
                     },
                     itemCount: itemCount,
                     itemBuilder: (context, index) {

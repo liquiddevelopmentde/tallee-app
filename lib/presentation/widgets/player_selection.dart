@@ -266,7 +266,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                       player: player,
                       icon: Icons.add,
                       onPressed: () async {
-                        await HapticFeedback.selectionClick();
+                        HapticFeedback.selectionClick();
                         setState(() {
                           // If the player is not already selected
                           if (!selectedPlayers.contains(player)) {
@@ -307,7 +307,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
         onLongPressEnd: (_) => setState(() => pressingId = null),
         onLongPress: !isPaired && widget.pairingEnabled
             ? () async {
-                await HapticFeedback.selectionClick();
+                HapticFeedback.selectionClick();
                 setState(() {
                   pressingId = null;
                   if (isSelectedForPairing) {
@@ -345,7 +345,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                           pairingSelection.isNotEmpty &&
                           !isSelectedForPairing
                       ? () async {
-                          await HapticFeedback.selectionClick();
+                          HapticFeedback.selectionClick();
                           setState(() {
                             pairingSelection.add(unit.id);
                             // Enter pairing mode as soon as we add a selection
@@ -548,10 +548,10 @@ class _PlayerSelectionState extends State<PlayerSelection> {
 
     if (success) {
       _handleSuccessfulPlayerCreation(createdPlayer);
-      await HapticFeedback.successNotification();
+      HapticFeedback.successNotification();
       showSnackBarMessage(loc.successfully_added_player(playerName));
     } else {
-      await HapticFeedback.errorNotification();
+      HapticFeedback.errorNotification();
       showSnackBarMessage(loc.could_not_add_player(playerName));
     }
   }

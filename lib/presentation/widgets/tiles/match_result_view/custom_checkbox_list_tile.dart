@@ -18,7 +18,7 @@ class CustomCheckboxListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        await HapticFeedback.selectionClick();
+        HapticFeedback.selectionClick();
         onChanged(!value);
       },
       child: Container(
@@ -37,7 +37,7 @@ class CustomCheckboxListTile extends StatelessWidget {
               ),
               value: value,
               onChanged: (bool? v) async {
-                await HapticFeedback.selectionClick();
+                HapticFeedback.selectionClick();
                 if (v == null) return;
                 onChanged(v);
               },

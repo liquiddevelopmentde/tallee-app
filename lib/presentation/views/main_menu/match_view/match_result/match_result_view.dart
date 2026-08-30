@@ -124,14 +124,14 @@ class _MatchResultViewState extends State<MatchResultView> {
                           setState(() {
                             canSave = players.isNotEmpty;
                           });
-                          await HapticFeedback.selectionClick();
+                          HapticFeedback.selectionClick();
                         },
                         onTeamsSelected: (List<Team> teams) async {
                           selectedTeams = teams;
                           setState(() {
                             canSave = teams.isNotEmpty;
                           });
-                          await HapticFeedback.selectionClick();
+                          HapticFeedback.selectionClick();
                         },
                       )
                     else
@@ -142,14 +142,14 @@ class _MatchResultViewState extends State<MatchResultView> {
                           setState(() {
                             canSave = player != null;
                           });
-                          await HapticFeedback.selectionClick();
+                          HapticFeedback.selectionClick();
                         },
                         onTeamSelected: (Team? team) async {
                           selectedTeam = team;
                           setState(() {
                             canSave = team != null;
                           });
-                          await HapticFeedback.selectionClick();
+                          HapticFeedback.selectionClick();
                         },
                       ),
 

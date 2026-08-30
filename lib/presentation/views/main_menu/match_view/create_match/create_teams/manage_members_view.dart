@@ -64,10 +64,10 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               itemCount: allItemsCount,
               onReorderItem: onReorderItem,
               onReorderStart: (int index) async {
-                await HapticFeedback.heavyImpact();
+                HapticFeedback.heavyImpact();
               },
               onReorderEnd: (int index) async {
-                await HapticFeedback.selectionClick();
+                HapticFeedback.selectionClick();
               },
               proxyDecorator: (child, index, animation) {
                 return AnimatedBuilder(

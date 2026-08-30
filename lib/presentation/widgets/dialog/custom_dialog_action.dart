@@ -28,7 +28,7 @@ class CustomDialogAction extends StatelessWidget {
     return BottomAnimatedButton(
       onPressed: onPressed != null
           ? () async {
-              await HapticFeedback.selectionClick();
+              HapticFeedback.selectionClick();
               onPressed?.call();
             }
           : null,

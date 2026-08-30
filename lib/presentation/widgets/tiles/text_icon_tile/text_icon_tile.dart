@@ -59,7 +59,7 @@ class TextIconTile extends StatelessWidget {
               GestureDetector(
                 onTap: () async {
                   onIconTap?.call();
-                  await HapticFeedback.selectionClick();
+                  HapticFeedback.selectionClick();
                 },
                 child: Icon(icon!, size: 20),
               ),

@@ -53,7 +53,7 @@ class _TextChipState extends State<TextChip> {
       },
       onTap: () async {
         widget.onTap();
-        await HapticFeedback.selectionClick();
+        HapticFeedback.selectionClick();
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),

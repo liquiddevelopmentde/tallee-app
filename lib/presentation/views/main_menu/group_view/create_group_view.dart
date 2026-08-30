@@ -140,13 +140,13 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
     if (success) {
       widget.onMembersChanged?.call();
-      await HapticFeedback.successNotification();
+      HapticFeedback.successNotification();
       if (mounted) {
         Navigator.pop(context, updatedGroup);
       }
     } else {
       if (mounted) {
-        await HapticFeedback.errorNotification();
+        HapticFeedback.errorNotification();
       }
       showSnackbar(
         message: widget.groupToEdit == null

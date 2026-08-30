@@ -33,7 +33,7 @@ class _ChooseTileState extends State<ChooseTile> {
     return GestureDetector(
       onTap: widget.onPressed != null
           ? () async {
-              await HapticFeedback.selectionClick();
+              HapticFeedback.selectionClick();
               if (widget.onPressed != null) {
                 widget.onPressed!.call();
               }

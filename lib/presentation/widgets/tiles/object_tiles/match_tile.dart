@@ -50,7 +50,7 @@ class _MatchTileState extends State<MatchTile> {
 
     return GestureDetector(
       onTap: () async {
-        await HapticFeedback.selectionClick();
+        HapticFeedback.selectionClick();
         widget.onTap.call();
       },
       child: Container(

@@ -90,12 +90,12 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
                 () async {
                   _isLongPressing = true;
                   widget.onLongPressed?.call();
-                  await HapticFeedback.heavyImpact();
+                  HapticFeedback.heavyImpact();
                   _repeatTimer = Timer.periodic(
                     const Duration(milliseconds: 250),
                     (_) async {
                       widget.onLongPressed?.call();
-                      await HapticFeedback.heavyImpact();
+                      HapticFeedback.heavyImpact();
                     },
                   );
                 },
@@ -109,7 +109,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
           } else {
             _cancelTimers();
             if (mounted && !_isLongPressing) {
-              await HapticFeedback.selectionClick();
+              HapticFeedback.selectionClick();
               widget.onPressed?.call();
             }
             _isLongPressing = false;

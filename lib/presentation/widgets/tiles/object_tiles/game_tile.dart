@@ -52,13 +52,13 @@ class GameTile extends StatelessWidget {
 
     return GestureDetector(
       onTap: () async {
-        await HapticFeedback.selectionClick();
+        HapticFeedback.selectionClick();
         if (onTap != null) {
           onTap!.call();
         }
       },
       onLongPress: () async {
-        await HapticFeedback.heavyImpact();
+        HapticFeedback.heavyImpact();
         if (onLongPress != null) {
           onLongPress!.call();
         }

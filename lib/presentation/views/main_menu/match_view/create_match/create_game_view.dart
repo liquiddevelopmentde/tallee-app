@@ -331,10 +331,10 @@ class _CreateGameViewState extends State<CreateGameView> {
       barrierColor: Colors.transparent,
       contentDecoration: CustomTheme.standardBoxDecoration,
       onBeforePopup: () async {
-        await HapticFeedback.selectionClick();
+        HapticFeedback.selectionClick();
       },
       onAfterPopup: () async {
-        await HapticFeedback.selectionClick();
+        HapticFeedback.selectionClick();
       },
       content: StatefulBuilder(
         builder: (context, setPopupState) => SizedBox(
@@ -346,7 +346,7 @@ class _CreateGameViewState extends State<CreateGameView> {
               _rulesets.length,
               (index) => GestureDetector(
                 onTap: () async {
-                  await HapticFeedback.selectionClick();
+                  HapticFeedback.selectionClick();
                   setState(() {
                     selectedRuleset = _rulesets[index].$1;
                   });
@@ -421,10 +421,10 @@ class _CreateGameViewState extends State<CreateGameView> {
       barrierColor: Colors.transparent,
       contentDecoration: CustomTheme.standardBoxDecoration,
       onBeforePopup: () async {
-        await HapticFeedback.selectionClick();
+        HapticFeedback.selectionClick();
       },
       onAfterPopup: () async {
-        await HapticFeedback.selectionClick();
+        HapticFeedback.selectionClick();
       },
       content: StatefulBuilder(
         builder: (context, setPopupState) => SizedBox(
@@ -436,7 +436,7 @@ class _CreateGameViewState extends State<CreateGameView> {
               _colors.length,
               (index) => GestureDetector(
                 onTap: () async {
-                  await HapticFeedback.selectionClick();
+                  HapticFeedback.selectionClick();
                   setState(() {
                     selectedColor = _colors[index].$1;
                   });
