@@ -90,9 +90,14 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                   children: [
                     buildClassifierSection(context, loc),
                     buildScopeSection(context, loc),
-                    buildTimeframeSection(context, loc),
-                    if (selectedTimeframe == Timeframe.custom)
-                      buildCustomTimeframeSection(context, loc),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildTimeframeSection(context, loc),
+                        if (selectedTimeframe == Timeframe.custom)
+                          buildDateRangeField(context),
+                      ],
+                    ),
                     buildColorSection(context, loc),
                   ],
                 ),
@@ -158,6 +163,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       hintText: isLoading ? loc.loading : loc.select_a_timeframe,
       enabled: !isLoading,
       valueListenable: selectedTimeframeNotifier,
+      bottomPadding: selectedTimeframe == Timeframe.custom ? 8 : null,
       options: [
         for (final timeframe in Timeframe.values)
           DropdownOption(
@@ -173,88 +179,54 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     );
   }
 
-  Widget buildCustomTimeframeSection(
-    BuildContext context,
-    AppLocalizations loc,
-  ) {
+  Widget buildDateRangeField(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8, bottom: 6),
-            child: Text(
-              loc.custom,
-              style: const TextStyle(
-                color: CustomTheme.textColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text(
-              loc.select_a_date_range,
-              style: const TextStyle(
-                color: CustomTheme.textColor,
-                fontSize: 12,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          buildDateRangeField(context),
-        ],
-      ),
-    );
-  }
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: isLoading
+            ? null
+            : () async {
+                final results = await showCustomTimeframePicker(
+                  initialStartDate: selectedStartDate,
+                  initialEndDate: selectedEndDate,
+                );
 
-  Widget buildDateRangeField(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: isLoading
-          ? null
-          : () async {
-              final results = await showCustomTimeframePicker(
-                initialStartDate: selectedStartDate,
-                initialEndDate: selectedEndDate,
-              );
-
-              if (results != null &&
-                  results.length >= 2 &&
-                  results[0] != null &&
-                  results[1] != null) {
-                setState(() {
-                  selectedStartDate = results[0];
-                  selectedEndDate = results[1];
-                });
-              }
-            },
-      child: Container(
-        height: 54,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          color: CustomTheme.onBoxColor,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.calendar_month, color: CustomTheme.textColor),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                formatDateRange(context, selectedStartDate, selectedEndDate),
-                style: TextStyle(
-                  color: selectedStartDate != null && selectedEndDate != null
-                      ? CustomTheme.textColor
-                      : CustomTheme.hintColor,
-                  fontSize: 14,
+                if (results != null &&
+                    results.length >= 2 &&
+                    results[0] != null &&
+                    results[1] != null) {
+                  setState(() {
+                    selectedStartDate = results[0];
+                    selectedEndDate = results[1];
+                  });
+                }
+              },
+        child: Container(
+          height: 54,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: CustomTheme.onBoxColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.calendar_month, color: CustomTheme.textColor),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  formatDateRange(context, selectedStartDate, selectedEndDate),
+                  style: TextStyle(
+                    color: selectedStartDate != null && selectedEndDate != null
+                        ? CustomTheme.textColor
+                        : CustomTheme.hintColor,
+                    fontSize: 14,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -442,7 +414,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       final locale = Localizations.localeOf(context).toString();
       return '${DateFormat.yMd(locale).format(startDate)} - ${DateFormat.yMd(locale).format(endDate)}';
     }
-    return AppLocalizations.of(context).custom;
+    return AppLocalizations.of(context).choose_date_range;
   }
 
   Future<List<DateTime?>?> showCustomTimeframePicker({

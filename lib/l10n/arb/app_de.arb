@@ -156,6 +156,7 @@
   "ruleset": "Regelwerk",
   "save_changes": "Änderungen speichern",
   "scope": "Bereich",
+  "choose_date_range": "Datumsbereich wählen",
   "scope_description": "Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.",
   "search_for_games": "Nach Spielvorlagen suchen",
   "search_for_groups": "Nach Gruppen suchen",

@@ -458,6 +458,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scope => 'Scope';
 
   @override
+  String get choose_date_range => 'Choose date range';
+
+  @override
   String get scope_description =>
       'Choose which games or players are included in the calculation.';
 

@@ -459,6 +459,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scope => 'Bereich';
 
   @override
+  String get choose_date_range => 'Datumsbereich wählen';
+
+  @override
   String get scope_description =>
       'Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.';
 

@@ -950,6 +950,12 @@ abstract class AppLocalizations {
   /// **'Scope'**
   String get scope;
 
+  /// No description provided for @choose_date_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose date range'**
+  String get choose_date_range;
+
   /// No description provided for @scope_description.
   ///
   /// In en, this message translates to:
