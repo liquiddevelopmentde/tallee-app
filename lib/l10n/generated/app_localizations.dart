@@ -200,12 +200,6 @@ abstract class AppLocalizations {
   /// **'Custom'**
   String get custom;
 
-  /// No description provided for @select_a_date_range.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a date range'**
-  String get select_a_date_range;
-
   /// No description provided for @classifier_description.
   ///
   /// In en, this message translates to:

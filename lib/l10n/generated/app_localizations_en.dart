@@ -60,9 +60,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get custom => 'Custom';
 
   @override
-  String get select_a_date_range => 'Select a date range';
-
-  @override
   String get classifier_description =>
       'Choose which metric is calculated and shown in this statistic.';
 

@@ -60,9 +60,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get custom => 'Benutzerdefiniert';
 
   @override
-  String get select_a_date_range => 'Select a date range';
-
-  @override
   String get classifier_description =>
       'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
 
