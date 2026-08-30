@@ -155,9 +155,9 @@ class _MatchTileState extends State<MatchTile> {
               ),
 
               child: Visibility(
-                visible: match.mvp.isNotEmpty,
+                visible: match.useTeamLogic,
 
-                // MVT Display for team matches
+                // MVP Display for player matches
                 replacement: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
@@ -175,12 +175,12 @@ class _MatchTileState extends State<MatchTile> {
                     children: [
                       getMvpIcon(),
                       const SizedBox(width: 8),
-                      Expanded(child: getMvtTextWidget(loc)),
+                      Expanded(child: getMvpTextWidget(loc)),
                     ],
                   ),
                 ),
 
-                // MVP Display for player matches
+                // MVT Display for team matches
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
@@ -198,7 +198,7 @@ class _MatchTileState extends State<MatchTile> {
                     children: [
                       getMvpIcon(),
                       const SizedBox(width: 8),
-                      Expanded(child: getMvpTextWidget(loc)),
+                      Expanded(child: getMvtTextWidget(loc)),
                     ],
                   ),
                 ),

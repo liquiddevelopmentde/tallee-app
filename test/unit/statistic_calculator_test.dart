@@ -363,7 +363,7 @@ void main() {
       expect(dianaValue.$2, 0.0);
     });
 
-    test('Counts total losses only for single loser ruleset', () {
+    test('Counts losses across rulesets', () {
       final singleLoserGame = Game(
         name: 'Single Loser',
         ruleset: Ruleset.singleLoser,
@@ -372,6 +372,7 @@ void main() {
       );
 
       final matches = [
+        // Single loser: MVP is the loser.
         buildMatch(
           name: 'l1',
           game: singleLoserGame,
@@ -382,9 +383,9 @@ void main() {
           name: 'l2',
           game: singleLoserGame,
           players: [testPlayer1, testPlayer2, testPlayer3],
-          scores: {testPlayer1: 8, testPlayer2: 2, testPlayer3: 7},
+          scores: {testPlayer1: 2, testPlayer2: 5, testPlayer3: 7},
         ),
-        // Not a single-loser match; must not affect totalLosses.
+        // Other rulesets: everyone who is not MVP loses.
         buildMatch(
           name: 'winner-game',
           game: testGame2,
@@ -405,9 +406,12 @@ void main() {
       );
 
       final byId = {for (final entry in values) entry.$1.id: entry.$2};
-      expect(byId[testPlayer2.id], 1);
+      // Alice is the loser in l2 and loses the winner-game (not MVP).
+      expect(byId[testPlayer1.id], 2);
+      // Bob only wins: not the single-loser MVP, but MVP of the winner-game.
+      expect(byId[testPlayer2.id], 0);
+      // Charlie is the loser in l1.
       expect(byId[testPlayer3.id], 1);
-      expect(byId[testPlayer1.id], 0);
     });
   });
 }
