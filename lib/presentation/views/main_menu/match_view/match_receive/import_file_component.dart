@@ -3,6 +3,7 @@ import 'dart:core' hide Match;
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/match.dart';
@@ -46,9 +47,11 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
         data = result;
         lastResult = data.$1;
         if (data.$1 == ImportResult.success) {
+          HapticFeedback.successNotification();
           successfulImport = true;
           dottedBorderColor = Colors.green;
         } else {
+          HapticFeedback.errorNotification();
           successfulImport = false;
           dottedBorderColor = Colors.red;
         }
@@ -66,14 +69,17 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
           padding: CustomTheme.standardMargin.copyWith(left: 25, right: 25),
           child: GestureDetector(
             onTap: () async {
+              HapticFeedback.selectionClick();
               data = await RemoteShareService().chooseFileToImport();
               lastResult = data.$1;
               if (data.$1 == ImportResult.success) {
+                HapticFeedback.successNotification();
                 setState(() {
                   successfulImport = true;
                   dottedBorderColor = Colors.green;
                 });
               } else {
+                HapticFeedback.errorNotification();
                 successfulImport = false;
                 if (data.$1 != ImportResult.canceled) {
                   setState(() {
@@ -149,7 +155,6 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
             BottomAnimatedButton(
               buttonText: loc.import_match,
               sizeRelativeToWidth: 0.9,
-              //icon: Icons.file_download,
               onPressed: successfulImport
                   ? () {
                       Navigator.push(
