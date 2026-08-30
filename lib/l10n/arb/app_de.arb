@@ -16,6 +16,7 @@
   "choose_timeframes": "Zeiträume wählen",
   "choose_types": "Typen wählen",
   "custom": "Benutzerdefiniert",
+  "select_a_date_range": "Datumsbereich auswählen",
   "classifier": "Klassifikator",
   "classifier_description": "Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.",
   "click_another_player_to_create_a_pair": "Klicke einen weiteren Spieler an, um ein Paar zu erstellen",
