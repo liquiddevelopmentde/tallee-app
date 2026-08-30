@@ -42,13 +42,11 @@ void main() {
       name: 'Game A',
       ruleset: Ruleset.highestScore,
       color: AppColor.blue,
-      icon: '',
     );
     testGame2 = Game(
       name: 'Game B',
       ruleset: Ruleset.singleWinner,
       color: AppColor.green,
-      icon: '',
     );
 
     testGroup = Group(name: 'Group AB', members: [testPlayer1, testPlayer2]);
@@ -156,13 +154,11 @@ void main() {
         name: 'Score Game',
         ruleset: Ruleset.highestScore,
         color: AppColor.purple,
-        icon: '',
       );
       final winnerOnlyGame = Game(
         name: 'Winner Game',
         ruleset: Ruleset.singleWinner,
         color: AppColor.orange,
-        icon: '',
       );
 
       final matches = [
@@ -301,6 +297,65 @@ void main() {
       expect(values.single.$2, 1);
     });
 
+    test('Filters matches by custom timeframe (inclusive)', () {
+      final startDate = DateTime(2023, 1, 10);
+      final endDate = DateTime(2023, 1, 20);
+
+      final matches = [
+        buildMatch(
+          name: 'too early',
+          game: testGame1,
+          players: [testPlayer1],
+          scores: {testPlayer1: 10},
+          endedAt: DateTime(2023, 1, 9, 23, 59),
+        ),
+        buildMatch(
+          name: 'start day',
+          game: testGame1,
+          players: [testPlayer1],
+          scores: {testPlayer1: 10},
+          endedAt: DateTime(2023, 1, 10, 0, 0),
+        ),
+        buildMatch(
+          name: 'middle',
+          game: testGame1,
+          players: [testPlayer1],
+          scores: {testPlayer1: 10},
+          endedAt: DateTime(2023, 1, 15),
+        ),
+        buildMatch(
+          name: 'end day',
+          game: testGame1,
+          players: [testPlayer1],
+          scores: {testPlayer1: 10},
+          endedAt: DateTime(2023, 1, 20, 23, 59),
+        ),
+        buildMatch(
+          name: 'too late',
+          game: testGame1,
+          players: [testPlayer1],
+          scores: {testPlayer1: 10},
+          endedAt: DateTime(2023, 1, 21, 0, 0),
+        ),
+      ];
+
+      final statistic = Statistic(
+        type: StatisticType.totalMatches,
+        scopes: [StatisticScope.allPlayers],
+        timeframe: Timeframe.custom,
+        startDate: startDate,
+        endDate: endDate,
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: matches,
+        players: [testPlayer1],
+      );
+
+      expect(values.single.$2, 3);
+    });
+
     test('Sorts worst score ascending', () {
       final matches = [
         buildMatch(
@@ -363,15 +418,15 @@ void main() {
       expect(dianaValue.$2, 0.0);
     });
 
-    test('Counts total losses only for single loser ruleset', () {
+    test('Counts losses across rulesets', () {
       final singleLoserGame = Game(
         name: 'Single Loser',
         ruleset: Ruleset.singleLoser,
         color: AppColor.red,
-        icon: '',
       );
 
       final matches = [
+        // Single loser: MVP is the loser.
         buildMatch(
           name: 'l1',
           game: singleLoserGame,
@@ -382,9 +437,9 @@ void main() {
           name: 'l2',
           game: singleLoserGame,
           players: [testPlayer1, testPlayer2, testPlayer3],
-          scores: {testPlayer1: 8, testPlayer2: 2, testPlayer3: 7},
+          scores: {testPlayer1: 2, testPlayer2: 5, testPlayer3: 7},
         ),
-        // Not a single-loser match; must not affect totalLosses.
+        // Other rulesets: everyone who is not MVP loses.
         buildMatch(
           name: 'winner-game',
           game: testGame2,
@@ -405,9 +460,12 @@ void main() {
       );
 
       final byId = {for (final entry in values) entry.$1.id: entry.$2};
-      expect(byId[testPlayer2.id], 1);
+      // Alice is the loser in l2 and loses the winner-game (not MVP).
+      expect(byId[testPlayer1.id], 2);
+      // Bob only wins: not the single-loser MVP, but MVP of the winner-game.
+      expect(byId[testPlayer2.id], 0);
+      // Charlie is the loser in l1.
       expect(byId[testPlayer3.id], 1);
-      expect(byId[testPlayer1.id], 0);
     });
   });
 }

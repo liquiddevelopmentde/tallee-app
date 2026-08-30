@@ -460,6 +460,12 @@ class LocalShareService {
       return Statistic(
         id: map['id'] as String,
         createdAt: DateTime.parse(map['createdAt'] as String),
+        startDate: map['startDate'] != null
+            ? DateTime.parse(map['startDate'] as String)
+            : null,
+        endDate: map['endDate'] != null
+            ? DateTime.parse(map['endDate'] as String)
+            : null,
         type: StatisticType.values.firstWhere(
           (e) => e.name == map['type'] || e.toString() == map['type'],
           orElse: () => StatisticType.totalWins,

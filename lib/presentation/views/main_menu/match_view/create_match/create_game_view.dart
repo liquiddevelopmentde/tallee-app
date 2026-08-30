@@ -320,10 +320,6 @@ class _CreateGameViewState extends State<CreateGameView> {
         color: newGame.color,
       );
     }
-
-    if (oldGame.icon != newGame.icon) {
-      await db.gameDao.updateGameIcon(gameId: oldGame.id, icon: newGame.icon);
-    }
   }
 
   /// Handles creating a new game in the database.

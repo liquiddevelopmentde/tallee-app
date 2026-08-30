@@ -116,6 +116,8 @@ String translateTimeframeToString(Timeframe timeframe, BuildContext context) {
       return loc.last_year;
     case Timeframe.allTime:
       return loc.all_time;
+    case Timeframe.custom:
+      return loc.custom;
   }
 }
 

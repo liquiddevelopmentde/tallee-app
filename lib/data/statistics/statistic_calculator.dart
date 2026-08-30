@@ -32,7 +32,33 @@ class StatisticCalculator {
     List<Match> filteredMatches = matches;
 
     // Filter timeframe
-    if (statistic.timeframe != Timeframe.allTime) {
+    if (statistic.timeframe == Timeframe.custom) {
+      if (statistic.startDate != null && statistic.endDate != null) {
+        final startOfDay = DateTime(
+          statistic.startDate!.year,
+          statistic.startDate!.month,
+          statistic.startDate!.day,
+        );
+        final endOfDay = DateTime(
+          statistic.endDate!.year,
+          statistic.endDate!.month,
+          statistic.endDate!.day,
+          23,
+          59,
+          59,
+        );
+        filteredMatches = matches.where((m) {
+          if (m.endedAt == null) return false;
+          final isAfterOrAtStart =
+              m.endedAt!.isAtSameMomentAs(startOfDay) ||
+              m.endedAt!.isAfter(startOfDay);
+          final isBeforeOrAtEnd =
+              m.endedAt!.isAtSameMomentAs(endOfDay) ||
+              m.endedAt!.isBefore(endOfDay);
+          return isAfterOrAtStart && isBeforeOrAtEnd;
+        }).toList();
+      }
+    } else if (statistic.timeframe != Timeframe.allTime) {
       final minDate = _getMinimumDate(timeframe: statistic.timeframe);
       if (minDate != null) {
         filteredMatches = matches
@@ -122,6 +148,8 @@ class StatisticCalculator {
       case Timeframe.lastYear:
         return now.subtract(const Duration(days: 365));
       case Timeframe.allTime:
+        return null;
+      case Timeframe.custom:
         return null;
     }
   }
@@ -239,14 +267,28 @@ class StatisticCalculator {
   static int _matchesPlayed(Player p, List<Match> matches) =>
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).length;
 
-  /// Determines how many matches the player is mvp in the given matches.
-  static int _wins(Player p, List<Match> matches) =>
-      matches.where((m) => m.mvp.any((mp) => mp.id == p.id)).length;
+  /// Determines how many wins the player has in the given matches.
+  ///
+  /// - singleLooser: Every player except the mvp gets a win
+  /// - Other rulesets: The mvp gets a win
+  static int _wins(Player p, List<Match> matches) => matches
+      .where((m) => m.players.any((mp) => mp.id == p.id))
+      .where((m) {
+        final isMvp = m.mvp.any((mp) => mp.id == p.id);
+        return m.game.ruleset == Ruleset.singleLoser ? !isMvp : isMvp;
+      })
+      .length;
 
-  /// Determines how many times a player is the loser in single-loser matches.
+  /// Determines how many losses the player has in the given matches.
+  ///
+  /// - singleLooser: The mvp is the loser
+  /// - Other rulesets: Everyone except mvp is the loser
   static int _losses(Player p, List<Match> matches) => matches
-      .where((m) => m.game.ruleset == Ruleset.singleLoser)
-      .where((m) => m.mvp.any((mp) => mp.id == p.id))
+      .where((m) => m.players.any((mp) => mp.id == p.id))
+      .where((m) {
+        final isMvp = m.mvp.any((mp) => mp.id == p.id);
+        return m.game.ruleset == Ruleset.singleLoser ? isMvp : !isMvp;
+      })
       .length;
 
   /// Determines the total score of the player in the given list of matches.

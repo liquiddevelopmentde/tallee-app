@@ -39,6 +39,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get choose_date_range => 'Choose date range';
+
+  @override
   String get choose_game => 'Choose Game';
 
   @override
@@ -122,6 +125,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get created_on => 'Created on';
+
+  @override
+  String get creation_date => 'Creation date';
+
+  @override
+  String get custom => 'Custom';
 
   @override
   String get data => 'Data';
@@ -586,6 +595,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get timeframe => 'Timeframe';
+
+  @override
+  String get today => 'Today';
 
   @override
   String get today_at => 'Today at';
