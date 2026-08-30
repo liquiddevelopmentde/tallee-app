@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 
-class CustomSwitch extends StatefulWidget {
+class CustomAdaptiveSwitch extends StatefulWidget {
   /// A custom switch widget
   /// - [value]: The current value of the switch
   /// - [onChanged]: Callback invoked when the switch value changes
   /// - [padding]: Optional padding around the switch
-  const CustomSwitch({
+  const CustomAdaptiveSwitch({
     super.key,
     required this.value,
     this.onChanged,
@@ -19,10 +19,10 @@ class CustomSwitch extends StatefulWidget {
   final EdgeInsets? padding;
 
   @override
-  State<CustomSwitch> createState() => _CustomSwitchState();
+  State<CustomAdaptiveSwitch> createState() => _CustomAdaptiveSwitchState();
 }
 
-class _CustomSwitchState extends State<CustomSwitch> {
+class _CustomAdaptiveSwitchState extends State<CustomAdaptiveSwitch> {
   @override
   Widget build(BuildContext context) {
     return Switch.adaptive(

@@ -12,7 +12,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/create_teams_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/custom_switch.dart';
+import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
@@ -142,7 +142,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               if (!widget.editMode)
                 ChooseTile(
                   title: loc.team_match,
-                  trailing: CustomSwitch(
+                  trailing: CustomAdaptiveSwitch(
                     padding: const EdgeInsets.symmetric(vertical: -15),
                     value: isTeamMatch,
                     onChanged: (value) => setState(() {
