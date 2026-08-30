@@ -60,7 +60,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get custom => 'Benutzerdefiniert';
 
   @override
-  String get select_a_date_range => 'Datumsbereich auswählen';
+  String get select_a_date_range => 'Select a date range';
 
   @override
   String get classifier_description =>
