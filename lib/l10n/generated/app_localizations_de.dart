@@ -459,7 +459,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scope => 'Bereich';
 
   @override
-  String get choose_date_range => 'Datumsbereich wählen';
+  String get choose_date_range => 'Datumsbereich auswählen';
 
   @override
   String get scope_description =>
