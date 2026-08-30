@@ -267,14 +267,28 @@ class StatisticCalculator {
   static int _matchesPlayed(Player p, List<Match> matches) =>
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).length;
 
-  /// Determines how many matches the player is mvp in the given matches.
-  static int _wins(Player p, List<Match> matches) =>
-      matches.where((m) => m.mvp.any((mp) => mp.id == p.id)).length;
+  /// Determines how many wins the player has in the given matches.
+  ///
+  /// - singleLooser: Every player except the mvp gets a win
+  /// - Other rulesets: The mvp gets a win
+  static int _wins(Player p, List<Match> matches) => matches
+      .where((m) => m.players.any((mp) => mp.id == p.id))
+      .where((m) {
+        final isMvp = m.mvp.any((mp) => mp.id == p.id);
+        return m.game.ruleset == Ruleset.singleLoser ? !isMvp : isMvp;
+      })
+      .length;
 
-  /// Determines how many times a player is the loser in single-loser matches.
+  /// Determines how many losses the player has in the given matches.
+  ///
+  /// - singleLooser: The mvp is the loser
+  /// - Other rulesets: Everyone except mvp is the loser
   static int _losses(Player p, List<Match> matches) => matches
-      .where((m) => m.game.ruleset == Ruleset.singleLoser)
-      .where((m) => m.mvp.any((mp) => mp.id == p.id))
+      .where((m) => m.players.any((mp) => mp.id == p.id))
+      .where((m) {
+        final isMvp = m.mvp.any((mp) => mp.id == p.id);
+        return m.game.ruleset == Ruleset.singleLoser ? isMvp : !isMvp;
+      })
       .length;
 
   /// Determines the total score of the player in the given list of matches.

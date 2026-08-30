@@ -170,6 +170,8 @@ const allDependencies = <Package>[
   _string_scanner,
   _strings,
   _sum_types,
+  _syncfusion_flutter_core,
+  _syncfusion_flutter_datepicker,
   _system_info2,
   _term_glyph,
   _test,
@@ -206,6 +208,7 @@ const dependencies = <Package>[
   _clock,
   _collection,
   _cupertino_icons,
+  _syncfusion_flutter_datepicker,
   _drift,
   _drift_flutter,
   _dropdown_button2,
@@ -38488,6 +38491,58 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
+/// syncfusion_flutter_core 28.2.12
+const _syncfusion_flutter_core = Package(
+    name: 'syncfusion_flutter_core',
+    description: 'Syncfusion Flutter Core is a dependent package for all the Syncfusion Flutter widgets.',
+    homepage: 'https://github.com/syncfusion/flutter-widgets/tree/master/packages/syncfusion_flutter_core',
+    authors: [],
+    version: '28.2.12',
+    spdxIdentifiers: [],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('vector_math'), PackageRef('flutter')],
+    devDependencies: [PackageRef('flutter_lints')],
+    license: '''Syncfusion<sup>&reg;</sup> License
+
+Syncfusion<sup>&reg;</sup> Flutter Core package is available under the Syncfusion Essential Studio<sup>&reg;</sup> program, and can be licensed either under the Syncfusion<sup>&reg;</sup> Community License Program or the Syncfusion<sup>&reg;</sup> commercial license.
+
+To be qualified for the Syncfusion<sup>&reg;</sup> Community License Program you must have a gross revenue of less than one (1) million U.S. dollars (\$1,000,000.00 USD) per year and have less than five (5) developers in your organization, and agree to be bound by Syncfusion<sup>&reg;</sup> terms and conditions.
+
+Customers who do not qualify for the community license can contact sales@syncfusion.com for commercial licensing options.
+
+Under no circumstances can you use this product without (1) either a Community License or a commercial license and (2) without agreeing and abiding by Syncfusion<sup>&reg;</sup> license containing all terms and conditions.
+
+The Syncfusion<sup>&reg;</sup> license that contains the terms and conditions can be found at
+https://www.syncfusion.com/content/downloads/syncfusion_license.pdf''',
+  );
+
+/// syncfusion_flutter_datepicker 28.2.12
+const _syncfusion_flutter_datepicker = Package(
+    name: 'syncfusion_flutter_datepicker',
+    description: 'The Flutter Date Range Picker widget allows users to easily select dates or a range of dates. It has four built-in views that allow quick navigation to the desired date.',
+    homepage: 'https://github.com/syncfusion/flutter-widgets/tree/master/packages/syncfusion_flutter_datepicker',
+    authors: [],
+    version: '28.2.12',
+    spdxIdentifiers: [],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('intl'), PackageRef('syncfusion_flutter_core')],
+    devDependencies: [],
+    license: '''Syncfusion<sup>&reg;</sup> License
+
+Syncfusion<sup>&reg;</sup> Flutter Date Picker package is available under the Syncfusion Essential Studio<sup>&reg;</sup> program, and can be licensed either under the Syncfusion<sup>&reg;</sup> Community License Program or the Syncfusion<sup>&reg;</sup> commercial license.
+
+To be qualified for the Syncfusion<sup>&reg;</sup> Community License Program you must have a gross revenue of less than one (1) million U.S. dollars (\$1,000,000.00 USD) per year and have less than five (5) developers in your organization, and agree to be bound by Syncfusion<sup>&reg;</sup> terms and conditions.
+
+Customers who do not qualify for the community license can contact sales@syncfusion.com for commercial licensing options.
+
+Under no circumstances can you use this product without (1) either a Community License or a commercial license and (2) without agreeing and abiding by Syncfusion<sup>&reg;</sup> license containing all terms and conditions.
+
+The Syncfusion<sup>&reg;</sup> license that contains the terms and conditions can be found at
+https://www.syncfusion.com/content/downloads/syncfusion_license.pdf''',
+  );
+
 /// system_info2 4.1.0
 const _system_info2 = Package(
     name: 'system_info2',
@@ -39829,16 +39884,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// tallee 0.0.86+510
+/// tallee 0.0.90+517
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.0.86+510',
+    version: '0.0.90+517',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_localizations'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('provider'), PackageRef('remove_unused_localizations'), PackageRef('shared_preferences'), PackageRef('skeletonizer'), PackageRef('url_launcher'), PackageRef('uuid')],
+    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('syncfusion_flutter_datepicker'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_localizations'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('provider'), PackageRef('remove_unused_localizations'), PackageRef('shared_preferences'), PackageRef('skeletonizer'), PackageRef('url_launcher'), PackageRef('uuid')],
     devDependencies: [PackageRef('arb_utils'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('sort_pubspec_dependencies')],
     license: '''GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

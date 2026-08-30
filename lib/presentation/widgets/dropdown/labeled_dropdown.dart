@@ -28,6 +28,7 @@ class LabeledDropdown<T> extends StatelessWidget {
     required void Function(T?) this.onChanged,
     this.enabled = true,
     this.selectedItemBuilder,
+    this.bottomPadding,
   }) : isMultiSelect = false,
        multiValueListenable = null,
        onItemTap = null;
@@ -42,6 +43,7 @@ class LabeledDropdown<T> extends StatelessWidget {
     required ValueListenable<List<T>> this.multiValueListenable,
     required void Function(T) this.onItemTap,
     this.enabled = true,
+    this.bottomPadding,
   }) : isMultiSelect = true,
        valueListenable = null,
        onChanged = null,
@@ -79,6 +81,9 @@ class LabeledDropdown<T> extends StatelessWidget {
 
   /// Optional builder for the selected item(s) shown in the button.
   final DropdownButtonBuilder? selectedItemBuilder;
+
+  /// Optional padding at the bottom of the dropdown.
+  final double? bottomPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +123,12 @@ class LabeledDropdown<T> extends StatelessWidget {
 
         // Dropdown
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          padding: EdgeInsets.only(
+            top: 8,
+            left: 16,
+            right: 16,
+            bottom: bottomPadding ?? 8,
+          ),
           child: DropdownButtonHideUnderline(
             child: isMultiSelect
                 ? DropdownButton2<T>(
