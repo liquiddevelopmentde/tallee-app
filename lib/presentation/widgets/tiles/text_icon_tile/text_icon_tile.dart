@@ -57,7 +57,7 @@ class TextIconTile extends StatelessWidget {
             if (iconEnabled) ...<Widget>[
               const SizedBox(width: 3),
               GestureDetector(
-                onTap: () async {
+                onTap: () {
                   onIconTap?.call();
                   HapticFeedback.selectionClick();
                 },

@@ -265,7 +265,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                     return TextIconListTile(
                       player: player,
                       icon: Icons.add,
-                      onPressed: () async {
+                      onPressed: () {
                         HapticFeedback.selectionClick();
                         setState(() {
                           // If the player is not already selected
@@ -306,7 +306,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
         onLongPressCancel: () => setState(() => pressingId = null),
         onLongPressEnd: (_) => setState(() => pressingId = null),
         onLongPress: !isPaired && widget.pairingEnabled
-            ? () async {
+            ? () {
                 HapticFeedback.selectionClick();
                 setState(() {
                   pressingId = null;
@@ -344,7 +344,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                           widget.pairingEnabled &&
                           pairingSelection.isNotEmpty &&
                           !isSelectedForPairing
-                      ? () async {
+                      ? () {
                           HapticFeedback.selectionClick();
                           setState(() {
                             pairingSelection.add(unit.id);

@@ -90,12 +90,8 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         allTeams.insert(newIndex, team);
                       });
                     },
-                    onReorderStart: (int index) async {
-                      HapticFeedback.heavyImpact();
-                    },
-                    onReorderEnd: (int index) async {
-                      HapticFeedback.selectionClick();
-                    },
+                    onReorderStart: (_) => HapticFeedback.heavyImpact(),
+                    onReorderEnd: (_) => HapticFeedback.selectionClick(),
                     itemCount: itemCount,
                     itemBuilder: (context, index) {
                       return SizedBox(
@@ -144,12 +140,8 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         allPlayers.insert(newIndex, item);
                       });
                     },
-                    onReorderStart: (int index) async {
-                      HapticFeedback.heavyImpact();
-                    },
-                    onReorderEnd: (int index) async {
-                      HapticFeedback.selectionClick();
-                    },
+                    onReorderStart: (_) => HapticFeedback.heavyImpact(),
+                    onReorderEnd: (_) => HapticFeedback.selectionClick(),
                     itemCount: itemCount,
                     itemBuilder: (context, index) {
                       return SizedBox(

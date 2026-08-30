@@ -51,7 +51,7 @@ class _TextChipState extends State<TextChip> {
           isPressed = false;
         });
       },
-      onTap: () async {
+      onTap: () {
         widget.onTap();
         HapticFeedback.selectionClick();
       },

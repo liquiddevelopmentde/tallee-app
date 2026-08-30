@@ -161,7 +161,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   }
 
   /// Handles tab tap events. Updates the current [index] state.
-  void onTabTapped(int index) async {
+  void onTabTapped(int index) {
     HapticFeedback.selectionClick();
     setState(() {
       currentIndex = index;

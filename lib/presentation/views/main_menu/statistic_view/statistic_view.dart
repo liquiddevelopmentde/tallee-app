@@ -419,12 +419,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                         );
                         db.statisticDao.updatePosition(statistics: statistics);
                       },
-                      onReorderStart: (int index) async {
-                        HapticFeedback.heavyImpact();
-                      },
-                      onReorderEnd: (int index) async {
-                        HapticFeedback.selectionClick();
-                      },
+                      onReorderStart: (_) => HapticFeedback.heavyImpact(),
+                      onReorderEnd: (_) => HapticFeedback.selectionClick(),
                       itemCount: statisticTiles.length,
                       itemBuilder: (BuildContext context, int index) {
                         return statisticTiles[index];

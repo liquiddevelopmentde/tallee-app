@@ -147,14 +147,14 @@ class _SettingsViewState extends State<SettingsView> {
                             children: [
                               HapticIconButton(
                                 icon: const Icon(Icons.language),
-                                onPressed: () async => {
+                                onPressed: () => {
                                   HapticFeedback.lightImpact(),
                                   launchUrl(Uri.parse('https://liquid-dev.de')),
                                 },
                               ),
                               HapticIconButton(
                                 icon: const FaIcon(FontAwesomeIcons.github),
-                                onPressed: () async => {
+                                onPressed: () => {
                                   HapticFeedback.lightImpact(),
                                   launchUrl(
                                     Uri.parse(
@@ -169,7 +169,7 @@ class _SettingsViewState extends State<SettingsView> {
                                       ? CupertinoIcons.mail_solid
                                       : Icons.email,
                                 ),
-                                onPressed: () async => {
+                                onPressed: () => {
                                   HapticFeedback.lightImpact(),
                                   launchUrl(
                                     Uri.parse('mailto:hi@liquid-dev.de'),

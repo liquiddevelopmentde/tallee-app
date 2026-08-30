@@ -330,12 +330,8 @@ class _CreateGameViewState extends State<CreateGameView> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       barrierColor: Colors.transparent,
       contentDecoration: CustomTheme.standardBoxDecoration,
-      onBeforePopup: () async {
-        HapticFeedback.selectionClick();
-      },
-      onAfterPopup: () async {
-        HapticFeedback.selectionClick();
-      },
+      onBeforePopup: () => HapticFeedback.selectionClick(),
+      onAfterPopup: () => HapticFeedback.selectionClick(),
       content: StatefulBuilder(
         builder: (context, setPopupState) => SizedBox(
           width: 280,
@@ -345,7 +341,7 @@ class _CreateGameViewState extends State<CreateGameView> {
             children: List.generate(
               _rulesets.length,
               (index) => GestureDetector(
-                onTap: () async {
+                onTap: () {
                   HapticFeedback.selectionClick();
                   setState(() {
                     selectedRuleset = _rulesets[index].$1;
@@ -420,12 +416,8 @@ class _CreateGameViewState extends State<CreateGameView> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       barrierColor: Colors.transparent,
       contentDecoration: CustomTheme.standardBoxDecoration,
-      onBeforePopup: () async {
-        HapticFeedback.selectionClick();
-      },
-      onAfterPopup: () async {
-        HapticFeedback.selectionClick();
-      },
+      onBeforePopup: () => HapticFeedback.selectionClick(),
+      onAfterPopup: () => HapticFeedback.selectionClick(),
       content: StatefulBuilder(
         builder: (context, setPopupState) => SizedBox(
           width: 150,
@@ -435,7 +427,7 @@ class _CreateGameViewState extends State<CreateGameView> {
             children: List.generate(
               _colors.length,
               (index) => GestureDetector(
-                onTap: () async {
+                onTap: () {
                   HapticFeedback.selectionClick();
                   setState(() {
                     selectedColor = _colors[index].$1;

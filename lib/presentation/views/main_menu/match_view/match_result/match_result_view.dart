@@ -119,14 +119,14 @@ class _MatchResultViewState extends State<MatchResultView> {
                     if (ruleset == Ruleset.multipleWinners)
                       MultiplePlayerSelection(
                         match: widget.match,
-                        onPlayersSelected: (List<Player> players) async {
+                        onPlayersSelected: (List<Player> players) {
                           selectedPlayers = players;
                           setState(() {
                             canSave = players.isNotEmpty;
                           });
                           HapticFeedback.selectionClick();
                         },
-                        onTeamsSelected: (List<Team> teams) async {
+                        onTeamsSelected: (List<Team> teams) {
                           selectedTeams = teams;
                           setState(() {
                             canSave = teams.isNotEmpty;
@@ -137,14 +137,14 @@ class _MatchResultViewState extends State<MatchResultView> {
                     else
                       SinglePlayerSelection(
                         match: widget.match,
-                        onPlayerSelected: (Player? player) async {
+                        onPlayerSelected: (Player? player) {
                           selectedPlayer = player;
                           setState(() {
                             canSave = player != null;
                           });
                           HapticFeedback.selectionClick();
                         },
-                        onTeamSelected: (Team? team) async {
+                        onTeamSelected: (Team? team) {
                           selectedTeam = team;
                           setState(() {
                             canSave = team != null;
