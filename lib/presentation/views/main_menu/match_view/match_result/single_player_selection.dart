@@ -54,11 +54,11 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
           ? RadioGroup<Team>(
               groupValue: selectedTeam,
               onChanged: (Team? team) async {
+                HapticFeedback.selectionClick();
                 setState(() {
                   selectedTeam = team;
                   widget.onTeamSelected?.call(selectedTeam);
                 });
-                HapticFeedback.selectionClick();
               },
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
@@ -73,6 +73,7 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
                           ),
                     value: allTeams[index],
                     onContainerTap: (team) async {
+                      HapticFeedback.selectionClick();
                       setState(() {
                         // Check if the already selected player is the same as the newly tapped player.
                         if (selectedTeam == team) {
@@ -84,7 +85,6 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
                         }
                         widget.onTeamSelected?.call(selectedTeam);
                       });
-                      HapticFeedback.selectionClick();
                     },
                   );
                 },

@@ -28,8 +28,8 @@ class _CustomAdaptiveSwitchState extends State<CustomAdaptiveSwitch> {
     return Switch.adaptive(
       value: widget.value,
       onChanged: (bool value) => {
-        widget.onChanged?.call(value),
         HapticFeedback.selectionClick(),
+        widget.onChanged?.call(value),
       },
       activeTrackColor: CustomTheme.primaryColor,
       padding: widget.padding,
