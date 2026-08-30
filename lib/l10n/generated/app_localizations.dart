@@ -194,6 +194,12 @@ abstract class AppLocalizations {
   /// **'Classifier'**
   String get classifier;
 
+  /// No description provided for @custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get custom;
+
   /// No description provided for @classifier_description.
   ///
   /// In en, this message translates to:
@@ -937,6 +943,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scope'**
   String get scope;
+
+  /// No description provided for @choose_date_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose date range'**
+  String get choose_date_range;
 
   /// No description provided for @scope_description.
   ///

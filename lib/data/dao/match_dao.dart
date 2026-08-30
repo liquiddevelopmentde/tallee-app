@@ -99,7 +99,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                     ruleset: game.ruleset,
                     description: game.description,
                     color: game.color,
-                    icon: game.icon,
                     createdAt: game.createdAt,
                   ),
                 )

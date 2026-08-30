@@ -52,7 +52,6 @@ void main() {
         ruleset: Ruleset.singleWinner,
         description: 'A test game',
         color: AppColor.blue,
-        icon: '',
       );
       testMatch1 = Match(
         name: 'First Test Match',
