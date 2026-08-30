@@ -39,6 +39,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
+  String get choose_date_range => 'Datumsbereich auswählen';
+
+  @override
   String get choose_game => 'Spielvorlage wählen';
 
   @override
@@ -55,9 +58,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get classifier => 'Klassifikator';
-
-  @override
-  String get custom => 'Benutzerdefiniert';
 
   @override
   String get classifier_description =>
@@ -125,6 +125,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get created_on => 'Erstellt am';
+
+  @override
+  String get custom => 'Benutzerdefiniert';
 
   @override
   String get data => 'Daten';
@@ -454,9 +457,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get scope => 'Bereich';
-
-  @override
-  String get choose_date_range => 'Datumsbereich auswählen';
 
   @override
   String get scope_description =>

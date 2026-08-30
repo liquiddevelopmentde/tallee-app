@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @choose_date_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose date range'**
+  String get choose_date_range;
+
   /// No description provided for @choose_game.
   ///
   /// In en, this message translates to:
@@ -193,12 +199,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Classifier'**
   String get classifier;
-
-  /// No description provided for @custom.
-  ///
-  /// In en, this message translates to:
-  /// **'Custom'**
-  String get custom;
 
   /// No description provided for @classifier_description.
   ///
@@ -325,6 +325,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Created on'**
   String get created_on;
+
+  /// No description provided for @custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get custom;
 
   /// No description provided for @data.
   ///
@@ -943,12 +949,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scope'**
   String get scope;
-
-  /// No description provided for @choose_date_range.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose date range'**
-  String get choose_date_range;
 
   /// No description provided for @scope_description.
   ///
