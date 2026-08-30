@@ -470,7 +470,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save_changes => 'Save Changes';
 
   @override
-  String get save_match_button => 'Save match';
+  String get save_match => 'Save match';
 
   @override
   String get scope => 'Scope';
@@ -785,6 +785,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get all_players_associated => 'All players successfully associated';
+
+  @override
+  String new_players_will_be_created(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new players will be created',
+      one: '1 new player will be created',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get create_as_new => 'Create as new';
 
   @override
   String get associate_game => 'Associate Game';

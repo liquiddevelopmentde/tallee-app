@@ -159,7 +159,7 @@
   "results": "Ergebnisse",
   "ruleset": "Regelwerk",
   "save_changes": "Änderungen speichern",
-  "save_match_button": "Spiel speichern",
+  "save_match": "Spiel speichern",
   "scope": "Bereich",
   "scope_description": "Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.",
   "search_for_games": "Nach Spielvorlagen suchen",
@@ -295,6 +295,15 @@
   "associate_players": "Spieler:innen verknüpfen",
   "remaining": "verbleibend",
   "all_players_associated": "Alle Spieler:innen erfolgreich verknüpft",
+  "new_players_will_be_created": "{count, plural, =1{1 neue Spieler:in wird erstellt} other{{count} neue Spieler:innen werden erstellt}}",
+  "@new_players_will_be_created": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "create_as_new": "Neu erstellen",
   "associate_game": "Spielvorlage verknüpfen",
   "game_associated": "Spielvorlage erfolgreich verknüpft",
   "no_matching_local_game_found": "Keine passende lokale Spielvorlage gefunden. Eine neue wird erstellt.",

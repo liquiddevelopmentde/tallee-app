@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/player.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 
 /// A Tile for matching a [player] to an [associatedPlayer]. This is used during the association process in the remote match sharing feature.
@@ -85,17 +86,32 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                         children: [
                           if (widget.associatedPlayer != null)
                             Flexible(
-                              child: buildUnitNameWidget(
-                                widget.associatedPlayer!,
-                                mainStyle: const TextStyle(fontSize: 17),
-                                countStyle: TextStyle(
-                                  fontSize: 15,
-                                  color: CustomTheme.textColor.withAlpha(100),
-                                ),
-                              ),
+                              child:
+                                  widget.associatedPlayer!.id ==
+                                      widget.player.id
+                                  ? Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      ).create_as_new,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.orange,
+                                      ),
+                                    )
+                                  : buildUnitNameWidget(
+                                      widget.associatedPlayer!,
+                                      mainStyle: const TextStyle(fontSize: 17),
+                                      countStyle: TextStyle(
+                                        fontSize: 15,
+                                        color: CustomTheme.textColor.withAlpha(
+                                          100,
+                                        ),
+                                      ),
+                                    ),
                             )
                           else
-                            const Icon(Icons.add, color: Colors.red),
+                            const Icon(Icons.search, color: Colors.red),
                         ],
                       ),
                     ),

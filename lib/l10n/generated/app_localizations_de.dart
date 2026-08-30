@@ -471,7 +471,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get save_changes => 'Änderungen speichern';
 
   @override
-  String get save_match_button => 'Spiel speichern';
+  String get save_match => 'Spiel speichern';
 
   @override
   String get scope => 'Bereich';
@@ -792,6 +792,20 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get all_players_associated =>
       'Alle Spieler:innen erfolgreich verknüpft';
+
+  @override
+  String new_players_will_be_created(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count neue Spieler:innen werden erstellt',
+      one: '1 neue Spieler:in wird erstellt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get create_as_new => 'Neu erstellen';
 
   @override
   String get associate_game => 'Spielvorlage verknüpfen';

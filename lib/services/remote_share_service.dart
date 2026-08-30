@@ -211,6 +211,16 @@ class RemoteShareService {
       await db.gameDao.addGame(game: localGame);
     }
 
+    // 6. Ensure all players (mapped and new) exist in the database
+    // This handles players from the match list, teams, and groups.
+    final allMappedPlayers = {
+      ...localPlayers,
+      if (localGroup != null) ...localGroup.members,
+      if (localTeams != null) ...localTeams.expand((t) => t.members),
+    }.toList();
+
+    await db.playerDao.addPlayersAsList(players: allMappedPlayers);
+
     final localMatch = importedMatch.copyWith(
       id: const Uuid().v4(),
       game: localGame,

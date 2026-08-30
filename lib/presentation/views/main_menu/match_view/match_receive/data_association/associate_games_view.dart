@@ -146,15 +146,16 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                     ),
             ),
             const SizedBox(height: 2),
-            Text(
-              loc.tap_to_choose_different_game,
-              style: const TextStyle(
-                color: CustomTheme.hintColor,
-                fontSize: 14,
-                overflow: TextOverflow.visible,
+            if (associatedGame != null)
+              Text(
+                loc.tap_to_choose_different_game,
+                style: const TextStyle(
+                  color: CustomTheme.hintColor,
+                  fontSize: 14,
+                  overflow: TextOverflow.visible,
+                ),
+                softWrap: true,
               ),
-              softWrap: true,
-            ),
             const Spacer(),
             BottomAnimatedButton(
               buttonText: loc.confirm,

@@ -48,8 +48,16 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     final players = playersToAssociate;
-    final remainingCount = players
+    final unassignedCount = players
         .where((player) => associations[player.id] == null)
+        .length;
+
+    final newPlayersCount = players
+        .where(
+          (player) =>
+              associations[player.id] != null &&
+              associations[player.id]!.id == player.id,
+        )
         .length;
 
     return Scaffold(
@@ -61,18 +69,20 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
               alignment: Alignment.center,
               child: Container(
                 margin: CustomTheme.standardMargin,
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: BoxDecoration(
-                  color: remainingCount == 0
-                      ? Colors.green
-                      : remainingCount == players.length
+                  color: unassignedCount == 0
+                      ? (newPlayersCount > 0 ? Colors.orange : Colors.green)
+                      : unassignedCount == players.length
                       ? Colors.red
-                      : Colors.orange,
+                      : Colors.redAccent,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
                 child: Text(
-                  remainingCount != 0
-                      ? '$remainingCount ${loc.remaining}'
+                  unassignedCount != 0
+                      ? '$unassignedCount ${loc.remaining}'
+                      : newPlayersCount > 0
+                      ? loc.new_players_will_be_created(newPlayersCount)
                       : loc.all_players_associated,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
@@ -90,21 +100,23 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                 itemBuilder: (context, index) {
                   final player = players[index];
                   final associatedPlayer = associations[player.id];
+                  final isNew =
+                      associatedPlayer != null &&
+                      associatedPlayer.id == player.id;
+
                   return AssociatePlayerTile(
                     player: player,
                     associatedPlayer: associatedPlayer,
                     borderColor: associatedPlayer != null
-                        ? Colors.green.withAlpha(150)
+                        ? (isNew ? Colors.orange : Colors.green).withAlpha(150)
                         : Colors.red.withAlpha(150),
                     onTap: () async {
                       final selectedPlayer = await showPlayerSelectionSheet(
                         associatedPlayer,
                       );
-                      if (selectedPlayer != null) {
-                        setState(() {
-                          associations[player.id] = selectedPlayer;
-                        });
-                      }
+                      setState(() {
+                        associations[player.id] = selectedPlayer ?? player;
+                      });
                     },
                   );
                 },
@@ -112,10 +124,10 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
             ),
             BottomAnimatedButton(
               buttonText: widget.match.group == null
-                  ? loc.save_match_button
+                  ? loc.save_match
                   : loc.confirm,
               sizeRelativeToWidth: 0.95,
-              onPressed: remainingCount == 0
+              onPressed: unassignedCount == 0
                   ? () async {
                       if (widget.match.group == null) {
                         await saveMatch();
@@ -182,8 +194,18 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     final db = Provider.of<AppDatabase>(context, listen: false);
     _cachedAllPlayers ??= await db.playerDao.getAllPlayers();
     final allPlayers = _cachedAllPlayers!;
+
+    final isCreateAsNew =
+        currentSelection != null &&
+        !allPlayers.any((p) => p.id == currentSelection.id);
+
     final associatedPlayerIds = associations.values
-        .where((p) => p != null && p.id != currentSelection?.id)
+        .where(
+          (p) =>
+              p != null &&
+              p.id != currentSelection?.id &&
+              allPlayers.any((lp) => lp.id == p.id),
+        )
         .map((p) => p!.id)
         .toSet();
 
@@ -193,13 +215,13 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
     if (!mounted) return null;
 
-    return showModalBottomSheet<Player>(
+    return showModalBottomSheet<Player?>(
       context: context,
       backgroundColor: CustomTheme.backgroundColor,
       builder: (context) {
         return PlayerSelectionWidget.single(
           onSingleChanged: (player) async {
-            await Future.delayed(const Duration(milliseconds: 400));
+            await Future.delayed(const Duration(milliseconds: 200));
             if (!context.mounted) return;
             Navigator.of(context).pop(player);
           },
@@ -210,7 +232,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
             autoAssociatePlayers();
           },
           availablePlayers: availablePlayers,
-          initialSelectedPlayer: currentSelection,
+          initialSelectedPlayer: isCreateAsNew ? null : currentSelection,
         );
       },
     );
@@ -237,6 +259,9 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
         if (match != null) {
           associations[importedPlayer.id] = match;
           usedLocalPlayerIds.add(match.id);
+        } else {
+          //Default to Create as New if no match found
+          associations[importedPlayer.id] = importedPlayer;
         }
       }
     });

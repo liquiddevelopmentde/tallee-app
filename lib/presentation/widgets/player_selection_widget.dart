@@ -55,7 +55,8 @@ class PlayerSelectionWidget extends StatefulWidget {
   final Player? initialSelectedPlayer;
 
   /// [Single] A callback function that is invoked whenever the selection changes.
-  final Function(Player player)? onSingleChanged;
+  /// Can be null if the player is deselected.
+  final Function(Player? player)? onSingleChanged;
 
   /// [Multiple] An optional list of players that should be pre-selected.
   final List<Player>? initialSelectedPlayers;
@@ -311,18 +312,16 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   }
 
   Widget buildSingleSelectionList() {
-    return RadioGroup<Player>(
+    return RadioGroup<Player?>(
       groupValue: selectedPlayer,
       onChanged: (value) {
-        if (value != null) {
-          widget.onSingleChanged?.call(value);
-        }
+        widget.onSingleChanged?.call(value);
       },
       child: ListView.builder(
         itemCount: suggestedPlayers.length,
         itemBuilder: (context, index) {
           final player = suggestedPlayers[index];
-          return CustomRadioListTile<Player>(
+          return CustomRadioListTile<Player?>(
             content: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: buildUnitNameWidget(
@@ -341,9 +340,13 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
             onContainerTap: (value) async {
               await HapticFeedback.selectionClick();
               setState(() {
-                selectedPlayer = value;
+                if (selectedPlayer == value) {
+                  selectedPlayer = null;
+                } else {
+                  selectedPlayer = value;
+                }
               });
-              widget.onSingleChanged?.call(value);
+              widget.onSingleChanged?.call(selectedPlayer);
             },
           );
         },

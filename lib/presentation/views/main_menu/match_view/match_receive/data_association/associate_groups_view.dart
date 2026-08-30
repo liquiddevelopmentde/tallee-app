@@ -138,18 +138,19 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                     ),
             ),
             const SizedBox(height: 2),
-            Text(
-              loc.tap_to_choose_different_group,
-              style: const TextStyle(
-                color: CustomTheme.hintColor,
-                fontSize: 14,
-                overflow: TextOverflow.visible,
+            if (associatedGroup != null)
+              Text(
+                loc.tap_to_choose_different_group,
+                style: const TextStyle(
+                  color: CustomTheme.hintColor,
+                  fontSize: 14,
+                  overflow: TextOverflow.visible,
+                ),
+                softWrap: true,
               ),
-              softWrap: true,
-            ),
             const Spacer(),
             BottomAnimatedButton(
-              buttonText: loc.save_match_button,
+              buttonText: loc.save_match,
               sizeRelativeToWidth: 0.95,
               onPressed: saveMatch,
             ),

@@ -968,11 +968,11 @@ abstract class AppLocalizations {
   /// **'Save Changes'**
   String get save_changes;
 
-  /// No description provided for @save_match_button.
+  /// No description provided for @save_match.
   ///
   /// In en, this message translates to:
   /// **'Save match'**
-  String get save_match_button;
+  String get save_match;
 
   /// No description provided for @scope.
   ///
@@ -1531,6 +1531,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All players successfully associated'**
   String get all_players_associated;
+
+  /// No description provided for @new_players_will_be_created.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 new player will be created} other{{count} new players will be created}}'**
+  String new_players_will_be_created(int count);
+
+  /// No description provided for @create_as_new.
+  ///
+  /// In en, this message translates to:
+  /// **'Create as new'**
+  String get create_as_new;
 
   /// No description provided for @associate_game.
   ///
