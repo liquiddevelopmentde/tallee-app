@@ -26,7 +26,6 @@ class StatisticGameDao extends DatabaseAccessor<AppDatabase>
             ruleset: row.ruleset,
             description: row.description,
             color: row.color,
-            icon: row.icon,
             createdAt: row.createdAt,
           ),
         )
@@ -47,11 +46,7 @@ class StatisticGameDao extends DatabaseAccessor<AppDatabase>
         .toList();
 
     return batch((batch) {
-      batch.insertAll(
-        statisticGameTable,
-        entries,
-        mode: .insertOrReplace,
-      );
+      batch.insertAll(statisticGameTable, entries, mode: .insertOrReplace);
     }).then((_) => true).catchError((error) {
       print('Error adding statistic games: $error');
       return false;

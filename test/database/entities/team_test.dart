@@ -46,7 +46,6 @@ void main() {
         name: 'Test Game',
         ruleset: Ruleset.highestScore,
         color: AppColor.blue,
-        icon: '',
       );
       testMatch1 = Match(
         name: 'Match 1',

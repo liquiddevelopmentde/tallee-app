@@ -6,6 +6,8 @@ class StatisticTable extends Table {
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get type => textEnum<StatisticType>()();
   TextColumn get timeframe => textEnum<Timeframe>()();
+  DateTimeColumn get startDate => dateTime().nullable()();
+  DateTimeColumn get endDate => dateTime().nullable()();
   TextColumn get color => textEnum<AppColor>()();
   IntColumn get displayCount => integer().withDefault(const Constant(5))();
   BoolColumn get isFavourite => boolean().withDefault(const Constant(false))();

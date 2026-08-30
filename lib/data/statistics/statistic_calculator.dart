@@ -32,7 +32,33 @@ class StatisticCalculator {
     List<Match> filteredMatches = matches;
 
     // Filter timeframe
-    if (statistic.timeframe != Timeframe.allTime) {
+    if (statistic.timeframe == Timeframe.custom) {
+      if (statistic.startDate != null && statistic.endDate != null) {
+        final startOfDay = DateTime(
+          statistic.startDate!.year,
+          statistic.startDate!.month,
+          statistic.startDate!.day,
+        );
+        final endOfDay = DateTime(
+          statistic.endDate!.year,
+          statistic.endDate!.month,
+          statistic.endDate!.day,
+          23,
+          59,
+          59,
+        );
+        filteredMatches = matches.where((m) {
+          if (m.endedAt == null) return false;
+          final isAfterOrAtStart =
+              m.endedAt!.isAtSameMomentAs(startOfDay) ||
+              m.endedAt!.isAfter(startOfDay);
+          final isBeforeOrAtEnd =
+              m.endedAt!.isAtSameMomentAs(endOfDay) ||
+              m.endedAt!.isBefore(endOfDay);
+          return isAfterOrAtStart && isBeforeOrAtEnd;
+        }).toList();
+      }
+    } else if (statistic.timeframe != Timeframe.allTime) {
       final minDate = _getMinimumDate(timeframe: statistic.timeframe);
       if (minDate != null) {
         filteredMatches = matches
@@ -122,6 +148,8 @@ class StatisticCalculator {
       case Timeframe.lastYear:
         return now.subtract(const Duration(days: 365));
       case Timeframe.allTime:
+        return null;
+      case Timeframe.custom:
         return null;
     }
   }
