@@ -5,6 +5,14 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class LiveEditListTile extends StatefulWidget {
   /// A large stepper tile with two big buttons on either side of a value.
+  /// - [title]: The widget shown above the stepper (usually the unit name).
+  /// - [value]: The initial value displayed by the tile.
+  /// - [onChanged]: The callback invoked with the new value whenever it changes.
+  /// - [color]: The optional accent color used to frame the [title].
+  /// - [minValue]: The inclusive lower bound the value is clamped to.
+  /// - [maxValue]: The inclusive upper bound the value is clamped to.
+  /// - [isLivesRuleset]: Whether to render a heart icon next to the value and
+  ///   dim it once the unit is eliminated.
   const LiveEditListTile({
     super.key,
     required this.title,

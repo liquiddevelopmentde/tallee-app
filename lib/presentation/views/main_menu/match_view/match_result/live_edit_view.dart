@@ -4,8 +4,17 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 
-/// A live editing list of large stepper tiles, one per player / team.
 class LiveEditView extends StatefulWidget {
+  /// A live editing list of large stepper tiles, one per player or team, used
+  /// to adjust their value live while playing.
+  /// - [match]: The match whose players / teams are being edited.
+  /// - [initialScores]: The current value per unit.
+  /// - [onScoresChanged]: The callback invoked with the updated value map
+  ///   whenever a value changes.
+  /// - [minValue]: The inclusive lower bound each value is clamped to.
+  /// - [maxValue]: The inclusive upper bound each value is clamped to.
+  /// - [livesMode]: Whether to render the tiles in lives mode (heart icon,
+  ///   dimmed elimination state and a default of 3 lives).
   const LiveEditView({
     super.key,
     required this.match,
