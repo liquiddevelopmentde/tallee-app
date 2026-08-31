@@ -31,15 +31,15 @@ class _LiveEditViewState extends State<LiveEditView> {
   late final int fallbackValue = widget.livesMode ? 3 : 0;
   Map<dynamic, int?> scores = {};
 
-  List<Team> get teams =>
+  List<Team> get allTeams =>
       (widget.match.teams ?? [])
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
 
-  List<Player> get players =>
+  List<Player> get allPlayers =>
       widget.match.players
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
 
-  List<dynamic> get units => useTeamLogic ? teams : players;
+  List<dynamic> get allUnits => useTeamLogic ? allTeams : allPlayers;
 
   @override
   void initState() {
@@ -59,9 +59,9 @@ class _LiveEditViewState extends State<LiveEditView> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: units.length,
+      itemCount: allUnits.length,
       itemBuilder: (context, index) {
-        final unit = units[index];
+        final unit = allUnits[index];
         return LiveEditListTile(
           isLivesRuleset: widget.livesMode,
           title: buildUnitNameWidget(
@@ -94,7 +94,7 @@ class _LiveEditViewState extends State<LiveEditView> {
 
   void seedScores() {
     scores = Map<dynamic, int?>.from(widget.initialScores);
-    for (final unit in units) {
+    for (final unit in allUnits) {
       scores[unit] ??= fallbackValue;
     }
   }
