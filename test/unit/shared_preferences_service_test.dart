@@ -26,11 +26,6 @@ void main() {
 
       SharedPreferencesService.setFilteredGames([game1, game2]);
 
-      SharedPreferencesService.setFilteredStatisticScopes([
-        StatisticScope.allPlayers,
-        StatisticScope.selectedGroups,
-      ]);
-
       SharedPreferencesService.setFilteredStatisticTypes([
         StatisticType.totalMatches,
         StatisticType.totalWins,
@@ -47,8 +42,6 @@ void main() {
 
       final filteredGroups = SharedPreferencesService.getFilteredGroups();
       final filteredGames = SharedPreferencesService.getFilteredGames();
-      final filteredScopes =
-          SharedPreferencesService.getFilteredStatisticScopes();
       final filteredTypes =
           SharedPreferencesService.getFilteredStatisticTypes();
       final filteredTimeframes =
@@ -56,7 +49,6 @@ void main() {
 
       expect(filteredGroups, isEmpty);
       expect(filteredGames, isEmpty);
-      expect(filteredScopes, isEmpty);
       expect(filteredTypes, isEmpty);
       expect(filteredTimeframes, isEmpty);
     });
@@ -89,21 +81,6 @@ void main() {
       SharedPreferencesService.setFilteredGroups([group1, group2]);
       final filteredGroups = SharedPreferencesService.getFilteredGroups();
       expect(filteredGroups, [group1.id, group2.id]);
-    });
-
-    test('Get and set filtered statistic scopes works correctly', () async {
-      SharedPreferencesService.setFilteredStatisticScopes([
-        StatisticScope.allPlayers,
-        StatisticScope.selectedGroups,
-      ]);
-
-      final filteredScopes =
-          SharedPreferencesService.getFilteredStatisticScopes();
-
-      expect(filteredScopes, [
-        StatisticScope.allPlayers,
-        StatisticScope.selectedGroups,
-      ]);
     });
 
     test('Get and set filtered statistic types works correctly', () async {
