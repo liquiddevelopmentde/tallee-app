@@ -16,6 +16,8 @@ IconData getRulesetIcon(Ruleset ruleset) {
       return Icons.sentiment_dissatisfied;
     case Ruleset.placement:
       return RpgAwesome.podium;
+    case Ruleset.lives:
+      return Icons.favorite;
   }
 }
 
