@@ -26,9 +26,10 @@ void main() {
       testGame1 = Game(
         id: 'game1',
         name: 'Chess',
-        ruleset: Ruleset.singleWinner,
+        ruleset: Ruleset.lives,
         description: 'A classic strategy game',
         color: AppColor.blue,
+        lives: 3,
       );
       testGame2 = Game(
         id: 'game2',
@@ -63,6 +64,7 @@ void main() {
         expect(game.ruleset, testGame1.ruleset);
         expect(game.description, testGame1.description);
         expect(game.color, testGame1.color);
+        expect(game.lives, testGame1.lives);
         expect(game.createdAt, testGame1.createdAt);
       });
 
@@ -91,6 +93,7 @@ void main() {
           expect(game.description, testGame.description);
           expect(game.ruleset, testGame.ruleset);
           expect(game.color, testGame.color);
+          expect(game.lives, testGame.lives);
         }
       });
 
@@ -142,6 +145,7 @@ void main() {
         expect(game.ruleset, testGame1.ruleset);
         expect(game.description, testGame1.description);
         expect(game.color, testGame1.color);
+        expect(game.lives, testGame1.lives);
       });
 
       test('getGameById() throws exception for non-existent game', () async {
@@ -306,6 +310,28 @@ void main() {
         final updated = await database.gameDao.updateGameColor(
           gameId: 'non-existent-id',
           color: AppColor.green,
+        );
+        expect(updated, isFalse);
+
+        final allGames = await database.gameDao.getAllGames();
+        expect(allGames, isEmpty);
+      });
+
+      test('updateGameLives() works correctly', () async {
+        await database.gameDao.addGame(game: testGame1);
+
+        await database.gameDao.updateGameLives(gameId: testGame1.id, lives: 5);
+
+        final updatedGame = await database.gameDao.getGameById(
+          gameId: testGame1.id,
+        );
+        expect(updatedGame.lives, 5);
+      });
+
+      test('updateGameLives() does nothing for non-existing game', () async {
+        final updated = await database.gameDao.updateGameLives(
+          gameId: 'non-existent-id',
+          lives: 3,
         );
         expect(updated, isFalse);
 

@@ -186,7 +186,7 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
   }
 
   /// Updates the default number of lives of the game with the given [gameId].
-  Future<bool> updateLives({
+  Future<bool> updateGameLives({
     required String gameId,
     required int? lives,
   }) async {
