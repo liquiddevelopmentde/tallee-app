@@ -143,31 +143,33 @@ Widget _buildPairGameNameWidget(
         const SizedBox(width: 5),
       ],
       if (team.members.length > 1) ...[
-        Text.rich(
-          TextSpan(
-            style: const TextStyle(color: CustomTheme.textColor),
-            children: [
-              buildPlayerNameCountSpan(
-                team.members[0],
-                mainStyle: resolvedMainStyle,
-                countStyle: resolvedCountStyle,
-                highlighted: isHighlighted(0),
-              ),
-              TextSpan(
-                text: ' & ',
-                style: highlighted.isNotEmpty && highlighted.every((h) => h)
-                    ? resolvedMainStyle.copyWith(
-                        color: CustomTheme.textColor.withAlpha(150),
-                      )
-                    : resolvedMainStyle,
-              ),
-              buildPlayerNameCountSpan(
-                team.members[1],
-                mainStyle: resolvedMainStyle,
-                countStyle: resolvedCountStyle,
-                highlighted: isHighlighted(1),
-              ),
-            ],
+        Flexible(
+          child: Text.rich(
+            TextSpan(
+              style: const TextStyle(color: CustomTheme.textColor),
+              children: [
+                buildPlayerNameCountSpan(
+                  team.members[0],
+                  mainStyle: resolvedMainStyle,
+                  countStyle: resolvedCountStyle,
+                  highlighted: isHighlighted(0),
+                ),
+                TextSpan(
+                  text: ' & ',
+                  style: highlighted.isNotEmpty && highlighted.every((h) => h)
+                      ? resolvedMainStyle.copyWith(
+                          color: CustomTheme.textColor.withAlpha(150),
+                        )
+                      : resolvedMainStyle,
+                ),
+                buildPlayerNameCountSpan(
+                  team.members[1],
+                  mainStyle: resolvedMainStyle,
+                  countStyle: resolvedCountStyle,
+                  highlighted: isHighlighted(1),
+                ),
+              ],
+            ),
           ),
         ),
       ] else if (team.members.isNotEmpty) ...[
