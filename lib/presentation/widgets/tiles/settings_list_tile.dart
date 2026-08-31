@@ -130,9 +130,9 @@ class _SettingsListTileState extends State<SettingsListTile> {
     );
   }
 
-  Future<void> handleTap() async {
+  Future<void> handleTap() {
     if (canExpand) {
-      await HapticFeedback.selectionClick();
+      HapticFeedback.selectionClick();
       setState(() => isExpanded = !isExpanded);
       return;
     }

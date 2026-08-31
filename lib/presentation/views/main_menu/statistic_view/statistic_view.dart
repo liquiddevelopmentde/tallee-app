@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tallee/core/app_color_utils.dart';
@@ -418,6 +419,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                         );
                         db.statisticDao.updatePosition(statistics: statistics);
                       },
+                      onReorderStart: (_) => HapticFeedback.heavyImpact(),
+                      onReorderEnd: (_) => HapticFeedback.selectionClick(),
                       itemCount: statisticTiles.length,
                       itemBuilder: (BuildContext context, int index) {
                         return statisticTiles[index];

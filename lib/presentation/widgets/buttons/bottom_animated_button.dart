@@ -54,8 +54,8 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
           onTapDown: (_) => setState(() => _isPressed = true),
           onTapUp: (_) => setState(() => _isPressed = false),
           onTapCancel: () => setState(() => _isPressed = false),
-          onTap: () async {
-            await HapticFeedback.selectionClick();
+          onTap: () {
+            HapticFeedback.selectionClick();
             if (widget.onPressed != null) {
               widget.onPressed!();
             }

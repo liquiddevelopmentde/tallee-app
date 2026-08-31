@@ -1,6 +1,7 @@
 import 'dart:core' hide Match;
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -53,6 +54,7 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
           ? RadioGroup<Team>(
               groupValue: selectedTeam,
               onChanged: (Team? team) async {
+                HapticFeedback.selectionClick();
                 setState(() {
                   selectedTeam = team;
                   widget.onTeamSelected?.call(selectedTeam);
@@ -71,6 +73,7 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
                           ),
                     value: allTeams[index],
                     onContainerTap: (team) async {
+                      HapticFeedback.selectionClick();
                       setState(() {
                         // Check if the already selected player is the same as the newly tapped player.
                         if (selectedTeam == team) {
@@ -90,6 +93,7 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
           : RadioGroup<Player>(
               groupValue: selectedPlayer,
               onChanged: (Player? player) => setState(() {
+                HapticFeedback.selectionClick();
                 selectedPlayer = player;
                 widget.onPlayerSelected?.call(selectedPlayer);
               }),
@@ -107,6 +111,7 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
                     ),
                     value: allPlayers[index],
                     onContainerTap: (player) async {
+                      HapticFeedback.selectionClick();
                       setState(() {
                         // Check if the already selected player is the same as the newly tapped player.
                         if (selectedPlayer == player) {

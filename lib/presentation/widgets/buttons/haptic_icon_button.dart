@@ -49,8 +49,8 @@ class _HapticIconButtonState extends State<HapticIconButton>
           onTapUp: isEnabled ? (_) => handleRelease() : null,
           onTapCancel: isEnabled ? () => handleRelease() : null,
           onTap: isEnabled
-              ? () async {
-                  await HapticFeedback.selectionClick();
+              ? () {
+                  HapticFeedback.selectionClick();
                   widget.onPressed!.call();
                 }
               : null,

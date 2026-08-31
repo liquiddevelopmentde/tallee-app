@@ -16,9 +16,9 @@ class LicenseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
+      onTap: () {
         final navigator = Navigator.of(context);
-        await HapticFeedback.selectionClick();
+        HapticFeedback.selectionClick();
         navigator.push(
           MaterialPageRoute(
             builder: (context) => LicenseDetailView(package: package),

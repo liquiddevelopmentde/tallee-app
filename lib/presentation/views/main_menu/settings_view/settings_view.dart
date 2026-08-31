@@ -176,8 +176,8 @@ class _SettingsViewState extends State<SettingsView> {
                               children: [
                                 HapticIconButton(
                                   icon: const Icon(Icons.language),
-                                  onPressed: () async => {
-                                    await HapticFeedback.lightImpact(),
+                                  onPressed: ()  => {
+                                     HapticFeedback.lightImpact(),
                                     launchUrl(
                                       Uri.parse('https://liquid-dev.de'),
                                     ),
@@ -185,8 +185,8 @@ class _SettingsViewState extends State<SettingsView> {
                                 ),
                                 HapticIconButton(
                                   icon: const FaIcon(FontAwesomeIcons.github),
-                                  onPressed: () async => {
-                                    await HapticFeedback.lightImpact(),
+                                  onPressed: ()  => {
+                                     HapticFeedback.lightImpact(),
                                     launchUrl(
                                       Uri.parse(
                                         'https://github.com/liquiddevelopmentde',
@@ -200,8 +200,8 @@ class _SettingsViewState extends State<SettingsView> {
                                         ? CupertinoIcons.mail_solid
                                         : Icons.email,
                                   ),
-                                  onPressed: () async => {
-                                    await HapticFeedback.lightImpact(),
+                                  onPressed: ()  => {
+                                     HapticFeedback.lightImpact(),
                                     launchUrl(
                                       Uri.parse('mailto:hi@liquid-dev.de'),
                                     ),
@@ -250,7 +250,7 @@ class _SettingsViewState extends State<SettingsView> {
     final loc = AppLocalizations.of(context);
     switch (result) {
       case ImportResult.success:
-        await HapticFeedback.successNotification();
+        HapticFeedback.successNotification();
         if (context.mounted) {
           showSnackbar(
             context: context,
@@ -266,7 +266,7 @@ class _SettingsViewState extends State<SettingsView> {
       case ImportResult.canceled:
       case ImportResult.formatException:
       case ImportResult.unknownException:
-        await HapticFeedback.errorNotification();
+        HapticFeedback.errorNotification();
         if (context.mounted) {
           showSnackbar(
             context: context,
@@ -287,7 +287,7 @@ class _SettingsViewState extends State<SettingsView> {
     final loc = AppLocalizations.of(context);
     switch (result) {
       case ExportResult.success:
-        await HapticFeedback.successNotification();
+        HapticFeedback.successNotification();
         if (context.mounted) {
           showSnackbar(
             context: context,
@@ -297,7 +297,7 @@ class _SettingsViewState extends State<SettingsView> {
       case ExportResult.canceled:
       case ExportResult.unknownException:
       case ExportResult.noData:
-        await HapticFeedback.errorNotification();
+        HapticFeedback.errorNotification();
         if (context.mounted) {
           showSnackbar(
             context: context,

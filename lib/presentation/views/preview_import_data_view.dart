@@ -355,10 +355,10 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     // Show snackbar with haptic feedback
     if (messengerKey != null) {
       if (importResult == ImportResult.success) {
-        await HapticFeedback.successNotification();
+        HapticFeedback.successNotification();
       } else if (importResult != ImportResult.canceled &&
           importResult != ImportResult.singleMatchDetected) {
-        await HapticFeedback.errorNotification();
+        HapticFeedback.errorNotification();
       }
 
       messengerKey.currentState
