@@ -486,7 +486,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_a_classifier => 'Select a classifier';
 
   @override
-  String get select_a_display_color => 'Select a display color';
+  String get select_a_display_color => 'Select a display color.';
 
   @override
   String get select_a_scope => 'Select a scope';
