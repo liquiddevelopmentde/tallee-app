@@ -324,6 +324,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get live_edit_mode => 'Live-Bearbeitungsmodus';
 
   @override
+  String get life => 'Leben';
+
+  @override
+  String get lives => 'Leben';
+
+  @override
   String get loading => 'Lädt...';
 
   @override

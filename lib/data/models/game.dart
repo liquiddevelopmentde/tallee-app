@@ -7,14 +7,16 @@ class Game {
   final DateTime createdAt;
   final String name;
   final Ruleset ruleset;
-  final String description;
   final AppColor color;
+  final String description;
+  final int? lives;
 
   Game({
     required this.name,
     required this.ruleset,
     this.color = AppColor.orange,
     this.description = '',
+    this.lives,
     String? id,
     DateTime? createdAt,
   }) : id = id ?? const Uuid().v4(),
@@ -22,7 +24,7 @@ class Game {
 
   @override
   String toString() {
-    return 'Game{id: $id, name: $name, ruleset: $ruleset, description: $description, color: $color}';
+    return 'Game{id: $id, name: $name, ruleset: $ruleset, color: $color, description: $description, lives: $lives}';
   }
 
   Game copyWith({
@@ -30,17 +32,19 @@ class Game {
     DateTime? createdAt,
     String? name,
     Ruleset? ruleset,
-    String? description,
     AppColor? color,
+    String? description,
     String? icon,
+    int? lives,
   }) {
     return Game(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
       ruleset: ruleset ?? this.ruleset,
-      description: description ?? this.description,
       color: color ?? this.color,
+      description: description ?? this.description,
+      lives: lives ?? this.lives,
     );
   }
 
@@ -53,11 +57,13 @@ class Game {
           createdAt == other.createdAt &&
           name == other.name &&
           ruleset == other.ruleset &&
+          color == other.color &&
           description == other.description &&
-          color == other.color;
+          lives == other.lives;
+
   @override
   int get hashCode =>
-      Object.hash(id, createdAt, name, ruleset, description, color);
+      Object.hash(id, createdAt, name, ruleset, color, description, lives);
 
   Game.fromJson(Map<String, dynamic> json)
     : id = json['id'],
@@ -67,18 +73,21 @@ class Game {
         (e) => e.name == json['ruleset'],
         orElse: () => Ruleset.singleWinner,
       ),
-      description = json['description'],
       color = AppColor.values.firstWhere(
         (e) => e.name == json['color'],
         orElse: () => AppColor.orange,
-      );
+      ),
+      description = json['description'],
+
+      lives = json['lives'];
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),
     'name': name,
     'ruleset': ruleset.name,
-    'description': description,
     'color': color.name,
+    'description': description,
+    'lives': lives,
   };
 }

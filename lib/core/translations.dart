@@ -11,6 +11,14 @@ String getPointLabel(AppLocalizations loc, int points) {
   }
 }
 
+String getLifeLabel(AppLocalizations loc, int lives) {
+  if (lives == 1) {
+    return '$lives ${loc.life}';
+  } else {
+    return '$lives ${loc.lives}';
+  }
+}
+
 /// Translates a [ImportResult] enum value to its corresponding localized string.
 String translateImportResultToString(
   ImportResult importResult,
@@ -71,6 +79,8 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
       return loc.multiple_winners;
     case Ruleset.placement:
       return loc.placement;
+    case Ruleset.lives:
+      return loc.lives;
   }
 }
 

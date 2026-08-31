@@ -323,6 +323,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get live_edit_mode => 'Live Edit Mode';
 
   @override
+  String get life => 'life';
+
+  @override
+  String get lives => 'lives';
+
+  @override
   String get loading => 'Loading...';
 
   @override

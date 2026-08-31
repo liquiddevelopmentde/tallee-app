@@ -41,11 +41,11 @@ enum ExportResult { success, canceled, unknownException, noData }
 enum Ruleset {
   singleWinner,
   multipleWinners,
+  singleLoser,
   highestScore,
   lowestScore,
-  placement,
-  singleLoser,
   lives,
+  placement,
 }
 
 /// Different colors for highlighting content

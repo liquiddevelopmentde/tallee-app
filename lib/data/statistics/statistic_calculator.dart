@@ -180,6 +180,7 @@ class StatisticCalculator {
       case Ruleset.multipleWinners:
       case Ruleset.placement:
       case Ruleset.singleLoser:
+      case Ruleset.lives:
         return false;
     }
   }
