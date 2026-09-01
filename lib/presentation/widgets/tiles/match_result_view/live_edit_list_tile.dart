@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
@@ -41,6 +42,9 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   final int smallStep = 1;
   late int value;
 
+  late final TextEditingController controller;
+  late final FocusNode focusNode;
+
   bool get isLowestValue => value <= widget.minValue;
 
   IconData get icon =>
@@ -53,7 +57,29 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   @override
   void initState() {
     value = widget.value.clamp(widget.minValue, widget.maxValue);
+    controller = TextEditingController(text: value.toString());
+    focusNode = FocusNode()..addListener(onFocusChanged);
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant LiveEditListTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      final clamped = widget.value.clamp(widget.minValue, widget.maxValue);
+      if (clamped != value) {
+        setState(() => value = clamped);
+        if (!focusNode.hasFocus) setControllerText(value.toString());
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    focusNode.removeListener(onFocusChanged);
+    focusNode.dispose();
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -110,19 +136,78 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                       const SizedBox(width: 10),
                     ],
                     Flexible(
-                      child: NumericText(
-                        value.toString(),
-                        maxLines: 1,
-                        textAlign: TextAlign.center,
-                        textWidthBasis: TextWidthBasis.longestLine,
-                        textHeightBehavior: const TextHeightBehavior(
-                          applyHeightToFirstAscent: false,
-                          applyHeightToLastDescent: false,
-                        ),
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.w600,
-                          color: valueColor,
+                      child: SizedBox(
+                        height: 60,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          clipBehavior: Clip.none,
+                          children: [
+                            // Value
+                            SizedBox(
+                              width: 150,
+                              child: NumericText(
+                                value.toString(),
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                textWidthBasis: TextWidthBasis.longestLine,
+                                textHeightBehavior: const TextHeightBehavior(
+                                  applyHeightToFirstAscent: false,
+                                  applyHeightToLastDescent: false,
+                                ),
+                                style: TextStyle(
+                                  fontSize: 48,
+                                  fontWeight: FontWeight.w600,
+                                  color: valueColor,
+                                ),
+                              ),
+                            ),
+
+                            // Invisible input field.
+                            Positioned.fill(
+                              top: 8,
+                              left: 2,
+                              child: MediaQuery.withNoTextScaling(
+                                child: TextField(
+                                  controller: controller,
+                                  focusNode: focusNode,
+                                  onChanged: onTextChanged,
+                                  onSubmitted: (_) => focusNode.unfocus(),
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                        signed: true,
+                                      ),
+                                  inputFormatters: [
+                                    TextInputFormatter.withFunction((
+                                      oldValue,
+                                      newValue,
+                                    ) {
+                                      return isValidScoreInput(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
+                                  ],
+                                  textAlign: TextAlign.center,
+                                  textAlignVertical: TextAlignVertical.center,
+                                  showCursor: true,
+                                  enableInteractiveSelection: true,
+                                  cursorColor: CustomTheme.textColor,
+                                  cursorHeight: 36,
+                                  style: const TextStyle(
+                                    fontSize: 48,
+                                    height: 1.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.transparent,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    isCollapsed: true,
+                                    border: InputBorder.none,
+                                    counterText: '',
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -147,12 +232,66 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
     );
   }
 
-  /// Updated the value with the given [delta] while clamping it between the
-  /// minimum and the maximum value
-  void changeValue(int delta) {
-    final clamped = (value + delta).clamp(widget.minValue, widget.maxValue);
-    if (clamped == value) return;
-    setState(() => value = clamped);
-    widget.onChanged?.call(value);
+  /// Updates the value with the given [delta], clamped into range.
+  void changeValue(int delta) => applyValue(value + delta, syncTextField: true);
+
+  /// Parses live keyboard input to keep the text field and the animated
+  /// text in sync.
+  void onTextChanged(String text) {
+    if (text.isEmpty || text == '-') {
+      setControllerText(value.toString());
+      return;
+    }
+    final parsed = int.tryParse(text);
+    if (parsed != null) applyValue(parsed);
+  }
+
+  /// Applies the [newValue] to the value variable and syncs the text field if needed
+  void applyValue(int newValue, {bool syncTextField = false}) {
+    final clamped = newValue.clamp(widget.minValue, widget.maxValue);
+    if (clamped != value) {
+      setState(() => value = clamped);
+      widget.onChanged?.call(value);
+    }
+
+    // Only sync when value differs or explicitly called
+    if (syncTextField || clamped != newValue) {
+      setControllerText(clamped.toString());
+    }
+  }
+
+  void onFocusChanged() {
+    if (focusNode.hasFocus) {
+      // Place the cursor at the end of the number
+      controller.selection = TextSelection.collapsed(
+        offset: controller.text.length,
+      );
+    } else {
+      setControllerText(value.toString());
+    }
+  }
+
+  void setControllerText(String text) {
+    controller.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+  }
+
+  /// Validates the input for a score text field.
+  bool isValidScoreInput(String text) {
+    if (text.isEmpty || text == '-') {
+      return true;
+    }
+
+    final isNegative = text.startsWith('-');
+    final digits = isNegative ? text.substring(1) : text;
+
+    if (digits.isEmpty || digits.length > 4) {
+      return false;
+    }
+
+    // CHeck if all characters are digits 0 <= x <= 9
+    return digits.codeUnits.every((unit) => unit >= 48 && unit <= 57);
   }
 }
