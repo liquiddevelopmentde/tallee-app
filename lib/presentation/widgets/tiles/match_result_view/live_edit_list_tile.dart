@@ -102,6 +102,8 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
             widget.title,
           ],
           const SizedBox(height: 4),
+
+          // Button row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -119,140 +121,141 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
 
               // Value display
               Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget.isLivesRuleset) ...[
-                      Icon(
-                        icon,
-                        color: isLowestValue ? valueColor : Colors.red,
-                        size: 28,
-                      ),
-                      const SizedBox(width: 10),
-                    ],
-                    Flexible(
-                      child: SizedBox(
-                        height: 60,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          clipBehavior: Clip.none,
-                          children: [
-                            // Value
-                            SizedBox(
-                              width: 150,
-                              child: NumericText(
-                                value.toString(),
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                                textWidthBasis: TextWidthBasis.longestLine,
-                                textHeightBehavior: const TextHeightBehavior(
-                                  applyHeightToFirstAscent: false,
-                                  applyHeightToLastDescent: false,
-                                ),
-                                style: TextStyle(
-                                  fontSize: 48,
-                                  fontWeight: FontWeight.w600,
-                                  color: valueColor,
-                                ),
-                              ),
-                            ),
+                child: widget.isLivesRuleset
+                    // Lives display
+                    ? TweenAnimationBuilder(
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeInOut,
+                        tween: Tween<double>(end: isLowestValue ? 1 : 0),
+                        builder: (context, t, _) {
+                          final iconColor = Color.lerp(
+                            Colors.red,
+                            CustomTheme.textColor.withAlpha(90),
+                            t,
+                          );
+                          final valueColor = Color.lerp(
+                            CustomTheme.textColor,
+                            CustomTheme.textColor.withAlpha(90),
+                            t,
+                          );
 
-                            // Invisible input field.
-                            Positioned.fill(
-                              top: 8,
-                              left: 2,
-                              child: MediaQuery.withNoTextScaling(
-                                child: TextField(
-                                  controller: controller,
-                                  focusNode: focusNode,
-                                  onChanged: onTextChanged,
-                                  onSubmitted: (_) => focusNode.unfocus(),
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                        signed: true,
-                                      ),
-                                  inputFormatters: [
-                                    TextInputFormatter.withFunction((
-                                      oldValue,
-                                      newValue,
-                                    ) {
-                                      return isValidScoreInput(newValue.text)
-                                          ? newValue
-                                          : oldValue;
-                                    }),
-                                  ],
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (widget.isLivesRuleset) ...[
+                                Icon(icon, color: iconColor, size: 28),
+                                const SizedBox(width: 10),
+                              ],
+                              Flexible(
+                                child: NumericText(
+                                  value.toString(),
+                                  maxLines: 1,
                                   textAlign: TextAlign.center,
-                                  textAlignVertical: TextAlignVertical.center,
-                                  showCursor: true,
-                                  enableInteractiveSelection: true,
-                                  cursorColor: CustomTheme.textColor,
-                                  cursorHeight: 36,
-                                  style: const TextStyle(
-                                    fontSize: 48,
-                                    height: 1.0,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.transparent,
+                                  textWidthBasis: TextWidthBasis.longestLine,
+                                  textHeightBehavior: const TextHeightBehavior(
+                                    applyHeightToFirstAscent: false,
+                                    applyHeightToLastDescent: false,
                                   ),
-                                  decoration: const InputDecoration(
-                                    isCollapsed: true,
-                                    border: InputBorder.none,
-                                    counterText: '',
-                                    contentPadding: EdgeInsets.zero,
+                                  style: TextStyle(
+                                    fontSize: 48,
+                                    fontWeight: FontWeight.w600,
+                                    color: valueColor,
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                child: TweenAnimationBuilder(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeInOut,
-                  tween: Tween<double>(end: isLowestValue ? 1 : 0),
-                  builder: (context, t, _) {
-                    final iconColor = Color.lerp(
-                      Colors.red,
-                      CustomTheme.textColor.withAlpha(90),
-                      t,
-                    );
-                    final valueColor = Color.lerp(
-                      CustomTheme.textColor,
-                      CustomTheme.textColor.withAlpha(90),
-                      t,
-                    );
+                            ],
+                          );
+                        },
+                      )
+                    // Score display
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: SizedBox(
+                              height: 60,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                clipBehavior: Clip.none,
+                                children: [
+                                  // Value
+                                  SizedBox(
+                                    width: 150,
+                                    child: NumericText(
+                                      value.toString(),
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      textWidthBasis:
+                                          TextWidthBasis.longestLine,
+                                      textHeightBehavior:
+                                          const TextHeightBehavior(
+                                            applyHeightToFirstAscent: false,
+                                            applyHeightToLastDescent: false,
+                                          ),
+                                      style: const TextStyle(
+                                        fontSize: 48,
+                                        fontWeight: FontWeight.w600,
+                                        color: CustomTheme.textColor,
+                                      ),
+                                    ),
+                                  ),
 
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (widget.isLivesRuleset) ...[
-                          Icon(icon, color: iconColor, size: 28),
-                          const SizedBox(width: 10),
-                        ],
-                        Flexible(
-                          child: NumericText(
-                            value.toString(),
-                            maxLines: 1,
-                            textAlign: TextAlign.center,
-                            textWidthBasis: TextWidthBasis.longestLine,
-                            textHeightBehavior: const TextHeightBehavior(
-                              applyHeightToFirstAscent: false,
-                              applyHeightToLastDescent: false,
-                            ),
-                            style: TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.w600,
-                              color: valueColor,
+                                  // Invisible input field.
+                                  Positioned.fill(
+                                    top: 8,
+                                    left: 2,
+                                    child: MediaQuery.withNoTextScaling(
+                                      child: TextField(
+                                        controller: controller,
+                                        focusNode: focusNode,
+                                        onChanged: onTextChanged,
+                                        onSubmitted: (_) => focusNode.unfocus(),
+                                        keyboardType:
+                                            const TextInputType.numberWithOptions(
+                                              signed: true,
+                                            ),
+                                        inputFormatters: [
+                                          TextInputFormatter.withFunction((
+                                            oldValue,
+                                            newValue,
+                                          ) {
+                                            return isValidScoreInput(
+                                                  newValue.text,
+                                                )
+                                                ? newValue
+                                                : oldValue;
+                                          }),
+                                        ],
+                                        textAlign: TextAlign.center,
+                                        textAlignVertical:
+                                            TextAlignVertical.center,
+                                        showCursor: true,
+                                        enableInteractiveSelection: true,
+                                        cursorColor: CustomTheme.textColor,
+                                        cursorHeight: 36,
+                                        style: const TextStyle(
+                                          fontSize: 48,
+                                          height: 1.0,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.transparent,
+                                        ),
+                                        decoration: const InputDecoration(
+                                          isCollapsed: true,
+                                          border: InputBorder.none,
+                                          counterText: '',
+                                          contentPadding: EdgeInsets.zero,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                        ],
+                      ),
               ),
 
               // Increase button
