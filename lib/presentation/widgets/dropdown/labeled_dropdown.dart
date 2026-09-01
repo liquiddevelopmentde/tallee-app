@@ -112,6 +112,7 @@ class LabeledDropdown<T> extends StatelessWidget {
                 description,
                 textAlign: TextAlign.start,
                 softWrap: true,
+                maxLines: 2,
                 style: const TextStyle(
                   color: CustomTheme.textColor,
                   fontSize: 12,

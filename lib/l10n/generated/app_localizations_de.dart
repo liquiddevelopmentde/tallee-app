@@ -515,7 +515,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get select_a_classifier => 'Klassifikator auswählen';
 
   @override
-  String get select_a_display_color => 'Wähle eine Anzeigefarbe aus';
+  String get select_a_display_color => 'Wähle eine Anzeigefarbe aus.';
 
   @override
   String get select_a_scope => 'Bereich auswählen';

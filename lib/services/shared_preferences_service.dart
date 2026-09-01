@@ -23,7 +23,6 @@ class SharedPreferencesService {
   static const String filteredGamesKey = 'filtered_games';
   static const String filteredTimeframesKey = 'filtered_timeframes';
   static const String filteredStatisticTypesKey = 'filtered_statistic_types';
-  static const String filteredStatisticScopesKey = 'filtered_statistic_scopes';
   static const String showFavouritesKey = 'show_favourites';
   static const String sharingConsentKey = 'share_consent';
 
@@ -33,7 +32,6 @@ class SharedPreferencesService {
     prefs.remove(filteredGamesKey);
     prefs.remove(filteredTimeframesKey);
     prefs.remove(filteredStatisticTypesKey);
-    prefs.remove(filteredStatisticScopesKey);
     if (includeFavourites) {
       prefs.remove(showFavouritesKey);
     }
@@ -109,26 +107,6 @@ class SharedPreferencesService {
           (typeString) => StatisticType.values.firstWhere(
             (type) => type.toString() == typeString,
             orElse: () => StatisticType.totalMatches,
-          ),
-        )
-        .toList();
-  }
-
-  static void setFilteredStatisticScopes(List<StatisticScope> scopes) {
-    final List<String> scopeJsonList = scopes
-        .map((scope) => scope.name.toString())
-        .toList();
-    _instance.setStringList(filteredStatisticScopesKey, scopeJsonList);
-  }
-
-  static List<StatisticScope> getFilteredStatisticScopes() {
-    final List<String> scopeStringList =
-        _instance.getStringList(filteredStatisticScopesKey) ?? [];
-    return scopeStringList
-        .map(
-          (scopeString) => StatisticScope.values.firstWhere(
-            (scope) => scope.name.toString() == scopeString,
-            orElse: () => StatisticScope.allPlayers,
           ),
         )
         .toList();

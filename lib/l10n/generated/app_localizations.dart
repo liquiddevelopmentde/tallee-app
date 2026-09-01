@@ -1055,7 +1055,7 @@ abstract class AppLocalizations {
   /// No description provided for @select_a_display_color.
   ///
   /// In en, this message translates to:
-  /// **'Select a display color'**
+  /// **'Select a display color.'**
   String get select_a_display_color;
 
   /// No description provided for @select_a_scope.

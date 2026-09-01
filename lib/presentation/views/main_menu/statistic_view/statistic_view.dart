@@ -51,7 +51,6 @@ class _StatisticsViewState extends State<StatisticsView> {
   List<Game> filteredGames = [];
   List<Group> filteredGroups = [];
   List<StatisticType> filteredStatisticTypes = [];
-  List<StatisticScope> filteredStatisticScopes = [];
   List<Timeframe> filteredTimeframes = [];
   bool showOnlyFavourites = false;
 
@@ -294,51 +293,6 @@ class _StatisticsViewState extends State<StatisticsView> {
                                         },
                                       ),
                                     ),
-
-                                    // Scope
-                                    Skeleton.unite(
-                                      child: TextChip(
-                                        text: loc.scope,
-                                        count: filteredStatisticScopes.length,
-                                        activated:
-                                            filteredStatisticScopes.isNotEmpty,
-                                        onTap: () async {
-                                          final result =
-                                              await Navigator.of(context).push(
-                                                adaptivePageRoute(
-                                                  fullscreenDialog: true,
-                                                  builder: (context) =>
-                                                      ChooseEnumView<
-                                                        StatisticScope
-                                                      >(
-                                                        enumValue:
-                                                            StatisticScope
-                                                                .values,
-                                                        initialEnums:
-                                                            filteredStatisticScopes,
-                                                        enableMultiSelection:
-                                                            true,
-                                                      ),
-                                                ),
-                                              );
-                                          setState(() {
-                                            filteredStatisticScopes =
-                                                List<StatisticScope>.from(
-                                                  result ??
-                                                      const <StatisticScope>[],
-                                                );
-                                            if (filteredStatisticScopes
-                                                .isNotEmpty) {
-                                              resetFavourites();
-                                            }
-                                          });
-                                          SharedPreferencesService.setFilteredStatisticScopes(
-                                            filteredStatisticScopes,
-                                          );
-                                          createFilteredStatisticTiles();
-                                        },
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ),
@@ -456,7 +410,6 @@ class _StatisticsViewState extends State<StatisticsView> {
       filteredGroups.isEmpty &&
       filteredGames.isEmpty &&
       filteredStatisticTypes.isEmpty &&
-      filteredStatisticScopes.isEmpty &&
       filteredTimeframes.isEmpty &&
       !showOnlyFavourites;
 
@@ -531,8 +484,6 @@ class _StatisticsViewState extends State<StatisticsView> {
         .toList();
     filteredStatisticTypes =
         SharedPreferencesService.getFilteredStatisticTypes();
-    filteredStatisticScopes =
-        SharedPreferencesService.getFilteredStatisticScopes();
     filteredTimeframes = SharedPreferencesService.getFilteredTimeframes();
     showOnlyFavourites = SharedPreferencesService.getShowFavourites();
   }
@@ -633,11 +584,6 @@ class _StatisticsViewState extends State<StatisticsView> {
       return false;
     }
 
-    if (filteredStatisticScopes.isNotEmpty &&
-        !statistic.scopes.any(filteredStatisticScopes.contains)) {
-      return false;
-    }
-
     if (filteredGroups.isNotEmpty) {
       final groupIds =
           statistic.selectedGroups?.map((group) => group.id).toSet() ??
@@ -664,7 +610,6 @@ class _StatisticsViewState extends State<StatisticsView> {
       filteredGroups = [];
       filteredGames = [];
       filteredStatisticTypes = [];
-      filteredStatisticScopes = [];
       filteredTimeframes = [];
       if (includeFavourites) showOnlyFavourites = false;
     });
