@@ -176,8 +176,9 @@ class _CreateGameViewState extends State<CreateGameView> {
                       if (!context.mounted) return;
                       if (success) {
                         widget.onGameChanged.call();
-                        Navigator.of(context)
-                            .pop((game: widget.gameToEdit, delete: true));
+                        Navigator.of(
+                          context,
+                        ).pop((game: widget.gameToEdit, delete: true));
                       } else {
                         if (!mounted) return;
                         showSnackbar(message: loc.error_deleting_game);
@@ -213,20 +214,18 @@ class _CreateGameViewState extends State<CreateGameView> {
               ChooseTile(title: loc.color, trailing: getColorDropdown(loc)),
 
               // Set lives tile
-              if (selectedRuleset == Ruleset.lives)
+              // Only editable if no matches with ruleset exist
+              if (selectedRuleset == Ruleset.lives &&
+                  (!isEditMode || widget.matchCount == 0))
                 ChooseTile(
-                  title: isEditMode
-                      ? loc.lives(0)
-                      : getLifeLabel(loc, selectedLives),
-                  trailing: isEditMode
-                      ? Text(selectedLives.toString())
-                      : CustomStepper(
-                          value: selectedLives,
-                          onChanged: (int newValue) =>
-                              setState(() => selectedLives = newValue),
-                          minValue: 1,
-                          maxValue: 99,
-                        ),
+                  title: getLifeLabel(loc, selectedLives),
+                  trailing: CustomStepper(
+                    value: selectedLives,
+                    onChanged: (int newValue) =>
+                        setState(() => selectedLives = newValue),
+                    minValue: 1,
+                    maxValue: 99,
+                  ),
                 ),
 
               // Description input field
@@ -271,8 +270,9 @@ class _CreateGameViewState extends State<CreateGameView> {
                           }
                           widget.onGameChanged.call();
                           if (context.mounted) {
-                            Navigator.of(context)
-                                .pop((game: newGame, delete: false));
+                            Navigator.of(
+                              context,
+                            ).pop((game: newGame, delete: false));
                           }
                         }
                       : null,
