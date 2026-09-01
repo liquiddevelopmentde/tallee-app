@@ -176,9 +176,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                       if (!context.mounted) return;
                       if (success) {
                         widget.onGameChanged.call();
-                        Navigator.of(
-                          context,
-                        ).pop((game: widget.gameToEdit, delete: true));
+                        Navigator.of(context)
+                            .pop((game: widget.gameToEdit, delete: true));
                       } else {
                         if (!mounted) return;
                         showSnackbar(message: loc.error_deleting_game);
@@ -217,7 +216,7 @@ class _CreateGameViewState extends State<CreateGameView> {
               if (selectedRuleset == Ruleset.lives)
                 ChooseTile(
                   title: isEditMode
-                      ? loc.lives
+                      ? loc.lives(0)
                       : getLifeLabel(loc, selectedLives),
                   trailing: isEditMode
                       ? Text(selectedLives.toString())
@@ -272,9 +271,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                           }
                           widget.onGameChanged.call();
                           if (context.mounted) {
-                            Navigator.of(
-                              context,
-                            ).pop((game: newGame, delete: false));
+                            Navigator.of(context)
+                                .pop((game: newGame, delete: false));
                           }
                         }
                       : null,

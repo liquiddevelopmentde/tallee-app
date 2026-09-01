@@ -686,17 +686,11 @@ abstract class AppLocalizations {
   /// **'Live Edit Mode'**
   String get live_edit_mode;
 
-  /// No description provided for @life.
-  ///
-  /// In en, this message translates to:
-  /// **'life'**
-  String get life;
-
   /// No description provided for @lives.
   ///
   /// In en, this message translates to:
-  /// **'lives'**
-  String get lives;
+  /// **'{count, plural, =1{life} other{lives}}'**
+  String lives(int count);
 
   /// No description provided for @loading.
   ///

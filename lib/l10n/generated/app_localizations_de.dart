@@ -325,10 +325,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get live_edit_mode => 'Live-Bearbeitungsmodus';
 
   @override
-  String get life => 'Leben';
-
-  @override
-  String get lives => 'Leben';
+  String lives(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Leben',
+      one: 'Leben',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get loading => 'Lädt...';
