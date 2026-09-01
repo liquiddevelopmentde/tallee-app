@@ -126,7 +126,7 @@
   "member": "Member",
   "members": "Members",
   "multiple_winners": "Multiple Winners",
-  "names_or_descriptions_too_long": "The data contains names or descriptions that are too long.",
+  "online_sharing_info_text": "Online game sharing requires a connection to external servers. To protect your privacy, this feature is disabled by default and all transmitted data is deleted after 10 minutes. You can still share games locally as a file.",  "names_or_descriptions_too_long": "The data contains names or descriptions that are too long.",
   "new_group_will_be_created": "New group will be created",
   "new_game_will_be_created": "New game will be created",
   "tap_to_choose_different_game": "Tap the game to choose a different one",

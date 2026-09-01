@@ -770,6 +770,12 @@ abstract class AppLocalizations {
   /// **'Multiple Winners'**
   String get multiple_winners;
 
+  /// No description provided for @online_sharing_info_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Online game sharing requires a connection to external servers. To protect your privacy, this feature is disabled by default and all transmitted data is deleted after 10 minutes. You can still share games locally as a file.'**
+  String get online_sharing_info_text;
+
   /// No description provided for @names_or_descriptions_too_long.
   ///
   /// In en, this message translates to:

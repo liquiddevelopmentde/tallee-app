@@ -30,10 +30,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get average_score => 'Durchschnittliche Punktzahl';
 
   @override
-  String get best_player => 'Beste:r Spieler:in';
+  String get best_player => 'Best Player';
 
   @override
-  String get best_score => 'Beste Punktzahl';
+  String get best_score => 'Best score';
 
   @override
   String get cancel => 'Abbrechen';
@@ -364,6 +364,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get multiple_winners => 'Mehrere Gewinner:innen';
+
+  @override
+  String get online_sharing_info_text =>
+      'Für das Online-Teilen von Spielen stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert und alle übertragenen Daten werden nach 10 Minuten gelöscht. Du kannst Spiele aber jederzeit auch lokal als Datei teilen.';
 
   @override
   String get names_or_descriptions_too_long =>

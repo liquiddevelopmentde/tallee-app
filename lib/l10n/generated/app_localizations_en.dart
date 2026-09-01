@@ -365,6 +365,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get multiple_winners => 'Multiple Winners';
 
   @override
+  String get online_sharing_info_text =>
+      'Online game sharing requires a connection to external servers. To protect your privacy, this feature is disabled by default and all transmitted data is deleted after 10 minutes. You can still share games locally as a file.';
+
+  @override
   String get names_or_descriptions_too_long =>
       'The data contains names or descriptions that are too long.';
 

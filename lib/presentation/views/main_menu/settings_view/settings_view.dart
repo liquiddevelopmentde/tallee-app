@@ -105,6 +105,7 @@ class _SettingsViewState extends State<SettingsView> {
                   SettingsListTile(
                     title: loc.online_sharing_title,
                     icon: Icons.cloud,
+                    description: loc.online_sharing_info_text,
                     suffixWidget: CustomAdaptiveSwitch(
                       value: isOnlineSharingEnabled,
                       onChanged: (value) async {
