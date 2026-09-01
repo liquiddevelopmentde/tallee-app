@@ -46,10 +46,6 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   IconData get icon =>
       isLowestValue ? Icons.heart_broken_rounded : Icons.favorite_rounded;
 
-  Color get valueColor => isLowestValue
-      ? CustomTheme.textColor.withAlpha(90)
-      : CustomTheme.textColor;
-
   @override
   void initState() {
     value = widget.value.clamp(widget.minValue, widget.maxValue);
@@ -97,36 +93,50 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
 
               // Value display
               Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget.isLivesRuleset) ...[
-                      Icon(
-                        icon,
-                        color: isLowestValue ? valueColor : Colors.red,
-                        size: 28,
-                      ),
-                      const SizedBox(width: 10),
-                    ],
-                    Flexible(
-                      child: NumericText(
-                        value.toString(),
-                        maxLines: 1,
-                        textAlign: TextAlign.center,
-                        textWidthBasis: TextWidthBasis.longestLine,
-                        textHeightBehavior: const TextHeightBehavior(
-                          applyHeightToFirstAscent: false,
-                          applyHeightToLastDescent: false,
+                child: TweenAnimationBuilder(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  tween: Tween<double>(end: isLowestValue ? 1 : 0),
+                  builder: (context, t, _) {
+                    final iconColor = Color.lerp(
+                      Colors.red,
+                      CustomTheme.textColor.withAlpha(90),
+                      t,
+                    );
+                    final valueColor = Color.lerp(
+                      CustomTheme.textColor,
+                      CustomTheme.textColor.withAlpha(90),
+                      t,
+                    );
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (widget.isLivesRuleset) ...[
+                          Icon(icon, color: iconColor, size: 28),
+                          const SizedBox(width: 10),
+                        ],
+                        Flexible(
+                          child: NumericText(
+                            value.toString(),
+                            maxLines: 1,
+                            textAlign: TextAlign.center,
+                            textWidthBasis: TextWidthBasis.longestLine,
+                            textHeightBehavior: const TextHeightBehavior(
+                              applyHeightToFirstAscent: false,
+                              applyHeightToLastDescent: false,
+                            ),
+                            style: TextStyle(
+                              fontSize: 48,
+                              fontWeight: FontWeight.w600,
+                              color: valueColor,
+                            ),
+                          ),
                         ),
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.w600,
-                          color: valueColor,
-                        ),
-                      ),
-                    ),
-                  ],
+                      ],
+                    );
+                  },
                 ),
               ),
 
