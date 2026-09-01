@@ -30,10 +30,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get average_score => 'Durchschnittliche Punktzahl';
 
   @override
-  String get best_player => 'Best Player';
+  String get best_player => 'Beste:r Spieler:in';
 
   @override
-  String get best_score => 'Best score';
+  String get best_score => 'Beste Punktzahl';
 
   @override
   String get cancel => 'Abbrechen';

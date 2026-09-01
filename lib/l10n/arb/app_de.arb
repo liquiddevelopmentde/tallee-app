@@ -9,6 +9,8 @@
   "average_score": "Durchschnittliche Punktzahl",
   "online_sharing_info_text": "Für das Online-Teilen von Spielen stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert und alle übertragenen Daten werden nach 10 Minuten gelöscht. Du kannst Spiele aber jederzeit auch lokal als Datei teilen.",  "cancel": "Abbrechen",
   "choose_date_range": "Datumsbereich auswählen",
+  "best_player": "Beste:r Spieler:in",
+  "best_score": "Beste Punktzahl",
   "choose_game": "Spielvorlage wählen",
   "choose_group": "Gruppe wählen",
   "choose_scopes": "Bereiche wählen",
