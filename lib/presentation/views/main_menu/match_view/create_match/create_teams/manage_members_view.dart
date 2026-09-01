@@ -8,6 +8,7 @@ import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -336,6 +337,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
+          settings: const RouteSettings(name: RouteNames.matchResultView),
           builder: (_) => MatchResultView(
             match: match,
             onWinnerChanged: widget.onWinnerChanged,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -150,6 +151,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                         onTileTap: () {
                           Navigator.of(context).pushReplacement(
                             adaptivePageRoute(
+                              settings: const RouteSettings(
+                                name: RouteNames.playerDetailView,
+                              ),
                               builder: (context) => PlayerDetailView(
                                 player: member,
                                 onPlayerNameUpdated: widget.callback,
@@ -182,6 +186,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   final updatedGroup = await Navigator.push<Group?>(
                     context,
                     adaptivePageRoute(
+                      settings: const RouteSettings(
+                        name: RouteNames.createGroupView,
+                      ),
                       builder: (context) {
                         return CreateGroupView(
                           groupToEdit: group,

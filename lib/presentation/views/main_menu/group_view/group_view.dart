@@ -5,6 +5,7 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
@@ -160,6 +161,9 @@ class _GroupViewState extends State<GroupView> {
                               await Navigator.push(
                                 context,
                                 adaptivePageRoute(
+                                  settings: const RouteSettings(
+                                    name: RouteNames.groupDetailView,
+                                  ),
                                   builder: (context) {
                                     return GroupDetailView(
                                       group: filteredGroups[index],
@@ -187,6 +191,9 @@ class _GroupViewState extends State<GroupView> {
                 await Navigator.push(
                   context,
                   adaptivePageRoute(
+                    settings: const RouteSettings(
+                      name: RouteNames.createGroupView,
+                    ),
                     builder: (context) {
                       return CreateGroupView(onMembersChanged: loadGroups);
                     },

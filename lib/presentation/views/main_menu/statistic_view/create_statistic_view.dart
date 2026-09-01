@@ -7,6 +7,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -352,6 +353,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     if (scopes.contains(StatisticScope.selectedGroups)) {
       final created = await Navigator.of(context).push<Statistic>(
         adaptivePageRoute(
+          settings: const RouteSettings(name: RouteNames.chooseGroupView),
           builder: (context) => ChooseGroupView(
             groups: groups,
             statistic: buildStat(selectedType.first),
@@ -371,6 +373,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     } else if (scopes.contains(StatisticScope.selectedGames)) {
       final created = await Navigator.of(context).push<Statistic>(
         adaptivePageRoute(
+          settings: const RouteSettings(name: RouteNames.chooseGameView),
           builder: (context) => ChooseGameView(
             games: games,
             statistic: buildStat(selectedType.first),

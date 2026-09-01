@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -73,6 +74,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
             icon: const Icon(Icons.copy),
             onPressed: () => Navigator.of(context).push(
               adaptivePageRoute(
+                settings: const RouteSettings(name: RouteNames.createMatchView),
                 builder: (context) => CreateMatchView(
                   matchToPrefill: templateMatch,
                   onWinnerChanged: widget.onMatchUpdate,
@@ -208,6 +210,10 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                         onTileTap: () => Navigator.of(context)
                                             .pushReplacement(
                                               adaptivePageRoute(
+                                                settings: const RouteSettings(
+                                                  name: RouteNames
+                                                      .playerDetailView,
+                                                ),
                                                 builder: (context) =>
                                                     PlayerDetailView(
                                                       player:
@@ -249,6 +255,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                 onTileTap: () {
                                   Navigator.of(context).pushReplacement(
                                     adaptivePageRoute(
+                                      settings: const RouteSettings(
+                                        name: RouteNames.playerDetailView,
+                                      ),
                                       builder: (context) => PlayerDetailView(
                                         player: player,
                                         onPlayerNameUpdated:
@@ -323,6 +332,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       await Navigator.push(
                         context,
                         adaptivePageRoute(
+                          settings: const RouteSettings(
+                            name: RouteNames.matchResultView,
+                          ),
                           fullscreenDialog: true,
                           builder: (context) => MatchResultView(
                             match: match,
@@ -596,6 +608,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       Navigator.push(
         context,
         adaptivePageRoute(
+          settings: const RouteSettings(name: RouteNames.createMatchView),
           fullscreenDialog: true,
           builder: (context) => CreateMatchView(
             matchToPrefill: match,

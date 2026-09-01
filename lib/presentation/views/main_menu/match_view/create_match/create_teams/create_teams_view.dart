@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
@@ -152,6 +153,9 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                           Navigator.push(
                             context,
                             adaptivePageRoute(
+                              settings: const RouteSettings(
+                                name: RouteNames.manageMembersView,
+                              ),
                               builder: (context) => ManageMembersView(
                                 match: match,
                                 onWinnerChanged: widget.onWinnerChanged,

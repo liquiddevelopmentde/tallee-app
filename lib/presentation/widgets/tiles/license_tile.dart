@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/license_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -21,6 +22,7 @@ class LicenseTile extends StatelessWidget {
         HapticFeedback.selectionClick();
         navigator.push(
           MaterialPageRoute(
+            settings: const RouteSettings(name: RouteNames.licenseDetailView),
             builder: (context) => LicenseDetailView(package: package),
           ),
         );

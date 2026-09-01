@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
@@ -18,19 +21,41 @@ import 'package:tallee/state/match_search_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferencesService.init();
-  runApp(
-    MultiProvider(
-      providers: [
-        Provider<AppDatabase>(
-          create: (context) => AppDatabase(),
-          dispose: (context, db) => db.close(),
+  await SentryFlutter.init(
+    (options) {
+      options.dsn =
+          'https://dc8adb886a0943ed89502041afe927ac@app.glitchtip.com/27452';
+      // Disable sending personal identfiable information
+      options.sendDefaultPii = false;
+      options.enableLogs = true;
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+      // Decrease in stable
+      options.tracesSampleRate = 1.0;
+      options.environment = kReleaseMode ? 'production' : 'development';
+    },
+    appRunner: () => runApp(
+      SentryWidget(
+        child: MultiProvider(
+          providers: [
+            Provider<AppDatabase>(
+              create: (context) => AppDatabase(),
+              dispose: (context, db) => db.close(),
+            ),
+            ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
+            ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
+            ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
+          ],
+          child: DefaultAssetBundle(
+            bundle: SentryAssetBundle(),
+            child: const Tallee(),
+          ),
         ),
-        ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
-        ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
-        ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
-      ],
-      child: const Tallee(),
+      ),
     ),
+  );
+  // TODO: Remove test exception
+  await Sentry.captureException(
+    StateError('This is a test exception in main.dart'),
   );
 }
 
@@ -79,6 +104,7 @@ class _TalleeState extends State<Tallee> {
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
       themeMode: ThemeMode.dark,
+      navigatorObservers: [SentryNavigatorObserver()],
       theme: ThemeData(
         // main colors
         primaryColor: CustomTheme.primaryColor,
@@ -128,7 +154,7 @@ class _TalleeState extends State<Tallee> {
     if (navigator == null) return;
     navigator.push(
       adaptivePageRoute(
-        settings: RouteSettings(name: path),
+        settings: const RouteSettings(name: RouteNames.importFile),
         fullscreenDialog: true,
         builder: (_) =>
             ImportFileView(filePath: path, messengerKey: scaffoldMessengerKey),

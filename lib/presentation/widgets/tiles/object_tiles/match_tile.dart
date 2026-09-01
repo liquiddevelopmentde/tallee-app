@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
@@ -270,6 +271,9 @@ class _MatchTileState extends State<MatchTile> {
                         Navigator.push(
                           context,
                           adaptivePageRoute(
+                            settings: const RouteSettings(
+                              name: RouteNames.playerDetailView,
+                            ),
                             builder: (context) => PlayerDetailView(
                               player: pair.members.first,
                               onPlayerNameUpdated: () {
@@ -304,6 +308,9 @@ class _MatchTileState extends State<MatchTile> {
                       Navigator.push(
                         context,
                         adaptivePageRoute(
+                          settings: const RouteSettings(
+                            name: RouteNames.playerDetailView,
+                          ),
                           builder: (context) => PlayerDetailView(
                             player: player,
                             onPlayerNameUpdated: () {

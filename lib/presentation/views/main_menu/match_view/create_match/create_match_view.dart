@@ -6,6 +6,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -266,6 +267,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   Future<void> onChoosingGame() async {
     selectedGame = await Navigator.of(context).push(
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGameView),
         builder: (context) => ChooseGameView(
           games: games,
           initialGames: [?selectedGame],
@@ -286,6 +288,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     final oldGroup = selectedGroup;
     final newGroup = await Navigator.of(context).push<Group?>(
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGroupView),
         builder: (context) =>
             ChooseGroupView(groups: groups, initialGroups: [?oldGroup]),
       ),
@@ -498,6 +501,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           Navigator.push(
             context,
             adaptivePageRoute(
+              settings: const RouteSettings(name: RouteNames.createTeamsView),
               builder: (context) => CreateTeamsView(
                 match: match,
                 previousMatch: widget.matchToPrefill,
@@ -512,6 +516,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           Navigator.pushAndRemoveUntil(
             context,
             adaptivePageRoute(
+              settings: const RouteSettings(name: RouteNames.matchResultView),
               fullscreenDialog: true,
               builder: (context) => MatchResultView(
                 match: match,

@@ -9,6 +9,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/import_file_view.dart';
@@ -116,6 +117,9 @@ class _SettingsViewState extends State<SettingsView> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
+                        settings: const RouteSettings(
+                          name: RouteNames.licensesView,
+                        ),
                         builder: (context) => const LicensesView(),
                       ),
                     );
@@ -326,6 +330,7 @@ class _SettingsViewState extends State<SettingsView> {
     final result = await Navigator.of(scaffoldMessengerContext)
         .push<ImportResult>(
           adaptivePageRoute<ImportResult>(
+            settings: const RouteSettings(name: RouteNames.importFile),
             fullscreenDialog: true,
             builder: (_) => ImportFileView(filePath: path),
           ),

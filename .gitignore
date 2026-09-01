@@ -175,3 +175,5 @@ app.*.map.json
 
 untranslated_messages.json
 .env
+
+sentry.properties

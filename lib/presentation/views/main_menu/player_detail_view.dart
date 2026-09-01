@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -205,6 +206,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                   onTap: () {
                                     Navigator.of(context).pushReplacement(
                                       adaptivePageRoute(
+                                        settings: const RouteSettings(
+                                          name: RouteNames.groupDetailView,
+                                        ),
                                         builder: (context) => GroupDetailView(
                                           group: group,
                                           callback: widget.onPlayerNameUpdated,
@@ -249,6 +253,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                 onTap: () {
                                   Navigator.of(context).pushReplacement(
                                     adaptivePageRoute(
+                                      settings: const RouteSettings(
+                                        name: RouteNames.matchDetailView,
+                                      ),
                                       builder: (context) => MatchDetailView(
                                         match: match,
                                         onMatchUpdate:

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/statistic.dart';
@@ -91,6 +92,9 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 final result = await Navigator.push(
                   context,
                   adaptivePageRoute(
+                    settings: const RouteSettings(
+                      name: RouteNames.createGameView,
+                    ),
                     builder: (context) => CreateGameView(
                       onGameChanged: () {
                         widget.onGamesUpdated?.call();
@@ -201,6 +205,9 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                         final result = await Navigator.push(
                           context,
                           adaptivePageRoute(
+                            settings: const RouteSettings(
+                              name: RouteNames.createGameView,
+                            ),
                             builder: (context) => CreateGameView(
                               gameToEdit: game,
                               matchCount: getMatchCount(game),

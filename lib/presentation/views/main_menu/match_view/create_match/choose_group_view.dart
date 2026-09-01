@@ -5,6 +5,7 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/route_names.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/statistic.dart';
@@ -192,6 +193,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
       if (mounted) {
         final createdStatistic = await Navigator.of(context).push<Statistic>(
           adaptivePageRoute(
+            settings: const RouteSettings(name: RouteNames.chooseGameView),
             builder: (context) =>
                 ChooseGameView(statistic: statistic, games: games),
           ),
