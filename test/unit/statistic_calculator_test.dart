@@ -23,6 +23,7 @@ void main() {
     required List<Player> players,
     required Map<Player, int> scores,
     Group? group,
+    DateTime? createdAt,
     DateTime? endedAt,
   }) {
     return Match(
@@ -30,6 +31,7 @@ void main() {
       game: game,
       players: players,
       group: group,
+      createdAt: createdAt,
       endedAt: endedAt,
       scores: {
         for (final entry in scores.entries)
@@ -330,6 +332,7 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 10},
+          createdAt: now.subtract(const Duration(days: 2)),
           endedAt: now.subtract(const Duration(days: 2)),
         ),
         buildMatch(
@@ -337,7 +340,16 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 20},
+          createdAt: now.subtract(const Duration(days: 20)),
           endedAt: now.subtract(const Duration(days: 20)),
+        ),
+        buildMatch(
+          name: 'long time',
+          game: highestScoreGame,
+          players: [testPlayer1],
+          scores: {testPlayer1: 20},
+          createdAt: now.subtract(const Duration(days: 20)),
+          endedAt: now.subtract(const Duration(days: 2)),
         ),
       ];
 
@@ -366,6 +378,7 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 10},
+          createdAt: DateTime(2023, 1, 9, 23, 59),
           endedAt: DateTime(2023, 1, 9, 23, 59),
         ),
         buildMatch(
@@ -373,6 +386,7 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 10},
+          createdAt: DateTime(2023, 1, 10, 0, 0),
           endedAt: DateTime(2023, 1, 10, 0, 0),
         ),
         buildMatch(
@@ -380,6 +394,7 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 10},
+          createdAt: DateTime(2023, 1, 15),
           endedAt: DateTime(2023, 1, 15),
         ),
         buildMatch(
@@ -387,6 +402,7 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 10},
+          createdAt: DateTime(2023, 1, 20, 23, 59),
           endedAt: DateTime(2023, 1, 20, 23, 59),
         ),
         buildMatch(
@@ -394,6 +410,7 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 10},
+          createdAt: DateTime(2023, 1, 21, 0, 0),
           endedAt: DateTime(2023, 1, 21, 0, 0),
         ),
       ];

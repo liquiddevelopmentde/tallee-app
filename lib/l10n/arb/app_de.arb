@@ -112,8 +112,14 @@
   "legal_notice": "Impressum",
   "licenses": "Lizenzen",
   "live_edit_mode": "Live-Bearbeitungsmodus",
-  "life": "Leben",
-  "lives": "Leben",
+  "lives": "{count, plural, =1{Leben} other{Leben}}",
+  "@lives": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "loading": "Lädt...",
   "loser": "Verlierer:in",
   "lowest_score": "Niedrigste Punkte",

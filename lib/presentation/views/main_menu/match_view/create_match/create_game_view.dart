@@ -214,20 +214,18 @@ class _CreateGameViewState extends State<CreateGameView> {
               ChooseTile(title: loc.color, trailing: getColorDropdown(loc)),
 
               // Set lives tile
-              if (selectedRuleset == Ruleset.lives)
+              // Only editable if no matches with ruleset exist
+              if (selectedRuleset == Ruleset.lives &&
+                  (!isEditMode || widget.matchCount == 0))
                 ChooseTile(
-                  title: isEditMode
-                      ? loc.lives
-                      : getLifeLabel(loc, selectedLives),
-                  trailing: isEditMode
-                      ? Text(selectedLives.toString())
-                      : CustomStepper(
-                          value: selectedLives,
-                          onChanged: (int newValue) =>
-                              setState(() => selectedLives = newValue),
-                          minValue: 1,
-                          maxValue: 99,
-                        ),
+                  title: getLifeLabel(loc, selectedLives),
+                  trailing: CustomStepper(
+                    value: selectedLives,
+                    onChanged: (int newValue) =>
+                        setState(() => selectedLives = newValue),
+                    minValue: 1,
+                    maxValue: 99,
+                  ),
                 ),
 
               // Description input field

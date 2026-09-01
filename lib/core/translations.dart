@@ -2,21 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
-/// Returns the correct singular or plural form of "point(s)" based on the [points] value.
-String getPointLabel(AppLocalizations loc, int points) {
-  if (points == 1) {
-    return '$points ${loc.point}';
+/// Returns the correct singular or plural form of "point(s)" based on the [amount] value.
+String getPointLabel(AppLocalizations loc, int amount) {
+  if (amount == 1) {
+    return '$amount ${loc.point}';
   } else {
-    return '$points ${loc.points}';
+    return '$amount ${loc.points}';
   }
 }
 
-String getLifeLabel(AppLocalizations loc, int lives) {
-  if (lives == 1) {
-    return '$lives ${loc.life}';
-  } else {
-    return '$lives ${loc.lives}';
-  }
+String getLifeLabel(AppLocalizations loc, int amount) {
+  return '$amount ${loc.lives(amount)}';
 }
 
 /// Translates a [ImportResult] enum value to its corresponding localized string.
@@ -80,7 +76,7 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
     case Ruleset.placement:
       return loc.placement;
     case Ruleset.lives:
-      return loc.lives;
+      return loc.lives(0);
   }
 }
 
