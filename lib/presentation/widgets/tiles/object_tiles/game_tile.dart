@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/game.dart';
-import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
 class GameTile extends StatelessWidget {
@@ -34,9 +32,7 @@ class GameTile extends StatelessWidget {
     final title = game.name;
     final description = game.description;
     final ruleset = translateRulesetToString(game.ruleset, context);
-    final subtitle = game.ruleset == Ruleset.lives
-        ? getLifeLabel(AppLocalizations.of(context), game.lives!)
-        : ruleset;
+    final subtitle = ruleset;
     final gameColor = getColorFromAppColor(game.color);
 
     return GestureDetector(

@@ -8,7 +8,6 @@ class GameTable extends Table {
   TextColumn get ruleset => textEnum<Ruleset>()();
   TextColumn get description => text()();
   TextColumn get color => textEnum<AppColor>()();
-  IntColumn get lives => integer().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

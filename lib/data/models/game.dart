@@ -9,14 +9,12 @@ class Game {
   final Ruleset ruleset;
   final AppColor color;
   final String description;
-  final int? lives;
 
   Game({
     required this.name,
     required this.ruleset,
     this.color = AppColor.orange,
     this.description = '',
-    this.lives,
     String? id,
     DateTime? createdAt,
   }) : id = id ?? const Uuid().v4(),
@@ -24,7 +22,7 @@ class Game {
 
   @override
   String toString() {
-    return 'Game{id: $id, name: $name, ruleset: $ruleset, color: $color, description: $description, lives: $lives}';
+    return 'Game{id: $id, name: $name, ruleset: $ruleset, color: $color, description: $description}';
   }
 
   Game copyWith({
@@ -34,8 +32,6 @@ class Game {
     Ruleset? ruleset,
     AppColor? color,
     String? description,
-    String? icon,
-    int? lives,
   }) {
     return Game(
       id: id ?? this.id,
@@ -44,7 +40,6 @@ class Game {
       ruleset: ruleset ?? this.ruleset,
       color: color ?? this.color,
       description: description ?? this.description,
-      lives: lives ?? this.lives,
     );
   }
 
@@ -58,12 +53,11 @@ class Game {
           name == other.name &&
           ruleset == other.ruleset &&
           color == other.color &&
-          description == other.description &&
-          lives == other.lives;
+          description == other.description;
 
   @override
   int get hashCode =>
-      Object.hash(id, createdAt, name, ruleset, color, description, lives);
+      Object.hash(id, createdAt, name, ruleset, color, description);
 
   Game.fromJson(Map<String, dynamic> json)
     : id = json['id'],
@@ -77,9 +71,7 @@ class Game {
         (e) => e.name == json['color'],
         orElse: () => AppColor.orange,
       ),
-      description = json['description'],
-
-      lives = json['lives'];
+      description = json['description'];
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -88,6 +80,5 @@ class Game {
     'ruleset': ruleset.name,
     'color': color.name,
     'description': description,
-    'lives': lives,
   };
 }

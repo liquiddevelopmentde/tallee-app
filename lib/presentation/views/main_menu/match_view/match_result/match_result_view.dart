@@ -16,13 +16,16 @@ class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
   /// [match]: The match for which the winner is to be selected
   /// [onWinnerChanged]: Optional callback invoked when the winner is changed
-  const MatchResultView({super.key, required this.match, this.onWinnerChanged});
+  const MatchResultView({
+    super.key,
+    required this.match,
+    this.onWinnerChanged,
+    this.defaultLives = 3,
+  });
 
-  /// The match for which the winner is to be selected
   final Match match;
-
-  /// Optional callback invoked when the winner is changed
   final VoidCallback? onWinnerChanged;
+  final int defaultLives;
 
   @override
   State<MatchResultView> createState() => _MatchResultViewState();
@@ -62,8 +65,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool rulesetSupportsDragBehaviour() => ruleset == Ruleset.placement;
 
-  bool rulesetSupportsLives() =>
-      ruleset == Ruleset.lives && widget.match.game.lives != null;
+  bool rulesetSupportsLives() => ruleset == Ruleset.lives;
 
   @override
   void initState() {
@@ -100,7 +102,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                     match: widget.match,
                     initialScores: scores,
                     minValue: 0,
-                    maxValue: widget.match.game.lives!,
+                    maxValue: 99,
                     livesMode: true,
                     onScoresChanged: onScoresChanged,
                   )
@@ -220,9 +222,9 @@ class _MatchResultViewState extends State<MatchResultView> {
                                 child: LiveEditView(
                                   initialScores: scores,
                                   match: widget.match,
-                                  onScoresChanged:
-                                      (Map<dynamic, int?> newScores) =>
-                                          onScoresChanged(newScores),
+                                  onScoresChanged: (
+                                    Map<dynamic, int?> newScores,
+                                  ) => onScoresChanged(newScores),
                                 ),
                               ),
                             ],
@@ -297,7 +299,7 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
 
     if (rulesetSupportsLives()) {
-      final int defaultLives = widget.match.game.lives!;
+      final int defaultLives = widget.defaultLives;
       scores = scores.map(
         (unit, value) => MapEntry(unit, value ?? defaultLives),
       );
@@ -437,11 +439,9 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Handles saving the remaining lives for each player/team in the database.
   Future<void> handleLives() async {
-    final int fallbackLives = widget.match.game.lives ?? 0;
-
     if (useTeamLogic) {
       for (final team in allTeams) {
-        final lives = scores[team] ?? fallbackLives;
+        final lives = scores[team] ?? widget.defaultLives;
         await db.teamDao.updateTeamScore(
           matchId: widget.match.id,
           teamId: team.id,
@@ -450,7 +450,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       }
     } else {
       for (final player in allPlayers) {
-        final lives = scores[player] ?? fallbackLives;
+        final lives = scores[player] ?? widget.defaultLives;
         await db.scoreEntryDao.addScore(
           matchId: widget.match.id,
           playerId: player.id,
