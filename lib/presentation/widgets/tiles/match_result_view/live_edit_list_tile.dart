@@ -195,7 +195,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                             applyHeightToLastDescent: false,
                                           ),
                                       style: const TextStyle(
-                                        fontSize: 48,
+                                        fontSize: 44,
                                         fontWeight: FontWeight.w600,
                                         color: CustomTheme.textColor,
                                       ),
@@ -236,7 +236,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                         cursorColor: CustomTheme.textColor,
                                         cursorHeight: 36,
                                         style: const TextStyle(
-                                          fontSize: 48,
+                                          fontSize: 44,
                                           height: 1.0,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.transparent,
@@ -277,7 +277,9 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
 
   String get displayedText {
     final text = controller.text;
-    if (text.isEmpty || text == '-') return text;
+    // Fixes the layout problem
+    if (text.isEmpty) return '\u00A0';
+    if (text == '-') return text;
     return value.toString();
   }
 
