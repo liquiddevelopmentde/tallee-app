@@ -284,7 +284,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   }
 
   /// Updates the value with the given [delta], clamped into range.
-  void changeValue(int delta) => applyValue(value + delta, syncTextField: true);
+  void changeValue(int delta) => applyValue(value + delta);
 
   /// Parses live keyboard input to keep the text field and the animated
   /// text in sync.
@@ -298,18 +298,13 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   }
 
   /// Applies the [newValue] to the value variable and syncs the text field if needed
-  void applyValue(int newValue, {bool syncTextField = false}) {
+  void applyValue(int newValue) {
     final clamped = newValue.clamp(widget.minValue, widget.maxValue);
     if (clamped != value) {
       value = clamped;
       widget.onChanged?.call(value);
     }
-
-    // Only sync when value differs or explicitly called
-    if (syncTextField || clamped != newValue) {
-      setControllerText(clamped.toString());
-    }
-    setState(() {});
+    setState(() => setControllerText(clamped.toString()));
   }
 
   /// Handles entering / leaving a text field
@@ -324,7 +319,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
       // User left textfield
       // Fallback to 0 for empty/invalid field content
       final resolved = int.tryParse(controller.text) ?? 0;
-      applyValue(resolved, syncTextField: true);
+      applyValue(resolved);
     }
   }
 
