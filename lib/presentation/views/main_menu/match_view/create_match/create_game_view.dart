@@ -16,7 +16,6 @@ import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
-import 'package:tallee/presentation/widgets/custom_stepper.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
@@ -104,7 +103,6 @@ class _CreateGameViewState extends State<CreateGameView> {
       selectedRuleset = widget.gameToEdit!.ruleset;
       selectedColor = widget.gameToEdit!.color;
       selectedRuleset = widget.gameToEdit!.ruleset;
-      selectedLives = widget.gameToEdit!.lives ?? 3;
     }
   }
 
@@ -176,9 +174,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                       if (!context.mounted) return;
                       if (success) {
                         widget.onGameChanged.call();
-                        Navigator.of(
-                          context,
-                        ).pop((game: widget.gameToEdit, delete: true));
+                        Navigator.of(context)
+                            .pop((game: widget.gameToEdit, delete: true));
                       } else {
                         if (!mounted) return;
                         showSnackbar(message: loc.error_deleting_game);
@@ -213,21 +210,6 @@ class _CreateGameViewState extends State<CreateGameView> {
               // Choose color tile
               ChooseTile(title: loc.color, trailing: getColorDropdown(loc)),
 
-              // Set lives tile
-              // Only editable if no matches with ruleset exist
-              if (selectedRuleset == Ruleset.lives &&
-                  (!isEditMode || widget.matchCount == 0))
-                ChooseTile(
-                  title: getLifeLabel(loc, selectedLives),
-                  trailing: CustomStepper(
-                    value: selectedLives,
-                    onChanged: (int newValue) =>
-                        setState(() => selectedLives = newValue),
-                    minValue: 1,
-                    maxValue: 99,
-                  ),
-                ),
-
               // Description input field
               Container(
                 margin: CustomTheme.tileMargin,
@@ -261,7 +243,6 @@ class _CreateGameViewState extends State<CreateGameView> {
                             description: descriptionController.text.trim(),
                             ruleset: selectedRuleset!,
                             color: selectedColor!,
-                            lives: selectedLives,
                           );
                           if (isEditing) {
                             await handleGameUpdate(newGame);
@@ -270,9 +251,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                           }
                           widget.onGameChanged.call();
                           if (context.mounted) {
-                            Navigator.of(
-                              context,
-                            ).pop((game: newGame, delete: false));
+                            Navigator.of(context)
+                                .pop((game: newGame, delete: false));
                           }
                         }
                       : null,

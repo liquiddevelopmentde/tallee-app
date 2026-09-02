@@ -25,7 +25,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
           description: game.description,
           color: game.color,
           createdAt: game.createdAt,
-          lives: Value(game.lives),
         ),
         mode: InsertMode.insertOrReplace,
       );
@@ -51,7 +50,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
                 description: game.description,
                 color: game.color,
                 createdAt: game.createdAt,
-                lives: Value(game.lives),
               ),
             )
             .toList(),
@@ -94,7 +92,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
             description: row.description,
             color: row.color,
             createdAt: row.createdAt,
-            lives: row.lives,
           ),
         )
         .toList();
@@ -111,7 +108,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
       description: row.description,
       color: row.color,
       createdAt: row.createdAt,
-      lives: row.lives,
     );
   }
 
@@ -129,7 +125,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
             description: row.description,
             color: row.color,
             createdAt: row.createdAt,
-            lives: row.lives,
           ),
         )
         .toList();
@@ -181,18 +176,6 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     final rowsAffected =
         await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
           GameTableCompanion(color: Value(color)),
-        );
-    return rowsAffected > 0;
-  }
-
-  /// Updates the default number of lives of the game with the given [gameId].
-  Future<bool> updateGameLives({
-    required String gameId,
-    required int? lives,
-  }) async {
-    final rowsAffected =
-        await (update(gameTable)..where((tbl) => tbl.id.equals(gameId))).write(
-          GameTableCompanion(lives: Value(lives)),
         );
     return rowsAffected > 0;
   }

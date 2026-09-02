@@ -55,12 +55,6 @@
           },
           "color": {
             "type": "string"
-          },
-          "lives": {
-            "type": [
-              "integer",
-              "null"
-            ]
           }
         },
         "additionalProperties": false,
