@@ -11,19 +11,26 @@ class LiveEditView extends StatefulWidget {
   /// - [initialScores]: The current value per unit.
   /// - [onScoresChanged]: The callback invoked with the updated value map
   ///   whenever a value changes.
-  /// - [minValue]: The inclusive lower bound each value is clamped to.
-  /// - [maxValue]: The inclusive upper bound each value is clamped to.
-  /// - [livesMode]: Whether to render the tiles in lives mode (heart icon,
-  ///   dimmed elimination state and a default of 3 lives).
-  const LiveEditView({
+
+  /// Creates a live editor for score entry.
+  const LiveEditView.score({
     super.key,
     required this.match,
     required this.initialScores,
     this.onScoresChanged,
-    this.minValue = -9999,
-    this.maxValue = 9999,
-    this.livesMode = false,
-  });
+  }) : minValue = -9999,
+       maxValue = 9999,
+       livesMode = false;
+
+  /// Creates a live editor for the lives ruleset
+  const LiveEditView.lives({
+    super.key,
+    required this.match,
+    required this.initialScores,
+    this.onScoresChanged,
+  }) : minValue = 0,
+       maxValue = 9999,
+       livesMode = true;
 
   final bool livesMode;
   final Match match;

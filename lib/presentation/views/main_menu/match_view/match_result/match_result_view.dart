@@ -91,16 +91,17 @@ class _MatchResultViewState extends State<MatchResultView> {
         children: [
           Expanded(
             child: rulesetSupportsScoreEntry()
-                ? LiveEditView(
-                    match: widget.match,
-                    initialScores: scores,
-                    onScoresChanged: onScoresChanged,
-                    minValue: ruleset == Ruleset.lives ? 0 : -9999,
-                    maxValue: ruleset == Ruleset.lives
-                        ? widget.match.game.lives!
-                        : 9999,
-                    livesMode: ruleset == Ruleset.lives,
-                  )
+                ? ruleset == Ruleset.lives
+                      ? LiveEditView.lives(
+                          match: widget.match,
+                          initialScores: scores,
+                          onScoresChanged: onScoresChanged,
+                        )
+                      : LiveEditView.score(
+                          match: widget.match,
+                          initialScores: scores,
+                          onScoresChanged: onScoresChanged,
+                        )
                 : Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -420,9 +421,6 @@ class _MatchResultViewState extends State<MatchResultView> {
         return loc.drag_to_set_placement;
       case Ruleset.multipleWinners:
         return loc.select_winners;
-      case Ruleset.lowestScore:
-      case Ruleset.highestScore:
-        return loc.enter_points;
       default:
         return '';
     }
