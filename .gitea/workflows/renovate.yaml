@@ -1,22 +1,16 @@
 name: Renovate
 on:
   schedule:
-    - cron: '0 10 1,15 * *'
+    - cron: 'TZ=Europe/Berlin 0 10 1,15 * *'
 
 jobs:
   renovate:
     runs-on: ubuntu-latest
     container:
-      image: node:20-bookworm
+      image: ghcr.io/renovatebot/renovate:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Upgrade git
-        run: |
-          apt-get update
-          apt-get install -y git
-          git --version
 
       - name: Run Renovate
         env:
@@ -26,7 +20,6 @@ jobs:
           RENOVATE_REPOSITORIES: liquid-development/tallee-app
           RENOVATE_GIT_AUTHOR: "Gitea Actions <actions@yannick-weigert.de>"
           RENOVATE_CONFIG_FILE: renovate.json
+          RENOVATE_BINARY_SOURCE: install
           LOG_LEVEL: debug
-        run: |
-          npm install -g renovate
-          renovate
+        run: renovate
