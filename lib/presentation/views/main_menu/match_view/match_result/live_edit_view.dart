@@ -39,6 +39,7 @@ class LiveEditView extends StatefulWidget {
 class _LiveEditViewState extends State<LiveEditView> {
   late final int fallbackValue = widget.livesMode ? 3 : 0;
   Map<dynamic, int?> scores = {};
+  List<FocusNode> focusNodes = [];
 
   List<Team> get allTeams =>
       (widget.match.teams ?? [])
@@ -54,6 +55,7 @@ class _LiveEditViewState extends State<LiveEditView> {
   void initState() {
     super.initState();
     seedScores();
+    focusNodes = List.generate(allUnits.length, (_) => FocusNode());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) widget.onScoresChanged?.call(scores);
     });
@@ -66,6 +68,14 @@ class _LiveEditViewState extends State<LiveEditView> {
   }
 
   @override
+  void dispose() {
+    for (final node in focusNodes) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: allUnits.length,
@@ -73,6 +83,11 @@ class _LiveEditViewState extends State<LiveEditView> {
         final unit = allUnits[index];
         return LiveEditListTile(
           isLivesRuleset: widget.livesMode,
+          focusNode: index < focusNodes.length ? focusNodes[index] : null,
+          textInputAction: index == allUnits.length - 1
+              ? TextInputAction.done
+              : TextInputAction.next,
+          onSubmitted: () => focusNextTile(index),
           title: buildUnitNameWidget(
             unit,
             isTeamMatch: isTeamMatch,
@@ -105,6 +120,14 @@ class _LiveEditViewState extends State<LiveEditView> {
     scores = Map<dynamic, int?>.from(widget.initialScores);
     for (final unit in allUnits) {
       scores[unit] ??= fallbackValue;
+    }
+  }
+
+  void focusNextTile(int index) {
+    if (index < focusNodes.length - 1) {
+      focusNodes[index + 1].requestFocus();
+    } else if (index < focusNodes.length) {
+      focusNodes[index].unfocus();
     }
   }
 }

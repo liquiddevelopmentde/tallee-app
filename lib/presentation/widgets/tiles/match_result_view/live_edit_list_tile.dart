@@ -14,6 +14,9 @@ class LiveEditListTile extends StatefulWidget {
   /// - [maxValue]: The inclusive upper bound the value is clamped to.
   /// - [isLivesRuleset]: Whether to render a heart icon next to the value and
   ///   dim it once the unit is eliminated.
+  /// - [focusNode]:
+  /// - [textInputAction]:
+  /// - [onSubmitted]:
   const LiveEditListTile({
     super.key,
     required this.title,
@@ -23,6 +26,9 @@ class LiveEditListTile extends StatefulWidget {
     this.minValue = -9999,
     this.maxValue = 9999,
     this.isLivesRuleset = false,
+    this.focusNode,
+    this.textInputAction,
+    this.onSubmitted,
   });
 
   final Widget title;
@@ -32,6 +38,9 @@ class LiveEditListTile extends StatefulWidget {
   final int minValue;
   final int maxValue;
   final bool isLivesRuleset;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onSubmitted;
 
   @override
   State<LiveEditListTile> createState() => _LiveEditListTileState();
@@ -54,7 +63,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   void initState() {
     value = widget.value.clamp(widget.minValue, widget.maxValue);
     controller = TextEditingController(text: value.toString());
-    focusNode = FocusNode()..addListener(onFocusChanged);
+    focusNode = (widget.focusNode ?? FocusNode())..addListener(onFocusChanged);
     super.initState();
   }
 
@@ -73,7 +82,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   @override
   void dispose() {
     focusNode.removeListener(onFocusChanged);
-    focusNode.dispose();
+    if (widget.focusNode == null) focusNode.dispose();
     controller.dispose();
     super.dispose();
   }
@@ -211,7 +220,14 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                         controller: controller,
                                         focusNode: focusNode,
                                         onChanged: onTextChanged,
-                                        onSubmitted: (_) => focusNode.unfocus(),
+                                        textInputAction: widget.textInputAction,
+                                        onSubmitted: (_) {
+                                          if (widget.onSubmitted != null) {
+                                            widget.onSubmitted!();
+                                          } else {
+                                            focusNode.unfocus();
+                                          }
+                                        },
                                         keyboardType:
                                             const TextInputType.numberWithOptions(
                                               signed: true,
