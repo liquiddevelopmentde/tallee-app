@@ -319,7 +319,10 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
 
   /// Applies the [newValue] to the value variable and syncs the text field if needed
   void applyValue(int newValue) {
-    final clamped = newValue.clamp(widget.minValue, widget.maxValue);
+    final clamped = controller.text.isEmpty
+        // Reset count if text field is empty
+        ? 0
+        : newValue.clamp(widget.minValue, widget.maxValue);
     if (clamped != value) {
       value = clamped;
       widget.onChanged?.call(value);
