@@ -47,7 +47,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
 
   bool get isLowestValue => value <= widget.minValue;
 
-  IconData get icon =>
+  IconData get livesIcon =>
       isLowestValue ? Icons.heart_broken_rounded : Icons.favorite_rounded;
 
   @override
@@ -144,7 +144,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               if (widget.isLivesRuleset) ...[
-                                Icon(icon, color: iconColor, size: 28),
+                                Icon(livesIcon, color: iconColor, size: 28),
                                 const SizedBox(width: 10),
                               ],
                               Flexible(
@@ -184,7 +184,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                   SizedBox(
                                     width: 150,
                                     child: NumericText(
-                                      value.toString(),
+                                      displayedText,
                                       maxLines: 1,
                                       textAlign: TextAlign.center,
                                       textWidthBasis:
@@ -275,6 +275,12 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
     );
   }
 
+  String get displayedText {
+    final text = controller.text;
+    if (text.isEmpty || text == '-') return text;
+    return value.toString();
+  }
+
   /// Updates the value with the given [delta], clamped into range.
   void changeValue(int delta) => applyValue(value + delta, syncTextField: true);
 
@@ -282,11 +288,11 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   /// text in sync.
   void onTextChanged(String text) {
     if (text.isEmpty || text == '-') {
-      setControllerText(value.toString());
-      return;
+      setState(() {});
+    } else {
+      final parsed = int.tryParse(text);
+      if (parsed != null) applyValue(parsed);
     }
-    final parsed = int.tryParse(text);
-    if (parsed != null) applyValue(parsed);
   }
 
   /// Applies the [newValue] to the value variable and syncs the text field if needed
@@ -303,14 +309,19 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
     }
   }
 
+  /// Handles entering / leaving a text field
   void onFocusChanged() {
+    // Textfield is focused
     if (focusNode.hasFocus) {
-      // Place the cursor at the end of the number
+      // Place cursor at the end
       controller.selection = TextSelection.collapsed(
         offset: controller.text.length,
       );
     } else {
-      setControllerText(value.toString());
+      // User left textfield
+      // Fallback to 0 for empty/invalid field content
+      final resolved = int.tryParse(controller.text) ?? 0;
+      applyValue(resolved, syncTextField: true);
     }
   }
 
