@@ -24,7 +24,7 @@ void main() async {
   await SentryFlutter.init(
     (options) {
       options.dsn =
-          'https://dc8adb886a0943ed89502041afe927ac@app.glitchtip.com/27452';
+          'https://4f3d6e59a5c3457f88c9c1e5108767ed@log.yannick-weigert.com/1';
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
       options.enableLogs = true;
@@ -52,10 +52,6 @@ void main() async {
         ),
       ),
     ),
-  );
-  // TODO: Remove test exception
-  await Sentry.captureException(
-    StateError('This is a test exception in main.dart'),
   );
 }
 
