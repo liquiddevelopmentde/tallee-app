@@ -299,7 +299,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   void applyValue(int newValue, {bool syncTextField = false}) {
     final clamped = newValue.clamp(widget.minValue, widget.maxValue);
     if (clamped != value) {
-      setState(() => value = clamped);
+      value = clamped;
       widget.onChanged?.call(value);
     }
 
@@ -307,6 +307,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
     if (syncTextField || clamped != newValue) {
       setControllerText(clamped.toString());
     }
+    setState(() {});
   }
 
   /// Handles entering / leaving a text field
