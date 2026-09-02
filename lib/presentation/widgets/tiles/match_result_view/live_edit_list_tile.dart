@@ -284,7 +284,11 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   }
 
   /// Updates the value with the given [delta], clamped into range.
-  void changeValue(int delta) => applyValue(value + delta);
+  void changeValue(int delta) {
+    applyValue(value + delta);
+    // Unfocus all text fields
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
 
   /// Parses live keyboard input to keep the text field and the animated
   /// text in sync.
