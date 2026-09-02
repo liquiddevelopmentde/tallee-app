@@ -4,11 +4,9 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/live_edit_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/multiple_player_selection.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/placement_drag_list.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result/score_enter_list.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/single_player_selection.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
@@ -58,18 +56,15 @@ class _MatchResultViewState extends State<MatchResultView> {
       ruleset == Ruleset.multipleWinners;
 
   bool rulesetSupportsScoreEntry() =>
-      ruleset == Ruleset.lowestScore || ruleset == Ruleset.highestScore;
-
-  bool rulesetSupportsDragBehaviour() => ruleset == Ruleset.placement;
-
-  bool rulesetSupportsLives() =>
-      ruleset == Ruleset.lives && widget.match.game.lives != null;
+      ruleset == Ruleset.lowestScore ||
+      ruleset == Ruleset.highestScore ||
+      ruleset == Ruleset.lives;
 
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
     ruleset = widget.match.game.ruleset;
-    canSave = rulesetSupportsDragBehaviour() || rulesetSupportsLives();
+    canSave = ruleset == Ruleset.placement || ruleset == Ruleset.lives;
 
     initData();
     super.initState();
@@ -95,14 +90,16 @@ class _MatchResultViewState extends State<MatchResultView> {
       body: Column(
         children: [
           Expanded(
-            child: rulesetSupportsLives()
+            child: rulesetSupportsScoreEntry()
                 ? LiveEditView(
                     match: widget.match,
                     initialScores: scores,
-                    minValue: 0,
-                    maxValue: widget.match.game.lives!,
-                    livesMode: true,
                     onScoresChanged: onScoresChanged,
+                    minValue: ruleset == Ruleset.lives ? 0 : -9999,
+                    maxValue: ruleset == Ruleset.lives
+                        ? widget.match.game.lives!
+                        : 9999,
+                    livesMode: ruleset == Ruleset.lives,
                   )
                 : Container(
                     margin: const EdgeInsets.symmetric(
@@ -166,19 +163,8 @@ class _MatchResultViewState extends State<MatchResultView> {
                               },
                             ),
 
-                        // Show score entry
-                        if (rulesetSupportsScoreEntry())
-                          ScoreEnterList(
-                            match: widget.match,
-                            initialScores: scores,
-                            onScoreChanged: (Map<dynamic, int?> newScores) =>
-                                scores = newScores,
-                            onCanSaveChanged: (bool canSave) =>
-                                setState(() => this.canSave = canSave),
-                          ),
-
                         // Show draggable placement list
-                        if (rulesetSupportsDragBehaviour())
+                        if (ruleset == Ruleset.placement)
                           PlacementDragList(
                             match: widget.match,
                             onPlayerOrderChanged: (List<Player> players) =>
@@ -191,68 +177,32 @@ class _MatchResultViewState extends State<MatchResultView> {
                   ),
           ),
 
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Live Edit Mode Button
-                if (rulesetSupportsScoreEntry()) ...[
+          if (ruleset != Ruleset.lives)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Save Changes Button
                   BottomAnimatedButton(
                     sizeRelativeToWidth: 0.95,
-                    buttonText: loc.live_edit_mode,
-                    buttonType: ButtonType.secondary,
-                    onPressed: () => Navigator.push(
-                      context,
-                      adaptivePageRoute(
-                        fullscreenDialog: true,
-                        builder: (context) => Scaffold(
-                          appBar: AppBar(
-                            title: Text(widget.match.name),
-                            leading: HapticIconButton(
-                              onPressed: () => Navigator.pop(context, scores),
-                              icon: const Icon(Icons.close),
-                            ),
-                          ),
-                          body: Column(
-                            children: [
-                              Expanded(
-                                child: LiveEditView(
-                                  initialScores: scores,
-                                  match: widget.match,
-                                  onScoresChanged:
-                                      (Map<dynamic, int?> newScores) =>
-                                          onScoresChanged(newScores),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    buttonText: loc.save_changes,
+                    onPressed: canSave
+                        ? () async {
+                            final ending = DateTime.now();
+                            await db.matchDao.updateMatchEndedAt(
+                              matchId: widget.match.id,
+                              endedAt: ending,
+                            );
+                            await handleSaving();
+                            if (!context.mounted) return;
+                            Navigator.pop(context);
+                          }
+                        : null,
                   ),
                 ],
-
-                // Save Changes Button
-                BottomAnimatedButton(
-                  sizeRelativeToWidth: 0.95,
-                  buttonText: loc.save_changes,
-                  onPressed: canSave
-                      ? () async {
-                          final ending = DateTime.now();
-                          await db.matchDao.updateMatchEndedAt(
-                            matchId: widget.match.id,
-                            endedAt: ending,
-                          );
-                          await handleSaving();
-                          if (!context.mounted) return;
-                          Navigator.pop(context);
-                        }
-                      : null,
-                ),
-              ],
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -296,7 +246,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       );
     }
 
-    if (rulesetSupportsLives()) {
+    if (ruleset == Ruleset.lives) {
       final int defaultLives = widget.match.game.lives!;
       scores = scores.map(
         (unit, value) => MapEntry(unit, value ?? defaultLives),
