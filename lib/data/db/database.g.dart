@@ -4942,22 +4942,20 @@ typedef $$PlayerTableTableProcessedTableManager =
         bool scoreEntryTableRefs,
       })
     >;
-typedef $$GroupTableTableCreateCompanionBuilder =
-    GroupTableCompanion Function({
-      required String id,
-      required DateTime createdAt,
-      required String name,
-      required String description,
-      Value<int> rowid,
-    });
-typedef $$GroupTableTableUpdateCompanionBuilder =
-    GroupTableCompanion Function({
-      Value<String> id,
-      Value<DateTime> createdAt,
-      Value<String> name,
-      Value<String> description,
-      Value<int> rowid,
-    });
+typedef $$GroupTableTableCreateCompanionBuilder = GroupTableCompanion Function({
+  required String id,
+  required DateTime createdAt,
+  required String name,
+  required String description,
+  Value<int> rowid,
+});
+typedef $$GroupTableTableUpdateCompanionBuilder = GroupTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<String> name,
+  Value<String> description,
+  Value<int> rowid,
+});
 
 final class $$GroupTableTableReferences
     extends BaseReferences<_$AppDatabase, $GroupTableTable, GroupTableData> {
@@ -5432,26 +5430,24 @@ typedef $$GroupTableTableProcessedTableManager =
         bool statisticGroupTableRefs,
       })
     >;
-typedef $$GameTableTableCreateCompanionBuilder =
-    GameTableCompanion Function({
-      required String id,
-      required DateTime createdAt,
-      required String name,
-      required Ruleset ruleset,
-      required String description,
-      required AppColor color,
-      Value<int> rowid,
-    });
-typedef $$GameTableTableUpdateCompanionBuilder =
-    GameTableCompanion Function({
-      Value<String> id,
-      Value<DateTime> createdAt,
-      Value<String> name,
-      Value<Ruleset> ruleset,
-      Value<String> description,
-      Value<AppColor> color,
-      Value<int> rowid,
-    });
+typedef $$GameTableTableCreateCompanionBuilder = GameTableCompanion Function({
+  required String id,
+  required DateTime createdAt,
+  required String name,
+  required Ruleset ruleset,
+  required String description,
+  required AppColor color,
+  Value<int> rowid,
+});
+typedef $$GameTableTableUpdateCompanionBuilder = GameTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<String> name,
+  Value<Ruleset> ruleset,
+  Value<String> description,
+  Value<AppColor> color,
+  Value<int> rowid,
+});
 
 final class $$GameTableTableReferences
     extends BaseReferences<_$AppDatabase, $GameTableTable, GameTableData> {
@@ -5861,30 +5857,28 @@ typedef $$GameTableTableProcessedTableManager =
       GameTableData,
       PrefetchHooks Function({bool matchTableRefs, bool statisticGameTableRefs})
     >;
-typedef $$MatchTableTableCreateCompanionBuilder =
-    MatchTableCompanion Function({
-      required String id,
-      required DateTime createdAt,
-      required String name,
-      required String gameId,
-      Value<String?> groupId,
-      Value<bool> isTeamMatch,
-      required String notes,
-      Value<DateTime?> endedAt,
-      Value<int> rowid,
-    });
-typedef $$MatchTableTableUpdateCompanionBuilder =
-    MatchTableCompanion Function({
-      Value<String> id,
-      Value<DateTime> createdAt,
-      Value<String> name,
-      Value<String> gameId,
-      Value<String?> groupId,
-      Value<bool> isTeamMatch,
-      Value<String> notes,
-      Value<DateTime?> endedAt,
-      Value<int> rowid,
-    });
+typedef $$MatchTableTableCreateCompanionBuilder = MatchTableCompanion Function({
+  required String id,
+  required DateTime createdAt,
+  required String name,
+  required String gameId,
+  Value<String?> groupId,
+  Value<bool> isTeamMatch,
+  required String notes,
+  Value<DateTime?> endedAt,
+  Value<int> rowid,
+});
+typedef $$MatchTableTableUpdateCompanionBuilder = MatchTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<String> name,
+  Value<String> gameId,
+  Value<String?> groupId,
+  Value<bool> isTeamMatch,
+  Value<String> notes,
+  Value<DateTime?> endedAt,
+  Value<int> rowid,
+});
 
 final class $$MatchTableTableReferences
     extends BaseReferences<_$AppDatabase, $MatchTableTable, MatchTableData> {
@@ -6426,32 +6420,26 @@ class $$MatchTableTableTableManager
                         >
                       >(state) {
                         if (gameId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.gameId,
-                                    referencedTable: $$MatchTableTableReferences
-                                        ._gameIdTable(db),
-                                    referencedColumn:
-                                        $$MatchTableTableReferences
-                                            ._gameIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.gameId,
+                            referencedTable: $$MatchTableTableReferences
+                                ._gameIdTable(db),
+                            referencedColumn: $$MatchTableTableReferences
+                                ._gameIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (groupId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.groupId,
-                                    referencedTable: $$MatchTableTableReferences
-                                        ._groupIdTable(db),
-                                    referencedColumn:
-                                        $$MatchTableTableReferences
-                                            ._groupIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.groupId,
+                            referencedTable: $$MatchTableTableReferences
+                                ._groupIdTable(db),
+                            referencedColumn: $$MatchTableTableReferences
+                                ._groupIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -6833,34 +6821,26 @@ class $$PlayerGroupTableTableTableManager
                     >
                   >(state) {
                     if (playerId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.playerId,
-                                referencedTable:
-                                    $$PlayerGroupTableTableReferences
-                                        ._playerIdTable(db),
-                                referencedColumn:
-                                    $$PlayerGroupTableTableReferences
-                                        ._playerIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.playerId,
+                        referencedTable: $$PlayerGroupTableTableReferences
+                            ._playerIdTable(db),
+                        referencedColumn: $$PlayerGroupTableTableReferences
+                            ._playerIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (groupId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.groupId,
-                                referencedTable:
-                                    $$PlayerGroupTableTableReferences
-                                        ._groupIdTable(db),
-                                referencedColumn:
-                                    $$PlayerGroupTableTableReferences
-                                        ._groupIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.groupId,
+                        referencedTable: $$PlayerGroupTableTableReferences
+                            ._groupIdTable(db),
+                        referencedColumn: $$PlayerGroupTableTableReferences
+                            ._groupIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -6888,24 +6868,22 @@ typedef $$PlayerGroupTableTableProcessedTableManager =
       PlayerGroupTableData,
       PrefetchHooks Function({bool playerId, bool groupId})
     >;
-typedef $$TeamTableTableCreateCompanionBuilder =
-    TeamTableCompanion Function({
-      required String id,
-      required DateTime createdAt,
-      required String name,
-      Value<AppColor> color,
-      Value<int?> score,
-      Value<int> rowid,
-    });
-typedef $$TeamTableTableUpdateCompanionBuilder =
-    TeamTableCompanion Function({
-      Value<String> id,
-      Value<DateTime> createdAt,
-      Value<String> name,
-      Value<AppColor> color,
-      Value<int?> score,
-      Value<int> rowid,
-    });
+typedef $$TeamTableTableCreateCompanionBuilder = TeamTableCompanion Function({
+  required String id,
+  required DateTime createdAt,
+  required String name,
+  Value<AppColor> color,
+  Value<int?> score,
+  Value<int> rowid,
+});
+typedef $$TeamTableTableUpdateCompanionBuilder = TeamTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<String> name,
+  Value<AppColor> color,
+  Value<int?> score,
+  Value<int> rowid,
+});
 
 final class $$TeamTableTableReferences
     extends BaseReferences<_$AppDatabase, $TeamTableTable, TeamTableData> {
@@ -7593,49 +7571,37 @@ class $$PlayerMatchTableTableTableManager
                         >
                       >(state) {
                         if (playerId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.playerId,
-                                    referencedTable:
-                                        $$PlayerMatchTableTableReferences
-                                            ._playerIdTable(db),
-                                    referencedColumn:
-                                        $$PlayerMatchTableTableReferences
-                                            ._playerIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.playerId,
+                            referencedTable: $$PlayerMatchTableTableReferences
+                                ._playerIdTable(db),
+                            referencedColumn: $$PlayerMatchTableTableReferences
+                                ._playerIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (matchId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.matchId,
-                                    referencedTable:
-                                        $$PlayerMatchTableTableReferences
-                                            ._matchIdTable(db),
-                                    referencedColumn:
-                                        $$PlayerMatchTableTableReferences
-                                            ._matchIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.matchId,
+                            referencedTable: $$PlayerMatchTableTableReferences
+                                ._matchIdTable(db),
+                            referencedColumn: $$PlayerMatchTableTableReferences
+                                ._matchIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (teamId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.teamId,
-                                    referencedTable:
-                                        $$PlayerMatchTableTableReferences
-                                            ._teamIdTable(db),
-                                    referencedColumn:
-                                        $$PlayerMatchTableTableReferences
-                                            ._teamIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.teamId,
+                            referencedTable: $$PlayerMatchTableTableReferences
+                                ._teamIdTable(db),
+                            referencedColumn: $$PlayerMatchTableTableReferences
+                                ._teamIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -8028,34 +7994,26 @@ class $$ScoreEntryTableTableTableManager
                     >
                   >(state) {
                     if (playerId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.playerId,
-                                referencedTable:
-                                    $$ScoreEntryTableTableReferences
-                                        ._playerIdTable(db),
-                                referencedColumn:
-                                    $$ScoreEntryTableTableReferences
-                                        ._playerIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.playerId,
+                        referencedTable: $$ScoreEntryTableTableReferences
+                            ._playerIdTable(db),
+                        referencedColumn: $$ScoreEntryTableTableReferences
+                            ._playerIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (matchId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.matchId,
-                                referencedTable:
-                                    $$ScoreEntryTableTableReferences
-                                        ._matchIdTable(db),
-                                referencedColumn:
-                                    $$ScoreEntryTableTableReferences
-                                        ._matchIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.matchId,
+                        referencedTable: $$ScoreEntryTableTableReferences
+                            ._matchIdTable(db),
+                        referencedColumn: $$ScoreEntryTableTableReferences
+                            ._matchIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -8956,19 +8914,15 @@ class $$StatisticScopeTableTableTableManager
                     >
                   >(state) {
                     if (statisticId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.statisticId,
-                                referencedTable:
-                                    $$StatisticScopeTableTableReferences
-                                        ._statisticIdTable(db),
-                                referencedColumn:
-                                    $$StatisticScopeTableTableReferences
-                                        ._statisticIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.statisticId,
+                        referencedTable: $$StatisticScopeTableTableReferences
+                            ._statisticIdTable(db),
+                        referencedColumn: $$StatisticScopeTableTableReferences
+                            ._statisticIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -9306,34 +9260,26 @@ class $$StatisticGameTableTableTableManager
                     >
                   >(state) {
                     if (statisticId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.statisticId,
-                                referencedTable:
-                                    $$StatisticGameTableTableReferences
-                                        ._statisticIdTable(db),
-                                referencedColumn:
-                                    $$StatisticGameTableTableReferences
-                                        ._statisticIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.statisticId,
+                        referencedTable: $$StatisticGameTableTableReferences
+                            ._statisticIdTable(db),
+                        referencedColumn: $$StatisticGameTableTableReferences
+                            ._statisticIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (gameId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.gameId,
-                                referencedTable:
-                                    $$StatisticGameTableTableReferences
-                                        ._gameIdTable(db),
-                                referencedColumn:
-                                    $$StatisticGameTableTableReferences
-                                        ._gameIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.gameId,
+                        referencedTable: $$StatisticGameTableTableReferences
+                            ._gameIdTable(db),
+                        referencedColumn: $$StatisticGameTableTableReferences
+                            ._gameIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -9674,34 +9620,26 @@ class $$StatisticGroupTableTableTableManager
                     >
                   >(state) {
                     if (statisticId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.statisticId,
-                                referencedTable:
-                                    $$StatisticGroupTableTableReferences
-                                        ._statisticIdTable(db),
-                                referencedColumn:
-                                    $$StatisticGroupTableTableReferences
-                                        ._statisticIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.statisticId,
+                        referencedTable: $$StatisticGroupTableTableReferences
+                            ._statisticIdTable(db),
+                        referencedColumn: $$StatisticGroupTableTableReferences
+                            ._statisticIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (groupId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.groupId,
-                                referencedTable:
-                                    $$StatisticGroupTableTableReferences
-                                        ._groupIdTable(db),
-                                referencedColumn:
-                                    $$StatisticGroupTableTableReferences
-                                        ._groupIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.groupId,
+                        referencedTable: $$StatisticGroupTableTableReferences
+                            ._groupIdTable(db),
+                        referencedColumn: $$StatisticGroupTableTableReferences
+                            ._groupIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
