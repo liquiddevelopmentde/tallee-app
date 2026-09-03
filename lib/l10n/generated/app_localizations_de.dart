@@ -206,9 +206,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get edit_game => 'Spielvorlage bearbeiten';
 
   @override
-  String get player_name => 'Name des/der Spieler:in';
-
-  @override
   String get edit_group => 'Gruppe bearbeiten';
 
   @override
@@ -438,6 +435,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get played_matches => 'Gespielte Spiele';
+
+  @override
+  String get player_name => 'Name des/der Spieler:in';
 
   @override
   String get player_profile => 'Spieler:in-Profil';

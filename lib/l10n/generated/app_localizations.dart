@@ -458,12 +458,6 @@ abstract class AppLocalizations {
   /// **'Edit Game'**
   String get edit_game;
 
-  /// No description provided for @player_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Player name'**
-  String get player_name;
-
   /// No description provided for @edit_group.
   ///
   /// In en, this message translates to:
@@ -907,6 +901,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Played Matches'**
   String get played_matches;
+
+  /// No description provided for @player_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Player name'**
+  String get player_name;
 
   /// No description provided for @player_profile.
   ///

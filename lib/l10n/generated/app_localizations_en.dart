@@ -206,9 +206,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_game => 'Edit Game';
 
   @override
-  String get player_name => 'Player name';
-
-  @override
   String get edit_group => 'Edit Group';
 
   @override
@@ -437,6 +434,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get played_matches => 'Played Matches';
+
+  @override
+  String get player_name => 'Player name';
 
   @override
   String get player_profile => 'Player Profile';
