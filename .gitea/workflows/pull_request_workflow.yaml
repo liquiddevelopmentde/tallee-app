@@ -23,7 +23,8 @@ jobs:
       MERGED: ${{ github.event.pull_request.merged }}
       TITLE: ${{ github.event.pull_request.title }}
     steps:
-      - run: |
+      - name: "Update label"
+        run: |
           set -euo pipefail
 
           TARGET=""
