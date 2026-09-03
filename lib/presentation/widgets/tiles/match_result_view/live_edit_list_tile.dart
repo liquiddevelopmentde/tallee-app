@@ -333,7 +333,8 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
 
   /// Updates the value with the given [delta], clamped into range.
   void onButtonPressed(int delta) {
-    suppressAnimation = false;
+    // Supress animation when switchin from 0 to 1 in lives mode
+    suppressAnimation = widget.isLivesRuleset && value == 0 && delta == 1;
     applyValue(value + delta);
     // Unfocus all text fields
     FocusManager.instance.primaryFocus?.unfocus();
