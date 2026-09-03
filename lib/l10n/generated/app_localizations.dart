@@ -482,12 +482,6 @@ abstract class AppLocalizations {
   /// **'Edit player'**
   String get edit_player;
 
-  /// No description provided for @enter_points.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter points'**
-  String get enter_points;
-
   /// No description provided for @enter_results.
   ///
   /// In en, this message translates to:
@@ -679,12 +673,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
-
-  /// No description provided for @live_edit_mode.
-  ///
-  /// In en, this message translates to:
-  /// **'Live Edit Mode'**
-  String get live_edit_mode;
 
   /// No description provided for @lives.
   ///

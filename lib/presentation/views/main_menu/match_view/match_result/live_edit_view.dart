@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
@@ -11,26 +12,30 @@ class LiveEditView extends StatefulWidget {
   /// - [initialScores]: The current value per unit.
   /// - [onScoresChanged]: The callback invoked with the updated value map
   ///   whenever a value changes.
-  /// - [minValue]: The inclusive lower bound each value is clamped to.
-  /// - [maxValue]: The inclusive upper bound each value is clamped to.
-  /// - [livesMode]: Whether to render the tiles in lives mode (heart icon,
-  ///   dimmed elimination state and a default of 3 lives).
-  const LiveEditView({
+
+  /// Creates a live editor for score entry.
+  const LiveEditView.score({
     super.key,
     required this.match,
     required this.initialScores,
     this.onScoresChanged,
-    this.minValue = -9999,
-    this.maxValue = 9999,
-    this.livesMode = false,
-  });
+  }) : boundaries = Constants.SCORE_INPUT_BOUNDARIES,
+       livesMode = false;
+
+  /// Creates a live editor for the lives ruleset
+  const LiveEditView.lives({
+    super.key,
+    required this.match,
+    required this.initialScores,
+    this.onScoresChanged,
+  }) : boundaries = Constants.LIVE_INPUT_BOUNDARIES,
+       livesMode = true;
 
   final bool livesMode;
   final Match match;
   final Map<dynamic, int?> initialScores;
   final void Function(Map<dynamic, int?>)? onScoresChanged;
-  final int minValue;
-  final int maxValue;
+  final ({int min, int max}) boundaries;
 
   @override
   State<LiveEditView> createState() => _LiveEditViewState();
@@ -39,6 +44,7 @@ class LiveEditView extends StatefulWidget {
 class _LiveEditViewState extends State<LiveEditView> {
   late final int fallbackValue = widget.livesMode ? 3 : 0;
   Map<dynamic, int?> scores = {};
+  List<FocusNode> focusNodes = [];
 
   List<Team> get allTeams =>
       (widget.match.teams ?? [])
@@ -54,6 +60,7 @@ class _LiveEditViewState extends State<LiveEditView> {
   void initState() {
     super.initState();
     seedScores();
+    focusNodes = List.generate(allUnits.length, (_) => FocusNode());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) widget.onScoresChanged?.call(scores);
     });
@@ -66,6 +73,14 @@ class _LiveEditViewState extends State<LiveEditView> {
   }
 
   @override
+  void dispose() {
+    for (final node in focusNodes) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: allUnits.length,
@@ -73,6 +88,11 @@ class _LiveEditViewState extends State<LiveEditView> {
         final unit = allUnits[index];
         return LiveEditListTile(
           isLivesRuleset: widget.livesMode,
+          focusNode: index < focusNodes.length ? focusNodes[index] : null,
+          textInputAction: index == allUnits.length - 1
+              ? TextInputAction.done
+              : TextInputAction.next,
+          onSubmitted: () => focusNextTile(index),
           title: buildUnitNameWidget(
             unit,
             isTeamMatch: isTeamMatch,
@@ -83,8 +103,7 @@ class _LiveEditViewState extends State<LiveEditView> {
             ),
           ),
           value: scores[unit] ?? fallbackValue,
-          minValue: widget.minValue,
-          maxValue: widget.maxValue,
+          boundaries: widget.boundaries,
           color: isTeamMatch && unit is Team
               ? getColorFromAppColor(unit.color)
               : null,
@@ -105,6 +124,14 @@ class _LiveEditViewState extends State<LiveEditView> {
     scores = Map<dynamic, int?>.from(widget.initialScores);
     for (final unit in allUnits) {
       scores[unit] ??= fallbackValue;
+    }
+  }
+
+  void focusNextTile(int index) {
+    if (index < focusNodes.length - 1) {
+      focusNodes[index + 1].requestFocus();
+    } else if (index < focusNodes.length) {
+      focusNodes[index].unfocus();
     }
   }
 }

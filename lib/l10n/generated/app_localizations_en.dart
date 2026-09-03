@@ -218,9 +218,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_player => 'Edit player';
 
   @override
-  String get enter_points => 'Enter points';
-
-  @override
   String get enter_results => 'Enter Results';
 
   @override
@@ -319,9 +316,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenses => 'Licenses';
-
-  @override
-  String get live_edit_mode => 'Live Edit Mode';
 
   @override
   String lives(int count) {

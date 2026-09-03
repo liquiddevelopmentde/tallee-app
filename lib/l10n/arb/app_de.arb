@@ -78,7 +78,6 @@
   "edit_match": "Match bearbeiten",
   "edit_name": "Name ändern",
   "edit_player": "Spieler bearbeiten",
-  "enter_points": "Punkte eingeben",
   "enter_results": "Ergebnisse eintragen",
   "error_creating_group": "Fehler beim Erstellen der Gruppe, bitte erneut versuchen",
   "error_deleting_game": "Fehler beim Löschen der Spielvorlage, bitte erneut versuchen",
@@ -111,7 +110,6 @@
   "legal": "Rechtliches",
   "legal_notice": "Impressum",
   "licenses": "Lizenzen",
-  "live_edit_mode": "Live-Bearbeitungsmodus",
   "lives": "{count, plural, =1{Leben} other{Leben}}",
   "@lives": {
     "placeholders": {
