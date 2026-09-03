@@ -49,9 +49,10 @@ class LiveEditListTile extends StatefulWidget {
 class _LiveEditListTileState extends State<LiveEditListTile> {
   final int largeStep = 10;
   final int smallStep = 1;
-  late int value;
+  static const Duration animationDuration = Duration(milliseconds: 300);
   bool suppressAnimation = false;
 
+  late int value;
   late final TextStyle valueTextStyle;
   late final TextEditingController controller;
   late final FocusNode focusNode;
@@ -143,7 +144,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                 child: widget.isLivesRuleset
                     // Lives display
                     ? TweenAnimationBuilder(
-                        duration: const Duration(milliseconds: 200),
+                        duration: animationDuration,
                         curve: Curves.easeInOut,
                         tween: Tween<double>(end: isLowestValue ? 1 : 0),
                         builder: (context, t, _) {
@@ -176,6 +177,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                 ),
                                 child: NumericText(
                                   valueText,
+                                  duration: animationDuration,
                                   maxLines: 1,
                                   textAlign: TextAlign.center,
                                   overflow: TextOverflow.visible,
@@ -212,7 +214,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                       displayedText,
                                       duration: suppressAnimation
                                           ? Duration.zero
-                                          : null,
+                                          : animationDuration,
                                       maxLines: 1,
                                       textAlign: TextAlign.center,
                                       textWidthBasis:
