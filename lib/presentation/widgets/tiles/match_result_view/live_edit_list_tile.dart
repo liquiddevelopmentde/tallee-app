@@ -50,9 +50,9 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   final int largeStep = 10;
   final int smallStep = 1;
   late int value;
+  bool suppressAnimation = false;
 
   late final TextStyle valueTextStyle;
-
   late final TextEditingController controller;
   late final FocusNode focusNode;
 
@@ -81,7 +81,10 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
       final clamped = widget.value.clamp(widget.minValue, widget.maxValue);
       if (clamped != value) {
         setState(() => value = clamped);
-        if (!focusNode.hasFocus) setControllerText(value.toString());
+        if (!focusNode.hasFocus) {
+          suppressAnimation = false;
+          setControllerText(value.toString());
+        }
       }
     }
   }
@@ -128,10 +131,10 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
               FloatingAnimatedButton(
                 icon: Icons.remove_rounded,
                 onPressed: value > widget.minValue
-                    ? () => changeValue(-smallStep)
+                    ? () => onButtonPressed(-smallStep)
                     : null,
                 onLongPressed: value > widget.minValue
-                    ? () => changeValue(-largeStep)
+                    ? () => onButtonPressed(-largeStep)
                     : null,
               ),
 
@@ -207,6 +210,9 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                     width: 150,
                                     child: NumericText(
                                       displayedText,
+                                      duration: suppressAnimation
+                                          ? Duration.zero
+                                          : null,
                                       maxLines: 1,
                                       textAlign: TextAlign.center,
                                       textWidthBasis:
@@ -287,10 +293,10 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
               FloatingAnimatedButton(
                 icon: Icons.add_rounded,
                 onPressed: value < widget.maxValue
-                    ? () => changeValue(smallStep)
+                    ? () => onButtonPressed(smallStep)
                     : null,
                 onLongPressed: value < widget.maxValue
-                    ? () => changeValue(largeStep)
+                    ? () => onButtonPressed(largeStep)
                     : null,
               ),
             ],
@@ -320,7 +326,8 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   }
 
   /// Updates the value with the given [delta], clamped into range.
-  void changeValue(int delta) {
+  void onButtonPressed(int delta) {
+    suppressAnimation = false;
     applyValue(value + delta);
     // Unfocus all text fields
     FocusManager.instance.primaryFocus?.unfocus();
@@ -329,6 +336,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   /// Parses live keyboard input to keep the text field and the animated
   /// text in sync.
   void onTextChanged(String text) {
+    suppressAnimation = true;
     if (text.isEmpty || text == '-') {
       setState(() {});
     } else {
