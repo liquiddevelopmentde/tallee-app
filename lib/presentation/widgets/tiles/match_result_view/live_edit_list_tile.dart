@@ -147,23 +147,39 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
               Expanded(
                 child: widget.isLivesRuleset
                     // Lives display
-                    ? TweenAnimationBuilder(
+                    ? TweenAnimationBuilder<double>(
                         duration: animationDuration,
                         curve: Curves.easeInOut,
                         tween: Tween<double>(end: isLowestValue ? 1 : 0),
-                        builder: (context, t, _) {
+                        child: SizedBox(
+                          width: measureTextWidth(
+                            value.toString(),
+                            valueTextStyle,
+                          ),
+                          child: NumericText(
+                            value.toString(),
+                            duration: animationDuration,
+                            maxLines: 1,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.visible,
+                            textWidthBasis: TextWidthBasis.longestLine,
+                            textHeightBehavior: const TextHeightBehavior(
+                              applyHeightToFirstAscent: false,
+                              applyHeightToLastDescent: false,
+                            ),
+                            style: valueTextStyle.copyWith(
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
+                        ),
+                        builder: (context, t, child) {
                           final iconColor = Color.lerp(
                             Colors.red,
                             CustomTheme.textColor.withAlpha(90),
                             t,
                           );
-                          final valueColor = Color.lerp(
-                            CustomTheme.textColor,
-                            CustomTheme.textColor.withAlpha(90),
-                            t,
-                          );
 
-                          final valueText = value.toString();
+                          final valueOpacity = 1.0 - t * (1.0 - 90 / 255);
 
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -174,27 +190,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                               const SizedBox(width: 5),
 
                               // Value
-                              SizedBox(
-                                width: measureTextWidth(
-                                  valueText,
-                                  valueTextStyle,
-                                ),
-                                child: NumericText(
-                                  valueText,
-                                  duration: animationDuration,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.visible,
-                                  textWidthBasis: TextWidthBasis.longestLine,
-                                  textHeightBehavior: const TextHeightBehavior(
-                                    applyHeightToFirstAscent: false,
-                                    applyHeightToLastDescent: false,
-                                  ),
-                                  style: valueTextStyle.copyWith(
-                                    color: valueColor,
-                                  ),
-                                ),
-                              ),
+                              Opacity(opacity: valueOpacity, child: child),
                             ],
                           );
                         },
