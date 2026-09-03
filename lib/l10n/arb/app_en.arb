@@ -212,5 +212,6 @@
   "winners": "Winners",
   "winrate": "Winrate",
   "worst_score": "Worst score",
-  "yesterday_at": "Yesterday at"
+  "yesterday_at": "Yesterday at",
+  "error_loading_privacy_policy": "Error loading privacy policy"
 }

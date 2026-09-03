@@ -7,12 +7,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/import_file_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licenses_view.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/privacy_policy_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
@@ -49,7 +51,7 @@ class _SettingsViewState extends State<SettingsView> {
     return Builder(
       builder: (scaffoldMessengerContext) {
         return Scaffold(
-          appBar: AppBar(backgroundColor: CustomTheme.backgroundColor),
+          appBar: AppBar(title: const Text('Settings')),
           backgroundColor: CustomTheme.backgroundColor,
           body: SingleChildScrollView(
             child: Column(
@@ -57,17 +59,6 @@ class _SettingsViewState extends State<SettingsView> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    textAlign: TextAlign.start,
-                    loc.settings,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 16, top: 10),
                   child: Text(
@@ -125,13 +116,23 @@ class _SettingsViewState extends State<SettingsView> {
                   title: loc.legal_notice,
                   icon: Icons.account_balance_sharp,
                   suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onPressed: null,
+                  onPressed: () async {
+                    await launchUrl(
+                      Uri.parse(Constants.LIQUID_WEBSITE_LEGAL_URL),
+                    );
+                  },
                 ),
                 SettingsListTile(
                   title: loc.privacy_policy,
                   icon: Icons.gpp_good_rounded,
                   suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const PrivacyPolicyView(),
+                      ),
+                    );
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 30, bottom: 20),
@@ -281,9 +282,8 @@ class _SettingsViewState extends State<SettingsView> {
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(CustomSnackBar(message: message));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(CustomSnackBar(message: message));
   }
 
   /// Initializes the package information.

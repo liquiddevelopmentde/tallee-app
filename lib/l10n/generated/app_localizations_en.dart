@@ -608,4 +608,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Yesterday at';
+
+  @override
+  String get error_loading_privacy_policy => 'Error loading privacy policy';
 }
