@@ -1,4 +1,4 @@
-name: "PR Workflow Automation"
+name: "PR Label Automation"
 on:
   pull_request:
     types: [ opened, edited, review_requested, review_request_removed, closed, labeled, unlabeled ]
