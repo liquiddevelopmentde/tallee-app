@@ -66,7 +66,11 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
                 itemBuilder: (context, index) {
                   return CustomRadioListTile(
                     content: isTeamMatch
-                        ? TeamCard(team: allTeams[index], maxChars: 24)
+                        ? TeamCard(
+                            team: allTeams[index],
+                            compact: true,
+                            showTeamMembers: false,
+                          )
                         : buildUnitNameWidget(
                             allTeams[index],
                             isTeamMatch: false,

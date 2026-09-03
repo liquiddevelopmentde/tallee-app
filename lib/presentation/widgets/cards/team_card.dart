@@ -13,25 +13,19 @@ class TeamCard extends StatelessWidget {
     this.width = double.infinity,
     this.margin,
     this.showDragHandle = false,
-    this.maxChars,
+    this.showTeamMembers = true,
   });
 
   final Team team;
-
   final bool compact;
-
   final double width;
-
   final EdgeInsetsGeometry? margin;
-
   final bool showDragHandle;
-
-  final int? maxChars;
+  final bool showTeamMembers;
 
   @override
   Widget build(BuildContext context) {
     final teamColor = getColorFromAppColor(team.color);
-    int shownPlayerAmount = getShownPlayerAmount();
 
     // Show only team name and member count
     if (compact) {
@@ -39,12 +33,23 @@ class TeamCard extends StatelessWidget {
         width: width,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: Color.lerp(teamColor, CustomTheme.boxColor, 0.8),
+          color: CustomTheme.onBoxColor,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: teamColor, width: 2),
         ),
         child: Row(
+          spacing: 10,
           children: [
+            // Colored circle
+            Container(
+              width: 14,
+              height: 14,
+              decoration: BoxDecoration(
+                color: teamColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+
+            // Team name
             Expanded(
               child: buildUnitNameWidget(
                 team,
@@ -56,23 +61,38 @@ class TeamCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            Container(
-              width: 1,
-              height: 14,
-              color: Colors.white.withValues(alpha: 0.35),
-            ),
-            const SizedBox(width: 8),
-            const Icon(Icons.people_alt_rounded, size: 14, color: Colors.white),
-            const SizedBox(width: 4),
-            Text(
-              '${team.members.length}',
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+            if (showTeamMembers)
+              Row(
+                spacing: 12,
+                children: [
+                  // Divider
+                  Container(
+                    width: 1,
+                    height: 14,
+                    color: Colors.white.withValues(alpha: 0.35),
+                  ),
+
+                  // Teammember count
+                  Row(
+                    spacing: 5,
+                    children: [
+                      const Icon(
+                        Icons.people_alt_rounded,
+                        size: 14,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        '${team.members.length}',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
           ],
         ),
       );
@@ -83,45 +103,58 @@ class TeamCard extends StatelessWidget {
             margin ?? const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: BoxDecoration(
-          color: Color.lerp(teamColor, CustomTheme.boxColor, 0.8),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: teamColor, width: 2),
+          borderRadius: BorderRadius.circular(10),
+          color: CustomTheme.backgroundColor,
+          // border: Border.all(color: CustomTheme.boxBorderColor),
         ),
         child: Row(
           children: [
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: showTeamMembers
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.center,
                 spacing: 3,
                 children: [
-                  buildUnitNameWidget(
-                    team,
-                    isTeamMatch: true,
-                    mainStyle: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: CustomTheme.textColor,
-                    ),
-                  ),
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    crossAxisAlignment: WrapCrossAlignment.center,
+                  // Team name row
+                  Row(
+                    spacing: 10,
                     children: [
-                      ...team.members.take(shownPlayerAmount).map((player) {
-                        return PlayerTile(player: player);
-                      }),
-                      if (team.members.length > shownPlayerAmount)
-                        Text(
-                          '+ ${team.members.length - shownPlayerAmount}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: CustomTheme.textColor,
-                          ),
+                      // Colored circle
+                      Container(
+                        width: 14,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: teamColor,
+                          shape: BoxShape.circle,
                         ),
+                      ),
+
+                      // Team name
+                      buildUnitNameWidget(
+                        team,
+                        isTeamMatch: true,
+                        mainStyle: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: CustomTheme.textColor,
+                        ),
+                      ),
                     ],
                   ),
+                  if (showTeamMembers)
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        // Player tiles
+                        ...team.members.map((player) {
+                          return PlayerTile(player: player);
+                        }),
+                      ],
+                    ),
                 ],
               ),
             ),
@@ -132,28 +165,6 @@ class TeamCard extends StatelessWidget {
           ],
         ),
       );
-    }
-  }
-
-  /// Returns how many player names will get displayed depending on [maxChars]
-  /// and the lengths of the player names.
-  int getShownPlayerAmount() {
-    if (maxChars == null) {
-      return team.members.length;
-    } else {
-      var combinedLength = 0;
-      var amount = 0;
-
-      for (final player in team.members) {
-        final nextLength = player.name.length + (amount > 0 ? 1 : 0);
-        if (combinedLength + nextLength > maxChars!) {
-          break;
-        }
-        combinedLength += nextLength;
-        amount++;
-      }
-
-      return amount;
     }
   }
 }

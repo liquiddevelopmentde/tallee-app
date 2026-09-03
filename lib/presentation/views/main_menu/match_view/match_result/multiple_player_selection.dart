@@ -54,7 +54,11 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
               itemBuilder: (context, index) {
                 return CustomCheckboxListTile(
                   content: isTeamMatch
-                      ? TeamCard(team: allTeams[index], maxChars: 24)
+                      ? TeamCard(
+                          team: allTeams[index],
+                          showTeamMembers: false,
+                          compact: true,
+                        )
                       : buildUnitNameWidget(
                           allTeams[index],
                           isTeamMatch: false,

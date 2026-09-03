@@ -51,7 +51,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
 
   @override
   Widget build(BuildContext context) {
-    final double rowHeight = isTeamMatch ? 85 : 60;
+    final double rowHeight = 60;
     final double badgeSize = rowHeight - 7;
 
     return Expanded(
@@ -105,9 +105,9 @@ class _PlacementDragListState extends State<PlacementDragList> {
                                   top: 4,
                                   bottom: 4,
                                 ),
+                                showTeamMembers: false,
                                 showDragHandle: true,
                                 team: allTeams[index],
-                                maxChars: 20,
                               )
                             : Padding(
                                 padding: const EdgeInsets.symmetric(
