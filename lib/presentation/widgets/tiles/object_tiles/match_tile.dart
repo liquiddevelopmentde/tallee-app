@@ -376,7 +376,8 @@ class _MatchTileState extends State<MatchTile> {
     final namesToRender =
         ruleset == Ruleset.multipleWinners ||
             ruleset == Ruleset.highestScore ||
-            ruleset == Ruleset.lowestScore
+            ruleset == Ruleset.lowestScore ||
+            ruleset == Ruleset.lives
         ? players
         : [players.first];
 
@@ -479,6 +480,8 @@ class _MatchTileState extends State<MatchTile> {
         return Icon(icon, size: 20, color: Colors.green);
       case Ruleset.placement:
         return Icon(icon, size: 20, color: Colors.deepOrangeAccent);
+      case Ruleset.lives:
+        return Icon(icon, size: 20, color: Colors.red);
     }
   }
 }
