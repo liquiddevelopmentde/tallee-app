@@ -35,7 +35,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   final groupNameController = TextEditingController();
 
   /// Controller for the group description input field
-  final _groupDescriptionController = TextEditingController();
+  final groupDescriptionController = TextEditingController();
 
   /// List of currently selected players
   List<Player> selectedPlayers = [];
@@ -48,8 +48,8 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
     if (widget.groupToEdit != null) {
-      _groupNameController.text = widget.groupToEdit!.name;
-      _groupDescriptionController.text = widget.groupToEdit!.description;
+      groupNameController.text = widget.groupToEdit!.name;
+      groupDescriptionController.text = widget.groupToEdit!.description;
       setState(() {
         initialSelectedPlayers = widget.groupToEdit!.members;
         selectedPlayers = widget.groupToEdit!.members;
@@ -62,8 +62,8 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
   @override
   void dispose() {
-    _groupNameController.dispose();
-    _groupDescriptionController.dispose();
+    groupNameController.dispose();
+    groupDescriptionController.dispose();
     super.dispose();
   }
 
@@ -96,7 +96,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
               Container(
                 margin: CustomTheme.standardMargin,
                 child: TextInputField(
-                  controller: _groupDescriptionController,
+                  controller: groupDescriptionController,
                   hintText: loc.description,
                   maxLength: Constants.MAX_GROUP_DESCRIPTION_LENGTH,
                   minLines: 3,
@@ -173,9 +173,9 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   }
 
   /// Handles creating a new group and returns whether the operation was successful.
-  Future<bool> _createGroup() async {
-    final groupName = _groupNameController.text.trim();
-    final groupDescription = _groupDescriptionController.text.trim();
+  Future<bool> createGroup() async {
+    final groupName = groupNameController.text.trim();
+    final groupDescription = groupDescriptionController.text.trim();
 
     final success = await db.groupDao.addGroup(
       group: Group(
@@ -189,9 +189,9 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
   /// Handles editing an existing group and returns a tuple of
   /// (success, updatedGroup).
-  Future<(bool, Group?)> _editGroup() async {
-    final groupName = _groupNameController.text.trim();
-    final groupDescription = _groupDescriptionController.text.trim();
+  Future<(bool, Group?)> editGroup() async {
+    final groupName = groupNameController.text.trim();
+    final groupDescription = groupDescriptionController.text.trim();
 
     Group? updatedGroup = Group(
       id: widget.groupToEdit!.id,
