@@ -99,7 +99,6 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                     ruleset: game.ruleset,
                     description: game.description,
                     color: game.color,
-                    icon: game.icon,
                     createdAt: game.createdAt,
                   ),
                 )
@@ -459,6 +458,19 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     final query = update(matchTable)..where((tbl) => tbl.id.equals(matchId));
     final rowsAffected = await query.write(
       const MatchTableCompanion(endedAt: Value(null)),
+    );
+    return rowsAffected > 0;
+  }
+
+  /// Updates the createdAt timestamp of the match with the given [matchId].
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> updateMatchCreatedAt({
+    required String matchId,
+    required DateTime createdAt,
+  }) async {
+    final query = update(matchTable)..where((tbl) => tbl.id.equals(matchId));
+    final rowsAffected = await query.write(
+      MatchTableCompanion(createdAt: Value(createdAt)),
     );
     return rowsAffected > 0;
   }

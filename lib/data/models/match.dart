@@ -116,7 +116,6 @@ class Match {
         ruleset: Ruleset.singleWinner,
         description: '',
         color: AppColor.blue,
-        icon: '',
       ),
       group = null,
       players = [],
@@ -172,6 +171,9 @@ class Match {
 
       case Ruleset.placement:
         return _getPlayersWithHighestScore().take(1).toList();
+
+      case Ruleset.lives:
+        return _getPlayersWithLivesRemaining();
     }
   }
 
@@ -209,6 +211,18 @@ class Match {
     }).toList();
   }
 
+  List<Player> _getPlayersWithLivesRemaining() {
+    if (players.isEmpty || scores.values.every((score) => score == null)) {
+      return [];
+    }
+
+    return players.where((player) {
+      final playerScore = scores[player.id];
+      if (playerScore == null) return false;
+      return playerScore.score > 0;
+    }).toList();
+  }
+
   // MVP for team-based matches (Most Valuable Team)
   List<Team> get mvt {
     if (teams == null || teams!.isEmpty) return [];
@@ -231,6 +245,9 @@ class Match {
 
       case Ruleset.placement:
         return _getHighestScoreTeam().take(1).toList();
+
+      case Ruleset.lives:
+        return _getTeamsWithLivesRemaining();
     }
   }
 
@@ -262,5 +279,13 @@ class Match {
     return teams!.where((team) {
       return team.score == lowestScore;
     }).toList();
+  }
+
+  List<Team> _getTeamsWithLivesRemaining() {
+    if (teams!.every((team) => team.score == null)) {
+      return [];
+    }
+
+    return teams!.where((team) => (team.score ?? 0) > 0).toList();
   }
 }

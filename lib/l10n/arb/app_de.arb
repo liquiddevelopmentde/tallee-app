@@ -10,6 +10,7 @@
   "best_player": "Beste:r Spieler:in",
   "best_score": "Beste Punktzahl",
   "cancel": "Abbrechen",
+  "choose_date_range": "Datumsbereich auswählen",
   "choose_game": "Spielvorlage wählen",
   "choose_group": "Gruppe wählen",
   "choose_scopes": "Bereiche wählen",
@@ -44,6 +45,8 @@
   "create_statistic": "Statistik erstellen",
   "create_teams": "Teams erstellen",
   "created_on": "Erstellt am",
+  "creation_date": "Erstellungsdatum",
+  "custom": "Benutzerdefiniert",
   "data": "Daten",
   "data_successfully_deleted": "Daten erfolgreich gelöscht",
   "data_successfully_exported": "Daten erfolgreich exportiert",
@@ -75,7 +78,6 @@
   "edit_match": "Match bearbeiten",
   "edit_name": "Name ändern",
   "edit_player": "Spieler bearbeiten",
-  "enter_points": "Punkte eingeben",
   "enter_results": "Ergebnisse eintragen",
   "error_creating_group": "Fehler beim Erstellen der Gruppe, bitte erneut versuchen",
   "error_deleting_game": "Fehler beim Löschen der Spielvorlage, bitte erneut versuchen",
@@ -108,7 +110,14 @@
   "legal": "Rechtliches",
   "legal_notice": "Impressum",
   "licenses": "Lizenzen",
-  "live_edit_mode": "Live-Bearbeitungsmodus",
+  "lives": "{count, plural, =1{Leben} other{Leben}}",
+  "@lives": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "loading": "Lädt...",
   "loser": "Verlierer:in",
   "lowest_score": "Niedrigste Punkte",
@@ -162,7 +171,7 @@
   "search_for_timeframes": "Nach Zeiträumen suchen",
   "search_for_types": "Nach Typen suchen",
   "select_a_classifier": "Klassifikator auswählen",
-  "select_a_display_color": "Wähle eine Anzeigefarbe aus",
+  "select_a_display_color": "Wähle eine Anzeigefarbe aus.",
   "select_a_scope": "Bereich auswählen",
   "select_a_timeframe": "Zeitraum auswählen",
   "select_loser": "Verlierer:in wählen",
@@ -188,6 +197,7 @@
   "this_cannot_be_undone": "Dies kann nicht rückgängig gemacht werden.",
   "tie": "Unentschieden",
   "timeframe": "Zeitraum",
+  "today": "Heute",
   "today_at": "Heute um",
   "total_losses": "Niederlagen insgesamt",
   "total_matches": "Spiele insgesamt",

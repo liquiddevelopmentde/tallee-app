@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -37,6 +38,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get cancel => 'Abbrechen';
+
+  @override
+  String get choose_date_range => 'Datumsbereich auswählen';
 
   @override
   String get choose_game => 'Spielvorlage wählen';
@@ -124,6 +128,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get created_on => 'Erstellt am';
 
   @override
+  String get creation_date => 'Erstellungsdatum';
+
+  @override
+  String get custom => 'Benutzerdefiniert';
+
+  @override
   String get data => 'Daten';
 
   @override
@@ -206,9 +216,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get edit_player => 'Spieler bearbeiten';
-
-  @override
-  String get enter_points => 'Punkte eingeben';
 
   @override
   String get enter_results => 'Ergebnisse eintragen';
@@ -312,7 +319,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get licenses => 'Lizenzen';
 
   @override
-  String get live_edit_mode => 'Live-Bearbeitungsmodus';
+  String lives(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Leben',
+      one: 'Leben',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get loading => 'Lädt...';
@@ -478,7 +493,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get select_a_classifier => 'Klassifikator auswählen';
 
   @override
-  String get select_a_display_color => 'Wähle eine Anzeigefarbe aus';
+  String get select_a_display_color => 'Wähle eine Anzeigefarbe aus.';
 
   @override
   String get select_a_scope => 'Bereich auswählen';
@@ -561,6 +576,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get timeframe => 'Zeitraum';
+
+  @override
+  String get today => 'Heute';
 
   @override
   String get today_at => 'Heute um';

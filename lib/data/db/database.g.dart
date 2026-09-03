@@ -792,15 +792,6 @@ class $GameTableTable extends GameTable
         type: DriftSqlType.string,
         requiredDuringInsert: true,
       ).withConverter<AppColor>($GameTableTable.$convertercolor);
-  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
-  @override
-  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
-    'icon',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -809,7 +800,6 @@ class $GameTableTable extends GameTable
     ruleset,
     description,
     color,
-    icon,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -855,14 +845,6 @@ class $GameTableTable extends GameTable
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
-    if (data.containsKey('icon')) {
-      context.handle(
-        _iconMeta,
-        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_iconMeta);
-    }
     return context;
   }
 
@@ -900,10 +882,6 @@ class $GameTableTable extends GameTable
           data['${effectivePrefix}color'],
         )!,
       ),
-      icon: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}icon'],
-      )!,
     );
   }
 
@@ -925,7 +903,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
   final Ruleset ruleset;
   final String description;
   final AppColor color;
-  final String icon;
   const GameTableData({
     required this.id,
     required this.createdAt,
@@ -933,7 +910,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     required this.ruleset,
     required this.description,
     required this.color,
-    required this.icon,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -952,7 +928,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
         $GameTableTable.$convertercolor.toSql(color),
       );
     }
-    map['icon'] = Variable<String>(icon);
     return map;
   }
 
@@ -964,7 +939,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       ruleset: Value(ruleset),
       description: Value(description),
       color: Value(color),
-      icon: Value(icon),
     );
   }
 
@@ -984,7 +958,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       color: $GameTableTable.$convertercolor.fromJson(
         serializer.fromJson<String>(json['color']),
       ),
-      icon: serializer.fromJson<String>(json['icon']),
     );
   }
   @override
@@ -1001,7 +974,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       'color': serializer.toJson<String>(
         $GameTableTable.$convertercolor.toJson(color),
       ),
-      'icon': serializer.toJson<String>(icon),
     };
   }
 
@@ -1012,7 +984,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     Ruleset? ruleset,
     String? description,
     AppColor? color,
-    String? icon,
   }) => GameTableData(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -1020,7 +991,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     ruleset: ruleset ?? this.ruleset,
     description: description ?? this.description,
     color: color ?? this.color,
-    icon: icon ?? this.icon,
   );
   GameTableData copyWithCompanion(GameTableCompanion data) {
     return GameTableData(
@@ -1032,7 +1002,6 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
           ? data.description.value
           : this.description,
       color: data.color.present ? data.color.value : this.color,
-      icon: data.icon.present ? data.icon.value : this.icon,
     );
   }
 
@@ -1044,15 +1013,14 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
           ..write('name: $name, ')
           ..write('ruleset: $ruleset, ')
           ..write('description: $description, ')
-          ..write('color: $color, ')
-          ..write('icon: $icon')
+          ..write('color: $color')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode =>
-      Object.hash(id, createdAt, name, ruleset, description, color, icon);
+      Object.hash(id, createdAt, name, ruleset, description, color);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1062,8 +1030,7 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
           other.name == this.name &&
           other.ruleset == this.ruleset &&
           other.description == this.description &&
-          other.color == this.color &&
-          other.icon == this.icon);
+          other.color == this.color);
 }
 
 class GameTableCompanion extends UpdateCompanion<GameTableData> {
@@ -1073,7 +1040,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
   final Value<Ruleset> ruleset;
   final Value<String> description;
   final Value<AppColor> color;
-  final Value<String> icon;
   final Value<int> rowid;
   const GameTableCompanion({
     this.id = const Value.absent(),
@@ -1082,7 +1048,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     this.ruleset = const Value.absent(),
     this.description = const Value.absent(),
     this.color = const Value.absent(),
-    this.icon = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   GameTableCompanion.insert({
@@ -1092,15 +1057,13 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     required Ruleset ruleset,
     required String description,
     required AppColor color,
-    required String icon,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
        name = Value(name),
        ruleset = Value(ruleset),
        description = Value(description),
-       color = Value(color),
-       icon = Value(icon);
+       color = Value(color);
   static Insertable<GameTableData> custom({
     Expression<String>? id,
     Expression<DateTime>? createdAt,
@@ -1108,7 +1071,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     Expression<String>? ruleset,
     Expression<String>? description,
     Expression<String>? color,
-    Expression<String>? icon,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1118,7 +1080,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
       if (ruleset != null) 'ruleset': ruleset,
       if (description != null) 'description': description,
       if (color != null) 'color': color,
-      if (icon != null) 'icon': icon,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1130,7 +1091,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     Value<Ruleset>? ruleset,
     Value<String>? description,
     Value<AppColor>? color,
-    Value<String>? icon,
     Value<int>? rowid,
   }) {
     return GameTableCompanion(
@@ -1140,7 +1100,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
       ruleset: ruleset ?? this.ruleset,
       description: description ?? this.description,
       color: color ?? this.color,
-      icon: icon ?? this.icon,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1170,9 +1129,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
         $GameTableTable.$convertercolor.toSql(color.value),
       );
     }
-    if (icon.present) {
-      map['icon'] = Variable<String>(icon.value);
-    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1188,7 +1144,6 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
           ..write('ruleset: $ruleset, ')
           ..write('description: $description, ')
           ..write('color: $color, ')
-          ..write('icon: $icon, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2996,6 +2951,28 @@ class $StatisticTableTable extends StatisticTable
         type: DriftSqlType.string,
         requiredDuringInsert: true,
       ).withConverter<Timeframe>($StatisticTableTable.$convertertimeframe);
+  static const VerificationMeta _startDateMeta = const VerificationMeta(
+    'startDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
+    'start_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endDateMeta = const VerificationMeta(
+    'endDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>(
+    'end_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<AppColor, String> color =
       GeneratedColumn<String>(
@@ -3050,6 +3027,8 @@ class $StatisticTableTable extends StatisticTable
     createdAt,
     type,
     timeframe,
+    startDate,
+    endDate,
     color,
     displayCount,
     isFavourite,
@@ -3079,6 +3058,18 @@ class $StatisticTableTable extends StatisticTable
       );
     } else if (isInserting) {
       context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('start_date')) {
+      context.handle(
+        _startDateMeta,
+        startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta),
+      );
+    }
+    if (data.containsKey('end_date')) {
+      context.handle(
+        _endDateMeta,
+        endDate.isAcceptableOrUnknown(data['end_date']!, _endDateMeta),
+      );
     }
     if (data.containsKey('display_count')) {
       context.handle(
@@ -3133,6 +3124,14 @@ class $StatisticTableTable extends StatisticTable
           data['${effectivePrefix}timeframe'],
         )!,
       ),
+      startDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_date'],
+      ),
+      endDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_date'],
+      ),
       color: $StatisticTableTable.$convertercolor.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -3173,6 +3172,8 @@ class StatisticTableData extends DataClass
   final DateTime createdAt;
   final StatisticType type;
   final Timeframe timeframe;
+  final DateTime? startDate;
+  final DateTime? endDate;
   final AppColor color;
   final int displayCount;
   final bool isFavourite;
@@ -3182,6 +3183,8 @@ class StatisticTableData extends DataClass
     required this.createdAt,
     required this.type,
     required this.timeframe,
+    this.startDate,
+    this.endDate,
     required this.color,
     required this.displayCount,
     required this.isFavourite,
@@ -3202,6 +3205,12 @@ class StatisticTableData extends DataClass
         $StatisticTableTable.$convertertimeframe.toSql(timeframe),
       );
     }
+    if (!nullToAbsent || startDate != null) {
+      map['start_date'] = Variable<DateTime>(startDate);
+    }
+    if (!nullToAbsent || endDate != null) {
+      map['end_date'] = Variable<DateTime>(endDate);
+    }
     {
       map['color'] = Variable<String>(
         $StatisticTableTable.$convertercolor.toSql(color),
@@ -3219,6 +3228,12 @@ class StatisticTableData extends DataClass
       createdAt: Value(createdAt),
       type: Value(type),
       timeframe: Value(timeframe),
+      startDate: startDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startDate),
+      endDate: endDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endDate),
       color: Value(color),
       displayCount: Value(displayCount),
       isFavourite: Value(isFavourite),
@@ -3240,6 +3255,8 @@ class StatisticTableData extends DataClass
       timeframe: $StatisticTableTable.$convertertimeframe.fromJson(
         serializer.fromJson<String>(json['timeframe']),
       ),
+      startDate: serializer.fromJson<DateTime?>(json['startDate']),
+      endDate: serializer.fromJson<DateTime?>(json['endDate']),
       color: $StatisticTableTable.$convertercolor.fromJson(
         serializer.fromJson<String>(json['color']),
       ),
@@ -3260,6 +3277,8 @@ class StatisticTableData extends DataClass
       'timeframe': serializer.toJson<String>(
         $StatisticTableTable.$convertertimeframe.toJson(timeframe),
       ),
+      'startDate': serializer.toJson<DateTime?>(startDate),
+      'endDate': serializer.toJson<DateTime?>(endDate),
       'color': serializer.toJson<String>(
         $StatisticTableTable.$convertercolor.toJson(color),
       ),
@@ -3274,6 +3293,8 @@ class StatisticTableData extends DataClass
     DateTime? createdAt,
     StatisticType? type,
     Timeframe? timeframe,
+    Value<DateTime?> startDate = const Value.absent(),
+    Value<DateTime?> endDate = const Value.absent(),
     AppColor? color,
     int? displayCount,
     bool? isFavourite,
@@ -3283,6 +3304,8 @@ class StatisticTableData extends DataClass
     createdAt: createdAt ?? this.createdAt,
     type: type ?? this.type,
     timeframe: timeframe ?? this.timeframe,
+    startDate: startDate.present ? startDate.value : this.startDate,
+    endDate: endDate.present ? endDate.value : this.endDate,
     color: color ?? this.color,
     displayCount: displayCount ?? this.displayCount,
     isFavourite: isFavourite ?? this.isFavourite,
@@ -3294,6 +3317,8 @@ class StatisticTableData extends DataClass
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       type: data.type.present ? data.type.value : this.type,
       timeframe: data.timeframe.present ? data.timeframe.value : this.timeframe,
+      startDate: data.startDate.present ? data.startDate.value : this.startDate,
+      endDate: data.endDate.present ? data.endDate.value : this.endDate,
       color: data.color.present ? data.color.value : this.color,
       displayCount: data.displayCount.present
           ? data.displayCount.value
@@ -3312,6 +3337,8 @@ class StatisticTableData extends DataClass
           ..write('createdAt: $createdAt, ')
           ..write('type: $type, ')
           ..write('timeframe: $timeframe, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate, ')
           ..write('color: $color, ')
           ..write('displayCount: $displayCount, ')
           ..write('isFavourite: $isFavourite, ')
@@ -3326,6 +3353,8 @@ class StatisticTableData extends DataClass
     createdAt,
     type,
     timeframe,
+    startDate,
+    endDate,
     color,
     displayCount,
     isFavourite,
@@ -3339,6 +3368,8 @@ class StatisticTableData extends DataClass
           other.createdAt == this.createdAt &&
           other.type == this.type &&
           other.timeframe == this.timeframe &&
+          other.startDate == this.startDate &&
+          other.endDate == this.endDate &&
           other.color == this.color &&
           other.displayCount == this.displayCount &&
           other.isFavourite == this.isFavourite &&
@@ -3350,6 +3381,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
   final Value<DateTime> createdAt;
   final Value<StatisticType> type;
   final Value<Timeframe> timeframe;
+  final Value<DateTime?> startDate;
+  final Value<DateTime?> endDate;
   final Value<AppColor> color;
   final Value<int> displayCount;
   final Value<bool> isFavourite;
@@ -3360,6 +3393,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     this.createdAt = const Value.absent(),
     this.type = const Value.absent(),
     this.timeframe = const Value.absent(),
+    this.startDate = const Value.absent(),
+    this.endDate = const Value.absent(),
     this.color = const Value.absent(),
     this.displayCount = const Value.absent(),
     this.isFavourite = const Value.absent(),
@@ -3371,6 +3406,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     required DateTime createdAt,
     required StatisticType type,
     required Timeframe timeframe,
+    this.startDate = const Value.absent(),
+    this.endDate = const Value.absent(),
     required AppColor color,
     this.displayCount = const Value.absent(),
     this.isFavourite = const Value.absent(),
@@ -3386,6 +3423,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Expression<DateTime>? createdAt,
     Expression<String>? type,
     Expression<String>? timeframe,
+    Expression<DateTime>? startDate,
+    Expression<DateTime>? endDate,
     Expression<String>? color,
     Expression<int>? displayCount,
     Expression<bool>? isFavourite,
@@ -3397,6 +3436,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       if (createdAt != null) 'created_at': createdAt,
       if (type != null) 'type': type,
       if (timeframe != null) 'timeframe': timeframe,
+      if (startDate != null) 'start_date': startDate,
+      if (endDate != null) 'end_date': endDate,
       if (color != null) 'color': color,
       if (displayCount != null) 'display_count': displayCount,
       if (isFavourite != null) 'is_favourite': isFavourite,
@@ -3410,6 +3451,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Value<DateTime>? createdAt,
     Value<StatisticType>? type,
     Value<Timeframe>? timeframe,
+    Value<DateTime?>? startDate,
+    Value<DateTime?>? endDate,
     Value<AppColor>? color,
     Value<int>? displayCount,
     Value<bool>? isFavourite,
@@ -3421,6 +3464,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       createdAt: createdAt ?? this.createdAt,
       type: type ?? this.type,
       timeframe: timeframe ?? this.timeframe,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
       color: color ?? this.color,
       displayCount: displayCount ?? this.displayCount,
       isFavourite: isFavourite ?? this.isFavourite,
@@ -3447,6 +3492,12 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       map['timeframe'] = Variable<String>(
         $StatisticTableTable.$convertertimeframe.toSql(timeframe.value),
       );
+    }
+    if (startDate.present) {
+      map['start_date'] = Variable<DateTime>(startDate.value);
+    }
+    if (endDate.present) {
+      map['end_date'] = Variable<DateTime>(endDate.value);
     }
     if (color.present) {
       map['color'] = Variable<String>(
@@ -3475,6 +3526,8 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
           ..write('createdAt: $createdAt, ')
           ..write('type: $type, ')
           ..write('timeframe: $timeframe, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate, ')
           ..write('color: $color, ')
           ..write('displayCount: $displayCount, ')
           ..write('isFavourite: $isFavourite, ')
@@ -4889,22 +4942,20 @@ typedef $$PlayerTableTableProcessedTableManager =
         bool scoreEntryTableRefs,
       })
     >;
-typedef $$GroupTableTableCreateCompanionBuilder =
-    GroupTableCompanion Function({
-      required String id,
-      required DateTime createdAt,
-      required String name,
-      required String description,
-      Value<int> rowid,
-    });
-typedef $$GroupTableTableUpdateCompanionBuilder =
-    GroupTableCompanion Function({
-      Value<String> id,
-      Value<DateTime> createdAt,
-      Value<String> name,
-      Value<String> description,
-      Value<int> rowid,
-    });
+typedef $$GroupTableTableCreateCompanionBuilder = GroupTableCompanion Function({
+  required String id,
+  required DateTime createdAt,
+  required String name,
+  required String description,
+  Value<int> rowid,
+});
+typedef $$GroupTableTableUpdateCompanionBuilder = GroupTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<String> name,
+  Value<String> description,
+  Value<int> rowid,
+});
 
 final class $$GroupTableTableReferences
     extends BaseReferences<_$AppDatabase, $GroupTableTable, GroupTableData> {
@@ -5379,28 +5430,24 @@ typedef $$GroupTableTableProcessedTableManager =
         bool statisticGroupTableRefs,
       })
     >;
-typedef $$GameTableTableCreateCompanionBuilder =
-    GameTableCompanion Function({
-      required String id,
-      required DateTime createdAt,
-      required String name,
-      required Ruleset ruleset,
-      required String description,
-      required AppColor color,
-      required String icon,
-      Value<int> rowid,
-    });
-typedef $$GameTableTableUpdateCompanionBuilder =
-    GameTableCompanion Function({
-      Value<String> id,
-      Value<DateTime> createdAt,
-      Value<String> name,
-      Value<Ruleset> ruleset,
-      Value<String> description,
-      Value<AppColor> color,
-      Value<String> icon,
-      Value<int> rowid,
-    });
+typedef $$GameTableTableCreateCompanionBuilder = GameTableCompanion Function({
+  required String id,
+  required DateTime createdAt,
+  required String name,
+  required Ruleset ruleset,
+  required String description,
+  required AppColor color,
+  Value<int> rowid,
+});
+typedef $$GameTableTableUpdateCompanionBuilder = GameTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<String> name,
+  Value<Ruleset> ruleset,
+  Value<String> description,
+  Value<AppColor> color,
+  Value<int> rowid,
+});
 
 final class $$GameTableTableReferences
     extends BaseReferences<_$AppDatabase, $GameTableTable, GameTableData> {
@@ -5489,11 +5536,6 @@ class $$GameTableTableFilterComposer
         column: $table.color,
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
-
-  ColumnFilters<String> get icon => $composableBuilder(
-    column: $table.icon,
-    builder: (column) => ColumnFilters(column),
-  );
 
   Expression<bool> matchTableRefs(
     Expression<bool> Function($$MatchTableTableFilterComposer f) f,
@@ -5584,11 +5626,6 @@ class $$GameTableTableOrderingComposer
     column: $table.color,
     builder: (column) => ColumnOrderings(column),
   );
-
-  ColumnOrderings<String> get icon => $composableBuilder(
-    column: $table.icon,
-    builder: (column) => ColumnOrderings(column),
-  );
 }
 
 class $$GameTableTableAnnotationComposer
@@ -5619,9 +5656,6 @@ class $$GameTableTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<AppColor, String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
-
-  GeneratedColumn<String> get icon =>
-      $composableBuilder(column: $table.icon, builder: (column) => column);
 
   Expression<T> matchTableRefs<T extends Object>(
     Expression<T> Function($$MatchTableTableAnnotationComposer a) f,
@@ -5712,7 +5746,6 @@ class $$GameTableTableTableManager
                 Value<Ruleset> ruleset = const Value.absent(),
                 Value<String> description = const Value.absent(),
                 Value<AppColor> color = const Value.absent(),
-                Value<String> icon = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => GameTableCompanion(
                 id: id,
@@ -5721,7 +5754,6 @@ class $$GameTableTableTableManager
                 ruleset: ruleset,
                 description: description,
                 color: color,
-                icon: icon,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -5732,7 +5764,6 @@ class $$GameTableTableTableManager
                 required Ruleset ruleset,
                 required String description,
                 required AppColor color,
-                required String icon,
                 Value<int> rowid = const Value.absent(),
               }) => GameTableCompanion.insert(
                 id: id,
@@ -5741,7 +5772,6 @@ class $$GameTableTableTableManager
                 ruleset: ruleset,
                 description: description,
                 color: color,
-                icon: icon,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -5827,30 +5857,28 @@ typedef $$GameTableTableProcessedTableManager =
       GameTableData,
       PrefetchHooks Function({bool matchTableRefs, bool statisticGameTableRefs})
     >;
-typedef $$MatchTableTableCreateCompanionBuilder =
-    MatchTableCompanion Function({
-      required String id,
-      required DateTime createdAt,
-      required String name,
-      required String gameId,
-      Value<String?> groupId,
-      Value<bool> isTeamMatch,
-      required String notes,
-      Value<DateTime?> endedAt,
-      Value<int> rowid,
-    });
-typedef $$MatchTableTableUpdateCompanionBuilder =
-    MatchTableCompanion Function({
-      Value<String> id,
-      Value<DateTime> createdAt,
-      Value<String> name,
-      Value<String> gameId,
-      Value<String?> groupId,
-      Value<bool> isTeamMatch,
-      Value<String> notes,
-      Value<DateTime?> endedAt,
-      Value<int> rowid,
-    });
+typedef $$MatchTableTableCreateCompanionBuilder = MatchTableCompanion Function({
+  required String id,
+  required DateTime createdAt,
+  required String name,
+  required String gameId,
+  Value<String?> groupId,
+  Value<bool> isTeamMatch,
+  required String notes,
+  Value<DateTime?> endedAt,
+  Value<int> rowid,
+});
+typedef $$MatchTableTableUpdateCompanionBuilder = MatchTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<String> name,
+  Value<String> gameId,
+  Value<String?> groupId,
+  Value<bool> isTeamMatch,
+  Value<String> notes,
+  Value<DateTime?> endedAt,
+  Value<int> rowid,
+});
 
 final class $$MatchTableTableReferences
     extends BaseReferences<_$AppDatabase, $MatchTableTable, MatchTableData> {
@@ -6392,32 +6420,26 @@ class $$MatchTableTableTableManager
                         >
                       >(state) {
                         if (gameId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.gameId,
-                                    referencedTable: $$MatchTableTableReferences
-                                        ._gameIdTable(db),
-                                    referencedColumn:
-                                        $$MatchTableTableReferences
-                                            ._gameIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.gameId,
+                            referencedTable: $$MatchTableTableReferences
+                                ._gameIdTable(db),
+                            referencedColumn: $$MatchTableTableReferences
+                                ._gameIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (groupId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.groupId,
-                                    referencedTable: $$MatchTableTableReferences
-                                        ._groupIdTable(db),
-                                    referencedColumn:
-                                        $$MatchTableTableReferences
-                                            ._groupIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.groupId,
+                            referencedTable: $$MatchTableTableReferences
+                                ._groupIdTable(db),
+                            referencedColumn: $$MatchTableTableReferences
+                                ._groupIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -6799,34 +6821,26 @@ class $$PlayerGroupTableTableTableManager
                     >
                   >(state) {
                     if (playerId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.playerId,
-                                referencedTable:
-                                    $$PlayerGroupTableTableReferences
-                                        ._playerIdTable(db),
-                                referencedColumn:
-                                    $$PlayerGroupTableTableReferences
-                                        ._playerIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.playerId,
+                        referencedTable: $$PlayerGroupTableTableReferences
+                            ._playerIdTable(db),
+                        referencedColumn: $$PlayerGroupTableTableReferences
+                            ._playerIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (groupId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.groupId,
-                                referencedTable:
-                                    $$PlayerGroupTableTableReferences
-                                        ._groupIdTable(db),
-                                referencedColumn:
-                                    $$PlayerGroupTableTableReferences
-                                        ._groupIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.groupId,
+                        referencedTable: $$PlayerGroupTableTableReferences
+                            ._groupIdTable(db),
+                        referencedColumn: $$PlayerGroupTableTableReferences
+                            ._groupIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -6854,24 +6868,22 @@ typedef $$PlayerGroupTableTableProcessedTableManager =
       PlayerGroupTableData,
       PrefetchHooks Function({bool playerId, bool groupId})
     >;
-typedef $$TeamTableTableCreateCompanionBuilder =
-    TeamTableCompanion Function({
-      required String id,
-      required DateTime createdAt,
-      required String name,
-      Value<AppColor> color,
-      Value<int?> score,
-      Value<int> rowid,
-    });
-typedef $$TeamTableTableUpdateCompanionBuilder =
-    TeamTableCompanion Function({
-      Value<String> id,
-      Value<DateTime> createdAt,
-      Value<String> name,
-      Value<AppColor> color,
-      Value<int?> score,
-      Value<int> rowid,
-    });
+typedef $$TeamTableTableCreateCompanionBuilder = TeamTableCompanion Function({
+  required String id,
+  required DateTime createdAt,
+  required String name,
+  Value<AppColor> color,
+  Value<int?> score,
+  Value<int> rowid,
+});
+typedef $$TeamTableTableUpdateCompanionBuilder = TeamTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<String> name,
+  Value<AppColor> color,
+  Value<int?> score,
+  Value<int> rowid,
+});
 
 final class $$TeamTableTableReferences
     extends BaseReferences<_$AppDatabase, $TeamTableTable, TeamTableData> {
@@ -7559,49 +7571,37 @@ class $$PlayerMatchTableTableTableManager
                         >
                       >(state) {
                         if (playerId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.playerId,
-                                    referencedTable:
-                                        $$PlayerMatchTableTableReferences
-                                            ._playerIdTable(db),
-                                    referencedColumn:
-                                        $$PlayerMatchTableTableReferences
-                                            ._playerIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.playerId,
+                            referencedTable: $$PlayerMatchTableTableReferences
+                                ._playerIdTable(db),
+                            referencedColumn: $$PlayerMatchTableTableReferences
+                                ._playerIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (matchId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.matchId,
-                                    referencedTable:
-                                        $$PlayerMatchTableTableReferences
-                                            ._matchIdTable(db),
-                                    referencedColumn:
-                                        $$PlayerMatchTableTableReferences
-                                            ._matchIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.matchId,
+                            referencedTable: $$PlayerMatchTableTableReferences
+                                ._matchIdTable(db),
+                            referencedColumn: $$PlayerMatchTableTableReferences
+                                ._matchIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (teamId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.teamId,
-                                    referencedTable:
-                                        $$PlayerMatchTableTableReferences
-                                            ._teamIdTable(db),
-                                    referencedColumn:
-                                        $$PlayerMatchTableTableReferences
-                                            ._teamIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.teamId,
+                            referencedTable: $$PlayerMatchTableTableReferences
+                                ._teamIdTable(db),
+                            referencedColumn: $$PlayerMatchTableTableReferences
+                                ._teamIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -7994,34 +7994,26 @@ class $$ScoreEntryTableTableTableManager
                     >
                   >(state) {
                     if (playerId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.playerId,
-                                referencedTable:
-                                    $$ScoreEntryTableTableReferences
-                                        ._playerIdTable(db),
-                                referencedColumn:
-                                    $$ScoreEntryTableTableReferences
-                                        ._playerIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.playerId,
+                        referencedTable: $$ScoreEntryTableTableReferences
+                            ._playerIdTable(db),
+                        referencedColumn: $$ScoreEntryTableTableReferences
+                            ._playerIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (matchId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.matchId,
-                                referencedTable:
-                                    $$ScoreEntryTableTableReferences
-                                        ._matchIdTable(db),
-                                referencedColumn:
-                                    $$ScoreEntryTableTableReferences
-                                        ._matchIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.matchId,
+                        referencedTable: $$ScoreEntryTableTableReferences
+                            ._matchIdTable(db),
+                        referencedColumn: $$ScoreEntryTableTableReferences
+                            ._matchIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -8055,6 +8047,8 @@ typedef $$StatisticTableTableCreateCompanionBuilder =
       required DateTime createdAt,
       required StatisticType type,
       required Timeframe timeframe,
+      Value<DateTime?> startDate,
+      Value<DateTime?> endDate,
       required AppColor color,
       Value<int> displayCount,
       Value<bool> isFavourite,
@@ -8067,6 +8061,8 @@ typedef $$StatisticTableTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<StatisticType> type,
       Value<Timeframe> timeframe,
+      Value<DateTime?> startDate,
+      Value<DateTime?> endDate,
       Value<AppColor> color,
       Value<int> displayCount,
       Value<bool> isFavourite,
@@ -8190,6 +8186,16 @@ class $$StatisticTableTableFilterComposer
         column: $table.timeframe,
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
+
+  ColumnFilters<DateTime> get startDate => $composableBuilder(
+    column: $table.startDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endDate => $composableBuilder(
+    column: $table.endDate,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<AppColor, AppColor, String> get color =>
       $composableBuilder(
@@ -8317,6 +8323,16 @@ class $$StatisticTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get startDate => $composableBuilder(
+    column: $table.startDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endDate => $composableBuilder(
+    column: $table.endDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get color => $composableBuilder(
     column: $table.color,
     builder: (column) => ColumnOrderings(column),
@@ -8358,6 +8374,12 @@ class $$StatisticTableTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<Timeframe, String> get timeframe =>
       $composableBuilder(column: $table.timeframe, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startDate =>
+      $composableBuilder(column: $table.startDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endDate =>
+      $composableBuilder(column: $table.endDate, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<AppColor, String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
@@ -8492,6 +8514,8 @@ class $$StatisticTableTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<StatisticType> type = const Value.absent(),
                 Value<Timeframe> timeframe = const Value.absent(),
+                Value<DateTime?> startDate = const Value.absent(),
+                Value<DateTime?> endDate = const Value.absent(),
                 Value<AppColor> color = const Value.absent(),
                 Value<int> displayCount = const Value.absent(),
                 Value<bool> isFavourite = const Value.absent(),
@@ -8502,6 +8526,8 @@ class $$StatisticTableTableTableManager
                 createdAt: createdAt,
                 type: type,
                 timeframe: timeframe,
+                startDate: startDate,
+                endDate: endDate,
                 color: color,
                 displayCount: displayCount,
                 isFavourite: isFavourite,
@@ -8514,6 +8540,8 @@ class $$StatisticTableTableTableManager
                 required DateTime createdAt,
                 required StatisticType type,
                 required Timeframe timeframe,
+                Value<DateTime?> startDate = const Value.absent(),
+                Value<DateTime?> endDate = const Value.absent(),
                 required AppColor color,
                 Value<int> displayCount = const Value.absent(),
                 Value<bool> isFavourite = const Value.absent(),
@@ -8524,6 +8552,8 @@ class $$StatisticTableTableTableManager
                 createdAt: createdAt,
                 type: type,
                 timeframe: timeframe,
+                startDate: startDate,
+                endDate: endDate,
                 color: color,
                 displayCount: displayCount,
                 isFavourite: isFavourite,
@@ -8884,19 +8914,15 @@ class $$StatisticScopeTableTableTableManager
                     >
                   >(state) {
                     if (statisticId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.statisticId,
-                                referencedTable:
-                                    $$StatisticScopeTableTableReferences
-                                        ._statisticIdTable(db),
-                                referencedColumn:
-                                    $$StatisticScopeTableTableReferences
-                                        ._statisticIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.statisticId,
+                        referencedTable: $$StatisticScopeTableTableReferences
+                            ._statisticIdTable(db),
+                        referencedColumn: $$StatisticScopeTableTableReferences
+                            ._statisticIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -9234,34 +9260,26 @@ class $$StatisticGameTableTableTableManager
                     >
                   >(state) {
                     if (statisticId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.statisticId,
-                                referencedTable:
-                                    $$StatisticGameTableTableReferences
-                                        ._statisticIdTable(db),
-                                referencedColumn:
-                                    $$StatisticGameTableTableReferences
-                                        ._statisticIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.statisticId,
+                        referencedTable: $$StatisticGameTableTableReferences
+                            ._statisticIdTable(db),
+                        referencedColumn: $$StatisticGameTableTableReferences
+                            ._statisticIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (gameId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.gameId,
-                                referencedTable:
-                                    $$StatisticGameTableTableReferences
-                                        ._gameIdTable(db),
-                                referencedColumn:
-                                    $$StatisticGameTableTableReferences
-                                        ._gameIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.gameId,
+                        referencedTable: $$StatisticGameTableTableReferences
+                            ._gameIdTable(db),
+                        referencedColumn: $$StatisticGameTableTableReferences
+                            ._gameIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -9602,34 +9620,26 @@ class $$StatisticGroupTableTableTableManager
                     >
                   >(state) {
                     if (statisticId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.statisticId,
-                                referencedTable:
-                                    $$StatisticGroupTableTableReferences
-                                        ._statisticIdTable(db),
-                                referencedColumn:
-                                    $$StatisticGroupTableTableReferences
-                                        ._statisticIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.statisticId,
+                        referencedTable: $$StatisticGroupTableTableReferences
+                            ._statisticIdTable(db),
+                        referencedColumn: $$StatisticGroupTableTableReferences
+                            ._statisticIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (groupId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.groupId,
-                                referencedTable:
-                                    $$StatisticGroupTableTableReferences
-                                        ._groupIdTable(db),
-                                referencedColumn:
-                                    $$StatisticGroupTableTableReferences
-                                        ._groupIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.groupId,
+                        referencedTable: $$StatisticGroupTableTableReferences
+                            ._groupIdTable(db),
+                        referencedColumn: $$StatisticGroupTableTableReferences
+                            ._groupIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;

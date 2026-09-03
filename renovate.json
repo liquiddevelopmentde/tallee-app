@@ -19,7 +19,7 @@
     {
       "matchManagers": ["pub"],
       "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "dart dependencies (minor-major)",
+      "groupName": "dart dependencies (minor)",
       "groupSlug": "dart-minor"
     },
     {

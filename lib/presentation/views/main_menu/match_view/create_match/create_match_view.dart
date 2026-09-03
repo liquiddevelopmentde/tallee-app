@@ -1,5 +1,8 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -12,6 +15,8 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/create_teams_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
+import 'package:tallee/presentation/widgets/custom_stepper.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
@@ -21,7 +26,7 @@ class CreateMatchView extends StatefulWidget {
   /// - [onWinnerChanged]: Optional callback invoked when the winner is changed
   /// - [editMode]: a bool which sets the view to edit mode
   /// - [matchToPrefill]: An optional match to prefill the fields
-  /// - [onMatchUpdated]: Optional callback invoked when the match is updated (only in
+  /// - [onMatchUpdated]: Optional callback invoked when the match is updated
   const CreateMatchView({
     super.key,
     this.onWinnerChanged,
@@ -61,7 +66,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   List<Game> games = [];
 
   Group? selectedGroup;
+  DateTime? selectedCreationDate;
   Game? selectedGame;
+  int selectedLives = 3;
   bool isTeamMatch = false;
   List<Player> selectedPlayers = [];
   List<Team> selectedUnits = [];
@@ -129,6 +136,19 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   onPressed: () async => await onChoosingGame(),
                 ),
 
+              // Choose the default lives
+              if (selectedGame?.ruleset == Ruleset.lives && !widget.editMode)
+                ChooseTile(
+                  title: getLifeLabel(loc, selectedLives),
+                  trailing: CustomStepper(
+                    value: selectedLives,
+                    onChanged: (int newValue) =>
+                        setState(() => selectedLives = newValue),
+                    minValue: 1,
+                    maxValue: 99,
+                  ),
+                ),
+
               // Group selection tile.
               ChooseTile(
                 title: loc.group,
@@ -138,11 +158,25 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 onPressed: () async => onChoosingGroup(),
               ),
 
+              // Creation date selection tile.
+              if (widget.editMode)
+                ChooseTile(
+                  title: loc.creation_date,
+                  trailing: selectedCreationDate == null
+                      ? Text(loc.today)
+                      : Text(
+                          DateFormat.yMMMd(
+                            Localizations.localeOf(context).toString(),
+                          ).format(selectedCreationDate!),
+                        ),
+                  onPressed: () async => onCreationDateSelection(),
+                ),
+
+              // Team match switch
               if (!widget.editMode)
                 ChooseTile(
                   title: loc.team_match,
-                  trailing: Switch.adaptive(
-                    activeTrackColor: CustomTheme.primaryColor,
+                  trailing: CustomAdaptiveSwitch(
                     padding: const EdgeInsets.symmetric(vertical: -15),
                     value: isTeamMatch,
                     onChanged: (value) => setState(() {
@@ -225,6 +259,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       selectedPlayers = match.players;
       selectedGame = match.game;
       isTeamMatch = match.isTeamMatch;
+
+      selectedCreationDate = nullIfToday(match.createdAt);
 
       if (match.teams != null &&
           match.teams!.isNotEmpty &&
@@ -318,6 +354,114 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     });
   }
 
+  Future<void> onCreationDateSelection() async {
+    await showDialog<DateTime>(
+      context: context,
+      builder: (context) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            splashFactory: NoSplash.splashFactory,
+            textButtonTheme: TextButtonThemeData(
+              style: ButtonStyle(
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
+              ),
+            ),
+            colorScheme: const ColorScheme.dark(
+              primary: CustomTheme.primaryColor,
+              onPrimary: CustomTheme.textColor,
+              surface: CustomTheme.boxColor,
+              onSurface: CustomTheme.textColor,
+            ),
+          ),
+          child: Dialog(
+            backgroundColor: CustomTheme.boxColor,
+            surfaceTintColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: const BorderSide(color: CustomTheme.boxBorderColor),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              height: 450,
+              child: SfDateRangePicker(
+                backgroundColor: CustomTheme.boxColor,
+                showNavigationArrow: true,
+                initialSelectedDate: selectedCreationDate ?? clock.now(),
+                maxDate: clock.now(),
+                headerStyle: const DateRangePickerHeaderStyle(
+                  textAlign: TextAlign.center,
+                  backgroundColor: Colors.transparent,
+                  textStyle: TextStyle(
+                    color: CustomTheme.textColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                monthCellStyle: const DateRangePickerMonthCellStyle(
+                  textStyle: TextStyle(
+                    color: CustomTheme.textColor,
+                    fontSize: 16,
+                  ),
+                  todayTextStyle: TextStyle(
+                    color: CustomTheme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  leadingDatesTextStyle: TextStyle(
+                    color: CustomTheme.hintColor,
+                    fontSize: 16,
+                  ),
+                  trailingDatesTextStyle: TextStyle(
+                    color: CustomTheme.hintColor,
+                    fontSize: 16,
+                  ),
+                ),
+                yearCellStyle: const DateRangePickerYearCellStyle(
+                  textStyle: TextStyle(
+                    color: CustomTheme.textColor,
+                    fontSize: 16,
+                  ),
+                  todayTextStyle: TextStyle(
+                    color: CustomTheme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                monthViewSettings: const DateRangePickerMonthViewSettings(
+                  viewHeaderStyle: DateRangePickerViewHeaderStyle(
+                    textStyle: TextStyle(
+                      color: CustomTheme.textColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  firstDayOfWeek: 1,
+                ),
+                selectionMode: DateRangePickerSelectionMode.single,
+                selectionColor: CustomTheme.primaryColor,
+                selectionTextStyle: const TextStyle(
+                  color: CustomTheme.textColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                showActionButtons: true,
+                onSubmit: (value) {
+                  if (value is DateTime) {
+                    setState(() {
+                      selectedCreationDate = nullIfToday(value);
+                    });
+                    Navigator.pop(context);
+                  }
+                },
+                onCancel: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   // If none of the selected players are from the currently selected group,
   // the group is also deselected.
   Future<void> removeGroupWhenNoMemberLeft() async {
@@ -380,15 +524,17 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       } else {
         // If it has pairs, we treat it as a team match but the teams are already set
         if (context.mounted) {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             adaptivePageRoute(
               fullscreenDialog: true,
               builder: (context) => MatchResultView(
                 match: match,
                 onWinnerChanged: widget.onWinnerChanged,
+                defaultLives: selectedLives,
               ),
             ),
+            (route) => route.isFirst,
           );
         }
       }
@@ -397,30 +543,52 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
   /// Updates the existing match in the database.
   Future<void> updateMatch() async {
+    final originalMatch = widget.matchToPrefill!;
+    final newCreatedAt = selectedCreationDate ?? originalMatch.createdAt;
+    DateTime? newEndedAt = originalMatch.endedAt;
+
+    if (newEndedAt != null && newEndedAt.isBefore(newCreatedAt)) {
+      newEndedAt = newCreatedAt;
+    }
+
     final updatedMatch = Match(
-      id: widget.matchToPrefill!.id,
+      id: originalMatch.id,
       name: matchNameController.text.isEmpty
           ? (hintText ?? '')
           : matchNameController.text.trim(),
       group: selectedGroup,
       players: selectedPlayers,
       game: selectedGame!,
-      createdAt: widget.matchToPrefill!.createdAt,
-      endedAt: widget.matchToPrefill!.endedAt,
-      notes: widget.matchToPrefill!.notes,
+      createdAt: newCreatedAt,
+      endedAt: newEndedAt,
+      notes: originalMatch.notes,
     );
 
-    if (widget.matchToPrefill!.name != updatedMatch.name) {
+    if (originalMatch.name != updatedMatch.name) {
       await db.matchDao.updateMatchName(
-        matchId: widget.matchToPrefill!.id,
+        matchId: originalMatch.id,
         name: updatedMatch.name,
       );
     }
 
-    if (widget.matchToPrefill!.group?.id != updatedMatch.group?.id) {
+    if (originalMatch.group?.id != updatedMatch.group?.id) {
       await db.matchDao.updateMatchGroup(
-        matchId: widget.matchToPrefill!.id,
+        matchId: originalMatch.id,
         groupId: updatedMatch.group?.id,
+      );
+    }
+
+    if (originalMatch.createdAt != updatedMatch.createdAt) {
+      await db.matchDao.updateMatchCreatedAt(
+        matchId: originalMatch.id,
+        createdAt: updatedMatch.createdAt,
+      );
+    }
+
+    if (originalMatch.endedAt != updatedMatch.endedAt) {
+      await db.matchDao.updateMatchEndedAt(
+        matchId: originalMatch.id,
+        endedAt: updatedMatch.endedAt!,
       );
     }
 
@@ -458,7 +626,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
     Match match = Match(
       name: effectiveTitle,
-      createdAt: DateTime.now(),
+      createdAt: selectedCreationDate,
       group: selectedGroup,
       players: selectedPlayers,
       isTeamMatch: isTeamMatch,
@@ -473,4 +641,15 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     }
     return match;
   }
+
+  /// Returns true if the given [date] is today.
+  bool isToday(DateTime date) {
+    final now = clock.now();
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
+  }
+
+  /// Returns null if the given [date] is today, otherwise returns the date.
+  DateTime? nullIfToday(DateTime date) => isToday(date) ? null : date;
 }

@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @choose_date_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose date range'**
+  String get choose_date_range;
+
   /// No description provided for @choose_game.
   ///
   /// In en, this message translates to:
@@ -320,6 +326,18 @@ abstract class AppLocalizations {
   /// **'Created on'**
   String get created_on;
 
+  /// No description provided for @creation_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Creation date'**
+  String get creation_date;
+
+  /// No description provided for @custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get custom;
+
   /// No description provided for @data.
   ///
   /// In en, this message translates to:
@@ -463,12 +481,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit player'**
   String get edit_player;
-
-  /// No description provided for @enter_points.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter points'**
-  String get enter_points;
 
   /// No description provided for @enter_results.
   ///
@@ -662,11 +674,11 @@ abstract class AppLocalizations {
   /// **'Licenses'**
   String get licenses;
 
-  /// No description provided for @live_edit_mode.
+  /// No description provided for @lives.
   ///
   /// In en, this message translates to:
-  /// **'Live Edit Mode'**
-  String get live_edit_mode;
+  /// **'{count, plural, =1{Life} other{Lives}}'**
+  String lives(int count);
 
   /// No description provided for @loading.
   ///
@@ -989,7 +1001,7 @@ abstract class AppLocalizations {
   /// No description provided for @select_a_display_color.
   ///
   /// In en, this message translates to:
-  /// **'Select a display color'**
+  /// **'Select a display color.'**
   String get select_a_display_color;
 
   /// No description provided for @select_a_scope.
@@ -1141,6 +1153,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Timeframe'**
   String get timeframe;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
 
   /// No description provided for @today_at.
   ///

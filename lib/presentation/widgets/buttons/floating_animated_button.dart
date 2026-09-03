@@ -33,94 +33,106 @@ class FloatingAnimatedButton extends StatefulWidget {
 
 class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
     with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late AnimationController _disabledAnimationController;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _disabledScaleAnimation;
+  late AnimationController animationController;
+  late AnimationController disabledAnimationController;
+  late Animation<double> scaleAnimation;
+  late Animation<double> disabledScaleAnimation;
 
   /// How long the button needs to be pressed to register it as long press
-  Timer? _longPressTimer;
+  Timer? longPressTimer;
 
   /// How much time between two onLongPressed calls
-  Timer? _repeatTimer;
+  Timer? repeatTimer;
 
-  bool _isLongPressing = false;
+  bool isLongPressing = false;
 
   @override
   void initState() {
     super.initState();
 
-    _animationController = AnimationController(
+    animationController = AnimationController(
       duration: const Duration(milliseconds: 100),
       vsync: this,
     );
 
-    _disabledAnimationController = AnimationController(
+    disabledAnimationController = AnimationController(
       duration: const Duration(milliseconds: 100),
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
     );
 
-    _disabledScaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+    disabledScaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
       CurvedAnimation(
-        parent: _disabledAnimationController,
+        parent: disabledAnimationController,
         curve: Curves.easeInOut,
       ),
     );
   }
 
   @override
+  void didUpdateWidget(FloatingAnimatedButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.onPressed == null || widget.onLongPressed == null) {
+      cancelTimers();
+      isLongPressing = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    cancelTimers();
+    animationController.dispose();
+    disabledAnimationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ScaleTransition(
-      scale: widget.onPressed == null
-          ? _disabledScaleAnimation
-          : _scaleAnimation,
+      scale: widget.onPressed == null ? disabledScaleAnimation : scaleAnimation,
       child: GestureDetector(
         onTapDown: (_) {
           if (widget.onPressed == null) {
-            _disabledAnimationController.forward();
+            disabledAnimationController.forward();
           } else {
-            _animationController.forward();
+            animationController.forward();
             if (widget.onLongPressed != null) {
-              _longPressTimer = Timer(
-                const Duration(milliseconds: 400),
-                () async {
-                  _isLongPressing = true;
-                  widget.onLongPressed?.call();
-                  await HapticFeedback.heavyImpact();
-                  _repeatTimer = Timer.periodic(
-                    const Duration(milliseconds: 250),
-                    (_) async {
-                      widget.onLongPressed?.call();
-                      await HapticFeedback.heavyImpact();
-                    },
-                  );
-                },
-              );
+              longPressTimer = Timer(const Duration(milliseconds: 400), () {
+                HapticFeedback.heavyImpact();
+                isLongPressing = true;
+                widget.onLongPressed?.call();
+                repeatTimer = Timer.periodic(
+                  const Duration(milliseconds: 250),
+                  (_) {
+                    HapticFeedback.heavyImpact();
+                    widget.onLongPressed?.call();
+                  },
+                );
+              });
             }
           }
         },
         onTapUp: (_) async {
+          cancelTimers();
           if (widget.onPressed == null) {
-            _disabledAnimationController.reverse();
+            disabledAnimationController.reverse();
           } else {
-            _cancelTimers();
-            if (mounted && !_isLongPressing) {
-              await HapticFeedback.selectionClick();
+            if (mounted && !isLongPressing) {
+              HapticFeedback.selectionClick();
               widget.onPressed?.call();
             }
-            _isLongPressing = false;
+            isLongPressing = false;
             await Future.delayed(const Duration(milliseconds: 100));
-            await _animationController.reverse();
+            await animationController.reverse();
           }
         },
         onTapCancel: () {
-          _isLongPressing = false;
-          _cancelTimers();
-          _animationController.reverse();
+          isLongPressing = false;
+          cancelTimers();
+          animationController.reverse();
         },
         child: Container(
           decoration: BoxDecoration(
@@ -151,18 +163,10 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
     );
   }
 
-  @override
-  void dispose() {
-    _cancelTimers();
-    _animationController.dispose();
-    _disabledAnimationController.dispose();
-    super.dispose();
-  }
-
-  void _cancelTimers() {
-    _longPressTimer?.cancel();
-    _longPressTimer = null;
-    _repeatTimer?.cancel();
-    _repeatTimer = null;
+  void cancelTimers() {
+    longPressTimer?.cancel();
+    longPressTimer = null;
+    repeatTimer?.cancel();
+    repeatTimer = null;
   }
 }

@@ -30,7 +30,6 @@ void main() {
         ruleset: Ruleset.singleWinner,
         description: 'A classic strategy game',
         color: AppColor.blue,
-        icon: '',
       );
       testGame2 = Game(
         id: 'game2',
@@ -38,7 +37,6 @@ void main() {
         ruleset: Ruleset.highestScore,
         description: 'Card game',
         color: AppColor.red,
-        icon: '',
       );
       testGame3 = Game(
         id: 'game3',
@@ -46,7 +44,6 @@ void main() {
         ruleset: Ruleset.lowestScore,
         description: 'Board game',
         color: AppColor.green,
-        icon: '',
       );
       testStatistic = Statistic(
         type: StatisticType.totalWins,
@@ -138,7 +135,6 @@ void main() {
         expect(games.first.ruleset, testGame1.ruleset);
         expect(games.first.description, testGame1.description);
         expect(games.first.color, testGame1.color);
-        expect(games.first.icon, testGame1.icon);
       });
 
       test('addStatisticGames() adds multiple games correctly', () async {

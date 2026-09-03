@@ -49,8 +49,8 @@ class _MatchTileState extends State<MatchTile> {
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(
-      onTap: () async {
-        await HapticFeedback.selectionClick();
+      onTap: () {
+        HapticFeedback.selectionClick();
         widget.onTap.call();
       },
       child: Container(
@@ -155,9 +155,9 @@ class _MatchTileState extends State<MatchTile> {
               ),
 
               child: Visibility(
-                visible: match.mvp.isNotEmpty,
+                visible: match.useTeamLogic,
 
-                // MVT Display for team matches
+                // MVP Display for player matches
                 replacement: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
@@ -175,12 +175,12 @@ class _MatchTileState extends State<MatchTile> {
                     children: [
                       getMvpIcon(),
                       const SizedBox(width: 8),
-                      Expanded(child: getMvtTextWidget(loc)),
+                      Expanded(child: getMvpTextWidget(loc)),
                     ],
                   ),
                 ),
 
-                // MVP Display for player matches
+                // MVT Display for team matches
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
@@ -198,7 +198,7 @@ class _MatchTileState extends State<MatchTile> {
                     children: [
                       getMvpIcon(),
                       const SizedBox(width: 8),
-                      Expanded(child: getMvpTextWidget(loc)),
+                      Expanded(child: getMvtTextWidget(loc)),
                     ],
                   ),
                 ),
@@ -376,7 +376,8 @@ class _MatchTileState extends State<MatchTile> {
     final namesToRender =
         ruleset == Ruleset.multipleWinners ||
             ruleset == Ruleset.highestScore ||
-            ruleset == Ruleset.lowestScore
+            ruleset == Ruleset.lowestScore ||
+            ruleset == Ruleset.lives
         ? players
         : [players.first];
 
@@ -479,6 +480,8 @@ class _MatchTileState extends State<MatchTile> {
         return Icon(icon, size: 20, color: Colors.green);
       case Ruleset.placement:
         return Icon(icon, size: 20, color: Colors.deepOrangeAccent);
+      case Ruleset.lives:
+        return Icon(icon, size: 20, color: Colors.red);
     }
   }
 }

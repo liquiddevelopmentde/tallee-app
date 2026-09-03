@@ -32,11 +32,37 @@ class StatisticCalculator {
     List<Match> filteredMatches = matches;
 
     // Filter timeframe
-    if (statistic.timeframe != Timeframe.allTime) {
+    if (statistic.timeframe == Timeframe.custom) {
+      if (statistic.startDate != null && statistic.endDate != null) {
+        final startOfDay = DateTime(
+          statistic.startDate!.year,
+          statistic.startDate!.month,
+          statistic.startDate!.day,
+        );
+        final endOfDay = DateTime(
+          statistic.endDate!.year,
+          statistic.endDate!.month,
+          statistic.endDate!.day,
+          23,
+          59,
+          59,
+        );
+        filteredMatches = matches.where((m) {
+          if (m.endedAt == null) return false;
+          final isAfterOrAtStart =
+              m.createdAt.isAtSameMomentAs(startOfDay) ||
+              m.createdAt.isAfter(startOfDay);
+          final isBeforeOrAtEnd =
+              m.createdAt.isAtSameMomentAs(endOfDay) ||
+              m.createdAt.isBefore(endOfDay);
+          return isAfterOrAtStart && isBeforeOrAtEnd;
+        }).toList();
+      }
+    } else if (statistic.timeframe != Timeframe.allTime) {
       final minDate = _getMinimumDate(timeframe: statistic.timeframe);
       if (minDate != null) {
         filteredMatches = matches
-            .where((m) => m.endedAt != null && m.endedAt!.isAfter(minDate))
+            .where((m) => m.endedAt != null && !m.createdAt.isBefore(minDate))
             .toList();
       }
     }
@@ -110,18 +136,21 @@ class StatisticCalculator {
   /// Returns a [DateTime] with the minimum time and date the [timeframe] allows
   static DateTime? _getMinimumDate({required Timeframe timeframe}) {
     final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+
     switch (timeframe) {
       case Timeframe.last7Days:
-        return now.subtract(const Duration(days: 7));
+        return todayStart.subtract(const Duration(days: 7));
       case Timeframe.last30Days:
-        return now.subtract(const Duration(days: 30));
+        return todayStart.subtract(const Duration(days: 30));
       case Timeframe.last90Days:
-        return now.subtract(const Duration(days: 90));
+        return todayStart.subtract(const Duration(days: 90));
       case Timeframe.last180Days:
-        return now.subtract(const Duration(days: 180));
+        return todayStart.subtract(const Duration(days: 180));
       case Timeframe.lastYear:
-        return now.subtract(const Duration(days: 365));
+        return todayStart.subtract(const Duration(days: 365));
       case Timeframe.allTime:
+      case Timeframe.custom:
         return null;
     }
   }
@@ -152,6 +181,7 @@ class StatisticCalculator {
       case Ruleset.multipleWinners:
       case Ruleset.placement:
       case Ruleset.singleLoser:
+      case Ruleset.lives:
         return false;
     }
   }
@@ -239,15 +269,25 @@ class StatisticCalculator {
   static int _matchesPlayed(Player p, List<Match> matches) =>
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).length;
 
-  /// Determines how many matches the player is mvp in the given matches.
+  /// Determines how many wins the player has in the given matches.
+  ///
+  /// - singleLooser: Every player except the mvp gets a win
+  /// - Other rulesets: The mvp gets a win
   static int _wins(Player p, List<Match> matches) =>
-      matches.where((m) => m.mvp.any((mp) => mp.id == p.id)).length;
+      matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
+        final isMvp = m.mvp.any((mp) => mp.id == p.id);
+        return m.game.ruleset == Ruleset.singleLoser ? !isMvp : isMvp;
+      }).length;
 
-  /// Determines how many times a player is the loser in single-loser matches.
-  static int _losses(Player p, List<Match> matches) => matches
-      .where((m) => m.game.ruleset == Ruleset.singleLoser)
-      .where((m) => m.mvp.any((mp) => mp.id == p.id))
-      .length;
+  /// Determines how many losses the player has in the given matches.
+  ///
+  /// - singleLooser: The mvp is the loser
+  /// - Other rulesets: Everyone except mvp is the loser
+  static int _losses(Player p, List<Match> matches) =>
+      matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
+        final isMvp = m.mvp.any((mp) => mp.id == p.id);
+        return m.game.ruleset == Ruleset.singleLoser ? isMvp : !isMvp;
+      }).length;
 
   /// Determines the total score of the player in the given list of matches.
   static int _totalScore(Player p, List<Match> matches) {

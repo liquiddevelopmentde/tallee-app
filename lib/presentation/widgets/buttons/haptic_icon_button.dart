@@ -45,12 +45,13 @@ class _HapticIconButtonState extends State<HapticIconButton>
       child: FadeTransition(
         opacity: controller,
         child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTapDown: isEnabled ? (_) => handleTapDown() : null,
           onTapUp: isEnabled ? (_) => handleRelease() : null,
           onTapCancel: isEnabled ? () => handleRelease() : null,
           onTap: isEnabled
-              ? () async {
-                  await HapticFeedback.selectionClick();
+              ? () {
+                  HapticFeedback.selectionClick();
                   widget.onPressed!.call();
                 }
               : null,

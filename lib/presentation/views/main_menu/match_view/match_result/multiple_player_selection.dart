@@ -1,6 +1,5 @@
-import 'dart:core' hide Match;
-
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
@@ -62,6 +61,7 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
                         ),
                   value: selectedTeams.contains(allTeams[index]),
                   onChanged: (bool value) {
+                    HapticFeedback.selectionClick();
                     setState(() {
                       if (value) {
                         selectedTeams.add(allTeams[index]);
@@ -87,6 +87,7 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
                   ),
                   value: selectedPlayers.contains(allPlayers[index]),
                   onChanged: (bool value) {
+                    HapticFeedback.selectionClick();
                     setState(() {
                       if (value) {
                         selectedPlayers.add(allPlayers[index]);

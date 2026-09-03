@@ -27,6 +27,8 @@ class LabeledDropdown<T> extends StatelessWidget {
     required ValueListenable<T> this.valueListenable,
     required void Function(T?) this.onChanged,
     this.enabled = true,
+    this.selectedItemBuilder,
+    this.bottomPadding,
   }) : isMultiSelect = false,
        multiValueListenable = null,
        onItemTap = null;
@@ -41,9 +43,11 @@ class LabeledDropdown<T> extends StatelessWidget {
     required ValueListenable<List<T>> this.multiValueListenable,
     required void Function(T) this.onItemTap,
     this.enabled = true,
+    this.bottomPadding,
   }) : isMultiSelect = true,
        valueListenable = null,
-       onChanged = null;
+       onChanged = null,
+       selectedItemBuilder = null;
 
   /// The bold section title.
   final String title;
@@ -75,6 +79,12 @@ class LabeledDropdown<T> extends StatelessWidget {
   /// Called with the tapped value in multi-select mode.
   final void Function(T)? onItemTap;
 
+  /// Optional builder for the selected item(s) shown in the button.
+  final DropdownButtonBuilder? selectedItemBuilder;
+
+  /// Optional padding at the bottom of the dropdown.
+  final double? bottomPadding;
+
   @override
   Widget build(BuildContext context) {
     final listenable = multiValueListenable;
@@ -102,6 +112,7 @@ class LabeledDropdown<T> extends StatelessWidget {
                 description,
                 textAlign: TextAlign.start,
                 softWrap: true,
+                maxLines: 2,
                 style: const TextStyle(
                   color: CustomTheme.textColor,
                   fontSize: 12,
@@ -113,7 +124,12 @@ class LabeledDropdown<T> extends StatelessWidget {
 
         // Dropdown
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          padding: EdgeInsets.only(
+            top: 8,
+            left: 16,
+            right: 16,
+            bottom: bottomPadding ?? 8,
+          ),
           child: DropdownButtonHideUnderline(
             child: isMultiSelect
                 ? DropdownButton2<T>(
@@ -203,6 +219,7 @@ class LabeledDropdown<T> extends StatelessWidget {
                     iconStyleData: iconStyle,
                     dropdownStyleData: dropdownStyle,
                     menuItemStyleData: menuStyle,
+                    selectedItemBuilder: selectedItemBuilder,
                   ),
           ),
         ),

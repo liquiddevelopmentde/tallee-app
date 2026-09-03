@@ -26,10 +26,9 @@ void main() {
       testGame1 = Game(
         id: 'game1',
         name: 'Chess',
-        ruleset: Ruleset.singleWinner,
+        ruleset: Ruleset.lives,
         description: 'A classic strategy game',
         color: AppColor.blue,
-        icon: 'chess_icon',
       );
       testGame2 = Game(
         id: 'game2',
@@ -37,7 +36,6 @@ void main() {
         ruleset: Ruleset.multipleWinners,
         description: 'Card game with multiple winners',
         color: AppColor.red,
-        icon: 'poker_icon',
       );
       testGame3 = Game(
         id: 'game3',
@@ -45,7 +43,6 @@ void main() {
         ruleset: Ruleset.highestScore,
         description: 'A board game about real estate',
         color: AppColor.orange,
-        icon: '',
       );
     });
   });
@@ -66,7 +63,6 @@ void main() {
         expect(game.ruleset, testGame1.ruleset);
         expect(game.description, testGame1.description);
         expect(game.color, testGame1.color);
-        expect(game.icon, testGame1.icon);
         expect(game.createdAt, testGame1.createdAt);
       });
 
@@ -95,7 +91,6 @@ void main() {
           expect(game.description, testGame.description);
           expect(game.ruleset, testGame.ruleset);
           expect(game.color, testGame.color);
-          expect(game.icon, testGame.icon);
         }
       });
 
@@ -125,7 +120,6 @@ void main() {
             ruleset: Ruleset.multipleWinners,
             description: 'Description with émojis 🎮🎲',
             color: AppColor.purple,
-            icon: '',
           );
           await database.gameDao.addGame(game: specialGame);
 
@@ -148,7 +142,6 @@ void main() {
         expect(game.ruleset, testGame1.ruleset);
         expect(game.description, testGame1.description);
         expect(game.color, testGame1.color);
-        expect(game.icon, testGame1.icon);
       });
 
       test('getGameById() throws exception for non-existent game', () async {
@@ -320,33 +313,6 @@ void main() {
         expect(allGames, isEmpty);
       });
 
-      test('updateGameIcon() works correctly', () async {
-        await database.gameDao.addGame(game: testGame1);
-        const newIcon = 'new_chess_icon';
-
-        final updated = await database.gameDao.updateGameIcon(
-          gameId: testGame1.id,
-          icon: newIcon,
-        );
-        expect(updated, isTrue);
-
-        final updatedGame = await database.gameDao.getGameById(
-          gameId: testGame1.id,
-        );
-        expect(updatedGame.icon, newIcon);
-      });
-
-      test('updateGameIcon() does nothing for non-existent game', () async {
-        final updated = await database.gameDao.updateGameIcon(
-          gameId: 'non-existent-id',
-          icon: 'New icon',
-        );
-        expect(updated, isFalse);
-
-        final allGames = await database.gameDao.getAllGames();
-        expect(allGames, isEmpty);
-      });
-
       test('Multiple updates to the same game work correctly', () async {
         await database.gameDao.addGame(game: testGame1);
 
@@ -379,7 +345,6 @@ void main() {
 
         // Staying the same
         expect(updatedGame.ruleset, testGame1.ruleset);
-        expect(updatedGame.icon, testGame1.icon);
       });
     });
     group('DELETE', () {

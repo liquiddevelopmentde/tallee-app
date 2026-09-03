@@ -71,35 +71,15 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         actions: [
           HapticIconButton(
             icon: const Icon(Icons.copy),
-            onPressed: () {
-              final cleanMatch = Match(
-                name: widget.match.name,
-                game: widget.match.game,
-                players: widget.match.players,
-                group: widget.match.group,
-                isTeamMatch: widget.match.isTeamMatch,
-                notes: widget.match.notes,
-                teams: widget.match.teams
-                    ?.map(
-                      (t) => Team(
-                        name: t.name,
-                        color: t.color,
-                        members: t.members,
-                      ),
-                    )
-                    .toList(),
-              );
-
-              Navigator.of(context).pushReplacement(
-                adaptivePageRoute(
-                  builder: (context) => CreateMatchView(
-                    matchToPrefill: cleanMatch,
-                    onWinnerChanged: widget.onMatchUpdate,
-                    onMatchesUpdated: widget.onMatchUpdate,
-                  ),
+            onPressed: () => Navigator.of(context).push(
+              adaptivePageRoute(
+                builder: (context) => CreateMatchView(
+                  matchToPrefill: templateMatch,
+                  onWinnerChanged: widget.onMatchUpdate,
+                  onMatchesUpdated: widget.onMatchUpdate,
                 ),
-              );
-            },
+              ),
+            ),
           ),
           HapticIconButton(
             icon: const Icon(Icons.delete),
@@ -364,6 +344,20 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     );
   }
 
+  /// Returns a copy of the current match without the previous match ID and
+  /// scores, used as a template for duplicating a match.
+  Match get templateMatch => Match(
+    name: widget.match.name,
+    game: widget.match.game,
+    players: widget.match.players,
+    group: widget.match.group,
+    isTeamMatch: widget.match.isTeamMatch,
+    notes: widget.match.notes,
+    teams: widget.match.teams
+        ?.map((t) => Team(name: t.name, color: t.color, members: t.members))
+        .toList(),
+  );
+
   /// Callback for when the match is updated in the edit view,
   /// updates the match in this view
   void onMatchUpdated(Match editedMatch) {
@@ -503,7 +497,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     }
 
     final ruleset = match.game.ruleset;
-    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
+    if (ruleset == Ruleset.highestScore ||
+        ruleset == Ruleset.placement ||
+        ruleset == Ruleset.lives) {
       namedScores.sort((a, b) => b.$2.compareTo(a.$2));
     } else if (ruleset == Ruleset.lowestScore) {
       namedScores.sort((a, b) => a.$2.compareTo(b.$2));
@@ -523,6 +519,15 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: getPlacementTextcolor(index),
+        ),
+      );
+    } else if (ruleset == Ruleset.lives) {
+      return Text(
+        getLifeLabel(loc, score),
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: score > 0 ? CustomTheme.primaryColor : CustomTheme.hintColor,
         ),
       );
     } else {
