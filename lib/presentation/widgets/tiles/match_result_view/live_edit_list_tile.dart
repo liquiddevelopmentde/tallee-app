@@ -387,6 +387,6 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
     }
 
     // Check if all characters are digits 0 <= x <= 9
-    return digits.codeUnits.every((unit) => unit >= 48 && unit <= 57);
+    return RegExp(r'^\d+$').hasMatch(digits);
   }
 }
