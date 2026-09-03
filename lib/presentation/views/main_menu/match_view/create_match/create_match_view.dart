@@ -531,6 +531,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               builder: (context) => MatchResultView(
                 match: match,
                 onWinnerChanged: widget.onWinnerChanged,
+                defaultLives: selectedLives,
               ),
             ),
             (route) => route.isFirst,
