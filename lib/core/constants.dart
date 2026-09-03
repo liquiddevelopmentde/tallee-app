@@ -25,4 +25,16 @@ class Constants {
 
   /// Maximum length for game descriptions
   static const int MAX_GAME_DESCRIPTION_LENGTH = 256;
+
+  /// Range for score input
+  static const ({int min, int max}) SCORE_INPUT_BOUNDARIES = (
+    min: -99999,
+    max: 99999,
+  );
+
+  /// Range for live input
+  static const ({int min, int max}) LIVE_INPUT_BOUNDARIES = (
+    min: 0,
+    max: 99999,
+  );
 }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
@@ -12,8 +13,7 @@ class LiveEditListTile extends StatefulWidget {
   /// - [value]: The initial value displayed by the tile.
   /// - [onChanged]: The callback invoked with the new value whenever it changes.
   /// - [color]: The optional accent color used to frame the [title].
-  /// - [minValue]: The inclusive lower bound the value is clamped to.
-  /// - [maxValue]: The inclusive upper bound the value is clamped to.
+  /// - [boundaries]: The inclusive (min, max) range the value is clamped to.
   /// - [isLivesRuleset]: Whether to render a heart icon next to the value and
   ///   dim it once the unit is eliminated.
   /// - [focusNode]:
@@ -25,8 +25,7 @@ class LiveEditListTile extends StatefulWidget {
     required this.value,
     this.onChanged,
     this.color,
-    this.minValue = -99999,
-    this.maxValue = 99999,
+    this.boundaries = Constants.SCORE_INPUT_BOUNDARIES,
     this.isLivesRuleset = false,
     this.focusNode,
     this.textInputAction,
@@ -37,8 +36,7 @@ class LiveEditListTile extends StatefulWidget {
   final int value;
   final void Function(int newValue)? onChanged;
   final Color? color;
-  final int minValue;
-  final int maxValue;
+  final ({int min, int max}) boundaries;
   final bool isLivesRuleset;
   final FocusNode? focusNode;
   final TextInputAction? textInputAction;
@@ -59,14 +57,18 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   late final TextEditingController controller;
   late final FocusNode focusNode;
 
-  bool get isLowestValue => value <= widget.minValue;
+  int get minValue => widget.boundaries.min;
 
+  int get maxValue => widget.boundaries.max;
+
+  // Ruleset.lives variables
+  bool get isLowestValue => value <= widget.boundaries.min;
   IconData get livesIcon =>
       isLowestValue ? Icons.heart_broken_rounded : Icons.favorite_rounded;
 
   @override
   void initState() {
-    value = widget.value.clamp(widget.minValue, widget.maxValue);
+    value = widget.value.clamp(minValue, maxValue);
     valueTextStyle = TextStyle(
       fontSize: widget.isLivesRuleset ? 46 : 38,
       fontWeight: FontWeight.w600,
@@ -81,7 +83,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   void didUpdateWidget(covariant LiveEditListTile oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
-      final clamped = widget.value.clamp(widget.minValue, widget.maxValue);
+      final clamped = widget.value.clamp(minValue, maxValue);
       if (clamped != value) {
         setState(() => value = clamped);
         if (!focusNode.hasFocus) {
@@ -133,10 +135,10 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
               // Decrease button
               FloatingAnimatedButton(
                 icon: Icons.remove_rounded,
-                onPressed: value > widget.minValue
+                onPressed: value > minValue
                     ? () => onButtonPressed(-smallStep)
                     : null,
-                onLongPressed: value > widget.minValue
+                onLongPressed: value > minValue
                     ? () => onButtonPressed(-largeStep)
                     : null,
               ),
@@ -296,10 +298,10 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
               // Increase button
               FloatingAnimatedButton(
                 icon: Icons.add_rounded,
-                onPressed: value < widget.maxValue
+                onPressed: value < maxValue
                     ? () => onButtonPressed(smallStep)
                     : null,
-                onLongPressed: value < widget.maxValue
+                onLongPressed: value < maxValue
                     ? () => onButtonPressed(largeStep)
                     : null,
               ),
@@ -354,7 +356,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
     final clamped = controller.text.isEmpty
         // Reset count if text field is empty
         ? 0
-        : newValue.clamp(widget.minValue, widget.maxValue);
+        : newValue.clamp(minValue, maxValue);
     if (clamped != value) {
       value = clamped;
       widget.onChanged?.call(value);
@@ -395,8 +397,8 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
     final digits = isNegative ? text.substring(1) : text;
 
     final maxDigits = max(
-      widget.maxValue.toString().length,
-      widget.minValue.toString().length - 1,
+      maxValue.toString().length,
+      minValue.toString().length - 1,
     );
     if (digits.isEmpty || digits.length > maxDigits) {
       return false;

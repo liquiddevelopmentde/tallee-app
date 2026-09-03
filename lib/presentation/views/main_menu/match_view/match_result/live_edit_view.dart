@@ -105,8 +105,7 @@ class _LiveEditViewState extends State<LiveEditView> {
             ),
           ),
           value: scores[unit] ?? fallbackValue,
-          minValue: widget.minValue,
-          maxValue: widget.maxValue,
+          boundaries: (min: widget.minValue, max: widget.maxValue),
           color: isTeamMatch && unit is Team
               ? getColorFromAppColor(unit.color)
               : null,
