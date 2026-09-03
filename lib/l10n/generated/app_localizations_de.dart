@@ -206,6 +206,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get edit_game => 'Spielvorlage bearbeiten';
 
   @override
+  String get player_name => 'Name des/der Spieler:in';
+
+  @override
   String get edit_group => 'Gruppe bearbeiten';
 
   @override
@@ -234,6 +237,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get error_editing_group =>
       'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
+
+  @override
+  String get error_editing_player =>
+      'Fehler beim Bearbeiten des Spielers, bitte erneut versuchen';
 
   @override
   String get error_reading_file => 'Fehler beim Lesen der Datei';

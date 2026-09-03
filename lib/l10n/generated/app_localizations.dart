@@ -458,6 +458,12 @@ abstract class AppLocalizations {
   /// **'Edit Game'**
   String get edit_game;
 
+  /// No description provided for @player_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Player name'**
+  String get player_name;
+
   /// No description provided for @edit_group.
   ///
   /// In en, this message translates to:
@@ -511,6 +517,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error while editing group, please try again'**
   String get error_editing_group;
+
+  /// No description provided for @error_editing_player.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while editing player, please try again'**
+  String get error_editing_player;
 
   /// No description provided for @error_reading_file.
   ///

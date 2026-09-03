@@ -206,6 +206,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_game => 'Edit Game';
 
   @override
+  String get player_name => 'Player name';
+
+  @override
   String get edit_group => 'Edit Group';
 
   @override
@@ -234,6 +237,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get error_editing_group =>
       'Error while editing group, please try again';
+
+  @override
+  String get error_editing_player =>
+      'Error while editing player, please try again';
 
   @override
   String get error_reading_file => 'Error reading file';

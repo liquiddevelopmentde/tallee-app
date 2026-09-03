@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -10,11 +9,11 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/player_view/edit_player_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
-import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/detail_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/player_profile_list_tile.dart';
@@ -23,13 +22,11 @@ class PlayerDetailView extends StatefulWidget {
   const PlayerDetailView({
     super.key,
     required this.player,
-    required this.onPlayerNameUpdated,
+    required this.onPlayerUpdated,
   });
 
-  /// The player to display
   final Player player;
-
-  final VoidCallback onPlayerNameUpdated;
+  final VoidCallback onPlayerUpdated;
 
   @override
   State<PlayerDetailView> createState() => _PlayerDetailViewState();
@@ -73,7 +70,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
     super.initState();
     player = widget.player;
     db = Provider.of<AppDatabase>(context, listen: false);
-    _loadData();
+    loadData();
   }
 
   @override
@@ -121,7 +118,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     await db.playerDao.deletePlayer(playerId: widget.player.id);
                     if (!context.mounted) return;
                     Navigator.pop(context);
-                    widget.onPlayerNameUpdated();
+                    widget.onPlayerUpdated();
                   }
                 });
               },
@@ -224,7 +221,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                       adaptivePageRoute(
                                         builder: (context) => GroupDetailView(
                                           group: group,
-                                          callback: widget.onPlayerNameUpdated,
+                                          callback: widget.onPlayerUpdated,
                                         ),
                                       ),
                                     );
@@ -268,8 +265,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                     adaptivePageRoute(
                                       builder: (context) => MatchDetailView(
                                         match: match,
-                                        onMatchUpdate:
-                                            widget.onPlayerNameUpdated,
+                                        onMatchUpdate: widget.onPlayerUpdated,
                                       ),
                                     ),
                                   );
@@ -310,94 +306,19 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   text: loc.edit_player,
                   icon: Icons.edit,
                   onPressed: () async {
-                    nameController.text = player.name;
-                    descriptionController.text = player.description;
-                    showDialog<bool>(
-                      context: context,
-                      builder: (context) => StatefulBuilder(
-                        builder: (context, setDialogState) {
-                          return CustomAlertDialog(
-                            title: loc.edit_name,
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextInputField(
-                                  controller: nameController,
-                                  hintText: loc.set_name,
-                                  maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
-                                  onChanged: (_) => setDialogState(() {}),
-                                ),
-                                const SizedBox(height: 10),
-                                TextInputField(
-                                  controller: descriptionController,
-                                  hintText: loc.description,
-maxLength:
-                                      Constants.MAX_PLAYER_DESCRIPTION_LENGTH,
-                                  minLines: 3,
-                                  maxLines: 3,
-                                  showCounterText: true,
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              CustomDialogAction(
-                                onPressed: isConfirmButtonEnabled()
-                                    ? () => Navigator.of(context).pop(true)
-                                    : null,
-                                text: loc.confirm,
-                              ),
-                              CustomDialogAction(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                buttonType: ButtonType.secondary,
-                                text: loc.cancel,
-                              ),
-                            ],
-                          );
-                        },
+                    final updatedPlayer = await Navigator.of(context).push(
+                      adaptivePageRoute(
+                        builder: (context) => EditPlayerView(
+                          playerToEdit: player,
+                          onPlayerChanged: widget.onPlayerUpdated,
+                        ),
                       ),
-                    ).then((confirmed) async {
-                      if (confirmed! && context.mounted) {
-                        final newName = nameController.text.trim();
-                        final newDescription = descriptionController.text
-                            .trim();
-
-                        final bool nameChanged = newName != player.name;
-                        int? newNameCount;
-
-                        if (nameChanged) {
-                          final fetchedPlayerNameCount = await db.playerDao
-                              .getNameCount(name: newName);
-                          await db.playerDao.updatePlayerName(
-                            playerId: player.id,
-                            name: newName,
-                          );
-                          widget.onPlayerNameUpdated.call();
-                          // If there is already a player with the same name,
-                          // the count of that player is 0, so we start counting from 2 to get the correct count for this player. If there are no players with the same name, we just show the name without a count.
-                          newNameCount = fetchedPlayerNameCount == 0
-                              ? 0
-                              : fetchedPlayerNameCount + 1;
-                        }
-                        if (newDescription != player.description) {
-                          await db.playerDao.updatePlayerDescription(
-                            playerId: player.id,
-                            description: newDescription,
-                          );
-                          widget.onPlayerNameUpdated.call();
-                        }
-                        if (nameChanged ||
-                            newDescription != player.description) {
-                          setState(() {
-                            player = player.copyWith(
-                              name: nameChanged ? newName : null,
-                              nameCount: newNameCount,
-                              description: newDescription,
-                            );
-                          });
-                        }
-                      }
-                    });
+                    );
+                    if (updatedPlayer != null) {
+                      setState(() {
+                        player = updatedPlayer;
+                      });
+                    }
                   },
                 ),
               ),
@@ -408,7 +329,7 @@ maxLength:
   }
 
   /// Loads statistics for this player
-  Future<void> _loadData() async {
+  Future<void> loadData() async {
     isLoading = true;
     final fetchedMatches = await db.matchDao.getMatchesByPlayer(
       playerId: player.id,

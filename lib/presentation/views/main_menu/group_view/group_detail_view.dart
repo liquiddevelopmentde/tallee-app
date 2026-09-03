@@ -7,7 +7,7 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
-import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
@@ -165,7 +165,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                             adaptivePageRoute(
                               builder: (context) => PlayerDetailView(
                                 player: member,
-                                onPlayerNameUpdated: widget.callback,
+                                onPlayerUpdated: widget.callback,
                               ),
                             ),
                           );

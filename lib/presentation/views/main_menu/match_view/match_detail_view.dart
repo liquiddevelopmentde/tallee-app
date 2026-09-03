@@ -12,7 +12,7 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
-import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -212,7 +212,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                                     PlayerDetailView(
                                                       player:
                                                           team.members.first,
-                                                      onPlayerNameUpdated:
+                                                      onPlayerUpdated:
                                                           widget.onMatchUpdate,
                                                     ),
                                               ),
@@ -251,8 +251,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                     adaptivePageRoute(
                                       builder: (context) => PlayerDetailView(
                                         player: player,
-                                        onPlayerNameUpdated:
-                                            widget.onMatchUpdate,
+                                        onPlayerUpdated: widget.onMatchUpdate,
                                       ),
                                     ),
                                   );
