@@ -131,9 +131,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 // Controller Icon
                 const Center(
                   child: ColoredIconContainer(
-                    icon: Icons.sports_esports,
+                    icon: RpgAwesome.clovers_card,
                     containerSize: 55,
-                    iconSize: 38,
                   ),
                 ),
                 const SizedBox(height: 10),

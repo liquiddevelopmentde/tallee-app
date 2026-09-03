@@ -143,7 +143,6 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   child: ColoredIconContainer(
                     icon: Icons.person,
                     containerSize: 55,
-                    iconSize: 38,
                   ),
                 ),
                 const SizedBox(height: 10),

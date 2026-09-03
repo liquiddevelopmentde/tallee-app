@@ -12,25 +12,18 @@ class ColoredIconContainer extends StatelessWidget {
     super.key,
     required this.icon,
     this.containerSize = 44,
-    this.iconSize = 28,
+    this.iconSize,
     this.margin,
     this.padding,
   });
 
-  /// The icon to be displayed inside the container.
   final IconData icon;
-
-  /// The size of the container (width and height).
   final double containerSize;
-
-  /// The size of the icon inside the container.
-  final double iconSize;
-
-  /// Optional margin around the container.
+  final double? iconSize;
   final EdgeInsetsGeometry? margin;
-
-  /// Optional padding inside the container.
   final EdgeInsetsGeometry? padding;
+
+  double get effectiveIconSize => iconSize ?? containerSize / 1.5;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +40,7 @@ class ColoredIconContainer extends StatelessWidget {
           ),
           child: Icon(
             icon,
-            size: iconSize,
+            size: effectiveIconSize,
             color: CustomTheme.primaryColor.withBlue(40),
           ),
         ),
