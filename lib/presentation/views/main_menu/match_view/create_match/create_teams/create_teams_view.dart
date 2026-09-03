@@ -97,6 +97,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
 
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text(loc.create_teams)),
       body: Stack(
         alignment: Alignment.center,
