@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @choose_date_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose date range'**
+  String get choose_date_range;
+
   /// No description provided for @choose_game.
   ///
   /// In en, this message translates to:
@@ -319,6 +325,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Created on'**
   String get created_on;
+
+  /// No description provided for @creation_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Creation date'**
+  String get creation_date;
+
+  /// No description provided for @custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get custom;
 
   /// No description provided for @data.
   ///
@@ -989,7 +1007,7 @@ abstract class AppLocalizations {
   /// No description provided for @select_a_display_color.
   ///
   /// In en, this message translates to:
-  /// **'Select a display color'**
+  /// **'Select a display color.'**
   String get select_a_display_color;
 
   /// No description provided for @select_a_scope.
@@ -1141,6 +1159,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Timeframe'**
   String get timeframe;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
 
   /// No description provided for @today_at.
   ///

@@ -29,10 +29,10 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   late final AppDatabase db;
 
   /// GlobalKey for ScaffoldMessenger to show snackbars
-  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   /// Controller for the group name input field
-  final _groupNameController = TextEditingController();
+  final groupNameController = TextEditingController();
 
   /// Controller for the group description input field
   final _groupDescriptionController = TextEditingController();
@@ -55,7 +55,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
         selectedPlayers = widget.groupToEdit!.members;
       });
     }
-    _groupNameController.addListener(() {
+    groupNameController.addListener(() {
       setState(() {});
     });
   }
@@ -71,7 +71,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return ScaffoldMessenger(
-      key: _scaffoldMessengerKey,
+      key: scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: CustomTheme.backgroundColor,
@@ -88,7 +88,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
               Container(
                 margin: CustomTheme.standardMargin,
                 child: TextInputField(
-                  controller: _groupNameController,
+                  controller: groupNameController,
                   hintText: loc.group_name,
                   maxLength: Constants.MAX_GROUP_NAME_LENGTH,
                 ),
@@ -124,10 +124,10 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                       : loc.edit_group,
                   buttonType: ButtonType.primary,
                   onPressed:
-                      (_groupNameController.text.isEmpty ||
+                      (groupNameController.text.isEmpty ||
                           (selectedPlayers.length < 2))
                       ? null
-                      : _saveGroup,
+                      : saveGroup,
                 ),
               ),
             ],
@@ -139,15 +139,15 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
   /// Saves the group by creating a new one or updating the existing one,
   /// depending on whether the widget  is in edit mode.
-  Future<void> _saveGroup() async {
+  Future<void> saveGroup() async {
     final loc = AppLocalizations.of(context);
     late bool success;
     Group? updatedGroup;
 
     if (widget.groupToEdit == null) {
-      success = await _createGroup();
+      success = await createGroup();
     } else {
-      final result = await _editGroup();
+      final result = await editGroup();
       success = result.$1;
       updatedGroup = result.$2;
     }
@@ -155,14 +155,14 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     if (!mounted) return;
 
     if (success) {
+      HapticFeedback.successNotification();
       widget.onMembersChanged?.call();
-      await HapticFeedback.successNotification();
       if (mounted) {
         Navigator.pop(context, updatedGroup);
       }
     } else {
       if (mounted) {
-        await HapticFeedback.errorNotification();
+        HapticFeedback.errorNotification();
       }
       showSnackbar(
         message: widget.groupToEdit == null
@@ -213,11 +213,10 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     }
 
     if (widget.groupToEdit!.description != groupDescription) {
-      successfullDescriptionChange = await db.groupDao
-          .updateGroupDescription(
-            groupId: widget.groupToEdit!.id,
-            description: groupDescription,
-          );
+      successfullDescriptionChange = await db.groupDao.updateGroupDescription(
+        groupId: widget.groupToEdit!.id,
+        description: groupDescription,
+      );
     }
 
     if (widget.groupToEdit!.members != selectedPlayers) {
@@ -264,7 +263,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   ///
   /// [message] The message to display in the snackbar.
   void showSnackbar({required String message}) {
-    final messenger = _scaffoldMessengerKey.currentState;
+    final messenger = scaffoldMessengerKey.currentState;
     if (messenger != null) {
       messenger.hideCurrentSnackBar();
       messenger.showSnackBar(CustomSnackBar(message: message));

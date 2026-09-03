@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -52,6 +54,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   List<Player> selectedPlayers = [];
   List<Group> selectedGroups = [];
   Timeframe selectedTimeframe = Timeframe.allTime;
+  DateTime? selectedStartDate;
+  DateTime? selectedEndDate;
   // null -> random color
   AppColor? selectedColor;
 
@@ -84,107 +88,21 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                   spacing: 15,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Classifier section
-                    LabeledDropdown<StatisticType>.multi(
-                      title: loc.classifier,
-                      description: loc.classifier_description,
-                      hintText: loc.select_a_classifier,
-                      enabled: !isLoading,
-                      multiValueListenable: selectedTypeNotifier,
-                      options: [
-                        for (final type in StatisticType.values)
-                          DropdownOption(
-                            value: type,
-                            label: translateStatisticTypeToString(
-                              type,
-                              context,
-                            ),
-                          ),
+                    buildClassifierSection(context, loc),
+                    buildScopeSection(context, loc),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildTimeframeSection(context, loc),
+                        if (selectedTimeframe == Timeframe.custom)
+                          buildDateRangeField(context),
                       ],
-                      onItemTap: onClassifierTapped,
                     ),
-
-                    // Scope section
-                    LabeledDropdown<StatisticScope>.multi(
-                      title: loc.scope,
-                      description: loc.scope_description,
-                      hintText: loc.select_a_scope,
-                      multiValueListenable: selectedScopeNotifier,
-                      options: [
-                        for (final scope in StatisticScope.values)
-                          DropdownOption(
-                            value: scope,
-                            label: translateScopeToString(scope, context),
-                          ),
-                      ],
-                      onItemTap: onScopeTapped,
-                    ),
-
-                    // Timeframe section
-                    LabeledDropdown<Timeframe>(
-                      title: loc.timeframe,
-                      description: loc.select_the_filtered_timeframe,
-                      hintText: isLoading
-                          ? loc.loading
-                          : loc.select_a_timeframe,
-                      enabled: !isLoading,
-                      valueListenable: selectedTimeframeNotifier,
-                      options: [
-                        for (final timeframe in Timeframe.values)
-                          DropdownOption(
-                            value: timeframe,
-                            label: translateTimeframeToString(
-                              timeframe,
-                              context,
-                            ),
-                          ),
-                      ],
-                      onChanged: (timeframe) {
-                        if (timeframe == null) return;
-                        selectedTimeframeNotifier.value = timeframe;
-                        setState(() => selectedTimeframe = timeframe);
-                      },
-                    ),
-
-                    // Color section
-                    LabeledDropdown<AppColor?>(
-                      title: loc.color,
-                      description: loc.select_a_display_color,
-                      hintText: isLoading
-                          ? loc.loading
-                          : loc.select_a_timeframe,
-                      valueListenable: selectedColorNotifier,
-                      options: [
-                        DropdownOption<AppColor?>(
-                          value: null,
-                          label: loc.random_color,
-                          leading: buildColorCircle(),
-                        ),
-                        for (final color in AppColor.values)
-                          DropdownOption<AppColor?>(
-                            value: color,
-                            label: translateAppColorToString(color, context),
-                            leading: Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                color: getColorFromAppColor(color),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          ),
-                      ],
-                      onChanged: (color) {
-                        selectedColorNotifier.value = color;
-                        setState(() => selectedColor = color);
-                      },
-                    ),
+                    buildColorSection(context, loc),
                   ],
                 ),
               ),
             ),
-
-            // Create statistic button
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
               child: BottomAnimatedButton(
@@ -200,6 +118,150 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildClassifierSection(BuildContext context, AppLocalizations loc) {
+    return LabeledDropdown<StatisticType>.multi(
+      title: loc.classifier,
+      description: loc.classifier_description,
+      hintText: loc.select_a_classifier,
+      enabled: !isLoading,
+      multiValueListenable: selectedTypeNotifier,
+      options: [
+        for (final type in StatisticType.values)
+          DropdownOption(
+            value: type,
+            label: translateStatisticTypeToString(type, context),
+          ),
+      ],
+      onItemTap: onClassifierTapped,
+    );
+  }
+
+  Widget buildScopeSection(BuildContext context, AppLocalizations loc) {
+    return LabeledDropdown<StatisticScope>.multi(
+      title: loc.scope,
+      description: loc.scope_description,
+      hintText: loc.select_a_scope,
+      multiValueListenable: selectedScopeNotifier,
+      options: [
+        for (final scope in StatisticScope.values)
+          DropdownOption(
+            value: scope,
+            label: translateScopeToString(scope, context),
+          ),
+      ],
+      onItemTap: onScopeTapped,
+    );
+  }
+
+  Widget buildTimeframeSection(BuildContext context, AppLocalizations loc) {
+    return LabeledDropdown<Timeframe>(
+      title: loc.timeframe,
+      description: loc.select_the_filtered_timeframe,
+      hintText: isLoading ? loc.loading : loc.select_a_timeframe,
+      enabled: !isLoading,
+      valueListenable: selectedTimeframeNotifier,
+      bottomPadding: selectedTimeframe == Timeframe.custom ? 8 : null,
+      options: [
+        for (final timeframe in Timeframe.values)
+          DropdownOption(
+            value: timeframe,
+            label: translateTimeframeToString(timeframe, context),
+          ),
+      ],
+      onChanged: (timeframe) {
+        if (timeframe == null) return;
+        selectedTimeframeNotifier.value = timeframe;
+        setState(() => selectedTimeframe = timeframe);
+      },
+    );
+  }
+
+  Widget buildDateRangeField(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: isLoading
+            ? null
+            : () async {
+                final results = await showCustomTimeframePicker(
+                  initialStartDate: selectedStartDate,
+                  initialEndDate: selectedEndDate,
+                );
+
+                if (results != null &&
+                    results.length >= 2 &&
+                    results[0] != null &&
+                    results[1] != null) {
+                  setState(() {
+                    selectedStartDate = results[0];
+                    selectedEndDate = results[1];
+                  });
+                }
+              },
+        child: Container(
+          height: 54,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: CustomTheme.onBoxColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.calendar_month, color: CustomTheme.textColor),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  formatDateRange(context, selectedStartDate, selectedEndDate),
+                  style: TextStyle(
+                    color: selectedStartDate != null && selectedEndDate != null
+                        ? CustomTheme.textColor
+                        : CustomTheme.hintColor,
+                    fontSize: 14,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildColorSection(BuildContext context, AppLocalizations loc) {
+    return LabeledDropdown<AppColor?>(
+      title: loc.color,
+      description: loc.select_a_display_color,
+      hintText: isLoading ? loc.loading : loc.select_a_timeframe,
+      valueListenable: selectedColorNotifier,
+      options: [
+        DropdownOption<AppColor?>(
+          value: null,
+          label: loc.random_color,
+          leading: buildColorCircle(),
+        ),
+        for (final color in AppColor.values)
+          DropdownOption<AppColor?>(
+            value: color,
+            label: translateAppColorToString(color, context),
+            leading: Container(
+              width: 16,
+              height: 16,
+              decoration: BoxDecoration(
+                color: getColorFromAppColor(color),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+      ],
+      onChanged: (color) {
+        selectedColorNotifier.value = color;
+        setState(() => selectedColor = color);
+      },
     );
   }
 
@@ -338,8 +400,141 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     type: type,
     scopes: selectedScope,
     timeframe: selectedTimeframe,
+    startDate: selectedStartDate,
+    endDate: selectedEndDate,
     color: selectedColor ?? getRandomAppColor(),
   );
+
+  String formatDateRange(
+    BuildContext context,
+    DateTime? startDate,
+    DateTime? endDate,
+  ) {
+    if (startDate != null && endDate != null) {
+      final locale = Localizations.localeOf(context).toString();
+      return '${DateFormat.yMd(locale).format(startDate)} - ${DateFormat.yMd(locale).format(endDate)}';
+    }
+    return AppLocalizations.of(context).choose_date_range;
+  }
+
+  Future<List<DateTime?>?> showCustomTimeframePicker({
+    DateTime? initialStartDate,
+    DateTime? initialEndDate,
+  }) async {
+    return showDialog<List<DateTime?>>(
+      context: context,
+      builder: (context) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            splashFactory: NoSplash.splashFactory,
+            textButtonTheme: TextButtonThemeData(
+              style: ButtonStyle(
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
+              ),
+            ),
+            colorScheme: const ColorScheme.dark(
+              primary: CustomTheme.primaryColor,
+              onPrimary: CustomTheme.textColor,
+              surface: CustomTheme.boxColor,
+              onSurface: CustomTheme.textColor,
+            ),
+          ),
+          child: Dialog(
+            backgroundColor: CustomTheme.boxColor,
+            surfaceTintColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: const BorderSide(color: CustomTheme.boxBorderColor),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              height: 450,
+              child: SfDateRangePicker(
+                backgroundColor: CustomTheme.boxColor,
+                showNavigationArrow: true,
+                initialSelectedRange:
+                    initialStartDate != null && initialEndDate != null
+                    ? PickerDateRange(initialStartDate, initialEndDate)
+                    : null,
+                headerStyle: const DateRangePickerHeaderStyle(
+                  textAlign: TextAlign.center,
+                  backgroundColor: Colors.transparent,
+                  textStyle: TextStyle(
+                    color: CustomTheme.textColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                monthCellStyle: const DateRangePickerMonthCellStyle(
+                  textStyle: TextStyle(
+                    color: CustomTheme.textColor,
+                    fontSize: 16,
+                  ),
+                  todayTextStyle: TextStyle(
+                    color: CustomTheme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  leadingDatesTextStyle: TextStyle(
+                    color: CustomTheme.hintColor,
+                    fontSize: 16,
+                  ),
+                  trailingDatesTextStyle: TextStyle(
+                    color: CustomTheme.hintColor,
+                    fontSize: 16,
+                  ),
+                ),
+                yearCellStyle: const DateRangePickerYearCellStyle(
+                  textStyle: TextStyle(
+                    color: CustomTheme.textColor,
+                    fontSize: 16,
+                  ),
+                  todayTextStyle: TextStyle(
+                    color: CustomTheme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                monthViewSettings: const DateRangePickerMonthViewSettings(
+                  viewHeaderStyle: DateRangePickerViewHeaderStyle(
+                    textStyle: TextStyle(
+                      color: CustomTheme.textColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  firstDayOfWeek: 1,
+                ),
+                selectionMode: DateRangePickerSelectionMode.range,
+                selectionColor: CustomTheme.primaryColor,
+                startRangeSelectionColor: CustomTheme.primaryColor,
+                endRangeSelectionColor: CustomTheme.primaryColor,
+                rangeSelectionColor: CustomTheme.primaryColor.withValues(
+                  alpha: 0.15,
+                ),
+                selectionTextStyle: const TextStyle(
+                  color: CustomTheme.textColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                rangeTextStyle: const TextStyle(
+                  color: CustomTheme.textColor,
+                  fontSize: 16,
+                ),
+                showActionButtons: true,
+                onSubmit: (value) {
+                  if (value is PickerDateRange) {
+                    Navigator.pop(context, [value.startDate, value.endDate]);
+                  }
+                },
+                onCancel: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget buildColorCircle() {
     final segmentColors = [

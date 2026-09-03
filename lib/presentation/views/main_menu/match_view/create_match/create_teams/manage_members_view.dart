@@ -2,6 +2,7 @@ import 'dart:core' hide Match;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:provider/provider.dart';
@@ -62,8 +63,43 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               buildDefaultDragHandles: false,
               itemCount: allItemsCount,
               onReorderItem: onReorderItem,
-              proxyDecorator: (child, index, animation) =>
-                  Material(type: MaterialType.transparency, child: child),
+              onReorderStart: (_) => HapticFeedback.heavyImpact(),
+              onReorderEnd: (_) => HapticFeedback.selectionClick(),
+              proxyDecorator: (child, index, animation) {
+                return AnimatedBuilder(
+                  animation: animation,
+                  builder: (context, _) {
+                    final t = Curves.easeInOut.transform(animation.value);
+                    return Material(
+                      type: MaterialType.transparency,
+                      child: Stack(
+                        children: [
+                          child,
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 4,
+                                ),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(
+                                      alpha: 0.10 * t,
+                                    ),
+                                    borderRadius:
+                                        CustomTheme.standardBorderRadiusAll,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
               itemBuilder: (context, index) {
                 final teamIndex = teamIndexForFlat(index);
                 final memberIndex = memberIndexForFlat(index, teamIndex);

@@ -88,7 +88,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   String? pressingId;
 
   /// Controller for the search bar input.
-  late final TextEditingController _searchBarController =
+  late final TextEditingController searchBarController =
       TextEditingController();
 
   /// Skeleton data used while loading players.
@@ -99,7 +99,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
 
   @override
   void dispose() {
-    _searchBarController.dispose();
+    searchBarController.dispose();
     super.dispose();
   }
 
@@ -130,7 +130,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
         widget.initialSelectedUnits != null) {
       setState(() {
         selectedUnits = [...widget.initialSelectedUnits!];
-        _updateSuggestedPlayers();
+        updateSuggestedPlayers();
       });
     }
 
@@ -155,12 +155,12 @@ class _PlayerSelectionState extends State<PlayerSelection> {
         children: [
           CustomSearchBar(
             maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
-            controller: _searchBarController,
+            controller: searchBarController,
             constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
             hintText: loc.search_for_players,
             trailingButtonShown: true,
             trailingButtonicon: Icons.add_circle,
-            trailingButtonEnabled: _searchBarController.text.trim().isNotEmpty,
+            trailingButtonEnabled: searchBarController.text.trim().isNotEmpty,
             onTrailingButtonPressed: () async {
               addNewPlayerFromSearch(context: context);
             },
@@ -265,8 +265,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                     return TextIconListTile(
                       player: player,
                       icon: Icons.add,
-                      onPressed: () async {
-                        await HapticFeedback.selectionClick();
+                      onPressed: () {
+                        HapticFeedback.selectionClick();
                         setState(() {
                           // If the player is not already selected
                           if (!selectedPlayers.contains(player)) {
@@ -306,8 +306,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
         onLongPressCancel: () => setState(() => pressingId = null),
         onLongPressEnd: (_) => setState(() => pressingId = null),
         onLongPress: !isPaired && widget.pairingEnabled
-            ? () async {
-                await HapticFeedback.selectionClick();
+            ? () {
+                HapticFeedback.selectionClick();
                 setState(() {
                   pressingId = null;
                   if (isSelectedForPairing) {
@@ -344,8 +344,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                           widget.pairingEnabled &&
                           pairingSelection.isNotEmpty &&
                           !isSelectedForPairing
-                      ? () async {
-                          await HapticFeedback.selectionClick();
+                      ? () {
+                          HapticFeedback.selectionClick();
                           setState(() {
                             pairingSelection.add(unit.id);
                             // Enter pairing mode as soon as we add a selection
@@ -368,7 +368,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                     widget.onChanged(selectedPlayers, selectedUnits);
 
                     final player = unit.members.first;
-                    final currentSearch = _searchBarController.text
+                    final currentSearch = searchBarController.text
                         .toLowerCase();
                     if (currentSearch.isEmpty ||
                         player.name.toLowerCase().contains(currentSearch)) {
@@ -538,7 +538,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   /// [context] - BuildContext to show the snackbar.
   Future<void> addNewPlayerFromSearch({required BuildContext context}) async {
     final loc = AppLocalizations.of(context);
-    final playerName = _searchBarController.text.trim();
+    final playerName = searchBarController.text.trim();
 
     int nameCount = _calculateNameCount(playerName);
     final createdPlayer = Player(name: playerName, nameCount: nameCount);
@@ -547,11 +547,11 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     if (!context.mounted) return;
 
     if (success) {
-      _handleSuccessfulPlayerCreation(createdPlayer);
-      await HapticFeedback.successNotification();
+      HapticFeedback.successNotification();
+      handleSuccessfulPlayerCreation(createdPlayer);
       showSnackBarMessage(loc.successfully_added_player(playerName));
     } else {
-      await HapticFeedback.errorNotification();
+      HapticFeedback.errorNotification();
       showSnackBarMessage(loc.could_not_add_player(playerName));
     }
   }
@@ -573,20 +573,20 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   }
 
   /// Updates the state after successfully adding a new player.
-  void _handleSuccessfulPlayerCreation(Player player) {
+  void handleSuccessfulPlayerCreation(Player player) {
     widget.onPlayerCreated?.call();
     selectedUnits.insert(0, Team(name: '', members: [player]));
     widget.onChanged(selectedPlayers, selectedUnits);
     allPlayers.add(player);
 
     setState(() {
-      _searchBarController.clear();
-      _updateSuggestedPlayers();
+      searchBarController.clear();
+      updateSuggestedPlayers();
     });
   }
 
   /// Updates the suggested players list based on current selection.
-  void _updateSuggestedPlayers() {
+  void updateSuggestedPlayers() {
     suggestedPlayers = allPlayers
         .where((player) => !selectedPlayers.any((p) => p.id == player.id))
         .toList();

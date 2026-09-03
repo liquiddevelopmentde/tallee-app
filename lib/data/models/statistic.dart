@@ -13,6 +13,8 @@ class Statistic {
   final StatisticType type;
   final List<StatisticScope> scopes;
   final Timeframe timeframe;
+  final DateTime? startDate;
+  final DateTime? endDate;
   final AppColor color;
   final List<Group>? selectedGroups;
   final List<Game>? selectedGames;
@@ -24,6 +26,8 @@ class Statistic {
     required this.type,
     required this.scopes,
     this.timeframe = Timeframe.allTime,
+    this.startDate,
+    this.endDate,
     this.selectedGroups,
     this.selectedGames,
     this.displayCount = 5,
@@ -38,13 +42,15 @@ class Statistic {
 
   @override
   String toString() {
-    return 'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames, displayCount: $displayCount, isFavourite: $isFavourite)';
+    return 'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, startDate: $startDate, endDate: $endDate, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames, displayCount: $displayCount, isFavourite: $isFavourite)';
   }
 
   Statistic copyWith({
     StatisticType? type,
     List<StatisticScope>? scopes,
     Timeframe? timeframe,
+    DateTime? startDate,
+    DateTime? endDate,
     AppColor? color,
     List<Group>? selectedGroups,
     List<Game>? selectedGames,
@@ -57,6 +63,8 @@ class Statistic {
       type: type ?? this.type,
       scopes: scopes ?? this.scopes,
       timeframe: timeframe ?? this.timeframe,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
       color: color ?? this.color,
       selectedGroups: selectedGroups ?? this.selectedGroups,
       selectedGames: selectedGames ?? this.selectedGames,
@@ -72,6 +80,8 @@ class Statistic {
     'type': type.name,
     'scopes': scopes.map((s) => s.name).toList(),
     'timeframe': timeframe.name,
+    'startDate': startDate?.toIso8601String(),
+    'endDate': endDate?.toIso8601String(),
     'color': color.name,
     'selectedGroups': selectedGroups?.map((g) => g.id).toList(),
     'selectedGames': selectedGames?.map((g) => g.id).toList(),
@@ -99,6 +109,9 @@ class Statistic {
         (e) => e.name == json['timeframe'],
         orElse: () => Timeframe.allTime,
       ),
+      startDate =
+          json['startDate'] != null ? DateTime.parse(json['startDate']) : null,
+      endDate = json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
       color = AppColor.values.firstWhere(
         (e) => e.name == json['color'],
         orElse: () => AppColor.orange,

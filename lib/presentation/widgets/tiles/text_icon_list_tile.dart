@@ -11,7 +11,6 @@ class TextIconListTile extends StatelessWidget {
   /// - [text]: The text to display if no player or pair is provided.
   /// - [onPressed]: The callback to be invoked when the icon is pressed.
   /// - [icon]: The icon to display in the tile.
-  /// - [color]: Optional background color for the tile.
   const TextIconListTile({
     super.key,
     this.text = '',
@@ -20,7 +19,6 @@ class TextIconListTile extends StatelessWidget {
     this.pair,
     this.pairIconLeft = false,
     this.icon,
-    this.color,
     this.onPressed,
   });
 
@@ -30,7 +28,6 @@ class TextIconListTile extends StatelessWidget {
   final Team? pair;
   final bool pairIconLeft;
   final IconData? icon;
-  final Color? color;
   final VoidCallback? onPressed;
 
   @override
@@ -38,12 +35,10 @@ class TextIconListTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
-        color:
-            Color.lerp(CustomTheme.onBoxColor, color?.withAlpha(10), 0.1) ??
-            CustomTheme.boxColor,
+        color: CustomTheme.boxColor,
         border: Border.all(
-          color: color ?? CustomTheme.boxBorderColor,
-          width: color != null ? 2 : 1,
+          color: CustomTheme.boxBorderColor,
+          width: 1,
           strokeAlign: BorderSide.strokeAlignCenter,
         ),
         borderRadius: CustomTheme.standardBorderRadiusAll,

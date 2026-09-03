@@ -33,12 +33,13 @@ class TeamCard extends StatelessWidget {
     final teamColor = getColorFromAppColor(team.color);
     int shownPlayerAmount = getShownPlayerAmount();
 
+    // Show only team name and member count
     if (compact) {
       return Container(
         width: width,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: teamColor.withAlpha(50),
+          color: Color.lerp(teamColor, CustomTheme.boxColor, 0.8),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: teamColor, width: 2),
         ),
@@ -82,7 +83,7 @@ class TeamCard extends StatelessWidget {
             margin ?? const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: BoxDecoration(
-          color: teamColor.withAlpha(50),
+          color: Color.lerp(teamColor, CustomTheme.boxColor, 0.8),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: teamColor, width: 2),
         ),
