@@ -112,7 +112,7 @@
   "legal_notice": "Legal Notice",
   "licenses": "Licenses",
   "live_edit_mode": "Live Edit Mode",
-  "lives": "{count, plural, =1{life} other{lives}}",
+  "lives": "{count, plural, =1{Life} other{Lives}}",
   "@lives": {
     "placeholders": {
       "count": {
