@@ -51,8 +51,8 @@ class _PlacementDragListState extends State<PlacementDragList> {
 
   @override
   Widget build(BuildContext context) {
-    final double rowHeight = 60;
-    final double badgeSize = rowHeight - 7;
+    const double rowHeight = 60;
+    const double badgeSize = rowHeight - 7;
 
     return Expanded(
       child: Row(
