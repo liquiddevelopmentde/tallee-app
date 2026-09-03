@@ -497,7 +497,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     }
 
     final ruleset = match.game.ruleset;
-    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
+    if (ruleset == Ruleset.highestScore ||
+        ruleset == Ruleset.placement ||
+        ruleset == Ruleset.lives) {
       namedScores.sort((a, b) => b.$2.compareTo(a.$2));
     } else if (ruleset == Ruleset.lowestScore) {
       namedScores.sort((a, b) => a.$2.compareTo(b.$2));
@@ -517,6 +519,15 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: getPlacementTextcolor(index),
+        ),
+      );
+    } else if (ruleset == Ruleset.lives) {
+      return Text(
+        getLifeLabel(loc, score),
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: score > 0 ? CustomTheme.primaryColor : CustomTheme.hintColor,
         ),
       );
     } else {
