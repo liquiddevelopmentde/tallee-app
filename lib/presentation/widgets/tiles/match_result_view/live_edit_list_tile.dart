@@ -316,7 +316,8 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
       textScaler: MediaQuery.textScalerOf(context),
       maxLines: 1,
     )..layout();
-    return painter.width + 4;
+    const int padding = 10;
+    return painter.width + padding;
   }
 
   String get displayedText {
