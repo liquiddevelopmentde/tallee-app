@@ -342,6 +342,8 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   void onTextChanged(String text) {
     suppressAnimation = true;
     if (text.isEmpty || text == '-') {
+      // Reset score to 0
+      widget.onChanged?.call(0);
       setState(() {});
     } else {
       final parsed = int.tryParse(text);
