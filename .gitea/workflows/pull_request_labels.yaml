@@ -1,13 +1,13 @@
-name: PR Workflow State
+name: "PR Workflow Automation"
 on:
   pull_request:
     types: [opened, review_requested, review_request_removed, closed]
   pull_request_review:
     types: [submitted]
-  pull_request_review_comment: {}
 
 jobs:
-  reconcile:
+  sync-workflow-label:
+    name: "Sync workflow label"
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -23,8 +23,7 @@ jobs:
       MERGED: ${{ github.event.pull_request.merged }}
       TITLE: ${{ github.event.pull_request.title }}
     steps:
-      - name: Set workflow label
-        run: |
+      - run: |
           set -euo pipefail
 
           TARGET=""
@@ -34,16 +33,13 @@ jobs:
                 opened)           TARGET="Workflow/In Progress" ;;
                 review_requested) TARGET="Workflow/Ready for Review" ;;
                 review_request_removed) TARGET="Workflow/In Progress" ;;
-                closed)           if [ "$MERGED" = "true" ]; then TARGET="Workflow/Merged"; fi ;;
+                closed)           if [ "$MERGED" = "true" ]; then TARGET="Workflow/Merged"; else TARGET="Workflow/Abandoned"; fi ;;
               esac ;;
             pull_request_review)
               case "$STATE" in
                 pull_request_review_approved) TARGET="Workflow/Ready for Merge" ;;
-                pull_request_review_rejected) TARGET="Workflow/In Progress" ;;
-                pull_request_review_comment)  TARGET="Workflow/In Review" ;;
+                pull_request_review_rejected) TARGET="Workflow/Revision" ;;
               esac ;;
-            pull_request_review_comment)
-              TARGET="Workflow/In Review" ;;
           esac
 
           [ -z "$TARGET" ] && { echo "no state change for $EVENT/$ACTION/$STATE"; exit 0; }
