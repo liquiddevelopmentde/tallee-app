@@ -29,7 +29,7 @@ class LiveEditView extends StatefulWidget {
     required this.initialScores,
     this.onScoresChanged,
   }) : minValue = 0,
-       maxValue = 9999,
+       maxValue = 99,
        livesMode = true;
 
   final bool livesMode;

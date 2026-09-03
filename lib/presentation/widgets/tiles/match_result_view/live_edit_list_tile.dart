@@ -51,6 +51,8 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   final int smallStep = 1;
   late int value;
 
+  late final TextStyle valueTextStyle;
+
   late final TextEditingController controller;
   late final FocusNode focusNode;
 
@@ -62,6 +64,11 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   @override
   void initState() {
     value = widget.value.clamp(widget.minValue, widget.maxValue);
+    valueTextStyle = TextStyle(
+      fontSize: widget.isLivesRuleset ? 48 : 44,
+      fontWeight: FontWeight.w600,
+    );
+
     controller = TextEditingController(text: value.toString());
     focusNode = (widget.focusNode ?? FocusNode())..addListener(onFocusChanged);
     super.initState();
@@ -148,27 +155,33 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                             t,
                           );
 
+                          final valueText = value.toString();
+
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              if (widget.isLivesRuleset) ...[
-                                Icon(livesIcon, color: iconColor, size: 28),
-                                const SizedBox(width: 10),
-                              ],
-                              Flexible(
+                              // Hearts icon
+                              Icon(livesIcon, color: iconColor, size: 28),
+                              const SizedBox(width: 10),
+
+                              // Value
+                              SizedBox(
+                                width: measureTextWidth(
+                                  valueText,
+                                  valueTextStyle,
+                                ),
                                 child: NumericText(
-                                  value.toString(),
+                                  valueText,
                                   maxLines: 1,
                                   textAlign: TextAlign.center,
+                                  overflow: TextOverflow.visible,
                                   textWidthBasis: TextWidthBasis.longestLine,
                                   textHeightBehavior: const TextHeightBehavior(
                                     applyHeightToFirstAscent: false,
                                     applyHeightToLastDescent: false,
                                   ),
-                                  style: TextStyle(
-                                    fontSize: 48,
-                                    fontWeight: FontWeight.w600,
+                                  style: valueTextStyle.copyWith(
                                     color: valueColor,
                                   ),
                                 ),
@@ -203,9 +216,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                             applyHeightToFirstAscent: false,
                                             applyHeightToLastDescent: false,
                                           ),
-                                      style: const TextStyle(
-                                        fontSize: 44,
-                                        fontWeight: FontWeight.w600,
+                                      style: valueTextStyle.copyWith(
                                         color: CustomTheme.textColor,
                                       ),
                                     ),
@@ -251,10 +262,8 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                         enableInteractiveSelection: true,
                                         cursorColor: CustomTheme.textColor,
                                         cursorHeight: 36,
-                                        style: const TextStyle(
-                                          fontSize: 44,
+                                        style: valueTextStyle.copyWith(
                                           height: 1.0,
-                                          fontWeight: FontWeight.w600,
                                           color: Colors.transparent,
                                         ),
                                         decoration: const InputDecoration(
@@ -289,6 +298,17 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
         ],
       ),
     );
+  }
+
+  /// Measures the width of [text] rendered with [style].
+  double measureTextWidth(String text, TextStyle style) {
+    final painter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context),
+      maxLines: 1,
+    )..layout();
+    return painter.width + 4;
   }
 
   String get displayedText {
