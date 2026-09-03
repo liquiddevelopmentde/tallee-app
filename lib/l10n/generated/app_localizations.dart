@@ -677,7 +677,7 @@ abstract class AppLocalizations {
   /// No description provided for @lives.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{life} other{lives}}'**
+  /// **'{count, plural, =1{Life} other{Lives}}'**
   String lives(int count);
 
   /// No description provided for @loading.
