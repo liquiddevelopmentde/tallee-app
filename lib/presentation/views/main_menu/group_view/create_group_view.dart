@@ -70,16 +70,19 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final viewTitle = widget.groupToEdit == null
+        ? loc.create_new_group
+        : loc.edit_group;
+    final buttonText = widget.groupToEdit == null
+        ? loc.create_group
+        : loc.save_changes;
+
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: CustomTheme.backgroundColor,
-        appBar: AppBar(
-          title: Text(
-            widget.groupToEdit == null ? loc.create_new_group : loc.edit_group,
-          ),
-        ),
+        appBar: AppBar(title: Text(viewTitle)),
         body: SafeArea(
           maintainBottomViewPadding: true,
           child: Column(
@@ -119,9 +122,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: BottomAnimatedButton(
                   sizeRelativeToWidth: 0.95,
-                  buttonText: widget.groupToEdit == null
-                      ? loc.create_group
-                      : loc.edit_group,
+                  buttonText: buttonText,
                   buttonType: ButtonType.primary,
                   onPressed:
                       (groupNameController.text.isEmpty ||
