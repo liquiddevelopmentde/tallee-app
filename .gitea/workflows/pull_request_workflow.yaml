@@ -1,13 +1,9 @@
-# Automates the PR lifecycle by keeping a single "Workflow/<state>" label in sync
-# with PR events, and by mirroring the "Workflow/In Progress" label <-> "WIP:" title prefix.
 name: "PR Workflow Automation"
 on:
   pull_request:
-    # opened/closed drive the state; edited/labeled/unlabeled drive the WIP<->label sync.
     types: [ opened, edited, review_requested, review_request_removed, closed, labeled, unlabeled ]
   pull_request_review:
-    # approvals/change-requests drive the review states.
-    types: [submitted]
+    types: [ submitted ]
 
 jobs:
   sync-workflow-label:
@@ -18,14 +14,13 @@ jobs:
       issues: write
     env:
       API: ${{ gitea.server_url }}/api/v1
-      # PAT of the automation user; needs write:issue, write:repository and read:user.
       AUTH: 'Authorization: token ${{ secrets.BOT_TOKEN }}'
       REPO: ${{ github.repository }}
       PR: ${{ github.event.pull_request.number }}
-      EVENT: ${{ github.event_name }}       # e.g. pull_request, pull_request_review
-      ACTION: ${{ github.event.action }}    # e.g. opened, edited, labeled, closed
-      ACTOR: ${{ github.actor }}            # who triggered the event (used to skip bot-driven runs)
-      STATE: ${{ github.event.review.type }} # approved/rejected for reviews
+      EVENT: ${{ github.event_name }}
+      ACTION: ${{ github.event.action }}
+      ACTOR: ${{ github.actor }}
+      STATE: ${{ github.event.review.type }}
       MERGED: ${{ github.event.pull_request.merged }}
       TITLE: ${{ github.event.pull_request.title }}
     steps:
