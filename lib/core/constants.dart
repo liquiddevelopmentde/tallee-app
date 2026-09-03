@@ -33,8 +33,5 @@ class Constants {
   );
 
   /// Range for live input
-  static const ({int min, int max}) LIVE_INPUT_BOUNDARIES = (
-    min: 0,
-    max: 99999,
-  );
+  static const ({int min, int max}) LIVE_INPUT_BOUNDARIES = (min: 0, max: 99);
 }

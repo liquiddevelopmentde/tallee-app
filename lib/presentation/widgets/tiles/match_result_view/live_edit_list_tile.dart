@@ -70,7 +70,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   void initState() {
     value = widget.value.clamp(minValue, maxValue);
     valueTextStyle = TextStyle(
-      fontSize: widget.isLivesRuleset ? 46 : 38,
+      fontSize: widget.isLivesRuleset ? 58 : 38,
       fontWeight: FontWeight.w600,
     );
 
