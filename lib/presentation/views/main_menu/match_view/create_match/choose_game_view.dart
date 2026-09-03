@@ -150,9 +150,8 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                   child: TopCenteredMessage(
                     icon: Icons.info,
                     title: loc.info,
-                    message: AppLocalizations.of(
-                      context,
-                    ).there_are_no_games_matching_your_search,
+                    message: AppLocalizations.of(context)
+                        .there_are_no_games_matching_your_search,
                   ),
                 ),
                 child: ListView.builder(
@@ -161,10 +160,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                   itemBuilder: (BuildContext context, int index) {
                     final game = filteredGames[index];
                     return GameTile(
-                      title: game.name,
-                      description: game.description,
-                      subtitle: translateRulesetToString(game.ruleset, context),
-                      badgeColor: getColorFromAppColor(game.color),
+                      game: game,
                       isHighlighted: selectedGames.any(
                         (selected) => selected.id == game.id,
                       ),

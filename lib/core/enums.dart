@@ -37,13 +37,15 @@ enum ExportResult { success, canceled, unknownException, noData }
 /// - [Ruleset.singleLoser]: The match has a single loser.
 /// - [Ruleset.multipleWinners]: Multiple players can be winners.
 /// - [Ruleset.placement]: The player with the highest placement wins.
+/// - [Ruleset.lives]: Every player with lives > 0 wins
 enum Ruleset {
   singleWinner,
   multipleWinners,
+  singleLoser,
   highestScore,
   lowestScore,
+  lives,
   placement,
-  singleLoser,
 }
 
 /// Different colors for highlighting content

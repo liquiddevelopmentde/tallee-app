@@ -50,11 +50,11 @@ class StatisticCalculator {
         filteredMatches = matches.where((m) {
           if (m.endedAt == null) return false;
           final isAfterOrAtStart =
-              m.endedAt!.isAtSameMomentAs(startOfDay) ||
-              m.endedAt!.isAfter(startOfDay);
+              m.createdAt.isAtSameMomentAs(startOfDay) ||
+              m.createdAt.isAfter(startOfDay);
           final isBeforeOrAtEnd =
-              m.endedAt!.isAtSameMomentAs(endOfDay) ||
-              m.endedAt!.isBefore(endOfDay);
+              m.createdAt.isAtSameMomentAs(endOfDay) ||
+              m.createdAt.isBefore(endOfDay);
           return isAfterOrAtStart && isBeforeOrAtEnd;
         }).toList();
       }
@@ -62,7 +62,7 @@ class StatisticCalculator {
       final minDate = _getMinimumDate(timeframe: statistic.timeframe);
       if (minDate != null) {
         filteredMatches = matches
-            .where((m) => m.endedAt != null && m.endedAt!.isAfter(minDate))
+            .where((m) => m.endedAt != null && !m.createdAt.isBefore(minDate))
             .toList();
       }
     }
@@ -136,19 +136,20 @@ class StatisticCalculator {
   /// Returns a [DateTime] with the minimum time and date the [timeframe] allows
   static DateTime? _getMinimumDate({required Timeframe timeframe}) {
     final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+
     switch (timeframe) {
       case Timeframe.last7Days:
-        return now.subtract(const Duration(days: 7));
+        return todayStart.subtract(const Duration(days: 7));
       case Timeframe.last30Days:
-        return now.subtract(const Duration(days: 30));
+        return todayStart.subtract(const Duration(days: 30));
       case Timeframe.last90Days:
-        return now.subtract(const Duration(days: 90));
+        return todayStart.subtract(const Duration(days: 90));
       case Timeframe.last180Days:
-        return now.subtract(const Duration(days: 180));
+        return todayStart.subtract(const Duration(days: 180));
       case Timeframe.lastYear:
-        return now.subtract(const Duration(days: 365));
+        return todayStart.subtract(const Duration(days: 365));
       case Timeframe.allTime:
-        return null;
       case Timeframe.custom:
         return null;
     }
@@ -180,6 +181,7 @@ class StatisticCalculator {
       case Ruleset.multipleWinners:
       case Ruleset.placement:
       case Ruleset.singleLoser:
+      case Ruleset.lives:
         return false;
     }
   }
@@ -271,25 +273,21 @@ class StatisticCalculator {
   ///
   /// - singleLooser: Every player except the mvp gets a win
   /// - Other rulesets: The mvp gets a win
-  static int _wins(Player p, List<Match> matches) => matches
-      .where((m) => m.players.any((mp) => mp.id == p.id))
-      .where((m) {
+  static int _wins(Player p, List<Match> matches) =>
+      matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
         return m.game.ruleset == Ruleset.singleLoser ? !isMvp : isMvp;
-      })
-      .length;
+      }).length;
 
   /// Determines how many losses the player has in the given matches.
   ///
   /// - singleLooser: The mvp is the loser
   /// - Other rulesets: Everyone except mvp is the loser
-  static int _losses(Player p, List<Match> matches) => matches
-      .where((m) => m.players.any((mp) => mp.id == p.id))
-      .where((m) {
+  static int _losses(Player p, List<Match> matches) =>
+      matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
         return m.game.ruleset == Ruleset.singleLoser ? isMvp : !isMvp;
-      })
-      .length;
+      }).length;
 
   /// Determines the total score of the player in the given list of matches.
   static int _totalScore(Player p, List<Match> matches) {
