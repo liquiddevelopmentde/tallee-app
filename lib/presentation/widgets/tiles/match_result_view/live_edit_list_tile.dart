@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
@@ -23,8 +25,8 @@ class LiveEditListTile extends StatefulWidget {
     required this.value,
     this.onChanged,
     this.color,
-    this.minValue = -9999,
-    this.maxValue = 9999,
+    this.minValue = -99999,
+    this.maxValue = 99999,
     this.isLivesRuleset = false,
     this.focusNode,
     this.textInputAction,
@@ -66,7 +68,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   void initState() {
     value = widget.value.clamp(widget.minValue, widget.maxValue);
     valueTextStyle = TextStyle(
-      fontSize: widget.isLivesRuleset ? 48 : 44,
+      fontSize: widget.isLivesRuleset ? 46 : 38,
       fontWeight: FontWeight.w600,
     );
 
@@ -167,7 +169,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                             children: [
                               // Hearts icon
                               Icon(livesIcon, color: iconColor, size: 28),
-                              const SizedBox(width: 10),
+                              const SizedBox(width: 5),
 
                               // Value
                               SizedBox(
@@ -392,7 +394,11 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
     final isNegative = text.startsWith('-');
     final digits = isNegative ? text.substring(1) : text;
 
-    if (digits.isEmpty || digits.length > 4) {
+    final maxDigits = max(
+      widget.maxValue.toString().length,
+      widget.minValue.toString().length - 1,
+    );
+    if (digits.isEmpty || digits.length > maxDigits) {
       return false;
     }
 

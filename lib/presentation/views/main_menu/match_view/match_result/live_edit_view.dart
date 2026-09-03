@@ -18,8 +18,8 @@ class LiveEditView extends StatefulWidget {
     required this.match,
     required this.initialScores,
     this.onScoresChanged,
-  }) : minValue = -9999,
-       maxValue = 9999,
+  }) : minValue = -99999,
+       maxValue = 99999,
        livesMode = false;
 
   /// Creates a live editor for the lives ruleset
@@ -29,7 +29,7 @@ class LiveEditView extends StatefulWidget {
     required this.initialScores,
     this.onScoresChanged,
   }) : minValue = 0,
-       maxValue = 99,
+       maxValue = 99999,
        livesMode = true;
 
   final bool livesMode;
