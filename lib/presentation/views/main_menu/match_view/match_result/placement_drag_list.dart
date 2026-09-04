@@ -5,10 +5,15 @@ import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/edge_blocked_bouncing_scroll_physics.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
 class PlacementDragList extends StatefulWidget {
+  /// A list widget for the [MatchResultView] that lets the user drag teams / players to different placements.
+  /// - [match]: The match whose players / teams are being reordered.
+  /// - [onPlayerOrderChanged]: The callback invoked with the updated player order whenever a player is moved.
+  /// - [onTeamOrderChanged]: The callback invoked with the updated team order whenever a team is moved.
   const PlacementDragList({
     super.key,
     required this.match,

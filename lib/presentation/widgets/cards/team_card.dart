@@ -6,6 +6,13 @@ import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class TeamCard extends StatelessWidget {
+  /// A card to display a team with its name, color, and its members.
+  /// - [team]: The team to display.
+  /// - [compact]: When `true`, shows only the team name and member count.
+  /// - [width]: The width of the card. Defaults to [double.infinity].
+  /// - [margin]: Optional outer margin around the card.
+  /// - [showDragHandle]: Whether to show a drag handle for reordering.
+  /// - [showTeamMembers]: Whether to display the list of team members.
   const TeamCard({
     super.key,
     required this.team,
@@ -61,6 +68,8 @@ class TeamCard extends StatelessWidget {
                 ),
               ),
             ),
+
+            // Members
             if (showTeamMembers)
               Row(
                 spacing: 12,
@@ -97,6 +106,7 @@ class TeamCard extends StatelessWidget {
         ),
       );
     } else {
+      /// Full size card
       return Container(
         width: width,
         margin:
@@ -105,9 +115,9 @@ class TeamCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: CustomTheme.backgroundColor,
-          // border: Border.all(color: CustomTheme.boxBorderColor),
         ),
         child: Row(
+          spacing: 8,
           children: [
             Expanded(
               child: Column(
@@ -158,10 +168,7 @@ class TeamCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (showDragHandle) ...[
-              const SizedBox(width: 8),
-              const Icon(Icons.drag_handle),
-            ],
+            if (showDragHandle) const Icon(Icons.drag_handle),
           ],
         ),
       );
