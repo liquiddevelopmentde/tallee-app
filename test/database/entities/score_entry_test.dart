@@ -34,7 +34,7 @@ void main() {
       testPlayer3 = Player(name: 'Charlie');
       testGame = Game(
         name: 'Test Game',
-        ruleset: Ruleset.singleWinner,
+        ruleset: Ruleset.winner,
         description: 'A test game',
         color: AppColor.blue,
       );
@@ -287,16 +287,13 @@ void main() {
         expect(result, isEmpty);
       });
 
-      test(
-        'getScoresForMatches() initializes empty maps for matches with no scores',
-        () async {
-          final result = await database.scoreEntryDao.getScoresForMatches(
-            matchIds: [testMatch1.id],
-          );
-          expect(result.containsKey(testMatch1.id), isTrue);
-          expect(result[testMatch1.id], isEmpty);
-        },
-      );
+      test('getScoresForMatches() initializes empty maps for matches with no scores', () async {
+        final result = await database.scoreEntryDao.getScoresForMatches(
+          matchIds: [testMatch1.id],
+        );
+        expect(result.containsKey(testMatch1.id), isTrue);
+        expect(result[testMatch1.id], isEmpty);
+      });
 
       test('getAllPlayerScoresInMatch() works correctly', () async {
         ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);

@@ -54,9 +54,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   bool get isTeamMatch => widget.match.isTeamMatch;
 
   bool rulesetSupportsPlayerSelection() =>
-      ruleset == Ruleset.singleWinner ||
-      ruleset == Ruleset.singleLoser ||
-      ruleset == Ruleset.multipleWinners;
+      ruleset == Ruleset.winner || ruleset == Ruleset.loser;
 
   bool rulesetSupportsScoreEntry() =>
       ruleset == Ruleset.lowestScore ||
@@ -134,7 +132,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
                         // Show player selection
                         if (rulesetSupportsPlayerSelection())
-                          if (ruleset == Ruleset.multipleWinners)
+                          if (ruleset == Ruleset.winner)
                             MultiplePlayerSelection(
                               match: widget.match,
                               onPlayersSelected: (List<Player> players) {
@@ -261,17 +259,15 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Handles saving or removing the winner in the database
   /// based on the current selection.
   Future<void> handleSaving() async {
-    if (ruleset == Ruleset.singleWinner) {
-      await handleWinner();
-    } else if (ruleset == Ruleset.singleLoser) {
+    if (ruleset == Ruleset.winner) {
+      await handleWinners();
+    } else if (ruleset == Ruleset.loser) {
       await handleLoser();
     } else if (ruleset == Ruleset.lowestScore ||
         ruleset == Ruleset.highestScore) {
       await handleScores();
     } else if (ruleset == Ruleset.placement) {
       await handlePlacement();
-    } else if (ruleset == Ruleset.multipleWinners) {
-      await handleWinners();
     } else if (ruleset == Ruleset.lives) {
       await handleLives();
     }
@@ -414,13 +410,11 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   String getTitleForRuleset(AppLocalizations loc) {
     switch (ruleset) {
-      case Ruleset.singleWinner:
-        return loc.select_winner;
-      case Ruleset.singleLoser:
+      case Ruleset.loser:
         return loc.select_loser;
       case Ruleset.placement:
         return loc.drag_to_set_placement;
-      case Ruleset.multipleWinners:
+      case Ruleset.winner:
         return loc.select_winners;
       default:
         return '';

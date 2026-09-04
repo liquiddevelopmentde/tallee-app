@@ -12,7 +12,7 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
-import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -131,9 +131,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 // Controller Icon
                 const Center(
                   child: ColoredIconContainer(
-                    icon: Icons.sports_esports,
+                    icon: RpgAwesome.clovers_card,
                     containerSize: 55,
-                    iconSize: 38,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -212,7 +211,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                                     PlayerDetailView(
                                                       player:
                                                           team.members.first,
-                                                      onPlayerNameUpdated:
+                                                      onPlayerUpdated:
                                                           widget.onMatchUpdate,
                                                     ),
                                               ),
@@ -251,8 +250,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                     adaptivePageRoute(
                                       builder: (context) => PlayerDetailView(
                                         player: player,
-                                        onPlayerNameUpdated:
-                                            widget.onMatchUpdate,
+                                        onPlayerUpdated: widget.onMatchUpdate,
                                       ),
                                     ),
                                   );
@@ -386,11 +384,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     final ruleset = match.game.ruleset;
 
     if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
-      final label = ruleset == Ruleset.singleWinner
-          ? loc.winner
-          : ruleset == Ruleset.singleLoser
-          ? loc.loser
-          : loc.winners;
+      final label = ruleset == Ruleset.loser ? loc.loser : loc.winners;
 
       return [
         Text(
@@ -557,9 +551,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   // Returns if the result can be displayed in a single row
   bool isSingleRowResult() {
-    return match.game.ruleset == Ruleset.singleWinner ||
-        match.game.ruleset == Ruleset.singleLoser ||
-        match.game.ruleset == Ruleset.multipleWinners;
+    return match.game.ruleset == Ruleset.winner ||
+        match.game.ruleset == Ruleset.loser;
   }
 
   String getPlacementText(BuildContext context, int rank) {

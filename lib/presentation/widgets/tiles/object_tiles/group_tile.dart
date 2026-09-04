@@ -4,7 +4,8 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
+import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class GroupTile extends StatefulWidget {
@@ -20,16 +21,9 @@ class GroupTile extends StatefulWidget {
     this.onPlayerChanged,
   });
 
-  /// The group data to be displayed.
   final Group group;
-
-  /// Whether the tile should be highlighted.
   final bool isHighlighted;
-
-  /// Callback function to be executed when the tile is tapped.
   final VoidCallback? onTap;
-
-  /// Callback function to be executed when the players in the group are changed.
   final VoidCallback? onPlayerChanged;
 
   @override
@@ -48,44 +42,86 @@ class _GroupTileState extends State<GroupTile> {
       },
       child: AnimatedContainer(
         margin: CustomTheme.tileMargin,
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         decoration: widget.isHighlighted
             ? CustomTheme.highlightedBoxDecoration
             : CustomTheme.standardBoxDecoration,
         duration: const Duration(milliseconds: 150),
         child: Column(
+          spacing: 5,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Title row
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(
-                  child: Text(
-                    widget.group.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
+                // Group icon
+                const ColoredIconContainer(
+                  icon: Icons.group,
+                  containerSize: 50,
                 ),
-                Row(
-                  children: [
-                    Text(
-                      '${widget.group.members.length}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 18,
+
+                // Text content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 3,
+                    children: [
+                      // Name row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Name
+                          Flexible(
+                            child: Text(
+                              widget.group.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+
+                          // Member amount
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 6,
+                            children: [
+                              Text(
+                                '${widget.group.members.length}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const Icon(Icons.group, size: 22),
+                            ],
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(width: 3),
-                    const Icon(Icons.group, size: 22),
-                  ],
+
+                      // Description
+                      Text(
+                        widget.group.description,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: CustomTheme.hintColor,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 5),
+
+            // Player
             Wrap(
               alignment: WrapAlignment.start,
               crossAxisAlignment: WrapCrossAlignment.start,
@@ -103,7 +139,7 @@ class _GroupTileState extends State<GroupTile> {
                         adaptivePageRoute(
                           builder: (context) => PlayerDetailView(
                             player: member,
-                            onPlayerNameUpdated: () {
+                            onPlayerUpdated: () {
                               widget.onPlayerChanged?.call();
                             },
                           ),
@@ -113,7 +149,6 @@ class _GroupTileState extends State<GroupTile> {
                   ),
               ],
             ),
-            const SizedBox(height: 2.5),
           ],
         ),
       ),

@@ -33,7 +33,6 @@ class LicenseDetailView extends StatelessWidget {
                   const ColoredIconContainer(
                     icon: Icons.description,
                     containerSize: 60,
-                    iconSize: 30,
                   ),
                   Column(
                     spacing: 2,
