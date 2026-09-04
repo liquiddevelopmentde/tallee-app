@@ -1,7 +1,7 @@
 name: "PR Label Automation"
 on:
   pull_request:
-    types: [ opened, edited, review_requested, review_request_removed, closed, labeled, unlabeled ]
+    types: [ opened, edited, review_requested, review_request_removed, closed, labeled ]
   pull_request_review:
     types: [ submitted ]
 
@@ -100,11 +100,6 @@ jobs:
               -d "{\"name\":\"$TARGET\",\"color\":\"#0E8A16\",\"exclusive\":true}" "$API/repos/$REPO/labels"
 
           labels=$(curl -fsS -H "$AUTH" "$API/repos/$REPO/issues/$PR/labels")
-
-          # Remove any other "Workflow/*" label so only the target state remains.
-          for id in $(printf '%s' "$labels" | python3 -c "import sys,json;d=json.load(sys.stdin);[print(x['id']) for x in d if x['name'].startswith('Workflow/') and x['name']!='$TARGET']"); do
-            curl -fsS -X DELETE -H "$AUTH" "$API/repos/$REPO/issues/$PR/labels/$id"
-          done
 
           # Add the target label if it isn't already set.
           printf '%s' "$labels" | python3 -c "import sys,json;d=json.load(sys.stdin);exit(0 if any(x['name']=='$TARGET' for x in d) else 1)" || \
