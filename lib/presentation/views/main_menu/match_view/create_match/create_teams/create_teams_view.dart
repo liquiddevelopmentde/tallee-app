@@ -45,65 +45,16 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (didInitTeams &&
+    final isStateSynced =
+        didInitTeams &&
         focusNodes.length == teams.length &&
-        nameController.length == teams.length) {
-      return;
-    }
+        nameController.length == teams.length;
 
-    didInitTeams = true;
+    if (isStateSynced) return;
 
-    final loc = AppLocalizations.of(context);
-
-    final bool areTeamsLogicallyPossible =
-        prefillMatchPlayers.length >= prefillMatchTeams.length;
-
-    if (areTeamsLogicallyPossible &&
-        widget.previousMatch?.teams != null &&
-        widget.previousMatch!.teams!.isNotEmpty) {
-      final matchPlayerIds = matchPlayers.map((p) => p.id).toSet();
-
-      // Use prefilled teams, exclude players that are not in the matches players anymore
-      teams = widget.previousMatch!.teams!.map((team) {
-        return team.copyWith(
-          members: team.members
-              .where((member) => matchPlayerIds.contains(member.id))
-              .toList(),
-        );
-      }).toList();
-    } else {
-      // Init the teams/reset teams
-      teams = List.generate(
-        initialTeamCount,
-        (index) => Team(
-          name: '${loc.team} ${index + 1}',
-          color: getTeamColor(index),
-          members: [],
-        ),
-      );
-    }
-
-    if (focusNodes.length != teams.length) {
-      for (final focusNode in focusNodes) {
-        focusNode.dispose();
-      }
-      focusNodes = List.generate(teams.length, (index) => FocusNode());
-      for (int index = 0; index < focusNodes.length; index++) {
-        focusNodes[index].addListener(() {
-          if (focusNodes[index].hasFocus) {
-            ensureTileVisible(index);
-          }
-        });
-      }
-    }
-
-    // Init the controllers
-    if (nameController.length != teams.length) {
-      for (final controller in nameController) {
-        controller.dispose();
-      }
-      nameController = teams.map(getNewController).toList();
-    }
+    setupTeams();
+    setupFocusNodes();
+    setupControllers();
   }
 
   @override
@@ -336,5 +287,67 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       curve: Curves.easeOut,
       alignment: 0.35,
     );
+  }
+
+  void setupTeams() {
+    didInitTeams = true;
+    final loc = AppLocalizations.of(context);
+
+    final bool areTeamsLogicallyPossible =
+        prefillMatchPlayers.length >= prefillMatchTeams.length;
+    final previousTeams = widget.previousMatch?.teams;
+
+    if (areTeamsLogicallyPossible &&
+        previousTeams != null &&
+        previousTeams.isNotEmpty) {
+      final matchPlayerIds = matchPlayers.map((p) => p.id).toSet();
+
+      // Use prefilled teams, exclude players that are not in the matches players anymore
+      teams = previousTeams.map((team) {
+        return team.copyWith(
+          members: team.members
+              .where((member) => matchPlayerIds.contains(member.id))
+              .toList(),
+        );
+      }).toList();
+    } else {
+      // Init the teams/reset teams
+      teams = List.generate(
+        initialTeamCount,
+        (index) => Team(
+          name: '${loc.team} ${index + 1}',
+          color: getTeamColor(index),
+          members: [],
+        ),
+      );
+    }
+  }
+
+  void setupFocusNodes() {
+    if (focusNodes.length == teams.length) return;
+
+    for (final node in focusNodes) {
+      node.dispose();
+    }
+
+    focusNodes = List.generate(teams.length, (index) {
+      final node = FocusNode();
+      node.addListener(() {
+        if (node.hasFocus) {
+          ensureTileVisible(index);
+        }
+      });
+      return node;
+    });
+  }
+
+  void setupControllers() {
+    if (nameController.length == teams.length) return;
+
+    for (final controller in nameController) {
+      controller.dispose();
+    }
+
+    nameController = teams.map(getNewController).toList();
   }
 }
