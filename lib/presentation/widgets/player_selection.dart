@@ -335,7 +335,6 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                 )
               : PlayerTile(
                   player: unit.members.first,
-                  icon: isPairingMode ? null : Icons.close,
                   backgroundColor: pressingId == unit.id
                       ? Colors.grey.shade800
                       : null,
