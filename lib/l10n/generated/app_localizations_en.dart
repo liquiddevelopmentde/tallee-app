@@ -233,6 +233,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Error while editing group, please try again';
 
   @override
+  String get error_loading_privacy_policy => 'Error loading privacy policy';
+
+  @override
   String get error_reading_file => 'Error reading file';
 
   @override
