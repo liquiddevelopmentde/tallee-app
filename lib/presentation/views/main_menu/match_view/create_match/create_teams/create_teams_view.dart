@@ -28,6 +28,7 @@ class CreateTeamsView extends StatefulWidget {
 
 class _CreateTeamsViewState extends State<CreateTeamsView> {
   final Random random = Random();
+  final List<GlobalKey> tileKeys = [];
 
   List<Player> get matchPlayers => widget.match.players;
 
@@ -89,6 +90,19 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
         focusNode.dispose();
       }
       focusNodes = List.generate(teams.length, (index) => FocusNode());
+      for (int index = 0; index < focusNodes.length; index++) {
+        focusNodes[index].addListener(() {
+          if (focusNodes[index].hasFocus) {
+            ensureTileVisible(index);
+          }
+        });
+      }
+    }
+
+    if (tileKeys.length != teams.length) {
+      tileKeys
+        ..clear()
+        ..addAll(List.generate(teams.length, (_) => GlobalKey()));
     }
 
     // Init the controllers
@@ -123,10 +137,16 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
         children: [
           Positioned.fill(
             child: ListView.builder(
-              padding: const EdgeInsets.only(top: 12, bottom: 105),
+              padding: EdgeInsets.only(
+                top: 12,
+                bottom: MediaQuery.of(context).viewInsets.bottom != 0
+                    ? MediaQuery.of(context).viewInsets.bottom + 10
+                    : 110,
+              ),
               itemCount: teams.length,
               itemBuilder: (context, index) {
                 return TeamCreationTile(
+                  key: tileKeys[index],
                   color: teams[index].color,
                   controller: nameController[index],
                   hintText: '${loc.team} ${index + 1}',
@@ -228,7 +248,15 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       final newTeam = getNewTeam();
       teams.add(newTeam);
       nameController.add(getNewController(newTeam));
-      focusNodes.add(FocusNode());
+      tileKeys.add(GlobalKey());
+      final focusNode = FocusNode();
+      focusNode.addListener(() {
+        if (focusNode.hasFocus) {
+          final index = focusNodes.indexOf(focusNode);
+          if (index != -1) ensureTileVisible(index);
+        }
+      });
+      focusNodes.add(focusNode);
     });
   }
 
@@ -243,6 +271,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       removedController.dispose();
       final removedFocusNode = focusNodes.removeAt(index);
       removedFocusNode.dispose();
+      tileKeys.removeAt(index);
 
       // Update index-based team names and default colors
       for (int i = 0; i < nameController.length; i++) {
@@ -305,5 +334,18 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
         }
       }
     }
+  }
+
+  void ensureTileVisible(int index) {
+    if (index < 0 || index >= tileKeys.length) return;
+    final context = tileKeys[index].currentContext;
+    if (context == null) return;
+
+    Scrollable.ensureVisible(
+      context,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOut,
+      alignment: 0.2,
+    );
   }
 }
