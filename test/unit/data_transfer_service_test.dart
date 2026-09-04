@@ -603,7 +603,7 @@ void main() {
           expect(gamesJson.length, 3);
           expect(
             gamesJson.map((g) => g['ruleset']),
-            containsAll(['highestScore', 'lowestScore', 'singleWinner']),
+            containsAll(['highestScore', 'lowestScore', 'winners']),
           );
         });
       });

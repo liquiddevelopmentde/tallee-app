@@ -1184,12 +1184,6 @@ abstract class AppLocalizations {
   /// **'Unknown Exception (see console)'**
   String get unknown_exception;
 
-  /// No description provided for @winner.
-  ///
-  /// In en, this message translates to:
-  /// **'Winner'**
-  String get winner;
-
   /// No description provided for @winners.
   ///
   /// In en, this message translates to:

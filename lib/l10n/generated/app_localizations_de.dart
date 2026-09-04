@@ -594,9 +594,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get unknown_exception => 'Unbekannter Fehler (siehe Konsole)';
 
   @override
-  String get winner => 'Gewinner:in';
-
-  @override
   String get winners => 'Gewinner:innen';
 
   @override
