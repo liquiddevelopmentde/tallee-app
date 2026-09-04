@@ -5,6 +5,7 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
+import 'package:tallee/services/package_info_service.dart';
 
 class UpdateView extends StatelessWidget {
   /// An update screen displaying a markdown file
@@ -13,6 +14,7 @@ class UpdateView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final PackageInfo packageInfo = PackageInfoService.info;
 
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
@@ -46,18 +48,18 @@ class UpdateView extends StatelessWidget {
                               icon: Icons.newspaper,
                             ),
                             Column(
-                              spacing: 4,
+                              spacing: 2,
                               children: [
                                 Text(
                                   loc.whats_new,
                                   style: const TextStyle(
-                                    fontSize: 22,
+                                    fontSize: 24,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const Text(
-                                  'X.Y.Z',
-                                  style: TextStyle(
+                                Text(
+                                  'Version ${packageInfo.version} (${packageInfo.buildNumber})',
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     color: CustomTheme.hintColor,
                                   ),

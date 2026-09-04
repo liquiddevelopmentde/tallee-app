@@ -1223,7 +1223,7 @@ abstract class AppLocalizations {
   /// No description provided for @whats_new.
   ///
   /// In en, this message translates to:
-  /// **'What\'s new'**
+  /// **'What\'s new?'**
   String get whats_new;
 
   /// No description provided for @winner.
