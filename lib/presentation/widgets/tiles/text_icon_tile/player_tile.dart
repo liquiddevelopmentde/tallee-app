@@ -7,14 +7,12 @@ class PlayerTile extends StatelessWidget {
   const PlayerTile({
     super.key,
     required this.player,
-    this.icon,
     this.onIconTap,
     this.onTileTap,
     this.backgroundColor,
   });
 
   final Player player;
-  final IconData? icon;
   final VoidCallback? onIconTap;
   final VoidCallback? onTileTap;
   final Color? backgroundColor;
