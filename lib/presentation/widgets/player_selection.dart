@@ -335,7 +335,6 @@ class _PlayerSelectionState extends State<PlayerSelection> {
                 )
               : PlayerTile(
                   player: unit.members.first,
-                  icon: isPairingMode ? null : Icons.close,
                   backgroundColor: pressingId == unit.id
                       ? Colors.grey.shade800
                       : null,
@@ -382,6 +381,12 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     );
   }
 
+  /// Generates a name for a newly created pair.
+  String generatePairName() {
+    final pairIndex = selectedUnits.where((u) => u.members.length > 1).length;
+    return 'Pair ${pairIndex + 1}';
+  }
+
   void mergeSelectedUnits() {
     setState(() {
       final unitsToMerge = selectedUnits
@@ -393,7 +398,10 @@ class _PlayerSelectionState extends State<PlayerSelection> {
       selectedUnits.removeWhere((u) => pairingSelection.contains(u.id));
 
       // Add new merged unit
-      selectedUnits.insert(0, Team(name: '', members: allMembers));
+      selectedUnits.insert(
+        0,
+        Team(name: generatePairName(), members: allMembers),
+      );
 
       pairingSelection.clear();
       isPairingMode = false;
@@ -420,10 +428,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
     // Add new merged unit (max 2 players)
     selectedUnits.insert(
       0,
-      Team(
-        name: allMembers.take(2).map((m) => m.name).join(' & '),
-        members: allMembers.take(2).toList(),
-      ),
+      Team(name: generatePairName(), members: allMembers.take(2).toList()),
     );
 
     pairingSelection.clear();

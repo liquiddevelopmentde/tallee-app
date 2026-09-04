@@ -109,23 +109,28 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       decoration: CustomTheme.standardBoxDecoration,
       child: Column(
+        spacing: 4,
         children: [
-          if (widget.color != null) ...[
-            // Colored unit name
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              decoration: BoxDecoration(
-                color: widget.color?.withAlpha(30),
-                border: Border.all(color: widget.color!, width: 2),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: widget.title,
-            ),
-          ] else ...[
-            // Default unit name
-            widget.title,
-          ],
-          const SizedBox(height: 4),
+          // Colored unit name
+          Row(
+            spacing: 5,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (widget.color != null) ...[
+                // Colored circle
+                Container(
+                  width: 14,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: widget.color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ],
+              widget.title,
+            ],
+          ),
 
           // Button row
           Row(
