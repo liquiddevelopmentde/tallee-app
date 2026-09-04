@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
@@ -162,21 +163,21 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               NavbarItem(
                 index: 0,
                 isSelected: currentIndex == 0,
-                icon: Icons.gamepad_rounded,
+                icon: MATCH_ICON,
                 label: loc.matches,
                 onTabTapped: onTabTapped,
               ),
               NavbarItem(
                 index: 1,
                 isSelected: currentIndex == 1,
-                icon: Icons.group_rounded,
+                icon: GROUP_ICON,
                 label: loc.groups,
                 onTabTapped: onTabTapped,
               ),
               NavbarItem(
                 index: 2,
                 isSelected: currentIndex == 2,
-                icon: Icons.videogame_asset,
+                icon: GAME_ICON,
                 label: loc.games,
                 onTabTapped: onTabTapped,
               ),

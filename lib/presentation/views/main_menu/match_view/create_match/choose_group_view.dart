@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
@@ -101,9 +101,8 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                   child: TopCenteredMessage(
                     icon: Icons.info,
                     title: loc.info,
-                    message: AppLocalizations.of(
-                      context,
-                    ).there_is_no_group_matching_your_search,
+                    message: AppLocalizations.of(context)
+                        .there_is_no_group_matching_your_search,
                   ),
                 ),
                 child: ListView.builder(
@@ -132,16 +131,15 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
 
                         // Navigate back to create match view instantly
                         if (!enableMultiSelection) {
-                          await Future.delayed(
-                            Constants.MINIMUM_SKELETON_DURATION,
-                          ).then((_) {
-                            if (!context.mounted) return;
-                            Navigator.of(context).pop(
-                              selectedGroups.isEmpty
-                                  ? null
-                                  : selectedGroups.first,
-                            );
-                          });
+                          await Future.delayed(MINIMUM_SKELETON_DURATION)
+                              .then((_) {
+                                if (!context.mounted) return;
+                                Navigator.of(context).pop(
+                                  selectedGroups.isEmpty
+                                      ? null
+                                      : selectedGroups.first,
+                                );
+                              });
                         }
                       },
                     );
@@ -229,7 +227,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
             maxScore = max(maxScore, weightedRatio(member.name, query));
           }
 
-          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+          if (maxScore >= FUZZY_SEARCH_THRESHOLD) {
             scoredGroups.add((group: group, score: maxScore));
           }
         }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -182,7 +182,8 @@ class _GameViewState extends State<GameView> {
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: FloatingAnimatedButton(
               text: loc.create_game,
-              icon: Icons.videogame_asset,
+              icon: GAME_ICON,
+              showAddBadge: true,
               onPressed: () async {
                 Navigator.push(
                   context,
@@ -224,7 +225,7 @@ class _GameViewState extends State<GameView> {
             ),
           );
 
-          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+          if (maxScore >= FUZZY_SEARCH_THRESHOLD) {
             scoredGames.add((game: game, score: maxScore));
           }
         }
@@ -252,7 +253,7 @@ class _GameViewState extends State<GameView> {
     Future.wait([
       db.gameDao.getAllGames(),
       db.gameDao.getAllGameCounts(),
-      Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+      Future.delayed(MINIMUM_SKELETON_DURATION),
     ]).then((results) {
       if (mounted) {
         setState(() {

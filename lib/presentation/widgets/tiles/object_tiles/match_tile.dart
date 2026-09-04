@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -86,7 +87,7 @@ class _MatchTileState extends State<MatchTile> {
             if (group != null) ...[
               Row(
                 children: [
-                  const Icon(Icons.group, size: 16, color: Colors.grey),
+                  const Icon(GROUP_ICON, size: 16, color: Colors.grey),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(

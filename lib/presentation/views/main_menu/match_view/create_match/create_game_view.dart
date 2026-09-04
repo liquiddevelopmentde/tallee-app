@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/icon_utils.dart';
@@ -181,7 +181,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
                   controller: gameNameController,
-                  maxLength: Constants.MAX_MATCH_NAME_LENGTH,
+                  maxLength: MAX_MATCH_NAME_LENGTH,
                   hintText: loc.game_name,
                 ),
               ),
@@ -204,7 +204,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                   hintText: loc.description,
                   minLines: 6,
                   maxLines: 6,
-                  maxLength: Constants.MAX_GAME_DESCRIPTION_LENGTH,
+                  maxLength: MAX_GAME_DESCRIPTION_LENGTH,
                   showCounterText: true,
                   textInputAction: TextInputAction.done,
                 ),

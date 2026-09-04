@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/translations.dart';
@@ -57,9 +57,8 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
           replacement: TopCenteredMessage(
             icon: Icons.info,
             title: loc.info,
-            message: AppLocalizations.of(
-              context,
-            ).there_is_no_group_matching_your_search,
+            message: AppLocalizations.of(context)
+                .there_is_no_group_matching_your_search,
           ),
           child: ListView.separated(
             padding: const EdgeInsets.only(
@@ -124,9 +123,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
 
                   // Navigate back to create match view instantly
                   if (!isMultiSelect) {
-                    await Future.delayed(
-                      Constants.MINIMUM_SKELETON_DURATION,
-                    ).then((_) {
+                    await Future.delayed(MINIMUM_SKELETON_DURATION).then((_) {
                       if (!context.mounted) return;
                       Navigator.of(context).pop(
                         selectedValues.isEmpty ? null : selectedValues.first,

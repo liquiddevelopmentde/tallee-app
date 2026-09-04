@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -122,7 +122,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 child: TextInputField(
                   controller: matchNameController,
                   hintText: hintText ?? '',
-                  maxLength: Constants.MAX_MATCH_NAME_LENGTH,
+                  maxLength: MAX_MATCH_NAME_LENGTH,
                 ),
               ),
 

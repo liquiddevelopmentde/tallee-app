@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
@@ -63,7 +63,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   bool isLoading = true;
 
   /// Future that loads all players from the database.
-  late Future<List<Player>> _allPlayersFuture;
+  late Future<List<Player>> allPlayersFuture;
 
   /// The complete list of all available players.
   List<Player> allPlayers = [];
@@ -154,7 +154,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomSearchBar(
-            maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
+            maxLength: MAX_PLAYER_NAME_LENGTH,
             controller: searchBarController,
             constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
             hintText: loc.search_for_players,
@@ -184,7 +184,7 @@ class _PlayerSelectionState extends State<PlayerSelection> {
 
                     if (isNotSelected) {
                       final score = weightedRatio(player.name, value);
-                      if (score >= Constants.FUZZY_SEARCH_THRESHOLD) {
+                      if (score >= FUZZY_SEARCH_THRESHOLD) {
                         scoredPlayers.add((player: player, score: score));
                       }
                     }
@@ -452,12 +452,12 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   /// Loads the list of players from the database or uses the provided available players.
   /// Sets the loading state and updates the player lists accordingly.
   void loadPlayerList() {
-    _allPlayersFuture = Future.wait([
+    allPlayersFuture = Future.wait([
       db.playerDao.getAllPlayers(),
-      Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+      Future.delayed(MINIMUM_SKELETON_DURATION),
     ]).then((results) => results[0] as List<Player>);
 
-    _allPlayersFuture.then((loadedPlayers) {
+    allPlayersFuture.then((loadedPlayers) {
       if (!mounted) return;
       setState(() {
         // If a list of available players is provided (even if empty), use that list.
@@ -597,9 +597,8 @@ class _PlayerSelectionState extends State<PlayerSelection> {
   void showSnackBarMessage(String message) {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(CustomSnackBar(message: message));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(CustomSnackBar(message: message));
   }
 
   /// Determines the appropriate info text to display when no players

@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -117,9 +117,7 @@ class _SettingsViewState extends State<SettingsView> {
                   icon: Icons.account_balance_sharp,
                   suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
                   onPressed: () async {
-                    await launchUrl(
-                      Uri.parse(Constants.LIQUID_WEBSITE_LEGAL_URL),
-                    );
+                    await launchUrl(Uri.parse(LIQUID_WEBSITE_LEGAL_URL));
                   },
                 ),
                 SettingsListTile(

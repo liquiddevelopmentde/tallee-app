@@ -8,24 +8,22 @@ class FloatingAnimatedButton extends StatefulWidget {
   /// - [onPressed]: The callback to be invoked when the button is pressed.
   /// - [icon]: The icon of the button.
   /// - [text]: The text of the button.
+  /// - [onLongPressed]:
+  /// - [showAddBadge]:
   const FloatingAnimatedButton({
     super.key,
     required this.onPressed,
     required this.icon,
     this.text,
     this.onLongPressed,
+    this.showAddBadge = false,
   });
 
-  /// The callback to be invoked when the button is pressed.
   final void Function()? onPressed;
-
-  /// The icon of the button.
   final IconData icon;
-
-  /// The text of the button.
   final String? text;
-
   final void Function()? onLongPressed;
+  final bool showAddBadge;
 
   @override
   State<FloatingAnimatedButton> createState() => _FloatingAnimatedButtonState();
@@ -144,7 +142,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(widget.icon, size: 26, color: Colors.black),
+              buildIcon(),
               if (widget.text != null) ...[
                 const SizedBox(width: 7),
                 Text(
@@ -160,6 +158,39 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildIcon() {
+    final icon = Icon(widget.icon, size: 26, color: Colors.black);
+
+    if (!widget.showAddBadge) return icon;
+
+    final backgroundColor = widget.onPressed == null
+        ? Colors.grey
+        : Colors.white;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        icon,
+        Positioned(
+          top: -5,
+          right: -6,
+          child: Container(
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.add_circle,
+              size: 15,
+              color: Colors.black,
+              weight: 200,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

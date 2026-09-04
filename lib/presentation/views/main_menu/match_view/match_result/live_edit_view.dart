@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
@@ -19,7 +19,7 @@ class LiveEditView extends StatefulWidget {
     required this.match,
     required this.initialScores,
     this.onScoresChanged,
-  }) : boundaries = Constants.SCORE_INPUT_BOUNDARIES,
+  }) : boundaries = SCORE_INPUT_BOUNDARIES,
        livesMode = false;
 
   /// Creates a live editor for the lives ruleset
@@ -28,7 +28,7 @@ class LiveEditView extends StatefulWidget {
     required this.match,
     required this.initialScores,
     this.onScoresChanged,
-  }) : boundaries = Constants.LIVE_INPUT_BOUNDARIES,
+  }) : boundaries = LIVE_INPUT_BOUNDARIES,
        livesMode = true;
 
   final bool livesMode;
