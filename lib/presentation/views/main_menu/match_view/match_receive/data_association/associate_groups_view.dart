@@ -85,7 +85,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
               },
               child: associatedGroup == null
                   ? GestureDetector(
-                      onTap: _showGroupSelectionSheet,
+                      onTap: navigateToGroupSelection,
                       child: Container(
                         key: const ValueKey('no_association'),
                         margin: CustomTheme.tileMargin,
@@ -132,7 +132,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                   : GroupTile(
                       key: ValueKey(associatedGroup!.id),
                       group: associatedGroup!,
-                      onTap: _showGroupSelectionSheet,
+                      onTap: navigateToGroupSelection,
                       borderColor: Colors.green.withAlpha(150),
                       playersClickable: false,
                     ),
@@ -182,9 +182,8 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(CustomSnackBar(message: loc.unexpected_error));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(CustomSnackBar(message: loc.unexpected_error));
       return;
     }
 
@@ -192,14 +191,13 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
 
     Provider.of<DataRefreshProvider>(context, listen: false).refresh();
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
 
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  Future<void> _showGroupSelectionSheet() async {
+  Future<void> navigateToGroupSelection() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final allGroups = await db.groupDao.getAllGroups();
 
@@ -227,11 +225,9 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
       ),
     );
 
-    if (selected != null) {
-      setState(() {
-        associatedGroup = selected;
-      });
-    }
+    setState(() {
+      associatedGroup = selected;
+    });
   }
 
   Future<void> autoAssociateGroup() async {

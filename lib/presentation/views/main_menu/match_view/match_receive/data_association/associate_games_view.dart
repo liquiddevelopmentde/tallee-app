@@ -85,7 +85,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
               },
               child: associatedGame == null
                   ? GestureDetector(
-                      onTap: showGameSelectionSheet,
+                      onTap: navigateToGameSelection,
                       child: Container(
                         key: const ValueKey('no_association'),
                         margin: CustomTheme.tileMargin,
@@ -139,7 +139,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                         associatedGame!.ruleset,
                         context,
                       ),
-                      onTap: showGameSelectionSheet,
+                      onTap: navigateToGameSelection,
                       isHighlighted: true,
                       badgeColor: getColorFromAppColor(associatedGame!.color),
                       borderColor: Colors.green.withAlpha(150),
@@ -177,7 +177,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
     );
   }
 
-  Future<void> showGameSelectionSheet() async {
+  Future<void> navigateToGameSelection() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final allGames = await db.gameDao.getAllGames();
 
@@ -199,11 +199,9 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
       ),
     );
 
-    if (selected != null) {
-      setState(() {
-        associatedGame = selected;
-      });
-    }
+    setState(() {
+      associatedGame = selected;
+    });
   }
 
   Future<void> autoAssociateGame() async {
