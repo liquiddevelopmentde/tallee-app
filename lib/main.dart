@@ -61,7 +61,7 @@ class _TalleeState extends State<Tallee> {
   /// Receives .tallee files opened via the system.
   final OpenWithApp openWithApp = OpenWithApp();
   StreamSubscription<String>? fileSubscription;
-  String? _pendingImportPath;
+  String? pendingImportPath;
 
   @override
   void initState() {
@@ -125,16 +125,16 @@ class _TalleeState extends State<Tallee> {
           },
         ),
       ),
-      home: SplashScreen(onFinished: _handleSplashFinished),
+      home: SplashScreen(onFinished: handleSplashFinished),
     );
   }
 
-  void _handleSplashFinished() {
+  void handleSplashFinished() {
     final navigator = navigatorKey.currentState;
     if (navigator == null) return;
 
-    final path = _pendingImportPath;
-    _pendingImportPath = null;
+    final path = pendingImportPath;
+    pendingImportPath = null;
 
     navigator.pushReplacement(
       PageRouteBuilder(
@@ -156,7 +156,7 @@ class _TalleeState extends State<Tallee> {
   Future<void> checkInitialFile() async {
     final path = await openWithApp.getInitialFile();
     if (path != null) {
-      _pendingImportPath = path;
+      pendingImportPath = path;
     }
   }
 
