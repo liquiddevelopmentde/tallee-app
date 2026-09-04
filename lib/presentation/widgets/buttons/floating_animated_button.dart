@@ -8,8 +8,8 @@ class FloatingAnimatedButton extends StatefulWidget {
   /// - [onPressed]: The callback to be invoked when the button is pressed.
   /// - [icon]: The icon of the button.
   /// - [text]: The text of the button.
-  /// - [onLongPressed]:
-  /// - [showAddBadge]:
+  /// - [onLongPressed]: The callback to be invoked when the button is pressed longer
+  /// - [showAddBadge]: Whether to show a plus badge on the top right corner on the icon
   const FloatingAnimatedButton({
     super.key,
     required this.onPressed,
