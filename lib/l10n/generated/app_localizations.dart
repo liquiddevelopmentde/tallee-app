@@ -1231,6 +1231,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yesterday at'**
   String get yesterday_at;
+
+  /// No description provided for @error_loading_privacy_policy.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading privacy policy'**
+  String get error_loading_privacy_policy;
 }
 
 class _AppLocalizationsDelegate

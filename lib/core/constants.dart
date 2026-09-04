@@ -2,6 +2,9 @@
 class Constants {
   Constants._(); // Private constructor to prevent instantiation
 
+  /// URL to the legal section on the LIQUID website
+  static const String LIQUID_WEBSITE_LEGAL_URL = 'https://liquid-dev.de/legal';
+
   /// Treshold for fuzzy search
   static const int FUZZY_SEARCH_THRESHOLD = 50;
 

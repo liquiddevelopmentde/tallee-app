@@ -209,5 +209,6 @@
   "winners": "Gewinner:innen",
   "winrate": "Siegquote",
   "worst_score": "Schlechteste Punktzahl",
-  "yesterday_at": "Gestern um"
+  "yesterday_at": "Gestern um",
+  "error_loading_privacy_policy": "Fehler beim Laden der Datenschutzerklärung"
 }
