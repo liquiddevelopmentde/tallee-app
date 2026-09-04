@@ -34,7 +34,7 @@ class LicenseDetailView extends StatelessWidget {
                         icon: Icons.description,
                         margin: EdgeInsetsGeometry.only(right: 15),
                         containerSize: 60,
-                        iconSize: 30,
+                        iconSize: 35,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

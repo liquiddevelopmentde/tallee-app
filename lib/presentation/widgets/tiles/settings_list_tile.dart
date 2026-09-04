@@ -57,7 +57,6 @@ class _SettingsListTileState extends State<SettingsListTile> {
                         ColoredIconContainer(
                           icon: widget.icon,
                           containerSize: 44,
-                          iconSize: 28,
                         ),
                         const SizedBox(width: 16),
                         Text(
