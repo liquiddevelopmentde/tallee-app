@@ -71,7 +71,7 @@ jobs:
           case "$EVENT" in
             pull_request)
               case "$ACTION" in
-                opened)           TARGET="Workflow/In Progress" ;;
+                opened)           if printf '%s' "$TITLE" | grep -qiE '^WIP:'; then TARGET="Workflow/In Progress"; else TARGET="Workflow/Ready for Review"; fi ;;
                 review_requested) TARGET="Workflow/Ready for Review" ;;
                 review_request_removed) TARGET="Workflow/In Progress" ;;
                 closed)           if [ "$MERGED" = "true" ]; then TARGET="Workflow/Merged"; else TARGET="Workflow/Abandoned"; fi ;;
