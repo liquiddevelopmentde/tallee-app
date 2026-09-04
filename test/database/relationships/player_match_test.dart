@@ -36,7 +36,7 @@ void main() {
       testPlayer5 = Player(name: 'Eve');
       testGame = Game(
         name: 'Test Game',
-        ruleset: Ruleset.singleWinner,
+        ruleset: Ruleset.winner,
         description: 'A test game',
         color: AppColor.blue,
       );

@@ -44,7 +44,7 @@ void main() {
 
       testGame = Game(
         name: 'Chess',
-        ruleset: Ruleset.singleWinner,
+        ruleset: Ruleset.winner,
         description: 'Strategic board game',
         color: AppColor.blue,
       );
@@ -386,10 +386,7 @@ void main() {
             statData['startDate'],
             testStatistic.startDate!.toIso8601String(),
           );
-          expect(
-            statData['endDate'],
-            testStatistic.endDate!.toIso8601String(),
-          );
+          expect(statData['endDate'], testStatistic.endDate!.toIso8601String());
         });
 
         testWidgets('Match with teams is handled correctly', (tester) async {
@@ -548,17 +545,17 @@ void main() {
           final games = [
             Game(
               name: 'Red Game',
-              ruleset: Ruleset.singleWinner,
+              ruleset: Ruleset.winner,
               color: AppColor.red,
             ),
             Game(
               name: 'Blue Game',
-              ruleset: Ruleset.singleWinner,
+              ruleset: Ruleset.winner,
               color: AppColor.blue,
             ),
             Game(
               name: 'Green Game',
-              ruleset: Ruleset.singleWinner,
+              ruleset: Ruleset.winner,
               color: AppColor.green,
             ),
           ];
@@ -591,7 +588,7 @@ void main() {
             ),
             Game(
               name: 'Single Winner',
-              ruleset: Ruleset.singleWinner,
+              ruleset: Ruleset.winner,
               color: AppColor.blue,
             ),
           ];

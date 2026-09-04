@@ -67,12 +67,10 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
       return loc.highest_score;
     case Ruleset.lowestScore:
       return loc.lowest_score;
-    case Ruleset.singleWinner:
-      return loc.single_winner;
-    case Ruleset.singleLoser:
-      return loc.single_loser;
-    case Ruleset.multipleWinners:
-      return loc.multiple_winners;
+    case Ruleset.loser:
+      return loc.loser;
+    case Ruleset.winner:
+      return loc.winner;
     case Ruleset.placement:
       return loc.placement;
     case Ruleset.lives:
@@ -92,7 +90,6 @@ String translateAppColorToString(AppColor color, BuildContext context) {
       return loc.color_green;
     case AppColor.yellow:
       return loc.color_yellow;
-    //return const Color(0xFFF7CA28);
     case AppColor.purple:
       return loc.color_purple;
     case AppColor.orange:
