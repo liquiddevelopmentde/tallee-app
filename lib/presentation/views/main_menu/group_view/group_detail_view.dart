@@ -134,7 +134,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                         color: CustomTheme.hintColor,
                       ),
                       textAlign: TextAlign.center,
-                      overflow: TextOverflow.clip,
+                      overflow: TextOverflow.visible,
                     ),
                   ),
                 const SizedBox(height: 5),
