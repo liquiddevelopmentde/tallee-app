@@ -22,49 +22,44 @@ class LicenseDetailView extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
+          spacing: 10,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 6,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  const ColoredIconContainer(
+                    icon: Icons.description,
+                    containerSize: 60,
+                  ),
+                  Column(
+                    spacing: 2,
                     children: [
-                      const ColoredIconContainer(
-                        icon: Icons.description,
-                        margin: EdgeInsetsGeometry.only(right: 15),
-                        containerSize: 60,
-                        iconSize: 35,
+                      Text(
+                        package.name,
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                          height: 0,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            package.name,
-                            textAlign: TextAlign.left,
-                            style: const TextStyle(
-                              height: 0,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      if (package.version != null) ...[
+                        Text(
+                          'Version ${package.version}',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade300,
                           ),
-                          if (package.version != null) ...[
-                            Text(
-                              'Version ${package.version}',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade300,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
+                        ),
+                      ],
                     ],
                   ),
 
                   if (package.authors.isNotEmpty) ...[
-                    const SizedBox(height: 8),
                     SelectableText(
                       package.authors.join(', '),
                       textAlign: TextAlign.center,
@@ -74,9 +69,9 @@ class LicenseDetailView extends StatelessWidget {
                       ),
                     ),
                   ],
+
                   if (package.homepage != null &&
                       package.homepage!.isNotEmpty) ...[
-                    const SizedBox(height: 8),
                     GestureDetector(
                       onTap: () async {
                         final uri = Uri.parse(package.homepage!);
@@ -102,7 +97,21 @@ class LicenseDetailView extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            if (package.description.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                child: SelectableText(
+                  package.description,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade300,
+                    height: 1.5,
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ),
+
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
