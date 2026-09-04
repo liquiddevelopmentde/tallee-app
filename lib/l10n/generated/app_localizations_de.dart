@@ -233,6 +233,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
 
   @override
+  String get error_loading_privacy_policy =>
+      'Fehler beim Laden der Datenschutzerklärung';
+
+  @override
   String get error_reading_file => 'Fehler beim Lesen der Datei';
 
   @override
@@ -615,8 +619,4 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Gestern um';
-
-  @override
-  String get error_loading_privacy_policy =>
-      'Fehler beim Laden der Datenschutzerklärung';
 }
