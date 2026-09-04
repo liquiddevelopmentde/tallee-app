@@ -20,15 +20,11 @@ class StatisticDetailView extends StatefulWidget {
     super.key,
     required this.statistic,
     required this.values,
-    required this.icon,
-    required this.barColor,
     required this.refreshStatistic,
   });
 
   final Statistic statistic;
   final List<(Player, num)> values;
-  final IconData icon;
-  final Color barColor;
   final Future<void> Function(String) refreshStatistic;
 
   @override

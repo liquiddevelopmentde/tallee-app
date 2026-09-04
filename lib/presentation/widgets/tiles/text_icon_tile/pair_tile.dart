@@ -7,7 +7,6 @@ class PairTile extends StatelessWidget {
   const PairTile({
     super.key,
     required this.pair,
-    this.icon,
     this.onIconTap,
     this.onTileTap,
     this.backgroundColor,
@@ -15,7 +14,6 @@ class PairTile extends StatelessWidget {
   });
 
   final Team pair;
-  final IconData? icon;
   final VoidCallback? onIconTap;
   final VoidCallback? onTileTap;
   final Color? backgroundColor;
