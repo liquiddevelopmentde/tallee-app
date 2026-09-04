@@ -202,37 +202,30 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       createdAt: widget.groupToEdit!.createdAt,
     );
 
-    bool successfullNameChange = true;
-    bool successfullDescriptionChange = true;
-    bool successfullMemberChange = true;
+    bool success = true;
 
     if (widget.groupToEdit!.name != groupName) {
-      successfullNameChange = await db.groupDao.updateGroupName(
+      success &= await db.groupDao.updateGroupName(
         groupId: widget.groupToEdit!.id,
         name: groupName,
       );
     }
 
     if (widget.groupToEdit!.description != groupDescription) {
-      successfullDescriptionChange = await db.groupDao.updateGroupDescription(
+      success &= await db.groupDao.updateGroupDescription(
         groupId: widget.groupToEdit!.id,
         description: groupDescription,
       );
     }
 
     if (widget.groupToEdit!.members != selectedPlayers) {
-      successfullMemberChange = await db.playerGroupDao.replaceGroupPlayers(
+      success &= await db.playerGroupDao.replaceGroupPlayers(
         groupId: widget.groupToEdit!.id,
         newPlayers: selectedPlayers,
       );
       await deleteObsoleteMatchGroupRelations();
       widget.onMembersChanged?.call();
     }
-
-    final success =
-        successfullNameChange &&
-        successfullDescriptionChange &&
-        successfullMemberChange;
 
     return (success, updatedGroup);
   }

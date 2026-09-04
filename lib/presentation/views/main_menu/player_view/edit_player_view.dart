@@ -120,7 +120,6 @@ class _EditPlayerViewState extends State<EditPlayerView> {
     final result = await editPlayer();
     success = result.$1;
     updatedPlayer = result.$2;
-    print('sucess: $success');
 
     if (!mounted) return;
 
@@ -142,27 +141,29 @@ class _EditPlayerViewState extends State<EditPlayerView> {
   Future<(bool, Player)> editPlayer() async {
     final newName = playerNameController.text.trim();
     final newDescription = playerDescriptionController.text.trim();
-    bool success = true;
-    Player newPlayer = widget.playerToEdit.copyWith(
+
+    Player updatedPlayer = widget.playerToEdit.copyWith(
       name: newName,
       description: newDescription,
     );
 
+    bool success = true;
+
     if (newName != widget.playerToEdit.name) {
       success &= await db.playerDao.updatePlayerName(
         playerId: widget.playerToEdit.id,
-        name: newPlayer.name,
+        name: updatedPlayer.name,
       );
     }
 
     if (newDescription != widget.playerToEdit.description) {
       success &= await db.playerDao.updatePlayerDescription(
         playerId: widget.playerToEdit.id,
-        description: newPlayer.description,
+        description: updatedPlayer.description,
       );
     }
 
-    return (success, newPlayer);
+    return (success, updatedPlayer);
   }
 
   /// Displays a snackbar with the given message and optional action.
