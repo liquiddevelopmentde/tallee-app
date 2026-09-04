@@ -125,7 +125,7 @@ class TeamCard extends StatelessWidget {
                 mainAxisAlignment: showTeamMembers
                     ? MainAxisAlignment.start
                     : MainAxisAlignment.center,
-                spacing: 3,
+                spacing: 8,
                 children: [
                   // Team name row
                   Row(
