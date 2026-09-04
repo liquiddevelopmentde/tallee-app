@@ -4,8 +4,10 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
 class UpdateView extends StatelessWidget {
+  /// An update screen displaying a markdown file
   const UpdateView({super.key});
 
   @override
@@ -13,10 +15,6 @@ class UpdateView extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.whats_new),
-        leading: const SizedBox.shrink(),
-      ),
       backgroundColor: CustomTheme.backgroundColor,
       body: SafeArea(
         child: Column(
@@ -30,23 +28,69 @@ class UpdateView extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: CustomTheme.standardBoxDecoration,
-                  child: FutureBuilder<String>(
-                    future: loadWhatsNew(context),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (snapshot.hasError) {
-                        return Center(child: Text(loc.error_loading_whats_new));
-                      }
-                      return Markdown(
-                        data: snapshot.data ?? '',
-                        selectable: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        styleSheet: buildMarkdownSheet(context),
-                      );
-                    },
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          right: 10,
+                          left: 10,
+                          top: 12,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 10,
+                          children: [
+                            const ColoredIconContainer(
+                              containerSize: 65,
+                              iconSize: 65 / 1.5,
+                              icon: Icons.newspaper,
+                            ),
+                            Column(
+                              spacing: 4,
+                              children: [
+                                Text(
+                                  loc.whats_new,
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Text(
+                                  'X.Y.Z',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: CustomTheme.hintColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      FutureBuilder<String>(
+                        future: loadMarkdownFiles(context),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text(loc.error_loading_whats_new),
+                            );
+                          }
+                          return Markdown(
+                            data: snapshot.data ?? '',
+                            selectable: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            styleSheet: buildMarkdownSheet(context),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -73,12 +117,12 @@ class UpdateView extends StatelessWidget {
       ),
       h1: const TextStyle(
         color: CustomTheme.textColor,
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
       h2: const TextStyle(
         color: CustomTheme.primaryColor,
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: FontWeight.bold,
       ),
       h3: const TextStyle(
@@ -97,7 +141,7 @@ class UpdateView extends StatelessWidget {
     );
   }
 
-  Future<String> loadWhatsNew(BuildContext context) async {
+  Future<String> loadMarkdownFiles(BuildContext context) async {
     final languageCode = Localizations.localeOf(context).languageCode;
     try {
       return await rootBundle.loadString(

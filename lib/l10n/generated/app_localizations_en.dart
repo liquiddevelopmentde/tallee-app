@@ -609,7 +609,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknown_exception => 'Unknown Exception (see console)';
 
   @override
-  String get whats_new => 'What\'s New';
+  String get whats_new => 'What\'s new';
 
   @override
   String get winner => 'Winner';
