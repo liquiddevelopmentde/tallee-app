@@ -28,20 +28,18 @@ class CreateTeamsView extends StatefulWidget {
 
 class _CreateTeamsViewState extends State<CreateTeamsView> {
   final Random random = Random();
-  final List<GlobalKey> tileKeys = [];
+  final int initialTeamCount = 2;
+  bool didInitTeams = false;
+
+  List<Team> teams = [];
+  List<TextEditingController> nameController = [];
+  List<FocusNode> focusNodes = [];
 
   List<Player> get matchPlayers => widget.match.players;
 
   List<Player> get prefillMatchPlayers => widget.previousMatch?.players ?? [];
 
   List<Team> get prefillMatchTeams => widget.previousMatch?.teams ?? [];
-
-  List<Team> teams = [];
-  List<TextEditingController> nameController = [];
-  final int initialTeamCount = 2;
-
-  List<FocusNode> focusNodes = [];
-  bool didInitTeams = false;
 
   @override
   void didChangeDependencies() {
@@ -99,12 +97,6 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       }
     }
 
-    if (tileKeys.length != teams.length) {
-      tileKeys
-        ..clear()
-        ..addAll(List.generate(teams.length, (_) => GlobalKey()));
-    }
-
     // Init the controllers
     if (nameController.length != teams.length) {
       for (final controller in nameController) {
@@ -146,7 +138,6 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
               itemCount: teams.length,
               itemBuilder: (context, index) {
                 return TeamCreationTile(
-                  key: tileKeys[index],
                   color: teams[index].color,
                   controller: nameController[index],
                   hintText: '${loc.team} ${index + 1}',
@@ -248,7 +239,6 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       final newTeam = getNewTeam();
       teams.add(newTeam);
       nameController.add(getNewController(newTeam));
-      tileKeys.add(GlobalKey());
       final focusNode = FocusNode();
       focusNode.addListener(() {
         if (focusNode.hasFocus) {
@@ -271,7 +261,6 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       removedController.dispose();
       final removedFocusNode = focusNodes.removeAt(index);
       removedFocusNode.dispose();
-      tileKeys.removeAt(index);
 
       // Update index-based team names and default colors
       for (int i = 0; i < nameController.length; i++) {
@@ -337,15 +326,15 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
   }
 
   void ensureTileVisible(int index) {
-    if (index < 0 || index >= tileKeys.length) return;
-    final context = tileKeys[index].currentContext;
+    if (index < 0 || index >= focusNodes.length) return;
+    final context = focusNodes[index].context;
     if (context == null) return;
 
     Scrollable.ensureVisible(
       context,
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeOut,
-      alignment: 0.2,
+      alignment: 0.35,
     );
   }
 }
