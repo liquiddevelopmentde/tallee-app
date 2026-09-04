@@ -615,4 +615,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Gestern um';
+
+  @override
+  String get error_loading_privacy_policy =>
+      'Fehler beim Laden der Datenschutzerklärung';
 }
