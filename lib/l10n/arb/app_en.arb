@@ -83,6 +83,7 @@
   "error_deleting_game": "Error while deleting game, please try again",
   "error_editing_group": "Error while editing group, please try again",
   "error_editing_player": "Error while editing player, please try again",
+  "error_loading_privacy_policy": "Error loading privacy policy",
   "error_reading_file": "Error reading file",
   "export_canceled": "Export canceled",
   "export_data": "Export data",

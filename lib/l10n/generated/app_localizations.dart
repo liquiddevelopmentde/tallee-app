@@ -512,6 +512,12 @@ abstract class AppLocalizations {
   /// **'Error while editing player, please try again'**
   String get error_editing_player;
 
+  /// No description provided for @error_loading_privacy_policy.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading privacy policy'**
+  String get error_loading_privacy_policy;
+
   /// No description provided for @error_reading_file.
   ///
   /// In en, this message translates to:

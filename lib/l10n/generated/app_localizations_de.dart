@@ -237,6 +237,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehler beim Bearbeiten des Spielers, bitte erneut versuchen';
 
   @override
+  String get error_loading_privacy_policy =>
+      'Fehler beim Laden der Datenschutzerklärung';
+
+  @override
   String get error_reading_file => 'Fehler beim Lesen der Datei';
 
   @override
