@@ -104,6 +104,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get close => 'Close';
+
+  @override
   String get create_game => 'Create Game';
 
   @override
@@ -234,6 +237,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_loading_privacy_policy => 'Error loading privacy policy';
+
+  @override
+  String get error_loading_whats_new => 'Error loading what\'s new';
 
   @override
   String get error_reading_file => 'Error reading file';
@@ -601,6 +607,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unknown_exception => 'Unknown Exception (see console)';
+
+  @override
+  String get whats_new => 'What\'s New';
 
   @override
   String get winner => 'Winner';

@@ -37,6 +37,7 @@
       }
     }
   },
+  "close": "Close",
   "create_game": "Create Game",
   "create_group": "Create Group",
   "create_match": "Create Match",
@@ -83,6 +84,7 @@
   "error_deleting_game": "Error while deleting game, please try again",
   "error_editing_group": "Error while editing group, please try again",
   "error_loading_privacy_policy": "Error loading privacy policy",
+  "error_loading_whats_new": "Error loading what's new",
   "error_reading_file": "Error reading file",
   "export_canceled": "Export canceled",
   "export_data": "Export data",
@@ -215,6 +217,7 @@
   "total_wins": "Total wins",
   "type": "Type",
   "unknown_exception": "Unknown Exception (see console)",
+  "whats_new": "What's New",
   "winner": "Winner",
   "winners": "Winners",
   "winrate": "Winrate",
