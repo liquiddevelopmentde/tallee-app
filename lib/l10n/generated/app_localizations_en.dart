@@ -775,9 +775,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Share tokens consist of 6 alphanumeric characters.';
 
   @override
-  String get match_import_failed => 'Match import failed';
-
-  @override
   String get choose_match_file => 'Choose Match File';
 
   @override

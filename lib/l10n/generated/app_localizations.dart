@@ -1508,12 +1508,6 @@ abstract class AppLocalizations {
   /// **'Share tokens consist of 6 alphanumeric characters.'**
   String get share_token_format_info;
 
-  /// No description provided for @match_import_failed.
-  ///
-  /// In en, this message translates to:
-  /// **'Match import failed'**
-  String get match_import_failed;
-
   /// No description provided for @choose_match_file.
   ///
   /// In en, this message translates to:

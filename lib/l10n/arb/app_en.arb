@@ -292,7 +292,6 @@
   "invalid_token": "Invalid token",
   "import_match": "Import match",
   "share_token_format_info": "Share tokens consist of 6 alphanumeric characters.",
-  "match_import_failed": "Match import failed",
   "choose_match_file": "Choose Match File",
   "tap_to_browse": "Tap to browse",
   "successfully_processed_file": "Successfully processed file",

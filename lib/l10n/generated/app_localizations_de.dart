@@ -779,9 +779,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Share-Token bestehen aus 6 alphanumerischen Zeichen.';
 
   @override
-  String get match_import_failed => 'Match-Import fehlgeschlagen';
-
-  @override
   String get choose_match_file => 'Match-Datei auswählen';
 
   @override
