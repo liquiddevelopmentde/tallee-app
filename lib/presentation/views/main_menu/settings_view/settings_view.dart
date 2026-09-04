@@ -51,7 +51,7 @@ class _SettingsViewState extends State<SettingsView> {
     return Builder(
       builder: (scaffoldMessengerContext) {
         return Scaffold(
-          appBar: AppBar(title: const Text('Settings')),
+          appBar: AppBar(title: Text(loc.settings)),
           backgroundColor: CustomTheme.backgroundColor,
           body: SingleChildScrollView(
             child: Column(
