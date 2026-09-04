@@ -218,9 +218,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get edit_player => 'Spieler bearbeiten';
 
   @override
-  String get enter_points => 'Punkte eingeben';
-
-  @override
   String get enter_results => 'Ergebnisse eintragen';
 
   @override
@@ -322,7 +319,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get licenses => 'Lizenzen';
 
   @override
-  String get live_edit_mode => 'Live-Bearbeitungsmodus';
+  String lives(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Leben',
+      one: 'Leben',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get loading => 'Lädt...';
