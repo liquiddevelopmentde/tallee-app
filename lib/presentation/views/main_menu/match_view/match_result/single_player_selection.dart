@@ -9,6 +9,10 @@ import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 
 class SinglePlayerSelection extends StatefulWidget {
+  /// A list widget for the [MatchResultView] that lets the user select a single player or team.
+  /// - [match]: The match whose players / teams are being selected.
+  /// - [onPlayerSelected]: The callback invoked with the selected player whenever a player is selected.
+  /// - [onTeamSelected]: The callback invoked with the selected team whenever a team is selected.
   const SinglePlayerSelection({
     super.key,
     required this.match,
@@ -66,7 +70,11 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
                 itemBuilder: (context, index) {
                   return CustomRadioListTile(
                     content: isTeamMatch
-                        ? TeamCard(team: allTeams[index], maxChars: 24)
+                        ? TeamCard(
+                            team: allTeams[index],
+                            compact: true,
+                            showTeamMembers: false,
+                          )
                         : buildUnitNameWidget(
                             allTeams[index],
                             isTeamMatch: false,

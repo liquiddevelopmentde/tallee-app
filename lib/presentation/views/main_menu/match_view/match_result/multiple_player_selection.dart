@@ -6,6 +6,10 @@ import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
 
 class MultiplePlayerSelection extends StatefulWidget {
+  /// A list widget for the [MatchResultView] that lets the user select multiple players or teams.
+  /// - [match]: The match whose players / teams are being selected.
+  /// - [onPlayersSelected]: The callback invoked with the selected players whenever the selection changes.
+  /// - [onTeamsSelected]: The callback invoked with the selected teams whenever the selection changes.
   const MultiplePlayerSelection({
     super.key,
     required this.match,
@@ -54,7 +58,11 @@ class _MultiplePlayerSelectionState extends State<MultiplePlayerSelection> {
               itemBuilder: (context, index) {
                 return CustomCheckboxListTile(
                   content: isTeamMatch
-                      ? TeamCard(team: allTeams[index], maxChars: 24)
+                      ? TeamCard(
+                          team: allTeams[index],
+                          showTeamMembers: false,
+                          compact: true,
+                        )
                       : buildUnitNameWidget(
                           allTeams[index],
                           isTeamMatch: false,
