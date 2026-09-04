@@ -33,7 +33,7 @@ void main() {
       testGame2 = Game(
         id: 'game2',
         name: 'Poker',
-        ruleset: Ruleset.winners,
+        ruleset: Ruleset.winner,
         description: 'Card game with multiple winners',
         color: AppColor.red,
       );
@@ -117,7 +117,7 @@ void main() {
         () async {
           final specialGame = Game(
             name: 'Game\'s & "Special" <Name>',
-            ruleset: Ruleset.winners,
+            ruleset: Ruleset.winner,
             description: 'Description with émojis 🎮🎲',
             color: AppColor.purple,
           );

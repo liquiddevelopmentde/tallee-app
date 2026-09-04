@@ -48,7 +48,7 @@ void main() {
 
     singleWinnerGame = Game(
       name: 'Single Winner Game',
-      ruleset: Ruleset.winners,
+      ruleset: Ruleset.winner,
       color: AppColor.green,
     );
     loserGame = Game(
@@ -68,7 +68,7 @@ void main() {
     );
     multipleWinnersGame = Game(
       name: 'Multiple Winners Game',
-      ruleset: Ruleset.winners,
+      ruleset: Ruleset.winner,
       color: AppColor.green,
     );
     placementGame = Game(

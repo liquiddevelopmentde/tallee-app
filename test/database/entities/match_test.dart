@@ -49,7 +49,7 @@ void main() {
       );
       testGame = Game(
         name: 'Test Game',
-        ruleset: Ruleset.winners,
+        ruleset: Ruleset.winner,
         description: 'A test game',
         color: AppColor.blue,
       );

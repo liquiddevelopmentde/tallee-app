@@ -54,7 +54,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   bool get isTeamMatch => widget.match.isTeamMatch;
 
   bool rulesetSupportsPlayerSelection() =>
-      ruleset == Ruleset.winners || ruleset == Ruleset.loser;
+      ruleset == Ruleset.winner || ruleset == Ruleset.loser;
 
   bool rulesetSupportsScoreEntry() =>
       ruleset == Ruleset.lowestScore ||
@@ -132,7 +132,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
                         // Show player selection
                         if (rulesetSupportsPlayerSelection())
-                          if (ruleset == Ruleset.winners)
+                          if (ruleset == Ruleset.winner)
                             MultiplePlayerSelection(
                               match: widget.match,
                               onPlayersSelected: (List<Player> players) {
@@ -259,7 +259,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Handles saving or removing the winner in the database
   /// based on the current selection.
   Future<void> handleSaving() async {
-    if (ruleset == Ruleset.winners) {
+    if (ruleset == Ruleset.winner) {
       await handleWinners();
     } else if (ruleset == Ruleset.loser) {
       await handleLoser();
@@ -414,7 +414,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         return loc.select_loser;
       case Ruleset.placement:
         return loc.drag_to_set_placement;
-      case Ruleset.winners:
+      case Ruleset.winner:
         return loc.select_winners;
       default:
         return '';

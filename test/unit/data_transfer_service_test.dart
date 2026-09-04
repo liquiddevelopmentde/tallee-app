@@ -44,7 +44,7 @@ void main() {
 
       testGame = Game(
         name: 'Chess',
-        ruleset: Ruleset.winners,
+        ruleset: Ruleset.winner,
         description: 'Strategic board game',
         color: AppColor.blue,
       );
@@ -545,17 +545,17 @@ void main() {
           final games = [
             Game(
               name: 'Red Game',
-              ruleset: Ruleset.winners,
+              ruleset: Ruleset.winner,
               color: AppColor.red,
             ),
             Game(
               name: 'Blue Game',
-              ruleset: Ruleset.winners,
+              ruleset: Ruleset.winner,
               color: AppColor.blue,
             ),
             Game(
               name: 'Green Game',
-              ruleset: Ruleset.winners,
+              ruleset: Ruleset.winner,
               color: AppColor.green,
             ),
           ];
@@ -588,7 +588,7 @@ void main() {
             ),
             Game(
               name: 'Single Winner',
-              ruleset: Ruleset.winners,
+              ruleset: Ruleset.winner,
               color: AppColor.blue,
             ),
           ];

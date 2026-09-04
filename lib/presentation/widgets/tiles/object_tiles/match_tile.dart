@@ -374,7 +374,7 @@ class _MatchTileState extends State<MatchTile> {
     );
 
     final namesToRender =
-        ruleset == Ruleset.winners ||
+        ruleset == Ruleset.winner ||
             ruleset == Ruleset.highestScore ||
             ruleset == Ruleset.lowestScore ||
             ruleset == Ruleset.lives
@@ -469,7 +469,7 @@ class _MatchTileState extends State<MatchTile> {
     final icon = getRulesetIcon(widget.match.game.ruleset);
 
     switch (widget.match.game.ruleset) {
-      case Ruleset.winners:
+      case Ruleset.winner:
         return Icon(icon, size: 20, color: Colors.amber);
       case Ruleset.loser:
         return Icon(icon, size: 20, color: Colors.blue);
