@@ -233,6 +233,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Error while editing group, please try again';
 
   @override
+  String get error_editing_player =>
+      'Error while editing player, please try again';
+
+  @override
   String get error_loading_privacy_policy => 'Error loading privacy policy';
 
   @override
@@ -435,6 +439,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get played_matches => 'Played Matches';
+
+  @override
+  String get player_name => 'Player name';
 
   @override
   String get player_profile => 'Player Profile';
