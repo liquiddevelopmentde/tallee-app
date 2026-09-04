@@ -1187,7 +1187,7 @@ abstract class AppLocalizations {
   /// No description provided for @winners.
   ///
   /// In en, this message translates to:
-  /// **'Winners'**
+  /// **'Winner'**
   String get winners;
 
   /// No description provided for @winrate.
