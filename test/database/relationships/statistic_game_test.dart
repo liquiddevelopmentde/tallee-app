@@ -27,7 +27,7 @@ void main() {
       testGame1 = Game(
         id: 'game1',
         name: 'Chess',
-        ruleset: Ruleset.singleWinner,
+        ruleset: Ruleset.winner,
         description: 'A classic strategy game',
         color: AppColor.blue,
       );
@@ -150,24 +150,21 @@ void main() {
         expect(games!.length, 2);
       });
 
-      test(
-        'addStatisticGames() with duplicate game does not create duplicate entries',
-        () async {
-          await database.statisticGameDao.addStatisticGames(
-            statisticId: testStatistic.id,
-            games: [testGame1],
-          );
-          await database.statisticGameDao.addStatisticGames(
-            statisticId: testStatistic.id,
-            games: [testGame1],
-          );
+      test('addStatisticGames() with duplicate game does not create duplicate entries', () async {
+        await database.statisticGameDao.addStatisticGames(
+          statisticId: testStatistic.id,
+          games: [testGame1],
+        );
+        await database.statisticGameDao.addStatisticGames(
+          statisticId: testStatistic.id,
+          games: [testGame1],
+        );
 
-          final games = await database.statisticGameDao.getGamesForStatistic(
-            testStatistic.id,
-          );
-          expect(games!.length, 1);
-        },
-      );
+        final games = await database.statisticGameDao.getGamesForStatistic(
+          testStatistic.id,
+        );
+        expect(games!.length, 1);
+      });
     });
   });
 }

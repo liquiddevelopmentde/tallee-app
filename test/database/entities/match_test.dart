@@ -49,7 +49,7 @@ void main() {
       );
       testGame = Game(
         name: 'Test Game',
-        ruleset: Ruleset.singleWinner,
+        ruleset: Ruleset.winner,
         description: 'A test game',
         color: AppColor.blue,
       );
@@ -563,16 +563,19 @@ void main() {
         expect(fetchedMatch.createdAt, newCreatedAt);
       });
 
-      test('updateMatchCreatedAt() does nothing for non-existent match', () async {
-        final updated = await database.matchDao.updateMatchCreatedAt(
-          matchId: 'non-existing-id',
-          createdAt: DateTime.now(),
-        );
-        expect(updated, isFalse);
+      test(
+        'updateMatchCreatedAt() does nothing for non-existent match',
+        () async {
+          final updated = await database.matchDao.updateMatchCreatedAt(
+            matchId: 'non-existing-id',
+            createdAt: DateTime.now(),
+          );
+          expect(updated, isFalse);
 
-        final allMatches = await database.matchDao.getAllMatches();
-        expect(allMatches, isEmpty);
-      });
+          final allMatches = await database.matchDao.getAllMatches();
+          expect(allMatches, isEmpty);
+        },
+      );
     });
 
     group('DELETE', () {

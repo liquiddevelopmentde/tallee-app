@@ -113,7 +113,7 @@ class Match {
       name = json['name'],
       game = Game(
         name: '',
-        ruleset: Ruleset.singleWinner,
+        ruleset: Ruleset.winner,
         description: '',
         color: AppColor.blue,
       ),
@@ -160,13 +160,10 @@ class Match {
       case Ruleset.lowestScore:
         return _getPlayersWithLowestScore();
 
-      case Ruleset.singleWinner:
-        return _getPlayersWithHighestScore().take(1).toList();
-
-      case Ruleset.singleLoser:
+      case Ruleset.loser:
         return _getPlayersWithLowestScore().take(1).toList();
 
-      case Ruleset.multipleWinners:
+      case Ruleset.winner:
         return _getPlayersWithHighestScore().toList();
 
       case Ruleset.placement:
@@ -234,13 +231,10 @@ class Match {
       case Ruleset.lowestScore:
         return _getLowestScoreTeam();
 
-      case Ruleset.singleWinner:
-        return _getHighestScoreTeam().take(1).toList();
-
-      case Ruleset.singleLoser:
+      case Ruleset.loser:
         return _getLowestScoreTeam().take(1).toList();
 
-      case Ruleset.multipleWinners:
+      case Ruleset.winner:
         return _getHighestScoreTeam();
 
       case Ruleset.placement:
