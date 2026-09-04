@@ -27,7 +27,7 @@ void main() {
       testGame1 = Game(
         id: 'game1',
         name: 'Chess',
-        ruleset: Ruleset.winner,
+        ruleset: Ruleset.winners,
         description: 'A classic strategy game',
         color: AppColor.blue,
       );

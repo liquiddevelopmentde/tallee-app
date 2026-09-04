@@ -65,7 +65,7 @@ class Game {
       name = json['name'],
       ruleset = Ruleset.values.firstWhere(
         (e) => e.name == json['ruleset'],
-        orElse: () => Ruleset.winner,
+        orElse: () => Ruleset.winners,
       ),
       color = AppColor.values.firstWhere(
         (e) => e.name == json['color'],

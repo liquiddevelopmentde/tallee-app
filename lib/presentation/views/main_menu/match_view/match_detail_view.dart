@@ -553,7 +553,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   // Returns if the result can be displayed in a single row
   bool isSingleRowResult() {
-    return match.game.ruleset == Ruleset.winner ||
+    return match.game.ruleset == Ruleset.winners ||
         match.game.ruleset == Ruleset.loser;
   }
 

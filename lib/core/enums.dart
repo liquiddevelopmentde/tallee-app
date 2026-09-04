@@ -33,11 +33,11 @@ enum ExportResult { success, canceled, unknownException, noData }
 /// Different rulesets available for games
 /// - [Ruleset.highestScore]: The player with the highest score wins.
 /// - [Ruleset.lowestScore]: The player with the lowest score wins.
-/// - [Ruleset.winner]: The match has one or multiple winner(s)
+/// - [Ruleset.winners]: The match has one or multiple winner(s)
 /// - [Ruleset.loser]: The match has one single loser.
 /// - [Ruleset.placement]: The player with the highest placement wins.
 /// - [Ruleset.lives]: Every player with lives > 0 wins
-enum Ruleset { winner, loser, highestScore, lowestScore, lives, placement }
+enum Ruleset { winners, loser, highestScore, lowestScore, lives, placement }
 
 /// Different colors for highlighting content
 enum AppColor { red, orange, yellow, green, teal, blue, purple, pink }

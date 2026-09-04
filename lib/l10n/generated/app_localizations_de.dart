@@ -370,9 +370,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get members => 'Mitglieder';
 
   @override
-  String get multiple_winners => 'Mehrere Gewinner:innen';
-
-  @override
   String get names_or_descriptions_too_long =>
       'Die Daten enthalten zu lange Namen oder Beschreibungen.';
 
@@ -513,9 +510,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wähle einen Zeitraum, nach dem gefiltert werden soll.';
 
   @override
-  String get select_winner => 'Gewinner:in wählen';
-
-  @override
   String get select_winners => 'Gewinner:innen wählen';
 
   @override
@@ -532,9 +526,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settings => 'Einstellungen';
-
-  @override
-  String get single_loser => 'Ein:e Verlierer:in';
 
   @override
   String get single_winner => 'Ein:e Gewinner:in';
