@@ -82,6 +82,7 @@
   "error_creating_group": "Fehler beim Erstellen der Gruppe, bitte erneut versuchen",
   "error_deleting_game": "Fehler beim Löschen der Spielvorlage, bitte erneut versuchen",
   "error_editing_group": "Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen",
+  "error_loading_privacy_policy": "Fehler beim Laden der Datenschutzerklärung",
   "error_reading_file": "Fehler beim Lesen der Datei",
   "export_canceled": "Export abgebrochen",
   "export_data": "Daten exportieren",
@@ -209,6 +210,5 @@
   "winners": "Gewinner:innen",
   "winrate": "Siegquote",
   "worst_score": "Schlechteste Punktzahl",
-  "yesterday_at": "Gestern um",
-  "error_loading_privacy_policy": "Fehler beim Laden der Datenschutzerklärung"
+  "yesterday_at": "Gestern um"
 }
