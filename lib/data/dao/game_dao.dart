@@ -71,8 +71,8 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     return count ?? 0;
   }
 
-  /// Retrieves all games with their respective match counts.
-  /// Returns a list of tuples (Game, matchCount).
+  /// Retrieves all games and their game count
+  /// Returns a list of tuples (Game, gameCount).
   Future<List<(Game, int)>> getAllGameCounts() async {
     final games = await getAllGames();
 

@@ -2,9 +2,8 @@ import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/models.dart';
 
 void main() {
   late AppDatabase database;
@@ -180,6 +179,26 @@ void main() {
         await database.gameDao.deleteGame(gameId: testGame1.id);
         count = await database.gameDao.getGameCount();
         expect(count, 1);
+      });
+
+      test('getAllGameCounts() works correctly', () async {
+        var counts = await database.gameDao.getAllGameCounts();
+        expect(counts, isEmpty);
+
+        await database.gameDao.addGame(game: testGame1);
+        await database.gameDao.addGame(game: testGame2);
+        await database.matchDao.addMatch(
+          match: Match(game: testGame1, name: '', players: []),
+        );
+        await database.matchDao.addMatch(
+          match: Match(game: testGame2, name: '', players: []),
+        );
+
+        counts = await database.gameDao.getAllGameCounts();
+
+        expect(counts, hasLength(2));
+        expect(counts.contains((testGame1, 1)), isTrue);
+        expect(counts.contains((testGame2, 1)), isTrue);
       });
 
       test('getGamesByIds() works correctly', () async {
