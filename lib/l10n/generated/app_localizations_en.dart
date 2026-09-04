@@ -372,9 +372,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get members => 'Members';
 
   @override
-  String get multiple_winners => 'Multiple Winners';
-
-  @override
   String get names_or_descriptions_too_long =>
       'The data contains names or descriptions that are too long.';
 
@@ -515,9 +512,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Select the timeframe you want to filter by.';
 
   @override
-  String get select_winner => 'Select Winner';
-
-  @override
   String get select_winners => 'Select Winners';
 
   @override
@@ -534,12 +528,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
-
-  @override
-  String get single_loser => 'Single Loser';
-
-  @override
-  String get single_winner => 'Single Winner';
 
   @override
   String get statistic => 'Statistic';
@@ -607,10 +595,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknown_exception => 'Unknown Exception (see console)';
 
   @override
-  String get winner => 'Winner';
-
-  @override
-  String get winners => 'Winners';
+  String get winners => 'Winner';
 
   @override
   String get winrate => 'Winrate';

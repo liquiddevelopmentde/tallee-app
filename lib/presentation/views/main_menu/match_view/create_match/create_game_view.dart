@@ -54,7 +54,7 @@ class _CreateGameViewState extends State<CreateGameView> {
   final gameDescriptionController = TextEditingController();
 
   int selectedLives = 3;
-  Ruleset? selectedRuleset = Ruleset.singleWinner;
+  Ruleset? selectedRuleset = Ruleset.winner;
   AppColor? selectedColor = AppColor.orange;
 
   @override

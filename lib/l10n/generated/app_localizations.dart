@@ -764,12 +764,6 @@ abstract class AppLocalizations {
   /// **'Members'**
   String get members;
 
-  /// No description provided for @multiple_winners.
-  ///
-  /// In en, this message translates to:
-  /// **'Multiple Winners'**
-  String get multiple_winners;
-
   /// No description provided for @names_or_descriptions_too_long.
   ///
   /// In en, this message translates to:
@@ -1040,12 +1034,6 @@ abstract class AppLocalizations {
   /// **'Select the timeframe you want to filter by.'**
   String get select_the_filtered_timeframe;
 
-  /// No description provided for @select_winner.
-  ///
-  /// In en, this message translates to:
-  /// **'Select Winner'**
-  String get select_winner;
-
   /// No description provided for @select_winners.
   ///
   /// In en, this message translates to:
@@ -1081,18 +1069,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
-
-  /// No description provided for @single_loser.
-  ///
-  /// In en, this message translates to:
-  /// **'Single Loser'**
-  String get single_loser;
-
-  /// No description provided for @single_winner.
-  ///
-  /// In en, this message translates to:
-  /// **'Single Winner'**
-  String get single_winner;
 
   /// No description provided for @statistic.
   ///
@@ -1214,16 +1190,10 @@ abstract class AppLocalizations {
   /// **'Unknown Exception (see console)'**
   String get unknown_exception;
 
-  /// No description provided for @winner.
-  ///
-  /// In en, this message translates to:
-  /// **'Winner'**
-  String get winner;
-
   /// No description provided for @winners.
   ///
   /// In en, this message translates to:
-  /// **'Winners'**
+  /// **'Winner'**
   String get winners;
 
   /// No description provided for @winrate.
