@@ -1,6 +1,6 @@
-/// Barrel file for all
+/// Barrel file for all constants
 ///
-/// Imports [ValueConstants], [IconConstants].
+/// Imports value_constants.dart, icon_constants.dart.
 library;
 
 export 'icon_constants.dart';
