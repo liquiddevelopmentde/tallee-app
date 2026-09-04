@@ -71,6 +71,27 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     return count ?? 0;
   }
 
+  /// Retrieves all games with their respective match counts.
+  /// Returns a list of tuples (Game, matchCount).
+  Future<List<(Game, int)>> getAllGameCounts() async {
+    final games = await getAllGames();
+
+    final results = <(Game, int)>[];
+
+    for (final game in games) {
+      final gameCount =
+          await (selectOnly(db.matchTable)
+                ..where(db.matchTable.gameId.equals(game.id))
+                ..addColumns([db.matchTable.id.count()]))
+              .map((row) => row.read(db.matchTable.id.count()))
+              .getSingle();
+
+      results.add((game, gameCount ?? 0));
+    }
+
+    return results;
+  }
+
   /// Checks if a game with the given [gameId] exists in the database.
   /// Returns `true` if the game exists, `false` otherwise.
   Future<bool> gameExists({required String gameId}) async {
@@ -196,26 +217,5 @@ class GameDao extends DatabaseAccessor<AppDatabase> with _$GameDaoMixin {
     final query = delete(gameTable);
     final rowsAffected = await query.go();
     return rowsAffected > 0;
-  }
-
-  /// Retrieves all games with their respective match counts.
-  /// Returns a list of tuples (Game, matchCount).
-  Future<List<(Game, int)>> getGameUsage() async {
-    final games = await getAllGames();
-
-    final results = <(Game, int)>[];
-
-    for (final game in games) {
-      final matchCount =
-          await (selectOnly(db.matchTable)
-                ..where(db.matchTable.gameId.equals(game.id))
-                ..addColumns([db.matchTable.id.count()]))
-              .map((row) => row.read(db.matchTable.id.count()))
-              .getSingle();
-
-      results.add((game, matchCount ?? 0));
-    }
-
-    return results;
   }
 }

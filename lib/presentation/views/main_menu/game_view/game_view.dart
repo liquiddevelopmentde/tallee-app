@@ -1,83 +1,61 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
-import 'package:once/once.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/models.dart';
+import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
-import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
-import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/state/game_search_provider.dart';
 
-class MatchView extends StatefulWidget {
-  /// A view that displays a list of matches
-  const MatchView({super.key});
+class GameView extends StatefulWidget {
+  const GameView({super.key});
 
   @override
-  State<MatchView> createState() => _MatchViewState();
+  State<GameView> createState() => _GameViewState();
 }
 
-class _MatchViewState extends State<MatchView> {
+class _GameViewState extends State<GameView> {
   late final AppDatabase db;
-  late final MatchSearchProvider searchProvider;
+  late final GameSearchProvider searchProvider;
+
   bool isLoading = true;
+  late List<(Game, int)> gameCounts = [];
 
   TextEditingController searchBarController = TextEditingController();
 
-  /// Loaded matches from the database, initially filled with skeleton matches
-  List<Match> matches = List.filled(
+  /// Loaded games from the database, initially filled with skeleton games
+  List<Game> games = List.filled(
     4,
-    Match(
-      name: 'Skeleton match name',
-      game: Game(
-        name: 'Game name',
-        ruleset: Ruleset.singleWinner,
-        color: AppColor.blue,
-      ),
-      group: Group(
-        name: 'Group name',
-        members: List.filled(5, Player(name: 'Player')),
-      ),
-      players: [
-        Player(name: 'Player'),
-        Player(name: 'Player'),
-        Player(name: 'Player'),
-        Player(name: 'Player'),
-        Player(id: 'mvp_id', name: 'Player'),
-      ],
-      scores: {'mvp_id': ScoreEntry(score: 1)},
-      endedAt: DateTime.now(),
+    Game(
+      name: 'Skeleton game name',
+      ruleset: Ruleset.singleWinner,
+      color: AppColor.blue,
+      description: 'Skeleton description for the game tile',
     ),
   );
 
-  late List<Match> filteredMatches = [...matches];
+  late List<Game> filteredGames = [...games];
 
   @override
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
+    searchProvider = Provider.of<GameSearchProvider>(context, listen: false);
     searchProvider.addListener(handleSearchToggle);
 
-    Once.runOnce(
-      'exampleStats',
-      callback: () {
-        addExampleStatistics();
-      },
-    );
-
-    loadMatches();
+    loadGames();
   }
 
   @override
@@ -90,11 +68,11 @@ class _MatchViewState extends State<MatchView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final searchProvider = Provider.of<MatchSearchProvider>(context);
+    final searchProvider = Provider.of<GameSearchProvider>(context);
 
     // Reset filtered matches when search is disabled
     if (!searchProvider.isSearching) {
-      filteredMatches = [...matches];
+      filteredGames = [...games];
     }
 
     return Scaffold(
@@ -140,7 +118,7 @@ class _MatchViewState extends State<MatchView> {
                           hintText: '',
                           onChanged: (value) {
                             setState(() {
-                              filterMatches(value);
+                              filterGames(value);
                             });
                           },
                         ),
@@ -153,43 +131,44 @@ class _MatchViewState extends State<MatchView> {
                 child: AppSkeleton(
                   enabled: isLoading,
                   child: Visibility(
-                    visible: matches.isNotEmpty,
+                    visible: games.isNotEmpty,
                     replacement: Center(
                       child: TopCenteredMessage(
                         icon: Icons.info,
                         title: loc.info,
-                        message: loc.no_matches_created_yet,
+                        message: loc.no_games_created_yet,
                       ),
                     ),
                     child: Visibility(
-                      visible: filteredMatches.isNotEmpty,
+                      visible: filteredGames.isNotEmpty,
                       replacement: Center(
                         child: TopCenteredMessage(
                           icon: Icons.info,
                           title: loc.info,
-                          message: loc.there_is_no_match_matching_your_search,
+                          message: loc.there_is_no_game_matching_your_search,
                         ),
                       ),
                       child: ListView.builder(
                         padding: CustomTheme.listViewPadding(context),
-                        itemCount: filteredMatches.length,
+                        itemCount: filteredGames.length,
 
                         itemBuilder: (BuildContext context, int index) {
-                          return MatchTile(
-                            onPlayerEdited: loadMatches,
-                            width: MediaQuery.sizeOf(context).width * 0.95,
+                          return GameTile(
                             onTap: () async {
                               Navigator.push(
                                 context,
                                 adaptivePageRoute(
-                                  builder: (context) => MatchDetailView(
-                                    match: filteredMatches[index],
-                                    onMatchUpdate: loadMatches,
+                                  builder: (context) => CreateGameView(
+                                    gameToEdit: filteredGames[index],
+                                    onGameChanged: loadGames,
+                                    gameCount: getGameCount(
+                                      filteredGames[index],
+                                    ),
                                   ),
                                 ),
                               );
                             },
-                            match: filteredMatches[index],
+                            game: filteredGames[index],
                           );
                         },
                       ),
@@ -202,16 +181,14 @@ class _MatchViewState extends State<MatchView> {
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: FloatingAnimatedButton(
-              text: loc.create_match,
-              icon: RpgAwesome.clovers_card,
+              text: loc.create_game,
+              icon: Icons.videogame_asset,
               onPressed: () async {
                 Navigator.push(
                   context,
                   adaptivePageRoute(
-                    builder: (context) => CreateMatchView(
-                      onWinnerChanged: loadMatches,
-                      onMatchesUpdated: loadMatches,
-                    ),
+                    builder: (context) =>
+                        CreateGameView(onGameChanged: loadGames),
                   ),
                 );
               },
@@ -222,50 +199,39 @@ class _MatchViewState extends State<MatchView> {
     );
   }
 
-  void filterMatches(String query) {
+  void filterGames(String query) {
     setState(() {
       if (query.isEmpty) {
-        filteredMatches = [...matches];
+        filteredGames = [...games];
       } else {
-        final List<({Match match, int score})> scoredMatches = [];
+        final List<({Game game, int score})> scoredGames = [];
 
-        for (final match in matches) {
+        for (final game in games) {
           int maxScore = 0;
 
-          // Check match name
-          maxScore = max(maxScore, weightedRatio(match.name, query));
-
           // Check game name
-          maxScore = max(maxScore, weightedRatio(match.game.name, query));
+          maxScore = max(maxScore, weightedRatio(game.name, query));
 
-          // Check group name
-          if (match.group != null) {
-            maxScore = max(maxScore, weightedRatio(match.group!.name, query));
-          }
+          // Check game description
+          maxScore = max(maxScore, weightedRatio(game.description, query));
 
-          // Check player names
-          for (final player in match.players) {
-            maxScore = max(
-              maxScore,
-              weightedRatio('${player.name} #${player.nameCount}', query),
-            );
-          }
-
-          // Check team names
-          if (match.teams != null) {
-            for (final team in match.teams!) {
-              maxScore = max(maxScore, weightedRatio(team.name, query));
-            }
-          }
+          // Check ruleset name
+          maxScore = max(
+            maxScore,
+            weightedRatio(
+              translateRulesetToString(game.ruleset, context),
+              query,
+            ),
+          );
 
           if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
-            scoredMatches.add((match: match, score: maxScore));
+            scoredGames.add((game: game, score: maxScore));
           }
         }
 
         // Sort by score descending
-        scoredMatches.sort((a, b) => b.score.compareTo(a.score));
-        filteredMatches = scoredMatches.map((e) => e.match).toList();
+        scoredGames.sort((a, b) => b.score.compareTo(a.score));
+        filteredGames = scoredGames.map((e) => e.game).toList();
       }
     });
   }
@@ -280,22 +246,26 @@ class _MatchViewState extends State<MatchView> {
     }
   }
 
-  /// Loads the matches from the database and sorts them by creation date.
-  void loadMatches() {
+  /// Loads the games from the database and sorts them by creation date.
+  void loadGames() {
     isLoading = true;
     Future.wait([
-      db.matchDao.getAllMatches(includeDeletedPlayer: true),
+      db.gameDao.getAllGames(),
+      db.gameDao.getAllGameCounts(),
       Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
     ]).then((results) {
       if (mounted) {
         setState(() {
-          final loadedMatches = results[0] as List<Match>;
-          matches = [...loadedMatches]
+          final loadedGames = results[0] as List<Game>;
+          gameCounts = results[1] as List<(Game, int)>;
+
+          games = [...loadedGames]
             ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
           if (searchBarController.text.isEmpty) {
-            filteredMatches = [...matches];
+            filteredGames = [...games];
           } else {
-            filterMatches(searchBarController.text);
+            filterGames(searchBarController.text);
           }
           isLoading = false;
         });
@@ -303,28 +273,8 @@ class _MatchViewState extends State<MatchView> {
     });
   }
 
-  Future<void> addExampleStatistics() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    final stat1 = Statistic(
-      type: StatisticType.totalWins,
-      color: AppColor.blue,
-      displayCount: 3,
-      scopes: [StatisticScope.allPlayers],
-    );
-    final stat2 = Statistic(
-      type: StatisticType.averageScore,
-      color: AppColor.pink,
-      displayCount: 5,
-      scopes: [StatisticScope.allPlayers],
-    );
-    final stat3 = Statistic(
-      type: StatisticType.averageScore,
-      color: AppColor.green,
-      displayCount: 8,
-      scopes: [StatisticScope.allPlayers],
-    );
-    await db.statisticDao.addStatisticsAsList(
-      statistics: [stat1, stat2, stat3],
-    );
-  }
+  /// Returns the number of matches that use the given [game].
+  int getGameCount(Game game) => gameCounts
+      .firstWhere((gc) => gc.$1.id == game.id, orElse: () => (game, 0))
+      .$2;
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/game_view/game_view.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
@@ -11,6 +12,7 @@ import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_vie
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
+import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 
@@ -34,9 +36,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+
     final matchSearchProvider = Provider.of<MatchSearchProvider>(context);
     final groupSearchProvider = Provider.of<GroupSearchProvider>(context);
+    final gameSearchProvider = Provider.of<GameSearchProvider>(context);
+
     final refreshRevision = context.watch<DataRefreshProvider>().revision;
+
     // Pretty ugly but works
     final List<Widget> tabs = [
       KeyedSubtree(
@@ -48,22 +54,28 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         child: const GroupView(),
       ),
       KeyedSubtree(
+        key: ValueKey('games_${tabKeyCount}_$refreshRevision'),
+        child: const GameView(),
+      ),
+      KeyedSubtree(
         key: ValueKey('stats_${tabKeyCount}_$refreshRevision'),
         child: const StatisticsView(),
       ),
     ];
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          _currentTabTitle(context),
+          currentTabTitle(context),
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
         actions: [
-          if (currentIndex == 0) // Only in MatchView
+          // Only in MatchView
+          if (currentIndex == 0)
             HapticIconButton(
               key: ValueKey(
                 matchSearchProvider.isSearching
@@ -76,7 +88,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               onPressed: () => matchSearchProvider.toggleSearch(),
             ),
 
-          if (currentIndex == 1) // Only in GroupView
+          // Only in GroupView
+          if (currentIndex == 1)
             HapticIconButton(
               key: ValueKey(
                 groupSearchProvider.isSearching
@@ -87,6 +100,20 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 groupSearchProvider.isSearching ? Icons.close : Icons.search,
               ),
               onPressed: () => groupSearchProvider.toggleSearch(),
+            ),
+
+          // Only in GameView
+          if (currentIndex == 2)
+            HapticIconButton(
+              key: ValueKey(
+                gameSearchProvider.isSearching
+                    ? 'game_search_close_button'
+                    : 'game_search_open_button',
+              ),
+              icon: Icon(
+                gameSearchProvider.isSearching ? Icons.close : Icons.search,
+              ),
+              onPressed: () => gameSearchProvider.toggleSearch(),
             ),
 
           HapticIconButton(
@@ -149,6 +176,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               NavbarItem(
                 index: 2,
                 isSelected: currentIndex == 2,
+                icon: Icons.videogame_asset,
+                label: loc.games,
+                onTabTapped: onTabTapped,
+              ),
+              NavbarItem(
+                index: 3,
+                isSelected: currentIndex == 3,
                 icon: Icons.bar_chart_rounded,
                 label: loc.statistics,
                 onTabTapped: onTabTapped,
@@ -169,7 +203,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   }
 
   /// Returns the title of the current tab based on [currentIndex].
-  String _currentTabTitle(BuildContext context) {
+  String currentTabTitle(BuildContext context) {
     final loc = AppLocalizations.of(context);
     switch (currentIndex) {
       case 0:
@@ -177,6 +211,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       case 1:
         return loc.groups;
       case 2:
+        return loc.games;
+      case 3:
         return loc.statistics;
       default:
         return '';

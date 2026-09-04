@@ -20,11 +20,8 @@ class GameTile extends StatelessWidget {
   });
 
   final Game game;
-
   final VoidCallback? onTap;
-
   final VoidCallback? onLongPress;
-
   final bool isHighlighted;
 
   @override
@@ -129,7 +126,8 @@ class GameTile extends StatelessWidget {
               ),
             ),
 
-            const Icon(Icons.chevron_right, color: CustomTheme.hintColor),
+            if (onLongPress != null)
+              const Icon(Icons.chevron_right, color: CustomTheme.hintColor),
           ],
         ),
       ),

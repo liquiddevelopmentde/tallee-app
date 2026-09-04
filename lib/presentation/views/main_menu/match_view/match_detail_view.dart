@@ -131,7 +131,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 // Controller Icon
                 const Center(
                   child: ColoredIconContainer(
-                    icon: Icons.sports_esports,
+                    icon: RpgAwesome.clovers_card,
                     containerSize: 55,
                     iconSize: 38,
                   ),
@@ -274,7 +274,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 // Game
                 InfoTile(
                   title: loc.game,
-                  leadingWidget: const Icon(RpgAwesome.clovers_card),
+                  leadingWidget: const Icon(Icons.videogame_asset),
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: Padding(
                     padding: const EdgeInsets.symmetric(

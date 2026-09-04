@@ -199,7 +199,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                           adaptivePageRoute(
                             builder: (context) => CreateGameView(
                               gameToEdit: game,
-                              matchCount: getMatchCount(game),
+                              gameCount: getMatchCount(game),
                               onGameChanged: () {
                                 widget.onGamesUpdated?.call();
                               },
@@ -264,7 +264,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
 
   /// Fetches the usage count for all games and stores it in [gameCounts].
   Future<void> fetchGameCounts() async =>
-      gameCounts = await db.gameDao.getGameUsage();
+      gameCounts = await db.gameDao.getAllGameCounts();
 
   /// Returns the number of matches that use the given [game].
   int getMatchCount(Game game) => gameCounts

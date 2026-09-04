@@ -12,6 +12,7 @@ import 'package:tallee/presentation/views/import_file_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
+import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 
@@ -27,6 +28,7 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
         ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
+        ChangeNotifierProvider(create: (context) => GameSearchProvider()),
         ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
       ],
       child: const Tallee(),

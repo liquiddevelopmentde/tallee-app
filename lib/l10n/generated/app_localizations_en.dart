@@ -206,6 +206,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_game => 'Edit Game';
 
   @override
+  String get there_is_no_game_matching_your_search =>
+      'There is no game matching your search';
+
+  @override
   String get edit_group => 'Edit Group';
 
   @override
