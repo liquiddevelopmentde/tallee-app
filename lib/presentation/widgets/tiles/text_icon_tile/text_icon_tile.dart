@@ -12,7 +12,6 @@ class TextIconTile extends StatelessWidget {
   /// - [icon]: Optional custom icon. Defaults to [Icons.close].
   /// - [onIconTap]: The callback to be invoked when the icon is tapped.
   /// - [onTileTap]: The callback to be invoked when the tile is tapped.
-  /// - [pairIconLeft]: Whether the icon should be displayed on the left side of the tile.
   /// - [highlighted]: Whether the tile is highlighted.
   const TextIconTile({
     super.key,
@@ -21,7 +20,6 @@ class TextIconTile extends StatelessWidget {
     this.icon = Icons.close,
     this.onIconTap,
     this.onTileTap,
-    this.pairIconLeft = false,
     this.highlighted = false,
   });
 
@@ -30,7 +28,6 @@ class TextIconTile extends StatelessWidget {
   final IconData? icon;
   final VoidCallback? onIconTap;
   final VoidCallback? onTileTap;
-  final bool pairIconLeft;
   final bool highlighted;
 
   @override
