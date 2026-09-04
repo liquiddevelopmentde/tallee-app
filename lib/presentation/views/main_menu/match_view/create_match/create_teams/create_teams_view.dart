@@ -35,15 +35,25 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
 
   List<Team> get prefillMatchTeams => widget.previousMatch?.teams ?? [];
 
-  late List<Team> teams;
-  late List<TextEditingController> nameController;
+  List<Team> teams = [];
+  List<TextEditingController> nameController = [];
   final int initialTeamCount = 2;
 
-  late List<FocusNode> focusNodes = [];
+  List<FocusNode> focusNodes = [];
+  bool didInitTeams = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    if (didInitTeams &&
+        focusNodes.length == teams.length &&
+        nameController.length == teams.length) {
+      return;
+    }
+
+    didInitTeams = true;
+
     final loc = AppLocalizations.of(context);
 
     final bool areTeamsLogicallyPossible =
@@ -74,10 +84,20 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       );
     }
 
-    focusNodes = List.generate(teams.length, (index) => FocusNode());
+    if (focusNodes.length != teams.length) {
+      for (final focusNode in focusNodes) {
+        focusNode.dispose();
+      }
+      focusNodes = List.generate(teams.length, (index) => FocusNode());
+    }
 
     // Init the controllers
-    nameController = teams.map(getNewController).toList();
+    if (nameController.length != teams.length) {
+      for (final controller in nameController) {
+        controller.dispose();
+      }
+      nameController = teams.map(getNewController).toList();
+    }
   }
 
   @override
@@ -94,7 +114,6 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       resizeToAvoidBottomInset: false,
@@ -104,7 +123,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
         children: [
           Positioned.fill(
             child: ListView.builder(
-              padding: const EdgeInsets.only(top: 12, bottom: 96),
+              padding: const EdgeInsets.only(top: 12, bottom: 105),
               itemCount: teams.length,
               itemBuilder: (context, index) {
                 return TeamCreationTile(
