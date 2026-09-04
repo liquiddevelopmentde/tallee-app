@@ -19,7 +19,6 @@ import 'package:tallee/services/shared_preferences_service.dart';
 class MatchShareView extends StatefulWidget {
   const MatchShareView({super.key, required this.match});
 
-  /// The match to share
   final Match match;
 
   @override
@@ -37,23 +36,23 @@ class _MatchShareViewState extends State<MatchShareView>
   // defaults to true, to already show the qr code behind the ConsentDialog
   bool serverSharingEnabled = true;
 
-  Timer? _timer;
+  Timer? timer;
 
-  int _secondsRemaining = 600; // 10 Minuten
+  int secondsRemaining = 600; // 10 Minutes
 
-  static const int _totalSeconds = 600;
+  static const int totalSeconds = 600;
 
   String? shareToken;
 
-  late final TabController _tabController;
+  late final TabController tabController;
 
-  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initSharingView();
     });
@@ -61,7 +60,7 @@ class _MatchShareViewState extends State<MatchShareView>
 
   @override
   void dispose() {
-    _timer?.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -70,7 +69,7 @@ class _MatchShareViewState extends State<MatchShareView>
     final loc = AppLocalizations.of(context);
 
     return ScaffoldMessenger(
-      key: _scaffoldMessengerKey,
+      key: scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(title: Text(loc.match_share), centerTitle: true),
@@ -89,7 +88,7 @@ class _MatchShareViewState extends State<MatchShareView>
                   ),
                 ),
                 child: TabBar(
-                  controller: _tabController,
+                  controller: tabController,
                   splashFactory: NoSplash.splashFactory,
                   dividerColor: Colors.transparent,
                   indicatorSize: TabBarIndicatorSize.tab,
@@ -117,13 +116,13 @@ class _MatchShareViewState extends State<MatchShareView>
             Expanded(
               child: SafeArea(
                 child: TabBarView(
-                  controller: _tabController,
+                  controller: tabController,
                   children: [
                     QrCodeComponent(
                       qrImage: qrImage,
                       isLoading: isLoading,
-                      secondsRemaining: _secondsRemaining,
-                      totalSeconds: _totalSeconds,
+                      secondsRemaining: secondsRemaining,
+                      totalSeconds: totalSeconds,
                       serverSharingEnabled: serverSharingEnabled,
                       onOnlineSharingPrefChanged: () {
                         initSharingView();
@@ -131,8 +130,8 @@ class _MatchShareViewState extends State<MatchShareView>
                       renewToken: renewToken,
                     ),
                     TokenComponent(
-                      secondsRemaining: _secondsRemaining,
-                      totalSeconds: _totalSeconds,
+                      secondsRemaining: secondsRemaining,
+                      totalSeconds: totalSeconds,
                       shareToken: shareToken,
                       isLoading: isLoading,
                       serverSharingEnabled: serverSharingEnabled,
@@ -181,9 +180,9 @@ class _MatchShareViewState extends State<MatchShareView>
     });
 
     if (serverSharingEnabled) {
-      _tabController.animateTo(0);
+      tabController.animateTo(0);
     } else {
-      _tabController.animateTo(2);
+      tabController.animateTo(2);
     }
 
     if (hasStoredSharingConsent) {
@@ -223,12 +222,12 @@ class _MatchShareViewState extends State<MatchShareView>
             } else {
               errorMessage = loc.unexpected_error;
             }
-            _scaffoldMessengerKey.currentState?.showSnackBar(
+            scaffoldMessengerKey.currentState?.showSnackBar(
               CustomSnackBar(
                 message: errorMessage,
                 actionIcon: Icons.refresh,
                 onActionTap: () {
-                  _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+                  scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
                   initSharingView(hasStoredSharingConsent);
                 },
               ),
@@ -263,13 +262,13 @@ class _MatchShareViewState extends State<MatchShareView>
   }
 
   void startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
         setState(() {
-          if (_secondsRemaining > 0) {
-            _secondsRemaining--;
+          if (secondsRemaining > 0) {
+            secondsRemaining--;
           } else {
-            _timer!.cancel();
+            timer.cancel();
           }
         });
       }
@@ -279,7 +278,7 @@ class _MatchShareViewState extends State<MatchShareView>
   void renewToken() async {
     setState(() {
       isLoading = true;
-      _secondsRemaining = _totalSeconds;
+      secondsRemaining = totalSeconds;
     });
 
     try {
@@ -293,7 +292,7 @@ class _MatchShareViewState extends State<MatchShareView>
           );
           qrImage = QrImage(qrCode);
           isLoading = false;
-          _timer?.cancel();
+          timer?.cancel();
           startTimer();
         });
       }
@@ -316,12 +315,12 @@ class _MatchShareViewState extends State<MatchShareView>
       } else {
         errorMessage = loc.unexpected_error;
       }
-      _scaffoldMessengerKey.currentState?.showSnackBar(
+      scaffoldMessengerKey.currentState?.showSnackBar(
         CustomSnackBar(
           message: errorMessage,
           actionIcon: Icons.refresh,
           onActionTap: () {
-            _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+            scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
             renewToken();
           },
         ),

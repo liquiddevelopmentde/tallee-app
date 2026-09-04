@@ -29,7 +29,7 @@ class CustomSnackBar extends SnackBar {
          behavior: SnackBarBehavior.floating,
          backgroundColor: Colors.transparent,
          elevation: 0,
-         content: _AnimatedContent(
+         content: AnimatedContent(
            message: message,
            animation: proxy,
            actionIcon: actionIcon,
@@ -44,7 +44,7 @@ class CustomSnackBar extends SnackBar {
   @override
   SnackBar withAnimation(Animation<double> newAnimation, {Key? fallbackKey}) {
     proxy.parent = newAnimation;
-    final animatedContent = content as _AnimatedContent;
+    final animatedContent = content as AnimatedContent;
 
     return CustomSnackBar._internal(
       key: key ?? fallbackKey,
@@ -57,8 +57,9 @@ class CustomSnackBar extends SnackBar {
   }
 }
 
-class _AnimatedContent extends StatelessWidget {
-  const _AnimatedContent({
+class AnimatedContent extends StatelessWidget {
+  const AnimatedContent({
+    super.key,
     required this.message,
     required this.animation,
     this.actionIcon,

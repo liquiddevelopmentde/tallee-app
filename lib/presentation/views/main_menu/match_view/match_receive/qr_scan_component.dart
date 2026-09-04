@@ -23,8 +23,8 @@ class _QrScanComponentState extends State<QrScanComponent> {
     formats: [BarcodeFormat.qrCode],
   );
 
-  bool _isProcessing = false;
-  String? _errorMessage;
+  bool isProcessing = false;
+  String? errorMessage;
 
   @override
   void dispose() {
@@ -67,9 +67,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
                           tapToFocus: true,
                           controller: controller,
                           fit: BoxFit.cover,
-                          onDetect: _isProcessing
-                              ? null
-                              : handleQrCodeDetection,
+                          onDetect: isProcessing ? null : handleQrCodeDetection,
                         ),
                         // Scanner Overlay
                         Positioned.fill(
@@ -86,8 +84,8 @@ class _QrScanComponentState extends State<QrScanComponent> {
                           ),
                         ),
                         StatusErrorOverlay(
-                          isProcessing: _isProcessing,
-                          errorMessage: _errorMessage,
+                          isProcessing: isProcessing,
+                          errorMessage: errorMessage,
                         ),
                       ],
                     );
@@ -122,11 +120,11 @@ class _QrScanComponentState extends State<QrScanComponent> {
 
   Future<void> handleQrCodeDetection(BarcodeCapture result) async {
     final token = result.barcodes.first.rawValue;
-    if (token == null || _isProcessing) return;
+    if (token == null || isProcessing) return;
 
     setState(() {
-      _isProcessing = true;
-      _errorMessage = null;
+      isProcessing = true;
+      errorMessage = null;
     });
 
     await Future.delayed(Constants.MINIMUM_SKELETON_DURATION);
@@ -143,7 +141,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
 
       if (mounted) {
         setState(() {
-          _isProcessing = false;
+          isProcessing = false;
         });
       }
     } catch (error) {
@@ -163,15 +161,14 @@ class _QrScanComponentState extends State<QrScanComponent> {
       } else {
         message = loc.error_loading_match(error.toString());
       }
-
-      setState(() => _errorMessage = message);
+      setState(() => errorMessage = message);
 
       await Future.delayed(const Duration(seconds: 4));
 
       if (mounted) {
         setState(() {
-          _isProcessing = false;
-          _errorMessage = null;
+          isProcessing = false;
+          errorMessage = null;
         });
       }
     }

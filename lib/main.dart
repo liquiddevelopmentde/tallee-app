@@ -167,7 +167,7 @@ class _TalleeState extends State<Tallee> {
 
     final (status, _) = await LocalShareService.getDataFromPath(path);
 
-    final route = status == ImportResult.singleMatchDetected
+    final route = status == ImportResult.matchSchemaDetected
         ? MatchReceiveView(initialFilePath: path)
         : PreviewImportDataView(
             filePath: path,

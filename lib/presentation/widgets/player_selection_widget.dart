@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
@@ -19,9 +20,12 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart'
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
-enum SelectionMode { single, multiple }
-
 class PlayerSelectionWidget extends StatefulWidget {
+  /// A widget for selecting a single player.
+  /// - [availablePlayers]: An optional list of players to choose from. If null, all players from the database are used.
+  /// - [initialSelectedPlayer]: An optional player that should be pre-selected.
+  /// - [onSingleChanged]: A callback function that is invoked whenever the selection changes. Can be null if the player is deselected.
+  /// - [onPlayerCreated]: A callback function that is invoked when a player was created in this widget.
   const PlayerSelectionWidget.single({
     super.key,
     this.availablePlayers,
@@ -34,6 +38,13 @@ class PlayerSelectionWidget extends StatefulWidget {
        pairingEnabled = false,
        onMultipleChanged = null;
 
+  /// A widget for selecting multiple players.
+  /// - [availablePlayers]: An optional list of players to choose from. If null, all players from the database are used.
+  /// - [initialSelectedPlayers]: An optional list of players that should be pre-selected.
+  /// - [initialSelectedUnits]: An optional list of units that should be pre-selected.
+  /// - [pairingEnabled]: Whether pairing mode is enabled for this widget.
+  /// - [onMultipleChanged]: A callback function that is invoked whenever the selection changes.
+  /// - [onPlayerCreated]: A callback function that is invoked when a player was created in this widget.
   const PlayerSelectionWidget.multiple({
     super.key,
     this.availablePlayers,
@@ -51,26 +62,18 @@ class PlayerSelectionWidget extends StatefulWidget {
   /// An optional list of players to choose from. If null, all players from the database are used.
   final List<Player>? availablePlayers;
 
-  /// [Single] An optional player that should be pre-selected.
   final Player? initialSelectedPlayer;
 
-  /// [Single] A callback function that is invoked whenever the selection changes.
-  /// Can be null if the player is deselected.
   final Function(Player? player)? onSingleChanged;
 
-  /// [Multiple] An optional list of players that should be pre-selected.
   final List<Player>? initialSelectedPlayers;
 
-  /// [Multiple] An optional list of units that should be pre-selected.
   final List<Team>? initialSelectedUnits;
 
-  /// [Multiple] Whether pairing mode is enabled for this widget
   final bool pairingEnabled;
 
-  /// [Multiple] A callback function that is invoked whenever the selection changes.
   final Function(List<Player> players, List<Team> units)? onMultipleChanged;
 
-  /// A callback function that is invoked when a player was created in this widget
   final VoidCallback? onPlayerCreated;
 
   @override
@@ -81,13 +84,10 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   late final AppDatabase db;
   bool isLoading = true;
 
-  /// Future that loads all players from the database.
   late Future<List<Player>> allPlayersFuture;
 
-  /// The complete list of all available players.
   List<Player> allPlayers = [];
 
-  /// The list of players suggested based on the search input.
   List<Player> suggestedPlayers = [];
 
   // --- Single Selection State ---
@@ -101,11 +101,9 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   final Set<String> pairingSelection = {};
   String? pressingId;
 
-  /// Controller for the search bar input.
   late final TextEditingController searchBarController =
       TextEditingController();
 
-  /// Skeleton data used while loading players.
   late final List<Player> skeletonData = List.filled(
     widget.mode == SelectionMode.single ? 5 : 7,
     Player(name: 'Player 0'),
@@ -648,9 +646,8 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   void showSnackBarMessage(String message) {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(CustomSnackBar(message: message));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(CustomSnackBar(message: message));
   }
 
   String getInfoText(BuildContext context) {

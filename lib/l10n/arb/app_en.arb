@@ -104,7 +104,9 @@
   "import_preview_description": "The following data will be imported",
   "info": "Info",
   "invalid_schema": "Invalid Schema",
+  "invalid_file": "Invalid File, try another one.",
   "last_180_days": "Last 180 days",
+  "error_while_processing_file_try_again": "Error while processing file. Please try again.",
   "last_30_days": "Last 30 days",
   "last_7_days": "Last 7 days",
   "last_90_days": "Last 90 days",
@@ -287,7 +289,7 @@
     }
   },
   "input_token_instruction": "Input a match share token another person created using Tallee to import the match.",
-  "invalid_token": "Invalid token.",
+  "invalid_token": "Invalid token",
   "import_match": "Import match",
   "share_token_format_info": "Share tokens consist of 6 alphanumeric characters.",
   "match_import_failed": "Match import failed",

@@ -33,7 +33,7 @@ class AssociatePlayersView extends StatefulWidget {
 
 class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   final Map<String, Player?> associations = {};
-  List<Player>? _cachedAllPlayers;
+  List<Player>? cachedAllPlayers;
 
   @override
   void initState() {
@@ -48,17 +48,17 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     final players = playersToAssociate;
+    final allPlayers = cachedAllPlayers ?? [];
+
     final unassignedCount = players
         .where((player) => associations[player.id] == null)
         .length;
 
-    final newPlayersCount = players
-        .where(
-          (player) =>
-              associations[player.id] != null &&
-              associations[player.id]!.id == player.id,
-        )
-        .length;
+    final newPlayersCount = players.where((player) {
+      final assoc = associations[player.id];
+      if (assoc == null) return false;
+      return !allPlayers.any((lp) => lp.id == assoc.id);
+    }).length;
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.associate_players), centerTitle: true),
@@ -102,11 +102,12 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                   final associatedPlayer = associations[player.id];
                   final isNew =
                       associatedPlayer != null &&
-                      associatedPlayer.id == player.id;
+                      !allPlayers.any((lp) => lp.id == associatedPlayer.id);
 
                   return AssociatePlayerTile(
                     player: player,
                     associatedPlayer: associatedPlayer,
+                    isNew: isNew,
                     borderColor: associatedPlayer != null
                         ? (isNew ? Colors.orange : Colors.green).withAlpha(150)
                         : Colors.red.withAlpha(150),
@@ -172,9 +173,8 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(CustomSnackBar(message: e.toString()));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(CustomSnackBar(message: e.toString()));
       return;
     }
 
@@ -183,17 +183,16 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     Provider.of<DataRefreshProvider>(context, listen: false).refresh();
 
     final loc = AppLocalizations.of(context);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
 
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   Future<Player?> showPlayerSelectionSheet(Player? currentSelection) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    _cachedAllPlayers ??= await db.playerDao.getAllPlayers();
-    final allPlayers = _cachedAllPlayers!;
+    cachedAllPlayers ??= await db.playerDao.getAllPlayers();
+    final allPlayers = cachedAllPlayers!;
 
     final isCreateAsNew =
         currentSelection != null &&
@@ -227,7 +226,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
           },
           onPlayerCreated: () {
             setState(() {
-              _cachedAllPlayers = null;
+              cachedAllPlayers = null;
             });
             autoAssociatePlayers();
           },
@@ -240,8 +239,8 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
   Future<void> autoAssociatePlayers() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    _cachedAllPlayers = await db.playerDao.getAllPlayers();
-    final allPlayers = _cachedAllPlayers!;
+    cachedAllPlayers = await db.playerDao.getAllPlayers();
+    final allPlayers = cachedAllPlayers!;
 
     if (!mounted) return;
 
@@ -249,18 +248,36 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
       final usedLocalPlayerIds = <String>{};
 
       for (var importedPlayer in playersToAssociate) {
-        final match = allPlayers.where((localPlayer) {
+        // 1. Try exact ID match first
+        Player? match = allPlayers.where((localPlayer) {
           return !usedLocalPlayerIds.contains(localPlayer.id) &&
-              localPlayer.name.compareIgnoringCaseTo(importedPlayer.name) ==
+              localPlayer.id == importedPlayer.id;
+        }).firstOrNull;
+
+        // 2. Try Name + NameCount match
+        match ??= allPlayers.where((localPlayer) {
+          return !usedLocalPlayerIds.contains(localPlayer.id) &&
+              localPlayer.name.trim().compareIgnoringCaseTo(
+                    importedPlayer.name.trim(),
+                  ) ==
                   0 &&
               localPlayer.nameCount == importedPlayer.nameCount;
+        }).firstOrNull;
+
+        // 3. Fall back to Name-only match (ignoring case and whitespace)
+        match ??= allPlayers.where((localPlayer) {
+          return !usedLocalPlayerIds.contains(localPlayer.id) &&
+              localPlayer.name.trim().compareIgnoringCaseTo(
+                    importedPlayer.name.trim(),
+                  ) ==
+                  0;
         }).firstOrNull;
 
         if (match != null) {
           associations[importedPlayer.id] = match;
           usedLocalPlayerIds.add(match.id);
         } else {
-          //Default to Create as New if no match found
+          // Default to Create as New if no match found
           associations[importedPlayer.id] = importedPlayer;
         }
       }

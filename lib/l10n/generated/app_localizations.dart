@@ -638,11 +638,23 @@ abstract class AppLocalizations {
   /// **'Invalid Schema'**
   String get invalid_schema;
 
+  /// No description provided for @invalid_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid File, try another one.'**
+  String get invalid_file;
+
   /// No description provided for @last_180_days.
   ///
   /// In en, this message translates to:
   /// **'Last 180 days'**
   String get last_180_days;
+
+  /// No description provided for @error_while_processing_file_try_again.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while processing file. Please try again.'**
+  String get error_while_processing_file_try_again;
 
   /// No description provided for @last_30_days.
   ///
@@ -1481,7 +1493,7 @@ abstract class AppLocalizations {
   /// No description provided for @invalid_token.
   ///
   /// In en, this message translates to:
-  /// **'Invalid token.'**
+  /// **'Invalid token'**
   String get invalid_token;
 
   /// No description provided for @import_match.

@@ -78,6 +78,12 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       decoration: BoxDecoration(border: Border.all(color: Colors.pink)),
     );
 
+    const errorTextStyle = TextStyle(
+      color: Colors.red,
+      fontSize: 14,
+      fontWeight: FontWeight.bold,
+    );
+
     return Column(
       children: [
         const SizedBox(height: 50),
@@ -118,6 +124,10 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
             showCursor: false,
             animationCurve: Curves.easeInOutCubic,
             animationDuration: const Duration(milliseconds: 100),
+            onClipboardFound: (value) {
+              print(value);
+              tokenInputFieldController.text = value;
+            },
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
               TextInputFormatter.withFunction(
@@ -129,6 +139,19 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
             ],
             forceErrorState: isTokenValid == false,
             errorText: loc.invalid_token,
+            errorTextStyle: errorTextStyle,
+            errorBuilder: (errorText, pin) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    errorText ?? '',
+                    style: errorTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            },
           ),
         ),
         Container(
@@ -197,9 +220,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       }
 
       if (errorMessage.isNotEmpty) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(CustomSnackBar(message: errorMessage));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(CustomSnackBar(message: errorMessage));
       }
 
       rethrow; //error an button "weiterleiten"

@@ -21,6 +21,7 @@ enum ApiButtonState { idle, loading, success, error }
 /// - [ImportResult.invalidData]: The JSON Schema is correct, but the data itself is invalid.
 /// - [ImportResult.formatException]: A format exception occurred during import.
 /// - [ImportResult.unknownException]: An exception occurred during import.
+/// - [ImportResult.matchSchemaDetected]: A single match was detected during import.
 enum ImportResult {
   success,
   canceled,
@@ -30,8 +31,13 @@ enum ImportResult {
   invalidData,
   formatException,
   unknownException,
-  singleMatchDetected,
+  matchSchemaDetected,
 }
+
+/// Enum for the Player Selection Widget
+/// - [SelectionMode.single]: Only one player can be selected at a time.
+/// - [SelectionMode.multiple]: Multiple players can be selected at once.
+enum SelectionMode { single, multiple }
 
 /// Result types for export operations in the [SettingsView]
 /// - [ExportResult.success]: The export operation was successful.

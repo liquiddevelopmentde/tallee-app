@@ -301,7 +301,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get invalid_schema => 'Ungültiges Schema';
 
   @override
+  String get invalid_file => 'Ungültige Datei, versuche es mit einer anderen';
+
+  @override
   String get last_180_days => 'Letzte 180 Tage';
+
+  @override
+  String get error_while_processing_file_try_again =>
+      'Fehler beim Verarbeiten der Datei. Bitte versuche es erneut';
 
   @override
   String get last_30_days => 'Letzte 30 Tage';
@@ -762,7 +769,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Gib einen Match-Share-Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.';
 
   @override
-  String get invalid_token => 'Ungültiger Token.';
+  String get invalid_token => 'Ungültiger Token';
 
   @override
   String get import_match => 'Match importieren';

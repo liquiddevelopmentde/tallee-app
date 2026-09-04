@@ -258,7 +258,7 @@ class _SettingsViewState extends State<SettingsView> {
             message: loc.data_successfully_imported,
           );
         }
-      case ImportResult.singleMatchDetected:
+      case ImportResult.matchSchemaDetected:
         break;
       case ImportResult.invalidSchema:
       case ImportResult.invalidData:
@@ -316,9 +316,8 @@ class _SettingsViewState extends State<SettingsView> {
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(CustomSnackBar(message: message));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(CustomSnackBar(message: message));
   }
 
   /// Initializes the package information.
@@ -362,7 +361,7 @@ class _SettingsViewState extends State<SettingsView> {
     // Pre-check the file type to avoid showing PreviewImportDataView for single matches
     final (status, _) = await LocalShareService.getDataFromPath(path);
 
-    if (status == ImportResult.singleMatchDetected) {
+    if (status == ImportResult.matchSchemaDetected) {
       if (!scaffoldMessengerContext.mounted) return;
       Navigator.of(scaffoldMessengerContext).push(
         adaptivePageRoute(

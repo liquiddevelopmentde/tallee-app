@@ -15,6 +15,7 @@ class AssociatePlayerTile extends StatefulWidget {
     required this.player,
     required this.onTap,
     this.associatedPlayer,
+    this.isNew = false,
     this.borderColor,
     super.key,
   });
@@ -22,6 +23,8 @@ class AssociatePlayerTile extends StatefulWidget {
   final Player player;
 
   final Player? associatedPlayer;
+
+  final bool isNew;
 
   final VoidCallback onTap;
 
@@ -86,13 +89,10 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                         children: [
                           if (widget.associatedPlayer != null)
                             Flexible(
-                              child:
-                                  widget.associatedPlayer!.id ==
-                                      widget.player.id
+                              child: widget.isNew
                                   ? Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      ).create_as_new,
+                                      AppLocalizations.of(context)
+                                          .create_as_new,
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,

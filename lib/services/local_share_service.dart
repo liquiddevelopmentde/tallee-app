@@ -126,7 +126,7 @@ class LocalShareService {
 
     final (status, _) = await _validateJson(jsonString);
     if (status != ImportResult.success &&
-        status != ImportResult.singleMatchDetected) {
+        status != ImportResult.matchSchemaDetected) {
       return (status, null);
     }
 
@@ -169,7 +169,7 @@ class LocalShareService {
           return (ImportResult.invalidData, null);
         }
 
-        return (ImportResult.singleMatchDetected, null);
+        return (ImportResult.matchSchemaDetected, null);
       }
 
       return (ImportResult.invalidSchema, null);

@@ -278,7 +278,9 @@
     }
   },
   "input_token_instruction": "Gib einen Match-Share-Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.",
-  "invalid_token": "Ungültiger Token.",
+  "invalid_token": "Ungültiger Token",
+  "invalid_file": "Ungültige Datei, versuche es mit einer anderen",
+  "error_while_processing_file_try_again": "Fehler beim Verarbeiten der Datei. Bitte versuche es erneut",
   "import_match": "Match importieren",
   "share_token_format_info": "Share-Token bestehen aus 6 alphanumerischen Zeichen.",
   "match_import_failed": "Match-Import fehlgeschlagen",

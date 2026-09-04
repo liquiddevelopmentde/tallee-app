@@ -185,7 +185,7 @@ class ChooseMatchFile extends StatelessWidget {
     if (lastResult != null &&
         lastResult != ImportResult.success &&
         lastResult != ImportResult.canceled) {
-      title = loc.match_import_failed;
+      title = translateMatchImportResultToString(lastResult!, context);
     }
 
     return Column(

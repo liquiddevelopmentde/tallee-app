@@ -300,7 +300,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalid_schema => 'Invalid Schema';
 
   @override
+  String get invalid_file => 'Invalid File, try another one.';
+
+  @override
   String get last_180_days => 'Last 180 days';
+
+  @override
+  String get error_while_processing_file_try_again =>
+      'Error while processing file. Please try again.';
 
   @override
   String get last_30_days => 'Last 30 days';
@@ -758,7 +765,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Input a match share token another person created using Tallee to import the match.';
 
   @override
-  String get invalid_token => 'Invalid token.';
+  String get invalid_token => 'Invalid token';
 
   @override
   String get import_match => 'Import match';

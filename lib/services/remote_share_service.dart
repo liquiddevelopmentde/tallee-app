@@ -40,10 +40,10 @@ class RemoteShareService {
 
       return data['token'] as String;
     } on SocketException {
-      // Wenn kein Internet oder Server down
+      // No internet connection or server down
       throw NetworkException();
     } on FormatException {
-      // Wenn jsonDecode fehlschlägt
+      //jsonDecode fails
       throw ParsingException();
     }
   }
@@ -119,16 +119,12 @@ class RemoteShareService {
     );
   }
 
-  /// Loads a match from a given file path without opening a file picker.
-  Future<(ImportResult, Match?, String)> loadMatchFromFile(
-    String filePath,
+  /// Parses and validates a match JSON string against schemas and content rules.
+  Future<(ImportResult, Match?, String)> parseAndValidateMatch(
+    String jsonString,
+    String fileName,
   ) async {
-    final file = File(filePath);
-    final fileName = file.path.split(Platform.pathSeparator).last;
-
     try {
-      final jsonString = await file.readAsString();
-
       final isValid = await validateJsonSchema(
         jsonString,
         'assets/match_schema.json',
@@ -145,15 +141,32 @@ class RemoteShareService {
 
       return (ImportResult.success, Match.fromJson(decoded), fileName);
     } on FormatException catch (e, stack) {
-      print('[loadMatchFromFile] FormatException');
-      print('[loadMatchFromFile] $e');
+      print('[parseAndValidateMatch] FormatException');
+      print('[parseAndValidateMatch] $e');
       print(stack);
       return (ImportResult.formatException, null, fileName);
     } on Exception catch (e, stack) {
-      print('[loadMatchFromFile] Exception');
-      print('[loadMatchFromFile] $e');
+      print('[parseAndValidateMatch] Exception');
+      print('[parseAndValidateMatch] $e');
       print(stack);
       return (ImportResult.unknownException, null, fileName);
+    }
+  }
+
+  /// Loads a match from a given file path without opening a file picker.
+  Future<(ImportResult, Match?, String)> loadMatchFromFile(
+    String filePath,
+  ) async {
+    final file = File(filePath);
+
+    try {
+      final jsonString = await file.readAsString();
+      return await parseAndValidateMatch(jsonString, filePath);
+    } on Exception catch (e, stack) {
+      print('[loadMatchFromFile] Exception reading file');
+      print('[loadMatchFromFile] $e');
+      print(stack);
+      return (ImportResult.fileReadError, null, filePath);
     }
   }
 
@@ -245,42 +258,14 @@ class RemoteShareService {
       return (ImportResult.canceled, null, '');
     }
 
-    try {
-      final jsonString = await readFileContent(path.files.single);
-      if (jsonString == null) {
-        return (ImportResult.fileReadError, null, path.files.single.name);
-      }
-
-      final isValid = await validateJsonSchema(
-        jsonString,
-        'assets/match_schema.json',
-      );
-      if (!isValid) {
-        return (ImportResult.invalidSchema, null, path.files.single.name);
-      }
-
-      final decoded = json.decode(jsonString) as Map<String, dynamic>;
-
-      if (!validateContent(decoded)) {
-        return (ImportResult.invalidData, null, path.files.single.name);
-      }
-
-      return (
-        ImportResult.success,
-        Match.fromJson(decoded),
-        path.files.single.name,
-      );
-    } on FormatException catch (e, stack) {
-      print('[importData] FormatException');
-      print('[importData] $e');
-      print(stack);
-      return (ImportResult.formatException, null, path.files.single.name);
-    } on Exception catch (e, stack) {
-      print('[importData] Exception');
-      print('[importData] $e');
-      print(stack);
-      return (ImportResult.unknownException, null, path.files.single.name);
+    final file = path.files.single;
+    final jsonString = await readFileContent(file);
+    final filePath = file.path ?? file.name;
+    if (jsonString == null) {
+      return (ImportResult.fileReadError, null, filePath);
     }
+
+    return await parseAndValidateMatch(jsonString, filePath);
   }
 
   /// Validates field lengths against the defined constants.

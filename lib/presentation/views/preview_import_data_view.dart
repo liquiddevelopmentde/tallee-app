@@ -357,7 +357,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
       if (importResult == ImportResult.success) {
         HapticFeedback.successNotification();
       } else if (importResult != ImportResult.canceled &&
-          importResult != ImportResult.singleMatchDetected) {
+          importResult != ImportResult.matchSchemaDetected) {
         HapticFeedback.errorNotification();
       }
 
