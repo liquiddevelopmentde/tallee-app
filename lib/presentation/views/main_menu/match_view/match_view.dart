@@ -78,7 +78,7 @@ class _MatchViewState extends State<MatchView> {
       },
     );
 
-    Once.runOnEveryNewBuild(
+    Once.runOnEveryNewVersion(
       key: 'whats-new-screen',
       callback: () {
         Navigator.push(
