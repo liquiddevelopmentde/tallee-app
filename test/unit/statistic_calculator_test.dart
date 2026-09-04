@@ -8,7 +8,7 @@ void main() {
   late Player testPlayer3;
   late Player testPlayer4;
   late Game singleWinnerGame;
-  late Game singleLoserGame;
+  late Game loserGame;
   late Game highestScoreGame;
   late Game lowestScoreGame;
   late Game multipleWinnersGame;
@@ -48,12 +48,12 @@ void main() {
 
     singleWinnerGame = Game(
       name: 'Single Winner Game',
-      ruleset: Ruleset.singleWinner,
+      ruleset: Ruleset.winner,
       color: AppColor.green,
     );
-    singleLoserGame = Game(
+    loserGame = Game(
       name: 'Single Loser Game',
-      ruleset: Ruleset.singleLoser,
+      ruleset: Ruleset.loser,
       color: AppColor.green,
     );
     highestScoreGame = Game(
@@ -68,7 +68,7 @@ void main() {
     );
     multipleWinnersGame = Game(
       name: 'Multiple Winners Game',
-      ruleset: Ruleset.multipleWinners,
+      ruleset: Ruleset.winner,
       color: AppColor.green,
     );
     placementGame = Game(
@@ -111,8 +111,8 @@ void main() {
         scores: {testPlayer1: 1},
       ),
       buildMatch(
-        name: 'singleLoserMatch',
-        game: singleLoserGame,
+        name: 'loserMatch',
+        game: loserGame,
         players: players,
         scores: {testPlayer1: 0},
       ),
@@ -263,7 +263,7 @@ void main() {
           ),
           buildMatch(
             name: 'game-b-match',
-            game: singleLoserGame,
+            game: loserGame,
             players: [testPlayer3],
             scores: {testPlayer3: 1},
           ),
@@ -272,7 +272,7 @@ void main() {
         final statistic = Statistic(
           type: StatisticType.totalMatches,
           scopes: [StatisticScope.selectedGames],
-          selectedGames: [singleLoserGame],
+          selectedGames: [loserGame],
         );
 
         final values = StatisticCalculator.computeStatisticValues(

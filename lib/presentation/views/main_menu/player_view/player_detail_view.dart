@@ -57,7 +57,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
     4,
     Match(
       name: 'Skeleton match',
-      game: Game(name: 'Game name', ruleset: Ruleset.singleWinner),
+      game: Game(name: 'Game name', ruleset: Ruleset.winner),
       players: [],
     ),
   );
