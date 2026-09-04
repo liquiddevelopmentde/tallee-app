@@ -512,6 +512,12 @@ abstract class AppLocalizations {
   /// **'Error while editing group, please try again'**
   String get error_editing_group;
 
+  /// No description provided for @error_editing_player.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while editing player, please try again'**
+  String get error_editing_player;
+
   /// No description provided for @error_loading_privacy_policy.
   ///
   /// In en, this message translates to:
@@ -895,6 +901,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Played Matches'**
   String get played_matches;
+
+  /// No description provided for @player_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Player name'**
+  String get player_name;
 
   /// No description provided for @player_profile.
   ///

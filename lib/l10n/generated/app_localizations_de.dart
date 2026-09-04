@@ -237,6 +237,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
 
   @override
+  String get error_editing_player =>
+      'Fehler beim Bearbeiten des Spielers, bitte erneut versuchen';
+
+  @override
   String get error_loading_privacy_policy =>
       'Fehler beim Laden der Datenschutzerklärung';
 
@@ -441,6 +445,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get played_matches => 'Gespielte Spiele';
+
+  @override
+  String get player_name => 'Name des/der Spieler:in';
 
   @override
   String get player_profile => 'Spieler:in-Profil';
