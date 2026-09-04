@@ -34,7 +34,7 @@ enum ExportResult { success, canceled, unknownException, noData }
 /// - [Ruleset.highestScore]: The player with the highest score wins.
 /// - [Ruleset.lowestScore]: The player with the lowest score wins.
 /// - [Ruleset.winners]: The match has one or multiple winner(s)
-/// - [Ruleset.loser]: The match has one single loser.
+/// - [Ruleset.loser]: The match has one loser.
 /// - [Ruleset.placement]: The player with the highest placement wins.
 /// - [Ruleset.lives]: Every player with lives > 0 wins
 enum Ruleset { winners, loser, highestScore, lowestScore, lives, placement }
