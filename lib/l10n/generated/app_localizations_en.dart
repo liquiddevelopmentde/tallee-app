@@ -526,9 +526,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get single_winner => 'Single Winner';
-
-  @override
   String get statistic => 'Statistic';
 
   @override

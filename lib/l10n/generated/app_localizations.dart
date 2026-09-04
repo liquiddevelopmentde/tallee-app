@@ -1064,12 +1064,6 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
-  /// No description provided for @single_winner.
-  ///
-  /// In en, this message translates to:
-  /// **'Single Winner'**
-  String get single_winner;
-
   /// No description provided for @statistic.
   ///
   /// In en, this message translates to:
