@@ -35,9 +35,10 @@ class TextIconTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final iconEnabled = onIconTap != null && icon != null;
-    final backgroundColor = highlighted
-        ? CustomTheme.onBoxColor.withAlpha((140).round())
-        : CustomTheme.onBoxColor;
+    final effectiveBgColor = backgroundColor ?? CustomTheme.onBoxColor;
+    final tileBgColor = highlighted
+        ? effectiveBgColor.withAlpha((140).round())
+        : effectiveBgColor;
 
     return GestureDetector(
       onTap: onTileTap,
@@ -45,8 +46,11 @@ class TextIconTile extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: backgroundColor,
+          color: tileBgColor,
           borderRadius: BorderRadius.circular(12),
+          border: effectiveBgColor == Colors.transparent
+              ? Border.all(color: CustomTheme.boxBorderColor)
+              : null,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

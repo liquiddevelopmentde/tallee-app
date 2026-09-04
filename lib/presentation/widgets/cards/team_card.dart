@@ -114,7 +114,7 @@ class TeamCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: CustomTheme.backgroundColor,
+          color: CustomTheme.onBoxColor,
         ),
         child: Row(
           spacing: 8,
@@ -161,7 +161,10 @@ class TeamCard extends StatelessWidget {
                       children: [
                         // Player tiles
                         ...team.members.map((player) {
-                          return PlayerTile(player: player);
+                          return PlayerTile(
+                            player: player,
+                            backgroundColor: Colors.transparent,
+                          );
                         }),
                       ],
                     ),
