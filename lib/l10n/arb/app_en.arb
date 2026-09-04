@@ -78,7 +78,6 @@
   "edit_match": "Edit Match",
   "edit_name": "Edit name",
   "edit_player": "Edit player",
-  "enter_points": "Enter points",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
   "error_deleting_game": "Error while deleting game, please try again",
@@ -111,7 +110,14 @@
   "legal": "Legal",
   "legal_notice": "Legal Notice",
   "licenses": "Licenses",
-  "live_edit_mode": "Live Edit Mode",
+  "lives": "{count, plural, =1{Life} other{Lives}}",
+  "@lives": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "loading": "Loading...",
   "loser": "Loser",
   "lowest_score": "Lowest Score",

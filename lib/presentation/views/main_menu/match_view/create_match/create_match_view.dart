@@ -16,6 +16,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/crea
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
+import 'package:tallee/presentation/widgets/custom_stepper.dart';
 import 'package:tallee/presentation/widgets/player_selection.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
@@ -67,6 +68,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   Group? selectedGroup;
   DateTime? selectedCreationDate;
   Game? selectedGame;
+  int selectedLives = 3;
   bool isTeamMatch = false;
   List<Player> selectedPlayers = [];
   List<Team> selectedUnits = [];
@@ -132,6 +134,19 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                       ? Text(loc.none_group)
                       : Text(selectedGame!.name),
                   onPressed: () async => await onChoosingGame(),
+                ),
+
+              // Choose the default lives
+              if (selectedGame?.ruleset == Ruleset.lives && !widget.editMode)
+                ChooseTile(
+                  title: getLifeLabel(loc, selectedLives),
+                  trailing: CustomStepper(
+                    value: selectedLives,
+                    onChanged: (int newValue) =>
+                        setState(() => selectedLives = newValue),
+                    minValue: 1,
+                    maxValue: 99,
+                  ),
                 ),
 
               // Group selection tile.
@@ -516,6 +531,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               builder: (context) => MatchResultView(
                 match: match,
                 onWinnerChanged: widget.onWinnerChanged,
+                defaultLives: selectedLives,
               ),
             ),
             (route) => route.isFirst,
