@@ -62,7 +62,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get choose_group => 'Gruppe wählen';
 
   @override
-  String get choose_match_file => 'Match-Datei auswählen';
+  String get choose_match_file => 'Spiel-Datei auswählen';
 
   @override
   String get choose_scopes => 'Bereiche wählen';
@@ -238,7 +238,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get edit_group => 'Gruppe bearbeiten';
 
   @override
-  String get edit_match => 'Match bearbeiten';
+  String get edit_match => 'Spiel bearbeiten';
 
   @override
   String get edit_name => 'Name ändern';
@@ -304,7 +304,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get file_share_instruction =>
-      'Match-Daten manuell in einer Datei teilen für eine vollständige lokale Übertragung.';
+      'Spiel-Daten manuell in einer Datei teilen für eine vollständige lokale Übertragung.';
 
   @override
   String get filter => 'Filter';
@@ -359,10 +359,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get import_file_instruction =>
-      'Wähle eine Match-Datei (.tallee), die aus einem Tallee-Match-Share exportiert wurde, um die Daten zu importieren.';
+      'Wähle eine Spiel-Datei (.tallee), die aus einem Tallee-Spiel-Share exportiert wurde, um die Daten zu importieren.';
 
   @override
-  String get import_match => 'Match importieren';
+  String get import_match => 'Spiel importieren';
 
   @override
   String get import_preview_description =>
@@ -451,10 +451,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get match_profile => 'Spielprofil';
 
   @override
-  String get match_receive => 'Match empfangen';
+  String get match_receive => 'Spiel empfangen';
 
   @override
-  String get match_share => 'Match teilen';
+  String get match_share => 'Spiel teilen';
 
   @override
   String get matches => 'Spiele';
