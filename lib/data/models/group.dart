@@ -62,21 +62,47 @@ class Group {
   );
 
   /// Creates a Group instance from a JSON object where the related [Player]
-  /// objects are represented by their IDs.
+  /// objects are represented by their full nested objects.
   Group.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       createdAt = DateTime.parse(json['createdAt']),
       name = json['name'],
-      description = json['description'],
-      members = [];
+      description = json['description'] ?? '',
+      members =
+          (json['members'] as List<dynamic>?)
+              ?.map((e) => Player.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [];
 
-  /// Converts the Group instance to a JSON object. Related [Player] objects are
-  /// represented by their IDs.
+  /// Converts the Group instance to a JSON object with full nested objects.
   Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'name': name,
+    'description': description,
+    'members': members.map((member) => member.toJson()).toList(),
+  };
+
+  /// Converts the Group instance to a JSON object using only IDs for members.
+  Map<String, dynamic> toNormalizedJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),
     'name': name,
     'description': description,
     'memberIds': members.map((member) => member.id).toList(),
   };
+
+  /// Creates a Group instance from a normalized JSON object and a list of members.
+  factory Group.fromNormalizedJson(
+    Map<String, dynamic> json,
+    List<Player> members,
+  ) {
+    return Group(
+      id: json['id'],
+      createdAt: DateTime.parse(json['createdAt']),
+      name: json['name'],
+      description: json['description'] ?? '',
+      members: members,
+    );
+  }
 }

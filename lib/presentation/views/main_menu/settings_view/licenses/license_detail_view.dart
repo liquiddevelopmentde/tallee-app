@@ -23,7 +23,7 @@ class LicenseDetailView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
           spacing: 10,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
               child: Column(
@@ -37,6 +37,7 @@ class LicenseDetailView extends StatelessWidget {
                   Column(
                     spacing: 2,
                     children: [
+                      // Packgage name
                       Text(
                         package.name,
                         textAlign: TextAlign.left,
@@ -46,6 +47,8 @@ class LicenseDetailView extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+
+                      // Package version
                       if (package.version != null) ...[
                         Text(
                           'Version ${package.version}',
@@ -59,6 +62,7 @@ class LicenseDetailView extends StatelessWidget {
                     ],
                   ),
 
+                  // Authors as selectable text
                   if (package.authors.isNotEmpty) ...[
                     SelectableText(
                       package.authors.join(', '),
@@ -70,6 +74,7 @@ class LicenseDetailView extends StatelessWidget {
                     ),
                   ],
 
+                  // Homepage as clickable link
                   if (package.homepage != null &&
                       package.homepage!.isNotEmpty) ...[
                     GestureDetector(
@@ -97,6 +102,8 @@ class LicenseDetailView extends StatelessWidget {
                 ],
               ),
             ),
+
+            // Description
             if (package.description.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -112,6 +119,7 @@ class LicenseDetailView extends StatelessWidget {
                 ),
               ),
 
+            // License text
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),

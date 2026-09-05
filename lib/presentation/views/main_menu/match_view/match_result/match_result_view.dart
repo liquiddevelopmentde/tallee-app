@@ -5,9 +5,9 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/live_edit_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result/multiple_player_selection.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/placement_drag_list.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_result/single_player_selection.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/select_looser_widget.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/select_winner_widget.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class MatchResultView extends StatefulWidget {
@@ -133,7 +133,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                         // Show player selection
                         if (rulesetSupportsPlayerSelection())
                           if (ruleset == Ruleset.winner)
-                            MultiplePlayerSelection(
+                            SelectWinnerWidget(
                               match: widget.match,
                               onPlayersSelected: (List<Player> players) {
                                 selectedPlayers = players;
@@ -149,7 +149,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                               },
                             )
                           else
-                            SinglePlayerSelection(
+                            SelectLooserWidget(
                               match: widget.match,
                               onPlayerSelected: (Player? player) {
                                 selectedPlayer = player;
