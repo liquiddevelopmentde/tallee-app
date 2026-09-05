@@ -206,6 +206,12 @@ abstract class AppLocalizations {
   /// **'Choose Match File'**
   String get choose_match_file;
 
+  /// No description provided for @choose_other_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose another file.'**
+  String get choose_other_file;
+
   /// No description provided for @choose_scopes.
   ///
   /// In en, this message translates to:
@@ -253,6 +259,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Code copied to clipboard'**
   String get code_copied;
+
+  /// No description provided for @code_pasted_from_clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Code pasted from clipboard'**
+  String get code_pasted_from_clipboard;
 
   /// No description provided for @color.
   ///
@@ -758,12 +770,6 @@ abstract class AppLocalizations {
   /// **'Invalid File.'**
   String get invalid_file;
 
-  /// No description provided for @choose_other_file.
-  ///
-  /// In en, this message translates to:
-  /// **'Please choose another file.'**
-  String get choose_other_file;
-
   /// No description provided for @invalid_qr_code.
   ///
   /// In en, this message translates to:
@@ -775,12 +781,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid Schema'**
   String get invalid_schema;
-
-  /// No description provided for @code_pasted_from_clipboard.
-  ///
-  /// In en, this message translates to:
-  /// **'Code pasted from clipboard'**
-  String get code_pasted_from_clipboard;
 
   /// No description provided for @invalid_token.
   ///

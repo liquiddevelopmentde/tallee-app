@@ -65,6 +65,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get choose_match_file => 'Spiel-Datei auswählen';
 
   @override
+  String get choose_other_file => 'Bitte wähle eine andere Datei aus.';
+
+  @override
   String get choose_scopes => 'Bereiche wählen';
 
   @override
@@ -90,6 +93,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get code_copied => 'Code in die Zwischenablage kopiert';
+
+  @override
+  String get code_pasted_from_clipboard =>
+      'Code aus der Zwischenablage eingefügt';
 
   @override
   String get color => 'Farbe';
@@ -375,17 +382,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get invalid_file => 'Ungültige Datei.';
 
   @override
-  String get choose_other_file => 'Bitte wähle eine andere Datei aus.';
-
-  @override
   String get invalid_qr_code => 'Dieser QR-Code ist ungültig oder abgelaufen.';
 
   @override
   String get invalid_schema => 'Ungültiges Schema';
-
-  @override
-  String get code_pasted_from_clipboard =>
-      'Code aus der Zwischenablage eingefügt';
 
   @override
   String get invalid_token => 'Ungültiger Token';

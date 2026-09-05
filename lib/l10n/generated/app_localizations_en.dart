@@ -64,6 +64,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get choose_match_file => 'Choose Match File';
 
   @override
+  String get choose_other_file => 'Please choose another file.';
+
+  @override
   String get choose_scopes => 'Choose Scopes';
 
   @override
@@ -88,6 +91,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get code_copied => 'Code copied to clipboard';
+
+  @override
+  String get code_pasted_from_clipboard => 'Code pasted from clipboard';
 
   @override
   String get color => 'Color';
@@ -371,16 +377,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalid_file => 'Invalid File.';
 
   @override
-  String get choose_other_file => 'Please choose another file.';
-
-  @override
   String get invalid_qr_code => 'This QR code is invalid or expired.';
 
   @override
   String get invalid_schema => 'Invalid Schema';
-
-  @override
-  String get code_pasted_from_clipboard => 'Code pasted from clipboard';
 
   @override
   String get invalid_token => 'Invalid token';
