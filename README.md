@@ -42,13 +42,13 @@ winning and get meaningful insights into your play history, all offline and on y
 - **Matches** – Record matches, determine winners automatically based
   on the game's ruleset and review detailed match results.
 - **Games & rulesets** – Create your own games and pick the ruleset that fits (highest or
-  lowest score, single winner, single loser, multiple winners, placement or lives).
+  lowest score, winner, loser, placement or lives).
 - **Players & groups** – Manage your players and organize them into groups for quick,
   recurring setups.
 - **Teams** – Split players into teams and track team-based matches.
 - **Statistics** – Build custom statistics, scoped them to different categories and analyze them over different
   timeframes.
-- **Data** – Back up and restore all your data locally via JSON or share your matches with other Tallee users
+- **Data** – Share your matches with other Tallee users via QR-Code or token and back up all your data locally.
 - **Localized** – Available in English and German.
 
 ## Contributing
