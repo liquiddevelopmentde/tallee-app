@@ -9,9 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
-import 'package:tallee/services/data_transfer_service.dart';
+import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 
 void main() {
@@ -44,7 +45,7 @@ void main() {
 
       testGame = Game(
         name: 'Chess',
-        ruleset: Ruleset.singleWinner,
+        ruleset: Ruleset.winner,
         description: 'Strategic board game',
         color: AppColor.blue,
       );
@@ -169,7 +170,7 @@ void main() {
     'statistics': <dynamic>[],
   });
 
-  group('DataTransferService Tests', () {
+  group('LocalShareService Tests', () {
     testWidgets('deleteAllData()', (tester) async {
       await database.playerDao.addPlayer(player: testPlayer1);
       await database.gameDao.addGame(game: testGame);
@@ -190,7 +191,7 @@ void main() {
       expect(matchCount, greaterThan(0));
 
       final ctx = await getContext(tester);
-      await DataTransferService.deleteAllData(ctx);
+      await LocalShareService.deleteAllData(ctx);
 
       playerCount = await database.playerDao.getPlayerCount();
       gameCount = await database.gameDao.getGameCount();
@@ -215,7 +216,7 @@ void main() {
           await database.matchDao.addMatch(match: testMatch);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
 
           expect(jsonString, isNotEmpty);
 
@@ -239,7 +240,7 @@ void main() {
 
         testWidgets('Exporting empty returns empty string', (tester) async {
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
 
           expect(jsonString, isEmpty);
         });
@@ -250,7 +251,7 @@ void main() {
           await database.playerDao.addPlayer(player: testPlayer1);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final players = decoded['players'] as List<dynamic>;
           final playerData = players[0] as Map<String, dynamic>;
@@ -268,7 +269,7 @@ void main() {
           await database.gameDao.addGame(game: testGame);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final games = decoded['games'] as List<dynamic>;
           final gameData = games[0] as Map<String, dynamic>;
@@ -286,7 +287,7 @@ void main() {
           await database.groupDao.addGroup(group: testGroup);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final groups = decoded['groups'] as List<dynamic>;
           final groupData = groups[0] as Map<String, dynamic>;
@@ -310,7 +311,7 @@ void main() {
           await database.matchDao.addMatch(match: testMatch);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final matches = decoded['matches'] as List<dynamic>;
           final matchData = matches[0] as Map<String, dynamic>;
@@ -361,7 +362,7 @@ void main() {
           await database.statisticDao.addStatistic(statistic: testStatistic);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
           expect(decoded.containsKey('statistics'), isTrue);
@@ -386,10 +387,7 @@ void main() {
             statData['startDate'],
             testStatistic.startDate!.toIso8601String(),
           );
-          expect(
-            statData['endDate'],
-            testStatistic.endDate!.toIso8601String(),
-          );
+          expect(statData['endDate'], testStatistic.endDate!.toIso8601String());
         });
 
         testWidgets('Match with teams is handled correctly', (tester) async {
@@ -408,7 +406,7 @@ void main() {
           await database.matchDao.addMatch(match: matchWithTeams);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final matches = decoded['matches'] as List<dynamic>;
 
@@ -451,7 +449,7 @@ void main() {
           await database.matchDao.addMatch(match: matchWithoutGroup);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final matches = decoded['matches'] as List<dynamic>;
           final matchData = matches[0] as Map<String, dynamic>;
@@ -474,7 +472,7 @@ void main() {
           await database.matchDao.addMatch(match: endedMatch);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final matches = decoded['matches'] as List<dynamic>;
           final matchData = matches[0] as Map<String, dynamic>;
@@ -487,8 +485,8 @@ void main() {
           await database.gameDao.addGame(game: testGame);
 
           final ctx = await getContext(tester);
-          final jsonString1 = await DataTransferService.getAppDataAsJson(ctx);
-          final jsonString2 = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString1 = await LocalShareService.getAppDataAsJson(ctx);
+          final jsonString2 = await LocalShareService.getAppDataAsJson(ctx);
 
           expect(jsonString1, equals(jsonString2));
         });
@@ -506,7 +504,7 @@ void main() {
           await database.matchDao.addMatch(match: matchWithEmptyNotes);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final matches = decoded['matches'] as List<dynamic>;
           final matchData = matches[0] as Map<String, dynamic>;
@@ -531,7 +529,7 @@ void main() {
           await database.matchDao.addMatch(match: multiPlayerMatch);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final matches = decoded['matches'] as List<dynamic>;
           final matchData = matches[0] as Map<String, dynamic>;
@@ -548,17 +546,17 @@ void main() {
           final games = [
             Game(
               name: 'Red Game',
-              ruleset: Ruleset.singleWinner,
+              ruleset: Ruleset.winner,
               color: AppColor.red,
             ),
             Game(
               name: 'Blue Game',
-              ruleset: Ruleset.singleWinner,
+              ruleset: Ruleset.winner,
               color: AppColor.blue,
             ),
             Game(
               name: 'Green Game',
-              ruleset: Ruleset.singleWinner,
+              ruleset: Ruleset.winner,
               color: AppColor.green,
             ),
           ];
@@ -566,7 +564,7 @@ void main() {
           await database.gameDao.addGamesAsList(games: games);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final gamesJson = decoded['games'] as List<dynamic>;
 
@@ -591,7 +589,7 @@ void main() {
             ),
             Game(
               name: 'Single Winner',
-              ruleset: Ruleset.singleWinner,
+              ruleset: Ruleset.winner,
               color: AppColor.blue,
             ),
           ];
@@ -599,14 +597,14 @@ void main() {
           await database.gameDao.addGamesAsList(games: games);
 
           final ctx = await getContext(tester);
-          final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+          final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
           final gamesJson = decoded['games'] as List<dynamic>;
 
           expect(gamesJson.length, 3);
           expect(
             gamesJson.map((g) => g['ruleset']),
-            containsAll(['highestScore', 'lowestScore', 'singleWinner']),
+            containsAll(['highestScore', 'lowestScore', 'winner']),
           );
         });
       });
@@ -633,7 +631,7 @@ void main() {
           ],
         };
 
-        final players = DataTransferService.parsePlayersFromJson(jsonMap);
+        final players = LocalShareService.parsePlayersFromJson(jsonMap);
 
         expect(players.length, 2);
         expect(players[0].id, testPlayer1.id);
@@ -644,13 +642,13 @@ void main() {
 
       test('parsePlayersFromJson() empty list', () {
         final jsonMap = {'players': []};
-        final players = DataTransferService.parsePlayersFromJson(jsonMap);
+        final players = LocalShareService.parsePlayersFromJson(jsonMap);
         expect(players, isEmpty);
       });
 
       test('parsePlayersFromJson() missing key', () {
         final jsonMap = <String, dynamic>{};
-        final players = DataTransferService.parsePlayersFromJson(jsonMap);
+        final players = LocalShareService.parsePlayersFromJson(jsonMap);
         expect(players, isEmpty);
       });
 
@@ -668,7 +666,7 @@ void main() {
           ],
         };
 
-        final games = DataTransferService.parseGamesFromJson(jsonMap);
+        final games = LocalShareService.parseGamesFromJson(jsonMap);
 
         expect(games.length, 1);
         expect(games[0].id, testGame.id);
@@ -678,13 +676,13 @@ void main() {
 
       test('parseGamesFromJson() empty list', () {
         final jsonMap = {'games': []};
-        final games = DataTransferService.parseGamesFromJson(jsonMap);
+        final games = LocalShareService.parseGamesFromJson(jsonMap);
         expect(games, isEmpty);
       });
 
       test('parseGamesFromJson() missing key', () {
         final jsonMap = <String, dynamic>{};
-        final games = DataTransferService.parseGamesFromJson(jsonMap);
+        final games = LocalShareService.parseGamesFromJson(jsonMap);
         expect(games, isEmpty);
       });
 
@@ -706,7 +704,7 @@ void main() {
           ],
         };
 
-        final groups = DataTransferService.parseGroupsFromJson(
+        final groups = LocalShareService.parseGroupsFromJson(
           jsonMap,
           playerById,
         );
@@ -721,13 +719,13 @@ void main() {
 
       test('parseGroupsFromJson() empty list', () {
         final jsonMap = {'groups': []};
-        final groups = DataTransferService.parseGroupsFromJson(jsonMap, {});
+        final groups = LocalShareService.parseGroupsFromJson(jsonMap, {});
         expect(groups, isEmpty);
       });
 
       test('parseGroupsFromJson() missing key', () {
         final jsonMap = <String, dynamic>{};
-        final groups = DataTransferService.parseGroupsFromJson(jsonMap, {});
+        final groups = LocalShareService.parseGroupsFromJson(jsonMap, {});
         expect(groups, isEmpty);
       });
 
@@ -746,7 +744,7 @@ void main() {
           ],
         };
 
-        final groups = DataTransferService.parseGroupsFromJson(
+        final groups = LocalShareService.parseGroupsFromJson(
           jsonMap,
           playerById,
         );
@@ -770,7 +768,7 @@ void main() {
           },
         ];
 
-        final teams = DataTransferService.parseTeamsFromJson(
+        final teams = LocalShareService.parseTeamsFromJson(
           teamsJson,
           playerById,
         );
@@ -785,7 +783,7 @@ void main() {
       });
 
       test('parseTeamsFromJson() empty list', () {
-        final teams = DataTransferService.parseTeamsFromJson([], {});
+        final teams = LocalShareService.parseTeamsFromJson([], {});
         expect(teams, isEmpty);
       });
 
@@ -797,7 +795,7 @@ void main() {
             'createdAt': testTeam.createdAt.toIso8601String(),
           },
         ];
-        final teams = DataTransferService.parseTeamsFromJson(teamsJson, {});
+        final teams = LocalShareService.parseTeamsFromJson(teamsJson, {});
         expect(teams.length, 1);
         expect(teams[0].members, isEmpty);
       });
@@ -827,7 +825,7 @@ void main() {
           ],
         };
 
-        final matches = DataTransferService.parseMatchesFromJson(
+        final matches = LocalShareService.parseMatchesFromJson(
           jsonMap,
           gameById,
           groupById,
@@ -844,7 +842,7 @@ void main() {
 
       test('parseMatchesFromJson() empty list', () {
         final jsonMap = {'teams': []};
-        final matches = DataTransferService.parseMatchesFromJson(
+        final matches = LocalShareService.parseMatchesFromJson(
           jsonMap,
           {},
           {},
@@ -855,7 +853,7 @@ void main() {
 
       test('parseMatchesFromJson() missing key', () {
         final jsonMap = <String, dynamic>{};
-        final matches = DataTransferService.parseMatchesFromJson(
+        final matches = LocalShareService.parseMatchesFromJson(
           jsonMap,
           {},
           {},
@@ -887,7 +885,7 @@ void main() {
         };
 
         expect(
-          () => DataTransferService.parseMatchesFromJson(
+          () => LocalShareService.parseMatchesFromJson(
             jsonMap,
             gameById,
             groupById,
@@ -925,7 +923,7 @@ void main() {
           ],
         };
 
-        final matches = DataTransferService.parseMatchesFromJson(
+        final matches = LocalShareService.parseMatchesFromJson(
           jsonMap,
           gameById,
           groupById,
@@ -959,7 +957,7 @@ void main() {
           ],
         };
 
-        final matches = DataTransferService.parseMatchesFromJson(
+        final matches = LocalShareService.parseMatchesFromJson(
           jsonMap,
           gameById,
           groupById,
@@ -993,7 +991,7 @@ void main() {
           ],
         };
 
-        final stats = DataTransferService.parseStatsFromJson(
+        final stats = LocalShareService.parseStatsFromJson(
           jsonMap,
           gamesById,
           groupsById,
@@ -1017,7 +1015,7 @@ void main() {
       });
 
       test('parseStatsFromJson() empty list', () {
-        final stats = DataTransferService.parseStatsFromJson(
+        final stats = LocalShareService.parseStatsFromJson(
           {'statistics': []},
           {},
           {},
@@ -1026,7 +1024,7 @@ void main() {
       });
 
       test('parseStatsFromJson() missing key', () {
-        final stats = DataTransferService.parseStatsFromJson(
+        final stats = LocalShareService.parseStatsFromJson(
           <String, dynamic>{},
           {},
           {},
@@ -1053,7 +1051,7 @@ void main() {
           ],
         };
 
-        final stats = DataTransferService.parseStatsFromJson(jsonMap, {}, {});
+        final stats = LocalShareService.parseStatsFromJson(jsonMap, {}, {});
 
         expect(stats.length, 1);
         expect(stats[0].selectedGames, isNull);
@@ -1174,8 +1172,9 @@ void main() {
           ],
         });
 
-        final isValidRoot = await DataTransferService.validateJsonSchema(
+        final isValidRoot = await validateJsonSchema(
           validJson,
+          'assets/app_schema.json',
         );
         expect(isValidRoot, true);
       });
@@ -1279,8 +1278,9 @@ void main() {
             ],
           });
 
-          final isValid = await DataTransferService.validateJsonSchema(
+          final isValid = await validateJsonSchema(
             validJson,
+            'assets/app_schema.json',
           );
           expect(isValid, true);
         });
@@ -1323,8 +1323,9 @@ void main() {
               ],
             });
 
-            final isValid = await DataTransferService.validateJsonSchema(
+            final isValid = await validateJsonSchema(
               invalidJson,
+              'assets/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1366,8 +1367,9 @@ void main() {
               'statistics': [],
             });
 
-            final isValid = await DataTransferService.validateJsonSchema(
+            final isValid = await validateJsonSchema(
               invalidJson,
+              'assets/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1430,8 +1432,9 @@ void main() {
               'statistics': [],
             });
 
-            final isValid = await DataTransferService.validateJsonSchema(
+            final isValid = await validateJsonSchema(
               invalidJson,
+              'assets/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1486,8 +1489,9 @@ void main() {
               'statistics': [],
             });
 
-            final isValid = await DataTransferService.validateJsonSchema(
+            final isValid = await validateJsonSchema(
               invalidJson,
+              'assets/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1504,12 +1508,12 @@ void main() {
         await database.matchDao.addMatch(match: testMatch);
 
         final ctx = await getContext(tester);
-        final jsonString = await DataTransferService.getAppDataAsJson(ctx);
+        final jsonString = await LocalShareService.getAppDataAsJson(ctx);
 
         expect(jsonString, isNotEmpty);
 
         final isValid = await tester.runAsync(
-          () => DataTransferService.validateJsonSchema(jsonString),
+          () => validateJsonSchema(jsonString, 'assets/app_schema.json'),
         );
         expect(isValid, true);
       });
@@ -1536,7 +1540,7 @@ void main() {
             },
           ],
         };
-        expect(DataTransferService.validateContent(validData), isTrue);
+        expect(LocalShareService.validateContent(validData), isTrue);
       });
 
       test('validateContent() returns false if player name is too long', () {
@@ -1545,7 +1549,7 @@ void main() {
             {'name': 'A' * 33},
           ],
         };
-        expect(DataTransferService.validateContent(data), isFalse);
+        expect(LocalShareService.validateContent(data), isFalse);
       });
 
       test('validateContent() returns false if game name is too long', () {
@@ -1554,7 +1558,7 @@ void main() {
             {'name': 'G' * 33},
           ],
         };
-        expect(DataTransferService.validateContent(data), isFalse);
+        expect(LocalShareService.validateContent(data), isFalse);
       });
 
       test(
@@ -1565,7 +1569,7 @@ void main() {
               {'name': 'G', 'description': 'D' * 257},
             ],
           };
-          expect(DataTransferService.validateContent(data), isFalse);
+          expect(LocalShareService.validateContent(data), isFalse);
         },
       );
 
@@ -1575,7 +1579,7 @@ void main() {
             {'name': 'Gr' * 17},
           ],
         };
-        expect(DataTransferService.validateContent(data), isFalse);
+        expect(LocalShareService.validateContent(data), isFalse);
       });
 
       test('validateContent() returns false if match name is too long', () {
@@ -1584,7 +1588,7 @@ void main() {
             {'name': 'M' * 33},
           ],
         };
-        expect(DataTransferService.validateContent(data), isFalse);
+        expect(LocalShareService.validateContent(data), isFalse);
       });
 
       test('validateContent() returns false if team name is too long', () {
@@ -1598,7 +1602,7 @@ void main() {
             },
           ],
         };
-        expect(DataTransferService.validateContent(data), isFalse);
+        expect(LocalShareService.validateContent(data), isFalse);
       });
     });
 
@@ -1611,7 +1615,7 @@ void main() {
           bytes: Uint8List.fromList(utf8.encode(content)),
         );
 
-        final result = await DataTransferService.readFileContent(file);
+        final result = await readFileContent(file);
 
         expect(result, content);
       });
@@ -1632,7 +1636,7 @@ void main() {
           path: tempFile.path,
         );
 
-        final result = await DataTransferService.readFileContent(file);
+        final result = await readFileContent(file);
 
         expect(result, content);
       });
@@ -1640,7 +1644,7 @@ void main() {
       test('returns null when both bytes and path are null', () async {
         final file = PlatformFile(name: 'data.tallee', size: 0);
 
-        final result = await DataTransferService.readFileContent(file);
+        final result = await readFileContent(file);
 
         expect(result, isNull);
       });
@@ -1648,7 +1652,7 @@ void main() {
 
     group('commitImport()', () {
       test('returns success and writes data for valid json', () async {
-        final result = await DataTransferService.commitImport(
+        final result = await LocalShareService.commitImport(
           database,
           buildJson(),
         );
@@ -1663,7 +1667,7 @@ void main() {
       test(
         'returns invalidSchema and writes nothing for invalid json',
         () async {
-          final result = await DataTransferService.commitImport(
+          final result = await LocalShareService.commitImport(
             database,
             '{"players": "not a list"}',
           );
@@ -1675,7 +1679,7 @@ void main() {
       );
 
       test('returns invalidSchema for malformed json', () async {
-        final result = await DataTransferService.commitImport(
+        final result = await LocalShareService.commitImport(
           database,
           'not-json',
         );
@@ -1688,7 +1692,7 @@ void main() {
       test('returns fileNotFound when the file does not exist', () async {
         final missingPath = '${Directory.systemTemp.path}/missing.tallee';
 
-        final result = await DataTransferService.getDataFromPath(missingPath);
+        final result = await LocalShareService.getDataFromPath(missingPath);
 
         expect(result.$1, ImportResult.fileNotFound);
         expect(result.$2, isNull);
@@ -1702,7 +1706,7 @@ void main() {
           if (file.existsSync()) await file.delete();
         });
 
-        final result = await DataTransferService.getDataFromPath(file.path);
+        final result = await LocalShareService.getDataFromPath(file.path);
 
         expect(result.$1, ImportResult.success);
         expect(result.$2, validJson);
@@ -1715,7 +1719,7 @@ void main() {
           if (file.existsSync()) await file.delete();
         });
 
-        final result = await DataTransferService.getDataFromPath(file.path);
+        final result = await LocalShareService.getDataFromPath(file.path);
 
         expect(result.$1, ImportResult.invalidSchema);
         expect(result.$2, isNull);

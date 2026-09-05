@@ -3,9 +3,13 @@
   "add_team": "Add Team",
   "all": "All",
   "all_players": "All players",
+  "all_players_associated": "All players successfully associated",
   "all_players_selected": "All players selected",
   "all_time": "All time",
   "app_name": "Tallee",
+  "associate_game": "Associate Game",
+  "associate_group": "Associate Group",
+  "associate_players": "Associate Players",
   "average_score": "Average score",
   "best_player": "Best Player",
   "best_score": "Best score",
@@ -13,12 +17,17 @@
   "choose_date_range": "Choose date range",
   "choose_game": "Choose Game",
   "choose_group": "Choose Group",
+  "choose_match_file": "Choose Match File",
+  "choose_other_file": "Please choose another file.",
   "choose_scopes": "Choose Scopes",
   "choose_timeframes": "Choose Timeframes",
   "choose_types": "Choose Types",
+  "choose_where_to_save": "Choose where to save your match:",
   "classifier": "Classifier",
   "classifier_description": "Choose which metric is calculated and shown in this statistic.",
   "click_another_player_to_create_a_pair": "Click another player to create a pair",
+  "code_copied": "Code copied to clipboard",
+  "code_pasted_from_clipboard": "Code pasted from clipboard",
   "color": "Color",
   "color_blue": "Blue",
   "color_green": "Green",
@@ -29,6 +38,7 @@
   "color_teal": "Teal",
   "color_yellow": "Yellow",
   "confirm": "Confirm",
+  "copy_code": "Copy Code",
   "could_not_add_player": "Could not add player {playerName}",
   "@could_not_add_player": {
     "placeholders": {
@@ -37,6 +47,7 @@
       }
     }
   },
+  "create_as_new": "Create as new",
   "create_game": "Create Game",
   "create_group": "Create Group",
   "create_match": "Create Match",
@@ -78,31 +89,67 @@
   "edit_match": "Edit Match",
   "edit_name": "Edit name",
   "edit_player": "Edit player",
+  "enable": "Enable",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
   "error_deleting_game": "Error while deleting game, please try again",
   "error_editing_group": "Error while editing group, please try again",
+  "error_editing_player": "Error while editing player, please try again",
+  "error_loading_match": "Error loading match: {error}",
+  "@error_loading_match": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "error_loading_privacy_policy": "Error loading privacy policy",
   "error_reading_file": "Error reading file",
+  "error_while_processing_file_try_again": "Error while processing file. Please try again.",
+  "expires_in": "Expires in {time}",
+  "@expires_in": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "export_canceled": "Export canceled",
   "export_data": "Export data",
   "favourites": "Favourites",
   "file_couldnt_be_accessed": "The file could not be accessed",
+  "file_share_instruction": "Manually share the match data in a file for full local transfer.",
   "filter": "Filter",
   "format_exception": "Format Exception (see console)",
   "game": "Game",
+  "game_associated": "Game successfully associated",
   "game_name": "Game Name",
   "games": "Games",
   "group": "Group",
+  "group_associated": "Group successfully associated",
   "group_name": "Group name",
   "group_profile": "Group Profile",
   "groups": "Groups",
+  "here_is_shared_match": "Here is the shared match \"{matchName}\"",
+  "@here_is_shared_match": {
+    "placeholders": {
+      "matchName": {
+        "type": "String"
+      }
+    }
+  },
   "highest_score": "Highest Score",
   "import_canceled": "Import canceled",
   "import_data": "Import data",
+  "import_file_instruction": "Select a match file (.tallee) exported from Tallee match share to import the data.",
+  "import_match": "Import match",
   "import_preview_description": "The following data will be imported",
   "info": "Info",
+  "input_token_instruction": "Input a match share token another person created using Tallee to import the match.",
+  "invalid_file": "Invalid File.",
+  "invalid_qr_code": "This QR code is invalid or expired.",
   "invalid_schema": "Invalid Schema",
+  "invalid_token": "Invalid token",
   "last_180_days": "Last 180 days",
   "last_30_days": "Last 30 days",
   "last_7_days": "Last 7 days",
@@ -120,19 +167,33 @@
     }
   },
   "loading": "Loading...",
+  "loading_match": "Loading match...",
   "loser": "Loser",
   "lowest_score": "Lowest Score",
   "manage_members": "Manage Members",
   "match_in_progress": "Match in progress...",
   "match_name": "Match name",
+  "match_not_ended_share_warning": "Matches can only be shared once they have ended.",
   "match_profile": "Match Profile",
+  "match_receive": "Match Receive",
+  "match_share": "Match Share",
   "matches": "Matches",
   "matches_played": "Matches played",
   "matches_won": "Matches won",
   "member": "Member",
   "members": "Members",
-  "multiple_winners": "Multiple Winners",
   "names_or_descriptions_too_long": "The data contains names or descriptions that are too long.",
+  "network_error": "Network error. Please check your connection.",
+  "new_game_will_be_created": "New game will be created",
+  "new_group_will_be_created": "New group will be created",
+  "new_players_will_be_created": "{count, plural, =1{1 new player will be created} other{{count} new players will be created}}",
+  "@new_players_will_be_created": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "no_data_available": "No data available",
   "no_data_to_export": "No data to export",
   "no_games_created_yet": "No games created yet",
@@ -140,6 +201,8 @@
   "no_license_text_available": "No license text available",
   "no_matches_created_yet": "No matches created yet",
   "no_matches_played_yet": "No games played yet",
+  "no_matching_local_game_found": "No matching local game found.\nA new game will be created.",
+  "no_matching_local_group_found": "No matching local group found.\nA new group will be created.",
   "no_players_available": "No players available",
   "no_players_created_yet": "No players created yet",
   "no_players_found_with_that_name": "No players found with that name",
@@ -151,18 +214,48 @@
   "none": "None",
   "none_group": "None",
   "not_part_of_any_group": "Not part of any group yet",
+  "online_sharing_consent_text": "To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?",
+  "online_sharing_disabled": "Online sharing is disabled",
+  "online_sharing_info_text": "To share matches online, the app connects to external servers. To protect your privacy, this feature is disabled by default. All transmitted data is automatically deleted after 10 minutes. You can also share games locally as files.",
+  "online_sharing_title": "Activate Online Sharing",
+  "open_settings": "Open Settings",
+  "pair": "{count, plural, =1{Pair} other{Pairs}}",
+  "@pair": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "parsing_error": "Data parsing error. Please try again later.",
   "place": "place",
   "placement": "Placement",
   "played_matches": "Played Matches",
+  "player_count": "{count, plural, =1{1 Player} other{{count} Players}}",
+  "@player_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "player_name": "Player name",
   "player_profile": "Player Profile",
   "players": "Players",
   "point": "Point",
   "points": "Points",
   "privacy_policy": "Privacy Policy",
+  "qr_code_expired": "QR Code expired",
+  "qr_code_parsing_error": "The scanned code does not contain valid match data.",
   "random_color": "Random color",
+  "remaining": "remaining",
   "results": "Results",
   "ruleset": "Ruleset",
   "save_changes": "Save Changes",
+  "save_file": "Save File",
+  "save_match": "Save match",
+  "scan_qr_code_instruction": "Scan the qr code with another Tallee instance to share the match.",
+  "scan_qr_receive_instruction": "Scan the QR code of another Tallee instance to receive the match.",
   "scope": "Scope",
   "scope_description": "Choose which games or players are included in the calculation.",
   "search_for_games": "Search for games",
@@ -177,15 +270,33 @@
   "select_a_timeframe": "Select a timeframe",
   "select_loser": "Select Loser",
   "select_the_filtered_timeframe": "Select the timeframe you want to filter by.",
-  "select_winner": "Select Winner",
   "select_winners": "Select Winners",
   "selected_games": "Selected games",
   "selected_groups": "Selected groups",
   "selected_players": "Selected players",
+  "send_code_instruction": "Send this code to a person who also has Tallee to share the current match.",
+  "server_error": "Server error: {statusCode}",
+  "@server_error": {
+    "placeholders": {
+      "statusCode": {
+        "type": "int"
+      }
+    }
+  },
   "set_name": "Set name",
   "settings": "Settings",
-  "single_loser": "Single Loser",
-  "single_winner": "Single Winner",
+  "share_as_qr_code_info": "To share a match as a QR code with others, online sharing must be enabled",
+  "share_as_token_info": "To share a match as a token with others, online sharing must be enabled",
+  "share_match_text": "Here is the match data for our game! Enter code {code} in Tallee.",
+  "@share_match_text": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "share_match_title": "Tallee Match Share",
+  "share_token_format_info": "Share tokens consist of 6 alphanumeric characters.",
   "statistic": "Statistic",
   "statistics": "Statistics",
   "successfully_added_player": "Successfully added player {playerName}",
@@ -198,6 +309,12 @@
       }
     }
   },
+  "successfully_processed_file": "Successfully processed file",
+  "tap_import_to_continue": "Tap import match to continue",
+  "tap_to_browse": "Tap to browse",
+  "tap_to_choose_different_game": "Tap the game to choose a different one",
+  "tap_to_choose_different_group": "Tap the group to choose a different one",
+  "tap_to_choose_existing": "Tap to choose existing",
   "team": "Team",
   "team_match": "Team Match",
   "teams": "Teams",
@@ -209,14 +326,15 @@
   "timeframe": "Timeframe",
   "today": "Today",
   "today_at": "Today at",
+  "token_expired": "Token expired",
   "total_losses": "Total losses",
   "total_matches": "Total matches",
   "total_score": "Total score",
   "total_wins": "Total wins",
   "type": "Type",
+  "unexpected_error": "An unexpected error occurred.",
   "unknown_exception": "Unknown Exception (see console)",
-  "winner": "Winner",
-  "winners": "Winners",
+  "winners": "Winner",
   "winrate": "Winrate",
   "worst_score": "Worst score",
   "yesterday_at": "Yesterday at"

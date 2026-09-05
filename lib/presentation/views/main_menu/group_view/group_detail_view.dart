@@ -7,7 +7,7 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/create_group_view.dart';
-import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
@@ -112,7 +112,6 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   child: ColoredIconContainer(
                     icon: Icons.group,
                     containerSize: 55,
-                    iconSize: 38,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -125,6 +124,19 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                if (group.description.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      group.description,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: CustomTheme.hintColor,
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ),
                 const SizedBox(height: 5),
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(group.createdAt)}',
@@ -152,7 +164,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                             adaptivePageRoute(
                               builder: (context) => PlayerDetailView(
                                 player: member,
-                                onPlayerNameUpdated: widget.callback,
+                                onPlayerUpdated: widget.callback,
                               ),
                             ),
                           );

@@ -23,12 +23,14 @@ class ChooseGameView extends StatefulWidget {
   /// - [initialGame]: The initially selected game
   /// - [onGamesUpdated]: Optional callback invoked when the games are updated
   /// - [statistic]: Optional statistic payload for choosing groups for a statistic
+  /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
   const ChooseGameView({
     super.key,
     required this.games,
     this.initialGames,
     this.onGamesUpdated,
     this.statistic,
+    this.requiredRuleset,
     this.enableMultiSelection = false,
   });
 
@@ -37,6 +39,7 @@ class ChooseGameView extends StatefulWidget {
   final VoidCallback? onGamesUpdated;
   final Statistic? statistic;
   final bool enableMultiSelection;
+  final Ruleset? requiredRuleset;
 
   @override
   State<ChooseGameView> createState() => _ChooseGameViewState();
@@ -92,6 +95,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                   context,
                   adaptivePageRoute(
                     builder: (context) => CreateGameView(
+                      requiredRuleset: widget.requiredRuleset,
                       onGameChanged: () {
                         widget.onGamesUpdated?.call();
                       },
@@ -99,6 +103,11 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                   ),
                 );
                 if (result != null && result.game != null) {
+                  if (widget.requiredRuleset != null &&
+                      result.game.ruleset != widget.requiredRuleset) {
+                    return;
+                  }
+
                   setState(() {
                     games.insert(0, result.game);
                     games.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));

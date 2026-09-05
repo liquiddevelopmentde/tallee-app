@@ -177,10 +177,9 @@ class StatisticCalculator {
       case Ruleset.highestScore:
       case Ruleset.lowestScore:
         return true;
-      case Ruleset.singleWinner:
-      case Ruleset.multipleWinners:
+      case Ruleset.winner:
       case Ruleset.placement:
-      case Ruleset.singleLoser:
+      case Ruleset.loser:
       case Ruleset.lives:
         return false;
     }
@@ -276,7 +275,7 @@ class StatisticCalculator {
   static int _wins(Player p, List<Match> matches) =>
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
-        return m.game.ruleset == Ruleset.singleLoser ? !isMvp : isMvp;
+        return m.game.ruleset == Ruleset.loser ? !isMvp : isMvp;
       }).length;
 
   /// Determines how many losses the player has in the given matches.
@@ -286,7 +285,7 @@ class StatisticCalculator {
   static int _losses(Player p, List<Match> matches) =>
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
-        return m.game.ruleset == Ruleset.singleLoser ? isMvp : !isMvp;
+        return m.game.ruleset == Ruleset.loser ? isMvp : !isMvp;
       }).length;
 
   /// Determines the total score of the player in the given list of matches.

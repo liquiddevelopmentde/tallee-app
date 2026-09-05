@@ -23,12 +23,14 @@ import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 /// A stateful widget for creating or editing a game.
 /// - [gameToEdit] An optional game to prefill the fields
 /// - [onGameChanged] Callback to invoke when the game is created or edited
+/// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
 class CreateGameView extends StatefulWidget {
   const CreateGameView({
     super.key,
     required this.onGameChanged,
     this.gameToEdit,
     this.matchCount = 0,
+    this.requiredRuleset,
   });
 
   /// Callback to invoke when the game is created or edited
@@ -38,6 +40,8 @@ class CreateGameView extends StatefulWidget {
   final Game? gameToEdit;
 
   final int matchCount;
+
+  final Ruleset? requiredRuleset;
 
   @override
   State<CreateGameView> createState() => _CreateGameViewState();
@@ -52,7 +56,7 @@ class _CreateGameViewState extends State<CreateGameView> {
   late List<(Ruleset, String)> rulesets;
   late List<(AppColor, String)> colors;
 
-  Ruleset? selectedRuleset = Ruleset.singleWinner;
+  Ruleset? selectedRuleset = Ruleset.winner;
   AppColor? selectedColor = AppColor.orange;
 
   int selectedLives = 3;
@@ -76,6 +80,10 @@ class _CreateGameViewState extends State<CreateGameView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
+    gameNameController.addListener(() => setState(() {}));
+    if (widget.requiredRuleset != null) {
+      selectedRuleset = widget.requiredRuleset;
+    }
     gameNameController.addListener(() => setState(() {}));
   }
 
@@ -204,7 +212,25 @@ class _CreateGameViewState extends State<CreateGameView> {
               if (!isEditMode)
                 ChooseTile(
                   title: loc.ruleset,
-                  trailing: getRulesetDropdown(loc),
+                  trailing: widget.requiredRuleset != null
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 8,
+                            children: [
+                              Icon(getRulesetIcon(selectedRuleset!), size: 16),
+                              Text(
+                                translateRulesetToString(
+                                  selectedRuleset!,
+                                  context,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
+                          ),
+                        )
+                      : getRulesetDropdown(loc),
                 ),
 
               // Choose color tile

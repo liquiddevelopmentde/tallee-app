@@ -3,7 +3,7 @@ import 'package:tallee/core/custom_theme.dart';
 
 class CustomRadioListTile<T> extends StatelessWidget {
   /// A custom radio list tile widget that encapsulates a [Radio] button with additional styling and functionality.
-  /// - [text]: The text to display next to the radio button.
+  /// - [content]: The content widget to display next to the radio button.
   /// - [value]: The value associated with the radio button.
   /// - [onContainerTap]: The callback invoked when the container is tapped.
   const CustomRadioListTile({
@@ -13,13 +13,8 @@ class CustomRadioListTile<T> extends StatelessWidget {
     required this.onContainerTap,
   });
 
-  /// The text to display next to the radio button.
   final Widget content;
-
-  /// The value associated with the radio button.
   final T value;
-
-  /// The callback invoked when the container is tapped.
   final ValueChanged<T> onContainerTap;
 
   @override
@@ -28,7 +23,7 @@ class CustomRadioListTile<T> extends StatelessWidget {
       onTap: () => onContainerTap(value),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        padding: const EdgeInsets.symmetric(horizontal: 2),
+        padding: const EdgeInsets.only(left: 2, right: 5),
         decoration: BoxDecoration(
           color: CustomTheme.boxColor,
           border: Border.all(color: CustomTheme.boxBorderColor),
