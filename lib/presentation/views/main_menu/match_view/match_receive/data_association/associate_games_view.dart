@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -60,15 +59,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
               ),
             ),
             const SizedBox(height: 10),
-            GameTile(
-              title: widget.match.game.name,
-              description: widget.match.game.description,
-              subtitle: translateRulesetToString(
-                widget.match.game.ruleset,
-                context,
-              ),
-              badgeColor: getColorFromAppColor(widget.match.game.color),
-            ),
+            GameTile(game: widget.match.game),
             const Icon(Icons.arrow_downward, size: 30),
             const SizedBox(height: 10),
             AnimatedSwitcher(
@@ -132,16 +123,10 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                       ),
                     )
                   : GameTile(
+                      game: associatedGame!,
                       key: ValueKey(associatedGame!.id),
-                      title: associatedGame!.name,
-                      description: associatedGame!.description,
-                      subtitle: translateRulesetToString(
-                        associatedGame!.ruleset,
-                        context,
-                      ),
                       onTap: navigateToGameSelection,
                       isHighlighted: true,
-                      badgeColor: getColorFromAppColor(associatedGame!.color),
                       borderColor: Colors.green.withAlpha(150),
                     ),
             ),

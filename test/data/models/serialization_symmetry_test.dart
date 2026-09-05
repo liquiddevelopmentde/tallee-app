@@ -11,7 +11,7 @@ void main() {
   setUp(() {
     testPlayer1 = Player(name: 'Alice', id: 'p1');
     testPlayer2 = Player(name: 'Bob', id: 'p2');
-    testGame = Game(name: 'Chess', ruleset: Ruleset.singleWinner, id: 'g1');
+    testGame = Game(name: 'Chess', ruleset: Ruleset.winner, id: 'g1');
     testGroup = Group(
       name: 'Monday Night',
       members: [testPlayer1, testPlayer2],

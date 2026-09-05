@@ -29,10 +29,6 @@ class GameTile extends StatelessWidget {
 
   final bool isHighlighted;
 
-  final String? badgeText;
-
-  final Color? badgeColor;
-
   final Color? borderColor;
 
   @override
