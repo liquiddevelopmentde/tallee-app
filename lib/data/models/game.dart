@@ -7,8 +7,8 @@ class Game {
   final DateTime createdAt;
   final String name;
   final Ruleset ruleset;
-  final String description;
   final AppColor color;
+  final String description;
 
   Game({
     required this.name,
@@ -22,7 +22,7 @@ class Game {
 
   @override
   String toString() {
-    return 'Game{id: $id, name: $name, ruleset: $ruleset, description: $description, color: $color}';
+    return 'Game{id: $id, name: $name, ruleset: $ruleset, color: $color, description: $description}';
   }
 
   Game copyWith({
@@ -30,17 +30,16 @@ class Game {
     DateTime? createdAt,
     String? name,
     Ruleset? ruleset,
-    String? description,
     AppColor? color,
-    String? icon,
+    String? description,
   }) {
     return Game(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
       ruleset: ruleset ?? this.ruleset,
-      description: description ?? this.description,
       color: color ?? this.color,
+      description: description ?? this.description,
     );
   }
 
@@ -53,11 +52,12 @@ class Game {
           createdAt == other.createdAt &&
           name == other.name &&
           ruleset == other.ruleset &&
-          description == other.description &&
-          color == other.color;
+          color == other.color &&
+          description == other.description;
+
   @override
   int get hashCode =>
-      Object.hash(id, createdAt, name, ruleset, description, color);
+      Object.hash(id, createdAt, name, ruleset, color, description);
 
   Game.fromJson(Map<String, dynamic> json)
     : id = json['id'],
@@ -65,20 +65,20 @@ class Game {
       name = json['name'],
       ruleset = Ruleset.values.firstWhere(
         (e) => e.name == json['ruleset'],
-        orElse: () => Ruleset.singleWinner,
+        orElse: () => Ruleset.winner,
       ),
-      description = json['description'],
       color = AppColor.values.firstWhere(
         (e) => e.name == json['color'],
         orElse: () => AppColor.orange,
-      );
+      ),
+      description = json['description'];
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'createdAt': createdAt.toIso8601String(),
     'name': name,
     'ruleset': ruleset.name,
-    'description': description,
     'color': color.name,
+    'description': description,
   };
 }

@@ -531,8 +531,6 @@ class _StatisticsViewState extends State<StatisticsView> {
             builder: (context) => StatisticDetailView(
               statistic: statistic,
               values: values,
-              icon: getStatisticIcon(type: statistic.type),
-              barColor: getColorFromAppColor(statistic.color),
               refreshStatistic: refreshStatistic,
             ),
           ),

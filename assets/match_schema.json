@@ -1,0 +1,268 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "endedAt": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "game": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ruleset": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "createdAt",
+        "name",
+        "ruleset",
+        "description",
+        "color"]
+    },
+    "group": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "members": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "deleted": {
+                "type": "boolean"
+              },
+              "nameCount": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "createdAt",
+              "name",
+              "description",
+              "deleted",
+              "nameCount"
+            ]
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "createdAt",
+        "description",
+        "members"
+      ]
+    },
+    "players": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "nameCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "name",
+          "description",
+          "deleted",
+          "nameCount"
+        ]
+      }
+    },
+    "scores": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "roundNumber": {
+                "type": "number"
+              },
+              "score": {
+                "type": "number"
+              },
+              "change": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "roundNumber",
+              "score",
+              "change"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "isTeamMatch": {
+      "type": "boolean"
+    },
+    "teams": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "deleted": {
+                  "type": "boolean"
+                },
+                "nameCount": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "createdAt",
+                "name",
+                "description",
+                "deleted",
+                "nameCount"
+              ]
+            },
+            "minItems": 1
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "createdAt",
+          "color",
+          "members"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "createdAt",
+    "game",
+    "players",
+    "notes",
+    "isTeamMatch",
+    "scores"
+  ]
+}

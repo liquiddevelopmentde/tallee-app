@@ -13,10 +13,12 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
-import 'package:tallee/presentation/views/main_menu/player_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_share/match_share_view.dart';
+import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
@@ -84,6 +86,28 @@ class _MatchDetailViewState extends State<MatchDetailView> {
             ),
           ),
           HapticIconButton(
+            onPressed: () {
+              if (match.endedAt != null) {
+                Navigator.of(context).push(
+                  adaptivePageRoute(
+                    builder: (context) => MatchShareView(match: match),
+                    fullscreenDialog: true,
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  CustomSnackBar(message: loc.match_not_ended_share_warning),
+                );
+              }
+            },
+            icon: Icon(
+              Icons.share,
+              color: match.endedAt != null
+                  ? Colors.white
+                  : Colors.white.withAlpha(150),
+            ),
+          ),
+          HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
               showDialog<bool>(
@@ -133,9 +157,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 // Controller Icon
                 const Center(
                   child: ColoredIconContainer(
-                    icon: Icons.sports_esports,
+                    icon: RpgAwesome.clovers_card,
                     containerSize: 55,
-                    iconSize: 38,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -218,7 +241,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                                     PlayerDetailView(
                                                       player:
                                                           team.members.first,
-                                                      onPlayerNameUpdated:
+                                                      onPlayerUpdated:
                                                           widget.onMatchUpdate,
                                                     ),
                                               ),
@@ -260,8 +283,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                                       ),
                                       builder: (context) => PlayerDetailView(
                                         player: player,
-                                        onPlayerNameUpdated:
-                                            widget.onMatchUpdate,
+                                        onPlayerUpdated: widget.onMatchUpdate,
                                       ),
                                     ),
                                   );
@@ -398,11 +420,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     final ruleset = match.game.ruleset;
 
     if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
-      final label = ruleset == Ruleset.singleWinner
-          ? loc.winner
-          : ruleset == Ruleset.singleLoser
-          ? loc.loser
-          : loc.winners;
+      final label = ruleset == Ruleset.loser ? loc.loser : loc.winners;
 
       return [
         Text(
@@ -442,10 +460,16 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         runSpacing: 4,
         children: [
           for (var i = 0; i < mvtTeams.length; i++)
-            buildUnitNameWidget(
-              mvtTeams[i],
-              isTeamMatch: match.isTeamMatch,
-              mainStyle: winnerStyle,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                buildUnitNameWidget(
+                  mvtTeams[i],
+                  isTeamMatch: match.isTeamMatch,
+                  mainStyle: winnerStyle,
+                ),
+                if (i != mvtTeams.length - 1) const Text(','),
+              ],
             ),
         ],
       );
@@ -455,12 +479,13 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       TextSpan(
         children: [
           for (var i = 0; i < mvpPlayers.length; i++) ...[
-            if (i > 0) const TextSpan(text: ', ', style: winnerStyle),
+            if (i > 0) const TextSpan(text: ', '),
             buildPlayerNameCountSpan(mvpPlayers[i], mainStyle: winnerStyle),
           ],
         ],
       ),
       textAlign: TextAlign.end,
+      overflow: TextOverflow.visible,
     );
   }
 
@@ -495,6 +520,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         Widget nameWidget = buildUnitNameWidget(
           team,
           isTeamMatch: match.isTeamMatch,
+          countStyle: const TextStyle(color: CustomTheme.hintColor),
         );
         namedScores.add((nameWidget, team.score ?? 0));
       }
@@ -504,12 +530,20 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
       for (var player in players) {
         int score = scores[player.id]?.score ?? 0;
-        namedScores.add((buildUnitNameWidget(player), score));
+        namedScores.add((
+          buildUnitNameWidget(
+            player,
+            countStyle: const TextStyle(color: CustomTheme.hintColor),
+          ),
+          score,
+        ));
       }
     }
 
     final ruleset = match.game.ruleset;
-    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.placement) {
+    if (ruleset == Ruleset.highestScore ||
+        ruleset == Ruleset.placement ||
+        ruleset == Ruleset.lives) {
       namedScores.sort((a, b) => b.$2.compareTo(a.$2));
     } else if (ruleset == Ruleset.lowestScore) {
       namedScores.sort((a, b) => a.$2.compareTo(b.$2));
@@ -529,6 +563,15 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: getPlacementTextcolor(index),
+        ),
+      );
+    } else if (ruleset == Ruleset.lives) {
+      return Text(
+        getLifeLabel(loc, score),
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: score > 0 ? CustomTheme.primaryColor : CustomTheme.hintColor,
         ),
       );
     } else {
@@ -558,9 +601,8 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   // Returns if the result can be displayed in a single row
   bool isSingleRowResult() {
-    return match.game.ruleset == Ruleset.singleWinner ||
-        match.game.ruleset == Ruleset.singleLoser ||
-        match.game.ruleset == Ruleset.multipleWinners;
+    return match.game.ruleset == Ruleset.winner ||
+        match.game.ruleset == Ruleset.loser;
   }
 
   String getPlacementText(BuildContext context, int rank) {

@@ -1,8 +1,17 @@
+import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
+
 /// Button types used for styling the [CustomWidthButton]
 /// - [ButtonType.primary]: Primary button style.
 /// - [ButtonType.secondary]: Secondary button style.
 /// - [ButtonType.tertiary]: Tertiary button style.
 enum ButtonType { primary, secondary, tertiary }
+
+/// States for the [ApiActionAnimatedButton] that triggers API calls
+/// - [ApiButtonState.idle]: Initial state, button is ready to be pressed.
+/// - [ApiButtonState.loading]: API call is in progress.
+/// - [ApiButtonState.success]: API call completed successfully.
+/// - [ApiButtonState.error]: API call failed.
+enum ApiButtonState { idle, loading, success, error }
 
 /// Result types for import operations in the [SettingsView]
 /// - [ImportResult.success]: The import operation was successful.
@@ -12,6 +21,7 @@ enum ButtonType { primary, secondary, tertiary }
 /// - [ImportResult.invalidData]: The JSON Schema is correct, but the data itself is invalid.
 /// - [ImportResult.formatException]: A format exception occurred during import.
 /// - [ImportResult.unknownException]: An exception occurred during import.
+/// - [ImportResult.matchSchemaDetected]: A single match was detected during import.
 enum ImportResult {
   success,
   canceled,
@@ -21,7 +31,13 @@ enum ImportResult {
   invalidData,
   formatException,
   unknownException,
+  matchSchemaDetected,
 }
+
+/// Enum for the Player Selection Widget
+/// - [SelectionMode.single]: Only one player can be selected at a time.
+/// - [SelectionMode.multiple]: Multiple players can be selected at once.
+enum SelectionMode { single, multiple }
 
 /// Result types for export operations in the [SettingsView]
 /// - [ExportResult.success]: The export operation was successful.
@@ -33,18 +49,11 @@ enum ExportResult { success, canceled, unknownException, noData }
 /// Different rulesets available for games
 /// - [Ruleset.highestScore]: The player with the highest score wins.
 /// - [Ruleset.lowestScore]: The player with the lowest score wins.
-/// - [Ruleset.singleWinner]: The match is won by a single player.
-/// - [Ruleset.singleLoser]: The match has a single loser.
-/// - [Ruleset.multipleWinners]: Multiple players can be winners.
+/// - [Ruleset.winner]: The match has one or multiple winner(s)
+/// - [Ruleset.loser]: The match has one loser.
 /// - [Ruleset.placement]: The player with the highest placement wins.
-enum Ruleset {
-  singleWinner,
-  multipleWinners,
-  highestScore,
-  lowestScore,
-  placement,
-  singleLoser,
-}
+/// - [Ruleset.lives]: Every player with lives > 0 wins
+enum Ruleset { winner, loser, highestScore, lowestScore, lives, placement }
 
 /// Different colors for highlighting content
 enum AppColor { red, orange, yellow, green, teal, blue, purple, pink }

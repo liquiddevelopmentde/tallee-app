@@ -7,7 +7,9 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/models.dart';
+import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
@@ -15,24 +17,28 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
-import 'package:tallee/services/data_transfer_service.dart';
+import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
 
 /// A page shown when the app opens a `.tallee` file
 /// - [filePath]: Path to the file
 /// - [messengerKey]: Optional key to a [ScaffoldMessenger] that should show
 /// the result snackbar. If not provided, the result is returned via [Navigator.pop].
-class ImportFileView extends StatefulWidget {
-  const ImportFileView({super.key, required this.filePath, this.messengerKey});
+class PreviewImportDataView extends StatefulWidget {
+  const PreviewImportDataView({
+    super.key,
+    required this.filePath,
+    this.messengerKey,
+  });
 
   final String filePath;
   final GlobalKey<ScaffoldMessengerState>? messengerKey;
 
   @override
-  State<ImportFileView> createState() => _ImportFileViewState();
+  State<PreviewImportDataView> createState() => _PreviewImportDataViewState();
 }
 
-class _ImportFileViewState extends State<ImportFileView> {
+class _PreviewImportDataViewState extends State<PreviewImportDataView> {
   bool isLoading = true;
   String? jsonString;
 
@@ -117,9 +123,9 @@ class _ImportFileViewState extends State<ImportFileView> {
                               children: getGroupsFromData
                                   .map(
                                     (group) => TextIconListTile(
-                                      text: group.name,
+                                      text: group['name'],
                                       description:
-                                          '${memberCountForGroup(group.id).toString()} ${loc.members}',
+                                          '${memberCountForGroup(group['id'] as String?).toString()} ${loc.members}',
                                     ),
                                   )
                                   .toList(),
@@ -169,12 +175,12 @@ class _ImportFileViewState extends State<ImportFileView> {
                             alignment: Alignment.center,
                             child: Column(
                               spacing: 10,
-                              children: getMatchesFromData()
+                              children: rawKeyList('matches')
                                   .map(
                                     (match) => TextIconListTile(
-                                      text: match.name,
+                                      text: match['name'] as String? ?? '',
                                       description:
-                                          '${getGameNameForMatch(match.id)}, ${getPlayerCountForMatch(match.id).toString()} ${loc.players}',
+                                          '${getGameNameForMatch(match['id'] as String?)}, ${getPlayerCountForMatch(match['id'] as String?).toString()} ${loc.players}',
                                     ),
                                   )
                                   .toList(),
@@ -273,10 +279,10 @@ class _ImportFileViewState extends State<ImportFileView> {
   List<Player> get getPlayersFromData => listOf('players', Player.fromJson);
 
   /// Returns all groups from the imported file
-  List<Group> get getGroupsFromData => listOf('groups', Group.fromJson);
+  List<Map<String, dynamic>> get getGroupsFromData => rawKeyList('groups');
 
   /// Returns the amount of memberIds for a group with the given [groupId].
-  int memberCountForGroup(String groupId) =>
+  int memberCountForGroup(String? groupId) =>
       (findEntryByKeyAndId('groups', groupId)['memberIds'] as List<dynamic>?)
           ?.length ??
       0;
@@ -286,14 +292,12 @@ class _ImportFileViewState extends State<ImportFileView> {
   List<Statistic> get getStatisticsFromData =>
       listOf('statistics', Statistic.fromJson);
 
-  List<Match> getMatchesFromData() => listOf('matches', Match.fromJson);
-
-  int getPlayerCountForMatch(String matchId) =>
+  int getPlayerCountForMatch(String? matchId) =>
       (findEntryByKeyAndId('matches', matchId)['playerIds'] as List<dynamic>?)
           ?.length ??
       0;
 
-  String getGameNameForMatch(String matchId) {
+  String getGameNameForMatch(String? matchId) {
     final gameId = findEntryByKeyAndId('matches', matchId)['gameId'];
     if (gameId == null) return '';
     return findEntryByKeyAndId('games', gameId)['name'] as String? ?? '';
@@ -302,11 +306,11 @@ class _ImportFileViewState extends State<ImportFileView> {
   /// Loads the import data from the file path and updates the loading/state values.
   Future<void> loadData() async {
     setState(() => isLoading = true);
-    final result = await DataTransferService.getDataFromPath(widget.filePath);
+    final result = await LocalShareService.getDataFromPath(widget.filePath);
 
     if (!mounted) return;
 
-    if (result.$1 != ImportResult.success || result.$2 == null) {
+    if (result.$1 != ImportResult.success) {
       finishImport(importResult: result.$1);
       return;
     }
@@ -323,7 +327,7 @@ class _ImportFileViewState extends State<ImportFileView> {
     if (jsonString == null) return;
 
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final result = await DataTransferService.commitImport(db, jsonString);
+    final result = await LocalShareService.commitImport(db, jsonString);
 
     if (!mounted) return;
 
@@ -358,7 +362,8 @@ class _ImportFileViewState extends State<ImportFileView> {
     if (messengerKey != null) {
       if (importResult == ImportResult.success) {
         HapticFeedback.successNotification();
-      } else if (importResult != ImportResult.canceled) {
+      } else if (importResult != ImportResult.canceled &&
+          importResult != ImportResult.matchSchemaDetected) {
         HapticFeedback.errorNotification();
       }
 

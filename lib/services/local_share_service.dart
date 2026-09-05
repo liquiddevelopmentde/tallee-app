@@ -4,14 +4,15 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:json_schema/json_schema.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 
-class DataTransferService {
+class LocalShareService {
   /// Deletes all data from the database.
   static Future<void> deleteAllData(BuildContext context) async {
     final db = Provider.of<AppDatabase>(context, listen: false);
@@ -47,10 +48,10 @@ class DataTransferService {
     }
 
     final Map<String, dynamic> jsonMap = {
-      'players': players.map((player) => player.toJson()).toList(),
-      'groups': groups.map((group) => group.toJson()).toList(),
+      'players': players.map((player) => player.toNormalizedJson()).toList(),
+      'groups': groups.map((group) => group.toNormalizedJson()).toList(),
       'games': games.map((game) => game.toJson()).toList(),
-      'matches': matches.map((match) => match.toJson()).toList(),
+      'matches': matches.map((match) => match.toNormalizedJson()).toList(),
       'statistics': statistics.map((stat) => stat.toJson()).toList(),
     };
 
@@ -124,11 +125,12 @@ class DataTransferService {
     }
 
     final (status, _) = await _validateJson(jsonString);
-    if (status != ImportResult.success) {
+    if (status != ImportResult.success &&
+        status != ImportResult.matchSchemaDetected) {
       return (status, null);
     }
 
-    return (ImportResult.success, jsonString);
+    return (status, jsonString);
   }
 
   /// Validates [jsonString] against the schema and the content length rules.
@@ -139,16 +141,38 @@ class DataTransferService {
     String jsonString,
   ) async {
     try {
-      final isValid = await validateJsonSchema(jsonString);
-      if (!isValid) return (ImportResult.invalidSchema, null);
+      final isValidAppSchema = await validateJsonSchema(
+        jsonString,
+        'assets/app_schema.json',
+      );
 
-      final decoded = json.decode(jsonString) as Map<String, dynamic>;
+      if (isValidAppSchema) {
+        final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
-      if (!validateContent(decoded)) {
-        return (ImportResult.invalidData, null);
+        if (!validateContent(decoded)) {
+          return (ImportResult.invalidData, null);
+        }
+
+        return (ImportResult.success, decoded);
       }
 
-      return (ImportResult.success, decoded);
+      // Check if it's a single match
+      final isValidMatchSchema = await validateJsonSchema(
+        jsonString,
+        'assets/match_schema.json',
+      );
+
+      if (isValidMatchSchema) {
+        final decoded = json.decode(jsonString) as Map<String, dynamic>;
+
+        if (!RemoteShareService.validateContent(decoded)) {
+          return (ImportResult.invalidData, null);
+        }
+
+        return (ImportResult.matchSchemaDetected, null);
+      }
+
+      return (ImportResult.invalidSchema, null);
     } on FormatException catch (e, stack) {
       print('[validateJson] FormatException');
       print('[validateJson] $e');
@@ -263,11 +287,36 @@ class DataTransferService {
 
     final importedStats = parseStatsFromJson(decodedJson, gameById, groupById);
 
-    await db.playerDao.addPlayersAsList(players: importedPlayers);
-    await db.gameDao.addGamesAsList(games: importedGames);
-    await db.groupDao.addGroupsAsList(groups: importedGroups);
-    await db.matchDao.addMatchesAsList(matches: importedMatches);
-    await db.statisticDao.addStatisticsAsList(statistics: importedStats);
+    // Wrap the entire import in a single transaction to ensure atomicity
+    // and prevent foreign key constraint violations due to intermediate states.
+    print('[importDataToDatabase] START');
+    await db.transaction(() async {
+      // Order is important for foreign key constraints:
+      // 1. Games & Players (no dependencies)
+      print('[importDataToDatabase] adding games');
+      await db.gameDao.addGamesAsList(games: importedGames);
+      print('[importDataToDatabase] added games');
+
+      print('[importDataToDatabase] adding players');
+      await db.playerDao.addPlayersAsList(players: importedPlayers);
+      print('[importDataToDatabase] added players');
+
+      // 2. Groups (depend on players)
+      print('[importDataToDatabase] adding groups');
+      await db.groupDao.addGroupsAsList(groups: importedGroups);
+      print('[importDataToDatabase] added groups');
+
+      // 3. Matches (now handles its own games/players/groups internally but safely)
+      print('[importDataToDatabase] adding matches');
+      await db.matchDao.addMatchesAsList(matches: importedMatches);
+      print('[importDataToDatabase] added matches');
+
+      // 4. Statistics (depend on games and groups)
+      print('[importDataToDatabase] adding statistics');
+      await db.statisticDao.addStatisticsAsList(statistics: importedStats);
+      print('[importDataToDatabase] added statistics');
+    });
+    print('[importDataToDatabase] END');
   }
 
   /* Parsing Methods */
@@ -299,18 +348,14 @@ class DataTransferService {
       final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
           .cast<String>();
 
+      // Ignore invalid member IDs (missing players) instead of throwing
       final members = memberIds
           .map((id) => playerById[id])
-          .whereType<Player>()
+          .where((p) => p != null)
+          .cast<Player>()
           .toList();
 
-      return Group(
-        id: map['id'] as String,
-        name: map['name'] as String,
-        description: map['description'] as String,
-        members: members,
-        createdAt: DateTime.parse(map['createdAt'] as String),
-      );
+      return Group.fromNormalizedJson(map, members);
     }).toList();
   }
 
@@ -325,13 +370,14 @@ class DataTransferService {
       final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
           .cast<String>();
 
+      // Ignore invalid member IDs (missing players) instead of throwing
       final members = memberIds
           .map((id) => playerById[id])
-          .whereType<Player>()
+          .where((p) => p != null)
+          .cast<Player>()
           .toList();
-      final team = Team.fromJson(map);
 
-      return team.copyWith(members: members);
+      return Team.fromNormalizedJson(map, members);
     }).toList();
   }
 
@@ -347,61 +393,37 @@ class DataTransferService {
     return matchesJson.map((m) {
       final map = m as Map<String, dynamic>;
 
-      // Extract attributes from json
-      final id = map['id'] as String;
-      final name = map['name'] as String;
       final gameId = map['gameId'] as String;
       final groupId = map['groupId'] as String?;
-      final createdAt = DateTime.parse(map['createdAt'] as String);
-      final endedAt = map['endedAt'] != null
-          ? DateTime.parse(map['endedAt'] as String)
-          : null;
-      final isTeamMatch = map['isTeamMatch'] as bool;
-      final notes = map['notes'] as String? ?? '';
-      final scoresJson = map['scores'] as Map<String, dynamic>? ?? {};
-      final scores = scoresJson.map(
-        (key, value) => MapEntry(
-          key,
-          value != null
-              ? ScoreEntry.fromJson(value as Map<String, dynamic>)
-              : null,
-        ),
-      );
-
-      // Drop score entries that reference players which are not part of the
-      // imported data. This keeps referential integrity and prevents foreign
-      // key violations when importing inconsistent or legacy files.
-      scores.removeWhere((playerId, _) => !playersMap.containsKey(playerId));
-
-      // Link attributes to objects
-      final game = ArgumentError.checkNotNull(
-        gamesMap[gameId],
-        'game for id $gameId',
-      );
-      final group = groupId != null ? groupsMap[groupId] : null;
-
       final playerIds = (map['playerIds'] as List<dynamic>? ?? [])
           .cast<String>();
-      final players = playerIds
-          .map((id) => playersMap[id])
-          .whereType<Player>()
-          .toList();
-
       final teamsJson = (map['teams'] as List<dynamic>?) ?? [];
+
+      final game = gamesMap[gameId];
+      if (game == null) {
+        throw ArgumentError('Game with ID $gameId not found in import data');
+      }
+
+      final group = groupId != null ? groupsMap[groupId] : null;
+      if (groupId != null && group == null) {
+        throw ArgumentError('Group with ID $groupId not found in import data');
+      }
+
+      final players = playerIds.map((id) {
+        final player = playersMap[id];
+        if (player == null) {
+          throw ArgumentError('Player with ID $id not found in import data');
+        }
+        return player;
+      }).toList();
       final teams = parseTeamsFromJson(teamsJson, playersMap);
 
-      return Match(
-        id: id,
-        name: name,
+      return Match.fromNormalizedJson(
+        map,
         game: game,
         group: group,
         players: players,
-        isTeamMatch: isTeamMatch,
         teams: teams.isEmpty ? null : teams,
-        createdAt: createdAt,
-        endedAt: endedAt,
-        notes: notes,
-        scores: scores,
       );
     }).toList();
   }
@@ -422,13 +444,17 @@ class DataTransferService {
       final selectedGroupIds = (map['selectedGroups'] as List<dynamic>? ?? [])
           .cast<String>();
 
+      // Ignore invalid selected game/group IDs instead of throwing
       final selectedGames = selectedGameIds
           .map((id) => gamesMap[id])
-          .whereType<Game>()
+          .where((g) => g != null)
+          .cast<Game>()
           .toList();
+
       final selectedGroups = selectedGroupIds
           .map((id) => groupsMap[id])
-          .whereType<Group>()
+          .where((g) => g != null)
+          .cast<Group>()
           .toList();
 
       return Statistic(
@@ -467,37 +493,5 @@ class DataTransferService {
         position: map['position'],
       );
     }).toList();
-  }
-
-  /// Helper method to read file content from either bytes or path
-  @visibleForTesting
-  static Future<String?> readFileContent(PlatformFile file) async {
-    if (file.bytes != null) return utf8.decode(file.bytes!);
-    if (file.path != null) return await File(file.path!).readAsString();
-    return null;
-  }
-
-  /// Validates the given JSON string against the schema
-  /// in `assets/schema.json`.
-  @visibleForTesting
-  static Future<bool> validateJsonSchema(String jsonString) async {
-    final String schemaString;
-
-    schemaString = await rootBundle.loadString('assets/schema.json');
-
-    try {
-      final schema = JsonSchema.create(json.decode(schemaString));
-      final jsonData = json.decode(jsonString);
-      final result = schema.validate(jsonData);
-
-      if (result.isValid) {
-        return true;
-      }
-      return false;
-    } catch (e, stack) {
-      print('[validateJsonSchema] $e');
-      print(stack);
-      return false;
-    }
   }
 }

@@ -9,13 +9,14 @@ IconData getRulesetIcon(Ruleset ruleset) {
       return Icons.arrow_upward;
     case Ruleset.lowestScore:
       return Icons.arrow_downward;
-    case Ruleset.singleWinner:
-    case Ruleset.multipleWinners:
+    case Ruleset.winner:
       return Icons.emoji_events;
-    case Ruleset.singleLoser:
+    case Ruleset.loser:
       return Icons.sentiment_dissatisfied;
     case Ruleset.placement:
       return RpgAwesome.podium;
+    case Ruleset.lives:
+      return Icons.favorite;
   }
 }
 

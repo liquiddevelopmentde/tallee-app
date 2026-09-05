@@ -8,8 +8,12 @@ import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 
-class SinglePlayerSelection extends StatefulWidget {
-  const SinglePlayerSelection({
+class SelectLooserWidget extends StatefulWidget {
+  /// A list widget for the [MatchResultView] that lets the user select a single player or team.
+  /// - [match]: The match whose players / teams are being selected.
+  /// - [onPlayerSelected]: The callback invoked with the selected player whenever a player is selected.
+  /// - [onTeamSelected]: The callback invoked with the selected team whenever a team is selected.
+  const SelectLooserWidget({
     super.key,
     required this.match,
     this.onPlayerSelected,
@@ -21,10 +25,10 @@ class SinglePlayerSelection extends StatefulWidget {
   final void Function(Team?)? onTeamSelected;
 
   @override
-  State<SinglePlayerSelection> createState() => _SinglePlayerSelectionState();
+  State<SelectLooserWidget> createState() => _SelectLooserWidgetState();
 }
 
-class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
+class _SelectLooserWidgetState extends State<SelectLooserWidget> {
   Team? selectedTeam;
   late List<Team> allTeams;
 
@@ -66,7 +70,11 @@ class _SinglePlayerSelectionState extends State<SinglePlayerSelection> {
                 itemBuilder: (context, index) {
                   return CustomRadioListTile(
                     content: isTeamMatch
-                        ? TeamCard(team: allTeams[index], maxChars: 24)
+                        ? TeamCard(
+                            team: allTeams[index],
+                            compact: true,
+                            showTeamMembers: false,
+                          )
                         : buildUnitNameWidget(
                             allTeams[index],
                             isTeamMatch: false,

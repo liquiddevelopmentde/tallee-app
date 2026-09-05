@@ -2,6 +2,19 @@
 class Constants {
   Constants._(); // Private constructor to prevent instantiation
 
+  /// URL to the LIQUID website
+  static const String LIQUID_WEBSITE_URL = 'https://liquid-dev.de/';
+
+  /// URL to the LIQUID github organization profile
+  static const String LIQUID_GITHUB_URL =
+      'https://github.com/liquiddevelopmentde';
+
+  /// URL to the legal section on the LIQUID website
+  static const String LIQUID_WEBSITE_LEGAL_URL = 'https://liquid-dev.de/legal';
+
+  /// Email for contacting LIQUID
+  static const String LIQUID_CONTACT_EMAIL = 'hi@liquid-dev.de';
+
   /// Treshold for fuzzy search
   static const int FUZZY_SEARCH_THRESHOLD = 50;
 
@@ -23,6 +36,21 @@ class Constants {
   /// Maximum length for team names
   static const int MAX_TEAM_NAME_LENGTH = 32;
 
+  /// Maximum length for player descriptions
+  static const int MAX_PLAYER_DESCRIPTION_LENGTH = 256;
+
+  /// Maximum length for group descriptions
+  static const int MAX_GROUP_DESCRIPTION_LENGTH = 256;
+
   /// Maximum length for game descriptions
   static const int MAX_GAME_DESCRIPTION_LENGTH = 256;
+
+  /// Range for score input
+  static const ({int min, int max}) SCORE_INPUT_BOUNDARIES = (
+    min: -99999,
+    max: 99999,
+  );
+
+  /// Range for live input
+  static const ({int min, int max}) LIVE_INPUT_BOUNDARIES = (min: 0, max: 99);
 }

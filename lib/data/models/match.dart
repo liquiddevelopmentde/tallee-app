@@ -111,16 +111,19 @@ class Match {
           ? DateTime.parse(json['endedAt'])
           : null,
       name = json['name'],
-      game = Game(
-        name: '',
-        ruleset: Ruleset.singleWinner,
-        description: '',
-        color: AppColor.blue,
-      ),
-      group = null,
-      players = [],
+      game = Game.fromJson(json['game'] as Map<String, dynamic>),
+      group = json['group'] != null
+          ? Group.fromJson(json['group'] as Map<String, dynamic>)
+          : null,
+      players = (json['players'] as List<dynamic>)
+          .map((e) => Player.fromJson(e as Map<String, dynamic>))
+          .toList(),
       isTeamMatch = json['isTeamMatch'],
-      teams = [],
+      teams = json['teams'] != null
+          ? (json['teams'] as List<dynamic>)
+                .map((e) => Team.fromJson(e as Map<String, dynamic>))
+                .toList()
+          : [],
       scores = json['scores'] != null
           ? (json['scores'] as Map<String, dynamic>).map(
               (key, value) => MapEntry(
@@ -138,14 +141,59 @@ class Match {
     'createdAt': createdAt.toIso8601String(),
     'endedAt': endedAt?.toIso8601String(),
     'name': name,
-    'gameId': game.id,
-    'groupId': group?.id,
-    'playerIds': players.map((player) => player.id).toList(),
+    'game': game.toJson(),
+    'group': group?.toJson(),
+    'players': players.map((player) => player.toJson()).toList(),
     'isTeamMatch': isTeamMatch,
     'teams': teams?.map((team) => team.toJson()).toList(),
     'scores': scores.map((key, value) => MapEntry(key, value?.toJson())),
     'notes': notes,
   };
+
+  Map<String, dynamic> toNormalizedJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'endedAt': endedAt?.toIso8601String(),
+    'name': name,
+    'gameId': game.id,
+    'groupId': group?.id,
+    'playerIds': players.map((player) => player.id).toList(),
+    'isTeamMatch': isTeamMatch,
+    'teams': teams?.map((team) => team.toNormalizedJson()).toList(),
+    'scores': scores.map((key, value) => MapEntry(key, value?.toJson())),
+    'notes': notes,
+  };
+
+  factory Match.fromNormalizedJson(
+    Map<String, dynamic> json, {
+    required Game game,
+    Group? group,
+    required List<Player> players,
+    List<Team>? teams,
+  }) {
+    return Match(
+      id: json['id'],
+      createdAt: DateTime.parse(json['createdAt']),
+      endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
+      name: json['name'],
+      game: game,
+      group: group,
+      players: players,
+      isTeamMatch: json['isTeamMatch'],
+      teams: teams,
+      scores: json['scores'] != null
+          ? (json['scores'] as Map<String, dynamic>).map(
+              (key, value) => MapEntry(
+                key,
+                value != null
+                    ? ScoreEntry.fromJson(value as Map<String, dynamic>)
+                    : null,
+              ),
+            )
+          : {},
+      notes: json['notes'] ?? '',
+    );
+  }
 
   bool get useTeamLogic => isTeamMatch || (teams?.isNotEmpty ?? false);
 
@@ -160,17 +208,17 @@ class Match {
       case Ruleset.lowestScore:
         return _getPlayersWithLowestScore();
 
-      case Ruleset.singleWinner:
-        return _getPlayersWithHighestScore().take(1).toList();
-
-      case Ruleset.singleLoser:
+      case Ruleset.loser:
         return _getPlayersWithLowestScore().take(1).toList();
 
-      case Ruleset.multipleWinners:
+      case Ruleset.winner:
         return _getPlayersWithHighestScore().toList();
 
       case Ruleset.placement:
         return _getPlayersWithHighestScore().take(1).toList();
+
+      case Ruleset.lives:
+        return _getPlayersWithLivesRemaining();
     }
   }
 
@@ -208,6 +256,18 @@ class Match {
     }).toList();
   }
 
+  List<Player> _getPlayersWithLivesRemaining() {
+    if (players.isEmpty || scores.values.every((score) => score == null)) {
+      return [];
+    }
+
+    return players.where((player) {
+      final playerScore = scores[player.id];
+      if (playerScore == null) return false;
+      return playerScore.score > 0;
+    }).toList();
+  }
+
   // MVP for team-based matches (Most Valuable Team)
   List<Team> get mvt {
     if (teams == null || teams!.isEmpty) return [];
@@ -219,17 +279,17 @@ class Match {
       case Ruleset.lowestScore:
         return _getLowestScoreTeam();
 
-      case Ruleset.singleWinner:
-        return _getHighestScoreTeam().take(1).toList();
-
-      case Ruleset.singleLoser:
+      case Ruleset.loser:
         return _getLowestScoreTeam().take(1).toList();
 
-      case Ruleset.multipleWinners:
+      case Ruleset.winner:
         return _getHighestScoreTeam();
 
       case Ruleset.placement:
         return _getHighestScoreTeam().take(1).toList();
+
+      case Ruleset.lives:
+        return _getTeamsWithLivesRemaining();
     }
   }
 
@@ -261,5 +321,13 @@ class Match {
     return teams!.where((team) {
       return team.score == lowestScore;
     }).toList();
+  }
+
+  List<Team> _getTeamsWithLivesRemaining() {
+    if (teams!.every((team) => team.score == null)) {
+      return [];
+    }
+
+    return teams!.where((team) => (team.score ?? 0) > 0).toList();
   }
 }

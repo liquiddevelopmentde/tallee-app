@@ -4,6 +4,7 @@ import 'package:tallee/core/custom_theme.dart';
 class ColoredIconContainer extends StatelessWidget {
   /// A customizable container widget that displays an icon with a colored background.
   /// - [icon]: The icon to be displayed inside the container.
+  /// - [color]: The color the container and icon should have.
   /// - [containerSize]: The size of the container (width and height).
   /// - [iconSize]: The size of the icon inside the container.
   /// - [margin]: Optional margin around the container.
@@ -11,26 +12,21 @@ class ColoredIconContainer extends StatelessWidget {
   const ColoredIconContainer({
     super.key,
     required this.icon,
+    this.color,
     this.containerSize = 44,
-    this.iconSize = 28,
+    this.iconSize,
     this.margin,
     this.padding,
   });
 
-  /// The icon to be displayed inside the container.
   final IconData icon;
-
-  /// The size of the container (width and height).
+  final Color? color;
   final double containerSize;
-
-  /// The size of the icon inside the container.
-  final double iconSize;
-
-  /// Optional margin around the container.
+  final double? iconSize;
   final EdgeInsetsGeometry? margin;
-
-  /// Optional padding inside the container.
   final EdgeInsetsGeometry? padding;
+
+  double get effectiveIconSize => iconSize ?? containerSize / 1.5;
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +38,14 @@ class ColoredIconContainer extends StatelessWidget {
           margin: margin,
           padding: padding,
           decoration: BoxDecoration(
-            color: CustomTheme.primaryColor.withAlpha(40),
+            color:
+                color?.withAlpha(40) ?? CustomTheme.primaryColor.withAlpha(40),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
             icon,
-            size: iconSize,
-            color: CustomTheme.primaryColor.withBlue(40),
+            size: effectiveIconSize,
+            color: color ?? CustomTheme.primaryColor.withBlue(40),
           ),
         ),
       ],

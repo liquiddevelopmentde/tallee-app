@@ -2,13 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
-/// Returns the correct singular or plural form of "point(s)" based on the [points] value.
-String getPointLabel(AppLocalizations loc, int points) {
-  if (points == 1) {
-    return '$points ${loc.point}';
+/// Returns the correct singular or plural form of "point(s)" based on the [amount] value.
+String getPointLabel(AppLocalizations loc, int amount) {
+  if (amount == 1) {
+    return '$amount ${loc.point}';
   } else {
-    return '$points ${loc.points}';
+    return '$amount ${loc.points}';
   }
+}
+
+String getLifeLabel(AppLocalizations loc, int amount) {
+  return '$amount ${loc.lives(amount)}';
 }
 
 /// Translates a [ImportResult] enum value to its corresponding localized string.
@@ -34,6 +38,33 @@ String translateImportResultToString(
       return loc.format_exception;
     case ImportResult.unknownException:
       return loc.unknown_exception;
+    case ImportResult.matchSchemaDetected:
+      return '';
+  }
+}
+
+/// Translates a [ImportResult] enum value to its corresponding localized string.
+String translateMatchImportResultToString(
+  ImportResult importResult,
+  BuildContext context,
+) {
+  final loc = AppLocalizations.of(context);
+  switch (importResult) {
+    case ImportResult.success:
+      return loc.data_successfully_imported;
+    case ImportResult.invalidSchema:
+    case ImportResult.invalidData:
+      return '${loc.invalid_file}\n${loc.choose_other_file}';
+    case ImportResult.unknownException:
+    case ImportResult.fileNotFound:
+    case ImportResult.fileReadError:
+      return loc.error_while_processing_file_try_again;
+    case ImportResult.canceled:
+      return loc.import_canceled;
+    case ImportResult.formatException:
+      return loc.format_exception;
+    case ImportResult.matchSchemaDetected:
+      return '';
   }
 }
 
@@ -63,14 +94,14 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
       return loc.highest_score;
     case Ruleset.lowestScore:
       return loc.lowest_score;
-    case Ruleset.singleWinner:
-      return loc.single_winner;
-    case Ruleset.singleLoser:
-      return loc.single_loser;
-    case Ruleset.multipleWinners:
-      return loc.multiple_winners;
+    case Ruleset.loser:
+      return loc.loser;
+    case Ruleset.winner:
+      return loc.winners;
     case Ruleset.placement:
       return loc.placement;
+    case Ruleset.lives:
+      return loc.lives(0);
   }
 }
 
@@ -86,7 +117,6 @@ String translateAppColorToString(AppColor color, BuildContext context) {
       return loc.color_green;
     case AppColor.yellow:
       return loc.color_yellow;
-    //return const Color(0xFFF7CA28);
     case AppColor.purple:
       return loc.color_purple;
     case AppColor.orange:

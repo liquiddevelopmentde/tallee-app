@@ -10,7 +10,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
-import 'package:tallee/presentation/widgets/player_selection.dart';
+import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
 class CreateGroupView extends StatefulWidget {
@@ -34,6 +34,9 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   /// Controller for the group name input field
   final groupNameController = TextEditingController();
 
+  /// Controller for the group description input field
+  final groupDescriptionController = TextEditingController();
+
   /// List of currently selected players
   List<Player> selectedPlayers = [];
 
@@ -46,6 +49,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     db = Provider.of<AppDatabase>(context, listen: false);
     if (widget.groupToEdit != null) {
       groupNameController.text = widget.groupToEdit!.name;
+      groupDescriptionController.text = widget.groupToEdit!.description;
       setState(() {
         initialSelectedPlayers = widget.groupToEdit!.members;
         selectedPlayers = widget.groupToEdit!.members;
@@ -59,22 +63,26 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   @override
   void dispose() {
     groupNameController.dispose();
+    groupDescriptionController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final viewTitle = widget.groupToEdit == null
+        ? loc.create_new_group
+        : loc.edit_group;
+    final buttonText = widget.groupToEdit == null
+        ? loc.create_group
+        : loc.save_changes;
+
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: CustomTheme.backgroundColor,
-        appBar: AppBar(
-          title: Text(
-            widget.groupToEdit == null ? loc.create_new_group : loc.edit_group,
-          ),
-        ),
+        appBar: AppBar(title: Text(viewTitle)),
         body: SafeArea(
           maintainBottomViewPadding: true,
           child: Column(
@@ -88,11 +96,22 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                   maxLength: Constants.MAX_GROUP_NAME_LENGTH,
                 ),
               ),
+              Container(
+                margin: CustomTheme.standardMargin,
+                child: TextInputField(
+                  controller: groupDescriptionController,
+                  hintText: loc.description,
+                  maxLength: Constants.MAX_GROUP_DESCRIPTION_LENGTH,
+                  minLines: 3,
+                  maxLines: 3,
+                  showCounterText: true,
+                ),
+              ),
               Expanded(
-                child: PlayerSelection(
+                child: PlayerSelectionWidget.multiple(
                   initialSelectedPlayers: initialSelectedPlayers,
                   onPlayerCreated: () => widget.onMembersChanged?.call(),
-                  onChanged: (players, units) {
+                  onMultipleChanged: (players, units) {
                     setState(() {
                       selectedPlayers = [...players];
                     });
@@ -103,9 +122,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: BottomAnimatedButton(
                   sizeRelativeToWidth: 0.95,
-                  buttonText: widget.groupToEdit == null
-                      ? loc.create_group
-                      : loc.edit_group,
+                  buttonText: buttonText,
                   buttonType: ButtonType.primary,
                   onPressed:
                       (groupNameController.text.isEmpty ||
@@ -159,9 +176,14 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   /// Handles creating a new group and returns whether the operation was successful.
   Future<bool> createGroup() async {
     final groupName = groupNameController.text.trim();
+    final groupDescription = groupDescriptionController.text.trim();
 
     final success = await db.groupDao.addGroup(
-      group: Group(name: groupName, members: selectedPlayers),
+      group: Group(
+        name: groupName,
+        description: groupDescription,
+        members: selectedPlayers,
+      ),
     );
     return success;
   }
@@ -170,34 +192,40 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   /// (success, updatedGroup).
   Future<(bool, Group?)> editGroup() async {
     final groupName = groupNameController.text.trim();
+    final groupDescription = groupDescriptionController.text.trim();
 
     Group? updatedGroup = Group(
       id: widget.groupToEdit!.id,
       name: groupName,
-      description: '',
+      description: groupDescription,
       members: selectedPlayers,
+      createdAt: widget.groupToEdit!.createdAt,
     );
 
-    bool successfullNameChange = true;
-    bool successfullMemberChange = true;
+    bool success = true;
 
     if (widget.groupToEdit!.name != groupName) {
-      successfullNameChange = await db.groupDao.updateGroupName(
+      success &= await db.groupDao.updateGroupName(
         groupId: widget.groupToEdit!.id,
         name: groupName,
       );
     }
 
+    if (widget.groupToEdit!.description != groupDescription) {
+      success &= await db.groupDao.updateGroupDescription(
+        groupId: widget.groupToEdit!.id,
+        description: groupDescription,
+      );
+    }
+
     if (widget.groupToEdit!.members != selectedPlayers) {
-      successfullMemberChange = await db.playerGroupDao.replaceGroupPlayers(
+      success &= await db.playerGroupDao.replaceGroupPlayers(
         groupId: widget.groupToEdit!.id,
         newPlayers: selectedPlayers,
       );
       await deleteObsoleteMatchGroupRelations();
       widget.onMembersChanged?.call();
     }
-
-    final success = successfullNameChange && successfullMemberChange;
 
     return (success, updatedGroup);
   }

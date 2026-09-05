@@ -38,7 +38,6 @@ class LicenseTile extends StatelessWidget {
             const ColoredIconContainer(
               icon: Icons.description,
               containerSize: 50,
-              iconSize: 32,
             ),
             const SizedBox(width: 16),
             Expanded(

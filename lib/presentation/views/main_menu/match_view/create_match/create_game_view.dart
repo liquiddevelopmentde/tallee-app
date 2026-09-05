@@ -23,12 +23,14 @@ import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 /// A stateful widget for creating or editing a game.
 /// - [gameToEdit] An optional game to prefill the fields
 /// - [onGameChanged] Callback to invoke when the game is created or edited
+/// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
 class CreateGameView extends StatefulWidget {
   const CreateGameView({
     super.key,
     required this.onGameChanged,
     this.gameToEdit,
     this.matchCount = 0,
+    this.requiredRuleset,
   });
 
   /// Callback to invoke when the game is created or edited
@@ -39,27 +41,31 @@ class CreateGameView extends StatefulWidget {
 
   final int matchCount;
 
+  final Ruleset? requiredRuleset;
+
   @override
   State<CreateGameView> createState() => _CreateGameViewState();
 }
 
 class _CreateGameViewState extends State<CreateGameView> {
   /// GlobalKey for ScaffoldMessenger to show snackbars
-  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   late final AppDatabase db;
 
-  late List<(Ruleset, String)> _rulesets;
-  late List<(AppColor, String)> _colors;
+  late List<(Ruleset, String)> rulesets;
+  late List<(AppColor, String)> colors;
 
-  Ruleset? selectedRuleset = Ruleset.singleWinner;
+  Ruleset? selectedRuleset = Ruleset.winner;
   AppColor? selectedColor = AppColor.orange;
 
+  int selectedLives = 3;
+
   /// Controller for the game name input field.
-  final _gameNameController = TextEditingController();
+  final gameNameController = TextEditingController();
 
   /// Controller for the game description input field.
-  final _descriptionController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   /// The ID of the currently selected group.
   late String selectedGroupId;
@@ -74,20 +80,24 @@ class _CreateGameViewState extends State<CreateGameView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    _gameNameController.addListener(() => setState(() {}));
+    gameNameController.addListener(() => setState(() {}));
+    if (widget.requiredRuleset != null) {
+      selectedRuleset = widget.requiredRuleset;
+    }
+    gameNameController.addListener(() => setState(() {}));
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _rulesets = List.generate(
+    rulesets = List.generate(
       Ruleset.values.length,
       (index) => (
         Ruleset.values[index],
         translateRulesetToString(Ruleset.values[index], context),
       ),
     );
-    _colors = List.generate(
+    colors = List.generate(
       AppColor.values.length,
       (index) => (
         AppColor.values[index],
@@ -96,8 +106,8 @@ class _CreateGameViewState extends State<CreateGameView> {
     );
 
     if (widget.gameToEdit != null) {
-      _gameNameController.text = widget.gameToEdit!.name;
-      _descriptionController.text = widget.gameToEdit!.description;
+      gameNameController.text = widget.gameToEdit!.name;
+      descriptionController.text = widget.gameToEdit!.description;
       selectedRuleset = widget.gameToEdit!.ruleset;
       selectedColor = widget.gameToEdit!.color;
       selectedRuleset = widget.gameToEdit!.ruleset;
@@ -106,8 +116,8 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   @override
   void dispose() {
-    _gameNameController.dispose();
-    _descriptionController.dispose();
+    gameNameController.dispose();
+    descriptionController.dispose();
     super.dispose();
   }
 
@@ -122,7 +132,7 @@ class _CreateGameViewState extends State<CreateGameView> {
         appBar: AppBar(
           title: Text(isEditing ? loc.edit_game : loc.create_game),
           actions: [
-            if (isEditMode())
+            if (isEditMode)
               HapticIconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () async {
@@ -172,9 +182,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                       if (!context.mounted) return;
                       if (success) {
                         widget.onGameChanged.call();
-                        Navigator.of(
-                          context,
-                        ).pop((game: widget.gameToEdit, delete: true));
+                        Navigator.of(context)
+                            .pop((game: widget.gameToEdit, delete: true));
                       } else {
                         if (!mounted) return;
                         showSnackbar(message: loc.error_deleting_game);
@@ -193,17 +202,35 @@ class _CreateGameViewState extends State<CreateGameView> {
               Container(
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
-                  controller: _gameNameController,
+                  controller: gameNameController,
                   maxLength: Constants.MAX_MATCH_NAME_LENGTH,
                   hintText: loc.game_name,
                 ),
               ),
 
               // Choose ruleset tile
-              if (!isEditMode())
+              if (!isEditMode)
                 ChooseTile(
                   title: loc.ruleset,
-                  trailing: getRulesetDropdown(loc),
+                  trailing: widget.requiredRuleset != null
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 8,
+                            children: [
+                              Icon(getRulesetIcon(selectedRuleset!), size: 16),
+                              Text(
+                                translateRulesetToString(
+                                  selectedRuleset!,
+                                  context,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
+                          ),
+                        )
+                      : getRulesetDropdown(loc),
                 ),
 
               // Choose color tile
@@ -213,7 +240,7 @@ class _CreateGameViewState extends State<CreateGameView> {
               Container(
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
-                  controller: _descriptionController,
+                  controller: descriptionController,
                   hintText: loc.description,
                   minLines: 6,
                   maxLines: 6,
@@ -233,13 +260,13 @@ class _CreateGameViewState extends State<CreateGameView> {
                   sizeRelativeToWidth: 0.95,
                   buttonType: ButtonType.primary,
                   onPressed:
-                      _gameNameController.text.trim().isNotEmpty &&
+                      gameNameController.text.trim().isNotEmpty &&
                           selectedRuleset != null &&
                           selectedColor != null
                       ? () async {
                           Game newGame = Game(
-                            name: _gameNameController.text.trim(),
-                            description: _descriptionController.text.trim(),
+                            name: gameNameController.text.trim(),
+                            description: descriptionController.text.trim(),
                             ruleset: selectedRuleset!,
                             color: selectedColor!,
                           );
@@ -250,9 +277,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                           }
                           widget.onGameChanged.call();
                           if (context.mounted) {
-                            Navigator.of(
-                              context,
-                            ).pop((game: newGame, delete: false));
+                            Navigator.of(context)
+                                .pop((game: newGame, delete: false));
                           }
                         }
                       : null,
@@ -308,16 +334,14 @@ class _CreateGameViewState extends State<CreateGameView> {
   ///
   /// [message] The message to display in the snackbar.
   void showSnackbar({required String message}) {
-    final messenger = _scaffoldMessengerKey.currentState;
+    final messenger = scaffoldMessengerKey.currentState;
     if (messenger != null) {
       messenger.hideCurrentSnackBar();
       messenger.showSnackBar(CustomSnackBar(message: message));
     }
   }
 
-  bool isEditMode() {
-    return widget.gameToEdit != null;
-  }
+  bool get isEditMode => widget.gameToEdit != null;
 
   Widget getRulesetDropdown(AppLocalizations loc) {
     return CustomPopup(
@@ -335,12 +359,12 @@ class _CreateGameViewState extends State<CreateGameView> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: List.generate(
-              _rulesets.length,
+              rulesets.length,
               (index) => GestureDetector(
                 onTap: () {
                   HapticFeedback.selectionClick();
                   setState(() {
-                    selectedRuleset = _rulesets[index].$1;
+                    selectedRuleset = rulesets[index].$1;
                   });
                   setPopupState(() {});
                 },
@@ -352,7 +376,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                         borderRadius: const BorderRadius.all(
                           Radius.circular(8),
                         ),
-                        color: selectedRuleset == _rulesets[index].$1
+                        color: selectedRuleset == rulesets[index].$1
                             ? CustomTheme.textColor.withAlpha(20)
                             : Colors.transparent,
                       ),
@@ -364,9 +388,9 @@ class _CreateGameViewState extends State<CreateGameView> {
                         child: Row(
                           spacing: 8,
                           children: [
-                            Icon(getRulesetIcon(_rulesets[index].$1), size: 16),
+                            Icon(getRulesetIcon(rulesets[index].$1), size: 16),
                             Text(
-                              _rulesets[index].$2,
+                              rulesets[index].$2,
                               style: const TextStyle(
                                 color: CustomTheme.textColor,
                                 fontSize: 15,
@@ -376,7 +400,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                         ),
                       ),
                     ),
-                    if (index < _rulesets.length - 1)
+                    if (index < rulesets.length - 1)
                       const Divider(indent: 15, endIndent: 15),
                   ],
                 ),
@@ -421,12 +445,12 @@ class _CreateGameViewState extends State<CreateGameView> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: List.generate(
-              _colors.length,
+              colors.length,
               (index) => GestureDetector(
                 onTap: () {
                   HapticFeedback.selectionClick();
                   setState(() {
-                    selectedColor = _colors[index].$1;
+                    selectedColor = colors[index].$1;
                   });
                   setPopupState(() {});
                 },
@@ -439,7 +463,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                         borderRadius: const BorderRadius.all(
                           Radius.circular(8),
                         ),
-                        color: selectedColor == _colors[index].$1
+                        color: selectedColor == colors[index].$1
                             ? CustomTheme.textColor.withAlpha(20)
                             : Colors.transparent,
                       ),
@@ -456,13 +480,13 @@ class _CreateGameViewState extends State<CreateGameView> {
                                     margin: const EdgeInsets.only(left: 12),
                                     decoration: BoxDecoration(
                                       color: getColorFromAppColor(
-                                        _colors[index].$1,
+                                        colors[index].$1,
                                       ),
                                       shape: BoxShape.circle,
                                     ),
                                   ),
                                   Text(
-                                    _colors[index].$2,
+                                    colors[index].$2,
                                     style: const TextStyle(
                                       color: CustomTheme.textColor,
                                       fontSize: 15,
@@ -472,7 +496,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                         ),
                       ),
                     ),
-                    if (index < _colors.length - 1)
+                    if (index < colors.length - 1)
                       const Divider(indent: 15, endIndent: 15),
                   ],
                 ),

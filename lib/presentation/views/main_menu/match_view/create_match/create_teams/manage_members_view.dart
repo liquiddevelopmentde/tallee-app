@@ -27,7 +27,6 @@ class ManageMembersView extends StatefulWidget {
   });
 
   final Match match;
-
   final VoidCallback? onWinnerChanged;
 
   @override
