@@ -111,16 +111,19 @@ class Match {
           ? DateTime.parse(json['endedAt'])
           : null,
       name = json['name'],
-      game = Game(
-        name: '',
-        ruleset: Ruleset.winner,
-        description: '',
-        color: AppColor.blue,
-      ),
-      group = null,
-      players = [],
+      game = Game.fromJson(json['game'] as Map<String, dynamic>),
+      group = json['group'] != null
+          ? Group.fromJson(json['group'] as Map<String, dynamic>)
+          : null,
+      players = (json['players'] as List<dynamic>)
+          .map((e) => Player.fromJson(e as Map<String, dynamic>))
+          .toList(),
       isTeamMatch = json['isTeamMatch'],
-      teams = [],
+      teams = json['teams'] != null
+          ? (json['teams'] as List<dynamic>)
+                .map((e) => Team.fromJson(e as Map<String, dynamic>))
+                .toList()
+          : [],
       scores = json['scores'] != null
           ? (json['scores'] as Map<String, dynamic>).map(
               (key, value) => MapEntry(
@@ -138,14 +141,59 @@ class Match {
     'createdAt': createdAt.toIso8601String(),
     'endedAt': endedAt?.toIso8601String(),
     'name': name,
-    'gameId': game.id,
-    'groupId': group?.id,
-    'playerIds': players.map((player) => player.id).toList(),
+    'game': game.toJson(),
+    'group': group?.toJson(),
+    'players': players.map((player) => player.toJson()).toList(),
     'isTeamMatch': isTeamMatch,
     'teams': teams?.map((team) => team.toJson()).toList(),
     'scores': scores.map((key, value) => MapEntry(key, value?.toJson())),
     'notes': notes,
   };
+
+  Map<String, dynamic> toNormalizedJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'endedAt': endedAt?.toIso8601String(),
+    'name': name,
+    'gameId': game.id,
+    'groupId': group?.id,
+    'playerIds': players.map((player) => player.id).toList(),
+    'isTeamMatch': isTeamMatch,
+    'teams': teams?.map((team) => team.toNormalizedJson()).toList(),
+    'scores': scores.map((key, value) => MapEntry(key, value?.toJson())),
+    'notes': notes,
+  };
+
+  factory Match.fromNormalizedJson(
+    Map<String, dynamic> json, {
+    required Game game,
+    Group? group,
+    required List<Player> players,
+    List<Team>? teams,
+  }) {
+    return Match(
+      id: json['id'],
+      createdAt: DateTime.parse(json['createdAt']),
+      endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
+      name: json['name'],
+      game: game,
+      group: group,
+      players: players,
+      isTeamMatch: json['isTeamMatch'],
+      teams: teams,
+      scores: json['scores'] != null
+          ? (json['scores'] as Map<String, dynamic>).map(
+              (key, value) => MapEntry(
+                key,
+                value != null
+                    ? ScoreEntry.fromJson(value as Map<String, dynamic>)
+                    : null,
+              ),
+            )
+          : {},
+      notes: json['notes'] ?? '',
+    );
+  }
 
   bool get useTeamLogic => isTeamMatch || (teams?.isNotEmpty ?? false);
 

@@ -27,8 +27,8 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
           createdAt: player.createdAt,
           nameCount: Value(nameCount),
         ),
-        mode: InsertMode.insertOrReplace,
       );
+
       return true;
     }
     return false;
