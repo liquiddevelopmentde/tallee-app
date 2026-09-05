@@ -21,21 +21,35 @@ An open-source app to track card- and board games, manage players & groups and g
     </a>
 </p>
 
-![Version](https://img.shields.io/badge/App--Version-0.0.1_Alpha-orange)
-![Flutter](https://img.shields.io/badge/Flutter-3.38.6-027DFD?logo=flutter)
+![Version](https://img.shields.io/badge/App--Version-0.1.0_Beta-orange)
+![Flutter](https://img.shields.io/badge/Flutter-3.47.2-027DFD?logo=flutter)
 ![iOS26](https://img.shields.io/badge/iOS-26-white?logo=apple)
 ![Android16](https://img.shields.io/badge/Android-16-3DDC84?logo=android)
 
-## Screenshots
+## This is Tallee
 
 <table align="center" cellspacing="8">
   <tr>
-    <td><img src="/artefacts/screenshot-1.png" alt="Screenshot 1" width="240" /></td>
-    <td><img src="/artefacts/screenshot-2.png" alt="Screenshot 2" width="240" /></td>
-    <td><img src="/artefacts/screenshot-3.png" alt="Screenshot 3" width="240" /></td>
-    <td><img src="/artefacts/screenshot-4.png" alt="Screenshot 4" width="240" /></td>
+    <td><img src="/artefacts/wireframe-1.png" alt="Screenshot of the match view" width="330" /></td>
+    <td><img src="/artefacts/wireframe-2.png" alt="Screenshot of the group view" width="330" /></td>
+    <td><img src="/artefacts/wireframe-3.png" alt="Screenshot of the statistics view" width="330" /></td>
   </tr>
 </table>
+
+Tallee is your companion for game nights: record every match you play, keep track of who's
+winning and get meaningful insights into your play history, all offline and on your device.
+
+- **Matches** – Record matches, determine winners automatically based
+  on the game's ruleset and review detailed match results.
+- **Games & rulesets** – Create your own games and pick the ruleset that fits (highest or
+  lowest score, single winner, single loser, multiple winners, placement or lives).
+- **Players & groups** – Manage your players and organize them into groups for quick,
+  recurring setups.
+- **Teams** – Split players into teams and track team-based matches.
+- **Statistics** – Build custom statistics, scoped them to different categories and analyze them over different
+  timeframes.
+- **Data** – Back up and restore all your data locally via JSON or share your matches with other Tallee users
+- **Localized** – Available in English and German.
 
 ## Contributing
 
