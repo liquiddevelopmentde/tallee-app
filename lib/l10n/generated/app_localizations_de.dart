@@ -381,6 +381,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get invalid_schema => 'Ungültiges Schema';
 
   @override
+  String get code_pasted_from_clipboard =>
+      'Code aus der Zwischenablage eingefügt';
+
+  @override
   String get invalid_token => 'Ungültiger Token';
 
   @override

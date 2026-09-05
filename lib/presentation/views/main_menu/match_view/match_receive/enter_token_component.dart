@@ -125,8 +125,11 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
             animationCurve: Curves.easeInOutCubic,
             animationDuration: const Duration(milliseconds: 100),
             onClipboardFound: (value) {
-              print(value);
+              HapticFeedback.lightImpact();
               tokenInputFieldController.text = value;
+              ScaffoldMessenger.of(context).showSnackBar(
+                CustomSnackBar(message: loc.code_pasted_from_clipboard),
+              );
             },
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
@@ -224,7 +227,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
             .showSnackBar(CustomSnackBar(message: errorMessage));
       }
 
-      rethrow; //error an button "weiterleiten"
+      rethrow; //redirect error to button
     }
   }
 

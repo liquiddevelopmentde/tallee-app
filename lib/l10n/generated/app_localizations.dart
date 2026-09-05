@@ -770,6 +770,12 @@ abstract class AppLocalizations {
   /// **'Invalid Schema'**
   String get invalid_schema;
 
+  /// No description provided for @code_pasted_from_clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Code pasted from clipboard'**
+  String get code_pasted_from_clipboard;
+
   /// No description provided for @invalid_token.
   ///
   /// In en, this message translates to:

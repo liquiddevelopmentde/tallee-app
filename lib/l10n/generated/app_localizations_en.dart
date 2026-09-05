@@ -377,6 +377,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalid_schema => 'Invalid Schema';
 
   @override
+  String get code_pasted_from_clipboard => 'Code pasted from clipboard';
+
+  @override
   String get invalid_token => 'Invalid token';
 
   @override

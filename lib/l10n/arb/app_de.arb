@@ -294,6 +294,7 @@
     }
   },
   "share_match_title": "Tallee Match teilen",
+  "code_pasted_from_clipboard": "Code aus der Zwischenablage eingefügt",
   "share_token_format_info": "Share-Token bestehen aus 6 alphanumerischen Zeichen.",
   "statistic": "Statistik",
   "statistics": "Statistiken",
