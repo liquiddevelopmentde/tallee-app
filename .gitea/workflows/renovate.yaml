@@ -1,0 +1,25 @@
+name: Renovate
+on:
+  schedule:
+    - cron: 'TZ=Europe/Berlin 0 10 1,15 * *'
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/renovatebot/renovate:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Renovate
+        env:
+          RENOVATE_TOKEN: ${{ secrets.BOT_TOKEN }}
+          RENOVATE_PLATFORM: gitea
+          RENOVATE_ENDPOINT: https://git.yannick-weigert.com
+          RENOVATE_REPOSITORIES: liquid-development/tallee-app
+          RENOVATE_GIT_AUTHOR: "Gitea Actions <actions@yannick-weigert.de>"
+          RENOVATE_CONFIG_FILE: renovate.json
+          RENOVATE_BINARY_SOURCE: install
+          LOG_LEVEL: debug
+        run: renovate

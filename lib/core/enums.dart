@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
 
 /// Button types used for styling the [CustomWidthButton]
 /// - [ButtonType.primary]: Primary button style.
@@ -7,46 +6,77 @@ import 'package:game_tracker/l10n/generated/app_localizations.dart';
 /// - [ButtonType.tertiary]: Tertiary button style.
 enum ButtonType { primary, secondary, tertiary }
 
+/// States for the [ApiActionAnimatedButton] that triggers API calls
+/// - [ApiButtonState.idle]: Initial state, button is ready to be pressed.
+/// - [ApiButtonState.loading]: API call is in progress.
+/// - [ApiButtonState.success]: API call completed successfully.
+/// - [ApiButtonState.error]: API call failed.
+enum ApiButtonState { idle, loading, success, error }
+
 /// Result types for import operations in the [SettingsView]
 /// - [ImportResult.success]: The import operation was successful.
 /// - [ImportResult.canceled]: The import operation was canceled by the user.
 /// - [ImportResult.fileReadError]: There was an error reading the selected file.
 /// - [ImportResult.invalidSchema]: The JSON schema of the imported data is invalid.
+/// - [ImportResult.invalidData]: The JSON Schema is correct, but the data itself is invalid.
 /// - [ImportResult.formatException]: A format exception occurred during import.
 /// - [ImportResult.unknownException]: An exception occurred during import.
+/// - [ImportResult.matchSchemaDetected]: A single match was detected during import.
 enum ImportResult {
   success,
   canceled,
   fileReadError,
+  fileNotFound,
   invalidSchema,
+  invalidData,
   formatException,
   unknownException,
+  matchSchemaDetected,
 }
+
+/// Enum for the Player Selection Widget
+/// - [SelectionMode.single]: Only one player can be selected at a time.
+/// - [SelectionMode.multiple]: Multiple players can be selected at once.
+enum SelectionMode { single, multiple }
 
 /// Result types for export operations in the [SettingsView]
 /// - [ExportResult.success]: The export operation was successful.
 /// - [ExportResult.canceled]: The export operation was canceled by the user.
 /// - [ExportResult.unknownException]: An exception occurred during export.
-enum ExportResult { success, canceled, unknownException }
+/// - [ExportResult.noData]: There is no data to export.
+enum ExportResult { success, canceled, unknownException, noData }
 
-/// Different rulesets available for matches
-/// - [Ruleset.singleWinner]: The match is won by a single player
-/// - [Ruleset.singleLoser]: The match is lost by a single player
-/// - [Ruleset.mostPoints]: The player with the most points wins.
-/// - [Ruleset.leastPoints]: The player with the fewest points wins.
-enum Ruleset { singleWinner, singleLoser, mostPoints, leastPoints }
+/// Different rulesets available for games
+/// - [Ruleset.highestScore]: The player with the highest score wins.
+/// - [Ruleset.lowestScore]: The player with the lowest score wins.
+/// - [Ruleset.winner]: The match has one or multiple winner(s)
+/// - [Ruleset.loser]: The match has one loser.
+/// - [Ruleset.placement]: The player with the highest placement wins.
+/// - [Ruleset.lives]: Every player with lives > 0 wins
+enum Ruleset { winner, loser, highestScore, lowestScore, lives, placement }
 
-/// Translates a [Ruleset] enum value to its corresponding localized string.
-String translateRulesetToString(Ruleset ruleset, BuildContext context) {
-  final loc = AppLocalizations.of(context);
-  switch (ruleset) {
-    case Ruleset.singleWinner:
-      return loc.single_winner;
-    case Ruleset.singleLoser:
-      return loc.single_loser;
-    case Ruleset.mostPoints:
-      return loc.most_points;
-    case Ruleset.leastPoints:
-      return loc.least_points;
-  }
+/// Different colors for highlighting content
+enum AppColor { red, orange, yellow, green, teal, blue, purple, pink }
+
+enum StatisticType {
+  totalMatches,
+  totalWins,
+  totalScore,
+  totalLosses,
+  averageScore,
+  bestScore,
+  worstScore,
+  winrate,
+}
+
+enum StatisticScope { allPlayers, selectedGroups, selectedGames }
+
+enum Timeframe {
+  last7Days,
+  last30Days,
+  last90Days,
+  last180Days,
+  lastYear,
+  custom,
+  allTime,
 }

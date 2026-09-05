@@ -3,7 +3,6 @@
 
 # Miscellaneous
 *.class
-*.lock
 *.log
 *.pyc
 *.swp
@@ -77,8 +76,10 @@ unlinked_spec.ds
 **/android/key.properties
 *.jks
 local.properties
+.kotlin
 
 # iOS/XCode related
+Podfile.lock
 **/ios/**/*.mode1v3
 **/ios/**/*.mode2v3
 **/ios/**/*.moved-aside
@@ -150,25 +151,9 @@ app.*.symbols
 .gclient_previous_custom_vars
 .gclient_previous_sync_commits
 
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
 .swiftpm/
 migrate_working_dir/
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
@@ -176,17 +161,8 @@ migrate_working_dir/
 #.vscode/
 
 # Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
 /build/
 
-# Symbolication related
-app.*.symbols
 
 # Obfuscation related
 app.*.map.json
@@ -196,3 +172,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /devtools_options.yaml
+
+untranslated_messages.json
+.env

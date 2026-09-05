@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:tallee/core/custom_theme.dart';
 
-/// A custom search bar widget that encapsulates a [SearchBar] with additional customization options.
-/// - [controller]: The controller for the search bar's text input.
-/// - [hintText]: The hint text displayed in the search bar when it is empty.
-/// - [trailingButtonShown]: Whether to show the trailing button.
-/// - [trailingButtonicon]: The icon for the trailing button.
-/// - [trailingButtonEnabled]: Whether the trailing button is in enabled state.
-/// - [onTrailingButtonPressed]: The callback invoked when the trailing button is pressed.
-/// - [onChanged]: The callback invoked when the text in the search bar changes.
-/// - [constraints]: The constraints for the search bar.
 class CustomSearchBar extends StatelessWidget {
+  /// A custom search bar widget that encapsulates a [SearchBar] with additional customization options.
+  /// - [controller]: The controller for the search bar's text input.
+  /// - [hintText]: The hint text displayed in the search bar when it is empty.
+  /// - [trailingButtonShown]: Whether to show the trailing button.
+  /// - [trailingButtonicon]: The icon for the trailing button.
+  /// - [trailingButtonEnabled]: Whether the trailing button is in enabled state.
+  /// - [onTrailingButtonPressed]: The callback invoked when the trailing button is pressed.
+  /// - [onChanged]: The callback invoked when the text in the search bar changes.
+  /// - [constraints]: The constraints for the search bar.
   const CustomSearchBar({
     super.key,
     required this.controller,
@@ -21,6 +21,7 @@ class CustomSearchBar extends StatelessWidget {
     this.onTrailingButtonPressed,
     this.onChanged,
     this.constraints,
+    this.maxLength,
   });
 
   /// The controller for the search bar's text input.
@@ -47,15 +48,27 @@ class CustomSearchBar extends StatelessWidget {
   /// The constraints for the search bar.
   final BoxConstraints? constraints;
 
+  /// Optional parameter for maximum length of the input text.
+  final int? maxLength;
+
   @override
   Widget build(BuildContext context) {
+    /// Enforce maximum length on the input text
+    if (maxLength != null) {
+      if (controller.text.length > maxLength!) {
+        controller.text = controller.text.substring(0, maxLength);
+        controller.selection = TextSelection.fromPosition(
+          TextPosition(offset: controller.text.length),
+        );
+      }
+    }
+
     return SearchBar(
       controller: controller,
       constraints:
           constraints ?? const BoxConstraints(maxHeight: 45, minHeight: 45),
       hintText: hintText,
       onChanged: onChanged,
-      hintStyle: WidgetStateProperty.all(const TextStyle(fontSize: 16)),
       leading: const Icon(Icons.search),
       trailing: [
         Visibility(
@@ -73,7 +86,10 @@ class CustomSearchBar extends StatelessWidget {
         const SizedBox(width: 5),
       ],
       backgroundColor: WidgetStateProperty.all(CustomTheme.boxColor),
-      side: WidgetStateProperty.all(BorderSide(color: CustomTheme.boxBorder)),
+      overlayColor: WidgetStateProperty.all(Colors.transparent),
+      side: WidgetStateProperty.all(
+        const BorderSide(color: CustomTheme.boxBorderColor),
+      ),
       shape: WidgetStateProperty.all(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),

@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
-import 'package:game_tracker/l10n/generated/app_localizations.dart';
-import 'package:game_tracker/presentation/views/main_menu/group_view/groups_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/home_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/match_view/match_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/settings_view.dart';
-import 'package:game_tracker/presentation/views/main_menu/statistics_view.dart';
-import 'package:game_tracker/presentation/widgets/navbar_item.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
+import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/navbar_item.dart';
+import 'package:tallee/state/data_refresh_provider.dart';
+import 'package:tallee/state/group_search_provider.dart';
+import 'package:tallee/state/match_search_provider.dart';
 
 class CustomNavigationBar extends StatefulWidget {
+  /// A custom navigation bar widget that provides tabbed navigation
+  /// between different views: Home, Matches, Groups, and Statistics.
   const CustomNavigationBar({super.key});
 
   @override
@@ -26,23 +35,26 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final matchSearchProvider = Provider.of<MatchSearchProvider>(context);
+    final groupSearchProvider = Provider.of<GroupSearchProvider>(context);
+    final refreshRevision = context.watch<DataRefreshProvider>().revision;
     // Pretty ugly but works
     final List<Widget> tabs = [
-      KeyedSubtree(key: ValueKey('home_$tabKeyCount'), child: const HomeView()),
       KeyedSubtree(
-        key: ValueKey('matches_$tabKeyCount'),
+        key: ValueKey('matches_${tabKeyCount}_$refreshRevision'),
         child: const MatchView(),
       ),
       KeyedSubtree(
-        key: ValueKey('groups_$tabKeyCount'),
-        child: const GroupsView(),
+        key: ValueKey('groups_${tabKeyCount}_$refreshRevision'),
+        child: const GroupView(),
       ),
       KeyedSubtree(
-        key: ValueKey('stats_$tabKeyCount'),
+        key: ValueKey('stats_${tabKeyCount}_$refreshRevision'),
         child: const StatisticsView(),
       ),
     ];
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -51,12 +63,54 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         ),
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
+        leading: currentIndex == 0
+            ? IconButton(
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    adaptivePageRoute(builder: (_) => const MatchReceiveView()),
+                  );
+                  if (mounted) {
+                    setState(() {
+                      tabKeyCount++;
+                    });
+                  }
+                },
+                icon: const Icon(Icons.qr_code_scanner),
+              )
+            : null,
         actions: [
-          IconButton(
+          if (currentIndex == 0) // Only in MatchView
+            HapticIconButton(
+              key: ValueKey(
+                matchSearchProvider.isSearching
+                    ? 'match_search_close_button'
+                    : 'match_search_open_button',
+              ),
+              icon: matchSearchProvider.isSearching
+                  ? const Icon(Icons.close)
+                  : const Icon(Icons.search),
+              onPressed: () => matchSearchProvider.toggleSearch(),
+            ),
+
+          if (currentIndex == 1) // Only in GroupView
+            HapticIconButton(
+              key: ValueKey(
+                groupSearchProvider.isSearching
+                    ? 'group_search_close_button'
+                    : 'group_search_open_button',
+              ),
+              icon: Icon(
+                groupSearchProvider.isSearching ? Icons.close : Icons.search,
+              ),
+              onPressed: () => groupSearchProvider.toggleSearch(),
+            ),
+
+          HapticIconButton(
             onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const SettingsView()),
+              final navigator = Navigator.of(context);
+              await navigator.push(
+                adaptivePageRoute(builder: (_) => const SettingsView()),
               );
               setState(() {
                 tabKeyCount++;
@@ -70,52 +124,53 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       backgroundColor: CustomTheme.backgroundColor,
       body: tabs[currentIndex],
       extendBody: true,
-      bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.only(bottom: 30),
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            color: CustomTheme.primaryColor,
+      bottomNavigationBar: Container(
+        height: 115,
+        decoration: BoxDecoration(
+          color: CustomTheme.navBarBackgroundColor,
+          border: Border.all(
+            strokeAlign: BorderSide.strokeAlignOutside,
+            color: CustomTheme.boxBorderColor,
+            width: 2,
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: SizedBox(
-              height: 60,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  NavbarItem(
-                    index: 0,
-                    isSelected: currentIndex == 0,
-                    icon: Icons.home_rounded,
-                    label: loc.home,
-                    onTabTapped: onTabTapped,
-                  ),
-                  NavbarItem(
-                    index: 1,
-                    isSelected: currentIndex == 1,
-                    icon: Icons.gamepad_rounded,
-                    label: loc.matches,
-                    onTabTapped: onTabTapped,
-                  ),
-                  NavbarItem(
-                    index: 2,
-                    isSelected: currentIndex == 2,
-                    icon: Icons.group_rounded,
-                    label: loc.groups,
-                    onTabTapped: onTabTapped,
-                  ),
-                  NavbarItem(
-                    index: 3,
-                    isSelected: currentIndex == 3,
-                    icon: Icons.bar_chart_rounded,
-                    label: loc.statistics,
-                    onTabTapped: onTabTapped,
-                  ),
-                ],
-              ),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
             ),
+          ],
+        ),
+        child: SafeArea(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              NavbarItem(
+                index: 0,
+                isSelected: currentIndex == 0,
+                icon: Icons.gamepad_rounded,
+                label: loc.matches,
+                onTabTapped: onTabTapped,
+              ),
+              NavbarItem(
+                index: 1,
+                isSelected: currentIndex == 1,
+                icon: Icons.group_rounded,
+                label: loc.groups,
+                onTabTapped: onTabTapped,
+              ),
+              NavbarItem(
+                index: 2,
+                isSelected: currentIndex == 2,
+                icon: Icons.bar_chart_rounded,
+                label: loc.statistics,
+                onTabTapped: onTabTapped,
+              ),
+            ],
           ),
         ),
       ),
@@ -124,22 +179,21 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
 
   /// Handles tab tap events. Updates the current [index] state.
   void onTabTapped(int index) {
+    HapticFeedback.selectionClick();
     setState(() {
       currentIndex = index;
     });
   }
 
   /// Returns the title of the current tab based on [currentIndex].
-  String _currentTabTitle(context) {
+  String _currentTabTitle(BuildContext context) {
     final loc = AppLocalizations.of(context);
     switch (currentIndex) {
       case 0:
-        return loc.home;
-      case 1:
         return loc.matches;
-      case 2:
+      case 1:
         return loc.groups;
-      case 3:
+      case 2:
         return loc.statistics;
       default:
         return '';

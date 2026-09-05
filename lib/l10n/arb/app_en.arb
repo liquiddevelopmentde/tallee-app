@@ -1,228 +1,305 @@
 {
   "@@locale": "en",
-  "@all_players": {
-    "description": "Label for all players list"
-  },
-  "@all_players_selected": {
-    "description": "Message when all players are added to selection"
-  },
-  "@amount_of_matches": {
-    "description": "Label for amount of matches statistic"
-  },
-  "@app_name": {
-    "description": "The name of the App"
-  },
-  "@cancel": {
-    "description": "Cancel button text"
-  },
-  "@choose_game": {
-    "description": "Label for choosing a game"
-  },
-  "@choose_group": {
-    "description": "Label for choosing a group"
-  },
-  "@choose_ruleset": {
-    "description": "Label for choosing a ruleset"
-  },
+  "add_team": "Add Team",
+  "all": "All",
+  "all_players": "All players",
+  "all_players_associated": "All players successfully associated",
+  "all_players_selected": "All players selected",
+  "all_time": "All time",
+  "app_name": "Tallee",
+  "associate_game": "Associate Game",
+  "associate_group": "Associate Group",
+  "associate_players": "Associate Players",
+  "average_score": "Average score",
+  "best_player": "Best Player",
+  "best_score": "Best score",
+  "cancel": "Cancel",
+  "choose_date_range": "Choose date range",
+  "choose_game": "Choose Game",
+  "choose_group": "Choose Group",
+  "choose_match_file": "Choose Match File",
+  "choose_other_file": "Please choose another file.",
+  "choose_scopes": "Choose Scopes",
+  "choose_timeframes": "Choose Timeframes",
+  "choose_types": "Choose Types",
+  "choose_where_to_save": "Choose where to save your match:",
+  "classifier": "Classifier",
+  "classifier_description": "Choose which metric is calculated and shown in this statistic.",
+  "click_another_player_to_create_a_pair": "Click another player to create a pair",
+  "code_copied": "Code copied to clipboard",
+  "code_pasted_from_clipboard": "Code pasted from clipboard",
+  "color": "Color",
+  "color_blue": "Blue",
+  "color_green": "Green",
+  "color_orange": "Orange",
+  "color_pink": "Pink",
+  "color_purple": "Purple",
+  "color_red": "Red",
+  "color_teal": "Teal",
+  "color_yellow": "Yellow",
+  "confirm": "Confirm",
+  "copy_code": "Copy Code",
+  "could_not_add_player": "Could not add player {playerName}",
   "@could_not_add_player": {
-    "description": "Error message when adding a player fails"
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
   },
-  "@create_group": {
-    "description": "Button text to create a group"
-  },
-  "@create_match": {
-    "description": "Button text to create a match"
-  },
-  "@create_new_group": {
-    "description": "Button text to create a new group"
-  },
-  "@create_new_match": {
-    "description": "Button text to create a new match"
-  },
-  "@data_successfully_deleted": {
-    "description": "Success message after deleting data"
-  },
-  "@data_successfully_exported": {
-    "description": "Success message after exporting data"
-  },
-  "@data_successfully_imported": {
-    "description": "Success message after importing data"
-  },
-  "@days_ago": {
-    "description": "Date format for days ago",
+  "create_as_new": "Create as new",
+  "create_game": "Create Game",
+  "create_group": "Create Group",
+  "create_match": "Create Match",
+  "create_new_group": "Create new group",
+  "create_new_match": "Create new match",
+  "create_statistic": "Create statistic",
+  "create_teams": "Create teams",
+  "created_on": "Created on",
+  "creation_date": "Creation date",
+  "custom": "Custom",
+  "data": "Data",
+  "data_successfully_deleted": "Data successfully deleted",
+  "data_successfully_exported": "Data successfully exported",
+  "data_successfully_imported": "Data successfully imported",
+  "days_ago": "{count} days ago",
+  "delete": "Delete",
+  "delete_all_data": "Delete all data",
+  "delete_game": "Delete Game",
+  "delete_game_with_matches_warning": "If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.",
+  "@delete_game_with_matches_warning": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "@delete": {
-    "description": "Delete button text"
+  "delete_group": "Delete Group",
+  "delete_group_warning_details": "This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.",
+  "delete_match": "Delete Match",
+  "delete_player": "Delete player?",
+  "delete_player_warning_details": "This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.",
+  "delete_statistic": "Delete statistic",
+  "deleted": "Deleted",
+  "description": "Description",
+  "displayed_entries": "Displayed entries",
+  "drag_to_set_placement": "Drag to set placement",
+  "edit_game": "Edit Game",
+  "edit_group": "Edit Group",
+  "edit_match": "Edit Match",
+  "edit_name": "Edit name",
+  "edit_player": "Edit player",
+  "enable": "Enable",
+  "enter_results": "Enter Results",
+  "error_creating_group": "Error while creating group, please try again",
+  "error_deleting_game": "Error while deleting game, please try again",
+  "error_editing_group": "Error while editing group, please try again",
+  "error_editing_player": "Error while editing player, please try again",
+  "error_loading_match": "Error loading match: {error}",
+  "@error_loading_match": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   },
-  "@delete_all_data": {
-    "description": "Confirmation dialog for deleting all data"
+  "error_loading_privacy_policy": "Error loading privacy policy",
+  "error_reading_file": "Error reading file",
+  "error_while_processing_file_try_again": "Error while processing file. Please try again.",
+  "expires_in": "Expires in {time}",
+  "@expires_in": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   },
-  "@error_creating_group": {
-    "description": "Error message when group creation fails"
+  "export_canceled": "Export canceled",
+  "export_data": "Export data",
+  "favourites": "Favourites",
+  "file_couldnt_be_accessed": "The file could not be accessed",
+  "file_share_instruction": "Manually share the match data in a file for full local transfer.",
+  "filter": "Filter",
+  "format_exception": "Format Exception (see console)",
+  "game": "Game",
+  "game_associated": "Game successfully associated",
+  "game_name": "Game Name",
+  "games": "Games",
+  "group": "Group",
+  "group_associated": "Group successfully associated",
+  "group_name": "Group name",
+  "group_profile": "Group Profile",
+  "groups": "Groups",
+  "here_is_shared_match": "Here is the shared match \"{matchName}\"",
+  "@here_is_shared_match": {
+    "placeholders": {
+      "matchName": {
+        "type": "String"
+      }
+    }
   },
-  "@error_reading_file": {
-    "description": "Error message when file cannot be read"
-  },
-  "@export_canceled": {
-    "description": "Message when export is canceled"
-  },
-  "@export_data": {
-    "description": "Export data menu item"
-  },
-  "@format_exception": {
-    "description": "Error message for format exceptions"
-  },
-  "@game": {
-    "description": "Game label"
-  },
-  "@game_name": {
-    "description": "Placeholder for game name search"
-  },
-  "@group": {
-    "description": "Group label"
-  },
-  "@group_name": {
-    "description": "Placeholder for group name input"
-  },
-  "@groups": {
-    "description": "Label for groups"
-  },
-  "@home": {
-    "description": "Home tab label"
-  },
-  "@import_canceled": {
-    "description": "Message when import is canceled"
-  },
-  "@import_data": {
-    "description": "Import data menu item"
-  },
-  "@info": {
-    "description": "Info label"
-  },
-  "@invalid_schema": {
-    "description": "Error message for invalid schema"
-  },
-  "@least_points": {
-    "description": "Title for least points ruleset"
-  },
-  "@match_in_progress": {
-    "description": "Message when match is in progress"
-  },
-  "@match_name": {
-    "description": "Placeholder for match name input"
-  },
-  "@matches": {
-    "description": "Label for matches"
-  },
-  "@menu": {
-    "description": "Menu label"
-  },
-  "@most_points": {
-    "description": "Title for most points ruleset"
-  },
-  "@no_data_available": {
-    "description": "Message when no data in the statistic tiles is given"
-  },
-  "@no_groups_created_yet": {
-    "description": "Message when no groups exist"
-  },
-  "@no_matches_created_yet": {
-    "description": "Message when no matches exist"
-  },
-  "@no_players_created_yet": {
-    "description": "Message when no players exist"
-  },
-  "@no_players_found_with_that_name": {
-    "description": "Message when search returns no results"
-  },
-  "@no_players_selected": {
-    "description": "Message when no players are selected"
-  },
-  "@no_recent_matches_available": {
-    "description": "Message when no recent matches exist"
-  },
-  "@no_second_match_available": {
-    "description": "Message when no second match exists"
-  },
-  "@no_statistics_available": {
-    "description": "Message when no statistics are available, because no matches were played yet"
-  },
-  "@none": {
-    "description": "None option label"
-  },
-  "@none_group": {
-    "description": "None group option label"
-  },
-  "@not_available": {
-    "description": "Abbreviation for not available"
-  },
-  "@player_name": {
-    "description": "Placeholder for player name input"
-  },
-  "@players": {
-    "description": "Players label"
-  },
-  "@players_count": {
-    "description": "Shows the number of players",
+  "highest_score": "Highest Score",
+  "import_canceled": "Import canceled",
+  "import_data": "Import data",
+  "import_file_instruction": "Select a match file (.tallee) exported from Tallee match share to import the data.",
+  "import_match": "Import match",
+  "import_preview_description": "The following data will be imported",
+  "info": "Info",
+  "input_token_instruction": "Input a match share token another person created using Tallee to import the match.",
+  "invalid_file": "Invalid File.",
+  "invalid_qr_code": "This QR code is invalid or expired.",
+  "invalid_schema": "Invalid Schema",
+  "invalid_token": "Invalid token",
+  "last_180_days": "Last 180 days",
+  "last_30_days": "Last 30 days",
+  "last_7_days": "Last 7 days",
+  "last_90_days": "Last 90 days",
+  "last_year": "Last year",
+  "legal": "Legal",
+  "legal_notice": "Legal Notice",
+  "licenses": "Licenses",
+  "lives": "{count, plural, =1{Life} other{Lives}}",
+  "@lives": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "@quick_create": {
-    "description": "Title for quick create section"
+  "loading": "Loading...",
+  "loading_match": "Loading match...",
+  "loser": "Loser",
+  "lowest_score": "Lowest Score",
+  "manage_members": "Manage Members",
+  "match_in_progress": "Match in progress...",
+  "match_name": "Match name",
+  "match_not_ended_share_warning": "Matches can only be shared once they have ended.",
+  "match_profile": "Match Profile",
+  "match_receive": "Match Receive",
+  "match_share": "Match Share",
+  "matches": "Matches",
+  "matches_played": "Matches played",
+  "matches_won": "Matches won",
+  "member": "Member",
+  "members": "Members",
+  "names_or_descriptions_too_long": "The data contains names or descriptions that are too long.",
+  "network_error": "Network error. Please check your connection.",
+  "new_game_will_be_created": "New game will be created",
+  "new_group_will_be_created": "New group will be created",
+  "new_players_will_be_created": "{count, plural, =1{1 new player will be created} other{{count} new players will be created}}",
+  "@new_players_will_be_created": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-  "@recent_matches": {
-    "description": "Title for recent matches section"
+  "no_data_available": "No data available",
+  "no_data_to_export": "No data to export",
+  "no_games_created_yet": "No games created yet",
+  "no_groups_created_yet": "No groups created yet",
+  "no_license_text_available": "No license text available",
+  "no_matches_created_yet": "No matches created yet",
+  "no_matches_played_yet": "No games played yet",
+  "no_matching_local_game_found": "No matching local game found.\nA new game will be created.",
+  "no_matching_local_group_found": "No matching local group found.\nA new group will be created.",
+  "no_players_available": "No players available",
+  "no_players_created_yet": "No players created yet",
+  "no_players_found_with_that_name": "No players found with that name",
+  "no_players_selected": "No players selected",
+  "no_results_entered_yet": "No results entered yet",
+  "no_statistics_created_yet": "No statistics created yet",
+  "no_statistics_with_filter": "No statistics with the selected filter",
+  "no_teams_available": "No teams available",
+  "none": "None",
+  "none_group": "None",
+  "not_part_of_any_group": "Not part of any group yet",
+  "online_sharing_consent_text": "To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?",
+  "online_sharing_disabled": "Online sharing is disabled",
+  "online_sharing_info_text": "To share matches online, the app connects to external servers. To protect your privacy, this feature is disabled by default. All transmitted data is automatically deleted after 10 minutes. You can also share games locally as files.",
+  "online_sharing_title": "Activate Online Sharing",
+  "open_settings": "Open Settings",
+  "pair": "{count, plural, =1{Pair} other{Pairs}}",
+  "@pair": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-  "@ruleset": {
-    "description": "Ruleset label"
+  "parsing_error": "Data parsing error. Please try again later.",
+  "place": "place",
+  "placement": "Placement",
+  "played_matches": "Played Matches",
+  "player_count": "{count, plural, =1{1 Player} other{{count} Players}}",
+  "@player_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-  "@ruleset_least_points": {
-    "description": "Description for least points ruleset"
+  "player_name": "Player name",
+  "player_profile": "Player Profile",
+  "players": "Players",
+  "point": "Point",
+  "points": "Points",
+  "privacy_policy": "Privacy Policy",
+  "qr_code_expired": "QR Code expired",
+  "qr_code_parsing_error": "The scanned code does not contain valid match data.",
+  "random_color": "Random color",
+  "remaining": "remaining",
+  "results": "Results",
+  "ruleset": "Ruleset",
+  "save_changes": "Save Changes",
+  "save_file": "Save File",
+  "save_match": "Save match",
+  "scan_qr_code_instruction": "Scan the qr code with another Tallee instance to share the match.",
+  "scan_qr_receive_instruction": "Scan the QR code of another Tallee instance to receive the match.",
+  "scope": "Scope",
+  "scope_description": "Choose which games or players are included in the calculation.",
+  "search_for_games": "Search for games",
+  "search_for_groups": "Search for groups",
+  "search_for_players": "Search for players",
+  "search_for_scopes": "Search for scopes",
+  "search_for_timeframes": "Search for timeframes",
+  "search_for_types": "Search for types",
+  "select_a_classifier": "Select a classifier",
+  "select_a_display_color": "Select a display color.",
+  "select_a_scope": "Select a scope",
+  "select_a_timeframe": "Select a timeframe",
+  "select_loser": "Select Loser",
+  "select_the_filtered_timeframe": "Select the timeframe you want to filter by.",
+  "select_winners": "Select Winners",
+  "selected_games": "Selected games",
+  "selected_groups": "Selected groups",
+  "selected_players": "Selected players",
+  "send_code_instruction": "Send this code to a person who also has Tallee to share the current match.",
+  "server_error": "Server error: {statusCode}",
+  "@server_error": {
+    "placeholders": {
+      "statusCode": {
+        "type": "int"
+      }
+    }
   },
-  "@ruleset_most_points": {
-    "description": "Description for most points ruleset"
+  "set_name": "Set name",
+  "settings": "Settings",
+  "share_as_qr_code_info": "To share a match as a QR code with others, online sharing must be enabled",
+  "share_as_token_info": "To share a match as a token with others, online sharing must be enabled",
+  "share_match_text": "Here is the match data for our game! Enter code {code} in Tallee.",
+  "@share_match_text": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
   },
-  "@ruleset_single_loser": {
-    "description": "Description for single loser ruleset"
-  },
-  "@ruleset_single_winner": {
-    "description": "Description for single winner ruleset"
-  },
-  "@search_for_groups": {
-    "description": "Hint text for group search input field"
-  },
-  "@search_for_players": {
-    "description": "Hint text for player search input field"
-  },
-  "@select_winner": {
-    "description": "Label to select the winner"
-  },
-  "@selected_players": {
-    "description": "Shows the number of selected players"
-  },
-  "@settings": {
-    "description": "Settings label"
-  },
-  "@single_loser": {
-    "description": "Title for single loser ruleset"
-  },
-  "@single_winner": {
-    "description": "Title for single winner ruleset"
-  },
-  "@statistics": {
-    "description": "Statistics tab label"
-  },
-  "@stats": {
-    "description": "Stats tab label (short)"
-  },
+  "share_match_title": "Tallee Match Share",
+  "share_token_format_info": "Share tokens consist of 6 alphanumeric characters.",
+  "statistic": "Statistic",
+  "statistics": "Statistics",
+  "successfully_added_player": "Successfully added player {playerName}",
   "@successfully_added_player": {
     "description": "Success message when adding a player",
     "placeholders": {
@@ -232,112 +309,33 @@
       }
     }
   },
-  "@there_is_no_group_matching_your_search": {
-    "description": "Message when search returns no groups"
-  },
-  "@this_cannot_be_undone": {
-    "description": "Warning message for irreversible actions"
-  },
-  "@today_at": {
-    "description": "Date format for today"
-  },
-  "@undo": {
-    "description": "Undo button text"
-  },
-  "@unknown_exception": {
-    "description": "Error message for unknown exceptions"
-  },
-  "@winner": {
-    "description": "Winner label"
-  },
-  "@winrate": {
-    "description": "Label for winrate statistic"
-  },
-  "@wins": {
-    "description": "Label for wins statistic"
-  },
-  "@yesterday_at": {
-    "description": "Date format for yesterday"
-  },
-  "all_players": "All players",
-  "all_players_selected": "All players selected",
-  "amount_of_matches": "Amount of Matches",
-  "app_name": "Game Tracker",
-  "cancel": "Cancel",
-  "choose_game": "Choose Game",
-  "choose_group": "Choose Group",
-  "choose_ruleset": "Choose Ruleset",
-  "could_not_add_player": "Could not add player",
-  "create_group": "Create Group",
-  "create_match": "Create match",
-  "create_new_group": "Create new group",
-  "create_new_match": "Create new match",
-  "data_successfully_deleted": "Data successfully deleted",
-  "data_successfully_exported": "Data successfully exported",
-  "data_successfully_imported": "Data successfully imported",
-  "days_ago": "{count} days ago",
-  "delete": "Delete",
-  "delete_all_data": "Delete all data?",
-  "error_creating_group": "Error while creating group, please try again",
-  "error_reading_file": "Error reading file",
-  "export_canceled": "Export canceled",
-  "export_data": "Export data",
-  "format_exception": "Format Exception (see console)",
-  "game": "Game",
-  "game_name": "Game Name",
-  "group": "Group",
-  "group_name": "Group name",
-  "groups": "Groups",
-  "home": "Home",
-  "import_canceled": "Import canceled",
-  "import_data": "Import data",
-  "info": "Info",
-  "invalid_schema": "Invalid Schema",
-  "least_points": "Least Points",
-  "match_in_progress": "Match in progress...",
-  "match_name": "Match name",
-  "matches": "Matches",
-  "menu": "Menu",
-  "most_points": "Most Points",
-  "no_data_available": "No data available",
-  "no_groups_created_yet": "No groups created yet",
-  "no_matches_created_yet": "No matches created yet",
-  "no_players_created_yet": "No players created yet",
-  "no_players_found_with_that_name": "No players found with that name",
-  "no_players_selected": "No players selected",
-  "no_recent_matches_available": "No recent matches available",
-  "no_second_match_available": "No second match available",
-  "no_statistics_available": "No statistics available",
-  "none": "None",
-  "none_group": "None",
-  "not_available": "Not available",
-  "player_name": "Player name",
-  "players": "Players",
-  "players_count": "{count} Players",
-  "quick_create": "Quick Create",
-  "recent_matches": "Recent Matches",
-  "ruleset": "Ruleset",
-  "ruleset_least_points": "Inverse scoring: the player with the fewest points wins.",
-  "ruleset_most_points": "Traditional ruleset: the player with the most points wins.",
-  "ruleset_single_loser": "Exactly one loser is determined; last place receives the penalty or consequence.",
-  "ruleset_single_winner": "Exactly one winner is chosen; ties are resolved by a predefined tiebreaker.",
-  "search_for_groups": "Search for groups",
-  "search_for_players": "Search for players",
-  "select_winner": "Select Winner:",
-  "selected_players": "Selected players",
-  "settings": "Settings",
-  "single_loser": "Single Loser",
-  "single_winner": "Single Winner",
-  "statistics": "Statistics",
-  "stats": "Stats",
-  "successfully_added_player": "Successfully added player {playerName}",
+  "successfully_processed_file": "Successfully processed file",
+  "tap_import_to_continue": "Tap import match to continue",
+  "tap_to_browse": "Tap to browse",
+  "tap_to_choose_different_game": "Tap the game to choose a different one",
+  "tap_to_choose_different_group": "Tap the group to choose a different one",
+  "tap_to_choose_existing": "Tap to choose existing",
+  "team": "Team",
+  "team_match": "Team Match",
+  "teams": "Teams",
+  "there_are_no_games_matching_your_search": "There are no games matching your search",
   "there_is_no_group_matching_your_search": "There is no group matching your search",
-  "this_cannot_be_undone": "This can't be undone",
+  "there_is_no_match_matching_your_search": "There is no match matching your search",
+  "this_cannot_be_undone": "This can't be undone.",
+  "tie": "Tie",
+  "timeframe": "Timeframe",
+  "today": "Today",
   "today_at": "Today at",
-  "undo": "Undo",
+  "token_expired": "Token expired",
+  "total_losses": "Total losses",
+  "total_matches": "Total matches",
+  "total_score": "Total score",
+  "total_wins": "Total wins",
+  "type": "Type",
+  "unexpected_error": "An unexpected error occurred.",
   "unknown_exception": "Unknown Exception (see console)",
-  "winner": "Winner",
+  "winners": "Winner",
   "winrate": "Winrate",
-  "wins": "Wins",
+  "worst_score": "Worst score",
   "yesterday_at": "Yesterday at"
 }

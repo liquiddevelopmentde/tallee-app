@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/db/tables/player_group_table.dart';
-import 'package:game_tracker/data/db/tables/player_table.dart';
-import 'package:game_tracker/data/dto/player.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/db/tables/player_group_table.dart';
+import 'package:tallee/data/db/tables/player_table.dart';
+import 'package:tallee/data/models/player.dart';
 
 part 'player_group_dao.g.dart';
 
@@ -11,8 +11,7 @@ class PlayerGroupDao extends DatabaseAccessor<AppDatabase>
     with _$PlayerGroupDaoMixin {
   PlayerGroupDao(super.db);
 
-  /// No need for a groupHasPlayers method since the members attribute is
-  /// not nullable
+  /* Create */
 
   /// Adds a [player] to a group with the given [groupId].
   /// If the player is already in the group, no action is taken.
@@ -27,42 +26,39 @@ class PlayerGroupDao extends DatabaseAccessor<AppDatabase>
     }
 
     if (!await db.playerDao.playerExists(playerId: player.id)) {
-      db.playerDao.addPlayer(player: player);
+      await db.playerDao.addPlayer(player: player);
     }
 
     await into(playerGroupTable).insert(
       PlayerGroupTableCompanion.insert(playerId: player.id, groupId: groupId),
     );
-
     return true;
   }
 
+  /* Read */
+
   /// Retrieves all players belonging to a specific group by [groupId].
   Future<List<Player>> getPlayersOfGroup({required String groupId}) async {
-    final query = select(playerGroupTable)
-      ..where((pG) => pG.groupId.equals(groupId));
-    final result = await query.get();
+    final query = select(playerGroupTable).join([
+      innerJoin(
+        playerTable,
+        playerTable.id.equalsExp(playerGroupTable.playerId),
+      ),
+    ])..where(playerGroupTable.groupId.equals(groupId));
 
-    List<Player> groupMembers = List.empty(growable: true);
-
-    for (var entry in result) {
-      final player = await db.playerDao.getPlayerById(playerId: entry.playerId);
-      groupMembers.add(player);
-    }
-
-    return groupMembers;
-  }
-
-  /// Removes a player from a group based on [playerId] and [groupId].
-  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
-  Future<bool> removePlayerFromGroup({
-    required String playerId,
-    required String groupId,
-  }) async {
-    final query = delete(playerGroupTable)
-      ..where((p) => p.playerId.equals(playerId) & p.groupId.equals(groupId));
-    final rowsAffected = await query.go();
-    return rowsAffected > 0;
+    final result = await query.map((row) => row.readTable(playerTable)).get();
+    return result
+        .map(
+          (row) => Player(
+            id: row.id,
+            createdAt: row.createdAt,
+            name: row.name,
+            nameCount: row.nameCount,
+            description: row.description,
+            deleted: row.deleted,
+          ),
+        )
+        .toList();
   }
 
   /// Checks if a player with [playerId] is in the group with [groupId].
@@ -72,8 +68,82 @@ class PlayerGroupDao extends DatabaseAccessor<AppDatabase>
     required String groupId,
   }) async {
     final query = select(playerGroupTable)
-      ..where((p) => p.playerId.equals(playerId) & p.groupId.equals(groupId));
+      ..where(
+        (tbl) => tbl.playerId.equals(playerId) & tbl.groupId.equals(groupId),
+      );
     final result = await query.getSingleOrNull();
     return result != null;
+  }
+
+  /* Update */
+
+  /// Replaces all players in a group with the provided list of players.
+  /// Removes all existing players from the group and adds the new players.
+  /// Also adds any new players to the player table if they don't exist.
+  /// Returns `true` if the group exists and players were replaced, `false` otherwise.
+  Future<bool> replaceGroupPlayers({
+    required String groupId,
+    required List<Player> newPlayers,
+  }) async {
+    if (!await db.groupDao.groupExists(groupId: groupId)) return false;
+    if (newPlayers.isEmpty) return false;
+
+    await db.transaction(() async {
+      // Remove all existing players from the group
+      final deleteQuery = delete(db.playerGroupTable)
+        ..where((tbl) => tbl.groupId.equals(groupId));
+      await deleteQuery.go();
+
+      // Add new players to the player table if they don't exist
+      await Future.wait(
+        newPlayers.map((player) async {
+          if (!await db.playerDao.playerExists(playerId: player.id)) {
+            await db.playerDao.addPlayer(player: player);
+          }
+        }),
+      );
+
+      // Add the new players to the group
+      await db.batch(
+        (b) => b.insertAll(
+          db.playerGroupTable,
+          newPlayers
+              .map(
+                (player) => PlayerGroupTableCompanion.insert(
+                  playerId: player.id,
+                  groupId: groupId,
+                ),
+              )
+              .toList(),
+          mode: InsertMode.insertOrReplace,
+        ),
+      );
+    });
+    return true;
+  }
+
+  /// Removes a player from all groups based on [playerId].
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> removePlayerFromAllGroups({required String playerId}) async {
+    final query = delete(playerGroupTable)
+      ..where((tbl) => tbl.playerId.equals(playerId));
+    final rowsAffected = await query.go();
+    return rowsAffected > 0;
+  }
+
+  /* Delete */
+
+  /// Removes a player from a group based on [playerId] and [groupId].
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> removePlayerFromGroup({
+    required String playerId,
+    required String groupId,
+  }) async {
+    final query = delete(playerGroupTable)
+      ..where(
+        (tbl) => tbl.playerId.equals(playerId) & tbl.groupId.equals(groupId),
+      );
+    final rowsAffected = await query.go();
+    return rowsAffected > 0;
   }
 }

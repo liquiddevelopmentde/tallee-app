@@ -1,44 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:game_tracker/core/custom_theme.dart';
+import 'package:flutter/services.dart';
+import 'package:tallee/core/custom_theme.dart';
 
-/// A custom text input field widget that encapsulates a [TextField] with specific styling.
-/// - [controller]: The controller for the text input field.
-/// - [onChanged]: The callback invoked when the text in the field changes.
-/// - [hintText]: The hint text displayed in the text input field when it is empty
 class TextInputField extends StatelessWidget {
+  /// A custom text input field widget that encapsulates a [TextField] with specific styling.
+  /// - [controller]: The controller for the text input field.
+  /// - [onChanged]: Optional callback invoked when the text in the field changes.
+  /// - [hintText]: The hint text displayed in the text input field when it is empty
+  /// - [maxLength]: Optional parameter for maximum length of the input text.
+  /// - [maxLines]: The maximum number of lines for the text input field. Defaults to 1.
+  /// - [minLines]: The minimum number of lines for the text input field. Defaults to 1.
+  /// - [showCounterText]: Whether to show the counter text in the text input field. Defaults to false.
+  /// - [textInputAction]: Optional action button shown on the keyboard.
+  /// - [focusNode]: Optional focus node for managing focus of the text input field.
+  /// - [onSubmitted]: Optional callback invoked when the user submits the field.
   const TextInputField({
     super.key,
     required this.controller,
     required this.hintText,
     this.onChanged,
+    this.maxLength,
+    this.maxLines = 1,
+    this.minLines = 1,
+    this.showCounterText = false,
+    this.textInputAction,
+    this.focusNode,
+    this.onSubmitted,
   });
 
-  /// The controller for the text input field.
   final TextEditingController controller;
-
-  /// The callback invoked when the text in the field changes.
   final ValueChanged<String>? onChanged;
-
-  /// The hint text displayed in the text input field when it is empty.
   final String hintText;
+  final int? maxLength;
+  final int? maxLines;
+  final int? minLines;
+  final bool showCounterText;
+  final TextInputAction? textInputAction;
+  final FocusNode? focusNode;
+  final ValueChanged<String>? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
       onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      textInputAction: textInputAction,
+      maxLength: maxLength,
+      maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
+      maxLines: maxLines,
+      minLines: minLines,
+      focusNode: focusNode,
       decoration: InputDecoration(
         filled: true,
         fillColor: CustomTheme.boxColor,
         hintText: hintText,
-        hintStyle: const TextStyle(fontSize: 18),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorder),
+        counterText: showCounterText ? null : '',
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorder),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
         ),
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),

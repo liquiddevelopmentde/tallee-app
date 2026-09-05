@@ -1,51 +1,46 @@
 import 'package:drift/drift.dart';
-import 'package:game_tracker/data/db/database.dart';
-import 'package:game_tracker/data/db/tables/player_match_table.dart';
-import 'package:game_tracker/data/dto/player.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/db/tables/player_match_table.dart';
+import 'package:tallee/data/db/tables/team_table.dart';
+import 'package:tallee/data/models/player.dart';
 
 part 'player_match_dao.g.dart';
 
-@DriftAccessor(tables: [PlayerMatchTable])
+@DriftAccessor(tables: [PlayerMatchTable, TeamTable])
 class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     with _$PlayerMatchDaoMixin {
   PlayerMatchDao(super.db);
 
+  /* Create */
+
   /// Associates a player with a match by inserting a record into the
-  /// [PlayerMatchTable].
-  Future<void> addPlayerToMatch({
+  /// [PlayerMatchTable]. Optionally associates with a team and sets initial score.
+  Future<bool> addPlayerToMatch({
     required String matchId,
     required String playerId,
+    String? teamId,
   }) async {
-    await into(playerMatchTable).insert(
-      PlayerMatchTableCompanion.insert(playerId: playerId, matchId: matchId),
-      mode: InsertMode.insertOrIgnore,
+    final rowsAffected = await into(playerMatchTable).insert(
+      PlayerMatchTableCompanion.insert(
+        playerId: playerId,
+        matchId: matchId,
+        teamId: Value(teamId),
+      ),
+      mode: InsertMode.insertOrReplace,
     );
+    return rowsAffected > 0;
   }
 
-  /// Retrieves a list of [Player]s associated with the given [matchId].
-  /// Returns null if no players are found.
-  Future<List<Player>?> getPlayersOfMatch({required String matchId}) async {
-    final result = await (select(
-      playerMatchTable,
-    )..where((p) => p.matchId.equals(matchId))).get();
-
-    if (result.isEmpty) return null;
-
-    final futures = result.map(
-      (row) => db.playerDao.getPlayerById(playerId: row.playerId),
-    );
-    final players = await Future.wait(futures);
-    return players;
-  }
+  /* Read */
 
   /// Checks if there are any players associated with the given [matchId].
   /// Returns `true` if there are players, otherwise `false`.
-  Future<bool> matchHasPlayers({required String matchId}) async {
+  Future<bool> hasMatchPlayers({required String matchId}) async {
     final count =
         await (selectOnly(playerMatchTable)
               ..where(playerMatchTable.matchId.equals(matchId))
               ..addColumns([playerMatchTable.playerId.count()]))
-            .map((row) => row.read(playerMatchTable.playerId.count()))
+            .map((tbl) => tbl.read(playerMatchTable.playerId.count()))
             .getSingle();
     return (count ?? 0) > 0;
   }
@@ -61,48 +56,144 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
               ..where(playerMatchTable.matchId.equals(matchId))
               ..where(playerMatchTable.playerId.equals(playerId))
               ..addColumns([playerMatchTable.playerId.count()]))
-            .map((row) => row.read(playerMatchTable.playerId.count()))
+            .map((tbl) => tbl.read(playerMatchTable.playerId.count()))
             .getSingle();
     return (count ?? 0) > 0;
   }
 
-  /// Removes the association of a player with a match by deleting the record
-  /// from the [PlayerMatchTable].
-  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
-  Future<bool> removePlayerFromMatch({
+  /// Retrieves a list of [Player]s associated with the given [matchId].
+  /// If [includeDeletedPlayer] is `false`, deleted players will be filtered
+  /// out from the result. Returns empty list if no players are found.
+  Future<List<Player>> getPlayersOfMatch({
+    required String matchId,
+    bool includeDeletedPlayer = false,
+  }) async {
+    final result = await (select(
+      playerMatchTable,
+    )..where((tbl) => tbl.matchId.equals(matchId))).get();
+
+    if (result.isEmpty) return [];
+
+    final futures = result.map(
+      (row) => db.playerDao.getPlayerById(playerId: row.playerId),
+    );
+    final fetchedPlayers = await Future.wait(futures);
+
+    return (includeDeletedPlayer
+          ? fetchedPlayers.toList()
+          // Filter deleted players
+          : fetchedPlayers.where((p) => !p.deleted).toList())
+      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+  }
+
+  /// Retrieves a list of [Player]s associated with a specific team in a match.
+  /// Returns empty list if no players are found for the team in the match.
+  Future<List<Player>> getPlayersOfTeamInMatch({
+    required String matchId,
+    required String teamId,
+  }) async {
+    final result =
+        await (select(playerMatchTable)
+              ..where((tbl) => tbl.matchId.equals(matchId))
+              ..where((tbl) => tbl.teamId.equals(teamId)))
+            .get();
+
+    if (result.isEmpty) return [];
+
+    final futures = result.map(
+      (row) => db.playerDao.getPlayerById(playerId: row.playerId),
+    );
+    final players = await Future.wait(futures);
+    return players;
+  }
+
+  /// Retrieves all [Player]s for the passed [matchIds] matches in a single operation.
+  /// Returns a map where the key is the matchId and the value is the list of players.
+  Future<Map<String, List<Player>>> getPlayersForMatches({
+    required List<String> matchIds,
+    bool includeDeletedPlayer = false,
+  }) async {
+    if (matchIds.isEmpty) return {};
+
+    final query = select(playerMatchTable)
+      ..where((tbl) => tbl.matchId.isIn(matchIds));
+    final rows = await query.get();
+
+    if (rows.isEmpty) return {};
+
+    final playerIds = rows.map((r) => r.playerId).toSet().toList();
+    final playersList = await db.playerDao.getPlayersByIds(
+      playerIds: playerIds,
+    );
+    final playersMap = {for (final p in playersList) p.id: p};
+
+    final Map<String, List<Player>> resultMap = {};
+    for (final row in rows) {
+      final player = playersMap[row.playerId];
+      if (player == null) continue;
+      if (includeDeletedPlayer || !player.deleted) {
+        resultMap.putIfAbsent(row.matchId, () => []).add(player);
+      }
+    }
+
+    for (final players in resultMap.values) {
+      players.sort(
+        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+      );
+    }
+
+    return resultMap;
+  }
+
+  /* Updated */
+
+  /// Updates the team for a player in a match.
+  /// Returns `true` if the update was successful, otherwise `false`.
+  Future<bool> updatePlayersTeam({
     required String matchId,
     required String playerId,
+    required String? teamId,
   }) async {
-    final query = delete(playerMatchTable)
-      ..where((pg) => pg.matchId.equals(matchId))
-      ..where((pg) => pg.playerId.equals(playerId));
-    final rowsAffected = await query.go();
+    final rowsAffected =
+        await (update(playerMatchTable)..where(
+              (tbl) =>
+                  tbl.matchId.equals(matchId) & tbl.playerId.equals(playerId),
+            ))
+            .write(PlayerMatchTableCompanion(teamId: Value(teamId)));
     return rowsAffected > 0;
   }
 
   /// Updates the players associated with a match based on the provided
-  /// [newPlayer] list. It adds new players and removes players that are no
+  /// [player] list. It adds new players and removes players that are no
   /// longer associated with the match.
-  Future<void> updatePlayersFromMatch({
+  Future<bool> updateMatchPlayers({
     required String matchId,
-    required List<Player> newPlayer,
+    required List<Player> player,
   }) async {
+    if (player.isEmpty) return false;
+
     final currentPlayers = await getPlayersOfMatch(matchId: matchId);
     // Create sets of player IDs for easy comparison
-    final currentPlayerIds = currentPlayers?.map((p) => p.id).toSet() ?? {};
-    final newPlayerIdsSet = newPlayer.map((p) => p.id).toSet();
+    final currentPlayerIds = currentPlayers.map((p) => p.id).toSet();
+    final newPlayerIdsSet = player.map((p) => p.id).toSet();
+
+    // Are the current and new player identical?
+    if (currentPlayerIds.containsAll(newPlayerIdsSet) &&
+        newPlayerIdsSet.containsAll(currentPlayerIds)) {
+      return false;
+    }
 
     // Determine players to add and remove
     final playersToAdd = newPlayerIdsSet.difference(currentPlayerIds);
     final playersToRemove = currentPlayerIds.difference(newPlayerIdsSet);
 
-    db.transaction(() async {
+    await db.transaction(() async {
       // Remove old players
       if (playersToRemove.isNotEmpty) {
         await (delete(playerMatchTable)..where(
-              (pg) =>
-                  pg.matchId.equals(matchId) &
-                  pg.playerId.isIn(playersToRemove.toList()),
+              (tbl) =>
+                  tbl.matchId.equals(matchId) &
+                  tbl.playerId.isIn(playersToRemove.toList()),
             ))
             .go();
       }
@@ -126,5 +217,22 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
         );
       }
     });
+    return true;
+  }
+
+  /* Delete */
+
+  /// Removes the association of a player with a match by deleting the record
+  /// from the [PlayerMatchTable].
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> removePlayerFromMatch({
+    required String matchId,
+    required String playerId,
+  }) async {
+    final query = delete(playerMatchTable)
+      ..where((tbl) => tbl.matchId.equals(matchId))
+      ..where((tbl) => tbl.playerId.equals(playerId));
+    final rowsAffected = await query.go();
+    return rowsAffected > 0;
   }
 }

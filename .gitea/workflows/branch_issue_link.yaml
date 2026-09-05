@@ -1,0 +1,162 @@
+name: "Branch to Issue Link"
+on:
+  create:
+
+jobs:
+  link-branch-to-issue:
+    name: "Link new branch to best matching issue"
+    # The "create" event also fires for tags; only act on branches.
+    if: ${{ gitea.event.ref_type == 'branch' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      API: ${{ gitea.server_url }}/api/v1
+      TOKEN: ${{ secrets.BOT_TOKEN }}
+      REPO: ${{ github.repository }}
+      BRANCH: ${{ github.event.ref }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      # Minimum similarity (0..1) required to assign a branch to an issue.
+      MIN_SCORE: "0.3"
+    steps:
+      - name: "Assign branch reference to matching issue"
+        run: |
+          set -euo pipefail
+
+          # Never link the default branch to an issue.
+          if [ "$BRANCH" = "$DEFAULT_BRANCH" ]; then
+            echo "skip: '$BRANCH' is the default branch"
+            exit 0
+          fi
+
+          python3 - <<'PY'
+          import json, os, re, sys
+          from difflib import SequenceMatcher
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError
+
+          API    = os.environ["API"]
+          TOKEN  = os.environ["TOKEN"]
+          REPO   = os.environ["REPO"]
+          BRANCH = os.environ["BRANCH"]
+          MIN    = float(os.environ["MIN_SCORE"])
+          AUTH   = {"Authorization": "token " + TOKEN}
+
+          # Words that only describe the kind of work and carry no matching signal.
+          STOP = {
+              "feature", "bug", "hotfix", "enhancement", "setup", "test", "testing",
+              "chore", "docs", "documentation", "refactor", "refactoring", "technical debt"
+          }
+
+          def api(path):
+              """GET path; returns (status, headers, parsed_json_or_None)."""
+              req = Request(API + path, headers=AUTH)
+              try:
+                  with urlopen(req) as r:
+                      return r.status, dict(r.headers), json.load(r)
+              except HTTPError as e:
+                  return e.code, dict(e.headers), None
+
+          def is_issue(obj):
+              # The index space is shared with pull requests; keep only real issues.
+              # Gitea always includes the "pull_request" key (null for plain issues).
+              return isinstance(obj, dict) and obj.get("pull_request") is None
+
+          def collect_open_issues():
+              # Primary path: the normal listing endpoint (backed by the issue indexer).
+              out, page = [], 1
+              while True:
+                  st, hdr, batch = api(f"/repos/{REPO}/issues?state=open&limit=50&page={page}")
+                  n = len(batch) if isinstance(batch, list) else 0
+                  print(f"[list] page={page} status={st} "
+                        f"total={hdr.get('X-Total-Count')} got={n}")
+                  if not isinstance(batch, list) or not batch:
+                      break
+                  out += batch
+                  if len(batch) < 50:
+                      break
+                  page += 1
+              issues = [i for i in out if is_issue(i)]
+              if issues:
+                  return issues
+
+              # Fallback: the issue indexer returned nothing (empty/out-of-sync).
+              # Walk the shared index space via the DB-backed single-issue endpoint,
+              # which does not depend on the indexer.
+              print("[walk] list endpoint empty -> enumerating issues directly")
+              found, idx, misses = [], 1, 0
+              while idx <= 2000 and misses < 25:
+                  st, _, obj = api(f"/repos/{REPO}/issues/{idx}")
+                  if st == 200 and isinstance(obj, dict):
+                      misses = 0
+                      if is_issue(obj) and obj.get("state") == "open":
+                          found.append(obj)
+                  else:
+                      misses += 1
+                  idx += 1
+              print(f"[walk] found {len(found)} open issue(s)")
+              return found
+
+          def tokens(text):
+              raw = re.split(r"[^a-z0-9]+", (text or "").lower())
+              return {t for t in raw if t and t not in STOP}
+
+          def assign(number):
+              # Set the issue's branch reference (the "Reference" field in the sidebar).
+              data = json.dumps({"ref": BRANCH}).encode()
+              req = Request(
+                  f"{API}/repos/{REPO}/issues/{number}",
+                  data=data, method="PATCH",
+                  headers={**AUTH, "Content-Type": "application/json"},
+              )
+              with urlopen(req) as r:
+                  print(f"assigned branch '{BRANCH}' to issue #{number} (HTTP {r.status})")
+
+          # Preferred convention: "<type>/<issue-no>-<name>" (e.g. feature/52-foo).
+          # A leading number right after the type is an explicit issue reference.
+          m = re.match(r"^[^/]+/0*(\d+)(?:[-_/]|$)", BRANCH)
+          if m:
+              num = m.group(1)
+              st, _, obj = api(f"/repos/{REPO}/issues/{num}")
+              if st == 200 and is_issue(obj):
+                  print(f"branch encodes issue #{num} '{obj.get('title')}' -> direct match")
+                  assign(num)
+                  sys.exit(0)
+              print(f"branch encodes #{num} but no matching issue (status={st}); "
+                    f"falling back to title similarity")
+
+          # Fallback: match the branch name against issue titles.
+          # Pure-digit tokens in the branch may still reference an issue number.
+          nums = {t for t in re.split(r"[^0-9]+", BRANCH) if t}
+          bt = tokens(BRANCH)
+          bnorm = " ".join(sorted(bt))
+
+          # Collect all open issues (indexer first, DB-walk fallback).
+          issues = collect_open_issues()
+
+          if not issues:
+              print("no open issues to match against")
+              sys.exit(0)
+
+          def score(issue):
+              it = tokens(issue["title"])
+              # Word overlap (Jaccard) blended with raw string similarity.
+              jacc = len(bt & it) / len(bt | it) if (bt | it) else 0.0
+              ratio = SequenceMatcher(None, bnorm, " ".join(sorted(it))).ratio()
+              s = 0.6 * jacc + 0.4 * ratio
+              # A branch that carries the issue number is almost certainly a match.
+              if str(issue["number"]) in nums:
+                  s = max(s, 0.95)
+              return s
+
+          best = max(issues, key=score)
+          bs = score(best)
+          print(f"branch '{BRANCH}' -> best issue #{best['number']} '{best['title']}' score={bs:.3f}")
+
+          if bs < MIN:
+              print(f"skip: best score {bs:.3f} below threshold {MIN}")
+              sys.exit(0)
+
+          assign(best["number"])
+          PY
