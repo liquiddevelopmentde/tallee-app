@@ -569,7 +569,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get online_sharing_info_text =>
-      'Für das Online-Teilen von Spielen stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert und alle übertragenen Daten werden nach 10 Minuten gelöscht. Du kannst Spiele aber jederzeit auch lokal als Datei teilen.';
+      'Für das Online-Teilen von Spielen stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert. Alle übertragenen Daten werden nach 10 Minuten automatisch gelöscht. Du kannst Spiele auch lokal als Datei teilen.';
 
   @override
   String get online_sharing_title => 'Online-Teilen aktivieren';

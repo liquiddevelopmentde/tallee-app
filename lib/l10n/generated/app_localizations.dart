@@ -1097,7 +1097,7 @@ abstract class AppLocalizations {
   /// No description provided for @online_sharing_info_text.
   ///
   /// In en, this message translates to:
-  /// **'Online game sharing requires a connection to external servers. To protect your privacy, this feature is disabled by default and all transmitted data is deleted after 10 minutes. You can still share games locally as a file.'**
+  /// **'To share matches online, the app connects to external servers. To protect your privacy, this feature is disabled by default. All transmitted data is automatically deleted after 10 minutes. You can also share games locally as files.'**
   String get online_sharing_info_text;
 
   /// No description provided for @online_sharing_title.
