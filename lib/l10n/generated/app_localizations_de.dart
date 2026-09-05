@@ -226,9 +226,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get description => 'Beschreibung';
 
   @override
-  String get disable => 'Deaktivieren';
-
-  @override
   String get displayed_entries => 'Angezeigte Einträge';
 
   @override
@@ -575,10 +572,21 @@ class AppLocalizationsDe extends AppLocalizations {
       'Für das Online-Teilen von Spielen stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert und alle übertragenen Daten werden nach 10 Minuten gelöscht. Du kannst Spiele aber jederzeit auch lokal als Datei teilen.';
 
   @override
-  String get online_sharing_title => 'Online-Teilen';
+  String get online_sharing_title => 'Online-Teilen aktivieren';
 
   @override
   String get open_settings => 'Einstellungen öffnen';
+
+  @override
+  String pair(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Paare',
+      one: 'Paar',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get parsing_error =>

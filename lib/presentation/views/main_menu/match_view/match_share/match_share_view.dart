@@ -252,7 +252,7 @@ class _MatchShareViewState extends State<MatchShareView>
             onPressed: () => Navigator.of(context).pop(true),
           ),
           CustomDialogAction(
-            text: loc.disable,
+            text: loc.cancel,
             buttonType: ButtonType.secondary,
             onPressed: () => Navigator.of(context).pop(false),
           ),

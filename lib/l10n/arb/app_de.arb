@@ -80,7 +80,6 @@
   "delete_statistic": "Statistik löschen",
   "deleted": "Gelöscht",
   "description": "Beschreibung",
-  "disable": "Deaktivieren",
   "displayed_entries": "Angezeigte Einträge",
   "drag_to_set_placement": "Ziehen um Platzierung zu setzen",
   "edit_game": "Spielvorlage bearbeiten",
@@ -217,8 +216,16 @@
   "online_sharing_consent_text": "Damit andere dein Match laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Share-Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du Online-Teilen aktivieren?",
   "online_sharing_disabled": "Online-Teilen ist deaktiviert",
   "online_sharing_info_text": "Für das Online-Teilen von Spielen stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert und alle übertragenen Daten werden nach 10 Minuten gelöscht. Du kannst Spiele aber jederzeit auch lokal als Datei teilen.",
-  "online_sharing_title": "Online-Teilen",
+  "online_sharing_title": "Online-Teilen aktivieren",
   "open_settings": "Einstellungen öffnen",
+  "pair": "{count, plural, =1{Paar} other{Paare}}",
+  "@pair": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "parsing_error": "Fehler beim Verarbeiten der Daten. Bitte versuche es später erneut.",
   "place": "Platz",
   "placement": "Platzierung",

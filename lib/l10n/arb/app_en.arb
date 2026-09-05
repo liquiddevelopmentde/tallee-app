@@ -80,7 +80,6 @@
   "delete_statistic": "Delete statistic",
   "deleted": "Deleted",
   "description": "Description",
-  "disable": "Disable",
   "displayed_entries": "Displayed entries",
   "drag_to_set_placement": "Drag to set placement",
   "edit_game": "Edit Game",
@@ -217,8 +216,16 @@
   "online_sharing_consent_text": "To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?",
   "online_sharing_disabled": "Online sharing is disabled",
   "online_sharing_info_text": "Online game sharing requires a connection to external servers. To protect your privacy, this feature is disabled by default and all transmitted data is deleted after 10 minutes. You can still share games locally as a file.",
-  "online_sharing_title": "Online Sharing",
+  "online_sharing_title": "Activate Online Sharing",
   "open_settings": "Open Settings",
+  "pair": "{count, plural, =1{Pair} other{Pairs}}",
+  "@pair": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "parsing_error": "Data parsing error. Please try again later.",
   "place": "place",
   "placement": "Placement",

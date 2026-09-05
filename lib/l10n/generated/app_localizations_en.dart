@@ -224,9 +224,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get description => 'Description';
 
   @override
-  String get disable => 'Disable';
-
-  @override
   String get displayed_entries => 'Displayed entries';
 
   @override
@@ -570,10 +567,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Online game sharing requires a connection to external servers. To protect your privacy, this feature is disabled by default and all transmitted data is deleted after 10 minutes. You can still share games locally as a file.';
 
   @override
-  String get online_sharing_title => 'Online Sharing';
+  String get online_sharing_title => 'Activate Online Sharing';
 
   @override
   String get open_settings => 'Open Settings';
+
+  @override
+  String pair(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Pairs',
+      one: 'Pair',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get parsing_error => 'Data parsing error. Please try again later.';

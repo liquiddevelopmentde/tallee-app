@@ -494,12 +494,6 @@ abstract class AppLocalizations {
   /// **'Description'**
   String get description;
 
-  /// No description provided for @disable.
-  ///
-  /// In en, this message translates to:
-  /// **'Disable'**
-  String get disable;
-
   /// No description provided for @displayed_entries.
   ///
   /// In en, this message translates to:
@@ -1109,7 +1103,7 @@ abstract class AppLocalizations {
   /// No description provided for @online_sharing_title.
   ///
   /// In en, this message translates to:
-  /// **'Online Sharing'**
+  /// **'Activate Online Sharing'**
   String get online_sharing_title;
 
   /// No description provided for @open_settings.
@@ -1117,6 +1111,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Settings'**
   String get open_settings;
+
+  /// No description provided for @pair.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Pair} other{Pairs}}'**
+  String pair(int count);
 
   /// No description provided for @parsing_error.
   ///
