@@ -368,7 +368,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Input a match share token another person created using Tallee to import the match.';
 
   @override
-  String get invalid_file => 'Invalid File, try another one.';
+  String get invalid_file => 'Invalid File.';
+
+  @override
+  String get choose_other_file => 'Please choose another file.';
 
   @override
   String get invalid_qr_code => 'This QR code is invalid or expired.';
