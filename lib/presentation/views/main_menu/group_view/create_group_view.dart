@@ -10,7 +10,7 @@ import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
-import 'package:tallee/presentation/widgets/player_selection.dart';
+import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
 class CreateGroupView extends StatefulWidget {
@@ -108,10 +108,10 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 ),
               ),
               Expanded(
-                child: PlayerSelection(
+                child: PlayerSelectionWidget.multiple(
                   initialSelectedPlayers: initialSelectedPlayers,
                   onPlayerCreated: () => widget.onMembersChanged?.call(),
-                  onChanged: (players, units) {
+                  onMultipleChanged: (players, units) {
                     setState(() {
                       selectedPlayers = [...players];
                     });

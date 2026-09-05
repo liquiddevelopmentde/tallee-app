@@ -76,7 +76,11 @@ class Team {
         orElse: () => AppColor.orange,
       ),
       score = json['score'],
-      members = []; // Populated during import via DataTransferService
+      members =
+          (json['members'] as List<dynamic>?)
+              ?.map((e) => Player.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [];
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -84,6 +88,32 @@ class Team {
     'createdAt': createdAt.toIso8601String(),
     'color': color.name,
     'score': score,
+    'members': members.map((member) => member.toJson()).toList(),
+  };
+
+  Map<String, dynamic> toNormalizedJson() => {
+    'id': id,
+    'name': name,
+    'createdAt': createdAt.toIso8601String(),
+    'color': color.name,
+    'score': score,
     'memberIds': members.map((member) => member.id).toList(),
   };
+
+  factory Team.fromNormalizedJson(
+    Map<String, dynamic> json,
+    List<Player> members,
+  ) {
+    return Team(
+      id: json['id'],
+      name: json['name'],
+      createdAt: DateTime.parse(json['createdAt']),
+      color: AppColor.values.firstWhere(
+        (e) => e.name == json['color'],
+        orElse: () => AppColor.orange,
+      ),
+      score: json['score'],
+      members: members,
+    );
+  }
 }

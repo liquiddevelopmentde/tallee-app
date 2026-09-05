@@ -19,12 +19,16 @@ class GroupTile extends StatefulWidget {
     this.isHighlighted = false,
     this.onTap,
     this.onPlayerChanged,
+    this.borderColor,
+    this.playersClickable = true,
   });
 
   final Group group;
   final bool isHighlighted;
   final VoidCallback? onTap;
   final VoidCallback? onPlayerChanged;
+  final Color? borderColor;
+  final bool playersClickable;
 
   @override
   State<GroupTile> createState() => _GroupTileState();
@@ -45,7 +49,11 @@ class _GroupTileState extends State<GroupTile> {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         decoration: widget.isHighlighted
             ? CustomTheme.highlightedBoxDecoration
-            : CustomTheme.standardBoxDecoration,
+            : CustomTheme.standardBoxDecoration.copyWith(
+                border: widget.borderColor != null
+                    ? Border.all(color: widget.borderColor!)
+                    : null,
+              ),
         duration: const Duration(milliseconds: 150),
         child: Column(
           spacing: 5,
@@ -133,19 +141,21 @@ class _GroupTileState extends State<GroupTile> {
                 ]..sort((a, b) => a.name.compareIgnoringCaseTo(b.name)))
                   PlayerTile(
                     player: member,
-                    onTileTap: () {
-                      Navigator.push(
-                        context,
-                        adaptivePageRoute(
-                          builder: (context) => PlayerDetailView(
-                            player: member,
-                            onPlayerUpdated: () {
-                              widget.onPlayerChanged?.call();
-                            },
-                          ),
-                        ),
-                      );
-                    },
+                    onTileTap: widget.playersClickable
+                        ? () {
+                            Navigator.push(
+                              context,
+                              adaptivePageRoute(
+                                builder: (context) => PlayerDetailView(
+                                  player: member,
+                                  onPlayerUpdated: () {
+                                    widget.onPlayerChanged?.call();
+                                  },
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
                   ),
               ],
             ),

@@ -3,9 +3,13 @@
   "add_team": "Team hinzufügen",
   "all": "Alle",
   "all_players": "Alle Spieler:innen",
+  "all_players_associated": "Alle Spieler:innen erfolgreich verknüpft",
   "all_players_selected": "Alle Spieler:innen ausgewählt",
   "all_time": "Gesamter Zeitraum",
   "app_name": "Tallee",
+  "associate_game": "Spielvorlage verknüpfen",
+  "associate_group": "Gruppe verknüpfen",
+  "associate_players": "Spieler:innen verknüpfen",
   "average_score": "Durchschnittliche Punktzahl",
   "best_player": "Beste:r Spieler:in",
   "best_score": "Beste Punktzahl",
@@ -13,12 +17,17 @@
   "choose_date_range": "Datumsbereich auswählen",
   "choose_game": "Spielvorlage wählen",
   "choose_group": "Gruppe wählen",
+  "choose_match_file": "Spiel-Datei auswählen",
+  "choose_other_file": "Bitte wähle eine andere Datei aus.",
   "choose_scopes": "Bereiche wählen",
   "choose_timeframes": "Zeiträume wählen",
   "choose_types": "Typen wählen",
+  "choose_where_to_save": "Wähle aus, wo du dein Match speichern möchtest:",
   "classifier": "Klassifikator",
   "classifier_description": "Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.",
   "click_another_player_to_create_a_pair": "Klicke einen weiteren Spieler an, um ein Paar zu erstellen",
+  "code_copied": "Code in die Zwischenablage kopiert",
+  "code_pasted_from_clipboard": "Code aus der Zwischenablage eingefügt",
   "color": "Farbe",
   "color_blue": "Blau",
   "color_green": "Grün",
@@ -29,6 +38,7 @@
   "color_teal": "Türkis",
   "color_yellow": "Gelb",
   "confirm": "Bestätigen",
+  "copy_code": "Code kopieren",
   "could_not_add_player": "Spieler:in {playerName} konnte nicht hinzugefügt werden",
   "@could_not_add_player": {
     "placeholders": {
@@ -37,6 +47,7 @@
       }
     }
   },
+  "create_as_new": "Neu erstellen",
   "create_game": "Spielvorlage erstellen",
   "create_group": "Gruppe erstellen",
   "create_match": "Spiel erstellen",
@@ -76,35 +87,70 @@
   "there_is_no_game_matching_your_search": "Es gibt keine Spielvorlage, die deiner Suche entspricht",
   "edit_game": "Spielvorlage bearbeiten",
   "edit_group": "Gruppe bearbeiten",
-  "edit_match": "Match bearbeiten",
+  "edit_match": "Spiel bearbeiten",
   "edit_name": "Name ändern",
   "edit_player": "Spieler bearbeiten",
+  "enable": "Aktivieren",
   "enter_results": "Ergebnisse eintragen",
   "error_creating_group": "Fehler beim Erstellen der Gruppe, bitte erneut versuchen",
   "error_deleting_game": "Fehler beim Löschen der Spielvorlage, bitte erneut versuchen",
   "error_editing_group": "Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen",
   "error_editing_player": "Fehler beim Bearbeiten des Spielers, bitte erneut versuchen",
+  "error_loading_match": "Fehler beim Laden: {error}",
+  "@error_loading_match": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "error_loading_privacy_policy": "Fehler beim Laden der Datenschutzerklärung",
   "error_reading_file": "Fehler beim Lesen der Datei",
+  "error_while_processing_file_try_again": "Fehler beim Verarbeiten der Datei. Bitte versuche es erneut",
+  "expires_in": "Läuft ab in {time}",
+  "@expires_in": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "export_canceled": "Export abgebrochen",
   "export_data": "Daten exportieren",
   "favourites": "Favoriten",
   "file_couldnt_be_accessed": "Die Datei konnte nicht geöffnet werden",
+  "file_share_instruction": "Spiel-Daten manuell in einer Datei teilen für eine vollständige lokale Übertragung.",
   "filter": "Filter",
   "format_exception": "Formatfehler (siehe Konsole)",
   "game": "Spielvorlage",
+  "game_associated": "Spielvorlage erfolgreich verknüpft",
   "game_name": "Spielvorlagenname",
   "games": "Spielvorlagen",
   "group": "Gruppe",
+  "group_associated": "Gruppe erfolgreich verknüpft",
   "group_name": "Gruppenname",
   "group_profile": "Gruppenprofil",
   "groups": "Gruppen",
+  "here_is_shared_match": "Hier ist das geteilte Match \"{matchName}\"",
+  "@here_is_shared_match": {
+    "placeholders": {
+      "matchName": {
+        "type": "String"
+      }
+    }
+  },
   "highest_score": "Höchste Punkte",
   "import_canceled": "Import abgebrochen",
   "import_data": "Daten importieren",
+  "import_file_instruction": "Wähle eine Spiel-Datei (.tallee), die aus einem Tallee-Spiel-Share exportiert wurde, um die Daten zu importieren.",
+  "import_match": "Spiel importieren",
   "import_preview_description": "Die folgenden Daten werden importiert",
   "info": "Info",
+  "input_token_instruction": "Gib einen Match-Share-Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.",
+  "invalid_file": "Ungültige Datei.",
+  "invalid_qr_code": "Dieser QR-Code ist ungültig oder abgelaufen.",
   "invalid_schema": "Ungültiges Schema",
+  "invalid_token": "Ungültiger Token",
   "last_180_days": "Letzte 180 Tage",
   "last_30_days": "Letzte 30 Tage",
   "last_7_days": "Letzte 7 Tage",
@@ -122,18 +168,33 @@
     }
   },
   "loading": "Lädt...",
+  "loading_match": "Lade Match...",
   "loser": "Verlierer:in",
   "lowest_score": "Niedrigste Punkte",
   "manage_members": "Mitglieder bearbeiten",
   "match_in_progress": "Spiel läuft...",
   "match_name": "Spieltitel",
+  "match_not_ended_share_warning": "Spiele können erst geteilt werden, wenn sie beendet wurden.",
   "match_profile": "Spielprofil",
+  "match_receive": "Spiel empfangen",
+  "match_share": "Spiel teilen",
   "matches": "Spiele",
   "matches_played": "Spiele gespielt",
   "matches_won": "Spiele gewonnen",
   "member": "Mitglied",
   "members": "Mitglieder",
   "names_or_descriptions_too_long": "Die Daten enthalten zu lange Namen oder Beschreibungen.",
+  "network_error": "Netzwerkfehler. Bitte überprüfe deine Verbindung.",
+  "new_game_will_be_created": "Neue Spielvorlage wird erstellt",
+  "new_group_will_be_created": "Neue Gruppe wird erstellt",
+  "new_players_will_be_created": "{count, plural, =1{1 neue Spieler:in wird erstellt} other{{count} neue Spieler:innen werden erstellt}}",
+  "@new_players_will_be_created": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "no_data_available": "Keine Daten verfügbar",
   "no_data_to_export": "Keine Daten zum exportieren",
   "no_games_created_yet": "Noch keine Spielvorlagen erstellt",
@@ -141,6 +202,8 @@
   "no_license_text_available": "Kein Lizenztext verfügbar",
   "no_matches_created_yet": "Noch keine Spiele erstellt",
   "no_matches_played_yet": "Noch kein Spiel gespielt",
+  "no_matching_local_game_found": "Keine passende lokale Spielvorlage gefunden. Eine neue wird erstellt.",
+  "no_matching_local_group_found": "Keine passende lokale Gruppe gefunden. Eine neue Gruppe wird erstellt.",
   "no_players_available": "Keine Spieler:innen verfügbar",
   "no_players_created_yet": "Noch keine Spieler:in erstellt",
   "no_players_found_with_that_name": "Keine Spieler:in mit diesem Namen gefunden",
@@ -152,19 +215,48 @@
   "none": "Kein",
   "none_group": "Keine",
   "not_part_of_any_group": "Noch keiner Gruppe hinzugefügt",
+  "online_sharing_consent_text": "Damit andere dein Match laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Share-Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du Online-Teilen aktivieren?",
+  "online_sharing_disabled": "Online-Teilen ist deaktiviert",
+  "online_sharing_info_text": "Für das Online-Teilen von Spielen stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert. Alle übertragenen Daten werden nach 10 Minuten automatisch gelöscht. Du kannst Spiele auch lokal als Datei teilen.",
+  "online_sharing_title": "Online-Teilen aktivieren",
+  "open_settings": "Einstellungen öffnen",
+  "pair": "{count, plural, =1{Paar} other{Paare}}",
+  "@pair": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "parsing_error": "Fehler beim Verarbeiten der Daten. Bitte versuche es später erneut.",
   "place": "Platz",
   "placement": "Platzierung",
   "played_matches": "Gespielte Spiele",
+  "player_count": "{count, plural, =1{1 Spieler:in} other{{count} Spieler:innen}}",
+  "@player_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "player_name": "Name des/der Spieler:in",
   "player_profile": "Spieler:in-Profil",
   "players": "Spieler:innen",
   "point": "Punkt",
   "points": "Punkte",
   "privacy_policy": "Datenschutzerklärung",
+  "qr_code_expired": "QR-Code abgelaufen",
+  "qr_code_parsing_error": "Der gescannte Code enthält keine gültigen Match-Daten.",
   "random_color": "Zufällige Farbe",
+  "remaining": "verbleibend",
   "results": "Ergebnisse",
   "ruleset": "Regelwerk",
   "save_changes": "Änderungen speichern",
+  "save_file": "Datei speichern",
+  "save_match": "Spiel speichern",
+  "scan_qr_code_instruction": "Scanne den QR-Code mit einer anderen Tallee-Instanz, um das Match zu teilen.",
+  "scan_qr_receive_instruction": "Scanne den QR-Code einer anderen Tallee-Instanz, um das Match zu empfangen.",
   "scope": "Bereich",
   "scope_description": "Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.",
   "search_for_games": "Nach Spielvorlagen suchen",
@@ -183,11 +275,38 @@
   "selected_games": "Ausgewählte Spielvorlagen",
   "selected_groups": "Ausgewählte Gruppen",
   "selected_players": "Ausgewählte Spieler:innen",
+  "send_code_instruction": "Sende diesen Code an eine Person, die ebenfalls Tallee hat, um das aktuelle Match zu teilen.",
+  "server_error": "Serverfehler: {statusCode}",
+  "@server_error": {
+    "placeholders": {
+      "statusCode": {
+        "type": "int"
+      }
+    }
+  },
   "set_name": "Name setzen",
   "settings": "Einstellungen",
+  "share_as_qr_code_info": "Damit du ein Spiel als QR-Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein",
+  "share_as_token_info": "Damit du ein Spiel als Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein",
+  "share_match_text": "Hier sind die Match-Daten für unser Spiel! Gib den Code {code} in Tallee ein.",
+  "@share_match_text": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "share_match_title": "Tallee Match teilen",
+  "share_token_format_info": "Share-Token bestehen aus 6 alphanumerischen Zeichen.",
   "statistic": "Statistik",
   "statistics": "Statistiken",
   "successfully_added_player": "Spieler:in {playerName} erfolgreich hinzugefügt",
+  "successfully_processed_file": "Datei erfolgreich verarbeitet",
+  "tap_import_to_continue": "Tippe auf Match importieren, um fortzufahren",
+  "tap_to_browse": "Tippen zum Durchsuchen",
+  "tap_to_choose_different_game": "Tippe die Spielvorlage an, um eine andere auszuwählen",
+  "tap_to_choose_different_group": "Tippe die Gruppe an, um eine andere auszuwählen",
+  "tap_to_choose_existing": "Tippen zum manuellen Auswählen",
   "team": "Team",
   "team_match": "Teamspiel",
   "teams": "Teams",
@@ -199,11 +318,13 @@
   "timeframe": "Zeitraum",
   "today": "Heute",
   "today_at": "Heute um",
+  "token_expired": "Token expired",
   "total_losses": "Niederlagen insgesamt",
   "total_matches": "Spiele insgesamt",
   "total_score": "Punktzahl insgesamt",
   "total_wins": "Siege insgesamt",
   "type": "Typ",
+  "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten.",
   "unknown_exception": "Unbekannter Fehler (siehe Konsole)",
   "winners": "Gewinner:in",
   "winrate": "Siegquote",

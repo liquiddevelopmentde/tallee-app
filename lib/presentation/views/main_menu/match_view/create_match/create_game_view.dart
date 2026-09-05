@@ -25,16 +25,20 @@ class CreateGameView extends StatefulWidget {
   /// - [gameToEdit] An optional game to prefill the fields
   /// - [onGameChanged] Callback to invoke when the game is created or edited
   /// - [gameCount]: The count of matches associated with this [gameToEdit]
+  /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
   const CreateGameView({
     super.key,
     required this.onGameChanged,
     this.gameToEdit,
     this.gameCount = 0,
+    this.requiredRuleset,
   });
 
   final VoidCallback onGameChanged;
   final Game? gameToEdit;
   final int gameCount;
+
+  final Ruleset? requiredRuleset;
 
   @override
   State<CreateGameView> createState() => _CreateGameViewState();
@@ -61,6 +65,11 @@ class _CreateGameViewState extends State<CreateGameView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
+
+    if (widget.requiredRuleset != null) {
+      selectedRuleset = widget.requiredRuleset;
+    }
+
     gameNameController.addListener(() => setState(() {}));
     gameDescriptionController.addListener(() => setState(() {}));
   }
@@ -145,7 +154,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                     ),
                   ).then((confirmed) async {
                     if (confirmed == true && context.mounted) {
-                      // Delete assocaited matches
+                      // Delete associated matches
                       if (widget.gameCount > 0) {
                         await db.matchDao.deleteMatchesByGame(
                           gameId: widget.gameToEdit!.id,
@@ -190,7 +199,25 @@ class _CreateGameViewState extends State<CreateGameView> {
               if (!isEditMode)
                 ChooseTile(
                   title: loc.ruleset,
-                  trailing: getRulesetDropdown(loc),
+                  trailing: widget.requiredRuleset != null
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 8,
+                            children: [
+                              Icon(getRulesetIcon(selectedRuleset!), size: 16),
+                              Text(
+                                translateRulesetToString(
+                                  selectedRuleset!,
+                                  context,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
+                          ),
+                        )
+                      : getRulesetDropdown(loc),
                 ),
 
               // Choose color tile
