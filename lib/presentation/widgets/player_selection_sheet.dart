@@ -20,13 +20,13 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart'
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
-class PlayerSelectionWidget extends StatefulWidget {
+class PlayerSelectionSheet extends StatefulWidget {
   /// A widget for selecting a single player.
   /// - [availablePlayers]: An optional list of players to choose from. If null, all players from the database are used.
   /// - [initialSelectedPlayer]: An optional player that should be pre-selected.
   /// - [onSingleChanged]: A callback function that is invoked whenever the selection changes. Can be null if the player is deselected.
   /// - [onPlayerCreated]: A callback function that is invoked when a player was created in this widget.
-  const PlayerSelectionWidget.single({
+  const PlayerSelectionSheet.single({
     super.key,
     this.availablePlayers,
     this.initialSelectedPlayer,
@@ -45,7 +45,7 @@ class PlayerSelectionWidget extends StatefulWidget {
   /// - [pairingEnabled]: Whether pairing mode is enabled for this widget.
   /// - [onMultipleChanged]: A callback function that is invoked whenever the selection changes.
   /// - [onPlayerCreated]: A callback function that is invoked when a player was created in this widget.
-  const PlayerSelectionWidget.multiple({
+  const PlayerSelectionSheet.multiple({
     super.key,
     this.availablePlayers,
     this.initialSelectedPlayers,
@@ -77,10 +77,10 @@ class PlayerSelectionWidget extends StatefulWidget {
   final VoidCallback? onPlayerCreated;
 
   @override
-  State<PlayerSelectionWidget> createState() => _PlayerSelectionWidgetState();
+  State<PlayerSelectionSheet> createState() => _PlayerSelectionSheetState();
 }
 
-class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
+class _PlayerSelectionSheetState extends State<PlayerSelectionSheet> {
   late final AppDatabase db;
   bool isLoading = true;
 
@@ -154,7 +154,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   }
 
   @override
-  void didUpdateWidget(PlayerSelectionWidget oldWidget) {
+  void didUpdateWidget(PlayerSelectionSheet oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.mode == SelectionMode.multiple) {

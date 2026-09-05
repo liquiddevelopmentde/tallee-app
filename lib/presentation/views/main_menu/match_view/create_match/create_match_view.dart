@@ -17,7 +17,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_result/matc
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/custom_stepper.dart';
-import 'package:tallee/presentation/widgets/player_selection_widget.dart';
+import 'package:tallee/presentation/widgets/player_selection_sheet.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 
@@ -192,7 +192,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
               // Player selection widget.
               Expanded(
-                child: PlayerSelectionWidget.multiple(
+                child: PlayerSelectionSheet.multiple(
                   key: ValueKey(selectedGroup?.id ?? 'no_group'),
                   initialSelectedUnits: selectedUnits,
                   pairingEnabled: !isTeamMatch,
