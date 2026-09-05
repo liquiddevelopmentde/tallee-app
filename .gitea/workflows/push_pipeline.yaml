@@ -250,7 +250,9 @@ jobs:
           flutter --version
 
       - name: Run tests
-        run: flutter test
+        run: |
+          touch .env
+          flutter test
 
   build:
     name: "Build for Android"
