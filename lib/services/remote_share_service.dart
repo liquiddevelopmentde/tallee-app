@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants.dart';
@@ -18,7 +19,7 @@ class RemoteShareService {
   final http.Client httpClient;
 
   RemoteShareService({http.Client? httpClient})
-    : httpClient = httpClient ?? http.Client();
+    : httpClient = httpClient ?? SentryHttpClient();
 
   Future<String> getShareToken(Match match) async {
     try {
