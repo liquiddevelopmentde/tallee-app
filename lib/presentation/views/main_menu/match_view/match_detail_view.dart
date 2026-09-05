@@ -448,10 +448,16 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         runSpacing: 4,
         children: [
           for (var i = 0; i < mvtTeams.length; i++)
-            buildUnitNameWidget(
-              mvtTeams[i],
-              isTeamMatch: match.isTeamMatch,
-              mainStyle: winnerStyle,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                buildUnitNameWidget(
+                  mvtTeams[i],
+                  isTeamMatch: match.isTeamMatch,
+                  mainStyle: winnerStyle,
+                ),
+                if (i != mvtTeams.length - 1) const Text(','),
+              ],
             ),
         ],
       );
@@ -461,12 +467,13 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       TextSpan(
         children: [
           for (var i = 0; i < mvpPlayers.length; i++) ...[
-            if (i > 0) const TextSpan(text: ', ', style: winnerStyle),
+            if (i > 0) const TextSpan(text: ', '),
             buildPlayerNameCountSpan(mvpPlayers[i], mainStyle: winnerStyle),
           ],
         ],
       ),
       textAlign: TextAlign.end,
+      overflow: TextOverflow.visible,
     );
   }
 
@@ -501,6 +508,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         Widget nameWidget = buildUnitNameWidget(
           team,
           isTeamMatch: match.isTeamMatch,
+          countStyle: const TextStyle(color: CustomTheme.hintColor),
         );
         namedScores.add((nameWidget, team.score ?? 0));
       }
@@ -510,7 +518,13 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
       for (var player in players) {
         int score = scores[player.id]?.score ?? 0;
-        namedScores.add((buildUnitNameWidget(player), score));
+        namedScores.add((
+          buildUnitNameWidget(
+            player,
+            countStyle: const TextStyle(color: CustomTheme.hintColor),
+          ),
+          score,
+        ));
       }
     }
 
