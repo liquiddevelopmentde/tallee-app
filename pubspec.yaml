@@ -30,8 +30,8 @@ dependencies:
   http: ^1.6.0
   intl: any
   json_schema: ^5.2.2
-  mobile_scanner: ^7.2.0
   lottie: ^3.5.1
+  mobile_scanner: ^7.2.0
   once: ^1.8.0
   open_with_app: ^0.2.0
   package_info_plus: ^9.0.1
