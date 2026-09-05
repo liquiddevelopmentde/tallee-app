@@ -372,7 +372,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Gib einen Match-Share-Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.';
 
   @override
-  String get invalid_file => 'Ungültige Datei, versuche es mit einer anderen';
+  String get invalid_file => 'Ungültige Datei.';
+
+  @override
+  String get choose_other_file => 'Bitte wähle eine andere Datei aus.';
 
   @override
   String get invalid_qr_code => 'Dieser QR-Code ist ungültig oder abgelaufen.';

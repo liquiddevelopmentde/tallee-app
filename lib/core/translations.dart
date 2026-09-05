@@ -54,7 +54,7 @@ String translateMatchImportResultToString(
       return loc.data_successfully_imported;
     case ImportResult.invalidSchema:
     case ImportResult.invalidData:
-      return loc.invalid_file;
+      return '${loc.invalid_file}\n${loc.choose_other_file}';
     case ImportResult.unknownException:
     case ImportResult.fileNotFound:
     case ImportResult.fileReadError:

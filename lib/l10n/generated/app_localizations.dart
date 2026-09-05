@@ -755,8 +755,14 @@ abstract class AppLocalizations {
   /// No description provided for @invalid_file.
   ///
   /// In en, this message translates to:
-  /// **'Invalid File, try another one.'**
+  /// **'Invalid File.'**
   String get invalid_file;
+
+  /// No description provided for @choose_other_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose another file.'**
+  String get choose_other_file;
 
   /// No description provided for @invalid_qr_code.
   ///

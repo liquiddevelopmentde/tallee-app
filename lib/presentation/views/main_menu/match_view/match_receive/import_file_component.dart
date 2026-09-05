@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:core' hide Match;
 
 import 'package:dotted_border/dotted_border.dart';
@@ -11,6 +10,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/cards/display_selected_file_card.dart';
 import 'package:tallee/services/remote_share_service.dart';
 
 class ImportFileComponent extends StatefulWidget {
@@ -128,7 +128,7 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
                       },
                   child: !successfulImport
                       ? ChooseMatchFile(loc: loc, lastResult: lastResult)
-                      : DisplaySelectedFile(loc: loc, match: data.$2!),
+                      : DisplaySelectedFile(match: data.$2!),
                 ),
               ),
             ),
@@ -196,7 +196,7 @@ class ChooseMatchFile extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-            fontSize: 25,
+            fontSize: 22,
             fontWeight: FontWeight.w500,
             overflow: TextOverflow.visible,
           ),
@@ -208,7 +208,7 @@ class ChooseMatchFile extends StatelessWidget {
           loc.tap_to_browse,
           style: TextStyle(
             color: CustomTheme.textColor.withAlpha(180),
-            fontSize: 16,
+            fontSize: 14,
             overflow: TextOverflow.visible,
           ),
           textAlign: TextAlign.center,
@@ -216,121 +216,5 @@ class ChooseMatchFile extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class DisplaySelectedFile extends StatelessWidget {
-  const DisplaySelectedFile({
-    required this.loc,
-    required this.match,
-    super.key,
-  });
-
-  final AppLocalizations loc;
-  final Match match;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      key: const ValueKey('display_selected_file'),
-      children: [
-        FileTile(loc: loc, match: match),
-        const SizedBox(height: 20),
-        Text(
-          loc.successfully_processed_file,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.w500,
-            overflow: TextOverflow.visible,
-          ),
-          softWrap: true,
-        ),
-        const SizedBox(height: 5),
-        Text(
-          loc.tap_import_to_continue,
-          style: TextStyle(
-            color: CustomTheme.textColor.withAlpha(180),
-            fontSize: 16,
-            overflow: TextOverflow.visible,
-          ),
-          textAlign: TextAlign.center,
-          softWrap: true,
-        ),
-      ],
-    );
-  }
-}
-
-class FileTile extends StatelessWidget {
-  const FileTile({required this.loc, required this.match, super.key});
-
-  final AppLocalizations loc;
-  final Match match;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: CustomTheme.onBoxColor,
-        border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
-        borderRadius: CustomTheme.standardBorderRadiusAll,
-      ),
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Icon(Icons.file_present, size: 30),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${match.name.toSafeFilename()}.tallee',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: CustomTheme.textColor,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${calculateFileSize(match).toStringAsFixed(1)} KB',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: CustomTheme.textColor,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      loc.player_count(
-                        match.players.isNotEmpty
-                            ? match.players.length
-                            : match.teams!.length,
-                      ),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: CustomTheme.textColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  double calculateFileSize(Match match) {
-    final jsonString = jsonEncode(match.toJson());
-    return utf8.encode(jsonString).length / 1024;
   }
 }
