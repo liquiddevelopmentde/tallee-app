@@ -192,7 +192,7 @@ class _SettingsViewState extends State<SettingsView> {
                                   onPressed: () => {
                                     HapticFeedback.lightImpact(),
                                     launchUrl(
-                                      Uri.parse('https://liquid-dev.de'),
+                                      Uri.parse(Constants.LIQUID_WEBSITE_URL),
                                     ),
                                   },
                                 ),
@@ -201,9 +201,7 @@ class _SettingsViewState extends State<SettingsView> {
                                   onPressed: () => {
                                     HapticFeedback.lightImpact(),
                                     launchUrl(
-                                      Uri.parse(
-                                        'https://github.com/liquiddevelopmentde',
-                                      ),
+                                      Uri.parse(Constants.LIQUID_GITHUB_URL),
                                     ),
                                   },
                                 ),
@@ -216,7 +214,9 @@ class _SettingsViewState extends State<SettingsView> {
                                   onPressed: () => {
                                     HapticFeedback.lightImpact(),
                                     launchUrl(
-                                      Uri.parse('mailto:hi@liquid-dev.de'),
+                                      Uri.parse(
+                                        'mailto:${Constants.LIQUID_CONTACT_EMAIL}',
+                                      ),
                                     ),
                                   },
                                 ),
