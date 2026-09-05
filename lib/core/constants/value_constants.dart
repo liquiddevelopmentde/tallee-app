@@ -8,7 +8,7 @@ const String LIQUID_WEBSITE_LEGAL_URL = 'https://liquid-dev.de/legal';
 const String LIQUID_GITHUB_URL = 'https://github.com/liquiddevelopmentde';
 
 /// Email for contacting LIQUID
-const String LIQUID_CONTACT_EMAIL = 'hi@liquid-dev.de';
+const String LIQUID_CONTACT_EMAIL = 'hello@liquid-dev.de';
 
 /// Treshold for fuzzy search
 const int FUZZY_SEARCH_THRESHOLD = 50;
