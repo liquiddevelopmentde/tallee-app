@@ -46,7 +46,7 @@ jobs:
           # Words that only describe the kind of work and carry no matching signal.
           STOP = {
               "feature", "bug", "hotfix", "enhancement", "setup", "test", "testing",
-              "chore", "docs","refactor", "refactoring", "technical debt"
+              "chore", "docs", "documentation", "refactor", "refactoring", "technical debt"
           }
 
           def api(path):
