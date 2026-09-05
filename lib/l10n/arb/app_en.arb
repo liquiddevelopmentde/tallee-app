@@ -147,6 +147,7 @@
   "info": "Info",
   "input_token_instruction": "Input a match share token another person created using Tallee to import the match.",
   "invalid_file": "Invalid File.",
+  "invalid_email": "Please enter a valid email address.",
   "invalid_qr_code": "This QR code is invalid or expired.",
   "invalid_schema": "Invalid Schema",
   "invalid_token": "Invalid token",
@@ -275,6 +276,14 @@
   "selected_groups": "Selected groups",
   "selected_players": "Selected players",
   "send_code_instruction": "Send this code to a person who also has Tallee to share the current match.",
+  "send_feedback": "Send feedback",
+  "feedback_info_text": "Your feedback helps us continuously improve Tallee!",
+  "feedback_hint": "Your message or feedback (required)",
+  "email_optional": "Email address (optional)",
+  "name_optional": "Name (optional)",
+  "sending": "Sending...",
+  "thank_you_for_feedback": "Thank you for your feedback!",
+  "error_sending_feedback": "Feedback could not be sent. Please try again.",
   "server_error": "Server error: {statusCode}",
   "@server_error": {
     "placeholders": {

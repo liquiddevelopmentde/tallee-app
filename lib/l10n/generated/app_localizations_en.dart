@@ -377,6 +377,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalid_file => 'Invalid File.';
 
   @override
+  String get invalid_email => 'Please enter a valid email address.';
+
+  @override
   String get invalid_qr_code => 'This QR code is invalid or expired.';
 
   @override
@@ -721,6 +724,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get send_code_instruction =>
       'Send this code to a person who also has Tallee to share the current match.';
+
+  @override
+  String get send_feedback => 'Send feedback';
+
+  @override
+  String get feedback_info_text =>
+      'Your feedback helps us continuously improve Tallee!';
+
+  @override
+  String get feedback_hint => 'Your message or feedback (required)';
+
+  @override
+  String get email_optional => 'Email address (optional)';
+
+  @override
+  String get name_optional => 'Name (optional)';
+
+  @override
+  String get sending => 'Sending...';
+
+  @override
+  String get thank_you_for_feedback => 'Thank you for your feedback!';
+
+  @override
+  String get error_sending_feedback =>
+      'Feedback could not be sent. Please try again.';
 
   @override
   String server_error(int statusCode) {

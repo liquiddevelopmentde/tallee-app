@@ -13,6 +13,7 @@ import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/route_names.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/custom_feedback_form.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licenses_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/privacy_policy_view.dart';
@@ -126,6 +127,26 @@ class _SettingsViewState extends State<SettingsView> {
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
                     onPressed: () =>
                         showDeleteDialog(scaffoldMessengerContext, loc),
+                  ),
+                  SettingsListTile(
+                    title: loc.send_feedback,
+                    icon: Icons.chat_bubble_outline_rounded,
+                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onPressed: () async {
+                      final result = await Navigator.push<bool>(
+                        context,
+                        MaterialPageRoute<bool>(
+                          fullscreenDialog: true,
+                          builder: (context) => const CustomFeedbackForm(),
+                        ),
+                      );
+                      if (result == true && scaffoldMessengerContext.mounted) {
+                        showSnackbar(
+                          context: scaffoldMessengerContext,
+                          message: loc.thank_you_for_feedback,
+                        );
+                      }
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.only(

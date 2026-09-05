@@ -18,7 +18,6 @@ class RouteNames {
   static const String manageMembersView = '/home/matches/create/teams/members';
   static const String matchDetailView = '/home/matches/{id}';
   static const String matchResultView = '/home/matches/{id}/result';
-  static const String liveEditView = '/home/matches/{id}/result/liveEdit';
 
   static const String playerDetailView = '/home/players/{id}';
 

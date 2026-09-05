@@ -45,6 +45,9 @@ class Constants {
   /// Maximum length for game descriptions
   static const int MAX_GAME_DESCRIPTION_LENGTH = 256;
 
+  /// Maximum length for feedback message
+  static const int MAX_FEEDBACK_MESSAGE_LENGTH = 1000;
+
   /// Range for score input
   static const ({int min, int max}) SCORE_INPUT_BOUNDARIES = (
     min: -99999,

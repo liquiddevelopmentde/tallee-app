@@ -24,6 +24,7 @@ class TextInputField extends StatelessWidget {
     this.minLines = 1,
     this.showCounterText = false,
     this.textInputAction,
+    this.keyboardType,
     this.focusNode,
     this.onSubmitted,
   });
@@ -36,6 +37,7 @@ class TextInputField extends StatelessWidget {
   final int? minLines;
   final bool showCounterText;
   final TextInputAction? textInputAction;
+  final TextInputType? keyboardType;
   final FocusNode? focusNode;
   final ValueChanged<String>? onSubmitted;
 
@@ -46,6 +48,7 @@ class TextInputField extends StatelessWidget {
       onChanged: onChanged,
       onSubmitted: onSubmitted,
       textInputAction: textInputAction,
+      keyboardType: keyboardType,
       maxLength: maxLength,
       maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
       maxLines: maxLines,
