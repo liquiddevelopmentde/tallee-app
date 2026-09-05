@@ -64,44 +64,60 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
             borderRadius: CustomTheme.standardBorderRadiusAll,
           ),
           margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          padding: const EdgeInsets.all(12),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            spacing: 12,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Icon(Icons.file_present, size: 30),
-              const SizedBox(width: 10),
+              const Icon(Icons.file_present, size: 36),
               Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '$formattedMatchName.tallee',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: CustomTheme.textColor,
-                      ),
-                    ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      spacing: 4,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        // Filename
+                        Expanded(
+                          child: Text(
+                            '$formattedMatchName.tallee',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: CustomTheme.textColor,
+                            ),
+                          ),
+                        ),
+
+                        // Filesize
                         Text(
                           '${fileSize.toStringAsFixed(1)} KB',
                           style: const TextStyle(
-                            fontSize: 14,
-                            color: CustomTheme.textColor,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          loc.player_count(widget.match.players.length),
-                          style: const TextStyle(
-                            fontSize: 14,
+                            fontSize: 13,
                             color: CustomTheme.textColor,
                           ),
                         ),
                       ],
+                    ),
+
+                    // Content
+                    Wrap(
+                      spacing: 4,
+                      runSpacing: 2,
+                      children: getContentAsStrings(loc)
+                          .map(
+                            (item) => Text(
+                              item,
+                              style: const TextStyle(
+                                color: CustomTheme.hintColor,
+                              ),
+                            ),
+                          )
+                          .toList(),
                     ),
                   ],
                 ),
@@ -138,6 +154,38 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
         ),
       ],
     );
+  }
+
+  /// Returns the individual content items of the match, e.g.:
+  /// ["1 Game,", "3 players,", "2 Pairs,", "1 Group"]
+  List<String> getContentAsStrings(AppLocalizations loc) {
+    final items = <String>[];
+
+    // Game
+    items.add('1 ${loc.game}');
+
+    // Players
+    items.add(loc.player_count(widget.match.players.length));
+
+    // Teams & Pairs
+    final isTeamMatch = widget.match.isTeamMatch;
+    final teams = widget.match.teams ?? [];
+    if (isTeamMatch) {
+      items.add('${teams.length} ${loc.teams}');
+    } else if (teams.isNotEmpty) {
+      final pairAmount = teams.where((t) => t.members.length > 1).length;
+      if (pairAmount > 0) items.add('$pairAmount ${loc.pair(pairAmount)}');
+    }
+
+    // Group
+    if (widget.match.group != null) items.add('1 ${loc.group}');
+
+    // Add "," at every string except the last
+    for (int i = 0; i < items.length - 1; i++) {
+      items[i] = '${items[i]},';
+    }
+
+    return items;
   }
 
   double calculateFileSize(Match match) {
