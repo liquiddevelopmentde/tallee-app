@@ -668,12 +668,6 @@ abstract class AppLocalizations {
   /// **'Games'**
   String get games;
 
-  /// No description provided for @go_to_settings_to_enable.
-  ///
-  /// In en, this message translates to:
-  /// **'Go to the settings to manually enable it.'**
-  String get go_to_settings_to_enable;
-
   /// No description provided for @group.
   ///
   /// In en, this message translates to:
@@ -1381,6 +1375,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @share_as_qr_code_info.
+  ///
+  /// In en, this message translates to:
+  /// **'To share a match as a QR code with others, online sharing must be enabled'**
+  String get share_as_qr_code_info;
+
+  /// No description provided for @share_as_token_info.
+  ///
+  /// In en, this message translates to:
+  /// **'To share a match as a token with others, online sharing must be enabled'**
+  String get share_as_token_info;
 
   /// No description provided for @share_match_text.
   ///

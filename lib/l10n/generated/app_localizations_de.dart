@@ -325,10 +325,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get games => 'Spielvorlagen';
 
   @override
-  String get go_to_settings_to_enable =>
-      'Gehe in die Einstellungen, um es manuell zu aktivieren.';
-
-  @override
   String get group => 'Gruppe';
 
   @override
@@ -736,6 +732,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settings => 'Einstellungen';
+
+  @override
+  String get share_as_qr_code_info =>
+      'Damit du ein Spiel als QR-Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein';
+
+  @override
+  String get share_as_token_info =>
+      'Damit du ein Spiel als Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein';
 
   @override
   String share_match_text(String code) {

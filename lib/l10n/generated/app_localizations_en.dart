@@ -321,10 +321,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get games => 'Games';
 
   @override
-  String get go_to_settings_to_enable =>
-      'Go to the settings to manually enable it.';
-
-  @override
   String get group => 'Group';
 
   @override
@@ -730,6 +726,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get share_as_qr_code_info =>
+      'To share a match as a QR code with others, online sharing must be enabled';
+
+  @override
+  String get share_as_token_info =>
+      'To share a match as a token with others, online sharing must be enabled';
 
   @override
   String share_match_text(String code) {

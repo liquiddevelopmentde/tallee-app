@@ -123,7 +123,6 @@
   "game_associated": "Spielvorlage erfolgreich verknüpft",
   "game_name": "Spielvorlagenname",
   "games": "Spielvorlagen",
-  "go_to_settings_to_enable": "Gehe in die Einstellungen, um es manuell zu aktivieren.",
   "group": "Gruppe",
   "group_associated": "Gruppe erfolgreich verknüpft",
   "group_name": "Gruppenname",
@@ -284,6 +283,8 @@
   },
   "set_name": "Name setzen",
   "settings": "Einstellungen",
+  "share_as_qr_code_info": "Damit du ein Spiel als QR-Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein",
+  "share_as_token_info": "Damit du ein Spiel als Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein",
   "share_match_text": "Hier sind die Match-Daten für unser Spiel! Gib den Code {code} in Tallee ein.",
   "@share_match_text": {
     "placeholders": {

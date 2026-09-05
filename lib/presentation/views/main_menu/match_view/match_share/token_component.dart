@@ -46,7 +46,7 @@ class TokenComponent extends StatelessWidget {
             children: [
               TopCenteredMessage(
                 title: loc.online_sharing_disabled,
-                message: loc.go_to_settings_to_enable,
+                message: loc.share_as_token_info,
                 icon: Icons.close,
               ),
               const SizedBox(height: 20),
@@ -168,15 +168,14 @@ class TokenComponent extends StatelessWidget {
                     onPressed: isLoading
                         ? null
                         : () {
-                            Clipboard.setData(
-                              ClipboardData(text: displayCode),
-                            ).then((_) {
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  CustomSnackBar(message: loc.code_copied),
-                                );
-                              }
-                            });
+                            Clipboard.setData(ClipboardData(text: displayCode))
+                                .then((_) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      CustomSnackBar(message: loc.code_copied),
+                                    );
+                                  }
+                                });
                           },
                     icon: Icons.copy,
                   ),

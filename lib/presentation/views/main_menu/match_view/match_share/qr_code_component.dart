@@ -41,7 +41,7 @@ class QrCodeComponent extends StatelessWidget {
             children: [
               TopCenteredMessage(
                 title: loc.online_sharing_disabled,
-                message: loc.go_to_settings_to_enable,
+                message: loc.share_as_qr_code_info,
                 icon: Icons.close,
               ),
               const SizedBox(height: 20),
