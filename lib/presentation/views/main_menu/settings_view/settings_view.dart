@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -14,6 +15,7 @@ import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licenses_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/privacy_policy_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
@@ -56,7 +58,7 @@ class _SettingsViewState extends State<SettingsView> {
       child: Builder(
         builder: (scaffoldMessengerContext) {
           return Scaffold(
-            appBar: AppBar(backgroundColor: CustomTheme.backgroundColor),
+            appBar: AppBar(title: Text(loc.settings)),
             backgroundColor: CustomTheme.backgroundColor,
             body: SingleChildScrollView(
               child: Column(
@@ -155,13 +157,23 @@ class _SettingsViewState extends State<SettingsView> {
                     title: loc.legal_notice,
                     icon: Icons.account_balance_sharp,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: null,
+                    onPressed: () async {
+                      await launchUrl(
+                        Uri.parse(Constants.LIQUID_WEBSITE_LEGAL_URL),
+                      );
+                    },
                   ),
                   SettingsListTile(
                     title: loc.privacy_policy,
                     icon: Icons.gpp_good_rounded,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: null,
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const PrivacyPolicyView(),
+                        ),
+                      );
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 30, bottom: 20),

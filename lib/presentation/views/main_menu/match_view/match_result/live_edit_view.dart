@@ -1,113 +1,140 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
-import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
 
 class LiveEditView extends StatefulWidget {
-  const LiveEditView({
+  /// A live editing list of large stepper tiles, one per player or team, used
+  /// to adjust their score value live while playing.
+  /// - [match]: The match whose players / teams are being edited.
+  /// - [initialScores]: The current value per unit.
+  /// - [onScoresChanged]: The callback invoked with the updated value map
+  ///   whenever a value changes.
+  const LiveEditView.score({
     super.key,
     required this.match,
     required this.initialScores,
     this.onScoresChanged,
-  });
+  }) : boundaries = Constants.SCORE_INPUT_BOUNDARIES,
+       livesMode = false;
 
+  /// A live editing list of large stepper tiles, one per player or team, used
+  /// to adjust their "life" value  while playing.
+  /// - [match]: The match whose players / teams are being edited.
+  /// - [initialScores]: The current value per unit.
+  /// - [onScoresChanged]: The callback invoked with the updated value map
+  ///   whenever a value changes.
+  const LiveEditView.lives({
+    super.key,
+    required this.match,
+    required this.initialScores,
+    this.onScoresChanged,
+  }) : boundaries = Constants.LIVE_INPUT_BOUNDARIES,
+       livesMode = true;
+
+  final bool livesMode;
   final Match match;
   final Map<dynamic, int?> initialScores;
   final void Function(Map<dynamic, int?>)? onScoresChanged;
+  final ({int min, int max}) boundaries;
 
   @override
   State<LiveEditView> createState() => _LiveEditViewState();
 }
 
 class _LiveEditViewState extends State<LiveEditView> {
+  late final int fallbackValue = widget.livesMode ? 3 : 0;
+  Map<dynamic, int?> scores = {};
+  List<FocusNode> focusNodes = [];
+
   List<Team> get allTeams =>
       (widget.match.teams ?? [])
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+
   List<Player> get allPlayers =>
       widget.match.players
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-  Map<dynamic, int?> scores = {};
 
-  bool get useTeamLogic => widget.match.useTeamLogic;
-  bool get isTeamMatch => widget.match.isTeamMatch;
+  List<dynamic> get allUnits => useTeamLogic ? allTeams : allPlayers;
 
   @override
   void initState() {
-    scores = widget.initialScores;
     super.initState();
+    seedScores();
+    focusNodes = List.generate(allUnits.length, (_) => FocusNode());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.onScoresChanged?.call(scores);
+    });
   }
 
   @override
   void didUpdateWidget(LiveEditView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    scores = widget.initialScores;
+    seedScores();
+  }
+
+  @override
+  void dispose() {
+    for (final node in focusNodes) {
+      node.dispose();
+    }
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.match.name),
-        leading: HapticIconButton(
-          onPressed: () => Navigator.pop(context, scores),
-          icon: const Icon(Icons.close),
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: useTeamLogic
-                ? ListView.builder(
-                    itemCount: allTeams.length,
-                    itemBuilder: (context, index) {
-                      final team = allTeams[index];
-                      return LiveEditListTile(
-                        title: buildUnitNameWidget(
-                          team,
-                          isTeamMatch: widget.match.isTeamMatch,
-                          rowAlignment: MainAxisAlignment.center,
-                          mainStyle: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        onChanged: (value) {
-                          scores[team] = value;
-                          widget.onScoresChanged?.call(scores);
-                        },
-                        value: scores[team] ?? 0,
-                        color: isTeamMatch
-                            ? getColorFromAppColor(team.color)
-                            : null,
-                      );
-                    },
-                  )
-                : ListView.builder(
-                    itemCount: allPlayers.length,
-                    itemBuilder: (context, index) {
-                      return LiveEditListTile(
-                        title: buildUnitNameWidget(
-                          allPlayers[index],
-                          mainStyle: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            scores[allPlayers[index]] = value;
-                            widget.onScoresChanged?.call(scores);
-                          });
-                        },
-                        value: scores[allPlayers[index]] ?? 0,
-                      );
-                    },
-                  ),
+    return ListView.builder(
+      itemCount: allUnits.length,
+      itemBuilder: (context, index) {
+        final unit = allUnits[index];
+        return LiveEditListTile(
+          isLivesRuleset: widget.livesMode,
+          focusNode: index < focusNodes.length ? focusNodes[index] : null,
+          textInputAction: index == allUnits.length - 1
+              ? TextInputAction.done
+              : TextInputAction.next,
+          onSubmitted: () => focusNextTile(index),
+          title: buildUnitNameWidget(
+            unit,
+            isTeamMatch: isTeamMatch,
+            rowAlignment: MainAxisAlignment.center,
+            mainStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
           ),
-        ],
-      ),
+          value: scores[unit] ?? fallbackValue,
+          boundaries: widget.boundaries,
+          color: isTeamMatch && unit is Team
+              ? getColorFromAppColor(unit.color)
+              : null,
+          onChanged: (value) {
+            scores[unit] = value;
+            widget.onScoresChanged?.call(scores);
+          },
+        );
+      },
     );
+  }
+
+  bool get useTeamLogic => widget.match.useTeamLogic;
+
+  bool get isTeamMatch => widget.match.isTeamMatch;
+
+  void seedScores() {
+    scores = Map<dynamic, int?>.from(widget.initialScores);
+    for (final unit in allUnits) {
+      scores[unit] ??= fallbackValue;
+    }
+  }
+
+  void focusNextTile(int index) {
+    if (index < focusNodes.length - 1) {
+      focusNodes[index + 1].requestFocus();
+    } else if (index < focusNodes.length) {
+      focusNodes[index].unfocus();
+    }
   }
 }

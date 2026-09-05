@@ -208,17 +208,17 @@ class Match {
       case Ruleset.lowestScore:
         return _getPlayersWithLowestScore();
 
-      case Ruleset.singleWinner:
-        return _getPlayersWithHighestScore().take(1).toList();
-
-      case Ruleset.singleLoser:
+      case Ruleset.loser:
         return _getPlayersWithLowestScore().take(1).toList();
 
-      case Ruleset.multipleWinners:
+      case Ruleset.winner:
         return _getPlayersWithHighestScore().toList();
 
       case Ruleset.placement:
         return _getPlayersWithHighestScore().take(1).toList();
+
+      case Ruleset.lives:
+        return _getPlayersWithLivesRemaining();
     }
   }
 
@@ -256,6 +256,18 @@ class Match {
     }).toList();
   }
 
+  List<Player> _getPlayersWithLivesRemaining() {
+    if (players.isEmpty || scores.values.every((score) => score == null)) {
+      return [];
+    }
+
+    return players.where((player) {
+      final playerScore = scores[player.id];
+      if (playerScore == null) return false;
+      return playerScore.score > 0;
+    }).toList();
+  }
+
   // MVP for team-based matches (Most Valuable Team)
   List<Team> get mvt {
     if (teams == null || teams!.isEmpty) return [];
@@ -267,17 +279,17 @@ class Match {
       case Ruleset.lowestScore:
         return _getLowestScoreTeam();
 
-      case Ruleset.singleWinner:
-        return _getHighestScoreTeam().take(1).toList();
-
-      case Ruleset.singleLoser:
+      case Ruleset.loser:
         return _getLowestScoreTeam().take(1).toList();
 
-      case Ruleset.multipleWinners:
+      case Ruleset.winner:
         return _getHighestScoreTeam();
 
       case Ruleset.placement:
         return _getHighestScoreTeam().take(1).toList();
+
+      case Ruleset.lives:
+        return _getTeamsWithLivesRemaining();
     }
   }
 
@@ -309,5 +321,13 @@ class Match {
     return teams!.where((team) {
       return team.score == lowestScore;
     }).toList();
+  }
+
+  List<Team> _getTeamsWithLivesRemaining() {
+    if (teams!.every((team) => team.score == null)) {
+      return [];
+    }
+
+    return teams!.where((team) => (team.score ?? 0) > 0).toList();
   }
 }
