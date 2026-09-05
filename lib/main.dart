@@ -34,13 +34,14 @@ void main() async {
   await SharedPreferencesService.init();
   await SentryFlutter.init(
     (options) {
-      options.dsn =
-          'https://4f3d6e59a5c3457f88c9c1e5108767ed@log.yannick-weigert.com/1';
+      // error reporting & feedback is disabled in debugMode
+      options.dsn = kReleaseMode
+          ? 'https://4f3d6e59a5c3457f88c9c1e5108767ed@log.yannick-weigert.com/1'
+          : '';
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
       options.enableLogs = true;
-      // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-      // Decrease in stable
+      // Decrease sampleRate in stable to avoid sending too many events
       options.tracesSampleRate = 1.0;
       options.environment = kReleaseMode ? 'production' : 'development';
     },
