@@ -159,11 +159,12 @@ class _DataManagementViewState extends State<DataManagementView> {
         actions: [
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(true),
-            buttonType: ButtonType.secondary,
+            isDestructive: true,
             text: loc.delete,
           ),
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(false),
+            buttonType: ButtonType.secondary,
             text: loc.cancel,
           ),
         ],
