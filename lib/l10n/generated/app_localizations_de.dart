@@ -188,13 +188,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get data => 'Daten';
 
   @override
-  String get export_import => 'Export/Import';
+  String get data_transfer => 'Datentransfer';
+
+  @override
+  String get data_transfer_description =>
+      'Exportiere und Importiere alle deine Spiele, Spieler:innen, Gruppen, Spielvorlagen, Statistiken in eine Datei. Dies dient als Backup oder zum Übertragen der Daten auf ein neues Gerät. Um deine Spiele mit Freunden zu Teilen, öffne ein Spiel und wähle \"Teilen\".';
 
   @override
   String get danger_zone => 'Gefahrenzone';
 
   @override
-  String get data_backup => 'Data & Backup';
+  String get data_backup => 'Daten & Backup';
 
   @override
   String get data_successfully_deleted => 'Daten erfolgreich gelöscht';
@@ -339,7 +343,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get export_description =>
-      'Exportiere alle deine Spiele, Spieler und Matches in eine Datei. Dies dient als Backup oder zum Übertragen von Daten zwischen Geräten – nicht zum Teilen von Matches mit anderen. Nutze dafür die Funktion zum Teilen von Matches.';
+      'Export all your games, players, match templates, and game templates into a single file. This serves as a backup or for transferring data to a new device. If you want to share a game with friends, open the game and select \"Share\".';
 
   @override
   String get favourites => 'Favoriten';

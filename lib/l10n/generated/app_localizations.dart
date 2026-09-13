@@ -422,11 +422,17 @@ abstract class AppLocalizations {
   /// **'Data'**
   String get data;
 
-  /// No description provided for @export_import.
+  /// No description provided for @data_transfer.
   ///
   /// In en, this message translates to:
-  /// **'Export/Import'**
-  String get export_import;
+  /// **'Data Transfer'**
+  String get data_transfer;
+
+  /// No description provided for @data_transfer_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Export and import all your games, players, groups, game templates, and statistics into a file. This serves as a backup or to transfer data to a new device. To share your games with friends, open a game and select \"Share\".'**
+  String get data_transfer_description;
 
   /// No description provided for @danger_zone.
   ///

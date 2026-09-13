@@ -37,30 +37,46 @@ class _DataManagementViewState extends State<DataManagementView> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(
-                      left: 16,
                       top: 10,
-                      bottom: 10,
+                      left: 16,
+                      right: 16,
                     ),
-                    child: Text(
-                      textAlign: TextAlign.start,
-                      loc.export_import,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 4,
+                      children: [
+                        Text(
+                          textAlign: TextAlign.start,
+                          loc.data_transfer,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          textAlign: TextAlign.start,
+                          loc.data_transfer_description,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: CustomTheme.hintColor,
+                            overflow: TextOverflow.visible,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+
                   SettingsListTile(
                     title: loc.export_data,
                     icon: Icons.upload,
-                    description: loc.export_description,
+                    //description: loc.export_description,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
                     onPressed: () => handleExport(scaffoldMessengerContext),
                   ),
                   SettingsListTile(
                     title: loc.import_data,
                     icon: Icons.download,
-                    description: loc.import_description,
+                    //description: loc.import_description,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
                     onPressed: () => handleImport(scaffoldMessengerContext),
                   ),

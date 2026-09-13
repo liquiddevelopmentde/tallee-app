@@ -185,7 +185,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get data => 'Data';
 
   @override
-  String get export_import => 'Export/Import';
+  String get data_transfer => 'Data Transfer';
+
+  @override
+  String get data_transfer_description =>
+      'Export and import all your games, players, groups, game templates, and statistics into a file. This serves as a backup or to transfer data to a new device. To share your games with friends, open a game and select \"Share\".';
 
   @override
   String get danger_zone => 'Danger Zone';
