@@ -392,36 +392,6 @@ abstract class AppLocalizations {
   /// **'Create {count, plural, =0{statistics} =1{statistic} other{statistics ({count})}}'**
   String create_statistic(int count);
 
-  /// No description provided for @later.
-  ///
-  /// In en, this message translates to:
-  /// **'Later'**
-  String get later;
-
-  /// No description provided for @update_now.
-  ///
-  /// In en, this message translates to:
-  /// **'Update Now'**
-  String get update_now;
-
-  /// No description provided for @update_available_content.
-  ///
-  /// In en, this message translates to:
-  /// **'A new version is available.'**
-  String get update_available_content;
-
-  /// No description provided for @update_available.
-  ///
-  /// In en, this message translates to:
-  /// **'Update Available'**
-  String get update_available;
-
-  /// No description provided for @update_features_fixes_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Please update the app to access the latest features and improvements.'**
-  String get update_features_fixes_desc;
-
   /// No description provided for @create_teams.
   ///
   /// In en, this message translates to:
@@ -895,6 +865,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last year'**
   String get last_year;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
 
   /// No description provided for @legal.
   ///
@@ -1693,6 +1669,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please update your apps to the newest version and try it again.'**
   String get update_app_version;
+
+  /// No description provided for @update_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Available'**
+  String get update_available;
+
+  /// No description provided for @update_available_content.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version is available.'**
+  String get update_available_content;
+
+  /// No description provided for @update_features_fixes_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Please update the app to access the latest features and improvements.'**
+  String get update_features_fixes_desc;
+
+  /// No description provided for @update_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Now'**
+  String get update_now;
 
   /// No description provided for @version.
   ///
