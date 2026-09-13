@@ -253,6 +253,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     final newVersionPlus = NewVersionPlus(
       iOSAppStoreCountry: 'de',
       androidPlayStoreCountry: 'de',
+      iOSId: 'de.felixkirchner.cabocounter',
     );
 
     VersionStatus? status;
@@ -275,6 +276,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           return CustomAlertDialog(
             title: loc.update_available,
             content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
