@@ -317,7 +317,7 @@
   },
   "report_error": "Fehler melden",
   "error_report_info_text": "Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!",
-  "error_report_hint": "Beschreibe den Fehler (erforderlich)",
+  "error_report_hint": "Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist (erforderlich)",
   "share_match_title": "Tallee Match teilen",
   "share_token_format_info": "Share-Token bestehen aus 6 alphanumerischen Zeichen.",
   "statistic": "Statistik",

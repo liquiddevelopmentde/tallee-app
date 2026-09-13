@@ -7,7 +7,7 @@
   "all_players_selected": "All players selected",
   "report_error": "Report Error",
   "error_report_info_text": "Reporting an error helps us identify and fix problems in Tallee!",
-  "error_report_hint": "Describe the error (required)",
+  "error_report_hint": "Please describe the steps leading up to the error and how it appeared (required)",
   "all_time": "All time",
   "app_name": "Tallee",
   "associate_game": "Associate Game",
