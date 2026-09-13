@@ -50,11 +50,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkVersionAndUpdate(context);
-    });
+
     addExampleStats();
-    openNewsDialog();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await checkVersionAndUpdate(context);
+      openNewsDialog();
+    });
   }
 
   @override
@@ -248,7 +250,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   Future<void> checkVersionAndUpdate(BuildContext context) async {
     final loc = AppLocalizations.of(context);
 
-    final newVersionPlus = NewVersionPlus();
+    final newVersionPlus = await NewVersionPlus();
 
     VersionStatus? status;
 
@@ -265,7 +267,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     if (status != null && status.canUpdate) {
       if (!context.mounted) return;
 
-      showDialog(
+      await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
