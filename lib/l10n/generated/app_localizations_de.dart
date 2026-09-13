@@ -469,6 +469,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get last_year => 'Letztes Jahr';
 
   @override
+  String get later => 'Später';
+
+  @override
   String get legal => 'Rechtliches';
 
   @override
@@ -929,6 +932,19 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get update_app_version =>
       'Bitte aktualisiert eure Apps auf die neueste Version und versucht es erneut.';
+
+  @override
+  String get update_available => 'Update verfügbar';
+
+  @override
+  String get update_available_content => 'Eine neue Version ist verfügbar.';
+
+  @override
+  String get update_features_fixes_desc =>
+      'Bitte aktualisiere die App, um die neuesten Funktionen und Verbesserungen zu nutzen.';
+
+  @override
+  String get update_now => 'Jetzt aktualisieren';
 
   @override
   String get version => 'Version';

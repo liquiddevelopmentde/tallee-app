@@ -21,7 +21,7 @@ import 'package:tallee/presentation/widgets/top_centered_message.dart';
 class ChooseGameView extends StatefulWidget {
   /// A view that allows the user to choose a game from a list of available games
   /// - [games]: The list of available games
-  /// - [initialGames]: The initially selected games
+  /// - [initialSelectedGames]: The initially selected games
   /// - [onGamesUpdated]: Optional callback invoked when the games are updated
   /// - [statistic]: Optional statistic payload for choosing groups for a statistic
   /// - [selectedTypes]: Optional list of statistic types to determine the correct button text
@@ -29,21 +29,19 @@ class ChooseGameView extends StatefulWidget {
   const ChooseGameView({
     super.key,
     required this.games,
-    this.initialGames,
+    this.initialSelectedGames,
     this.onGamesUpdated,
     this.statistic,
     this.selectedTypes,
-    this.requiredRuleset,
     this.enableMultiSelection = false,
   });
 
   final List<Game> games;
-  final List<Game>? initialGames;
+  final List<Game>? initialSelectedGames;
   final VoidCallback? onGamesUpdated;
   final Statistic? statistic;
   final List<StatisticType>? selectedTypes;
   final bool enableMultiSelection;
-  final Ruleset? requiredRuleset;
 
   @override
   State<ChooseGameView> createState() => _ChooseGameViewState();
@@ -71,12 +69,21 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   // How many statistics get created
   late int statAmount = widget.selectedTypes?.length ?? 0;
 
+  Ruleset? get requiredRuleset {
+    if (games.isEmpty) return null;
+
+    final firstRuleset = games.first.ruleset;
+    return games.every((game) => game.ruleset == firstRuleset)
+        ? firstRuleset
+        : null;
+  }
+
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
     fetchGameCounts();
 
-    selectedGames = widget.initialGames ?? [];
+    selectedGames = widget.initialSelectedGames ?? [];
     // Start with all games visible
     filteredGames = List<Game>.from(games);
 
@@ -105,7 +112,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                       name: RouteNames.createGameView,
                     ),
                     builder: (context) => CreateGameView(
-                      requiredRuleset: widget.requiredRuleset,
+                      requiredRuleset: requiredRuleset,
                       onGameChanged: () {
                         widget.onGamesUpdated?.call();
                       },
@@ -113,8 +120,8 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                   ),
                 );
                 if (result != null && result.game != null) {
-                  if (widget.requiredRuleset != null &&
-                      result.game.ruleset != widget.requiredRuleset) {
+                  if (requiredRuleset != null &&
+                      result.game.ruleset != requiredRuleset) {
                     return;
                   }
 
