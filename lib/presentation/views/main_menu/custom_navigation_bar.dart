@@ -253,7 +253,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     final newVersionPlus = NewVersionPlus(
       iOSAppStoreCountry: 'de',
       androidPlayStoreCountry: 'de',
-      iOSId: 'de.felixkirchner.cabocounter',
     );
 
     VersionStatus? status;
