@@ -42,8 +42,6 @@ String translateImportResultToString(
       return loc.unknown_exception;
     case ImportResult.incompatibleVersion:
       return loc.incompatible_version;
-    case ImportResult.matchSchemaDetected:
-      return '';
   }
 }
 
@@ -72,8 +70,6 @@ String translateMatchImportResultToString(
       return loc.import_canceled;
     case ImportResult.formatException:
       return loc.format_exception;
-    case ImportResult.matchSchemaDetected:
-      return '';
   }
 }
 

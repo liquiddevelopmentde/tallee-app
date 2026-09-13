@@ -132,8 +132,7 @@ class LocalShareService {
     }
 
     final (status, _) = await validateJson(jsonString);
-    if (status != ImportResult.success &&
-        status != ImportResult.matchSchemaDetected) {
+    if (status != ImportResult.success) {
       return (status, null);
     }
 
@@ -183,7 +182,7 @@ class LocalShareService {
         if (!RemoteShareService.validateContent(decoded)) {
           return (ImportResult.invalidData, null);
         }
-        return (ImportResult.matchSchemaDetected, null);
+        return (ImportResult.success, decoded);
       }
     } on FormatException catch (e, stack) {
       print('[validateJson] FormatException');

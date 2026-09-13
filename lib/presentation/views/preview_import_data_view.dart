@@ -238,8 +238,8 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                 ),
                 BottomAnimatedButton(
                   buttonText: loc.cancel,
-                  buttonType: ButtonType.secondary,
                   sizeRelativeToWidth: 0.95,
+                  buttonType: ButtonType.secondary,
                   onPressed: cancelImport,
                 ),
               ],
@@ -356,9 +356,6 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     if (messengerKey != null) {
       if (importResult == ImportResult.success) {
         HapticFeedback.successNotification();
-      } else if (importResult != ImportResult.canceled &&
-          importResult != ImportResult.matchSchemaDetected) {
-        HapticFeedback.errorNotification();
       }
 
       messengerKey.currentState

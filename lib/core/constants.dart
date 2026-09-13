@@ -67,7 +67,7 @@ class Constants {
   static const String MATCH_FILE_EXTENSION = 'tallee';
 
   /// File extension for app data
-  static const String APP_DATA_FILE_EXTENSION = 'tallee';
+  static const String APP_DATA_FILE_EXTENSION = 'json';
 
   /// Range for score input
   static const ({int min, int max}) SCORE_INPUT_BOUNDARIES = (

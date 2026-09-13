@@ -10,14 +10,12 @@ import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
 import 'package:tallee/services/local_share_service.dart';
@@ -194,21 +192,17 @@ class _TalleeState extends State<Tallee> {
     final navigator = navigatorKey.currentState;
     if (navigator == null) return;
 
-    final (status, _) = await LocalShareService.getDataFromPath(path);
-
-    final route = status == ImportResult.matchSchemaDetected
-        ? MatchReceiveView(initialFilePath: path)
-        : PreviewImportDataView(
-            filePath: path,
-            messengerKey: scaffoldMessengerKey,
-          );
+    final (_) = await LocalShareService.getDataFromPath(path);
 
     Future.delayed(Constants.OPEN_WITH_NAVIGATION_DELAY, () {
       navigator.push(
         adaptivePageRoute(
           settings: const RouteSettings(name: RouteNames.importFile),
           fullscreenDialog: true,
-          builder: (_) => route,
+          builder: (_) => PreviewImportDataView(
+            filePath: path,
+            messengerKey: scaffoldMessengerKey,
+          ),
         ),
       );
     });
