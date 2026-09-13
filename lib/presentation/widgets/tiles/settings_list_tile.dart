@@ -45,7 +45,10 @@ class _SettingsListTileState extends State<SettingsListTile> {
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.95,
         child: GestureDetector(
-          onTap: handleTap,
+          onTap: () {
+            HapticFeedback.selectionClick();
+            handleTap();
+          },
           child: Container(
             margin: EdgeInsets.zero,
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
