@@ -26,6 +26,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get all_players_selected => 'Alle Spieler:innen ausgewählt';
 
   @override
+  String get report_error => 'Fehler melden';
+
+  @override
+  String get error_report_info_text =>
+      'Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!';
+
+  @override
+  String get error_report_hint => 'Beschreibe den Fehler (erforderlich)';
+
+  @override
   String get all_time => 'Gesamter Zeitraum';
 
   @override
@@ -876,6 +886,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get thank_you_for_feedback => 'Vielen Dank für dein Feedback!';
+
+  @override
+  String get thank_you_for_report => 'Vielen Dank für deine Fehlermeldung!';
 
   @override
   String get there_are_no_games_matching_your_search =>

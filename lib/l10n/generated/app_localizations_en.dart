@@ -25,6 +25,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all_players_selected => 'All players selected';
 
   @override
+  String get report_error => 'Report Error';
+
+  @override
+  String get error_report_info_text =>
+      'Reporting an error helps us identify and fix problems in Tallee!';
+
+  @override
+  String get error_report_hint => 'Describe the error (required)';
+
+  @override
   String get all_time => 'All time';
 
   @override
@@ -868,6 +878,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thank_you_for_feedback => 'Thank you for your feedback!';
+
+  @override
+  String get thank_you_for_report => 'Thank you for your error report!';
 
   @override
   String get there_are_no_games_matching_your_search =>

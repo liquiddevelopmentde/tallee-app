@@ -128,6 +128,24 @@ abstract class AppLocalizations {
   /// **'All players selected'**
   String get all_players_selected;
 
+  /// No description provided for @report_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Error'**
+  String get report_error;
+
+  /// No description provided for @error_report_info_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Reporting an error helps us identify and fix problems in Tallee!'**
+  String get error_report_info_text;
+
+  /// No description provided for @error_report_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the error (required)'**
+  String get error_report_hint;
+
   /// No description provided for @all_time.
   ///
   /// In en, this message translates to:
@@ -1615,6 +1633,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Thank you for your feedback!'**
   String get thank_you_for_feedback;
+
+  /// No description provided for @thank_you_for_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your error report!'**
+  String get thank_you_for_report;
 
   /// No description provided for @there_are_no_games_matching_your_search.
   ///

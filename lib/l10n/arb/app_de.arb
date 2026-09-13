@@ -315,6 +315,9 @@
       }
     }
   },
+  "report_error": "Fehler melden",
+  "error_report_info_text": "Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!",
+  "error_report_hint": "Beschreibe den Fehler (erforderlich)",
   "share_match_title": "Tallee Match teilen",
   "share_token_format_info": "Share-Token bestehen aus 6 alphanumerischen Zeichen.",
   "statistic": "Statistik",
@@ -330,6 +333,7 @@
   "team_match": "Teamspiel",
   "teams": "Teams",
   "thank_you_for_feedback": "Vielen Dank für dein Feedback!",
+  "thank_you_for_report": "Vielen Dank für deine Fehlermeldung!",
   "there_are_no_games_matching_your_search": "Es gibt keine Spielvorlagen, die deiner Suche entspricht",
   "there_is_no_group_matching_your_search": "Es gibt keine Gruppe, die deiner Suche entspricht",
   "there_is_no_match_matching_your_search": "Es gibt kein Spiel, das deiner Suche entspricht",

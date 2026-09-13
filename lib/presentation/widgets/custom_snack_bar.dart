@@ -7,11 +7,13 @@ class CustomSnackBar extends SnackBar {
     Key? key,
     required String message,
     IconData? actionIcon,
+    String? actionLabel,
     VoidCallback? onActionTap,
   }) : this._internal(
          key: key,
          message: message,
          actionIcon: actionIcon,
+         actionLabel: actionLabel,
          onActionTap: onActionTap,
          duration: const Duration(milliseconds: 5000),
          proxy: ProxyAnimation(),
@@ -22,6 +24,7 @@ class CustomSnackBar extends SnackBar {
     required String message,
     required this.proxy,
     this.actionIcon,
+    this.actionLabel,
     this.onActionTap,
     super.duration,
   }) : super(
@@ -33,12 +36,14 @@ class CustomSnackBar extends SnackBar {
            message: message,
            animation: proxy,
            actionIcon: actionIcon,
+           actionLabel: actionLabel,
            onActionTap: onActionTap,
          ),
        );
 
   final ProxyAnimation proxy;
   final IconData? actionIcon;
+  final String? actionLabel;
   final VoidCallback? onActionTap;
 
   @override
@@ -50,6 +55,7 @@ class CustomSnackBar extends SnackBar {
       key: key ?? fallbackKey,
       message: animatedContent.message,
       actionIcon: animatedContent.actionIcon,
+      actionLabel: animatedContent.actionLabel,
       onActionTap: animatedContent.onActionTap,
       duration: duration,
       proxy: proxy,
@@ -63,11 +69,13 @@ class AnimatedContent extends StatelessWidget {
     required this.message,
     required this.animation,
     this.actionIcon,
+    this.actionLabel,
     this.onActionTap,
   });
 
   final String message;
   final IconData? actionIcon;
+  final String? actionLabel;
   final VoidCallback? onActionTap;
   final Animation<double> animation;
 
@@ -106,7 +114,7 @@ class AnimatedContent extends StatelessWidget {
                     message,
                     overflow: TextOverflow.visible,
                     textWidthBasis: TextWidthBasis.longestLine,
-                    textAlign: actionIcon != null
+                    textAlign: (actionIcon != null || actionLabel != null)
                         ? TextAlign.left
                         : TextAlign.center,
                     style: const TextStyle(
@@ -117,7 +125,25 @@ class AnimatedContent extends StatelessWidget {
                   ),
                 ),
 
-                if (onActionTap != null && actionIcon != null) ...[
+                if (onActionTap != null && actionLabel != null) ...[
+                  const SizedBox(width: 12),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      foregroundColor: CustomTheme.primaryColor,
+                    ),
+                    onPressed: onActionTap,
+                    child: Text(
+                      actionLabel!,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ] else if (onActionTap != null && actionIcon != null) ...[
                   const SizedBox(width: 12),
                   HapticIconButton(
                     padding: EdgeInsets.zero,

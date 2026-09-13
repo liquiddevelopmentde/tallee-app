@@ -56,6 +56,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
 
   @override
   Widget build(BuildContext context) {
+    final isErrorReport = widget.associatedEventId != null;
     final loc = AppLocalizations.of(context);
     final emailText = emailController.text.trim();
     final isEmailFormatValid = isEmailValid;
@@ -68,7 +69,9 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
 
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
-      appBar: AppBar(title: Text(loc.send_feedback)),
+      appBar: AppBar(
+        title: Text(isErrorReport ? loc.report_error : loc.send_feedback),
+      ),
       body: SafeArea(
         maintainBottomViewPadding: true,
         child: LayoutBuilder(
@@ -81,25 +84,33 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                   child: Column(
                     children: [
                       const SizedBox(height: 80),
-                      const Icon(
-                        Icons.chat_bubble_outline_rounded,
+                      Icon(
+                        isErrorReport
+                            ? Icons.error_outline_rounded
+                            : Icons.chat_bubble_outline_rounded,
                         size: 50,
                         color: CustomTheme.primaryColor,
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        loc.feedback_info_text,
+                        isErrorReport
+                            ? loc.error_report_info_text
+                            : loc.feedback_info_text,
                         style: const TextStyle(
                           fontSize: 14,
                           color: CustomTheme.textColor,
                           fontWeight: FontWeight.w500,
+                          overflow: TextOverflow.clip,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 40),
                       TextInputField(
                         controller: messageController,
                         focusNode: messageFocusNode,
-                        hintText: loc.feedback_hint,
+                        hintText: isErrorReport
+                            ? loc.error_report_hint
+                            : loc.feedback_hint,
                         maxLines: 5,
                         minLines: 4,
                         maxLength: Constants.MAX_FEEDBACK_MESSAGE_LENGTH,
@@ -149,7 +160,9 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                         sizeRelativeToWidth: 0.95,
                         buttonText: isSubmitting
                             ? loc.sending
-                            : loc.send_feedback,
+                            : (isErrorReport
+                                  ? loc.report_error
+                                  : loc.send_feedback),
                         buttonType: ButtonType.primary,
                         onPressed: canSubmit ? () => submit(loc) : null,
                       ),
