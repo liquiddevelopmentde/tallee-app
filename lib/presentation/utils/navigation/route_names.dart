@@ -27,6 +27,7 @@ class RouteNames {
   static const String statisticDetailView = '/home/statistics/{id}';
 
   static const String settingsView = '/home/settings';
+  static const String dataManagementView = '/home/settings/data';
   static const String licensesView = '/home/settings/licenses';
   static const String licenseDetailView = '/home/settings/licenses/{id}';
 }

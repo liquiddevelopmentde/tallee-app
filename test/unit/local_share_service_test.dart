@@ -113,7 +113,7 @@ void main() {
     return context;
   }
 
-  // Builds a schema-valid .tallee json string from the test entities.
+  // Builds a schema-valid json string from the test entities.
   String buildJson() => json.encode({
     'version': APP_DATA_SCHEMA_VERSION,
     'players': [
@@ -1617,7 +1617,7 @@ void main() {
       test('returns decoded string when bytes are present', () async {
         const content = '{"players": []}';
         final file = PlatformFile(
-          name: 'data.tallee',
+          name: 'data.$APP_DATA_FILE_EXTENSION',
           size: content.length,
           bytes: Uint8List.fromList(utf8.encode(content)),
         );
@@ -1630,7 +1630,7 @@ void main() {
       test('reads from path when bytes are null', () async {
         const content = '{"games": []}';
         final tempFile = File(
-          '${Directory.systemTemp.path}/read_file_content_test.tallee',
+          '${Directory.systemTemp.path}/read_file_content_test.$APP_DATA_FILE_EXTENSION',
         );
         await tempFile.writeAsString(content);
         addTearDown(() async {
@@ -1638,7 +1638,7 @@ void main() {
         });
 
         final file = PlatformFile(
-          name: 'data.tallee',
+          name: 'data.$APP_DATA_FILE_EXTENSION',
           size: content.length,
           path: tempFile.path,
         );
@@ -1649,7 +1649,10 @@ void main() {
       });
 
       test('returns null when both bytes and path are null', () async {
-        final file = PlatformFile(name: 'data.tallee', size: 0);
+        final file = PlatformFile(
+          name: 'data.$APP_DATA_FILE_EXTENSION',
+          size: 0,
+        );
 
         final result = await readFileContent(file: file);
 
@@ -1696,8 +1699,15 @@ void main() {
     });
 
     group('getDataFromPath()', () {
+      test('returns invalidExtension when file has wrong extension', () async {
+        final result = await LocalShareService.getDataFromPath('test.txt');
+        expect(result.$1, ImportResult.invalidExtension);
+        expect(result.$2, isNull);
+      });
+
       test('returns fileNotFound when the file does not exist', () async {
-        final missingPath = '${Directory.systemTemp.path}/missing.tallee';
+        final missingPath =
+            '${Directory.systemTemp.path}/missing.$APP_DATA_FILE_EXTENSION';
 
         final result = await LocalShareService.getDataFromPath(missingPath);
 
@@ -1707,7 +1717,9 @@ void main() {
 
       test('returns success and json for a valid file', () async {
         final validJson = buildJson();
-        final file = File('${Directory.systemTemp.path}/data.tallee');
+        final file = File(
+          '${Directory.systemTemp.path}/data.$APP_DATA_FILE_EXTENSION',
+        );
         await file.writeAsString(validJson);
         addTearDown(() async {
           if (file.existsSync()) await file.delete();
@@ -1720,7 +1732,9 @@ void main() {
       });
 
       test('returns invalidSchema and null json for an invalid file', () async {
-        final file = File('${Directory.systemTemp.path}/invalid.tallee');
+        final file = File(
+          '${Directory.systemTemp.path}/invalid.$APP_DATA_FILE_EXTENSION',
+        );
         await file.writeAsString('{"players": "not a list"}');
         addTearDown(() async {
           if (file.existsSync()) await file.delete();

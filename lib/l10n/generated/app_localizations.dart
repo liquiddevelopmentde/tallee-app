@@ -392,36 +392,6 @@ abstract class AppLocalizations {
   /// **'Create {count, plural, =0{statistics} =1{statistic} other{statistics ({count})}}'**
   String create_statistic(int count);
 
-  /// No description provided for @later.
-  ///
-  /// In en, this message translates to:
-  /// **'Later'**
-  String get later;
-
-  /// No description provided for @update_now.
-  ///
-  /// In en, this message translates to:
-  /// **'Update Now'**
-  String get update_now;
-
-  /// No description provided for @update_available_content.
-  ///
-  /// In en, this message translates to:
-  /// **'A new version is available.'**
-  String get update_available_content;
-
-  /// No description provided for @update_available.
-  ///
-  /// In en, this message translates to:
-  /// **'Update Available'**
-  String get update_available;
-
-  /// No description provided for @update_features_fixes_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Please update the app to access the latest features and improvements.'**
-  String get update_features_fixes_desc;
-
   /// No description provided for @create_teams.
   ///
   /// In en, this message translates to:
@@ -446,11 +416,23 @@ abstract class AppLocalizations {
   /// **'Custom'**
   String get custom;
 
+  /// No description provided for @danger_zone.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger Zone'**
+  String get danger_zone;
+
   /// No description provided for @data.
   ///
   /// In en, this message translates to:
   /// **'Data'**
   String get data;
+
+  /// No description provided for @data_backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Data & Backup'**
+  String get data_backup;
 
   /// No description provided for @data_successfully_deleted.
   ///
@@ -470,6 +452,18 @@ abstract class AppLocalizations {
   /// **'Data successfully imported'**
   String get data_successfully_imported;
 
+  /// No description provided for @data_transfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Transfer'**
+  String get data_transfer;
+
+  /// No description provided for @data_transfer_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Export and import all your games, players, groups, game templates, and statistics into a file. This serves as a backup or to transfer data to a new device. To share your games with friends, open a game and select \"Share\".'**
+  String get data_transfer_description;
+
   /// No description provided for @days_ago.
   ///
   /// In en, this message translates to:
@@ -487,6 +481,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete all data'**
   String get delete_all_data;
+
+  /// No description provided for @delete_app_data_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete all app data. This action is irreversible.'**
+  String get delete_app_data_description;
 
   /// No description provided for @delete_game.
   ///
@@ -752,6 +752,12 @@ abstract class AppLocalizations {
   /// **'Games'**
   String get games;
 
+  /// No description provided for @general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
   /// No description provided for @group.
   ///
   /// In en, this message translates to:
@@ -806,6 +812,12 @@ abstract class AppLocalizations {
   /// **'Import data'**
   String get import_data;
 
+  /// No description provided for @import_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Import your Tallee data (.json) from a previously exported file. This is meant for restoring a backup or transferring data between devices. To import shared matches, tap the QR code icon in the match view.'**
+  String get import_description;
+
   /// No description provided for @import_file_instruction.
   ///
   /// In en, this message translates to:
@@ -847,6 +859,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter a valid email address.'**
   String get invalid_email;
+
+  /// No description provided for @invalid_extension.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid file extension.'**
+  String get invalid_extension;
 
   /// No description provided for @invalid_file.
   ///
@@ -901,6 +919,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last year'**
   String get last_year;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
 
   /// No description provided for @legal.
   ///
@@ -1193,7 +1217,7 @@ abstract class AppLocalizations {
   /// No description provided for @online_sharing_info_text.
   ///
   /// In en, this message translates to:
-  /// **'To share matches online, the app connects to external servers. To protect your privacy, this feature is disabled by default. All transmitted data is automatically deleted after 10 minutes. You can also share games locally as files.'**
+  /// **'To share matches via qr code or token, the app connects to external servers. To protect your privacy, this feature is disabled by default. All transmitted data is automatically deleted after 10 minutes. You can also share games locally as files.'**
   String get online_sharing_info_text;
 
   /// No description provided for @online_sharing_title.
@@ -1699,6 +1723,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please update your apps to the newest version and try it again.'**
   String get update_app_version;
+
+  /// No description provided for @update_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Available'**
+  String get update_available;
+
+  /// No description provided for @update_available_content.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version is available.'**
+  String get update_available_content;
+
+  /// No description provided for @update_features_fixes_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Please update the app to access the latest features and improvements.'**
+  String get update_features_fixes_desc;
+
+  /// No description provided for @update_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Now'**
+  String get update_now;
 
   /// No description provided for @version.
   ///

@@ -312,4 +312,28 @@ void main() {
       expect(isValid, isTrue);
     });
   });
+
+  group('RemoteShareService.parseAndValidateMatch', () {
+    test(
+      'returns invalidSchema when filename is correct but json is not',
+      () async {
+        final service = RemoteShareService();
+        final result = await service.parseAndValidateMatch(
+          '{"invalid": true}',
+          'test.$MATCH_FILE_EXTENSION',
+        );
+
+        expect(result.result, ImportResult.invalidSchema);
+      },
+    );
+  });
+
+  group('RemoteShareService.loadMatchFromFile', () {
+    test('returns invalidExtension for wrong file extension', () async {
+      final service = RemoteShareService();
+      final result = await service.loadMatchFromFile('test.json');
+
+      expect(result.result, ImportResult.invalidExtension);
+    });
+  });
 }

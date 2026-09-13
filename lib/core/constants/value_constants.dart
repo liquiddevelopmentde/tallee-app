@@ -10,12 +10,6 @@ const String LIQUID_GITHUB_URL = 'https://github.com/liquiddevelopmentde';
 /// Email for contacting LIQUID
 const String LIQUID_CONTACT_EMAIL = 'hello@liquid-dev.de';
 
-/// Schema version of the whole app data
-const int APP_DATA_SCHEMA_VERSION = 1;
-
-/// Schema version of the match data
-const int MATCH_DATA_SCHEMA_VERSION = 1;
-
 /// Treshold for fuzzy search
 const int FUZZY_SEARCH_THRESHOLD = 50;
 
@@ -63,3 +57,15 @@ const ({int min, int max}) SCORE_INPUT_BOUNDARIES = (min: -99999, max: 99999);
 
 /// Range for live input
 const ({int min, int max}) LIVE_INPUT_BOUNDARIES = (min: 0, max: 99);
+
+/// Schema version of the whole app data
+const int APP_DATA_SCHEMA_VERSION = 1;
+
+/// Schema version of the match data
+const int MATCH_DATA_SCHEMA_VERSION = 1;
+
+/// File extension for match files
+const String MATCH_FILE_EXTENSION = 'tallee';
+
+/// File extension for app data
+const String APP_DATA_FILE_EXTENSION = 'json';
