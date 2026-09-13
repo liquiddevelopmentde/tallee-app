@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
@@ -90,7 +90,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                         key: const ValueKey('no_association'),
                         margin: CustomTheme.tileMargin,
                         height: 150,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: CustomTheme.standardBoxDecoration.copyWith(
                           border: Border.all(
                             color: Colors.orange.withAlpha(150),

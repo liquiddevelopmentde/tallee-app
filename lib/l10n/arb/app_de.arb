@@ -161,6 +161,7 @@
   "info": "Info",
   "input_token_instruction": "Gib einen Match-Share-Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.",
   "invalid_email": "Bitte gib eine gültige E-Mail-Adresse ein.",
+  "invalid_extension": "Ungültige Dateiendung.",
   "invalid_file": "Ungültige Datei.",
   "invalid_qr_code": "Dieser QR-Code ist ungültig oder abgelaufen.",
   "invalid_schema": "Ungültiges Schema",

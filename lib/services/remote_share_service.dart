@@ -101,7 +101,7 @@ class RemoteShareService {
     required String title,
   }) async {
     String formattedMatchName = match.name.toSafeFilename();
-    var filename = '$formattedMatchName.tallee';
+    var filename = '$formattedMatchName.${Constants.MATCH_FILE_EXTENSION}';
     final temp = await getTemporaryDirectory();
     final path = '${temp.path}/$filename';
     File(path).writeAsString(jsonEncode(match));
@@ -115,7 +115,7 @@ class RemoteShareService {
     required String dialogTitle,
   }) async {
     String formattedMatchName = match.name.toSafeFilename();
-    var filename = '$formattedMatchName.tallee';
+    var filename = '$formattedMatchName.${Constants.MATCH_FILE_EXTENSION}';
 
     String jsonString = jsonEncode(match.toJson());
     Uint8List fileBytes = utf8.encode(jsonString);
@@ -196,6 +196,16 @@ class RemoteShareService {
   /// Loads a match from a given file path without opening a file picker.
   Future<({ImportResult result, Match? match, String filePath})>
   loadMatchFromFile(String filePath) async {
+    if (!filePath.toLowerCase().endsWith(
+      '.${Constants.MATCH_FILE_EXTENSION}',
+    )) {
+      return (
+        result: ImportResult.invalidExtension,
+        match: null,
+        filePath: filePath,
+      );
+    }
+
     final file = File(filePath);
 
     try {
@@ -295,7 +305,7 @@ class RemoteShareService {
     final path = await FilePicker.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: ['tallee'],
+      allowedExtensions: [Constants.MATCH_FILE_EXTENSION],
     );
 
     if (path == null || path.files.isEmpty) {
@@ -303,8 +313,19 @@ class RemoteShareService {
     }
 
     final file = path.files.single;
-    final jsonString = await readFileContent(file: file);
     final filePath = file.path ?? file.name;
+
+    if (!filePath.toLowerCase().endsWith(
+      '.${Constants.MATCH_FILE_EXTENSION}',
+    )) {
+      return (
+        result: ImportResult.invalidExtension,
+        match: null,
+        filePath: filePath,
+      );
+    }
+
+    final jsonString = await readFileContent(file: file);
     if (jsonString == null) {
       return (
         result: ImportResult.fileReadError,

@@ -81,6 +81,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                         key: const ValueKey('no_association'),
                         margin: CustomTheme.tileMargin,
                         height: 138,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: CustomTheme.standardBoxDecoration.copyWith(
                           border: Border.all(
                             color: Colors.orange.withAlpha(150),

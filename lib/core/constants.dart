@@ -63,6 +63,12 @@ class Constants {
   /// Maximum length for feedback message
   static const int MAX_FEEDBACK_MESSAGE_LENGTH = 1000;
 
+  /// File extension for match files
+  static const String MATCH_FILE_EXTENSION = 'tallee';
+
+  /// File extension for app data
+  static const String APP_DATA_FILE_EXTENSION = 'tallee';
+
   /// Range for score input
   static const ({int min, int max}) SCORE_INPUT_BOUNDARIES = (
     min: -99999,

@@ -410,6 +410,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalid_email => 'Please enter a valid email address.';
 
   @override
+  String get invalid_extension => 'Invalid file extension.';
+
+  @override
   String get invalid_file => 'Invalid File.';
 
   @override

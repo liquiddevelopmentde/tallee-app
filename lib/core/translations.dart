@@ -28,6 +28,8 @@ String translateImportResultToString(
       return loc.invalid_schema;
     case ImportResult.invalidData:
       return loc.names_or_descriptions_too_long;
+    case ImportResult.invalidExtension:
+      return loc.invalid_extension;
     case ImportResult.fileReadError:
       return loc.error_reading_file;
     case ImportResult.fileNotFound:
@@ -59,7 +61,9 @@ String translateMatchImportResultToString(
     case ImportResult.invalidData:
       return '${loc.invalid_file} ${loc.choose_other_file}';
     case ImportResult.incompatibleVersion:
-      return loc.incompatible_version;
+      return '${loc.incompatible_version} ${loc.choose_other_file}';
+    case ImportResult.invalidExtension:
+      return '${loc.invalid_extension}\n${loc.choose_other_file}';
     case ImportResult.unknownException:
     case ImportResult.fileNotFound:
     case ImportResult.fileReadError:

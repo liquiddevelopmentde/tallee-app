@@ -812,6 +812,12 @@ abstract class AppLocalizations {
   /// **'Please enter a valid email address.'**
   String get invalid_email;
 
+  /// No description provided for @invalid_extension.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid file extension.'**
+  String get invalid_extension;
+
   /// No description provided for @invalid_file.
   ///
   /// In en, this message translates to:

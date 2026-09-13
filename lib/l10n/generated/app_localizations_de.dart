@@ -415,6 +415,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get invalid_email => 'Bitte gib eine gültige E-Mail-Adresse ein.';
 
   @override
+  String get invalid_extension => 'Ungültige Dateiendung.';
+
+  @override
   String get invalid_file => 'Ungültige Datei.';
 
   @override
