@@ -21,9 +21,10 @@ import 'package:tallee/presentation/widgets/top_centered_message.dart';
 class ChooseGameView extends StatefulWidget {
   /// A view that allows the user to choose a game from a list of available games
   /// - [games]: The list of available games
-  /// - [initialGame]: The initially selected game
+  /// - [initialGames]: The initially selected games
   /// - [onGamesUpdated]: Optional callback invoked when the games are updated
   /// - [statistic]: Optional statistic payload for choosing groups for a statistic
+  /// - [selectedTypes]: Optional list of statistic types to determine the correct button text
   /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
   const ChooseGameView({
     super.key,
@@ -31,6 +32,7 @@ class ChooseGameView extends StatefulWidget {
     this.initialGames,
     this.onGamesUpdated,
     this.statistic,
+    this.selectedTypes,
     this.requiredRuleset,
     this.enableMultiSelection = false,
   });
@@ -39,6 +41,7 @@ class ChooseGameView extends StatefulWidget {
   final List<Game>? initialGames;
   final VoidCallback? onGamesUpdated;
   final Statistic? statistic;
+  final List<StatisticType>? selectedTypes;
   final bool enableMultiSelection;
   final Ruleset? requiredRuleset;
 
@@ -64,6 +67,9 @@ class _ChooseGameViewState extends State<ChooseGameView> {
 
   // If selecting multiple is possible
   late bool enableMultiSelection;
+
+  // How many statistics get created
+  late int statAmount = widget.selectedTypes?.length ?? 0;
 
   @override
   void initState() {
@@ -254,13 +260,14 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 ),
               ),
             ),
+
+            // Create statistic button
             if (widget.statistic != null)
-              // Create statistic button
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
                 child: BottomAnimatedButton(
                   buttonConstraints: const BoxConstraints(minWidth: 390),
-                  buttonText: loc.create_statistic,
+                  buttonText: buttonText,
                   onPressed: selectedGames.isNotEmpty
                       ? () => submitStatistic()
                       : null,
@@ -271,6 +278,9 @@ class _ChooseGameViewState extends State<ChooseGameView> {
       ),
     );
   }
+
+  String get buttonText =>
+      AppLocalizations.of(context).create_statistic(statAmount);
 
   Object? get popResult {
     if (widget.statistic != null) return null;

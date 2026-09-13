@@ -46,6 +46,7 @@ class Statistic {
   }
 
   Statistic copyWith({
+    String? id,
     StatisticType? type,
     List<StatisticScope>? scopes,
     Timeframe? timeframe,
@@ -59,7 +60,7 @@ class Statistic {
     int? position,
   }) {
     return Statistic(
-      id: id,
+      id: id ?? this.id,
       type: type ?? this.type,
       scopes: scopes ?? this.scopes,
       timeframe: timeframe ?? this.timeframe,
