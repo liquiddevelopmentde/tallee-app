@@ -3462,7 +3462,7 @@ const _flutter = Package(
     description: 'A framework for writing Flutter applications',
     homepage: 'https://flutter.dev',
     authors: [],
-  version: '3.47.4',
+    version: '3.47.4',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: true,
