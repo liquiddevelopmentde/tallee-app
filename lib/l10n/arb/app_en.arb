@@ -63,6 +63,11 @@
       }
     }
   },
+  "later": "Later",
+  "update_now": "Update Now",
+  "update_available_content": "A new version is available.",
+  "update_available": "Update Available",
+  "update_features_fixes_desc": "Please update the app to access the latest features and improvements.",
   "create_teams": "Create teams",
   "created_on": "Created on",
   "creation_date": "Creation date",
