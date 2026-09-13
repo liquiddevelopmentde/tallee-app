@@ -65,17 +65,7 @@
   },
   "later": "Later",
   "update_now": "Update Now",
-  "updateAvailableContent": "A new version ({storeVersion}) is available. You are currently using version {localVersion}.",
-  "@updateAvailableContent": {
-    "placeholders": {
-      "storeVersion": {
-        "type": "String"
-      },
-      "localVersion": {
-        "type": "String"
-      }
-    }
-  },
+  "update_available_content": "A new version is available.",
   "update_available": "Update Available",
   "update_features_fixes_desc": "Please update the app to access the latest features and improvements.",
   "create_teams": "Create teams",

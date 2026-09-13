@@ -275,7 +275,7 @@
   "scope": "Bereich",
   "later": "Später",
   "update_now": "Jetzt aktualisieren",
-  "updateAvailableContent": "Eine neue Version ({storeVersion}) ist verfügbar. Du nutzt aktuell Version {localVersion}.",
+  "update_available_content": "Eine neue Version ist verfügbar.",
   "update_available": "Update verfügbar",
   "update_features_fixes_desc": "Bitte aktualisiere die App, um die neuesten Funktionen und Verbesserungen zu nutzen.",
   "scope_description": "Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.",

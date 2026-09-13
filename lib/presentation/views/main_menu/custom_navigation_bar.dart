@@ -277,10 +277,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  loc.updateAvailableContent(
-                    status!.storeVersion,
-                    status.localVersion,
-                  ),
+                  loc.update_available_content,
                   style: const TextStyle(color: CustomTheme.textColor),
                   maxLines: 3,
                 ),

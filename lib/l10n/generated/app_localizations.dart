@@ -404,11 +404,11 @@ abstract class AppLocalizations {
   /// **'Update Now'**
   String get update_now;
 
-  /// No description provided for @updateAvailableContent.
+  /// No description provided for @update_available_content.
   ///
   /// In en, this message translates to:
-  /// **'A new version ({storeVersion}) is available. You are currently using version {localVersion}.'**
-  String updateAvailableContent(String storeVersion, String localVersion);
+  /// **'A new version is available.'**
+  String get update_available_content;
 
   /// No description provided for @update_available.
   ///

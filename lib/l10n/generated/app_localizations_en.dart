@@ -176,9 +176,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get update_now => 'Update Now';
 
   @override
-  String updateAvailableContent(String storeVersion, String localVersion) {
-    return 'A new version ($storeVersion) is available. You are currently using version $localVersion.';
-  }
+  String get update_available_content => 'A new version is available.';
 
   @override
   String get update_available => 'Update Available';
