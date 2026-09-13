@@ -32,7 +32,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Reporting an error helps us identify and fix problems in Tallee!';
 
   @override
-  String get error_report_hint => 'Describe the error (required)';
+  String get error_report_hint =>
+      'Please describe the steps leading up to the error and how it appeared (required)';
 
   @override
   String get all_time => 'All time';

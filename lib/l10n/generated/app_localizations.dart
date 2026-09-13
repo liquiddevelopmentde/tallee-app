@@ -143,7 +143,7 @@ abstract class AppLocalizations {
   /// No description provided for @error_report_hint.
   ///
   /// In en, this message translates to:
-  /// **'Describe the error (required)'**
+  /// **'Please describe the steps leading up to the error and how it appeared (required)'**
   String get error_report_hint;
 
   /// No description provided for @all_time.
