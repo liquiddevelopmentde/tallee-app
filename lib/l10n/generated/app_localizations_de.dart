@@ -185,17 +185,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get custom => 'Benutzerdefiniert';
 
   @override
-  String get data => 'Daten';
-
-  @override
-  String get data_transfer => 'Datentransfer';
-
-  @override
-  String get data_transfer_description =>
-      'Exportiere und Importiere alle deine Spiele, Spieler:innen, Gruppen, Spielvorlagen, Statistiken in eine Datei. Dies dient als Backup oder zum Übertragen der Daten auf ein neues Gerät. Um deine Spiele mit Freunden zu Teilen, öffne ein Spiel und wähle \"Teilen\".';
-
-  @override
   String get danger_zone => 'Gefahrenzone';
+
+  @override
+  String get data => 'Daten';
 
   @override
   String get data_backup => 'Daten & Backup';
@@ -208,6 +201,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get data_successfully_imported => 'Daten erfolgreich importiert';
+
+  @override
+  String get data_transfer => 'Datentransfer';
+
+  @override
+  String get data_transfer_description =>
+      'Exportiere und Importiere alle deine Spiele, Spieler:innen, Gruppen, Spielvorlagen, Statistiken in eine Datei. Dies dient als Backup oder zum Übertragen der Daten auf ein neues Gerät. Um deine Spiele mit Freunden zu Teilen, öffne ein Spiel und wähle \"Teilen\".';
 
   @override
   String days_ago(Object count) {
@@ -342,10 +342,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get export_data => 'Daten exportieren';
 
   @override
-  String get export_description =>
-      'Export all your games, players, match templates, and game templates into a single file. This serves as a backup or for transferring data to a new device. If you want to share a game with friends, open the game and select \"Share\".';
-
-  @override
   String get favourites => 'Favoriten';
 
   @override
@@ -382,6 +378,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get games => 'Spielvorlagen';
 
   @override
+  String get general => 'Allgemein';
+
+  @override
   String get group => 'Gruppe';
 
   @override
@@ -413,9 +412,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get import_description =>
       'Importiere deine Tallee-Daten (.json) aus einer zuvor exportierten Datei. Dies dient zum Wiederherstellen eines Backups oder zum Übertragen von Daten auf ein neues Gerät. Um geteilte Spiele zu importieren, tippe auf das QR-Code-Symbol in der Spielansicht.';
-
-  @override
-  String get general => 'Allgemein';
 
   @override
   String get import_file_instruction =>

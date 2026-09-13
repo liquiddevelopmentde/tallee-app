@@ -182,17 +182,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get custom => 'Custom';
 
   @override
-  String get data => 'Data';
-
-  @override
-  String get data_transfer => 'Data Transfer';
-
-  @override
-  String get data_transfer_description =>
-      'Export and import all your games, players, groups, game templates, and statistics into a file. This serves as a backup or to transfer data to a new device. To share your games with friends, open a game and select \"Share\".';
-
-  @override
   String get danger_zone => 'Danger Zone';
+
+  @override
+  String get data => 'Data';
 
   @override
   String get data_backup => 'Data & Backup';
@@ -205,6 +198,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get data_successfully_imported => 'Data successfully imported';
+
+  @override
+  String get data_transfer => 'Data Transfer';
+
+  @override
+  String get data_transfer_description =>
+      'Export and import all your games, players, groups, game templates, and statistics into a file. This serves as a backup or to transfer data to a new device. To share your games with friends, open a game and select \"Share\".';
 
   @override
   String days_ago(Object count) {
@@ -338,10 +338,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get export_data => 'Export data';
 
   @override
-  String get export_description =>
-      'Export all your games, players, match templates, and game templates into a single file. This serves as a backup or for transferring data to a new device. If you want to share a game with friends, open the game and select \"Share\".';
-
-  @override
   String get favourites => 'Favourites';
 
   @override
@@ -377,6 +373,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get games => 'Games';
 
   @override
+  String get general => 'General';
+
+  @override
   String get group => 'Group';
 
   @override
@@ -408,9 +407,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get import_description =>
       'Import your Tallee data (.json) from a previously exported file. This is meant for restoring a backup or transferring data between devices. To import shared matches, tap the QR code icon in the match view.';
-
-  @override
-  String get general => 'General';
 
   @override
   String get import_file_instruction =>

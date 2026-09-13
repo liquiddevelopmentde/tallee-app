@@ -132,7 +132,6 @@
   },
   "export_canceled": "Export canceled",
   "export_data": "Export data",
-  "export_description": "Export all your games, players, match templates, and game templates into a single file. This serves as a backup or for transferring data to a new device. If you want to share a game with friends, open the game and select \"Share\".",
   "favourites": "Favourites",
   "feedback_hint": "Your message or feedback (required)",
   "feedback_info_text": "Your feedback helps us continuously improve Tallee!",

@@ -416,29 +416,17 @@ abstract class AppLocalizations {
   /// **'Custom'**
   String get custom;
 
-  /// No description provided for @data.
-  ///
-  /// In en, this message translates to:
-  /// **'Data'**
-  String get data;
-
-  /// No description provided for @data_transfer.
-  ///
-  /// In en, this message translates to:
-  /// **'Data Transfer'**
-  String get data_transfer;
-
-  /// No description provided for @data_transfer_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Export and import all your games, players, groups, game templates, and statistics into a file. This serves as a backup or to transfer data to a new device. To share your games with friends, open a game and select \"Share\".'**
-  String get data_transfer_description;
-
   /// No description provided for @danger_zone.
   ///
   /// In en, this message translates to:
   /// **'Danger Zone'**
   String get danger_zone;
+
+  /// No description provided for @data.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get data;
 
   /// No description provided for @data_backup.
   ///
@@ -463,6 +451,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Data successfully imported'**
   String get data_successfully_imported;
+
+  /// No description provided for @data_transfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Transfer'**
+  String get data_transfer;
+
+  /// No description provided for @data_transfer_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Export and import all your games, players, groups, game templates, and statistics into a file. This serves as a backup or to transfer data to a new device. To share your games with friends, open a game and select \"Share\".'**
+  String get data_transfer_description;
 
   /// No description provided for @days_ago.
   ///
@@ -680,12 +680,6 @@ abstract class AppLocalizations {
   /// **'Export data'**
   String get export_data;
 
-  /// No description provided for @export_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Export all your games, players, match templates, and game templates into a single file. This serves as a backup or for transferring data to a new device. If you want to share a game with friends, open the game and select \"Share\".'**
-  String get export_description;
-
   /// No description provided for @favourites.
   ///
   /// In en, this message translates to:
@@ -752,6 +746,12 @@ abstract class AppLocalizations {
   /// **'Games'**
   String get games;
 
+  /// No description provided for @general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
   /// No description provided for @group.
   ///
   /// In en, this message translates to:
@@ -811,12 +811,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Import your Tallee data (.json) from a previously exported file. This is meant for restoring a backup or transferring data between devices. To import shared matches, tap the QR code icon in the match view.'**
   String get import_description;
-
-  /// No description provided for @general.
-  ///
-  /// In en, this message translates to:
-  /// **'General'**
-  String get general;
 
   /// No description provided for @import_file_instruction.
   ///
