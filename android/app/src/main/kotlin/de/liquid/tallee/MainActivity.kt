@@ -1,4 +1,4 @@
-package de.liquid.tallee
+package de.liquiddev.tallee
 
 import io.flutter.embedding.android.FlutterActivity
 
