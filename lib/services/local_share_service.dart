@@ -203,7 +203,6 @@ class LocalShareService {
     String jsonString,
   ) async {
     final (status, decoded) = await validateJson(jsonString);
-    print('decoded: $decoded');
     if (status != ImportResult.success || decoded == null) {
       return status;
     }

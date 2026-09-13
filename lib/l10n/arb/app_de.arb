@@ -55,7 +55,14 @@
   "create_match": "Spiel erstellen",
   "create_new_group": "Neue Gruppe erstellen",
   "create_new_match": "Neues Spiel erstellen",
-  "create_statistic": "Statistik erstellen",
+  "create_statistic": "{count, plural, =0{Statistiken erstellen} =1{Statistik erstellen} other{Statistiken erstellen ({count})}}",
+  "@create_statistic": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "create_teams": "Teams erstellen",
   "created_on": "Erstellt am",
   "creation_date": "Erstellungsdatum",

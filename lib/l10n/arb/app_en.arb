@@ -55,7 +55,14 @@
   "create_match": "Create Match",
   "create_new_group": "Create new group",
   "create_new_match": "Create new match",
-  "create_statistic": "Create statistic",
+  "create_statistic": "Create {count, plural, =0{statistics} =1{statistic} other{statistics ({count})}}",
+  "@create_statistic": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "create_teams": "Create teams",
   "created_on": "Created on",
   "creation_date": "Creation date",

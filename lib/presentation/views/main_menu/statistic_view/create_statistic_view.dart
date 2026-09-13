@@ -20,6 +20,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/dropdown/labeled_dropdown.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateStatisticView extends StatefulWidget {
   const CreateStatisticView({super.key, required this.onStatisticCreated});
@@ -49,8 +50,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   List<Group> groups = [];
 
   /* User selections */
-  List<StatisticType> selectedType = [];
-  List<StatisticScope> selectedScope = [];
+  List<StatisticType> selectedTypes = [];
+  List<StatisticScope> selectedScopes = [];
   List<Game> selectedGames = [];
   List<Player> selectedPlayers = [];
   List<Group> selectedGroups = [];
@@ -59,6 +60,12 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   DateTime? selectedEndDate;
   // null -> random color
   AppColor? selectedColor;
+
+  String get submitButtonText =>
+      selectedScopes.contains(StatisticScope.selectedGroups) ||
+          selectedScopes.contains(StatisticScope.selectedGames)
+      ? AppLocalizations.of(context).continue_
+      : AppLocalizations.of(context).create_statistic(selectedTypes.length);
 
   @override
   void initState() {
@@ -73,7 +80,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
     return ScaffoldMessenger(
       child: Scaffold(
-        appBar: AppBar(title: Text(loc.create_statistic)),
+        appBar: AppBar(title: Text(loc.create_statistic(1))),
         body: Column(
           children: [
             Expanded(
@@ -109,11 +116,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               child: BottomAnimatedButton(
                 buttonConstraints: const BoxConstraints(minWidth: 390),
                 buttonText: submitButtonText,
-                onPressed:
-                    (selectedType.isNotEmpty && selectedScope.isNotEmpty) &&
-                        !isLoading
-                    ? () => submitStatistic()
-                    : null,
+                onPressed: enableSubmitButton ? () => submitStatistic() : null,
               ),
             ),
           ],
@@ -121,6 +124,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       ),
     );
   }
+
+  bool get enableSubmitButton =>
+      (selectedTypes.isNotEmpty && selectedScopes.isNotEmpty) && !isLoading;
 
   Widget buildClassifierSection(BuildContext context, AppLocalizations loc) {
     return LabeledDropdown<StatisticType>.multi(
@@ -276,7 +282,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     }
     selectedTypeNotifier.value = current;
     setState(() {
-      selectedType = current;
+      selectedTypes = current;
     });
   }
 
@@ -302,15 +308,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
     selectedScopeNotifier.value = current;
     setState(() {
-      selectedScope = current;
+      selectedScopes = current;
     });
   }
-
-  String get submitButtonText =>
-      selectedScope.contains(StatisticScope.selectedGroups) ||
-          selectedScope.contains(StatisticScope.selectedGames)
-      ? AppLocalizations.of(context).confirm
-      : AppLocalizations.of(context).create_statistic;
 
   Future<void> loadAllData() async {
     setState(() {
@@ -342,66 +342,78 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         });
   }
 
-  /// Creates the statistic based on the user selections. If the statistic
-  /// requires selecting specific groups or games, navigates to the respective
-  /// selection view. For multiple selected types, one [Statistic] per type is
-  /// created — all sharing the same scope, timeframe and color.
+  /// Creates the statistic based on the user selections. Navigates to the
+  /// ChooseViews if their type has been selected
   Future<void> submitStatistic() async {
-    final scopes = [...selectedScope];
     final db = Provider.of<AppDatabase>(context, listen: false);
 
-    if (scopes.contains(StatisticScope.selectedGroups)) {
-      final created = await Navigator.of(context).push<Statistic>(
+    final result = await resolveBaseStatistic();
+    if (result == null) return; // User cancelled the picker.
+    final baseStat = result.statistic;
+    final isStatSaved = result.isSaved;
+
+    // Create additional statistic based on the base stat
+    final additionalStats = [
+      for (final type in selectedTypes.skip(1))
+        baseStat.copyWith(id: const Uuid().v4(), type: type),
+    ];
+
+    final statsToSave = [
+      // When only "All Players" has been selected, stat wont get saved to db
+      if (!isStatSaved) baseStat,
+      ...additionalStats,
+    ];
+    if (statsToSave.isNotEmpty) {
+      await db.statisticDao.addStatisticsAsList(statistics: statsToSave);
+    }
+
+    if (!mounted) return;
+    widget.onStatisticCreated([baseStat, ...additionalStats]);
+    Navigator.of(context).pop();
+  }
+
+  /// Handles the navigation when multiple [StatisticType]s have been selected.
+  /// Returns the base statistic + a flag indicating if it has been saved to the db
+  Future<({Statistic statistic, bool isSaved})?> resolveBaseStatistic() async {
+    final firstType = selectedTypes.first;
+
+    // "Selected Groups" choosen
+    if (selectedScopes.contains(StatisticScope.selectedGroups)) {
+      final stat = await Navigator.of(context).push<Statistic>(
         adaptivePageRoute(
           settings: const RouteSettings(name: RouteNames.chooseGroupView),
           builder: (context) => ChooseGroupView(
             groups: groups,
-            statistic: buildStat(selectedType.first),
+            statistic: buildStat(firstType),
+            selectedTypes: selectedTypes,
           ),
         ),
       );
-      if (created == null) return;
-      final additionalStats = [
-        for (final type in selectedType.skip(1)) created.copyWith(type: type),
-      ];
-      for (final stat in additionalStats) {
-        await db.statisticDao.addStatistic(statistic: stat);
-      }
-      if (!mounted) return;
-      widget.onStatisticCreated([created, ...additionalStats]);
-      Navigator.of(context).pop();
-    } else if (scopes.contains(StatisticScope.selectedGames)) {
-      final created = await Navigator.of(context).push<Statistic>(
+      return stat == null ? null : (statistic: stat, isSaved: true);
+    }
+
+    // "Selected Games" choosen
+    if (selectedScopes.contains(StatisticScope.selectedGames)) {
+      final stat = await Navigator.of(context).push<Statistic>(
         adaptivePageRoute(
           settings: const RouteSettings(name: RouteNames.chooseGameView),
           builder: (context) => ChooseGameView(
             games: games,
-            statistic: buildStat(selectedType.first),
+            statistic: buildStat(firstType),
+            selectedTypes: selectedTypes,
           ),
         ),
       );
-      if (created == null) return;
-      final additionalStats = [
-        for (final t in selectedType.skip(1)) created.copyWith(type: t),
-      ];
-      for (final stat in additionalStats) {
-        await db.statisticDao.addStatistic(statistic: stat);
-      }
-      if (!mounted) return;
-      widget.onStatisticCreated([created, ...additionalStats]);
-      Navigator.of(context).pop();
-    } else {
-      final stats = [for (final t in selectedType) buildStat(t)];
-      await db.statisticDao.addStatisticsAsList(statistics: stats);
-      if (!mounted) return;
-      widget.onStatisticCreated(stats);
-      Navigator.of(context).pop();
+      return stat == null ? null : (statistic: stat, isSaved: true);
     }
+
+    // "All players" choosen
+    return (statistic: buildStat(firstType), isSaved: false);
   }
 
   Statistic buildStat(StatisticType type) => Statistic(
     type: type,
-    scopes: selectedScope,
+    scopes: selectedScopes,
     timeframe: selectedTimeframe,
     startDate: selectedStartDate,
     endDate: selectedEndDate,

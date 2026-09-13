@@ -161,7 +161,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get create_new_match => 'Neues Spiel erstellen';
 
   @override
-  String get create_statistic => 'Statistik erstellen';
+  String create_statistic(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Statistiken erstellen ($count)',
+      one: 'Statistik erstellen',
+      zero: 'Statistiken erstellen',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get create_teams => 'Teams erstellen';

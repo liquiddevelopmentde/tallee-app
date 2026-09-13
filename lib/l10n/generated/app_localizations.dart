@@ -389,8 +389,8 @@ abstract class AppLocalizations {
   /// No description provided for @create_statistic.
   ///
   /// In en, this message translates to:
-  /// **'Create statistic'**
-  String get create_statistic;
+  /// **'Create {count, plural, =0{statistics} =1{statistic} other{statistics ({count})}}'**
+  String create_statistic(int count);
 
   /// No description provided for @create_teams.
   ///
