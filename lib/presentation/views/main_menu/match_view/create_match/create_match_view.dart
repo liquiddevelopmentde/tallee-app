@@ -285,7 +285,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         settings: const RouteSettings(name: RouteNames.chooseGameView),
         builder: (context) => ChooseGameView(
           games: games,
-          initialGames: [?selectedGame],
+          initialSelectedGames: [?selectedGame],
           onGamesUpdated: widget.onMatchesUpdated,
         ),
       ),
