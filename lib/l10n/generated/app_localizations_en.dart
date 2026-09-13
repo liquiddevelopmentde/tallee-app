@@ -464,6 +464,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get last_year => 'Last year';
 
   @override
+  String get later => 'Later';
+
+  @override
   String get legal => 'Legal';
 
   @override
@@ -920,6 +923,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get update_app_version =>
       'Please update your apps to the newest version and try it again.';
+
+  @override
+  String get update_available => 'Update Available';
+
+  @override
+  String get update_available_content => 'A new version is available.';
+
+  @override
+  String get update_features_fixes_desc =>
+      'Please update the app to access the latest features and improvements.';
+
+  @override
+  String get update_now => 'Update Now';
 
   @override
   String get version => 'Version';

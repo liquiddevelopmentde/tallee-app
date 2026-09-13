@@ -1,5 +1,11 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:new_version_plus/model/version_status.dart';
+import 'package:new_version_plus/new_version_plus.dart';
 import 'package:once/once.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants.dart';
@@ -17,10 +23,12 @@ import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
 import 'package:tallee/presentation/views/news/news_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   /// A custom navigation bar widget that provides tabbed navigation
@@ -42,8 +50,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   @override
   void initState() {
     super.initState();
+
     addExampleStats();
-    openNewsDialog();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await checkVersionAndUpdate(context);
+      openNewsDialog();
+    });
   }
 
   @override
@@ -231,6 +244,91 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         });
       },
     );
+  }
+
+  /// Checks for a new version and shows an update dialog if available.
+  Future<void> checkVersionAndUpdate(BuildContext context) async {
+    final loc = AppLocalizations.of(context);
+
+    final newVersionPlus = NewVersionPlus(
+      iOSAppStoreCountry: 'de',
+      androidPlayStoreCountry: 'de',
+      iOSId: 'de.felixkirchner.cabocounter',
+    );
+
+    VersionStatus? status;
+
+    try {
+      status = await newVersionPlus.getVersionStatus();
+    } catch (error) {
+      // ignore network errors, that come from a users network conditions
+      if (isNetworkError(error)) return;
+      rethrow;
+    }
+
+    if (status != null && status.canUpdate) {
+      if (!context.mounted) return;
+
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return CustomAlertDialog(
+            title: loc.update_available,
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  loc.update_available_content,
+                  style: const TextStyle(
+                    color: CustomTheme.textColor,
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  loc.update_features_fixes_desc,
+                  style: const TextStyle(
+                    color: CustomTheme.textColor,
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              CustomDialogAction(
+                text: loc.update_now,
+                buttonType: ButtonType.primary,
+                onPressed: () async {
+                  final Uri url = Uri.parse(status!.appStoreLink);
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
+                },
+              ),
+              CustomDialogAction(
+                text: loc.later,
+                buttonType: ButtonType.secondary,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  /// Helper function to classify connection/network exceptions
+  bool isNetworkError(Object error) {
+    return error is SocketException ||
+        error is TimeoutException ||
+        error is HandshakeException ||
+        error is http.ClientException ||
+        error.toString().contains('SocketException') ||
+        error.toString().contains('Failed host lookup');
   }
 
   /// Adds example statistics to the database the first time the user opens the app
