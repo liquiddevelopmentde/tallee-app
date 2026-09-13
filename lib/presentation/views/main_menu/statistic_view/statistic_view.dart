@@ -192,7 +192,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                   builder: (context) =>
                                                       ChooseGameView(
                                                         games: games,
-                                                        initialGames:
+                                                        initialSelectedGames:
                                                             filteredGames,
                                                         enableMultiSelection:
                                                             true,

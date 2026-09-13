@@ -1,7 +1,7 @@
 name: tallee
 description: "Tracking App for Card Games"
 publish_to: 'none'
-version: 0.1.8+641
+version: 0.1.10+643
 
 environment:
   sdk: ^3.13.2
@@ -32,6 +32,7 @@ dependencies:
   json_schema: ^5.2.2
   lottie: ^3.5.1
   mobile_scanner: ^7.2.0
+  new_version_plus: ^1.0.1
   once: ^1.8.0
   open_with_app: ^0.2.0
   package_info_plus: ^9.0.1

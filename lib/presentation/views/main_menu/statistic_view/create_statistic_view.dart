@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:tallee/core/app_color_utils.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -394,11 +393,12 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
     // "Selected Games" choosen
     if (selectedScopes.contains(StatisticScope.selectedGames)) {
+      final filteredGames = filterGamesForRequiredRuleset(games);
       final stat = await Navigator.of(context).push<Statistic>(
         adaptivePageRoute(
           settings: const RouteSettings(name: RouteNames.chooseGameView),
           builder: (context) => ChooseGameView(
-            games: games,
+            games: filteredGames,
             statistic: buildStat(firstType),
             selectedTypes: selectedTypes,
           ),
@@ -409,6 +409,14 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
     // "All players" choosen
     return (statistic: buildStat(firstType), isSaved: false);
+  }
+
+  /// Filters the [games] based on the rulesets required by the selected [StatisticType]s
+  List<Game> filterGamesForRequiredRuleset(List<Game> games) {
+    final Set<Ruleset> requiredRulesets = {
+      for (final t in selectedTypes) ...getRulesetForTypes(t),
+    };
+    return games.where((g) => requiredRulesets.contains(g.ruleset)).toList();
   }
 
   Statistic buildStat(StatisticType type) => Statistic(
