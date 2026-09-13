@@ -50,11 +50,12 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkVersionAndUpdate(context);
-    });
     addExampleStats();
     openNewsDialog();
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => checkVersionAndUpdate(context),
+    );
   }
 
   @override
@@ -248,17 +249,18 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   Future<void> checkVersionAndUpdate(BuildContext context) async {
     final loc = AppLocalizations.of(context);
 
-    final newVersionPlus = NewVersionPlus();
+    final newVersionPlus = NewVersionPlus(
+      iOSAppStoreCountry: 'de',
+      androidPlayStoreCountry: 'de',
+    );
 
     VersionStatus? status;
 
     try {
       status = await newVersionPlus.getVersionStatus();
     } catch (error) {
-      if (_isNetworkError(error)) {
-        // ignore network errors, that come from a users network conditions
-        return;
-      }
+      // ignore network errors, that come from a users network conditions
+      if (isNetworkError(error)) return;
       rethrow;
     }
 
@@ -279,25 +281,22 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                     status!.storeVersion,
                     status.localVersion,
                   ),
-                  style: const TextStyle(color: CustomTheme.textColor),
-                  maxLines: 3,
+                  style: const TextStyle(
+                    color: CustomTheme.textColor,
+                    overflow: TextOverflow.visible,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   loc.update_features_fixes_desc,
-                  style: const TextStyle(color: CustomTheme.textColor),
-                  maxLines: 3,
+                  style: const TextStyle(
+                    color: CustomTheme.textColor,
+                    overflow: TextOverflow.visible,
+                  ),
                 ),
               ],
             ),
             actions: [
-              CustomDialogAction(
-                text: loc.later,
-                buttonType: ButtonType.secondary,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
               CustomDialogAction(
                 text: loc.update_now,
                 buttonType: ButtonType.primary,
@@ -308,6 +307,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                   }
                 },
               ),
+              CustomDialogAction(
+                text: loc.later,
+                buttonType: ButtonType.secondary,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
             ],
           );
         },
@@ -316,7 +322,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   }
 
   /// Helper function to classify connection/network exceptions
-  bool _isNetworkError(Object error) {
+  bool isNetworkError(Object error) {
     return error is SocketException ||
         error is TimeoutException ||
         error is HandshakeException ||
