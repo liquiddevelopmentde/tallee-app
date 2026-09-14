@@ -153,7 +153,7 @@ class _MatchViewState extends State<MatchView> {
                 padding: CustomTheme.filterRowPadding,
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  spacing: 10,
+                  spacing: 12,
                   children: [
                     // All matches
                     TextChip(
@@ -182,6 +182,9 @@ class _MatchViewState extends State<MatchView> {
                       onTap: () => setFilter(MatchFilter.team),
                       activated: selectedFilter == MatchFilter.team,
                     ),
+
+                    // To keep padding on the right side
+                    const SizedBox.shrink(),
                   ],
                 ),
               ),
