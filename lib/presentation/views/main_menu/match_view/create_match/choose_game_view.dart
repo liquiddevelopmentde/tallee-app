@@ -10,9 +10,6 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
-import 'package:tallee/presentation/utils/navigation/route_names.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
@@ -98,46 +95,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        actions: [
-          Visibility(
-            visible: !enableMultiSelection,
-            child: HapticIconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  adaptivePageRoute(
-                    settings: const RouteSettings(
-                      name: RouteNames.createGameView,
-                    ),
-                    builder: (context) => CreateGameView(
-                      requiredRuleset: requiredRuleset,
-                      onGameChanged: () {
-                        widget.onGamesUpdated?.call();
-                      },
-                    ),
-                  ),
-                );
-                if (result != null && result.game != null) {
-                  if (requiredRuleset != null &&
-                      result.game.ruleset != requiredRuleset) {
-                    return;
-                  }
-
-                  setState(() {
-                    games.insert(0, result.game);
-                    games.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-                  });
-                  refreshFromSource();
-                }
-              },
-            ),
-          ),
-        ],
-
-        title: Text(loc.choose_game),
-      ),
+      appBar: AppBar(title: Text(loc.choose_game)),
       body: PopScope(
         // This fixes that the Android Back Gesture didn't return the
         // selectedGameIndex and therefore the selected Game wasn't saved
@@ -216,49 +174,6 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                                       : selectedGames.first,
                                 );
                               });
-                        }
-                      },
-                      onLongPress: () async {
-                        final result = await Navigator.push(
-                          context,
-                          adaptivePageRoute(
-                            settings: const RouteSettings(
-                              name: RouteNames.createGameView,
-                            ),
-                            builder: (context) => CreateGameView(
-                              gameToEdit: game,
-                              gameCount: getGameCount(game),
-                              onGameChanged: () {
-                                widget.onGamesUpdated?.call();
-                              },
-                            ),
-                          ),
-                        );
-                        if (result != null && result.game != null) {
-                          // Find the index in the original list to mutate
-                          final originalIndex = games.indexWhere(
-                            (g) => g.id == game.id,
-                          );
-                          if (originalIndex == -1) {
-                            return;
-                          }
-                          if (result.delete) {
-                            setState(() {
-                              // deselect the game
-                              if (selectedGames.any(
-                                (selected) => selected.id == game.id,
-                              )) {
-                                selectedGames.clear();
-                              }
-                              games.removeAt(originalIndex);
-                              widget.onGamesUpdated?.call();
-                            });
-                          } else {
-                            setState(() {
-                              games[originalIndex] = result.game;
-                            });
-                          }
-                          refreshFromSource();
                         }
                       },
                     );
