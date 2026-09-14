@@ -134,6 +134,30 @@ abstract class AppLocalizations {
   /// **'All time'**
   String get all_time;
 
+  /// No description provided for @there_is_no_match_matching_your_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no match matching your filter'**
+  String get there_is_no_match_matching_your_filter;
+
+  /// No description provided for @active_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Matches'**
+  String get active_matches;
+
+  /// No description provided for @finished_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished Matches'**
+  String get finished_matches;
+
+  /// No description provided for @team_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Matches'**
+  String get team_matches;
+
   /// No description provided for @app_name.
   ///
   /// In en, this message translates to:

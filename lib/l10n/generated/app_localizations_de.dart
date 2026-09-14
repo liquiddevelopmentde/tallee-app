@@ -29,6 +29,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get all_time => 'Gesamter Zeitraum';
 
   @override
+  String get there_is_no_match_matching_your_filter =>
+      'Es gibt kein Spiel, das deinem Filter entspricht';
+
+  @override
+  String get active_matches => 'Aktive Spiele';
+
+  @override
+  String get finished_matches => 'Beendete Spiele';
+
+  @override
+  String get team_matches => 'Teamspiele';
+
+  @override
   String get app_name => 'Tallee';
 
   @override

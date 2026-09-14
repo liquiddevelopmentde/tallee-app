@@ -14,9 +14,11 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/crea
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/cards/text_chip.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/match_search_provider.dart';
 
 class MatchView extends StatefulWidget {
@@ -31,11 +33,12 @@ class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
   late final MatchSearchProvider searchProvider;
   bool isLoading = true;
+  MatchFilter selectedFilter = SharedPreferencesService.getMatchFilter();
 
   TextEditingController searchBarController = TextEditingController();
 
   /// Loaded matches from the database, initially filled with skeleton matches
-  List<Match> matches = List.filled(
+  List<Match> allMatches = List.filled(
     4,
     Match(
       name: 'Skeleton match name',
@@ -60,7 +63,11 @@ class _MatchViewState extends State<MatchView> {
     ),
   );
 
-  late List<Match> filteredMatches = [...matches];
+  /// Matches based on the selected filter
+  late List<Match> filteredMatches = [...allMatches];
+
+  /// Matches based on the search query
+  late List<Match> displayedMatches = [...allMatches];
 
   @override
   void initState() {
@@ -85,9 +92,7 @@ class _MatchViewState extends State<MatchView> {
     final searchProvider = Provider.of<MatchSearchProvider>(context);
 
     // Reset filtered matches when search is disabled
-    if (!searchProvider.isSearching) {
-      filteredMatches = [...matches];
-    }
+    if (!searchProvider.isSearching) displayedMatches = [...filteredMatches];
 
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
@@ -97,6 +102,7 @@ class _MatchViewState extends State<MatchView> {
         children: [
           Column(
             children: [
+              // Searchbar
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
                 switchInCurve: Curves.easeOutCubic,
@@ -141,55 +147,100 @@ class _MatchViewState extends State<MatchView> {
                         key: ValueKey('match-searchbar-hidden'),
                       ),
               ),
+
+              // Filter row
+              SingleChildScrollView(
+                padding: CustomTheme.filterRowPadding,
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  spacing: 10,
+                  children: [
+                    // All matches
+                    TextChip(
+                      text: loc.all,
+                      onTap: () => setFilter(MatchFilter.all),
+                      activated: selectedFilter == MatchFilter.all,
+                    ),
+
+                    // Active matches
+                    TextChip(
+                      text: loc.active_matches,
+                      onTap: () => setFilter(MatchFilter.active),
+                      activated: selectedFilter == MatchFilter.active,
+                    ),
+
+                    // Finished matches
+                    TextChip(
+                      text: loc.finished_matches,
+                      onTap: () => setFilter(MatchFilter.finished),
+                      activated: selectedFilter == MatchFilter.finished,
+                    ),
+
+                    // team matches
+                    TextChip(
+                      text: loc.team_matches,
+                      onTap: () => setFilter(MatchFilter.team),
+                      activated: selectedFilter == MatchFilter.team,
+                    ),
+                  ],
+                ),
+              ),
+
+              // Matches
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
-                  child: Visibility(
-                    visible: matches.isNotEmpty,
-                    replacement: Center(
-                      child: TopCenteredMessage(
-                        icon: Icons.info,
-                        title: loc.info,
-                        message: loc.no_matches_created_yet,
-                      ),
-                    ),
-                    child: Visibility(
-                      visible: filteredMatches.isNotEmpty,
-                      replacement: Center(
-                        child: TopCenteredMessage(
+
+                  // No matches created
+                  child: allMatches.isEmpty
+                      ? Center(
+                          child: TopCenteredMessage(
+                            icon: Icons.info,
+                            title: loc.info,
+                            message: loc.no_matches_created_yet,
+                          ),
+                        )
+                      // No matches in filter
+                      : filteredMatches.isEmpty
+                      ? Center(
+                          child: TopCenteredMessage(
+                            icon: Icons.info,
+                            title: loc.info,
+                            message: loc.there_is_no_match_matching_your_filter,
+                          ),
+                        )
+                      // No matches in search
+                      : displayedMatches.isEmpty
+                      ? TopCenteredMessage(
                           icon: Icons.info,
                           title: loc.info,
                           message: loc.there_is_no_match_matching_your_search,
+                        )
+                      : ListView.builder(
+                          padding: CustomTheme.listViewPadding(context),
+                          itemCount: displayedMatches.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return MatchTile(
+                              onPlayerEdited: loadMatches,
+                              width: MediaQuery.sizeOf(context).width * 0.95,
+                              onTap: () async {
+                                Navigator.push(
+                                  context,
+                                  adaptivePageRoute(
+                                    settings: const RouteSettings(
+                                      name: RouteNames.matchDetailView,
+                                    ),
+                                    builder: (context) => MatchDetailView(
+                                      match: displayedMatches[index],
+                                      onMatchUpdate: loadMatches,
+                                    ),
+                                  ),
+                                );
+                              },
+                              match: displayedMatches[index],
+                            );
+                          },
                         ),
-                      ),
-                      child: ListView.builder(
-                        padding: CustomTheme.listViewPadding(context),
-                        itemCount: filteredMatches.length,
-
-                        itemBuilder: (BuildContext context, int index) {
-                          return MatchTile(
-                            onPlayerEdited: loadMatches,
-                            width: MediaQuery.sizeOf(context).width * 0.95,
-                            onTap: () async {
-                              Navigator.push(
-                                context,
-                                adaptivePageRoute(
-                                  settings: const RouteSettings(
-                                    name: RouteNames.matchDetailView,
-                                  ),
-                                  builder: (context) => MatchDetailView(
-                                    match: filteredMatches[index],
-                                    onMatchUpdate: loadMatches,
-                                  ),
-                                ),
-                              );
-                            },
-                            match: filteredMatches[index],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -221,14 +272,41 @@ class _MatchViewState extends State<MatchView> {
     );
   }
 
+  void setFilter(MatchFilter filter) {
+    setState(() {
+      selectedFilter = filter;
+      filterMatchesByAttribute(filter);
+    });
+    SharedPreferencesService.setMatchFilter(filter);
+  }
+
+  void filterMatchesByAttribute(MatchFilter filter) {
+    switch (filter) {
+      case MatchFilter.all:
+        filteredMatches = [...allMatches];
+      case MatchFilter.active:
+        filteredMatches = allMatches
+            .where((match) => match.endedAt == null)
+            .toList();
+      case MatchFilter.finished:
+        filteredMatches = allMatches
+            .where((match) => match.endedAt != null)
+            .toList();
+      case MatchFilter.team:
+        filteredMatches = allMatches
+            .where((match) => match.isTeamMatch)
+            .toList();
+    }
+  }
+
   void filterMatches(String query) {
     setState(() {
       if (query.isEmpty) {
-        filteredMatches = [...matches];
+        displayedMatches = [...filteredMatches];
       } else {
         final List<({Match match, int score})> scoredMatches = [];
 
-        for (final match in matches) {
+        for (final match in allMatches) {
           int maxScore = 0;
 
           // Check match name
@@ -264,7 +342,7 @@ class _MatchViewState extends State<MatchView> {
 
         // Sort by score descending
         scoredMatches.sort((a, b) => b.score.compareTo(a.score));
-        filteredMatches = scoredMatches.map((e) => e.match).toList();
+        displayedMatches = scoredMatches.map((e) => e.match).toList();
       }
     });
   }
@@ -289,13 +367,15 @@ class _MatchViewState extends State<MatchView> {
       if (mounted) {
         setState(() {
           final loadedMatches = results[0] as List<Match>;
-          matches = [...loadedMatches]
+
+          allMatches = [...loadedMatches]
             ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-          if (searchBarController.text.isEmpty) {
-            filteredMatches = [...matches];
-          } else {
-            filterMatches(searchBarController.text);
-          }
+          filteredMatches = [...allMatches];
+
+          searchBarController.text.isEmpty
+              ? displayedMatches = [...allMatches]
+              : filterMatches(searchBarController.text);
+
           isLoading = false;
         });
       }
