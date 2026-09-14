@@ -176,7 +176,7 @@ class _MatchViewState extends State<MatchView> {
                       activated: selectedFilter == MatchFilter.finished,
                     ),
 
-                    // team matches
+                    // Team matches
                     TextChip(
                       text: loc.team_matches,
                       onTap: () => setFilter(MatchFilter.team),
