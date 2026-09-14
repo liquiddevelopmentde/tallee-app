@@ -566,12 +566,6 @@ abstract class AppLocalizations {
   /// **'Edit Game'**
   String get edit_game;
 
-  /// No description provided for @there_is_no_game_matching_your_search.
-  ///
-  /// In en, this message translates to:
-  /// **'There is no game matching your search'**
-  String get there_is_no_game_matching_your_search;
-
   /// No description provided for @edit_group.
   ///
   /// In en, this message translates to:
@@ -1627,6 +1621,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'There are no games matching your search'**
   String get there_are_no_games_matching_your_search;
+
+  /// No description provided for @there_is_no_game_matching_your_search.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no game matching your search'**
+  String get there_is_no_game_matching_your_search;
 
   /// No description provided for @there_is_no_group_matching_your_search.
   ///

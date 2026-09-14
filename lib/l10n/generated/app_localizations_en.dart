@@ -271,10 +271,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_game => 'Edit Game';
 
   @override
-  String get there_is_no_game_matching_your_search =>
-      'There is no game matching your search';
-
-  @override
   String get edit_group => 'Edit Group';
 
   @override
@@ -876,6 +872,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get there_are_no_games_matching_your_search =>
       'There are no games matching your search';
+
+  @override
+  String get there_is_no_game_matching_your_search =>
+      'There is no game matching your search';
 
   @override
   String get there_is_no_group_matching_your_search =>
