@@ -112,7 +112,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                             ? loc.error_report_hint
                             : loc.feedback_hint,
                         maxLines: 5,
-                        minLines: 4,
+                        minLines: 5,
                         maxLength: Constants.MAX_FEEDBACK_MESSAGE_LENGTH,
                         showCounterText: true,
                         textInputAction: TextInputAction.next,
