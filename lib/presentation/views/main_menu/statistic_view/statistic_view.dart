@@ -108,23 +108,22 @@ class _StatisticsViewState extends State<StatisticsView> {
                             ),
 
                             // Favourites chip
-                      Skeleton.unite(
-                        child: TextChip(
-                          text: loc.favourites,
-                          activated: showOnlyFavourites,
-                          onTap: () =>
-                          {
-                            setState(() {
-                              showOnlyFavourites = true;
-                              resetFilter(includeFavourites: false);
-                            }),
-                            SharedPreferencesService.setShowFavourites(
-                              showOnlyFavourites,
+                            Skeleton.unite(
+                              child: TextChip(
+                                text: loc.favourites,
+                                activated: showOnlyFavourites,
+                                onTap: () => {
+                                  setState(() {
+                                    showOnlyFavourites = true;
+                                    resetFilter(includeFavourites: false);
+                                  }),
+                                  SharedPreferencesService.setShowFavourites(
+                                    showOnlyFavourites,
+                                  ),
+                                  createFilteredStatisticTiles(),
+                                },
+                              ),
                             ),
-                            createFilteredStatisticTiles(),
-                          },
-                        ),
-                      ),
 
                             // Groups Chip
                             Skeleton.unite(
@@ -162,40 +161,39 @@ class _StatisticsViewState extends State<StatisticsView> {
                             ),
 
                             // Games Chip
-                      Skeleton.unite(
-                        child: TextChip(
-                          text: isLoading ? 'skeleton' : loc.games,
-                          count: filteredGames.length,
-                          activated: filteredGames.isNotEmpty,
-                          onTap: () async {
-                            final result = await Navigator.of(context)
-                                .push(
-                              adaptivePageRoute(
-                                settings: const RouteSettings(
-                                  name: RouteNames.chooseGameView,
-                                ),
-                                fullscreenDialog: true,
-                                builder: (context) =>
-                                    ChooseGameView(
-                                      games: games,
-                                      initialSelectedGames: filteredGames,
-                                      enableMultiSelection: true,
-                                    ),
+                            Skeleton.unite(
+                              child: TextChip(
+                                text: isLoading ? 'skeleton' : loc.games,
+                                count: filteredGames.length,
+                                activated: filteredGames.isNotEmpty,
+                                onTap: () async {
+                                  final result = await Navigator.of(context)
+                                      .push(
+                                        adaptivePageRoute(
+                                          settings: const RouteSettings(
+                                            name: RouteNames.chooseGameView,
+                                          ),
+                                          fullscreenDialog: true,
+                                          builder: (context) => ChooseGameView(
+                                            games: games,
+                                            initialSelectedGames: filteredGames,
+                                            enableMultiSelection: true,
+                                          ),
+                                        ),
+                                      );
+                                  setState(() {
+                                    filteredGames = result ?? [];
+                                    if (filteredGames.isNotEmpty) {
+                                      resetFavourites();
+                                    }
+                                  });
+                                  SharedPreferencesService.setFilteredGames(
+                                    filteredGames,
+                                  );
+                                  createFilteredStatisticTiles();
+                                },
                               ),
-                            );
-                            setState(() {
-                              filteredGames = result ?? [];
-                              if (filteredGames.isNotEmpty) {
-                                resetFavourites();
-                              }
-                            });
-                            SharedPreferencesService.setFilteredGames(
-                              filteredGames,
-                            );
-                            createFilteredStatisticTiles();
-                          },
-                        ),
-                      ),
+                            ),
 
                             // Type Chip
                             Skeleton.unite(
@@ -216,11 +214,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                 enumValue: StatisticType.values,
 
                                                 initialEnums:
-                                      filteredStatisticTypes,
-                                      enableMultiSelection: true,
-                                    ),
-                              ),
-                            );
+                                                    filteredStatisticTypes,
+                                                enableMultiSelection: true,
+                                              ),
+                                        ),
+                                      );
 
                                   setState(() {
                                     filteredStatisticTypes =
@@ -240,22 +238,22 @@ class _StatisticsViewState extends State<StatisticsView> {
                             ),
 
                             // Timeframe Chip
-                      Skeleton.unite(
-                        child: TextChip(
-                          text: isLoading ? 'skeleton' : loc.timeframe,
-                          count: filteredTimeframes.length,
-                          activated: filteredTimeframes.isNotEmpty,
-                          onTap: () async {
-                            final result = await Navigator.of(context)
-                                .push(
-                              adaptivePageRoute(
-                                settings: const RouteSettings(
-                                  name: RouteNames.chooseEnumView,
-                                ),
-                                fullscreenDialog: true,
-                                builder: (context) =>
-                                    ChooseEnumView<Timeframe>(
-                                      enumValue: Timeframe.values,
+                            Skeleton.unite(
+                              child: TextChip(
+                                text: isLoading ? 'skeleton' : loc.timeframe,
+                                count: filteredTimeframes.length,
+                                activated: filteredTimeframes.isNotEmpty,
+                                onTap: () async {
+                                  final result = await Navigator.of(context)
+                                      .push(
+                                        adaptivePageRoute(
+                                          settings: const RouteSettings(
+                                            name: RouteNames.chooseEnumView,
+                                          ),
+                                          fullscreenDialog: true,
+                                          builder: (context) =>
+                                              ChooseEnumView<Timeframe>(
+                                                enumValue: Timeframe.values,
 
                                                 initialEnums:
                                                     filteredTimeframes,
