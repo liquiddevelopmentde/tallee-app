@@ -59,7 +59,7 @@ class SharedPreferencesService {
   }
 
   /// Returns null when the key is not set, so user wasn't asked yet
-  static bool? getStoredSharingConsent() {
+  static bool? getSharingConsent() {
     return _instance.getBool(sharingConsentKey);
   }
 

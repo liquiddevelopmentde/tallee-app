@@ -47,7 +47,7 @@ void main() {
       final filteredTimeframes =
           SharedPreferencesService.getFilteredTimeframes();
       final matchFilter = SharedPreferencesService.getMatchFilter();
-      final sharingConsent = SharedPreferencesService.getStoredSharingConsent();
+      final sharingConsent = SharedPreferencesService.getSharingConsent();
 
       expect(filteredGroups, isEmpty);
       expect(filteredGames, isEmpty);
@@ -163,13 +163,13 @@ void main() {
     });
 
     test('Get and set sharing consent works correctly', () async {
-      expect(SharedPreferencesService.getStoredSharingConsent(), isNull);
+      expect(SharedPreferencesService.getSharingConsent(), isNull);
 
       await SharedPreferencesService.setSharingConsent(true);
-      expect(SharedPreferencesService.getStoredSharingConsent(), isTrue);
+      expect(SharedPreferencesService.getSharingConsent(), isTrue);
 
       await SharedPreferencesService.setSharingConsent(false);
-      expect(SharedPreferencesService.getStoredSharingConsent(), isFalse);
+      expect(SharedPreferencesService.getSharingConsent(), isFalse);
     });
 
     test('Get and set match filters works correctly', () async {
