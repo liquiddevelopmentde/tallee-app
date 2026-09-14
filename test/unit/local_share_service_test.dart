@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/local_share_service.dart';
@@ -115,7 +115,7 @@ void main() {
 
   // Builds a schema-valid json string from the test entities.
   String buildJson() => json.encode({
-    'version': Constants.APP_DATA_SCHEMA_VERSION,
+    'version': APP_DATA_SCHEMA_VERSION,
     'players': [
       {
         'id': testPlayer1.id,
@@ -1062,7 +1062,7 @@ void main() {
 
       test('validateJsonSchema() works correctly', () async {
         final validJson = json.encode({
-          'version': Constants.APP_DATA_SCHEMA_VERSION,
+          'version': APP_DATA_SCHEMA_VERSION,
           'players': [
             {
               'id': testPlayer1.id,
@@ -1185,7 +1185,7 @@ void main() {
       group('Schema Validation', () {
         test('validateJsonSchema() returns true for valid data', () async {
           final validJson = json.encode({
-            'version': Constants.MATCH_DATA_SCHEMA_VERSION,
+            'version': MATCH_DATA_SCHEMA_VERSION,
             'players': [
               {
                 'id': testPlayer1.id,
@@ -1617,7 +1617,7 @@ void main() {
       test('returns decoded string when bytes are present', () async {
         const content = '{"players": []}';
         final file = PlatformFile(
-          name: 'data.${Constants.APP_DATA_FILE_EXTENSION}',
+          name: 'data.$APP_DATA_FILE_EXTENSION',
           size: content.length,
           bytes: Uint8List.fromList(utf8.encode(content)),
         );
@@ -1630,7 +1630,7 @@ void main() {
       test('reads from path when bytes are null', () async {
         const content = '{"games": []}';
         final tempFile = File(
-          '${Directory.systemTemp.path}/read_file_content_test.${Constants.APP_DATA_FILE_EXTENSION}',
+          '${Directory.systemTemp.path}/read_file_content_test.$APP_DATA_FILE_EXTENSION',
         );
         await tempFile.writeAsString(content);
         addTearDown(() async {
@@ -1638,7 +1638,7 @@ void main() {
         });
 
         final file = PlatformFile(
-          name: 'data.${Constants.APP_DATA_FILE_EXTENSION}',
+          name: 'data.$APP_DATA_FILE_EXTENSION',
           size: content.length,
           path: tempFile.path,
         );
@@ -1650,7 +1650,7 @@ void main() {
 
       test('returns null when both bytes and path are null', () async {
         final file = PlatformFile(
-          name: 'data.${Constants.APP_DATA_FILE_EXTENSION}',
+          name: 'data.$APP_DATA_FILE_EXTENSION',
           size: 0,
         );
 
@@ -1674,16 +1674,19 @@ void main() {
         expect(await database.matchDao.getMatchCount(), greaterThan(0));
       });
 
-      test('returns invalidSchema and writes nothing for invalid json', () async {
-        final result = await LocalShareService.commitImport(
-          database,
-          '{"version": ${Constants.APP_DATA_SCHEMA_VERSION}, "players": "not a list"}',
-        );
+      test(
+        'returns invalidSchema and writes nothing for invalid json',
+        () async {
+          final result = await LocalShareService.commitImport(
+            database,
+            '{"version": $APP_DATA_SCHEMA_VERSION, "players": "not a list"}',
+          );
 
-        expect(result, ImportResult.invalidSchema);
-        expect(await database.playerDao.getPlayerCount(), 0);
-        expect(await database.matchDao.getMatchCount(), 0);
-      });
+          expect(result, ImportResult.invalidSchema);
+          expect(await database.playerDao.getPlayerCount(), 0);
+          expect(await database.matchDao.getMatchCount(), 0);
+        },
+      );
 
       test('returns invalidSchema for malformed json', () async {
         final result = await LocalShareService.commitImport(
@@ -1704,7 +1707,7 @@ void main() {
 
       test('returns fileNotFound when the file does not exist', () async {
         final missingPath =
-            '${Directory.systemTemp.path}/missing.${Constants.APP_DATA_FILE_EXTENSION}';
+            '${Directory.systemTemp.path}/missing.$APP_DATA_FILE_EXTENSION';
 
         final result = await LocalShareService.getDataFromPath(missingPath);
 
@@ -1715,7 +1718,7 @@ void main() {
       test('returns success and json for a valid file', () async {
         final validJson = buildJson();
         final file = File(
-          '${Directory.systemTemp.path}/data.${Constants.APP_DATA_FILE_EXTENSION}',
+          '${Directory.systemTemp.path}/data.$APP_DATA_FILE_EXTENSION',
         );
         await file.writeAsString(validJson);
         addTearDown(() async {
@@ -1730,7 +1733,7 @@ void main() {
 
       test('returns invalidSchema and null json for an invalid file', () async {
         final file = File(
-          '${Directory.systemTemp.path}/invalid.${Constants.APP_DATA_FILE_EXTENSION}',
+          '${Directory.systemTemp.path}/invalid.$APP_DATA_FILE_EXTENSION',
         );
         await file.writeAsString('{"players": "not a list"}');
         addTearDown(() async {
@@ -1746,7 +1749,7 @@ void main() {
 
     group('isSchemaVersionCorrect()', () {
       test('returns true for the current schema version', () {
-        const schemaVersion = Constants.APP_DATA_SCHEMA_VERSION;
+        const schemaVersion = APP_DATA_SCHEMA_VERSION;
         final decoded = <String, dynamic>{'version': schemaVersion};
         final isVersionCorrect = isSchemaVersionCorrect(
           jsonMap: decoded,
@@ -1760,7 +1763,7 @@ void main() {
         final decoded = <String, dynamic>{};
         final isVersionCorrect = isSchemaVersionCorrect(
           jsonMap: decoded,
-          schemaVersion: Constants.APP_DATA_SCHEMA_VERSION,
+          schemaVersion: APP_DATA_SCHEMA_VERSION,
         );
 
         expect(isVersionCorrect, isFalse);
@@ -1768,19 +1771,19 @@ void main() {
 
       test('returns false for an outdated schema version', () {
         final decoded = <String, dynamic>{
-          'version': Constants.APP_DATA_SCHEMA_VERSION - 1,
+          'version': APP_DATA_SCHEMA_VERSION - 1,
         };
 
         final isVersionCorrect = isSchemaVersionCorrect(
           jsonMap: decoded,
-          schemaVersion: Constants.APP_DATA_SCHEMA_VERSION,
+          schemaVersion: APP_DATA_SCHEMA_VERSION,
         );
 
         expect(isVersionCorrect, isFalse);
       });
 
       test('returns false for a newer schema version', () {
-        const schemaVersion = Constants.APP_DATA_SCHEMA_VERSION;
+        const schemaVersion = APP_DATA_SCHEMA_VERSION;
         final decoded = <String, dynamic>{'version': schemaVersion + 1};
 
         final isVersionCorrect = isSchemaVersionCorrect(
@@ -1792,7 +1795,7 @@ void main() {
       });
 
       test('returns false when the version is not an integer', () {
-        const schemaVersion = Constants.APP_DATA_SCHEMA_VERSION;
+        const schemaVersion = APP_DATA_SCHEMA_VERSION;
         final decoded = <String, dynamic>{'version': '$schemaVersion'};
 
         final isVersionCorrect = isSchemaVersionCorrect(
@@ -1808,7 +1811,7 @@ void main() {
 
         final isVersionCorrect = isSchemaVersionCorrect(
           jsonMap: decoded,
-          schemaVersion: Constants.APP_DATA_SCHEMA_VERSION,
+          schemaVersion: APP_DATA_SCHEMA_VERSION,
         );
 
         expect(isVersionCorrect, isFalse);

@@ -274,6 +274,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get edit_game => 'Spielvorlage bearbeiten';
 
   @override
+  String get there_is_no_game_matching_your_search =>
+      'Es gibt keine Spielvorlage, die deiner Suche entspricht';
+
+  @override
   String get edit_group => 'Gruppe bearbeiten';
 
   @override

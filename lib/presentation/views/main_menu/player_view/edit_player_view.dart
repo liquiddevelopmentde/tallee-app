@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -69,7 +69,7 @@ class _EditPlayerViewState extends State<EditPlayerView> {
                 child: TextInputField(
                   controller: playerNameController,
                   hintText: loc.player_name,
-                  maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
+                  maxLength: MAX_PLAYER_NAME_LENGTH,
                 ),
               ),
               Container(
@@ -77,7 +77,7 @@ class _EditPlayerViewState extends State<EditPlayerView> {
                 child: TextInputField(
                   controller: playerDescriptionController,
                   hintText: loc.description,
-                  maxLength: Constants.MAX_PLAYER_DESCRIPTION_LENGTH,
+                  maxLength: MAX_PLAYER_DESCRIPTION_LENGTH,
                   minLines: 8,
                   maxLines: 8,
                   showCounterText: true,

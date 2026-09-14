@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:tallee/core/app_color_utils.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -70,7 +70,7 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                           child: TextInputField(
                             controller: widget.controller,
                             hintText: widget.hintText,
-                            maxLength: Constants.MAX_TEAM_NAME_LENGTH,
+                            maxLength: MAX_TEAM_NAME_LENGTH,
                             focusNode: widget.focusNode,
                             textInputAction: widget.textInputAction,
                             onSubmitted: widget.onSubmitted,

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -229,7 +229,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
   Widget buildSearchBar(AppLocalizations loc) {
     return CustomSearchBar(
-      maxLength: Constants.MAX_PLAYER_NAME_LENGTH,
+      maxLength: MAX_PLAYER_NAME_LENGTH,
       controller: searchBarController,
       constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
       hintText: loc.search_for_players,
@@ -253,7 +253,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
               if (isNotSelected) {
                 final score = weightedRatio(player.name, value);
-                if (score >= Constants.FUZZY_SEARCH_THRESHOLD) {
+                if (score >= FUZZY_SEARCH_THRESHOLD) {
                   scoredPlayers.add((player: player, score: score));
                 }
               }
@@ -514,7 +514,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   void loadPlayerList() {
     allPlayersFuture = Future.wait([
       db.playerDao.getAllPlayers(),
-      Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+      Future.delayed(MINIMUM_SKELETON_DURATION),
     ]).then((results) => results[0] as List<Player>);
 
     allPlayersFuture.then((loadedPlayers) {

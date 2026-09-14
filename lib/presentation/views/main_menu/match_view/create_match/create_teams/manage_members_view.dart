@@ -4,14 +4,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
-import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
@@ -144,7 +144,8 @@ class _ManageMembersViewState extends State<ManageMembersView> {
                       ? () async => submitMatch()
                       : null,
                   text: loc.create_match,
-                  icon: RpgAwesome.clovers_card,
+                  icon: MATCH_ICON,
+                  showAddBadge: true,
                 ),
               ],
             ),

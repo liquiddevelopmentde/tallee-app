@@ -1,10 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -30,7 +29,7 @@ class MatchView extends StatefulWidget {
 
 class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
-  late final MatchSearchProvider _searchProvider;
+  late final MatchSearchProvider searchProvider;
   bool isLoading = true;
 
   TextEditingController searchBarController = TextEditingController();
@@ -67,15 +66,15 @@ class _MatchViewState extends State<MatchView> {
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    _searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
-    _searchProvider.addListener(_handleSearchToggle);
+    searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
+    searchProvider.addListener(handleSearchToggle);
 
     loadMatches();
   }
 
   @override
   void dispose() {
-    _searchProvider.removeListener(_handleSearchToggle);
+    searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
     super.dispose();
   }
@@ -199,7 +198,8 @@ class _MatchViewState extends State<MatchView> {
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: FloatingAnimatedButton(
               text: loc.create_match,
-              icon: RpgAwesome.clovers_card,
+              icon: MATCH_ICON,
+              showAddBadge: true,
               onPressed: () async {
                 Navigator.push(
                   context,
@@ -257,7 +257,7 @@ class _MatchViewState extends State<MatchView> {
             }
           }
 
-          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+          if (maxScore >= FUZZY_SEARCH_THRESHOLD) {
             scoredMatches.add((match: match, score: maxScore));
           }
         }
@@ -269,12 +269,12 @@ class _MatchViewState extends State<MatchView> {
     });
   }
 
-  void _handleSearchToggle() {
+  void handleSearchToggle() {
     if (!mounted) {
       return;
     }
 
-    if (!_searchProvider.isSearching) {
+    if (!searchProvider.isSearching) {
       searchBarController.clear();
     }
   }
@@ -284,7 +284,7 @@ class _MatchViewState extends State<MatchView> {
     isLoading = true;
     Future.wait([
       db.matchDao.getAllMatches(includeDeletedPlayer: true),
-      Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+      Future.delayed(MINIMUM_SKELETON_DURATION),
     ]).then((results) {
       if (mounted) {
         setState(() {

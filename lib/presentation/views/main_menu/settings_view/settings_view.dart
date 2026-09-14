@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/translations.dart';
@@ -159,9 +160,7 @@ class _SettingsViewState extends State<SettingsView> {
                     icon: Icons.account_balance_sharp,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
                     onPressed: () async {
-                      await launchUrl(
-                        Uri.parse(Constants.LIQUID_WEBSITE_LEGAL_URL),
-                      );
+                      await launchUrl(Uri.parse(LIQUID_WEBSITE_LEGAL_URL));
                     },
                   ),
                   SettingsListTile(
@@ -192,18 +191,14 @@ class _SettingsViewState extends State<SettingsView> {
                                   icon: const Icon(Icons.language),
                                   onPressed: () => {
                                     HapticFeedback.lightImpact(),
-                                    launchUrl(
-                                      Uri.parse(Constants.LIQUID_WEBSITE_URL),
-                                    ),
+                                    launchUrl(Uri.parse(LIQUID_WEBSITE_URL)),
                                   },
                                 ),
                                 HapticIconButton(
                                   icon: const FaIcon(FontAwesomeIcons.github),
                                   onPressed: () => {
                                     HapticFeedback.lightImpact(),
-                                    launchUrl(
-                                      Uri.parse(Constants.LIQUID_GITHUB_URL),
-                                    ),
+                                    launchUrl(Uri.parse(LIQUID_GITHUB_URL)),
                                   },
                                 ),
                                 HapticIconButton(
@@ -215,9 +210,7 @@ class _SettingsViewState extends State<SettingsView> {
                                   onPressed: () => {
                                     HapticFeedback.lightImpact(),
                                     launchUrl(
-                                      Uri.parse(
-                                        'mailto:${Constants.LIQUID_CONTACT_EMAIL}',
-                                      ),
+                                      Uri.parse('mailto:$LIQUID_CONTACT_EMAIL'),
                                     ),
                                   },
                                 ),

@@ -8,7 +8,7 @@ import 'package:new_version_plus/model/version_status.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:once/once.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/statistic.dart';
@@ -16,6 +16,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_sheet_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/views/main_menu/game_view/game_view.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
@@ -26,6 +27,7 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
+import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -62,9 +64,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+
     final matchSearchProvider = Provider.of<MatchSearchProvider>(context);
     final groupSearchProvider = Provider.of<GroupSearchProvider>(context);
+    final gameSearchProvider = Provider.of<GameSearchProvider>(context);
+
     final refreshRevision = context.watch<DataRefreshProvider>().revision;
+
     // Pretty ugly but works
     final List<Widget> tabs = [
       KeyedSubtree(
@@ -76,10 +82,15 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         child: const GroupView(),
       ),
       KeyedSubtree(
+        key: ValueKey('games_${tabKeyCount}_$refreshRevision'),
+        child: const GameView(),
+      ),
+      KeyedSubtree(
         key: ValueKey('stats_${tabKeyCount}_$refreshRevision'),
         child: const StatisticsView(),
       ),
     ];
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -107,7 +118,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               )
             : null,
         actions: [
-          if (currentIndex == 0) // Only in MatchView
+          // Only in MatchView
+          if (currentIndex == 0)
             HapticIconButton(
               key: ValueKey(
                 matchSearchProvider.isSearching
@@ -120,7 +132,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               onPressed: () => matchSearchProvider.toggleSearch(),
             ),
 
-          if (currentIndex == 1) // Only in GroupView
+          // Only in GroupView
+          if (currentIndex == 1)
             HapticIconButton(
               key: ValueKey(
                 groupSearchProvider.isSearching
@@ -131,6 +144,20 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 groupSearchProvider.isSearching ? Icons.close : Icons.search,
               ),
               onPressed: () => groupSearchProvider.toggleSearch(),
+            ),
+
+          // Only in GameView
+          if (currentIndex == 2)
+            HapticIconButton(
+              key: ValueKey(
+                gameSearchProvider.isSearching
+                    ? 'game_search_close_button'
+                    : 'game_search_open_button',
+              ),
+              icon: Icon(
+                gameSearchProvider.isSearching ? Icons.close : Icons.search,
+              ),
+              onPressed: () => gameSearchProvider.toggleSearch(),
             ),
 
           HapticIconButton(
@@ -182,20 +209,27 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               NavbarItem(
                 index: 0,
                 isSelected: currentIndex == 0,
-                icon: Icons.gamepad_rounded,
+                icon: MATCH_ICON,
                 label: loc.matches,
                 onTabTapped: onTabTapped,
               ),
               NavbarItem(
                 index: 1,
                 isSelected: currentIndex == 1,
-                icon: Icons.group_rounded,
+                icon: GROUP_ICON,
                 label: loc.groups,
                 onTabTapped: onTabTapped,
               ),
               NavbarItem(
                 index: 2,
                 isSelected: currentIndex == 2,
+                icon: GAME_ICON,
+                label: loc.games,
+                onTabTapped: onTabTapped,
+              ),
+              NavbarItem(
+                index: 3,
+                isSelected: currentIndex == 3,
                 icon: Icons.bar_chart_rounded,
                 label: loc.statistics,
                 onTabTapped: onTabTapped,
@@ -224,6 +258,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       case 1:
         return loc.groups;
       case 2:
+        return loc.games;
+      case 3:
         return loc.statistics;
       default:
         return '';
@@ -235,7 +271,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     Once.runOnEveryNewVersion(
       key: 'whats-new-screen',
       callback: () {
-        Future.delayed(Constants.OPEN_WITH_NAVIGATION_DELAY, () {
+        Future.delayed(OPEN_WITH_NAVIGATION_DELAY, () {
           if (!mounted) return;
           Navigator.of(
             context,
