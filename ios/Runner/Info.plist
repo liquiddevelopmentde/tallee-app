@@ -86,7 +86,7 @@
             <string>Owner</string>
             <key>LSItemContentTypes</key>
             <array>
-                <string>de.liquid.tallee</string>
+                <string>de.liquid-dev.tallee</string>
             </array>
         </dict>
     </array>
@@ -96,7 +96,7 @@
     <array>
         <dict>
             <key>UTTypeIdentifier</key>
-            <string>de.liquid.tallee</string>
+            <string>de.liquid-dev.tallee</string>
             <key>UTTypeDescription</key>
             <string>Tallee File</string>
             <key>UTTypeConformsTo</key>
