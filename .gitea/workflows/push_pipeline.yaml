@@ -6,6 +6,10 @@ on:
       - "development"
       - "main"
 
+concurrency:
+  group: push-pipeline
+  cancel-in-progress: false
+
 jobs:
   update_version:
     name: "Increment version number"
