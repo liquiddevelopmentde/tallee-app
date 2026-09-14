@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -8,13 +9,15 @@ import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 class GameTile extends StatelessWidget {
   /// A list tile widget that displays a title and description, with optional highlighting and badge.
   /// - [game]: The game object displayed on the tile.
+  /// - [gameCount]: How many matches use this game.
   /// - [onTap]: The callback invoked when the tile is tapped.
-  /// - [onLongPress]: The callback invoked when the tile is tapped.
+  /// - [onLongPress]: The callback invoked when the tile is long pressed.
   /// - [isHighlighted]: A boolean to determine if the tile should be highlighted.
   /// - [borderColor]: Optional color for the highlight border. If null, [badgeColor] or orange is used.
   const GameTile({
     super.key,
     required this.game,
+    this.gameCount,
     this.onTap,
     this.onLongPress,
     this.isHighlighted = false,
@@ -22,13 +25,10 @@ class GameTile extends StatelessWidget {
   });
 
   final Game game;
-
+  final int? gameCount;
   final VoidCallback? onTap;
-
   final VoidCallback? onLongPress;
-
   final bool isHighlighted;
-
   final Color? borderColor;
 
   @override
@@ -36,9 +36,9 @@ class GameTile extends StatelessWidget {
     final title = game.name;
     final description = game.description;
     final ruleset = translateRulesetToString(game.ruleset, context);
-    final subtitle = ruleset;
     final gameColor = getColorFromAppColor(game.color);
     final highlightBorderColor = borderColor ?? gameColor;
+    final showChevron = onLongPress != null;
 
     return GestureDetector(
       onTap: () {
@@ -55,7 +55,13 @@ class GameTile extends StatelessWidget {
       },
       child: AnimatedContainer(
         margin: CustomTheme.tileMargin,
-        padding: const EdgeInsets.only(top: 12, bottom: 12, left: 12, right: 8),
+        padding: EdgeInsets.only(
+          top: 12,
+          bottom: 12,
+          left: 12,
+          // When chevron is shown, we need less padding
+          right: showChevron ? 8 : 12,
+        ),
         decoration: !isHighlighted
             ? CustomTheme.standardBoxDecoration
             : CustomTheme.highlightedBoxDecoration.copyWith(
@@ -67,7 +73,9 @@ class GameTile extends StatelessWidget {
               ),
         duration: const Duration(milliseconds: 200),
         child: Row(
+          spacing: 2,
           children: [
+            // Content
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,6 +85,7 @@ class GameTile extends StatelessWidget {
                   // Title row
                   Row(
                     spacing: 8,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Colored Icon
                       ColoredIconContainer(
@@ -87,32 +96,47 @@ class GameTile extends StatelessWidget {
                         margin: EdgeInsets.zero,
                       ),
 
-                      // Title & Subtitle
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            softWrap: false,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                      // Title & Ruleset
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Title
+                            Text(
+                              title,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              softWrap: false,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
                             ),
-                          ),
-                          Text(
-                            subtitle,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            softWrap: false,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: CustomTheme.hintColor,
+
+                            // Ruleset
+                            Text(
+                              ruleset,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              softWrap: false,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: CustomTheme.hintColor,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+
+                      // Gamecount
+                      if (gameCount != null)
+                        Row(
+                          spacing: 8,
+                          children: [
+                            const Icon(MATCH_ICON),
+                            Text(gameCount.toString()),
+                          ],
+                        ),
                     ],
                   ),
 
@@ -134,7 +158,9 @@ class GameTile extends StatelessWidget {
               ),
             ),
 
-            const Icon(Icons.chevron_right, color: CustomTheme.hintColor),
+            // Chevron
+            if (showChevron)
+              const Icon(Icons.chevron_right, color: CustomTheme.hintColor),
           ],
         ),
       ),

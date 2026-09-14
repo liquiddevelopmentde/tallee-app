@@ -2,7 +2,7 @@ import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/share_exceptions.dart';
@@ -156,7 +156,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
 
     await controller.stop();
 
-    await Future.delayed(Constants.MINIMUM_SKELETON_DURATION);
+    await Future.delayed(MINIMUM_SKELETON_DURATION);
 
     try {
       final response = await RemoteShareService().getMatchByToken(token);

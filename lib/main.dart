@@ -8,7 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/data/db/database.dart';
@@ -24,6 +24,7 @@ import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
+import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 
@@ -96,6 +97,7 @@ void main() async {
             ),
             ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
             ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
+            ChangeNotifierProvider(create: (context) => GameSearchProvider()),
             ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
           ],
           child: DefaultAssetBundle(
@@ -237,7 +239,7 @@ class _TalleeState extends State<Tallee> {
 
     final (_) = await LocalShareService.getDataFromPath(path);
 
-    Future.delayed(Constants.OPEN_WITH_NAVIGATION_DELAY, () {
+    Future.delayed(OPEN_WITH_NAVIGATION_DELAY, () {
       navigator.push(
         adaptivePageRoute(
           settings: const RouteSettings(name: RouteNames.importFile),

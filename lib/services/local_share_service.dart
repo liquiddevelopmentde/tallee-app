@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/remote_share_service.dart';
@@ -48,7 +48,7 @@ class LocalShareService {
     }
 
     final Map<String, dynamic> jsonMap = {
-      'version': Constants.APP_DATA_SCHEMA_VERSION,
+      'version': APP_DATA_SCHEMA_VERSION,
       'players': players.map((player) => player.toNormalizedJson()).toList(),
       'groups': groups.map((group) => group.toNormalizedJson()).toList(),
       'games': games.map((game) => game.toJson()).toList(),
@@ -71,7 +71,7 @@ class LocalShareService {
     try {
       final bytes = Uint8List.fromList(utf8.encode(jsonString));
       final path = await FilePicker.saveFile(
-        fileName: '$fileName.${Constants.APP_DATA_FILE_EXTENSION}',
+        fileName: '$fileName.$APP_DATA_FILE_EXTENSION',
         bytes: bytes,
       );
 
@@ -93,7 +93,7 @@ class LocalShareService {
     final result = await FilePicker.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: [Constants.APP_DATA_FILE_EXTENSION],
+      allowedExtensions: [APP_DATA_FILE_EXTENSION],
     );
 
     if (result == null || result.files.isEmpty) {
@@ -109,9 +109,7 @@ class LocalShareService {
   static Future<(ImportResult, String?)> getDataFromPath(
     String filePath,
   ) async {
-    if (!filePath.toLowerCase().endsWith(
-      '.${Constants.APP_DATA_FILE_EXTENSION}',
-    )) {
+    if (!filePath.toLowerCase().endsWith('.$APP_DATA_FILE_EXTENSION')) {
       return (ImportResult.invalidExtension, null);
     }
 
@@ -164,7 +162,7 @@ class LocalShareService {
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
       final isVersionCorrect = isSchemaVersionCorrect(
         jsonMap: decoded,
-        schemaVersion: Constants.APP_DATA_SCHEMA_VERSION,
+        schemaVersion: APP_DATA_SCHEMA_VERSION,
       );
 
       if (!isVersionCorrect) {
@@ -218,14 +216,14 @@ class LocalShareService {
     }
   }
 
-  /// Validates field lengths against the defined constants.
+  /// Validates field lengths against the defined
   @visibleForTesting
   static bool validateContent(Map<String, dynamic> decoded) {
     // Validate players
     final players = decoded['players'] as List<dynamic>? ?? [];
     for (final p in players) {
       final name = p['name'] as String?;
-      if (name != null && name.length > Constants.MAX_PLAYER_NAME_LENGTH) {
+      if (name != null && name.length > MAX_PLAYER_NAME_LENGTH) {
         return false;
       }
     }
@@ -234,11 +232,11 @@ class LocalShareService {
     final games = decoded['games'] as List<dynamic>? ?? [];
     for (final g in games) {
       final name = g['name'] as String?;
-      if (name != null && name.length > Constants.MAX_GAME_NAME_LENGTH) {
+      if (name != null && name.length > MAX_GAME_NAME_LENGTH) {
         return false;
       }
       final desc = g['description'] as String?;
-      if (desc != null && desc.length > Constants.MAX_GAME_DESCRIPTION_LENGTH) {
+      if (desc != null && desc.length > MAX_GAME_DESCRIPTION_LENGTH) {
         return false;
       }
     }
@@ -247,7 +245,7 @@ class LocalShareService {
     final groups = decoded['groups'] as List<dynamic>? ?? [];
     for (final g in groups) {
       final name = g['name'] as String?;
-      if (name != null && name.length > Constants.MAX_GROUP_NAME_LENGTH) {
+      if (name != null && name.length > MAX_GROUP_NAME_LENGTH) {
         return false;
       }
     }
@@ -256,15 +254,14 @@ class LocalShareService {
     final matches = decoded['matches'] as List<dynamic>? ?? [];
     for (final m in matches) {
       final name = m['name'] as String?;
-      if (name != null && name.length > Constants.MAX_MATCH_NAME_LENGTH) {
+      if (name != null && name.length > MAX_MATCH_NAME_LENGTH) {
         return false;
       }
 
       final teams = m['teams'] as List<dynamic>? ?? [];
       for (final t in teams) {
         final teamName = t['name'] as String?;
-        if (teamName != null &&
-            teamName.length > Constants.MAX_TEAM_NAME_LENGTH) {
+        if (teamName != null && teamName.length > MAX_TEAM_NAME_LENGTH) {
           return false;
         }
       }

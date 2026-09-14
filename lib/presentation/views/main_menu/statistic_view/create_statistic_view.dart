@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -321,7 +321,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           db.playerDao.getAllPlayers(),
           db.groupDao.getAllGroups(),
           db.gameDao.getAllGames(),
-          Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+          Future.delayed(MINIMUM_SKELETON_DURATION),
         ])
         .then((results) async {
           if (!mounted) return;

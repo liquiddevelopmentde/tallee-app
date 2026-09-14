@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tallee/core/app_color_utils.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -401,7 +401,8 @@ class _StatisticsViewState extends State<StatisticsView> {
               bottom: MediaQuery.paddingOf(context).bottom + 20,
               child: FloatingAnimatedButton(
                 text: loc.create_statistic(1),
-                icon: Icons.bar_chart,
+                icon: STATISTIC_ICON,
+                showAddBadge: true,
                 onPressed: () async {
                   if (!mounted) return;
                   final navigator = Navigator.of(this.context);
@@ -470,7 +471,7 @@ class _StatisticsViewState extends State<StatisticsView> {
       db.playerDao.getAllPlayers(),
       db.groupDao.getAllGroups(),
       db.gameDao.getAllGames(),
-      Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+      Future.delayed(MINIMUM_SKELETON_DURATION),
     ]);
 
     if (!mounted) return;

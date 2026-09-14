@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -101,7 +101,7 @@ class RemoteShareService {
     required String title,
   }) async {
     String formattedMatchName = match.name.toSafeFilename();
-    var filename = '$formattedMatchName.${Constants.MATCH_FILE_EXTENSION}';
+    var filename = '$formattedMatchName.$MATCH_FILE_EXTENSION';
     final temp = await getTemporaryDirectory();
     final path = '${temp.path}/$filename';
     File(path).writeAsString(jsonEncode(match));
@@ -115,7 +115,7 @@ class RemoteShareService {
     required String dialogTitle,
   }) async {
     String formattedMatchName = match.name.toSafeFilename();
-    var filename = '$formattedMatchName.${Constants.MATCH_FILE_EXTENSION}';
+    var filename = '$formattedMatchName.$MATCH_FILE_EXTENSION';
 
     String jsonString = jsonEncode(match.toJson());
     Uint8List fileBytes = utf8.encode(jsonString);
@@ -148,7 +148,7 @@ class RemoteShareService {
 
       final isCorrectVersion = isSchemaVersionCorrect(
         jsonMap: decoded,
-        schemaVersion: Constants.MATCH_DATA_SCHEMA_VERSION,
+        schemaVersion: MATCH_DATA_SCHEMA_VERSION,
       );
 
       if (!isCorrectVersion) {
@@ -196,9 +196,7 @@ class RemoteShareService {
   /// Loads a match from a given file path without opening a file picker.
   Future<({ImportResult result, Match? match, String filePath})>
   loadMatchFromFile(String filePath) async {
-    if (!filePath.toLowerCase().endsWith(
-      '.${Constants.MATCH_FILE_EXTENSION}',
-    )) {
+    if (!filePath.toLowerCase().endsWith('.$MATCH_FILE_EXTENSION')) {
       return (
         result: ImportResult.invalidExtension,
         match: null,
@@ -305,7 +303,7 @@ class RemoteShareService {
     final path = await FilePicker.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: [Constants.MATCH_FILE_EXTENSION],
+      allowedExtensions: [MATCH_FILE_EXTENSION],
     );
 
     if (path == null || path.files.isEmpty) {
@@ -315,9 +313,7 @@ class RemoteShareService {
     final file = path.files.single;
     final filePath = file.path ?? file.name;
 
-    if (!filePath.toLowerCase().endsWith(
-      '.${Constants.MATCH_FILE_EXTENSION}',
-    )) {
+    if (!filePath.toLowerCase().endsWith('.$MATCH_FILE_EXTENSION')) {
       return (
         result: ImportResult.invalidExtension,
         match: null,
@@ -337,11 +333,11 @@ class RemoteShareService {
     return await parseAndValidateMatch(jsonString, filePath);
   }
 
-  /// Validates field lengths against the defined constants.
+  /// Validates field lengths against the defined
   static bool validateContent(Map<String, dynamic> decoded) {
     // Validate match name
     final name = decoded['name'] as String?;
-    if (name != null && name.length > Constants.MAX_MATCH_NAME_LENGTH) {
+    if (name != null && name.length > MAX_MATCH_NAME_LENGTH) {
       return false;
     }
 
@@ -349,13 +345,11 @@ class RemoteShareService {
     final game = decoded['game'] as Map<String, dynamic>?;
     if (game != null) {
       final gameName = game['name'] as String?;
-      if (gameName != null &&
-          gameName.length > Constants.MAX_GAME_NAME_LENGTH) {
+      if (gameName != null && gameName.length > MAX_GAME_NAME_LENGTH) {
         return false;
       }
       final gameDesc = game['description'] as String?;
-      if (gameDesc != null &&
-          gameDesc.length > Constants.MAX_GAME_DESCRIPTION_LENGTH) {
+      if (gameDesc != null && gameDesc.length > MAX_GAME_DESCRIPTION_LENGTH) {
         return false;
       }
     }
@@ -365,8 +359,7 @@ class RemoteShareService {
     if (players != null) {
       for (final p in players) {
         final playerName = p['name'] as String?;
-        if (playerName != null &&
-            playerName.length > Constants.MAX_PLAYER_NAME_LENGTH) {
+        if (playerName != null && playerName.length > MAX_PLAYER_NAME_LENGTH) {
           return false;
         }
       }
@@ -376,8 +369,7 @@ class RemoteShareService {
     final group = decoded['group'] as Map<String, dynamic>?;
     if (group != null) {
       final groupName = group['name'] as String?;
-      if (groupName != null &&
-          groupName.length > Constants.MAX_GROUP_NAME_LENGTH) {
+      if (groupName != null && groupName.length > MAX_GROUP_NAME_LENGTH) {
         return false;
       }
     }
@@ -387,8 +379,7 @@ class RemoteShareService {
     if (teams != null) {
       for (final t in teams) {
         final teamName = t['name'] as String?;
-        if (teamName != null &&
-            teamName.length > Constants.MAX_TEAM_NAME_LENGTH) {
+        if (teamName != null && teamName.length > MAX_TEAM_NAME_LENGTH) {
           return false;
         }
       }

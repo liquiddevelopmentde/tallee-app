@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/value_constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -141,16 +141,15 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
 
                         // Navigate back to create match view instantly
                         if (!enableMultiSelection) {
-                          await Future.delayed(
-                            Constants.MINIMUM_SKELETON_DURATION,
-                          ).then((_) {
-                            if (!context.mounted) return;
-                            Navigator.of(context).pop(
-                              selectedGroups.isEmpty
-                                  ? null
-                                  : selectedGroups.first,
-                            );
-                          });
+                          await Future.delayed(MINIMUM_SKELETON_DURATION)
+                              .then((_) {
+                                if (!context.mounted) return;
+                                Navigator.of(context).pop(
+                                  selectedGroups.isEmpty
+                                      ? null
+                                      : selectedGroups.first,
+                                );
+                              });
                         }
                       },
                     );
@@ -252,7 +251,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
             maxScore = max(maxScore, weightedRatio(member.name, query));
           }
 
-          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+          if (maxScore >= FUZZY_SEARCH_THRESHOLD) {
             scoredGroups.add((group: group, score: maxScore));
           }
         }

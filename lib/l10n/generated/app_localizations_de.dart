@@ -902,6 +902,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Es gibt keine Spielvorlagen, die deiner Suche entspricht';
 
   @override
+  String get there_is_no_game_matching_your_search =>
+      'Es gibt keine Spielvorlage, die deiner Suche entspricht';
+
+  @override
   String get there_is_no_group_matching_your_search =>
       'Es gibt keine Gruppe, die deiner Suche entspricht';
 

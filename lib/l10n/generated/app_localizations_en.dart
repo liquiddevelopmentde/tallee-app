@@ -894,6 +894,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'There are no games matching your search';
 
   @override
+  String get there_is_no_game_matching_your_search =>
+      'There is no game matching your search';
+
+  @override
   String get there_is_no_group_matching_your_search =>
       'There is no group matching your search';
 
