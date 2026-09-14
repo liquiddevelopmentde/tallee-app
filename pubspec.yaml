@@ -1,7 +1,7 @@
 name: tallee
 description: "Tracking App for Card Games"
 publish_to: 'none'
-version: 0.1.12+654
+version: 0.1.13+656
 
 environment:
   sdk: ^3.13.2
@@ -60,6 +60,9 @@ dev_dependencies:
     sdk: flutter
   sentry_dart_plugin: ^3.4.0
   sort_pubspec_dependencies: 0.0.2
+
+dependency_overrides:
+  device_info_plus: ^12.1.0
 
 flutter:
   uses-material-design: true

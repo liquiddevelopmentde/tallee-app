@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 
@@ -28,7 +27,6 @@ class CustomDialogAction extends StatelessWidget {
     return BottomAnimatedButton(
       onPressed: onPressed != null
           ? () {
-              HapticFeedback.selectionClick();
               onPressed?.call();
             }
           : null,

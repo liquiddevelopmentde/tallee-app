@@ -290,7 +290,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_player => 'Edit player';
 
   @override
-  String get email_optional => 'Email address (optional)';
+  String get email => 'Email address';
 
   @override
   String get enable => 'Enable';
@@ -326,6 +326,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_reading_file => 'Error reading file';
 
   @override
+  String get error_report_hint =>
+      'Please describe the steps leading up to the error and how it appeared';
+
+  @override
+  String get error_report_info_text =>
+      'Reporting an error helps us identify and fix problems in Tallee!';
+
+  @override
   String get error_sending_feedback =>
       'Feedback could not be sent. Please try again.';
 
@@ -348,10 +356,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favourites => 'Favourites';
 
   @override
-  String get feedback_helps_us => 'Feedback helps us improving the app.';
+  String get feedback_hint => 'Your message or feedback';
 
   @override
-  String get feedback_hint => 'Your message or feedback (required)';
+  String get feedback_helps_us => 'Feedback helps us improving the app.';
 
   @override
   String get feedback_info_text =>
@@ -546,7 +554,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get members => 'Members';
 
   @override
-  String get name_optional => 'Name (optional)';
+  String get name => 'Name';
 
   @override
   String get names_or_descriptions_too_long =>
@@ -657,6 +665,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get open_settings => 'Open Settings';
 
   @override
+  String get optional => 'optional';
+
+  @override
   String pair(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -720,6 +731,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remaining => 'remaining';
+
+  @override
+  String get report_error => 'Report Error';
+
+  @override
+  String get required => 'required';
 
   @override
   String get results => 'Results';
@@ -881,6 +898,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thank_you_for_feedback => 'Thank you for your feedback!';
+
+  @override
+  String get thank_you_for_report => 'Thank you for your error report!';
 
   @override
   String get there_are_no_games_matching_your_search =>

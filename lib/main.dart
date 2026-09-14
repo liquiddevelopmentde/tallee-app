@@ -18,8 +18,10 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -60,6 +62,46 @@ void main() async {
           : IS_TEST_ENV
           ? 'testing'
           : 'development';
+
+      // disabled because not supported by glitchtip
+      options.enableAutoSessionTracking = false;
+
+      options.beforeSend = (event, hint) {
+        if (event.level == SentryLevel.error ||
+            event.level == SentryLevel.fatal) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final context = Tallee.navigatorKey.currentContext;
+            if (context != null) {
+              final loc = AppLocalizations.of(context);
+              Tallee.scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+              Tallee.scaffoldMessengerKey.currentState?.showSnackBar(
+                CustomSnackBar(
+                  message: loc.unexpected_error,
+                  actionLabel: loc.report_error,
+                  onActionTap: () async {
+                    Tallee.scaffoldMessengerKey.currentState
+                        ?.hideCurrentSnackBar();
+                    final result = await Tallee.navigatorKey.currentState
+                        ?.push<bool>(
+                          MaterialPageRoute(
+                            builder: (context) => FeedbackFormView(
+                              associatedEventId: event.eventId,
+                            ),
+                          ),
+                        );
+                    if (result == true) {
+                      Tallee.scaffoldMessengerKey.currentState?.showSnackBar(
+                        CustomSnackBar(message: loc.thank_you_for_report),
+                      );
+                    }
+                  },
+                ),
+              );
+            }
+          });
+        }
+        return event;
+      };
     },
     appRunner: () => runApp(
       SentryWidget(
@@ -87,15 +129,16 @@ void main() async {
 class Tallee extends StatefulWidget {
   const Tallee({super.key});
 
+  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
   @override
   State<Tallee> createState() => _TalleeState();
 }
 
 class _TalleeState extends State<Tallee> {
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
   /// Receives .tallee files opened via the system.
   final OpenWithApp openWithApp = OpenWithApp();
   StreamSubscription<String>? fileSubscription;
@@ -119,8 +162,8 @@ class _TalleeState extends State<Tallee> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey,
-      scaffoldMessengerKey: scaffoldMessengerKey,
+      navigatorKey: Tallee.navigatorKey,
+      scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       localeResolutionCallback: (locale, supportedLocales) {
@@ -175,7 +218,7 @@ class _TalleeState extends State<Tallee> {
   }
 
   void handleSplashFinished() {
-    final navigator = navigatorKey.currentState;
+    final navigator = Tallee.navigatorKey.currentState;
     if (navigator == null) return;
 
     final path = pendingImportPath;
@@ -207,7 +250,7 @@ class _TalleeState extends State<Tallee> {
 
   /// Pushes the import view for the .tallee file at [path].
   void openImport(String path) async {
-    final navigator = navigatorKey.currentState;
+    final navigator = Tallee.navigatorKey.currentState;
     if (navigator == null) return;
 
     final (_) = await LocalShareService.getDataFromPath(path);
@@ -219,7 +262,7 @@ class _TalleeState extends State<Tallee> {
           fullscreenDialog: true,
           builder: (_) => PreviewImportDataView(
             filePath: path,
-            messengerKey: scaffoldMessengerKey,
+            messengerKey: Tallee.scaffoldMessengerKey,
           ),
         ),
       );
