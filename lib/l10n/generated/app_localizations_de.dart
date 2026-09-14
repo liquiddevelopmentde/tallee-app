@@ -189,7 +189,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get custom => 'Benutzerdefiniert';
 
   @override
+  String get danger_zone => 'Gefahrenzone';
+
+  @override
   String get data => 'Daten';
+
+  @override
+  String get data_backup => 'Daten & Backup';
 
   @override
   String get data_successfully_deleted => 'Daten erfolgreich gelöscht';
@@ -201,6 +207,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get data_successfully_imported => 'Daten erfolgreich importiert';
 
   @override
+  String get data_transfer => 'Datentransfer';
+
+  @override
+  String get data_transfer_description =>
+      'Exportiere und Importiere alle deine Spiele, Spieler:innen, Gruppen, Spielvorlagen, Statistiken in eine Datei. Dies dient als Backup oder zum Übertragen der Daten auf ein neues Gerät. Um deine Spiele mit Freunden zu Teilen, öffne ein Spiel und wähle \"Teilen\".';
+
+  @override
   String days_ago(Object count) {
     return 'vor $count Tagen';
   }
@@ -210,6 +223,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get delete_all_data => 'Alle Daten löschen';
+
+  @override
+  String get delete_app_data_description =>
+      'Lösche all deine lokalen Daten unwiderruflich. Dieser Vorgang kann nicht rückgängig gemacht werden.';
 
   @override
   String get delete_game => 'Spielvorlage löschen';
@@ -371,6 +388,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get games => 'Spielvorlagen';
 
   @override
+  String get general => 'Allgemein';
+
+  @override
   String get group => 'Gruppe';
 
   @override
@@ -400,6 +420,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get import_data => 'Daten importieren';
 
   @override
+  String get import_description =>
+      'Importiere deine Tallee-Daten (.json) aus einer zuvor exportierten Datei. Dies dient zum Wiederherstellen eines Backups oder zum Übertragen von Daten auf ein neues Gerät. Um geteilte Spiele zu importieren, tippe auf das QR-Code-Symbol in der Spielansicht.';
+
+  @override
   String get import_file_instruction =>
       'Wähle eine Spiel-Datei (.tallee), die aus einem Tallee-Spiel-Share exportiert wurde, um die Daten zu importieren.';
 
@@ -423,6 +447,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get invalid_email => 'Bitte gib eine gültige E-Mail-Adresse ein.';
+
+  @override
+  String get invalid_extension => 'Ungültige Dateiendung.';
 
   @override
   String get invalid_file => 'Ungültige Datei.';
@@ -450,6 +477,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get last_year => 'Letztes Jahr';
+
+  @override
+  String get later => 'Später';
 
   @override
   String get legal => 'Rechtliches';
@@ -624,7 +654,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get online_sharing_info_text =>
-      'Für das Online-Teilen von Spielen stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert. Alle übertragenen Daten werden nach 10 Minuten automatisch gelöscht. Du kannst Spiele auch lokal als Datei teilen.';
+      'Für das Teilen von Spielen per QR Code oder Token stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert. Alle übertragenen Daten werden nach 10 Minuten automatisch gelöscht. Du kannst Spiele auch lokal als Datei teilen.';
 
   @override
   String get online_sharing_title => 'Online-Teilen aktivieren';
@@ -865,6 +895,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Es gibt keine Spielvorlagen, die deiner Suche entspricht';
 
   @override
+  String get there_is_no_game_matching_your_search =>
+      'Es gibt keine Spielvorlage, die deiner Suche entspricht';
+
+  @override
   String get there_is_no_group_matching_your_search =>
       'Es gibt keine Gruppe, die deiner Suche entspricht';
 
@@ -918,6 +952,19 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get update_app_version =>
       'Bitte aktualisiert eure Apps auf die neueste Version und versucht es erneut.';
+
+  @override
+  String get update_available => 'Update verfügbar';
+
+  @override
+  String get update_available_content => 'Eine neue Version ist verfügbar.';
+
+  @override
+  String get update_features_fixes_desc =>
+      'Bitte aktualisiere die App, um die neuesten Funktionen und Verbesserungen zu nutzen.';
+
+  @override
+  String get update_now => 'Jetzt aktualisieren';
 
   @override
   String get version => 'Version';

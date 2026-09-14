@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -154,10 +153,10 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 bottom: 100,
               ),
               children: [
-                // Controller Icon
+                // Icon
                 const Center(
                   child: ColoredIconContainer(
-                    icon: RpgAwesome.clovers_card,
+                    icon: MATCH_ICON,
                     containerSize: 55,
                   ),
                 ),
@@ -192,7 +191,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.group),
+                      const Icon(GROUP_ICON),
                       const SizedBox(width: 8),
                       Text(
                         '${match.group!.name}${getExtraPlayerCount(match)}',
@@ -305,7 +304,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                 // Game
                 InfoTile(
                   title: loc.game,
-                  leadingWidget: const Icon(RpgAwesome.clovers_card),
+                  leadingWidget: const Icon(GAME_ICON),
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -669,7 +668,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
             return CustomAlertDialog(
               title: loc.edit_name,
               content: TextInputField(
-                maxLength: Constants.MAX_MATCH_NAME_LENGTH,
+                maxLength: MAX_MATCH_NAME_LENGTH,
                 controller: nameController,
                 hintText: loc.set_name,
                 onChanged: (_) => setDialogState(() {}),

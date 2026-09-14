@@ -51,6 +51,8 @@ const allDependencies = <Package>[
   _dcli_common,
   _dcli_core,
   _dcli_terminal,
+  _device_info_plus,
+  _device_info_plus_platform_interface,
   _dio,
   _dio_web_adapter,
   _dotted_border,
@@ -112,6 +114,7 @@ const allDependencies = <Package>[
   _native_synchronization_temp,
   _native_toolchain_c,
   _nested,
+  _new_version_plus,
   _node_preamble,
   _objective_c,
   _once,
@@ -213,6 +216,7 @@ const allDependencies = <Package>[
   _web_socket_channel,
   _webkit_inspection_protocol,
   _win32,
+  _win32_registry,
   _xdg_directories,
   _xml,
   _yaml
@@ -243,6 +247,7 @@ const dependencies = <Package>[
   _json_schema,
   _lottie,
   _mobile_scanner,
+  _new_version_plus,
   _once,
   _open_with_app,
   _package_info_plus,
@@ -2718,6 +2723,90 @@ INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PA
 PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
 ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''',
+  );
+
+/// device_info_plus 10.1.2
+const _device_info_plus = Package(
+    name: 'device_info_plus',
+    description: 'Flutter plugin providing detailed information about the device (make, model, etc.), and Android or iOS version the app is running on.',
+    homepage: 'https://github.com/fluttercommunity/plus_plugins',
+    repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/device_info_plus/device_info_plus',
+    authors: [],
+    version: '10.1.2',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('device_info_plus_platform_interface'), PackageRef('ffi'), PackageRef('file'), PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('meta'), PackageRef('web'), PackageRef('win32'), PackageRef('win32_registry')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('test')],
+    license: '''Copyright 2017 The Chromium Authors. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+   * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// device_info_plus_platform_interface 7.0.3
+const _device_info_plus_platform_interface = Package(
+    name: 'device_info_plus_platform_interface',
+    description: 'A common platform interface for the device_info_plus plugin.',
+    homepage: 'https://github.com/fluttercommunity/plus_plugins',
+    repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/',
+    authors: [],
+    version: '7.0.3',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('meta'), PackageRef('plugin_platform_interface')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
+    license: '''Copyright 2017 The Chromium Authors. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+   * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
 /// dio 5.11.0
@@ -6046,6 +6135,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
+  );
+
+/// new_version_plus 1.0.1
+const _new_version_plus = Package(
+    name: 'new_version_plus',
+    description: 'Check if your user has the most recent version of your Flutter app.',
+    homepage: 'https://github.com/CodesFirst/new_version_plus',
+    authors: [],
+    version: '1.0.1',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('package_info_plus'), PackageRef('http'), PackageRef('url_launcher'), PackageRef('device_info_plus')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''Copyright 2018, Tim Traversy
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
 /// node_preamble 2.0.2
@@ -40555,6 +40669,48 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
+/// win32_registry 1.1.5
+const _win32_registry = Package(
+    name: 'win32_registry',
+    description: 'A package that provides a friendly Dart API for accessing the Windows Registry.',
+    repository: 'https://github.com/halildurmus/win32_registry',
+    authors: [],
+    version: '1.1.5',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('ffi'), PackageRef('win32')],
+    devDependencies: [PackageRef('lints'), PackageRef('test')],
+    license: '''BSD 3-Clause License
+
+Copyright (c) 2023, Halil Durmus
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
 /// xdg_directories 1.1.0
 const _xdg_directories = Package(
     name: 'xdg_directories',
@@ -40664,16 +40820,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// tallee 0.1.7+640
+/// tallee 0.1.12+650
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.1.7+640',
+    version: '0.1.12+650',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('dotted_border'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_dotenv'), PackageRef('flutter_localizations'), PackageRef('flutter_markdown_plus'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('http'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('mobile_scanner'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('pinput'), PackageRef('pretty_qr_code'), PackageRef('provider'), PackageRef('remove_unused_localizations'), PackageRef('sentry_flutter'), PackageRef('share_plus'), PackageRef('shared_preferences'), PackageRef('skeletonizer'), PackageRef('syncfusion_flutter_datepicker'), PackageRef('url_launcher'), PackageRef('uuid')],
+    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('dotted_border'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_dotenv'), PackageRef('flutter_localizations'), PackageRef('flutter_markdown_plus'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('http'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('mobile_scanner'), PackageRef('new_version_plus'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('pinput'), PackageRef('pretty_qr_code'), PackageRef('provider'), PackageRef('remove_unused_localizations'), PackageRef('sentry_flutter'), PackageRef('share_plus'), PackageRef('shared_preferences'), PackageRef('skeletonizer'), PackageRef('syncfusion_flutter_datepicker'), PackageRef('url_launcher'), PackageRef('uuid')],
     devDependencies: [PackageRef('arb_utils'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('sentry_dart_plugin'), PackageRef('sort_pubspec_dependencies')],
     license: '''GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

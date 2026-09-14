@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/icon_utils.dart';
@@ -20,26 +20,23 @@ import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 
-/// A stateful widget for creating or editing a game.
-/// - [gameToEdit] An optional game to prefill the fields
-/// - [onGameChanged] Callback to invoke when the game is created or edited
-/// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
 class CreateGameView extends StatefulWidget {
+  /// A stateful widget for creating or editing a game.
+  /// - [gameToEdit] An optional game to prefill the fields
+  /// - [onGameChanged] Callback to invoke when the game is created or edited
+  /// - [gameCount]: The count of matches associated with this [gameToEdit]
+  /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
   const CreateGameView({
     super.key,
     required this.onGameChanged,
     this.gameToEdit,
-    this.matchCount = 0,
+    this.gameCount = 0,
     this.requiredRuleset,
   });
 
-  /// Callback to invoke when the game is created or edited
   final VoidCallback onGameChanged;
-
-  /// An optional game to prefill the fields
   final Game? gameToEdit;
-
-  final int matchCount;
+  final int gameCount;
 
   final Ruleset? requiredRuleset;
 
@@ -48,43 +45,33 @@ class CreateGameView extends StatefulWidget {
 }
 
 class _CreateGameViewState extends State<CreateGameView> {
-  /// GlobalKey for ScaffoldMessenger to show snackbars
-  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-
   late final AppDatabase db;
 
   late List<(Ruleset, String)> rulesets;
   late List<(AppColor, String)> colors;
 
-  Ruleset? selectedRuleset = Ruleset.winner;
-  AppColor? selectedColor = AppColor.orange;
+  late String selectedGroupId;
+  late final List<Group> filteredGroups;
+
+  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  final gameNameController = TextEditingController();
+  final gameDescriptionController = TextEditingController();
 
   int selectedLives = 3;
-
-  /// Controller for the game name input field.
-  final gameNameController = TextEditingController();
-
-  /// Controller for the game description input field.
-  final descriptionController = TextEditingController();
-
-  /// The ID of the currently selected group.
-  late String selectedGroupId;
-
-  /// A controller for the search bar input field.
-  final TextEditingController controller = TextEditingController();
-
-  /// A list of groups filtered based on the search query.
-  late final List<Group> filteredGroups;
+  Ruleset? selectedRuleset = Ruleset.winner;
+  AppColor? selectedColor = AppColor.orange;
 
   @override
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
-    gameNameController.addListener(() => setState(() {}));
+
     if (widget.requiredRuleset != null) {
       selectedRuleset = widget.requiredRuleset;
     }
+
     gameNameController.addListener(() => setState(() {}));
+    gameDescriptionController.addListener(() => setState(() {}));
   }
 
   @override
@@ -107,7 +94,7 @@ class _CreateGameViewState extends State<CreateGameView> {
 
     if (widget.gameToEdit != null) {
       gameNameController.text = widget.gameToEdit!.name;
-      descriptionController.text = widget.gameToEdit!.description;
+      gameDescriptionController.text = widget.gameToEdit!.description;
       selectedRuleset = widget.gameToEdit!.ruleset;
       selectedColor = widget.gameToEdit!.color;
       selectedRuleset = widget.gameToEdit!.ruleset;
@@ -117,7 +104,7 @@ class _CreateGameViewState extends State<CreateGameView> {
   @override
   void dispose() {
     gameNameController.dispose();
-    descriptionController.dispose();
+    gameDescriptionController.dispose();
     super.dispose();
   }
 
@@ -139,8 +126,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                   if (!context.mounted) return;
 
                   // Build the dialog content based on match count
-                  final String dialogContent = widget.matchCount > 0
-                      ? loc.delete_game_with_matches_warning(widget.matchCount)
+                  final String dialogContent = widget.gameCount > 0
+                      ? loc.delete_game_with_matches_warning(widget.gameCount)
                       : loc.this_cannot_be_undone;
 
                   showDialog<bool>(
@@ -167,8 +154,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                     ),
                   ).then((confirmed) async {
                     if (confirmed == true && context.mounted) {
-                      // Delete assocaited matches
-                      if (widget.matchCount > 0) {
+                      // Delete associated matches
+                      if (widget.gameCount > 0) {
                         await db.matchDao.deleteMatchesByGame(
                           gameId: widget.gameToEdit!.id,
                         );
@@ -203,7 +190,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
                   controller: gameNameController,
-                  maxLength: Constants.MAX_MATCH_NAME_LENGTH,
+                  maxLength: MAX_MATCH_NAME_LENGTH,
                   hintText: loc.game_name,
                 ),
               ),
@@ -240,11 +227,11 @@ class _CreateGameViewState extends State<CreateGameView> {
               Container(
                 margin: CustomTheme.tileMargin,
                 child: TextInputField(
-                  controller: descriptionController,
+                  controller: gameDescriptionController,
                   hintText: loc.description,
                   minLines: 6,
                   maxLines: 6,
-                  maxLength: Constants.MAX_GAME_DESCRIPTION_LENGTH,
+                  maxLength: MAX_GAME_DESCRIPTION_LENGTH,
                   showCounterText: true,
                   textInputAction: TextInputAction.done,
                 ),
@@ -266,7 +253,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                       ? () async {
                           Game newGame = Game(
                             name: gameNameController.text.trim(),
-                            description: descriptionController.text.trim(),
+                            description: gameDescriptionController.text.trim(),
                             ruleset: selectedRuleset!,
                             color: selectedColor!,
                           );

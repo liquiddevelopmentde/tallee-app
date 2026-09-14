@@ -6,6 +6,10 @@ on:
       - "development"
       - "main"
 
+concurrency:
+  group: push-pipeline
+  cancel-in-progress: false
+
 jobs:
   update_version:
     name: "Increment version number"
@@ -289,5 +293,22 @@ jobs:
           git config --global --add safe.directory '*'
           flutter pub get
 
+      - name: Create .env file
+        run: |
+          cat > .env <<EOF
+          API_URL_PROD=${{ secrets.API_URL }}
+          SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          EOF
+
       - name: Build APK
-        run: flutter build apk --release
+        run: |
+          flutter build apk --release
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/tallee-release.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: "tallee_android_release"
+          path: build/app/outputs/flutter-apk/tallee-release.apk
+          if-no-files-found: error
+          retention-days: 7

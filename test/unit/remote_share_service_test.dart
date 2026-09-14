@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/remote_share_service.dart';
@@ -264,7 +264,7 @@ void main() {
     });
 
     test('returns false when a field exceeds max length', () {
-      final decoded = {'name': 'A' * (Constants.MAX_MATCH_NAME_LENGTH + 1)};
+      final decoded = {'name': 'A' * (MAX_MATCH_NAME_LENGTH + 1)};
 
       expect(RemoteShareService.validateContent(decoded), isFalse);
     });
@@ -310,6 +310,30 @@ void main() {
         schemaAssetPath: 'assets/match_schema.json',
       );
       expect(isValid, isTrue);
+    });
+  });
+
+  group('RemoteShareService.parseAndValidateMatch', () {
+    test(
+      'returns invalidSchema when filename is correct but json is not',
+      () async {
+        final service = RemoteShareService();
+        final result = await service.parseAndValidateMatch(
+          '{"invalid": true}',
+          'test.$MATCH_FILE_EXTENSION',
+        );
+
+        expect(result.result, ImportResult.invalidSchema);
+      },
+    );
+  });
+
+  group('RemoteShareService.loadMatchFromFile', () {
+    test('returns invalidExtension for wrong file extension', () async {
+      final service = RemoteShareService();
+      final result = await service.loadMatchFromFile('test.json');
+
+      expect(result.result, ImportResult.invalidExtension);
     });
   });
 }

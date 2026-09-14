@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/value_constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -59,7 +60,7 @@ class MatchFileTile extends StatelessWidget {
                           fit: BoxFit.scaleDown,
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            fileName ?? match.name.toSafeFilename(),
+                            '${fileName ?? match.name.toSafeFilename()}.$MATCH_FILE_EXTENSION',
                             maxLines: 1,
                             style: const TextStyle(
                               fontSize: 18,

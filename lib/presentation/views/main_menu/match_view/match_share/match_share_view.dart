@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/models/models.dart';
@@ -194,7 +194,7 @@ class _MatchShareViewState extends State<MatchShareView>
     if (hasStoredSharingConsent) {
       Future.wait([
             RemoteShareService().getShareToken(widget.match),
-            Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+            Future.delayed(MINIMUM_SKELETON_DURATION),
           ])
           .then((results) {
             if (mounted) {

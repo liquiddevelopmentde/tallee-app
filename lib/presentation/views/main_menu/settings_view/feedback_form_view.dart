@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -102,7 +102,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                         hintText: loc.feedback_hint,
                         maxLines: 5,
                         minLines: 4,
-                        maxLength: Constants.MAX_FEEDBACK_MESSAGE_LENGTH,
+                        maxLength: MAX_FEEDBACK_MESSAGE_LENGTH,
                         showCounterText: true,
                         textInputAction: TextInputAction.next,
                         onSubmitted: (_) => emailFocusNode.requestFocus(),

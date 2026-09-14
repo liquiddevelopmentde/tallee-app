@@ -1,10 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -200,7 +199,8 @@ class _MatchViewState extends State<MatchView> {
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: FloatingAnimatedButton(
               text: loc.create_match,
-              icon: RpgAwesome.clovers_card,
+              icon: MATCH_ICON,
+              showAddBadge: true,
               onPressed: () async {
                 await Navigator.push(
                   context,
@@ -337,7 +337,7 @@ class _MatchViewState extends State<MatchView> {
             }
           }
 
-          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+          if (maxScore >= FUZZY_SEARCH_THRESHOLD) {
             scoredMatches.add((match: match, score: maxScore));
           }
         }
@@ -362,7 +362,7 @@ class _MatchViewState extends State<MatchView> {
     isLoading = true;
     Future.wait([
       db.matchDao.getAllMatches(includeDeletedPlayer: true),
-      Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+      Future.delayed(MINIMUM_SKELETON_DURATION),
     ]).then((results) {
       if (mounted) {
         setState(() {

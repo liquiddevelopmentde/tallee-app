@@ -8,3 +8,5 @@ class ServerException extends MatchShareException {
 }
 
 class ParsingException extends MatchShareException {}
+
+class ImportException extends MatchShareException {}

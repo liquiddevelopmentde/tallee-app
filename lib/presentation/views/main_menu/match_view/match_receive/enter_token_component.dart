@@ -217,7 +217,6 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
           response.result,
           context,
         );
-        setState(() => isMatchValid = false);
       } else {
         setState(() {
           isMatchValid = true;
@@ -232,22 +231,23 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
     } catch (error) {
       if (error is NetworkException) {
         errorMessage = loc.network_error;
+        setState(() => isMatchValid = false);
       } else if (error is ServerException) {
         if (error.statusCode == 404 || error.statusCode == 410) {
           setState(() => isTokenValid = false);
           errorMessage = '';
         } else {
           errorMessage = loc.server_error;
+          setState(() => isMatchValid = false);
         }
       } else if (error is ParsingException) {
         errorMessage = loc.parsing_error;
+        setState(() => isMatchValid = false);
+      } else if (error is ImportException) {
+        setState(() => isMatchValid = false);
       } else {
         errorMessage = loc.unexpected_error;
-      }
-
-      if (errorMessage.isNotEmpty && mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(CustomSnackBar(message: errorMessage));
+        setState(() => isMatchValid = false);
       }
 
       rethrow; // redirect error to button
