@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 
 class CustomRadioListTile<T> extends StatelessWidget {
@@ -20,7 +21,10 @@ class CustomRadioListTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onContainerTap(value),
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onContainerTap(value);
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         padding: const EdgeInsets.only(left: 2, right: 5),
