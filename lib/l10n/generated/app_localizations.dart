@@ -134,6 +134,12 @@ abstract class AppLocalizations {
   /// **'Report Error'**
   String get report_error;
 
+  /// No description provided for @required.
+  ///
+  /// In en, this message translates to:
+  /// **'required'**
+  String get required;
+
   /// No description provided for @error_report_info_text.
   ///
   /// In en, this message translates to:
@@ -143,7 +149,7 @@ abstract class AppLocalizations {
   /// No description provided for @error_report_hint.
   ///
   /// In en, this message translates to:
-  /// **'Please describe the steps leading up to the error and how it appeared (required)'**
+  /// **'Please describe the steps leading up to the error and how it appeared'**
   String get error_report_hint;
 
   /// No description provided for @all_time.
@@ -608,11 +614,11 @@ abstract class AppLocalizations {
   /// **'Edit player'**
   String get edit_player;
 
-  /// No description provided for @email_optional.
+  /// No description provided for @email.
   ///
   /// In en, this message translates to:
-  /// **'Email address (optional)'**
-  String get email_optional;
+  /// **'Email address'**
+  String get email;
 
   /// No description provided for @enable.
   ///
@@ -707,7 +713,7 @@ abstract class AppLocalizations {
   /// No description provided for @feedback_hint.
   ///
   /// In en, this message translates to:
-  /// **'Your message or feedback (required)'**
+  /// **'Your message or feedback'**
   String get feedback_hint;
 
   /// No description provided for @feedback_info_text.
@@ -1058,11 +1064,11 @@ abstract class AppLocalizations {
   /// **'Members'**
   String get members;
 
-  /// No description provided for @name_optional.
+  /// No description provided for @name.
   ///
   /// In en, this message translates to:
-  /// **'Name (optional)'**
-  String get name_optional;
+  /// **'Name'**
+  String get name;
 
   /// No description provided for @names_or_descriptions_too_long.
   ///
@@ -1243,6 +1249,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Settings'**
   String get open_settings;
+
+  /// No description provided for @optional.
+  ///
+  /// In en, this message translates to:
+  /// **'optional'**
+  String get optional;
 
   /// No description provided for @pair.
   ///

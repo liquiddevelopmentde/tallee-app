@@ -28,12 +28,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get report_error => 'Report Error';
 
   @override
+  String get required => 'required';
+
+  @override
   String get error_report_info_text =>
       'Reporting an error helps us identify and fix problems in Tallee!';
 
   @override
   String get error_report_hint =>
-      'Please describe the steps leading up to the error and how it appeared (required)';
+      'Please describe the steps leading up to the error and how it appeared';
 
   @override
   String get all_time => 'All time';
@@ -294,7 +297,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_player => 'Edit player';
 
   @override
-  String get email_optional => 'Email address (optional)';
+  String get email => 'Email address';
 
   @override
   String get enable => 'Enable';
@@ -352,7 +355,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favourites => 'Favourites';
 
   @override
-  String get feedback_hint => 'Your message or feedback (required)';
+  String get feedback_hint => 'Your message or feedback';
 
   @override
   String get feedback_info_text =>
@@ -547,7 +550,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get members => 'Members';
 
   @override
-  String get name_optional => 'Name (optional)';
+  String get name => 'Name';
 
   @override
   String get names_or_descriptions_too_long =>
@@ -653,6 +656,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get open_settings => 'Open Settings';
+
+  @override
+  String get optional => 'optional';
 
   @override
   String pair(int count) {
