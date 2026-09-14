@@ -73,14 +73,11 @@ class RemoteShareService {
       }
 
       return (result: ImportResult.success, match: result.match!);
-    } on SocketException catch (e) {
-      print(e);
-      print(e.message);
+    } on SocketException {
       throw NetworkException();
     } on FormatException {
       throw ParsingException();
-    } on NetworkException catch (e) {
-      print(e);
+    } on NetworkException {
       throw NetworkException();
     }
   }
