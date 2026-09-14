@@ -344,6 +344,18 @@ abstract class AppLocalizations {
   /// **'Copy Code'**
   String get copy_code;
 
+  /// No description provided for @duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicate;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
   /// No description provided for @could_not_add_player.
   ///
   /// In en, this message translates to:

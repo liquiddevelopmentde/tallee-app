@@ -135,6 +135,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy_code => 'Copy Code';
 
   @override
+  String get duplicate => 'Duplicate';
+
+  @override
+  String get share => 'Share';
+
+  @override
   String could_not_add_player(String playerName) {
     return 'Could not add player $playerName';
   }

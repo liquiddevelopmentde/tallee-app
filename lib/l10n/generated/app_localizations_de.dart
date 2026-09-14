@@ -138,6 +138,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get copy_code => 'Code kopieren';
 
   @override
+  String get duplicate => 'Duplizieren';
+
+  @override
+  String get share => 'Teilen';
+
+  @override
   String could_not_add_player(String playerName) {
     return 'Spieler:in $playerName konnte nicht hinzugefügt werden';
   }
