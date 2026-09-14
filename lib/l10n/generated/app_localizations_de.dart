@@ -26,6 +26,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get all_players_selected => 'Alle Spieler:innen ausgewählt';
 
   @override
+  String get report_error => 'Fehler melden';
+
+  @override
+  String get required => 'erforderlich';
+
+  @override
+  String get error_report_info_text =>
+      'Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!';
+
+  @override
+  String get error_report_hint =>
+      'Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist';
+
+  @override
   String get all_time => 'Gesamter Zeitraum';
 
   @override
@@ -286,7 +300,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get edit_player => 'Spieler bearbeiten';
 
   @override
-  String get email_optional => 'E-Mail-Adresse (optional)';
+  String get email => 'E-Mail-Adresse';
 
   @override
   String get enable => 'Aktivieren';
@@ -345,7 +359,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get favourites => 'Favoriten';
 
   @override
-  String get feedback_hint => 'Deine Nachricht oder Kritik (erforderlich)';
+  String get feedback_hint => 'Deine Nachricht oder Kritik';
 
   @override
   String get feedback_info_text =>
@@ -541,7 +555,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get members => 'Mitglieder';
 
   @override
-  String get name_optional => 'Name (optional)';
+  String get name => 'Name';
 
   @override
   String get names_or_descriptions_too_long =>
@@ -648,6 +662,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get open_settings => 'Einstellungen öffnen';
+
+  @override
+  String get optional => 'optional';
 
   @override
   String pair(int count) {
@@ -876,6 +893,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get thank_you_for_feedback => 'Vielen Dank für dein Feedback!';
+
+  @override
+  String get thank_you_for_report => 'Vielen Dank für deine Fehlermeldung!';
 
   @override
   String get there_are_no_games_matching_your_search =>

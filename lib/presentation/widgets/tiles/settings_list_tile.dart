@@ -45,7 +45,9 @@ class _SettingsListTileState extends State<SettingsListTile> {
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.95,
         child: GestureDetector(
-          onTap: handleTap,
+          onTap: () {
+            handleTap();
+          },
           child: Container(
             margin: EdgeInsets.zero,
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -130,8 +132,8 @@ class _SettingsListTileState extends State<SettingsListTile> {
   }
 
   void handleTap() {
+    HapticFeedback.selectionClick();
     if (canExpand) {
-      HapticFeedback.selectionClick();
       setState(() => isExpanded = !isExpanded);
       return;
     }
