@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -225,7 +226,7 @@ class _MatchViewState extends State<MatchView> {
 
   /// Triggers the rate dialog if the user has not rated the app yet and the conditions are met.
   Future<void> triggerRateDialog() async {
-    if (environment == AppEnvironment.development) return;
+    if (ENVIRONMENT == AppEnvironment.development) return;
     if (!RATE_MY_APP.shouldOpenDialog) return;
 
     final loc = AppLocalizations.of(context);

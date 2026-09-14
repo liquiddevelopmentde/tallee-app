@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -28,7 +29,7 @@ import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 
 void main() async {
-  environment = kDebugMode
+  ENVIRONMENT = kDebugMode
       ? AppEnvironment.development
       : AppEnvironment.testing;
 
@@ -37,16 +38,16 @@ void main() async {
   /* Initializing Services */
 
   // Only init in production
-  if (isProdEnv) await RATE_MY_APP.init();
+  if (IS_PROD_ENV) await RATE_MY_APP.init();
 
   await dotenv.load();
-  if (isDevEnv) HttpOverrides.global = SelfSignedCertHttpOverrides();
+  if (IS_DEV_ENV) HttpOverrides.global = SelfSignedCertHttpOverrides();
   await SharedPreferencesService.init();
   await PackageInfoService.init();
   await SentryFlutter.init(
     (options) {
       // error reporting & feedback is disabled in development
-      options.dsn = isProdEnv || isTestEnv
+      options.dsn = IS_PROD_ENV || IS_TEST_ENV
           ? dotenv.get('SENTRY_DSN', fallback: '')
           : '';
       // Disable sending personal identfiable information
@@ -54,9 +55,9 @@ void main() async {
       options.enableLogs = true;
       // Decrease sampleRate in stable to avoid sending too many events
       options.tracesSampleRate = 1.0;
-      options.environment = isProdEnv
+      options.environment = IS_PROD_ENV
           ? 'production'
-          : isTestEnv
+          : IS_TEST_ENV
           ? 'testing'
           : 'development';
     },
