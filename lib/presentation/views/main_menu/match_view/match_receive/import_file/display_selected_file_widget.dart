@@ -4,20 +4,27 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/tiles/file_tile.dart';
 
-class DisplaySelectedFile extends StatelessWidget {
-  const DisplaySelectedFile({required this.match, super.key});
+class DisplaySelectedFileWidget extends StatelessWidget {
+  const DisplaySelectedFileWidget({
+    required this.match,
+    super.key,
+    this.fileName,
+  });
 
   final Match match;
+  final String? fileName;
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    print('DisplaySelectedFile: match=${match.name}, fileName=$fileName');
 
     return Column(
       key: const ValueKey('display_selected_file'),
       children: [
-        FileTile(
+        MatchFileTile(
           match: match,
+          fileName: fileName,
           margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
         ),
         const SizedBox(height: 20),
@@ -25,7 +32,7 @@ class DisplaySelectedFile extends StatelessWidget {
           loc.successfully_processed_file,
           textAlign: TextAlign.center,
           style: const TextStyle(
-            fontSize: 22,
+            fontSize: 20,
             fontWeight: FontWeight.w500,
             overflow: TextOverflow.visible,
           ),

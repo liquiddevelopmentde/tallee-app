@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
@@ -93,7 +93,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 child: TextInputField(
                   controller: groupNameController,
                   hintText: loc.group_name,
-                  maxLength: Constants.MAX_GROUP_NAME_LENGTH,
+                  maxLength: MAX_GROUP_NAME_LENGTH,
                 ),
               ),
               Container(
@@ -101,7 +101,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 child: TextInputField(
                   controller: groupDescriptionController,
                   hintText: loc.description,
-                  maxLength: Constants.MAX_GROUP_DESCRIPTION_LENGTH,
+                  maxLength: MAX_GROUP_DESCRIPTION_LENGTH,
                   minLines: 3,
                   maxLines: 3,
                   showCounterText: true,

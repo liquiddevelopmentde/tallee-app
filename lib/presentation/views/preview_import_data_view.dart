@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
@@ -86,7 +87,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                       children: [
                         // Players
                         SettingsListTile(
-                          icon: Icons.person_rounded,
+                          icon: PLAYER_ICON,
                           title: loc.players,
                           suffixWidget: Text(
                             '${countOf('players')}',
@@ -107,7 +108,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
                         // Groups
                         SettingsListTile(
-                          icon: Icons.group_rounded,
+                          icon: GROUP_ICON,
                           title: loc.groups,
                           suffixWidget: Text(
                             '${countOf('groups')}',
@@ -134,7 +135,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
                         // Games
                         SettingsListTile(
-                          icon: Icons.casino_rounded,
+                          icon: GAME_ICON,
                           title: loc.games,
                           suffixWidget: Text(
                             '${countOf('games')}',
@@ -163,7 +164,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
                         // Matches
                         SettingsListTile(
-                          icon: Icons.gamepad_rounded,
+                          icon: MATCH_ICON,
                           title: loc.matches,
                           suffixWidget: Text(
                             '${countOf('matches')}',
@@ -189,7 +190,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
                         // Statistics
                         SettingsListTile(
-                          icon: Icons.bar_chart_rounded,
+                          icon: STATISTIC_ICON,
                           title: loc.statistics,
                           suffixWidget: Text(
                             '${countOf('statistics')}',
@@ -238,8 +239,8 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                 ),
                 BottomAnimatedButton(
                   buttonText: loc.cancel,
-                  buttonType: ButtonType.secondary,
                   sizeRelativeToWidth: 0.95,
+                  buttonType: ButtonType.secondary,
                   onPressed: cancelImport,
                 ),
               ],
@@ -356,9 +357,6 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     if (messengerKey != null) {
       if (importResult == ImportResult.success) {
         HapticFeedback.successNotification();
-      } else if (importResult != ImportResult.canceled &&
-          importResult != ImportResult.matchSchemaDetected) {
-        HapticFeedback.errorNotification();
       }
 
       messengerKey.currentState

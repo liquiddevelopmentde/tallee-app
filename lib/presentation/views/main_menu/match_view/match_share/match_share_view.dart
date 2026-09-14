@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/share_exceptions.dart';
-import 'package:tallee/data/models/match.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/qr_code_component.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/save_file_component.dart';
@@ -33,14 +33,18 @@ class _MatchShareViewState extends State<MatchShareView>
   bool isLoading = true;
 
   // this gets set to false before any data is sent
-  // defaults to true, to already show the qr code behind the ConsentDialog
+  // defaults to true, to already show the placeholder qr code behind the ConsentDialog
   bool serverSharingEnabled = true;
 
   Timer? timer;
 
+  DateTime? expiresAt;
+
+  late final AppLifecycleListener lifecycleListener;
+
   int secondsRemaining = 600; // 10 Minutes
 
-  static const int totalSeconds = 600;
+  int totalSeconds = 600;
 
   String? shareToken;
 
@@ -53,6 +57,7 @@ class _MatchShareViewState extends State<MatchShareView>
   void initState() {
     super.initState();
     tabController = TabController(length: 3, vsync: this);
+    lifecycleListener = AppLifecycleListener(onResume: onAppResumed);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initSharingView();
     });
@@ -60,6 +65,7 @@ class _MatchShareViewState extends State<MatchShareView>
 
   @override
   void dispose() {
+    lifecycleListener.dispose();
     timer?.cancel();
     super.dispose();
   }
@@ -188,13 +194,15 @@ class _MatchShareViewState extends State<MatchShareView>
     if (hasStoredSharingConsent) {
       Future.wait([
             RemoteShareService().getShareToken(widget.match),
-            Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+            Future.delayed(MINIMUM_SKELETON_DURATION),
           ])
           .then((results) {
             if (mounted) {
               setState(() {
-                final loadedShareToken = results[0] as String?;
-                shareToken = loadedShareToken;
+                final shareResponse = results[0] as ShareCreateResponse;
+                shareToken = shareResponse.token;
+                expiresAt = shareResponse.expiresAt;
+                totalSeconds = shareResponse.ttlSeconds;
                 final qrCode = QrCode.fromData(
                   data: shareToken!,
                   errorCorrectLevel: QrErrorCorrectLevel.H,
@@ -216,7 +224,7 @@ class _MatchShareViewState extends State<MatchShareView>
             if (error is NetworkException) {
               errorMessage = loc.network_error;
             } else if (error is ServerException) {
-              errorMessage = loc.server_error(error.statusCode);
+              errorMessage = loc.server_error;
             } else if (error is ParsingException) {
               errorMessage = loc.parsing_error;
             } else {
@@ -261,38 +269,60 @@ class _MatchShareViewState extends State<MatchShareView>
     );
   }
 
-  void startTimer() {
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted) {
-        setState(() {
-          if (secondsRemaining > 0) {
-            secondsRemaining--;
-          } else {
-            timer.cancel();
-          }
-        });
+  void onAppResumed() {
+    if (serverSharingEnabled && shareToken != null && !isLoading) {
+      updateRemainingTime();
+      if (secondsRemaining <= 0) {
+        renewToken();
       }
+    }
+  }
+
+  void updateRemainingTime() {
+    if (expiresAt == null) return;
+
+    final remaining = expiresAt!.difference(DateTime.now()).inSeconds;
+
+    if (mounted) {
+      setState(() {
+        if (remaining > 0) {
+          secondsRemaining = remaining;
+        } else {
+          secondsRemaining = 0;
+          timer?.cancel();
+        }
+      });
+    }
+  }
+
+  void startTimer() {
+    updateRemainingTime();
+    timer?.cancel();
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      updateRemainingTime();
     });
   }
 
   void renewToken() async {
     setState(() {
       isLoading = true;
-      secondsRemaining = totalSeconds;
     });
 
     try {
-      final newToken = await RemoteShareService().getShareToken(widget.match);
+      final shareResponse = await RemoteShareService().getShareToken(
+        widget.match,
+      );
       if (mounted) {
         setState(() {
-          shareToken = newToken;
+          shareToken = shareResponse.token;
+          expiresAt = shareResponse.expiresAt;
+          totalSeconds = shareResponse.ttlSeconds;
           final qrCode = QrCode.fromData(
             data: shareToken!,
             errorCorrectLevel: QrErrorCorrectLevel.H,
           );
           qrImage = QrImage(qrCode);
           isLoading = false;
-          timer?.cancel();
           startTimer();
         });
       }
@@ -309,7 +339,7 @@ class _MatchShareViewState extends State<MatchShareView>
       if (error is NetworkException) {
         errorMessage = loc.network_error;
       } else if (error is ServerException) {
-        errorMessage = loc.server_error(error.statusCode);
+        errorMessage = loc.server_error;
       } else if (error is ParsingException) {
         errorMessage = loc.parsing_error;
       } else {

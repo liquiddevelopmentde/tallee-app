@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -142,7 +143,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Icon
                 const Center(
                   child: ColoredIconContainer(
-                    icon: Icons.person,
+                    icon: PLAYER_ICON,
                     containerSize: 55,
                   ),
                 ),
@@ -200,7 +201,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 if (!widget.player.deleted) ...[
                   InfoTile(
                     title: '${loc.groups} ($totalGroups)',
-                    leadingWidget: const Icon(Icons.people),
+                    leadingWidget: const Icon(GROUP_ICON),
                     horizontalAlignment: CrossAxisAlignment.start,
                     content: AppSkeleton(
                       enabled: isLoading,
@@ -247,7 +248,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Matches
                 InfoTile(
                   title: '${loc.matches} ($totalMatches)',
-                  leadingWidget: const Icon(Icons.sports_esports),
+                  leadingWidget: const Icon(MATCH_ICON),
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: AppSkeleton(
                     enabled: isLoading,

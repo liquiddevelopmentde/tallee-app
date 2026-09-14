@@ -1,9 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/services.dart';
-import 'package:json_schema/json_schema.dart';
 import 'package:tallee/data/models/models.dart';
 
 export 'app_color_utils.dart';
@@ -63,28 +57,22 @@ extension FilenameSanitization on String {
   }
 }
 
-/// Helper method to read file content from either bytes or path
-Future<String?> readFileContent(PlatformFile file) async {
-  if (file.bytes != null) return utf8.decode(file.bytes!);
-  if (file.path != null) return await File(file.path!).readAsString();
-  return null;
-}
+/// Returns the rulesets which make sense for a given [StatisticType]
+List<Ruleset> getRulesetForTypes(StatisticType type) {
+  final scoreBaseRulesets = [Ruleset.lowestScore, Ruleset.highestScore];
+  const allRulesets = Ruleset.values;
 
-/// Validates the given JSON string against the schema.
-Future<bool> validateJsonSchema(
-  String jsonString,
-  String schemaAssetPath,
-) async {
-  try {
-    final schemaString = await rootBundle.loadString(schemaAssetPath);
-    final schema = JsonSchema.create(json.decode(schemaString));
-    final jsonData = json.decode(jsonString);
-    final result = schema.validate(jsonData);
+  switch (type) {
+    case StatisticType.averageScore:
+    case StatisticType.bestScore:
+    case StatisticType.worstScore:
+    case StatisticType.totalScore:
+      return scoreBaseRulesets;
 
-    return result.isValid;
-  } catch (e, stack) {
-    print('[validateJsonSchema] $e');
-    print(stack);
-    return false;
+    case StatisticType.totalMatches:
+    case StatisticType.totalLosses:
+    case StatisticType.winrate:
+    case StatisticType.totalWins:
+      return allRulesets;
   }
 }

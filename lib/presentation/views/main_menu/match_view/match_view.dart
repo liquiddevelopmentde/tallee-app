@@ -5,8 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -74,7 +75,8 @@ class _MatchViewState extends State<MatchView> {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
     searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
-    searchProvider.addListener(_handleSearchToggle);
+    searchProvider.addListener(handleSearchToggle);
+
     showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
 
     loadMatches();
@@ -86,7 +88,7 @@ class _MatchViewState extends State<MatchView> {
 
   @override
   void dispose() {
-    searchProvider.removeListener(_handleSearchToggle);
+    searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
     ShowcaseView.get().unregister();
     super.dispose();
@@ -212,7 +214,7 @@ class _MatchViewState extends State<MatchView> {
             child: Showcase(
               key: matchViewCreateButtonKey,
               description:
-                  "Let's track your first match, click the button below.",
+              "Let's track your first match, click the button below.",
               targetShapeBorder: const CircleBorder(),
               disableBarrierInteraction: true,
               disposeOnTap: true,
@@ -241,14 +243,25 @@ class _MatchViewState extends State<MatchView> {
                   ),
                 ),
               ),
-              child: FloatingAnimatedButton(
-                text: loc.create_match,
-                icon: RpgAwesome.clovers_card,
-                onPressed: () async {
-                  navigateToCreateMatchView();
-                },
-              ),
-            ),
+            child: FloatingAnimatedButton(
+              text: loc.create_match,
+              icon: MATCH_ICON,
+              showAddBadge: true,
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  adaptivePageRoute(
+                    settings: const RouteSettings(
+                      name: RouteNames.createMatchView,
+                    ),
+                    builder: (context) => CreateMatchView(
+                      onWinnerChanged: loadMatches,
+                      onMatchesUpdated: loadMatches,
+                    ),
+                  ),
+                );
+              },
+            ),),
           ),
         ],
       ),
@@ -317,7 +330,7 @@ class _MatchViewState extends State<MatchView> {
             }
           }
 
-          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+          if (maxScore >= FUZZY_SEARCH_THRESHOLD) {
             scoredMatches.add((match: match, score: maxScore));
           }
         }
@@ -329,7 +342,7 @@ class _MatchViewState extends State<MatchView> {
     });
   }
 
-  void _handleSearchToggle() {
+  void handleSearchToggle() {
     if (!mounted) {
       return;
     }
@@ -344,7 +357,7 @@ class _MatchViewState extends State<MatchView> {
     isLoading = true;
     Future.wait([
       db.matchDao.getAllMatches(includeDeletedPlayer: true),
-      Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+      Future.delayed(MINIMUM_SKELETON_DURATION),
     ]).then((results) {
       if (mounted) {
         setState(() {

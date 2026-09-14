@@ -179,32 +179,32 @@ class _MatchResultViewState extends State<MatchResultView> {
                   ),
           ),
 
-          if (ruleset != Ruleset.lives)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Save Changes Button
-                  BottomAnimatedButton(
-                    sizeRelativeToWidth: 0.95,
-                    buttonText: loc.save_changes,
-                    onPressed: canSave
-                        ? () async {
-                            final ending = DateTime.now();
-                            await db.matchDao.updateMatchEndedAt(
-                              matchId: widget.match.id,
-                              endedAt: ending,
-                            );
-                            await handleSaving();
-                            if (!context.mounted) return;
-                            Navigator.pop(context);
-                          }
-                        : null,
-                  ),
-                ],
-              ),
+          // Saving button
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Save Changes Button
+                BottomAnimatedButton(
+                  sizeRelativeToWidth: 0.95,
+                  buttonText: loc.save_changes,
+                  onPressed: canSave
+                      ? () async {
+                          final ending = DateTime.now();
+                          await db.matchDao.updateMatchEndedAt(
+                            matchId: widget.match.id,
+                            endedAt: ending,
+                          );
+                          await handleSaving();
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
+                        }
+                      : null,
+                ),
+              ],
             ),
+          ),
         ],
       ),
     );

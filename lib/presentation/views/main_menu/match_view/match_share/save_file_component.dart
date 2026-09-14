@@ -55,7 +55,7 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
           ],
         ),
         // File
-        FileTile(match: widget.match),
+        MatchFileTile(match: widget.match),
         const Spacer(),
 
         // Buttons

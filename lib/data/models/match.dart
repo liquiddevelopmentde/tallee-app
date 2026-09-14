@@ -1,5 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -137,6 +138,7 @@ class Match {
       notes = json['notes'] ?? '';
 
   Map<String, dynamic> toJson() => {
+    'version': MATCH_DATA_SCHEMA_VERSION,
     'id': id,
     'createdAt': createdAt.toIso8601String(),
     'endedAt': endedAt?.toIso8601String(),

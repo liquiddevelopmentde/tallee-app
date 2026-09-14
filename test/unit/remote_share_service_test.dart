@@ -5,11 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/remote_share_service.dart';
+import 'package:tallee/services/shared.dart';
 
 class TestRemoteShareService extends RemoteShareService {
   TestRemoteShareService({super.httpClient});
@@ -34,14 +34,20 @@ void main() {
         return null;
       });
   group('RemoteShareService', () {
-    late Player player;
+    late Player player1;
+    late Player player2;
     late Game game;
     late Match match;
 
     setUp(() {
-      player = Player(
+      player1 = Player(
         id: 'player-1',
         name: 'Alice',
+        createdAt: DateTime.parse('2024-01-01T10:00:00.000Z'),
+      );
+      player2 = Player(
+        id: 'player-2',
+        name: 'Bob',
         createdAt: DateTime.parse('2024-01-01T10:00:00.000Z'),
       );
       game = Game(
@@ -55,8 +61,11 @@ void main() {
         createdAt: DateTime.parse('2024-01-01T10:00:00.000Z'),
         name: 'Friday Session',
         game: game,
-        players: [player],
-        scores: {player.id: ScoreEntry(score: 42)},
+        players: [player1, player2],
+        scores: {
+          player1.id: ScoreEntry(score: 42),
+          player2.id: ScoreEntry(score: 24),
+        },
       );
     });
 
@@ -67,13 +76,21 @@ void main() {
           expect(request.url.toString(), 'https://api.tallee.test/v1/shares/');
           expect(request.headers['content-type'], 'application/json');
           expect(jsonDecode(request.body), equals(match.toJson()));
-          return http.Response('{"token":"A1B2C3"}', 201);
+          return http.Response(
+            '{"token":"A1B2C3","ttl_seconds":600,"expires_at":"2026-09-07T22:38:37.065Z"}',
+            201,
+          );
         });
         final service = TestRemoteShareService(httpClient: client);
 
-        final token = await service.getShareToken(match);
+        final shareResponse = await service.getShareToken(match);
 
-        expect(token, 'A1B2C3');
+        expect(shareResponse.token, 'A1B2C3');
+        expect(shareResponse.ttlSeconds, 600);
+        expect(
+          shareResponse.expiresAt,
+          DateTime.parse('2026-09-07T22:38:37.065Z').toLocal(),
+        );
       });
 
       test('throws ServerException on non-201 responses', () async {
@@ -95,6 +112,34 @@ void main() {
       test('throws ParsingException when token key is missing', () async {
         final client = MockClient(
           (_) async => http.Response('{"foo":"bar"}', 201),
+        );
+        final service = TestRemoteShareService(httpClient: client);
+
+        expect(
+          () => service.getShareToken(match),
+          throwsA(isA<ParsingException>()),
+        );
+      });
+
+      test('throws ParsingException when ttl_seconds is missing', () async {
+        final client = MockClient(
+          (_) async => http.Response(
+            '{"token":"A1B2C3","expires_at":"2026-09-07T22:38:37.065Z"}',
+            201,
+          ),
+        );
+        final service = TestRemoteShareService(httpClient: client);
+
+        expect(
+          () => service.getShareToken(match),
+          throwsA(isA<ParsingException>()),
+        );
+      });
+
+      test('throws ParsingException when expires_at is missing', () async {
+        final client = MockClient(
+          (_) async =>
+              http.Response('{"token":"A1B2C3","ttl_seconds":600}', 201),
         );
         final service = TestRemoteShareService(httpClient: client);
 
@@ -139,7 +184,8 @@ void main() {
         });
         final service = TestRemoteShareService(httpClient: client);
 
-        final loadedMatch = await service.getMatchByToken('share-token');
+        final result = await service.getMatchByToken('share-token');
+        final loadedMatch = result.match!;
 
         expect(loadedMatch.id, match.id);
         expect(loadedMatch.name, match.name);
@@ -218,7 +264,7 @@ void main() {
     });
 
     test('returns false when a field exceeds max length', () {
-      final decoded = {'name': 'A' * (Constants.MAX_MATCH_NAME_LENGTH + 1)};
+      final decoded = {'name': 'A' * (MAX_MATCH_NAME_LENGTH + 1)};
 
       expect(RemoteShareService.validateContent(decoded), isFalse);
     });
@@ -260,10 +306,34 @@ void main() {
       final jsonString = jsonEncode(matchObj.toJson());
 
       final isValid = await validateJsonSchema(
-        jsonString,
-        'assets/match_schema.json',
+        jsonString: jsonString,
+        schemaAssetPath: 'assets/match_schema.json',
       );
       expect(isValid, isTrue);
+    });
+  });
+
+  group('RemoteShareService.parseAndValidateMatch', () {
+    test(
+      'returns invalidSchema when filename is correct but json is not',
+      () async {
+        final service = RemoteShareService();
+        final result = await service.parseAndValidateMatch(
+          '{"invalid": true}',
+          'test.$MATCH_FILE_EXTENSION',
+        );
+
+        expect(result.result, ImportResult.invalidSchema);
+      },
+    );
+  });
+
+  group('RemoteShareService.loadMatchFromFile', () {
+    test('returns invalidExtension for wrong file extension', () async {
+      final service = RemoteShareService();
+      final result = await service.loadMatchFromFile('test.json');
+
+      expect(result.result, ImportResult.invalidExtension);
     });
   });
 }

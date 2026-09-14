@@ -8,5 +8,6 @@ export 'group.dart';
 export 'match.dart';
 export 'player.dart';
 export 'score_entry.dart';
+export 'share_create_response.dart';
 export 'statistic.dart';
 export 'team.dart';

@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -251,7 +251,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
                         spacing: 8,
                         children: [
                           const Icon(
-                            RpgAwesome.clovers_card,
+                            GAME_ICON,
                             color: CustomTheme.hintColor,
                             size: 20,
                           ),
@@ -274,10 +274,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 8,
                         children: [
-                          const Icon(
-                            Icons.groups,
-                            color: CustomTheme.hintColor,
-                          ),
+                          const Icon(GROUP_ICON, color: CustomTheme.hintColor),
                           Text(
                             getSubtitleText(
                               selectedGroups!.map((g) => g.name).toList(),

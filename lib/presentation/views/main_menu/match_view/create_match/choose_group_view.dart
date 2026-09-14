@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/value_constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -22,18 +24,21 @@ class ChooseGroupView extends StatefulWidget {
   /// - [groups]: A list of available groups to choose from
   /// - [initialGroups]: The initially selected group
   /// - [statistic]: Optional statistic payload for choosing groups for a statistic
+  /// - [selectedTypes]: Optional list of statistic types to determine the correct button text
   /// - [enableMultiSelection]: Whether multiple groups can be selected
   const ChooseGroupView({
     super.key,
     required this.groups,
     this.initialGroups,
     this.statistic,
+    this.selectedTypes,
     this.enableMultiSelection = false,
   });
 
   final List<Group> groups;
   final List<Group>? initialGroups;
   final Statistic? statistic;
+  final List<StatisticType>? selectedTypes;
   final bool enableMultiSelection;
 
   @override
@@ -49,6 +54,9 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
   // If selecting multiple is possible
   late bool enableMultiSelection;
 
+  // How many statistics get created
+  late int statAmount = widget.selectedTypes?.length ?? 0;
+
   @override
   void initState() {
     filteredGroups = [...widget.groups];
@@ -61,6 +69,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       resizeToAvoidBottomInset: false,
@@ -132,16 +141,15 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
 
                         // Navigate back to create match view instantly
                         if (!enableMultiSelection) {
-                          await Future.delayed(
-                            Constants.MINIMUM_SKELETON_DURATION,
-                          ).then((_) {
-                            if (!context.mounted) return;
-                            Navigator.of(context).pop(
-                              selectedGroups.isEmpty
-                                  ? null
-                                  : selectedGroups.first,
-                            );
-                          });
+                          await Future.delayed(MINIMUM_SKELETON_DURATION)
+                              .then((_) {
+                                if (!context.mounted) return;
+                                Navigator.of(context).pop(
+                                  selectedGroups.isEmpty
+                                      ? null
+                                      : selectedGroups.first,
+                                );
+                              });
                         }
                       },
                     );
@@ -171,8 +179,8 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
   String get buttonText =>
       widget.statistic != null &&
           widget.statistic!.scopes.contains(StatisticScope.selectedGames)
-      ? AppLocalizations.of(context).confirm
-      : AppLocalizations.of(context).create_statistic;
+      ? AppLocalizations.of(context).continue_
+      : AppLocalizations.of(context).create_statistic(statAmount);
 
   Object? get popResult {
     if (widget.statistic != null) return null;
@@ -189,16 +197,21 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
     if (widget.statistic!.scopes.contains(StatisticScope.selectedGames)) {
       // Choose a game
       final games = await db.gameDao.getAllGames();
+      final filteredGames = filterGamesForRequiredRuleset(games);
+
       if (mounted) {
         final createdStatistic = await Navigator.of(context).push<Statistic>(
           adaptivePageRoute(
             settings: const RouteSettings(name: RouteNames.chooseGameView),
-            builder: (context) =>
-                ChooseGameView(statistic: statistic, games: games),
+            builder: (context) => ChooseGameView(
+              statistic: statistic,
+              games: filteredGames,
+              selectedTypes: widget.selectedTypes,
+            ),
           ),
         );
-        if (!mounted) return;
-        if (createdStatistic != null) {
+
+        if (mounted && createdStatistic != null) {
           Navigator.of(context).pop(createdStatistic);
         }
       }
@@ -208,6 +221,14 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
       if (!mounted) return;
       Navigator.of(context).pop(statistic);
     }
+  }
+
+  /// Filters the [games] based on the rulesets required by the selected [StatisticType]s
+  List<Game> filterGamesForRequiredRuleset(List<Game> games) {
+    final Set<Ruleset> requiredRulesets = {
+      for (final t in widget.selectedTypes!) ...getRulesetForTypes(t),
+    };
+    return games.where((g) => requiredRulesets.contains(g.ruleset)).toList();
   }
 
   /// Filters the groups based on the search [query].
@@ -230,7 +251,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
             maxScore = max(maxScore, weightedRatio(member.name, query));
           }
 
-          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+          if (maxScore >= FUZZY_SEARCH_THRESHOLD) {
             scoredGroups.add((group: group, score: maxScore));
           }
         }

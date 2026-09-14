@@ -2,6 +2,9 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
+    "version": {
+      "type": "integer"
+    },
     "players": {
       "type": "array",
       "items": {
@@ -316,6 +319,7 @@
   },
   "additionalProperties": false,
   "required": [
+    "version",
     "players",
     "games",
     "groups",

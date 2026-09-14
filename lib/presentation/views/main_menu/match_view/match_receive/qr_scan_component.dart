@@ -2,11 +2,13 @@ import 'dart:core' hide Match;
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/share_exceptions.dart';
+import 'package:tallee/core/translations.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
 import 'package:tallee/presentation/widgets/qr_scanner_overlay_shape.dart';
 import 'package:tallee/services/remote_share_service.dart';
@@ -19,15 +21,31 @@ class QrScanComponent extends StatefulWidget {
 }
 
 class _QrScanComponentState extends State<QrScanComponent> {
-  final MobileScannerController controller = MobileScannerController(
-    formats: [BarcodeFormat.qrCode],
-  );
+  late final MobileScannerController controller;
+  late final AppLifecycleListener lifecycleListener;
 
   bool isProcessing = false;
   String? errorMessage;
 
   @override
+  void initState() {
+    super.initState();
+    controller = MobileScannerController(
+      formats: [BarcodeFormat.qrCode],
+      autoStart: false,
+    );
+
+    lifecycleListener = AppLifecycleListener(
+      onResume: startScanner,
+      onPause: controller.stop,
+    );
+
+    startScanner();
+  }
+
+  @override
   void dispose() {
+    lifecycleListener.dispose();
     controller.dispose();
     super.dispose();
   }
@@ -67,7 +85,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
                           tapToFocus: true,
                           controller: controller,
                           fit: BoxFit.cover,
-                          onDetect: isProcessing ? null : handleQrCodeDetection,
+                          onDetect: handleQrCodeDetection,
                         ),
                         // Scanner Overlay
                         Positioned.fill(
@@ -118,28 +136,51 @@ class _QrScanComponentState extends State<QrScanComponent> {
     );
   }
 
+  Future<void> startScanner() async {
+    if (!controller.value.isRunning) {
+      await controller.start();
+    }
+  }
+
   Future<void> handleQrCodeDetection(BarcodeCapture result) async {
-    final token = result.barcodes.first.rawValue;
-    if (token == null || isProcessing) return;
+    final barcodes = result.barcodes;
+    if (barcodes.isEmpty || isProcessing || !mounted) return;
+
+    final token = barcodes.first.rawValue;
+    if (token == null) return;
 
     setState(() {
       isProcessing = true;
       errorMessage = null;
     });
 
-    await Future.delayed(Constants.MINIMUM_SKELETON_DURATION);
+    await controller.stop();
+
+    await Future.delayed(MINIMUM_SKELETON_DURATION);
 
     try {
-      final loadedMatch = await RemoteShareService().getMatchByToken(token);
-      if (!mounted) return;
+      final response = await RemoteShareService().getMatchByToken(token);
 
-      await Navigator.of(context).push(
-        adaptivePageRoute(
-          builder: (_) => AssociateGamesView(match: loadedMatch),
-        ),
-      );
+      // If an import error occured
+      if (response.result != ImportResult.success && mounted) {
+        final message = translateMatchImportResultToString(
+          response.result,
+          context,
+        );
+        await displayErrorMessage(message);
+      } else {
+        final loadedMatch = response.match!;
+        if (!mounted) return;
+
+        await Navigator.of(context).push(
+          adaptivePageRoute(
+            builder: (_) => AssociateGamesView(match: loadedMatch),
+          ),
+        );
+      }
 
       if (mounted) {
+        await startScanner();
         setState(() {
           isProcessing = false;
         });
@@ -155,22 +196,30 @@ class _QrScanComponentState extends State<QrScanComponent> {
       } else if (error is ServerException) {
         message = (error.statusCode == 404 || error.statusCode == 410)
             ? loc.invalid_qr_code
-            : loc.server_error(error.statusCode);
+            : loc.server_error;
       } else if (error is ParsingException) {
         message = loc.qr_code_parsing_error;
       } else {
         message = loc.error_loading_match(error.toString());
       }
-      setState(() => errorMessage = message);
 
-      await Future.delayed(const Duration(seconds: 4));
+      await displayErrorMessage(message);
+    }
+  }
 
-      if (mounted) {
-        setState(() {
-          isProcessing = false;
-          errorMessage = null;
-        });
-      }
+  /// Displays the [message] for 4 seconds and then resets the state.
+  Future<void> displayErrorMessage(String message) async {
+    setState(() => errorMessage = message);
+
+    await Future.delayed(const Duration(seconds: 4));
+
+    if (mounted) {
+      await startScanner();
+
+      setState(() {
+        isProcessing = false;
+        errorMessage = null;
+      });
     }
   }
 }
@@ -202,20 +251,7 @@ class StatusErrorOverlay extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (errorMessage == null) ...[
-                    const CircularProgressIndicator(
-                      color: CustomTheme.primaryColor,
-                      strokeWidth: 4,
-                    ),
-                    const SizedBox(height: 15),
-                    Text(
-                      loc.loading_match,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ] else ...[
+                  if (errorMessage != null) ...[
                     const Icon(
                       Icons.error_outline,
                       color: Colors.redAccent,
@@ -232,6 +268,19 @@ class StatusErrorOverlay extends StatelessWidget {
                         overflow: TextOverflow.visible,
                       ),
                       softWrap: true,
+                    ),
+                  ] else if (isProcessing) ...[
+                    const CircularProgressIndicator(
+                      color: CustomTheme.primaryColor,
+                      strokeWidth: 4,
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      loc.loading_match,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ],

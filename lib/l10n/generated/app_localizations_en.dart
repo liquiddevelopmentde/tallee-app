@@ -158,7 +158,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_new_match => 'Create new match';
 
   @override
-  String get create_statistic => 'Create statistic';
+  String create_statistic(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'statistics ($count)',
+      one: 'statistic',
+      zero: 'statistics',
+    );
+    return 'Create $_temp0';
+  }
 
   @override
   String get create_teams => 'Create teams';
@@ -173,7 +182,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get custom => 'Custom';
 
   @override
+  String get danger_zone => 'Danger Zone';
+
+  @override
   String get data => 'Data';
+
+  @override
+  String get data_backup => 'Data & Backup';
 
   @override
   String get data_successfully_deleted => 'Data successfully deleted';
@@ -185,6 +200,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get data_successfully_imported => 'Data successfully imported';
 
   @override
+  String get data_transfer => 'Data Transfer';
+
+  @override
+  String get data_transfer_description =>
+      'Export and import all your games, players, groups, game templates, and statistics into a file. This serves as a backup or to transfer data to a new device. To share your games with friends, open a game and select \"Share\".';
+
+  @override
   String days_ago(Object count) {
     return '$count days ago';
   }
@@ -194,6 +216,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete_all_data => 'Delete all data';
+
+  @override
+  String get delete_app_data_description =>
+      'Permanently delete all app data. This action is irreversible.';
 
   @override
   String get delete_game => 'Delete Game';
@@ -257,7 +283,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_player => 'Edit player';
 
   @override
-  String get email_optional => 'Email address (optional)';
+  String get email => 'Email address';
 
   @override
   String get enable => 'Enable';
@@ -293,6 +319,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_reading_file => 'Error reading file';
 
   @override
+  String get error_report_hint =>
+      'Please describe the steps leading up to the error and how it appeared';
+
+  @override
+  String get error_report_info_text =>
+      'Reporting an error helps us identify and fix problems in Tallee!';
+
+  @override
   String get error_sending_feedback =>
       'Feedback could not be sent. Please try again.';
 
@@ -315,7 +349,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favourites => 'Favourites';
 
   @override
-  String get feedback_hint => 'Your message or feedback (required)';
+  String get feedback_hint => 'Your message or feedback';
 
   @override
   String get feedback_info_text =>
@@ -347,6 +381,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get games => 'Games';
 
   @override
+  String get general => 'General';
+
+  @override
   String get group => 'Group';
 
   @override
@@ -376,6 +413,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get import_data => 'Import data';
 
   @override
+  String get import_description =>
+      'Import your Tallee data (.json) from a previously exported file. This is meant for restoring a backup or transferring data between devices. To import shared matches, tap the QR code icon in the match view.';
+
+  @override
   String get import_file_instruction =>
       'Select a match file (.tallee) exported from Tallee match share to import the data.';
 
@@ -387,6 +428,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The following data will be imported';
 
   @override
+  String get incompatible_version =>
+      'This file was created with a different version of Tallee and can\'t be imported. Please update your app and try again.';
+
+  @override
   String get info => 'Info';
 
   @override
@@ -395,6 +440,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalid_email => 'Please enter a valid email address.';
+
+  @override
+  String get invalid_extension => 'Invalid file extension.';
 
   @override
   String get invalid_file => 'Invalid File.';
@@ -422,6 +470,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get last_year => 'Last year';
+
+  @override
+  String get later => 'Later';
 
   @override
   String get legal => 'Legal';
@@ -493,7 +544,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get members => 'Members';
 
   @override
-  String get name_optional => 'Name (optional)';
+  String get name => 'Name';
 
   @override
   String get names_or_descriptions_too_long =>
@@ -592,13 +643,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get online_sharing_info_text =>
-      'To share matches online, the app connects to external servers. To protect your privacy, this feature is disabled by default. All transmitted data is automatically deleted after 10 minutes. You can also share games locally as files.';
+      'To share matches via qr code or token, the app connects to external servers. To protect your privacy, this feature is disabled by default. All transmitted data is automatically deleted after 10 minutes. You can also share games locally as files.';
 
   @override
   String get online_sharing_title => 'Activate Online Sharing';
 
   @override
   String get open_settings => 'Open Settings';
+
+  @override
+  String get optional => 'optional';
 
   @override
   String pair(int count) {
@@ -664,6 +718,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remaining => 'remaining';
+
+  @override
+  String get report_error => 'Report Error';
+
+  @override
+  String get required => 'required';
 
   @override
   String get results => 'Results';
@@ -755,9 +815,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sending => 'Sending...';
 
   @override
-  String server_error(int statusCode) {
-    return 'Server error: $statusCode';
-  }
+  String get server_error => 'Internal server error';
 
   @override
   String get set_name => 'Set name';
@@ -829,8 +887,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thank_you_for_feedback => 'Thank you for your feedback!';
 
   @override
+  String get thank_you_for_report => 'Thank you for your error report!';
+
+  @override
   String get there_are_no_games_matching_your_search =>
       'There are no games matching your search';
+
+  @override
+  String get there_is_no_game_matching_your_search =>
+      'There is no game matching your search';
 
   @override
   String get there_is_no_group_matching_your_search =>
@@ -878,6 +943,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unknown_exception => 'Unknown Exception (see console)';
+
+  @override
+  String get update_app_version =>
+      'Please update your apps to the newest version and try it again.';
+
+  @override
+  String get update_available => 'Update Available';
+
+  @override
+  String get update_available_content => 'A new version is available.';
+
+  @override
+  String get update_features_fixes_desc =>
+      'Please update the app to access the latest features and improvements.';
+
+  @override
+  String get update_now => 'Update Now';
 
   @override
   String get version => 'Version';

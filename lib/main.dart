@@ -8,9 +8,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -19,12 +18,15 @@ import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
 import 'package:tallee/presentation/views/onboarding_view.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
+import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/showcase_provider.dart';
@@ -47,6 +49,46 @@ void main() async {
       // Decrease sampleRate in stable to avoid sending too many events
       options.tracesSampleRate = 1.0;
       options.environment = kReleaseMode ? 'production' : 'development';
+
+      // disabled because not supported by glitchtip
+      options.enableAutoSessionTracking = false;
+
+      options.beforeSend = (event, hint) {
+        if (event.level == SentryLevel.error ||
+            event.level == SentryLevel.fatal) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final context = Tallee.navigatorKey.currentContext;
+            if (context != null) {
+              final loc = AppLocalizations.of(context);
+              Tallee.scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+              Tallee.scaffoldMessengerKey.currentState?.showSnackBar(
+                CustomSnackBar(
+                  message: loc.unexpected_error,
+                  actionLabel: loc.report_error,
+                  onActionTap: () async {
+                    Tallee.scaffoldMessengerKey.currentState
+                        ?.hideCurrentSnackBar();
+                    final result = await Tallee.navigatorKey.currentState
+                        ?.push<bool>(
+                          MaterialPageRoute(
+                            builder: (context) => FeedbackFormView(
+                              associatedEventId: event.eventId,
+                            ),
+                          ),
+                        );
+                    if (result == true) {
+                      Tallee.scaffoldMessengerKey.currentState?.showSnackBar(
+                        CustomSnackBar(message: loc.thank_you_for_report),
+                      );
+                    }
+                  },
+                ),
+              );
+            }
+          });
+        }
+        return event;
+      };
     },
     appRunner: () => runApp(
       SentryWidget(
@@ -58,6 +100,7 @@ void main() async {
             ),
             ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
             ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
+            ChangeNotifierProvider(create: (context) => GameSearchProvider()),
             ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
             ChangeNotifierProvider(create: (context) => ShowcaseProvider()),
           ],
@@ -74,15 +117,16 @@ void main() async {
 class Tallee extends StatefulWidget {
   const Tallee({super.key});
 
+  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
   @override
   State<Tallee> createState() => _TalleeState();
 }
 
 class _TalleeState extends State<Tallee> {
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
   /// Receives .tallee files opened via the system.
   final OpenWithApp openWithApp = OpenWithApp();
   StreamSubscription<String>? fileSubscription;
@@ -106,8 +150,8 @@ class _TalleeState extends State<Tallee> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey,
-      scaffoldMessengerKey: scaffoldMessengerKey,
+      navigatorKey: Tallee.navigatorKey,
+      scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       localeResolutionCallback: (locale, supportedLocales) {
@@ -162,7 +206,7 @@ class _TalleeState extends State<Tallee> {
   }
 
   void handleSplashFinished() {
-    final navigator = navigatorKey.currentState;
+    final navigator = Tallee.navigatorKey.currentState;
     if (navigator == null) return;
 
     final path = pendingImportPath;
@@ -215,24 +259,20 @@ class _TalleeState extends State<Tallee> {
 
   /// Pushes the import view for the .tallee file at [path].
   void openImport(String path) async {
-    final navigator = navigatorKey.currentState;
+    final navigator = Tallee.navigatorKey.currentState;
     if (navigator == null) return;
 
-    final (status, _) = await LocalShareService.getDataFromPath(path);
+    final (_) = await LocalShareService.getDataFromPath(path);
 
-    final route = status == ImportResult.matchSchemaDetected
-        ? MatchReceiveView(initialFilePath: path)
-        : PreviewImportDataView(
-            filePath: path,
-            messengerKey: scaffoldMessengerKey,
-          );
-
-    Future.delayed(Constants.OPEN_WITH_NAVIGATION_DELAY, () {
+    Future.delayed(OPEN_WITH_NAVIGATION_DELAY, () {
       navigator.push(
         adaptivePageRoute(
           settings: const RouteSettings(name: RouteNames.importFile),
           fullscreenDialog: true,
-          builder: (_) => route,
+          builder: (_) => PreviewImportDataView(
+            filePath: path,
+            messengerKey: Tallee.scaffoldMessengerKey,
+          ),
         ),
       );
     });

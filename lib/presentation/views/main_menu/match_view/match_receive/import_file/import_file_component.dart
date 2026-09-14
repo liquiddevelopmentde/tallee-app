@@ -3,59 +3,39 @@ import 'dart:core' hide Match;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file/choose_match_file_widget.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file/display_selected_file_widget.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/cards/display_selected_file_card.dart';
 import 'package:tallee/services/remote_share_service.dart';
 
-class ImportFileComponent extends StatefulWidget {
-  const ImportFileComponent({super.key, this.initialFilePath});
+class ImportFileCard extends StatefulWidget {
+  const ImportFileCard({super.key, this.initialFilePath});
 
   final String? initialFilePath;
 
   @override
-  State<ImportFileComponent> createState() => _ImportFileComponentState();
+  State<ImportFileCard> createState() => _ImportFileCardState();
 }
 
-class _ImportFileComponentState extends State<ImportFileComponent> {
+class _ImportFileCardState extends State<ImportFileCard> {
   bool successfulImport = false;
   ImportResult? lastResult;
+  String? fileName;
 
   Color dottedBorderColor = CustomTheme.boxBorderColor;
 
-  late (ImportResult, Match?, String) data;
+  late ({ImportResult result, Match? match, String filePath}) data;
 
   @override
   void initState() {
     super.initState();
     if (widget.initialFilePath != null) {
       loadInitialFile();
-    }
-  }
-
-  Future<void> loadInitialFile() async {
-    final result = await RemoteShareService().loadMatchFromFile(
-      widget.initialFilePath!,
-    );
-    if (mounted) {
-      setState(() {
-        data = result;
-        lastResult = data.$1;
-        if (data.$1 == ImportResult.success) {
-          HapticFeedback.successNotification();
-          successfulImport = true;
-          dottedBorderColor = Colors.green;
-        } else {
-          HapticFeedback.errorNotification();
-          successfulImport = false;
-          dottedBorderColor = Colors.red;
-        }
-      });
     }
   }
 
@@ -71,26 +51,7 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
             onTap: () async {
               HapticFeedback.selectionClick();
               data = await RemoteShareService().chooseFileToImport();
-              lastResult = data.$1;
-              if (data.$1 == ImportResult.success) {
-                HapticFeedback.successNotification();
-                setState(() {
-                  successfulImport = true;
-                  dottedBorderColor = Colors.green;
-                });
-              } else {
-                HapticFeedback.errorNotification();
-                successfulImport = false;
-                if (data.$1 != ImportResult.canceled) {
-                  setState(() {
-                    dottedBorderColor = Colors.red;
-                  });
-                } else {
-                  setState(() {
-                    dottedBorderColor = CustomTheme.boxBorderColor;
-                  });
-                }
-              }
+              processFile(data);
             },
             child: DottedBorder(
               options: RoundedRectDottedBorderOptions(
@@ -127,8 +88,11 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
                         );
                       },
                   child: !successfulImport
-                      ? ChooseMatchFile(loc: loc, lastResult: lastResult)
-                      : DisplaySelectedFile(match: data.$2!),
+                      ? ChooseMatchFileWidget(loc: loc, lastResult: lastResult)
+                      : DisplaySelectedFileWidget(
+                          match: data.match!,
+                          fileName: fileName,
+                        ),
                 ),
               ),
             ),
@@ -160,7 +124,8 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
                       Navigator.push(
                         context,
                         adaptivePageRoute(
-                          builder: (_) => AssociateGamesView(match: data.$2!),
+                          builder: (_) =>
+                              AssociateGamesView(match: data.match!),
                         ),
                       );
                     }
@@ -171,50 +136,36 @@ class _ImportFileComponentState extends State<ImportFileComponent> {
       ],
     );
   }
-}
 
-class ChooseMatchFile extends StatelessWidget {
-  const ChooseMatchFile({required this.loc, this.lastResult, super.key});
-
-  final AppLocalizations loc;
-  final ImportResult? lastResult;
-
-  @override
-  Widget build(BuildContext context) {
-    String title = loc.choose_match_file;
-    if (lastResult != null &&
-        lastResult != ImportResult.success &&
-        lastResult != ImportResult.canceled) {
-      title = translateMatchImportResultToString(lastResult!, context);
-    }
-
-    return Column(
-      key: const ValueKey('choose_match_file'),
-      children: [
-        const Icon(Icons.file_present, size: 50),
-        const SizedBox(height: 20),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w500,
-            overflow: TextOverflow.visible,
-          ),
-          softWrap: true,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 5),
-        Text(
-          loc.tap_to_browse,
-          style: TextStyle(
-            color: CustomTheme.textColor.withAlpha(180),
-            fontSize: 14,
-            overflow: TextOverflow.visible,
-          ),
-          textAlign: TextAlign.center,
-          softWrap: true,
-        ),
-      ],
+  /// Loads a file if [initialFilePath] was provided
+  Future<void> loadInitialFile() async {
+    final data = await RemoteShareService().loadMatchFromFile(
+      widget.initialFilePath!,
     );
+    processFile(data);
+  }
+
+  void processFile(dynamic data) {
+    lastResult = data.result;
+    if (data.result == ImportResult.success) {
+      HapticFeedback.successNotification();
+      setState(() {
+        successfulImport = true;
+        dottedBorderColor = Colors.green;
+      });
+    } else {
+      HapticFeedback.errorNotification();
+      successfulImport = false;
+
+      setState(() {
+        if (data.result != ImportResult.canceled) {
+          dottedBorderColor = Colors.red;
+        } else {
+          dottedBorderColor = CustomTheme.boxBorderColor;
+        }
+      });
+    }
+    final path = data.filePath;
+    fileName = path.split('/').last;
   }
 }

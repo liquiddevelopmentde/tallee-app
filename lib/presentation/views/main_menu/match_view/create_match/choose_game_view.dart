@@ -1,49 +1,44 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
-import 'package:tallee/presentation/utils/navigation/route_names.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
-import 'package:tallee/state/showcase_provider.dart';
 
 class ChooseGameView extends StatefulWidget {
   /// A view that allows the user to choose a game from a list of available games
   /// - [games]: The list of available games
-  /// - [initialGame]: The initially selected game
+  /// - [initialSelectedGames]: The initially selected games
   /// - [onGamesUpdated]: Optional callback invoked when the games are updated
   /// - [statistic]: Optional statistic payload for choosing groups for a statistic
+  /// - [selectedTypes]: Optional list of statistic types to determine the correct button text
   /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
   const ChooseGameView({
     super.key,
     required this.games,
-    this.initialGames,
+    this.initialSelectedGames,
     this.onGamesUpdated,
     this.statistic,
-    this.requiredRuleset,
+    this.selectedTypes,
     this.enableMultiSelection = false,
   });
 
   final List<Game> games;
-  final List<Game>? initialGames;
+  final List<Game>? initialSelectedGames;
   final VoidCallback? onGamesUpdated;
   final Statistic? statistic;
+  final List<StatisticType>? selectedTypes;
   final bool enableMultiSelection;
-  final Ruleset? requiredRuleset;
 
   @override
   State<ChooseGameView> createState() => _ChooseGameViewState();
@@ -68,32 +63,29 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   // If selecting multiple is possible
   late bool enableMultiSelection;
 
-  final GlobalKey createGameKey = GlobalKey();
+  // How many statistics get created
+  late int statAmount = widget.selectedTypes?.length ?? 0;
 
-  late final ShowcaseProvider showcaseProvider;
+  Ruleset? get requiredRuleset {
+    if (games.isEmpty) return null;
+
+    final firstRuleset = games.first.ruleset;
+    return games.every((game) => game.ruleset == firstRuleset)
+        ? firstRuleset
+        : null;
+  }
 
   @override
   void initState() {
     db = Provider.of<AppDatabase>(context, listen: false);
     fetchGameCounts();
 
-    selectedGames = widget.initialGames ?? [];
+    selectedGames = widget.initialSelectedGames ?? [];
     // Start with all games visible
     filteredGames = List<Game>.from(games);
 
     enableMultiSelection =
         widget.enableMultiSelection || widget.statistic != null;
-
-    showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (showcaseProvider.shouldShowShowcase(
-        'choose_game_view_create_game_button',
-      )) {
-        ShowcaseView.get().startShowCase([createGameKey]);
-      }
-    });
-
     super.initState();
   }
 
@@ -103,52 +95,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        actions: [
-          Visibility(
-            visible: !enableMultiSelection,
-            child: Showcase(
-              key: createGameKey,
-              description: "Nothing here yet, let's create your first game",
-              targetShapeBorder: const CircleBorder(),
-              disableBarrierInteraction: true,
-              disposeOnTap: true,
-              onTargetClick: () {
-                onGameCreateButtonClicked();
-                showcaseProvider.markAsSeen(
-                  'choose_game_view_create_game_button',
-                );
-              },
-              disableMovingAnimation: true,
-              tooltipPosition: TooltipPosition.top,
-              floatingActionWidget: FloatingActionWidget(
-                left: 16,
-                bottom: 32,
-                //TODO: change button
-                child: TextButton(
-                  onPressed: () {
-                    HapticFeedback.selectionClick();
-                    showcaseProvider.skipTour();
-                    ShowcaseView.get().dismiss();
-                  },
-                  child: const Text(
-                    'Skip',
-                    style: TextStyle(color: CustomTheme.textColor),
-                  ),
-                ),
-              ),
-              child: HapticIconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () async {
-                  onGameCreateButtonClicked();
-                },
-              ),
-            ),
-          ),
-        ],
-
-        title: Text(loc.choose_game),
-      ),
+      appBar: AppBar(title: Text(loc.choose_game)),
       body: PopScope(
         // This fixes that the Android Back Gesture didn't return the
         // selectedGameIndex and therefore the selected Game wasn't saved
@@ -218,59 +165,15 @@ class _ChooseGameViewState extends State<ChooseGameView> {
 
                         // Navigate back to create match view instantly
                         if (!enableMultiSelection) {
-                          await Future.delayed(
-                            Constants.MINIMUM_SKELETON_DURATION,
-                          ).then((_) {
-                            if (!context.mounted) return;
-                            Navigator.of(context).pop(
-                              selectedGames.isEmpty
-                                  ? null
-                                  : selectedGames.first,
-                            );
-                          });
-                        }
-                      },
-                      onLongPress: () async {
-                        final result = await Navigator.push(
-                          context,
-                          adaptivePageRoute(
-                            settings: const RouteSettings(
-                              name: RouteNames.createGameView,
-                            ),
-                            builder: (context) => CreateGameView(
-                              gameToEdit: game,
-                              matchCount: getMatchCount(game),
-                              onGameChanged: () {
-                                widget.onGamesUpdated?.call();
-                              },
-                            ),
-                          ),
-                        );
-                        if (result != null && result.game != null) {
-                          // Find the index in the original list to mutate
-                          final originalIndex = games.indexWhere(
-                            (g) => g.id == game.id,
-                          );
-                          if (originalIndex == -1) {
-                            return;
-                          }
-                          if (result.delete) {
-                            setState(() {
-                              // deselect the game
-                              if (selectedGames.any(
-                                (selected) => selected.id == game.id,
-                              )) {
-                                selectedGames.clear();
-                              }
-                              games.removeAt(originalIndex);
-                              widget.onGamesUpdated?.call();
-                            });
-                          } else {
-                            setState(() {
-                              games[originalIndex] = result.game;
-                            });
-                          }
-                          refreshFromSource();
+                          await Future.delayed(MINIMUM_SKELETON_DURATION)
+                              .then((_) {
+                                if (!context.mounted) return;
+                                Navigator.of(context).pop(
+                                  selectedGames.isEmpty
+                                      ? null
+                                      : selectedGames.first,
+                                );
+                              });
                         }
                       },
                     );
@@ -278,13 +181,14 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 ),
               ),
             ),
+
+            // Create statistic button
             if (widget.statistic != null)
-              // Create statistic button
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
                 child: BottomAnimatedButton(
                   buttonConstraints: const BoxConstraints(minWidth: 390),
-                  buttonText: loc.create_statistic,
+                  buttonText: buttonText,
                   onPressed: selectedGames.isNotEmpty
                       ? () => submitStatistic()
                       : null,
@@ -296,45 +200,21 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     );
   }
 
+  String get buttonText =>
+      AppLocalizations.of(context).create_statistic(statAmount);
+
   Object? get popResult {
     if (widget.statistic != null) return null;
     if (enableMultiSelection) return selectedGames;
     return selectedGames.isEmpty ? null : selectedGames.first;
   }
 
-  void onGameCreateButtonClicked() async {
-    final result = await Navigator.push(
-      context,
-      adaptivePageRoute(
-        settings: const RouteSettings(name: RouteNames.createGameView),
-        builder: (context) => CreateGameView(
-          requiredRuleset: widget.requiredRuleset,
-          onGameChanged: () {
-            widget.onGamesUpdated?.call();
-          },
-        ),
-      ),
-    );
-    if (result != null && result.game != null) {
-      if (widget.requiredRuleset != null &&
-          result.game.ruleset != widget.requiredRuleset) {
-        return;
-      }
-
-      setState(() {
-        games.insert(0, result.game);
-        games.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-      });
-      refreshFromSource();
-    }
-  }
-
   /// Fetches the usage count for all games and stores it in [gameCounts].
   Future<void> fetchGameCounts() async =>
-      gameCounts = await db.gameDao.getGameUsage();
+      gameCounts = await db.gameDao.getAllGameCounts();
 
   /// Returns the number of matches that use the given [game].
-  int getMatchCount(Game game) => gameCounts
+  int getGameCount(Game game) => gameCounts
       .firstWhere((gc) => gc.$1.id == game.id, orElse: () => (game, 0))
       .$2;
 
@@ -359,7 +239,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
         // Check description
         maxScore = max(maxScore, weightedRatio(game.description, query));
 
-        if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+        if (maxScore >= FUZZY_SEARCH_THRESHOLD) {
           scoredGames.add((game: game, score: maxScore));
         }
       }
