@@ -38,7 +38,7 @@ void main() {
         Timeframe.allTime,
       ]);
 
-      SharedPreferencesService.deleteAllFilters(includeFavourites: false);
+      SharedPreferencesService.resetStatisticFilter(includeFavourites: false);
 
       final filteredGroups = SharedPreferencesService.getFilteredGroups();
       final filteredGames = SharedPreferencesService.getFilteredGames();
