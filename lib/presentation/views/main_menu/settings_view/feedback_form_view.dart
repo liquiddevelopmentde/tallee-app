@@ -108,9 +108,8 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                       TextInputField(
                         controller: messageController,
                         focusNode: messageFocusNode,
-                        hintText: isErrorReport
-                            ? loc.error_report_hint
-                            : loc.feedback_hint,
+                        hintText:
+                            '${isErrorReport ? loc.error_report_hint : loc.feedback_hint} (${loc.required})',
                         maxLines: 5,
                         minLines: 5,
                         maxLength: Constants.MAX_FEEDBACK_MESSAGE_LENGTH,
@@ -122,7 +121,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                       TextInputField(
                         controller: emailController,
                         focusNode: emailFocusNode,
-                        hintText: loc.email_optional,
+                        hintText: '${loc.email} (${loc.optional})',
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
                         onSubmitted: (_) => nameFocusNode.requestFocus(),
@@ -145,7 +144,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                       TextInputField(
                         controller: nameController,
                         focusNode: nameFocusNode,
-                        hintText: loc.name_optional,
+                        hintText: '${loc.name} (${loc.optional})',
                         textInputAction: TextInputAction.done,
                         onSubmitted: (_) {
                           nameFocusNode.unfocus();
