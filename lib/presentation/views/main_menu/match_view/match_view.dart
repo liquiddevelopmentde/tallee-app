@@ -92,7 +92,7 @@ class _MatchViewState extends State<MatchView> {
     final searchProvider = Provider.of<MatchSearchProvider>(context);
 
     // Reset filtered matches when search is disabled
-    if (!searchProvider.isSearching) displayedMatches = [...filteredMatches];
+    if (!searchProvider.isSearching) applySearch('');
 
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
@@ -138,7 +138,7 @@ class _MatchViewState extends State<MatchView> {
                           hintText: '',
                           onChanged: (value) {
                             setState(() {
-                              filterMatches(value);
+                              applySearch(value);
                             });
                           },
                         ),
@@ -275,12 +275,12 @@ class _MatchViewState extends State<MatchView> {
   void setFilter(MatchFilter filter) {
     setState(() {
       selectedFilter = filter;
-      filterMatchesByAttribute(filter);
+      applyFilter(filter);
     });
     SharedPreferencesService.setMatchFilter(filter);
   }
 
-  void filterMatchesByAttribute(MatchFilter filter) {
+  void applyFilter(MatchFilter filter) {
     switch (filter) {
       case MatchFilter.all:
         filteredMatches = [...allMatches];
@@ -297,9 +297,10 @@ class _MatchViewState extends State<MatchView> {
             .where((match) => match.isTeamMatch)
             .toList();
     }
+    displayedMatches = [...filteredMatches];
   }
 
-  void filterMatches(String query) {
+  void applySearch(String query) {
     setState(() {
       if (query.isEmpty) {
         displayedMatches = [...filteredMatches];
@@ -374,7 +375,7 @@ class _MatchViewState extends State<MatchView> {
 
           searchBarController.text.isEmpty
               ? displayedMatches = [...allMatches]
-              : filterMatches(searchBarController.text);
+              : applySearch(searchBarController.text);
 
           isLoading = false;
         });
