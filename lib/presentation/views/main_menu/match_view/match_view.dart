@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -33,10 +34,16 @@ class MatchView extends StatefulWidget {
 class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
   late final MatchSearchProvider searchProvider;
-  late final ShowcaseProvider showcaseProvider;
   bool isLoading = true;
 
   final GlobalKey matchViewCreateButtonKey = GlobalKey();
+
+  final String matchViewCreateButtonIdentifier =
+      'match_view_create_match_button';
+
+  final String navbarGameViewIdentifier = 'navbar_game_view';
+
+  late final ShowcaseProvider showcaseProvider;
 
   TextEditingController searchBarController = TextEditingController();
 
@@ -79,16 +86,22 @@ class _MatchViewState extends State<MatchView> {
 
     loadMatches();
 
-    ShowcaseView.register(blurValue: 0.5);
-
-    startTourStep();
+    if (showcaseProvider.hasSeen(navbarGameViewIdentifier)) {
+      print('showcase seen navbar');
+      print(showcaseProvider.hasSeen(navbarGameViewIdentifier));
+      handleShowcase(
+        widgetKeys: [matchViewCreateButtonKey],
+        identifiers: [matchViewCreateButtonIdentifier],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
+    }
   }
 
   @override
   void dispose() {
     searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
-    ShowcaseView.get().unregister();
     super.dispose();
   }
 
@@ -278,19 +291,6 @@ class _MatchViewState extends State<MatchView> {
         ),
       ),
     );
-  }
-
-  void startTourStep() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (showcaseProvider.shouldShowShowcase(
-        'match_view_create_match_button',
-      )) {
-        if (!showcaseProvider.isTourActive) {
-          showcaseProvider.startTour();
-        }
-        ShowcaseView.get().startShowCase([matchViewCreateButtonKey]);
-      }
-    });
   }
 
   void filterMatches(String query) {

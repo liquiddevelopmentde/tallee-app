@@ -8,6 +8,8 @@ import 'package:new_version_plus/model/version_status.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:once/once.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -30,6 +32,7 @@ import 'package:tallee/state/data_refresh_provider.dart';
 import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/state/showcase_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomNavigationBar extends StatefulWidget {
@@ -42,12 +45,22 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAware {
   /// Currently selected tab index
   int currentIndex = 0;
 
   /// Key count to force rebuild of tab views
   int tabKeyCount = 0;
+
+  final GlobalKey navbarGameViewKey = GlobalKey();
+  final String navbarGameViewIdentifier = 'navbar_game_view';
+
+  final GlobalKey navbarMatchViewKey = GlobalKey();
+  final String navbarMatchViewIdentifier = 'navbar_match_view';
+
+  late final ShowcaseProvider showcaseProvider;
+
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
   @override
   void initState() {
@@ -59,6 +72,26 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       await checkVersionAndUpdate(context);
       openNewsDialog();
     });
+
+    showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
+    showTabShowcase();
+  }
+
+  @override
+  void didChangeDependencies() {
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+
+    bool createGameShowcaseDone = showcaseProvider.hasSeen(
+      'create_game_view_game_name',
+    );
+    print("seen create game showcase in change deps");
+    print(createGameShowcaseDone);
+
+    showTabShowcase();
+    super.didChangeDependencies();
   }
 
   @override
@@ -206,12 +239,50 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              NavbarItem(
-                index: 0,
-                isSelected: currentIndex == 0,
-                icon: MATCH_ICON,
-                label: loc.matches,
-                onTabTapped: onTabTapped,
+              Showcase(
+                key: navbarMatchViewKey,
+                description:
+                    "Now that we created a game, we can head to the match tab.",
+                descTextStyle: TextStyle(
+                  overflow: TextOverflow.visible,
+                  color: Colors.black,
+                ),
+                descriptionTextAlign: TextAlign.center,
+                targetShapeBorder: const CircleBorder(),
+                disableBarrierInteraction: true,
+                disposeOnTap: true,
+                onTargetClick: () {
+                  onTabTapped(2);
+                  showcaseProvider.markAsSeen(navbarGameViewIdentifier);
+                },
+                disableMovingAnimation: true,
+                tooltipPosition: TooltipPosition.top,
+                floatingActionWidget: FloatingActionWidget(
+                  left: 16,
+                  bottom: 32,
+                  //TODO: change button
+                  child: TextButton(
+                    onPressed: () {
+                      HapticFeedback.selectionClick();
+                      Provider.of<ShowcaseProvider>(
+                        context,
+                        listen: false,
+                      ).skipTour();
+                      ShowcaseView.get().dismiss();
+                    },
+                    child: const Text(
+                      'Skip',
+                      style: TextStyle(color: CustomTheme.textColor),
+                    ),
+                  ),
+                ),
+                child: NavbarItem(
+                  index: 0,
+                  isSelected: currentIndex == 0,
+                  icon: MATCH_ICON,
+                  label: loc.matches,
+                  onTabTapped: onTabTapped,
+                ),
               ),
               NavbarItem(
                 index: 1,
@@ -220,12 +291,49 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 label: loc.groups,
                 onTabTapped: onTabTapped,
               ),
-              NavbarItem(
-                index: 2,
-                isSelected: currentIndex == 2,
-                icon: GAME_ICON,
-                label: loc.games,
-                onTabTapped: onTabTapped,
+              Showcase(
+                key: navbarGameViewKey,
+                description: "Each match needs a specific game it belongs to, let's start by heading to the game tab.",
+                descTextStyle: TextStyle(
+                  overflow: TextOverflow.visible,
+                  color: Colors.black,
+                ),
+                descriptionTextAlign: TextAlign.center,
+                targetShapeBorder: const CircleBorder(),
+                disableBarrierInteraction: true,
+                disposeOnTap: true,
+                onTargetClick: () {
+                  onTabTapped(2);
+                  showcaseProvider.markAsSeen(navbarGameViewIdentifier);
+                },
+                disableMovingAnimation: true,
+                tooltipPosition: TooltipPosition.top,
+                floatingActionWidget: FloatingActionWidget(
+                  left: 16,
+                  bottom: 32,
+                  //TODO: change button
+                  child: TextButton(
+                    onPressed: () {
+                      HapticFeedback.selectionClick();
+                      Provider.of<ShowcaseProvider>(
+                        context,
+                        listen: false,
+                      ).skipTour();
+                      ShowcaseView.get().dismiss();
+                    },
+                    child: const Text(
+                      'Skip',
+                      style: TextStyle(color: CustomTheme.textColor),
+                    ),
+                  ),
+                ),
+                child: NavbarItem(
+                  index: 2,
+                  isSelected: currentIndex == 2,
+                  icon: GAME_ICON,
+                  label: loc.games,
+                  onTabTapped: onTabTapped,
+                ),
               ),
               NavbarItem(
                 index: 3,
@@ -238,6 +346,29 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           ),
         ),
       ),
+    );
+  }
+
+  void showTabShowcase() {
+    bool createGameShowcaseDone = showcaseProvider.hasSeen(
+      'create_game_view_game_name',
+    );
+
+    print("seen create game showcase");
+    print(createGameShowcaseDone);
+
+    handleShowcase(
+      widgetKeys: [
+        createGameShowcaseDone ? navbarMatchViewKey : navbarGameViewKey,
+      ],
+      identifiers: [
+        createGameShowcaseDone
+            ? navbarMatchViewIdentifier
+            : navbarGameViewIdentifier,
+      ],
+      showcaseProvider: showcaseProvider,
+      context: context,
+      isStart: !createGameShowcaseDone,
     );
   }
 

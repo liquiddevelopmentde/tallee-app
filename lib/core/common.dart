@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/state/showcase_provider.dart';
 
 export 'app_color_utils.dart';
 export 'icon_utils.dart';
@@ -75,4 +78,33 @@ List<Ruleset> getRulesetForTypes(StatisticType type) {
     case StatisticType.totalWins:
       return allRulesets;
   }
+}
+
+void handleShowcase({
+  required List<GlobalKey> widgetKeys,
+  required List<String> identifiers,
+  required BuildContext context,
+  required ShowcaseProvider showcaseProvider,
+  //Function()? onFinish,
+  bool isStart = false,
+}) {
+  assert(
+    widgetKeys.length == identifiers.length,
+    'widgetKeys and identifiers have to have the same length',
+  );
+  if (identifiers.isEmpty) return;
+
+  ShowcaseView.register(blurValue: 0.5); //onFinish: onFinish
+
+  final String firstIdentifier = identifiers.first;
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (showcaseProvider.shouldShowShowcase(firstIdentifier)) {
+      if (isStart && !showcaseProvider.isTourActive) {
+        showcaseProvider.startTour();
+      }
+
+      ShowcaseView.get().startShowCase(widgetKeys);
+    }
+  });
 }

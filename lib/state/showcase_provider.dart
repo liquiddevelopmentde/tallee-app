@@ -27,7 +27,7 @@ class ShowcaseProvider extends ChangeNotifier {
   }
 
   bool shouldShowShowcase(String screenKey) {
-    if (isTourSkipped) return false;
+    if (isTourSkipped && !_isTourActive) return false;
 
     if (_isTourActive) {
       return !_shownInCurrentTour.contains(screenKey);
@@ -39,5 +39,10 @@ class ShowcaseProvider extends ChangeNotifier {
   void markAsSeen(String screenKey) {
     SharedPreferencesService.setShowcaseSeen(screenKey);
     _shownInCurrentTour.add(screenKey);
+    notifyListeners();
+  }
+
+  bool hasSeen(String screenKey) {
+    return SharedPreferencesService.hasSeenShowcase(screenKey);
   }
 }

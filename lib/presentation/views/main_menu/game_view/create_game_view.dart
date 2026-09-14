@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/app_color_utils.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/core/icon_utils.dart';
-import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -19,6 +18,7 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
+import 'package:tallee/state/showcase_provider.dart';
 
 class CreateGameView extends StatefulWidget {
   /// A stateful widget for creating or editing a game.
@@ -50,12 +50,27 @@ class _CreateGameViewState extends State<CreateGameView> {
   late List<(Ruleset, String)> rulesets;
   late List<(AppColor, String)> colors;
 
+  final GlobalKey createGameViewGameNameKey = GlobalKey();
+  final String createGameViewGameNameIdentifier = 'create_game_view_game_name';
+
+  final GlobalKey createGameViewGameRulesetKey = GlobalKey();
+  final String createGameViewGameRulesetIdentifier =
+      'create_game_view_game_ruleset';
+
+  final GlobalKey createGameViewCreateGameKey = GlobalKey();
+  final String createGameViewCreateGameIdentifier =
+      'create_game_view_create_game';
+
+  late final ShowcaseProvider showcaseProvider;
+
   late String selectedGroupId;
   late final List<Group> filteredGroups;
 
-  final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-  final gameNameController = TextEditingController();
-  final gameDescriptionController = TextEditingController();
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+  final TextEditingController gameNameController = TextEditingController();
+  final TextEditingController gameDescriptionController =
+      TextEditingController();
 
   int selectedLives = 3;
   Ruleset? selectedRuleset = Ruleset.winner;
@@ -72,6 +87,35 @@ class _CreateGameViewState extends State<CreateGameView> {
 
     gameNameController.addListener(() => setState(() {}));
     gameDescriptionController.addListener(() => setState(() {}));
+
+    showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
+
+    /*
+    handleShowcase(
+      widgetKeys: [
+        createGameViewGameNameKey,
+        if (!isEditMode) createGameViewGameRulesetKey,
+        createGameViewCreateGameKey,
+      ],
+      identifiers: [
+        createGameViewGameNameIdentifier,
+        if (!isEditMode) createGameViewGameRulesetIdentifier,
+        createGameViewCreateGameIdentifier,
+      ],
+      showcaseProvider: showcaseProvider,
+      context: context,
+    );
+     */
+
+    ShowcaseView.register(blurValue: 0.5);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ShowcaseView.get().startShowCase([
+        createGameViewGameNameKey,
+        if (!isEditMode) createGameViewGameRulesetKey,
+        createGameViewCreateGameKey,
+      ]);
+    });
   }
 
   @override
@@ -181,43 +225,119 @@ class _CreateGameViewState extends State<CreateGameView> {
               ),
           ],
         ),
+        // Game name input field
         body: SafeArea(
           maintainBottomViewPadding: true,
           child: Column(
             children: [
-              // Game name input field
-              Container(
-                margin: CustomTheme.tileMargin,
-                child: TextInputField(
-                  controller: gameNameController,
-                  maxLength: MAX_MATCH_NAME_LENGTH,
-                  hintText: loc.game_name,
+              Showcase(
+                key: createGameViewGameNameKey,
+                description: 'Set a name for the game here',
+                targetShapeBorder: const CircleBorder(),
+                onBarrierClick: () {
+                  showcaseProvider.markAsSeen(createGameViewGameNameIdentifier);
+                },
+                onToolTipClick: () {
+                  showcaseProvider.markAsSeen(createGameViewGameNameIdentifier);
+                },
+                disableMovingAnimation: true,
+                tooltipPosition: TooltipPosition.bottom,
+                floatingActionWidget: FloatingActionWidget(
+                  left: 16,
+                  bottom: 32,
+                  //TODO: change button
+                  child: TextButton(
+                    onPressed: () {
+                      HapticFeedback.selectionClick();
+                      Provider.of<ShowcaseProvider>(
+                        context,
+                        listen: false,
+                      ).skipTour();
+                      ShowcaseView.get().dismiss();
+                    },
+                    child: const Text(
+                      'Skip',
+                      style: TextStyle(color: CustomTheme.textColor),
+                    ),
+                  ),
+                ),
+                child: Container(
+                  margin: CustomTheme.tileMargin,
+                  child: TextInputField(
+                    controller: gameNameController,
+                    maxLength: MAX_MATCH_NAME_LENGTH,
+                    hintText: loc.game_name,
+                  ),
                 ),
               ),
 
               // Choose ruleset tile
               if (!isEditMode)
-                ChooseTile(
-                  title: loc.ruleset,
-                  trailing: widget.requiredRuleset != null
-                      ? Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            spacing: 8,
-                            children: [
-                              Icon(getRulesetIcon(selectedRuleset!), size: 16),
-                              Text(
-                                translateRulesetToString(
-                                  selectedRuleset!,
-                                  context,
+                Showcase(
+                  key: createGameViewGameRulesetKey,
+                  description: 'By default the ruleset "Winner" is selected, for now on, we`ll use that. For other game types, other rulesets will fit the needs.',
+                  descTextStyle: TextStyle(
+                    overflow: TextOverflow.visible,
+                    color: Colors.black,
+                  ),
+                  targetShapeBorder: const CircleBorder(),
+                  descriptionTextAlign: TextAlign.center,
+                  onBarrierClick: () {
+                    showcaseProvider.markAsSeen(
+                      createGameViewGameRulesetIdentifier,
+                    );
+                  },
+                  onToolTipClick: () {
+                    showcaseProvider.markAsSeen(
+                      createGameViewGameRulesetIdentifier,
+                    );
+                  },
+                  disableMovingAnimation: true,
+                  tooltipPosition: TooltipPosition.bottom,
+                  floatingActionWidget: FloatingActionWidget(
+                    left: 16,
+                    bottom: 32,
+                    //TODO: change button
+                    child: TextButton(
+                      onPressed: () {
+                        HapticFeedback.selectionClick();
+                        Provider.of<ShowcaseProvider>(
+                          context,
+                          listen: false,
+                        ).skipTour();
+                        ShowcaseView.get().dismiss();
+                      },
+                      child: const Text(
+                        'Skip',
+                        style: TextStyle(color: CustomTheme.textColor),
+                      ),
+                    ),
+                  ),
+                  child: ChooseTile(
+                    title: loc.ruleset,
+                    trailing: widget.requiredRuleset != null
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              spacing: 8,
+                              children: [
+                                Icon(
+                                  getRulesetIcon(selectedRuleset!),
+                                  size: 16,
                                 ),
-                                textAlign: TextAlign.right,
-                              ),
-                            ],
-                          ),
-                        )
-                      : getRulesetDropdown(loc),
+                                Text(
+                                  translateRulesetToString(
+                                    selectedRuleset!,
+                                    context,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+                          )
+                        : getRulesetDropdown(loc),
+                  ),
                 ),
 
               // Choose color tile
@@ -242,33 +362,75 @@ class _CreateGameViewState extends State<CreateGameView> {
               // Create/Edit game button
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: BottomAnimatedButton(
-                  buttonText: isEditing ? loc.edit_game : loc.create_game,
-                  sizeRelativeToWidth: 0.95,
-                  buttonType: ButtonType.primary,
-                  onPressed:
-                      gameNameController.text.trim().isNotEmpty &&
-                          selectedRuleset != null &&
-                          selectedColor != null
-                      ? () async {
-                          Game newGame = Game(
-                            name: gameNameController.text.trim(),
-                            description: gameDescriptionController.text.trim(),
-                            ruleset: selectedRuleset!,
-                            color: selectedColor!,
-                          );
-                          if (isEditing) {
-                            await handleGameUpdate(newGame);
-                          } else {
-                            await handleGameCreation(newGame);
+                child: Showcase(
+                  key: createGameViewCreateGameKey,
+                  description: 'Hit the Create Game button once you`re ready. It will only work if a name is provided.',
+                  descTextStyle: TextStyle(
+                    overflow: TextOverflow.visible,
+                    color: Colors.black,
+                  ),
+                  targetShapeBorder: const CircleBorder(),
+                  descriptionTextAlign: TextAlign.center,
+                  onBarrierClick: () {
+                    showcaseProvider.markAsSeen(
+                      createGameViewGameRulesetIdentifier,
+                    );
+                  },
+                  onToolTipClick: () {
+                    showcaseProvider.markAsSeen(
+                      createGameViewGameRulesetIdentifier,
+                    );
+                  },
+                  disableMovingAnimation: true,
+                  tooltipPosition: TooltipPosition.top,
+                  floatingActionWidget: FloatingActionWidget(
+                    left: 16,
+                    bottom: 32,
+                    //TODO: change button
+                    child: TextButton(
+                      onPressed: () {
+                        HapticFeedback.selectionClick();
+                        Provider.of<ShowcaseProvider>(
+                          context,
+                          listen: false,
+                        ).skipTour();
+                        ShowcaseView.get().dismiss();
+                      },
+                      child: const Text(
+                        'Skip',
+                        style: TextStyle(color: CustomTheme.textColor),
+                      ),
+                    ),
+                  ),
+                  child: BottomAnimatedButton(
+                    buttonText: isEditing ? loc.edit_game : loc.create_game,
+                    sizeRelativeToWidth: 0.95,
+                    buttonType: ButtonType.primary,
+                    onPressed:
+                        gameNameController.text.trim().isNotEmpty &&
+                            selectedRuleset != null &&
+                            selectedColor != null
+                        ? () async {
+                            Game newGame = Game(
+                              name: gameNameController.text.trim(),
+                              description: gameDescriptionController.text
+                                  .trim(),
+                              ruleset: selectedRuleset!,
+                              color: selectedColor!,
+                            );
+                            if (isEditing) {
+                              await handleGameUpdate(newGame);
+                            } else {
+                              await handleGameCreation(newGame);
+                            }
+                            widget.onGameChanged.call();
+                            if (context.mounted) {
+                              Navigator.of(context)
+                                  .pop((game: newGame, delete: false));
+                            }
                           }
-                          widget.onGameChanged.call();
-                          if (context.mounted) {
-                            Navigator.of(context)
-                                .pop((game: newGame, delete: false));
-                          }
-                        }
-                      : null,
+                        : null,
+                  ),
                 ),
               ),
             ],

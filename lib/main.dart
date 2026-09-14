@@ -166,7 +166,7 @@ class _TalleeState extends State<Tallee> {
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
       themeMode: ThemeMode.dark,
-      navigatorObservers: [SentryNavigatorObserver()],
+      navigatorObservers: [SentryNavigatorObserver(), RouteObserver()],
       theme: ThemeData(
         // main colors
         primaryColor: CustomTheme.primaryColor,

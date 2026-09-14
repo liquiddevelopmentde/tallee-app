@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -11,13 +13,14 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
+import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/state/game_search_provider.dart';
+import 'package:tallee/state/showcase_provider.dart';
 
 class GameView extends StatefulWidget {
   const GameView({super.key});
@@ -26,9 +29,15 @@ class GameView extends StatefulWidget {
   State<GameView> createState() => _GameViewState();
 }
 
-class _GameViewState extends State<GameView> {
+class _GameViewState extends State<GameView> with RouteAware {
   late final AppDatabase db;
   late final GameSearchProvider searchProvider;
+
+  final GlobalKey gameViewCreateButtonKey = GlobalKey();
+
+  final String gameViewCreateButtonIdentifier = 'game_view_create_gane_button';
+
+  late final ShowcaseProvider showcaseProvider;
 
   bool isLoading = true;
   late List<(Game, int)> gameCounts = [];
@@ -55,7 +64,52 @@ class _GameViewState extends State<GameView> {
     searchProvider = Provider.of<GameSearchProvider>(context, listen: false);
     searchProvider.addListener(handleSearchToggle);
 
+    showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
+
     loadGames();
+
+    handleShowcase(
+      widgetKeys: [gameViewCreateButtonKey],
+      identifiers: [gameViewCreateButtonIdentifier],
+      showcaseProvider: showcaseProvider,
+      context: context,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    print("did change deps");
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didPop() {
+    print("did pop");
+    super.didPop();
+  }
+
+  @override
+  void didPush() {
+    print("did push");
+    super.didPush();
+  }
+
+  @override
+  void didPushNext() {
+    print("did push next");
+    super.didPushNext();
+  }
+
+  @override
+  void didUpdateWidget(covariant GameView oldWidget) {
+    print("did update widget");
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didPopNext() {
+    print("did pop next");
+    super.didPopNext();
   }
 
   @override
@@ -181,22 +235,57 @@ class _GameViewState extends State<GameView> {
           ),
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
-            child: FloatingAnimatedButton(
-              text: loc.create_game,
-              icon: GAME_ICON,
-              showAddBadge: true,
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  adaptivePageRoute(
-                    builder: (context) =>
-                        CreateGameView(onGameChanged: loadGames),
-                  ),
-                );
+            child: Showcase(
+              key: gameViewCreateButtonKey,
+              description: "Click the button below to create a new game",
+              targetShapeBorder: const CircleBorder(),
+              disableBarrierInteraction: true,
+              disposeOnTap: true,
+              onTargetClick: () {
+                navigateToCreateGameView();
+                showcaseProvider.markAsSeen(gameViewCreateButtonIdentifier);
               },
+              disableMovingAnimation: true,
+              tooltipPosition: TooltipPosition.top,
+              floatingActionWidget: FloatingActionWidget(
+                left: 16,
+                bottom: 32,
+                //TODO: change button
+                child: TextButton(
+                  onPressed: () {
+                    HapticFeedback.selectionClick();
+                    Provider.of<ShowcaseProvider>(
+                      context,
+                      listen: false,
+                    ).skipTour();
+                    ShowcaseView.get().dismiss();
+                  },
+                  child: const Text(
+                    'Skip',
+                    style: TextStyle(color: CustomTheme.textColor),
+                  ),
+                ),
+              ),
+              child: FloatingAnimatedButton(
+                text: loc.create_game,
+                icon: GAME_ICON,
+                showAddBadge: true,
+                onPressed: () {
+                  navigateToCreateGameView();
+                },
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void navigateToCreateGameView() {
+    Navigator.push(
+      context,
+      adaptivePageRoute(
+        builder: (context) => CreateGameView(onGameChanged: loadGames),
       ),
     );
   }

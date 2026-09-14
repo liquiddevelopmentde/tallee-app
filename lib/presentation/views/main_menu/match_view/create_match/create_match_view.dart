@@ -151,6 +151,17 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   onTargetClick: () {
                     onChoosingGame();
                     showcaseProvider.markAsSeen('create_match_view_game_tile');
+                    ShowcaseView.get().next();
+                  },
+                  onToolTipClick: () {
+                    onChoosingGame();
+                    showcaseProvider.markAsSeen('create_match_view_game_tile');
+                    ShowcaseView.get().next();
+                  },
+                  onBarrierClick: () {
+                    onChoosingGame();
+                    showcaseProvider.markAsSeen('create_match_view_game_tile');
+                    ShowcaseView.get().next();
                   },
                   disableMovingAnimation: true,
                   tooltipPosition: TooltipPosition.top,
