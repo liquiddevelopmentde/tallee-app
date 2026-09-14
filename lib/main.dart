@@ -16,9 +16,8 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
-import 'package:tallee/presentation/views/onboarding_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_view.dart';
+import 'package:tallee/presentation/views/onboarding_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
@@ -237,7 +236,7 @@ class _TalleeState extends State<Tallee> {
   }
 
   void navigateToHomeAndHandleImport(String? path) {
-    final navigator = navigatorKey.currentState;
+    final navigator = Tallee.navigatorKey.currentState;
     if (navigator == null) return;
 
     navigator.pushReplacement(
