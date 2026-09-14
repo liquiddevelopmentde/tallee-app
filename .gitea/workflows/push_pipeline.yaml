@@ -297,7 +297,9 @@ jobs:
           EOF
 
       - name: Build APK
-        run: flutter build apk --release
+        run: |
+          flutter build apk --release
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/tallee-release.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v3
