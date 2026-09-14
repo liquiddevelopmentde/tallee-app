@@ -33,7 +33,8 @@ class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
   late final MatchSearchProvider searchProvider;
   bool isLoading = true;
-  MatchFilter selectedFilter = SharedPreferencesService.getMatchFilter();
+  MatchFilter selectedFilter =
+      SharedPreferencesService.getMatchFilter() ?? MatchFilter.all;
 
   TextEditingController searchBarController = TextEditingController();
 

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/data/models/models.dart';
 
@@ -49,13 +50,11 @@ class SharedPreferencesService {
     _instance.setString(matchFilterKey, filter.toString());
   }
 
-  static MatchFilter getMatchFilter() {
+  static MatchFilter? getMatchFilter() {
     final filterString = _instance.getString(matchFilterKey);
-    if (filterString == null) return MatchFilter.all;
 
-    return MatchFilter.values.firstWhere(
+    return MatchFilter.values.firstWhereOrNull(
       (filter) => filter.toString() == filterString,
-      orElse: () => MatchFilter.all,
     );
   }
 
