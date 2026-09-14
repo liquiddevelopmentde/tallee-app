@@ -120,6 +120,8 @@
   },
   "error_loading_privacy_policy": "Fehler beim Laden der Datenschutzerklärung",
   "error_reading_file": "Fehler beim Lesen der Datei",
+  "error_report_hint": "Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist",
+  "error_report_info_text": "Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!",
   "error_sending_feedback": "Feedback konnte nicht gesendet werden. Bitte versuche es erneut.",
   "error_while_processing_file_try_again": "Fehler beim Verarbeiten der Datei. Bitte versuche es erneut",
   "expires_in": "Läuft ab in {time}",
@@ -275,6 +277,8 @@
   "qr_code_parsing_error": "Der gescannte Code enthält keine gültigen Match-Daten.",
   "random_color": "Zufällige Farbe",
   "remaining": "verbleibend",
+  "report_error": "Fehler melden",
+  "required": "erforderlich",
   "results": "Ergebnisse",
   "ruleset": "Regelwerk",
   "save_changes": "Änderungen speichern",
@@ -316,10 +320,6 @@
       }
     }
   },
-  "report_error": "Fehler melden",
-  "required": "erforderlich",
-  "error_report_info_text": "Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!",
-  "error_report_hint": "Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist",
   "share_match_title": "Tallee Match teilen",
   "share_token_format_info": "Share-Token bestehen aus 6 alphanumerischen Zeichen.",
   "statistic": "Statistik",

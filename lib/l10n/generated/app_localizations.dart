@@ -128,30 +128,6 @@ abstract class AppLocalizations {
   /// **'All players selected'**
   String get all_players_selected;
 
-  /// No description provided for @report_error.
-  ///
-  /// In en, this message translates to:
-  /// **'Report Error'**
-  String get report_error;
-
-  /// No description provided for @required.
-  ///
-  /// In en, this message translates to:
-  /// **'required'**
-  String get required;
-
-  /// No description provided for @error_report_info_text.
-  ///
-  /// In en, this message translates to:
-  /// **'Reporting an error helps us identify and fix problems in Tallee!'**
-  String get error_report_info_text;
-
-  /// No description provided for @error_report_hint.
-  ///
-  /// In en, this message translates to:
-  /// **'Please describe the steps leading up to the error and how it appeared'**
-  String get error_report_hint;
-
   /// No description provided for @all_time.
   ///
   /// In en, this message translates to:
@@ -673,6 +649,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error reading file'**
   String get error_reading_file;
+
+  /// No description provided for @error_report_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please describe the steps leading up to the error and how it appeared'**
+  String get error_report_hint;
+
+  /// No description provided for @error_report_info_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Reporting an error helps us identify and fix problems in Tallee!'**
+  String get error_report_info_text;
 
   /// No description provided for @error_sending_feedback.
   ///
@@ -1351,6 +1339,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'remaining'**
   String get remaining;
+
+  /// No description provided for @report_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Error'**
+  String get report_error;
+
+  /// No description provided for @required.
+  ///
+  /// In en, this message translates to:
+  /// **'required'**
+  String get required;
 
   /// No description provided for @results.
   ///

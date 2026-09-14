@@ -25,20 +25,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all_players_selected => 'All players selected';
 
   @override
-  String get report_error => 'Report Error';
-
-  @override
-  String get required => 'required';
-
-  @override
-  String get error_report_info_text =>
-      'Reporting an error helps us identify and fix problems in Tallee!';
-
-  @override
-  String get error_report_hint =>
-      'Please describe the steps leading up to the error and how it appeared';
-
-  @override
   String get all_time => 'All time';
 
   @override
@@ -331,6 +317,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_reading_file => 'Error reading file';
+
+  @override
+  String get error_report_hint =>
+      'Please describe the steps leading up to the error and how it appeared';
+
+  @override
+  String get error_report_info_text =>
+      'Reporting an error helps us identify and fix problems in Tallee!';
 
   @override
   String get error_sending_feedback =>
@@ -724,6 +718,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remaining => 'remaining';
+
+  @override
+  String get report_error => 'Report Error';
+
+  @override
+  String get required => 'required';
 
   @override
   String get results => 'Results';

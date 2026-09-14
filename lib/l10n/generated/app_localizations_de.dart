@@ -26,20 +26,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get all_players_selected => 'Alle Spieler:innen ausgewählt';
 
   @override
-  String get report_error => 'Fehler melden';
-
-  @override
-  String get required => 'erforderlich';
-
-  @override
-  String get error_report_info_text =>
-      'Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!';
-
-  @override
-  String get error_report_hint =>
-      'Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist';
-
-  @override
   String get all_time => 'Gesamter Zeitraum';
 
   @override
@@ -335,6 +321,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get error_reading_file => 'Fehler beim Lesen der Datei';
+
+  @override
+  String get error_report_hint =>
+      'Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist';
+
+  @override
+  String get error_report_info_text =>
+      'Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!';
 
   @override
   String get error_sending_feedback =>
@@ -731,6 +725,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get remaining => 'verbleibend';
+
+  @override
+  String get report_error => 'Fehler melden';
+
+  @override
+  String get required => 'erforderlich';
 
   @override
   String get results => 'Ergebnisse';
