@@ -37,7 +37,7 @@ void main() async {
   await SentryFlutter.init(
     (options) {
       // error reporting & feedback is disabled in debugMode
-      options.dsn = kReleaseMode ? dotenv.get('SENTRY_DSN', fallback: '') : '';
+      if (kDebugMode) options.dsn = dotenv.get('SENTRY_DSN', fallback: '');
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
       options.enableLogs = true;

@@ -292,7 +292,7 @@ jobs:
       - name: Create .env file
         run: |
           cat > .env <<EOF
-          PROD_API_URL=${{ secrets.PROD_API_URL }}
+          API_URL_PROD=${{ secrets.API_URL }}
           SENTRY_DSN=${{ secrets.SENTRY_DSN }}
           EOF
 
