@@ -4,6 +4,12 @@ import 'package:tallee/core/enums.dart';
 /// The current environment
 AppEnvironment environment = AppEnvironment.development;
 
+bool get isProdEnv => environment == AppEnvironment.production;
+
+bool get isDevEnv => environment == AppEnvironment.development;
+
+bool get isTestEnv => environment == AppEnvironment.development;
+
 /// URL to the LIQUID website
 const String LIQUID_WEBSITE_URL = 'https://liquid-dev.de/';
 

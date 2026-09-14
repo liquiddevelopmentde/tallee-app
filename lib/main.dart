@@ -37,24 +37,28 @@ void main() async {
   /* Initializing Services */
 
   // Only init in production
-  if (environment == AppEnvironment.production) {
-    await RATE_MY_APP.init();
-  }
+  if (isProdEnv) await RATE_MY_APP.init();
 
   await dotenv.load();
-  if (kDebugMode) HttpOverrides.global = SelfSignedCertHttpOverrides();
+  if (isDevEnv) HttpOverrides.global = SelfSignedCertHttpOverrides();
   await SharedPreferencesService.init();
   await PackageInfoService.init();
   await SentryFlutter.init(
     (options) {
-      // error reporting & feedback is disabled in debugMode
-      if (kDebugMode) options.dsn = dotenv.get('SENTRY_DSN', fallback: '');
+      // error reporting & feedback is disabled in development
+      options.dsn = isProdEnv || isTestEnv
+          ? dotenv.get('SENTRY_DSN', fallback: '')
+          : '';
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
       options.enableLogs = true;
       // Decrease sampleRate in stable to avoid sending too many events
       options.tracesSampleRate = 1.0;
-      options.environment = kReleaseMode ? 'production' : 'development';
+      options.environment = isProdEnv
+          ? 'production'
+          : isTestEnv
+          ? 'testing'
+          : 'development';
     },
     appRunner: () => runApp(
       SentryWidget(

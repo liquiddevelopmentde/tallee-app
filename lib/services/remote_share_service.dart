@@ -86,7 +86,7 @@ class RemoteShareService {
   }
 
   String getApiBaseUrl() {
-    if (kDebugMode) {
+    if (isDevEnv) {
       return Platform.isAndroid
           ? dotenv.get('API_URL_DEV_ANDROID')
           : dotenv.get('API_URL_DEV_IOS');
