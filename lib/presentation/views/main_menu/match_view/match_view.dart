@@ -225,7 +225,8 @@ class _MatchViewState extends State<MatchView> {
 
   /// Triggers the rate dialog if the user has not rated the app yet and the conditions are met.
   Future<void> triggerRateDialog() async {
-    if (!Constants.rateMyApp.shouldOpenDialog) return;
+    if (environment == AppEnvironment.development) return;
+    if (!RATE_MY_APP.shouldOpenDialog) return;
 
     final loc = AppLocalizations.of(context);
     bool? result;
@@ -237,7 +238,7 @@ class _MatchViewState extends State<MatchView> {
     if (result is bool) {
       if (result! && mounted) {
         // Pre rating is good
-        Constants.rateMyApp.showStarRateDialog(context);
+        RATE_MY_APP.showStarRateDialog(context);
       } else if (mounted) {
         // Pre rating is bad
         await Future.delayed(

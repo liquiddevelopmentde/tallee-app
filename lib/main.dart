@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -27,16 +28,23 @@ import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 
 void main() async {
+  environment = kDebugMode
+      ? AppEnvironment.development
+      : AppEnvironment.testing;
+
   SentryWidgetsFlutterBinding.ensureInitialized();
 
-  if (kDebugMode) HttpOverrides.global = SelfSignedCertHttpOverrides();
+  /* Initializing Services */
+
+  // Only init in production
+  if (environment == AppEnvironment.production) {
+    await RATE_MY_APP.init();
+  }
 
   await dotenv.load();
-
-  // Initializing Services
+  if (kDebugMode) HttpOverrides.global = SelfSignedCertHttpOverrides();
   await SharedPreferencesService.init();
   await PackageInfoService.init();
-  await Constants.rateMyApp.init();
   await SentryFlutter.init(
     (options) {
       // error reporting & feedback is disabled in debugMode

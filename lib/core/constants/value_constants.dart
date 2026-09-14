@@ -1,4 +1,8 @@
 import 'package:rate_my_app/rate_my_app.dart';
+import 'package:tallee/core/enums.dart';
+
+/// The current environment
+AppEnvironment environment = AppEnvironment.development;
 
 /// URL to the LIQUID website
 const String LIQUID_WEBSITE_URL = 'https://liquid-dev.de/';
@@ -73,7 +77,8 @@ const String MATCH_FILE_EXTENSION = 'tallee';
 const String APP_DATA_FILE_EXTENSION = 'json';
 
 // Config for rate my app package
-final RateMyApp rateMyApp = RateMyApp(
+// ignore: non_constant_identifier_names
+final RateMyApp RATE_MY_APP = RateMyApp(
   preferencesPrefix: 'rateMyApp_',
   minDays: 28,
   minLaunches: 20,
