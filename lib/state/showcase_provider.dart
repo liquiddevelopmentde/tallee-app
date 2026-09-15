@@ -44,6 +44,7 @@ class ShowcaseProvider extends ChangeNotifier {
   }
 
   void markAsSeen(String screenKey) {
+    print("$screenKey markedAsSeen");
     SharedPreferencesService.setShowcaseSeen(screenKey);
     _shownInCurrentTour.add(screenKey);
     notifyListeners();

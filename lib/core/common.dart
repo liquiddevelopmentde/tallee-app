@@ -97,9 +97,9 @@ void handleShowcase({
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     if (showcaseProvider.shouldShowShowcase(firstIdentifier)) {
-      if (isStart && !showcaseProvider.isTourActive) {
-        showcaseProvider.startTour();
-      }
+      print(
+        "handleShowcase for $firstIdentifier is ${showcaseProvider.shouldShowShowcase(firstIdentifier)}",
+      );
 
       ShowcaseView.get().startShowCase(
         widgetKeys,

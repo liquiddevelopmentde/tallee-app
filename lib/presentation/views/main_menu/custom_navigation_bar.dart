@@ -272,6 +272,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 onTargetClick: () {
                   onTabTapped(2);
                   showcaseProvider.markAsSeen(navbarGameViewIdentifier);
+                  print("seen navbar game view");
                 },
                 tooltipPosition: TooltipPosition.top,
                 child: NavbarItem(
@@ -309,6 +310,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         navbarMatchViewIdentifier,
       );
 
+      print("gameShowcaseDone ${createGameShowcaseDone}");
+
       if (matchTabShowcaseDone) return;
 
       handleShowcase(
@@ -322,7 +325,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         ],
         showcaseProvider: showcaseProvider,
         context: context,
-        //isStart: !createGameShowcaseDone,
       );
     });
   }

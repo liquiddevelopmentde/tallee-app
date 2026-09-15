@@ -149,10 +149,13 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
                 softWrap: true,
               ),
             const Spacer(),
-            BottomAnimatedButton(
-              buttonText: loc.save_match,
-              sizeRelativeToWidth: 0.95,
-              onPressed: saveMatch,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: BottomAnimatedButton(
+                buttonText: loc.save_match,
+                sizeRelativeToWidth: 0.95,
+                onPressed: saveMatch,
+              ),
             ),
           ],
         ),

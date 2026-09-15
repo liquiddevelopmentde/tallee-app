@@ -181,7 +181,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
           // Saving button
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 28),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

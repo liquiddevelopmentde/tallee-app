@@ -220,12 +220,12 @@ class _CreateGameViewState extends State<CreateGameView> {
           maintainBottomViewPadding: true,
           child: Column(
             children: [
-              CustomShowcaseWidget(
-                showcaseKey: createGameViewGameNameKey,
-                identifier: createGameViewGameNameIdentifier,
-                description: 'Set a name for the game here',
-                child: Container(
-                  margin: CustomTheme.tileMargin,
+              Container(
+                margin: CustomTheme.tileMargin,
+                child: CustomShowcaseWidget(
+                  showcaseKey: createGameViewGameNameKey,
+                  identifier: createGameViewGameNameIdentifier,
+                  description: 'Set a name for the game here',
                   child: TextInputField(
                     controller: gameNameController,
                     maxLength: MAX_MATCH_NAME_LENGTH,
@@ -236,39 +236,48 @@ class _CreateGameViewState extends State<CreateGameView> {
 
               // Choose ruleset tile
               if (!isEditMode)
-                CustomShowcaseWidget(
-                  showcaseKey: createGameViewGameRulesetKey,
-                  identifier: createGameViewGameRulesetIdentifier,
-                  description: 'By default the ruleset "Winner" is selected, for now on, we`ll use that. For other game types, other rulesets will fit the needs.',
-                  child: ChooseTile(
-                    title: loc.ruleset,
-                    trailing: widget.requiredRuleset != null
-                        ? Padding(
-                            padding: const EdgeInsets.only(right: 5),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 8,
-                              children: [
-                                Icon(
-                                  getRulesetIcon(selectedRuleset!),
-                                  size: 16,
-                                ),
-                                Text(
-                                  translateRulesetToString(
-                                    selectedRuleset!,
-                                    context,
+                Container(
+                  margin: CustomTheme.tileMargin,
+                  child: CustomShowcaseWidget(
+                    showcaseKey: createGameViewGameRulesetKey,
+                    identifier: createGameViewGameRulesetIdentifier,
+                    description: 'By default the ruleset "Winner" is selected, for now on, we`ll use that. For other game types, other rulesets will fit the needs.',
+                    child: ChooseTile(
+                      title: loc.ruleset,
+                      trailing: widget.requiredRuleset != null
+                          ? Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 8,
+                                children: [
+                                  Icon(
+                                    getRulesetIcon(selectedRuleset!),
+                                    size: 16,
                                   ),
-                                  textAlign: TextAlign.right,
-                                ),
-                              ],
-                            ),
-                          )
-                        : getRulesetDropdown(loc),
+                                  Text(
+                                    translateRulesetToString(
+                                      selectedRuleset!,
+                                      context,
+                                    ),
+                                    textAlign: TextAlign.right,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : getRulesetDropdown(loc),
+                    ),
                   ),
                 ),
 
               // Choose color tile
-              ChooseTile(title: loc.color, trailing: getColorDropdown(loc)),
+              Container(
+                margin: CustomTheme.tileMargin,
+                child: ChooseTile(
+                  title: loc.color,
+                  trailing: getColorDropdown(loc),
+                ),
+              ),
 
               // Description input field
               Container(
@@ -288,7 +297,10 @@ class _CreateGameViewState extends State<CreateGameView> {
 
               // Create/Edit game button
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 20,
+                ),
                 child: CustomShowcaseWidget(
                   showcaseKey: createGameViewCreateGameKey,
                   identifier: createGameViewCreateGameIdentifier,
@@ -302,7 +314,6 @@ class _CreateGameViewState extends State<CreateGameView> {
                             selectedRuleset != null &&
                             selectedColor != null
                         ? () async {
-                            // mark showcase as seen
                             if (showcaseProvider.shouldShowShowcase(
                               createGameViewGameNameIdentifier,
                             )) {

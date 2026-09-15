@@ -40,7 +40,7 @@ class _MatchViewState extends State<MatchView> {
   final String matchViewCreateButtonIdentifier =
       'match_view_create_match_button';
 
-  final String navbarGameViewIdentifier = 'navbar_game_view';
+  final String createGameViewGameNameIdentifier = 'create_game_view_game_name';
 
   late final ShowcaseProvider showcaseProvider;
 
@@ -85,7 +85,9 @@ class _MatchViewState extends State<MatchView> {
 
     loadMatches();
 
-    if (!showcaseProvider.shouldShowShowcase(navbarGameViewIdentifier)) {
+    if (!showcaseProvider.shouldShowShowcase(
+      createGameViewGameNameIdentifier,
+    )) {
       handleShowcase(
         widgetKeys: [matchViewCreateButtonKey],
         identifiers: [matchViewCreateButtonIdentifier],
@@ -231,6 +233,7 @@ class _MatchViewState extends State<MatchView> {
                 showcaseProvider.markAsSeen('match_view_create_match_button');
               },
               tooltipPosition: TooltipPosition.top,
+              targetBorderRadius: BorderRadius.circular(30),
               child: FloatingAnimatedButton(
                 text: loc.create_match,
                 icon: MATCH_ICON,

@@ -1517,7 +1517,7 @@ abstract class AppLocalizations {
   /// No description provided for @send_feedback.
   ///
   /// In en, this message translates to:
-  /// **'Send feedback'**
+  /// **'Send Feedback'**
   String get send_feedback;
 
   /// No description provided for @sending.

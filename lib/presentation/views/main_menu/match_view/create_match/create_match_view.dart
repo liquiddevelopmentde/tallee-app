@@ -173,71 +173,86 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               ),
 
               if (!widget.editMode)
-                CustomShowcaseWidget(
-                  showcaseKey: createMatchViewMatchGameKey,
-                  identifier: createMatchViewMatchGameIdentifier,
-                  description:
-                      'Select the game you created earlier by tapping here',
-                  child: ChooseTile(
-                    title: loc.game,
-                    trailing: selectedGame == null
-                        ? Text(loc.none_group)
-                        : Text(selectedGame!.name),
-                    onPressed: () async => await onChoosingGame(),
+                Container(
+                  margin: CustomTheme.tileMargin,
+                  child: CustomShowcaseWidget(
+                    showcaseKey: createMatchViewMatchGameKey,
+                    identifier: createMatchViewMatchGameIdentifier,
+                    description:
+                        'Select the game you created earlier by tapping here',
+                    child: ChooseTile(
+                      title: loc.game,
+                      trailing: selectedGame == null
+                          ? Text(loc.none_group)
+                          : Text(selectedGame!.name),
+                      onPressed: () async => await onChoosingGame(),
+                    ),
                   ),
                 ),
 
               // Choose the default lives
               if (selectedGame?.ruleset == Ruleset.lives && !widget.editMode)
-                ChooseTile(
-                  title: getLifeLabel(loc, selectedLives),
-                  trailing: CustomStepper(
-                    value: selectedLives,
-                    onChanged: (int newValue) =>
-                        setState(() => selectedLives = newValue),
-                    minValue: 1,
-                    maxValue: 99,
+                Container(
+                  margin: CustomTheme.tileMargin,
+                  child: ChooseTile(
+                    title: getLifeLabel(loc, selectedLives),
+                    trailing: CustomStepper(
+                      value: selectedLives,
+                      onChanged: (int newValue) =>
+                          setState(() => selectedLives = newValue),
+                      minValue: 1,
+                      maxValue: 99,
+                    ),
                   ),
                 ),
 
               // Group selection tile.
-              ChooseTile(
-                title: loc.group,
-                trailing: selectedGroup == null
-                    ? Text(loc.none_group)
-                    : Text(selectedGroup!.name),
-                onPressed: () async => onChoosingGroup(),
+              Container(
+                margin: CustomTheme.tileMargin,
+                child: ChooseTile(
+                  title: loc.group,
+                  trailing: selectedGroup == null
+                      ? Text(loc.none_group)
+                      : Text(selectedGroup!.name),
+                  onPressed: () async => onChoosingGroup(),
+                ),
               ),
 
               // Creation date selection tile.
               if (widget.editMode)
-                ChooseTile(
-                  title: loc.creation_date,
-                  trailing: selectedCreationDate == null
-                      ? Text(loc.today)
-                      : Text(
-                          DateFormat.yMMMd(
-                            Localizations.localeOf(context).toString(),
-                          ).format(selectedCreationDate!),
-                        ),
-                  onPressed: () async => onCreationDateSelection(),
+                Container(
+                  margin: CustomTheme.standardMargin,
+                  child: ChooseTile(
+                    title: loc.creation_date,
+                    trailing: selectedCreationDate == null
+                        ? Text(loc.today)
+                        : Text(
+                            DateFormat.yMMMd(
+                              Localizations.localeOf(context).toString(),
+                            ).format(selectedCreationDate!),
+                          ),
+                    onPressed: () async => onCreationDateSelection(),
+                  ),
                 ),
 
               // Team match switch
               if (!widget.editMode)
-                ChooseTile(
-                  title: loc.team_match,
-                  trailing: CustomAdaptiveSwitch(
-                    padding: const EdgeInsets.symmetric(vertical: -15),
-                    value: isTeamMatch,
-                    onChanged: (value) => setState(() {
-                      isTeamMatch = value;
-                      // Always reset pairs to individual units when team match is active
-                      // or when explicitly disabled, to ensure a clean state.
-                      selectedUnits = selectedPlayers
-                          .map((p) => Team(name: '', members: [p]))
-                          .toList();
-                    }),
+                Container(
+                  margin: CustomTheme.tileMargin,
+                  child: ChooseTile(
+                    title: loc.team_match,
+                    trailing: CustomAdaptiveSwitch(
+                      padding: const EdgeInsets.symmetric(vertical: -15),
+                      value: isTeamMatch,
+                      onChanged: (value) => setState(() {
+                        isTeamMatch = value;
+                        // Always reset pairs to individual units when team match is active
+                        // or when explicitly disabled, to ensure a clean state.
+                        selectedUnits = selectedPlayers
+                            .map((p) => Team(name: '', members: [p]))
+                            .toList();
+                      }),
+                    ),
                   ),
                 ),
 
@@ -246,6 +261,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 showcaseKey: createMatchViewSelectPlayersKey,
                 identifier: createMatchViewSelectPlayersIdentifier,
                 description: 'Select the participating players here, to create new ones, tap the plus icon next to the searchbar after entering a name.',
+                targetPadding: const .only(top: 10),
                 child: Expanded(
                   child: PlayerSelectionWidget.multiple(
                     key: ValueKey(selectedGroup?.id ?? 'no_group'),
@@ -267,7 +283,10 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
               // Create or save button.
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 child: CustomShowcaseWidget(
                   showcaseKey: createMatchViewCreateMatchKey,
                   identifier: createMatchViewCreateMatchIdentifier,

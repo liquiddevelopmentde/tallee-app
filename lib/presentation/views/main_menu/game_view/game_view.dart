@@ -34,7 +34,7 @@ class _GameViewState extends State<GameView> with RouteAware {
 
   final GlobalKey gameViewCreateButtonKey = GlobalKey();
 
-  final String gameViewCreateButtonIdentifier = 'game_view_create_gane_button';
+  final String gameViewCreateButtonIdentifier = 'game_view_create_game_button';
 
   late final ShowcaseProvider showcaseProvider;
 
@@ -208,6 +208,7 @@ class _GameViewState extends State<GameView> with RouteAware {
                 navigateToCreateGameView();
                 showcaseProvider.markAsSeen(gameViewCreateButtonIdentifier);
               },
+              targetBorderRadius: BorderRadius.circular(30),
               child: FloatingAnimatedButton(
                 text: loc.create_game,
                 icon: GAME_ICON,

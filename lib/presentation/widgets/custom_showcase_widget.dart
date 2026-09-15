@@ -17,6 +17,8 @@ class CustomShowcaseWidget extends StatelessWidget {
     this.onTargetClick,
     this.disableBarrierInteraction = false,
     this.disposeOnTap,
+    this.targetBorderRadius,
+    this.targetPadding = EdgeInsets.zero,
   });
 
   final GlobalKey showcaseKey;
@@ -27,6 +29,8 @@ class CustomShowcaseWidget extends StatelessWidget {
   final VoidCallback? onTargetClick;
   final bool disableBarrierInteraction;
   final bool? disposeOnTap;
+  final BorderRadius? targetBorderRadius;
+  final EdgeInsets targetPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -38,22 +42,25 @@ class CustomShowcaseWidget extends StatelessWidget {
     return Showcase(
       key: showcaseKey,
       description: description,
-      targetShapeBorder: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-      ),
+      targetPadding: targetPadding,
+      targetBorderRadius: targetBorderRadius ?? BorderRadius.circular(12),
       descTextStyle: const TextStyle(
         overflow: TextOverflow.visible,
         color: Colors.black,
       ),
       descriptionTextAlign: TextAlign.center,
+      /*
       onBarrierClick: disableBarrierInteraction
           ? null
           : () {
               showcaseProvider.markAsSeen(identifier);
             },
+       */
+      /*
       onToolTipClick: () {
         showcaseProvider.markAsSeen(identifier);
       },
+       */
       scaleAnimationDuration: const Duration(milliseconds: 300),
       scaleAnimationCurve: Curves.easeInOut,
       onTargetClick: onTargetClick,

@@ -111,6 +111,16 @@ class _SettingsViewState extends State<SettingsView> {
                     onPressed: null,
                   ),
                   SettingsListTile(
+                    title: loc.show_app_walkthrough,
+                    icon: Icons.explore,
+                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onPressed: () {
+                      SharedPreferencesService.setTourSkipped(false);
+                      SharedPreferencesService.setTourCompleted(false);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  SettingsListTile(
                     title: loc.data_backup,
                     icon: Icons.storage_rounded,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -123,16 +133,6 @@ class _SettingsViewState extends State<SettingsView> {
                           builder: (context) => const DataManagementView(),
                         ),
                       );
-                    },
-                  ),
-                  SettingsListTile(
-                    title: loc.show_app_walkthrough,
-                    icon: Icons.explore,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () {
-                      SharedPreferencesService.setTourSkipped(false);
-                      SharedPreferencesService.setTourCompleted(false);
-                      Navigator.of(context).pop();
                     },
                   ),
                   Padding(

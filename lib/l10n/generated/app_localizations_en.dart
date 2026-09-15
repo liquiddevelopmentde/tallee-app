@@ -812,7 +812,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Send this code to a person who also has Tallee to share the current match.';
 
   @override
-  String get send_feedback => 'Send feedback';
+  String get send_feedback => 'Send Feedback';
 
   @override
   String get sending => 'Sending...';

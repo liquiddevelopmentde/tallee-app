@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -83,6 +84,7 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
         showcaseKey: selectWinnerWidgetListviewKey,
         identifier: selectWinnerWidgetListviewIdentifier,
         description: 'To track your winners, just select them here and click the save button below.',
+        tooltipPosition: TooltipPosition.top,
         child: useTeamLogic
             ? ListView.builder(
                 itemCount: allTeams.length,
