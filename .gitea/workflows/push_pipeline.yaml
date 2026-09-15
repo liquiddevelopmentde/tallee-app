@@ -30,6 +30,7 @@ jobs:
         uses: stikkyapp/update-pubspec-version@v2
         with:
           strategy: 'patch'
+          bump-build: true
           path: './pubspec.yaml'
 
       - name: Commit version update
