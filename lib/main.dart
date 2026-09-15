@@ -49,9 +49,7 @@ void main() async {
   await SentryFlutter.init(
     (options) {
       // error reporting & feedback is disabled in development
-      options.dsn = IS_PROD_ENV || IS_TEST_ENV
-          ? dotenv.get('SENTRY_DSN', fallback: '')
-          : '';
+      options.dsn = !IS_DEV_ENV ? dotenv.get('SENTRY_DSN', fallback: '') : '';
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
       options.enableLogs = true;
