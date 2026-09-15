@@ -1,10 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -16,6 +14,7 @@ import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -235,39 +234,16 @@ class _GameViewState extends State<GameView> with RouteAware {
           ),
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
-            child: Showcase(
-              key: gameViewCreateButtonKey,
+            child: CustomShowcaseWidget(
+              showcaseKey: gameViewCreateButtonKey,
+              identifier: gameViewCreateButtonIdentifier,
               description: 'Click the button below to create a new game',
-              targetShapeBorder: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
               disableBarrierInteraction: true,
               disposeOnTap: true,
               onTargetClick: () {
                 navigateToCreateGameView();
                 showcaseProvider.markAsSeen(gameViewCreateButtonIdentifier);
               },
-              disableMovingAnimation: true,
-              tooltipPosition: TooltipPosition.top,
-              floatingActionWidget: FloatingActionWidget(
-                left: 16,
-                bottom: 32,
-                //TODO: change button
-                child: TextButton(
-                  onPressed: () {
-                    HapticFeedback.selectionClick();
-                    Provider.of<ShowcaseProvider>(
-                      context,
-                      listen: false,
-                    ).skipTour();
-                    ShowcaseView.get().dismiss();
-                  },
-                  child: const Text(
-                    'Skip',
-                    style: TextStyle(color: CustomTheme.textColor),
-                  ),
-                ),
-              ),
               child: FloatingAnimatedButton(
                 text: loc.create_game,
                 icon: GAME_ICON,

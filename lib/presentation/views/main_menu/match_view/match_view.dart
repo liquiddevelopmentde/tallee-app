@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -17,6 +16,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/crea
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -37,7 +37,6 @@ class _MatchViewState extends State<MatchView> {
   bool isLoading = true;
 
   final GlobalKey matchViewCreateButtonKey = GlobalKey();
-
   final String matchViewCreateButtonIdentifier =
       'match_view_create_match_button';
 
@@ -220,40 +219,18 @@ class _MatchViewState extends State<MatchView> {
           ),
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
-            child: Showcase(
-              key: matchViewCreateButtonKey,
+            child: CustomShowcaseWidget(
+              showcaseKey: matchViewCreateButtonKey,
+              identifier: matchViewCreateButtonIdentifier,
               description:
                   "Let's track your first match, click the button below.",
-              targetShapeBorder: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
               disableBarrierInteraction: true,
               disposeOnTap: true,
               onTargetClick: () {
                 navigateToCreateMatchView();
                 showcaseProvider.markAsSeen('match_view_create_match_button');
               },
-              disableMovingAnimation: true,
               tooltipPosition: TooltipPosition.top,
-              floatingActionWidget: FloatingActionWidget(
-                left: 16,
-                bottom: 32,
-                //TODO: change button
-                child: TextButton(
-                  onPressed: () {
-                    HapticFeedback.selectionClick();
-                    Provider.of<ShowcaseProvider>(
-                      context,
-                      listen: false,
-                    ).skipTour();
-                    ShowcaseView.get().dismiss();
-                  },
-                  child: const Text(
-                    'Skip',
-                    style: TextStyle(color: CustomTheme.textColor),
-                  ),
-                ),
-              ),
               child: FloatingAnimatedButton(
                 text: loc.create_match,
                 icon: MATCH_ICON,

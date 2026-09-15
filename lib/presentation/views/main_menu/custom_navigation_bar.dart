@@ -26,6 +26,7 @@ import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
 import 'package:tallee/presentation/views/news/news_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
@@ -233,47 +234,18 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Showcase(
-                key: navbarMatchViewKey,
+              CustomShowcaseWidget(
+                showcaseKey: navbarMatchViewKey,
+                identifier: navbarMatchViewIdentifier,
                 description:
                     'Now that we created a game, we can head to the match tab.',
-                descTextStyle: const TextStyle(
-                  overflow: TextOverflow.visible,
-                  color: Colors.black,
-                ),
-                descriptionTextAlign: TextAlign.center,
-                targetShapeBorder: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                ),
                 disableBarrierInteraction: true,
                 disposeOnTap: true,
                 onTargetClick: () {
                   onTabTapped(0);
-                  print('marked navbarmatchview as seen todo');
                   showcaseProvider.markAsSeen(navbarMatchViewIdentifier);
-                  print('marked navbarmatchview as seen done');
                 },
-                disableMovingAnimation: true,
                 tooltipPosition: TooltipPosition.top,
-                floatingActionWidget: FloatingActionWidget(
-                  left: 16,
-                  bottom: 32,
-                  //TODO: change button
-                  child: TextButton(
-                    onPressed: () {
-                      HapticFeedback.selectionClick();
-                      Provider.of<ShowcaseProvider>(
-                        context,
-                        listen: false,
-                      ).skipTour();
-                      ShowcaseView.get().dismiss();
-                    },
-                    child: const Text(
-                      'Skip',
-                      style: TextStyle(color: CustomTheme.textColor),
-                    ),
-                  ),
-                ),
                 child: NavbarItem(
                   index: 0,
                   isSelected: currentIndex == 0,
@@ -289,44 +261,17 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 label: loc.groups,
                 onTabTapped: onTabTapped,
               ),
-              Showcase(
-                key: navbarGameViewKey,
+              CustomShowcaseWidget(
+                showcaseKey: navbarGameViewKey,
+                identifier: navbarGameViewIdentifier,
                 description: "Each match needs a specific game it belongs to, let's start by heading to the game tab.",
-                descTextStyle: const TextStyle(
-                  overflow: TextOverflow.visible,
-                  color: Colors.black,
-                ),
-                descriptionTextAlign: TextAlign.center,
-                targetShapeBorder: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                ),
                 disableBarrierInteraction: true,
                 disposeOnTap: true,
                 onTargetClick: () {
                   onTabTapped(2);
                   showcaseProvider.markAsSeen(navbarGameViewIdentifier);
                 },
-                disableMovingAnimation: true,
                 tooltipPosition: TooltipPosition.top,
-                floatingActionWidget: FloatingActionWidget(
-                  left: 16,
-                  bottom: 32,
-                  //TODO: change button
-                  child: TextButton(
-                    onPressed: () {
-                      HapticFeedback.selectionClick();
-                      Provider.of<ShowcaseProvider>(
-                        context,
-                        listen: false,
-                      ).skipTour();
-                      ShowcaseView.get().dismiss();
-                    },
-                    child: const Text(
-                      'Skip',
-                      style: TextStyle(color: CustomTheme.textColor),
-                    ),
-                  ),
-                ),
                 child: NavbarItem(
                   index: 2,
                   isSelected: currentIndex == 2,

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
@@ -71,41 +69,10 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Showcase(
-        key: selectWinnerWidgetListviewKey,
+      child: CustomShowcaseWidget(
+        showcaseKey: selectWinnerWidgetListviewKey,
+        identifier: selectWinnerWidgetListviewIdentifier,
         description: 'To track your winners, just select them here and click the save button below.',
-        targetShapeBorder: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-        descTextStyle: const TextStyle(
-          overflow: TextOverflow.visible,
-          color: Colors.black,
-        ),
-        descriptionTextAlign: TextAlign.center,
-        onBarrierClick: () {
-          showcaseProvider.markAsSeen(selectWinnerWidgetListviewIdentifier);
-        },
-        onToolTipClick: () {
-          showcaseProvider.markAsSeen(selectWinnerWidgetListviewIdentifier);
-        },
-        disableMovingAnimation: true,
-        tooltipPosition: TooltipPosition.top,
-        floatingActionWidget: FloatingActionWidget(
-          left: 16,
-          bottom: 32,
-          //TODO: change button
-          child: TextButton(
-            onPressed: () {
-              HapticFeedback.selectionClick();
-              Provider.of<ShowcaseProvider>(context, listen: false).skipTour();
-              ShowcaseView.get().dismiss();
-            },
-            child: const Text(
-              'Skip',
-              style: TextStyle(color: CustomTheme.textColor),
-            ),
-          ),
-        ),
         child: useTeamLogic
             ? ListView.builder(
                 itemCount: allTeams.length,

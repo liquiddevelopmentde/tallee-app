@@ -103,7 +103,7 @@ void handleShowcase({
 
       ShowcaseView.get().startShowCase(
         widgetKeys,
-        delay: const Duration(milliseconds: 750),
+        delay: const Duration(milliseconds: 550),
       );
     }
   });

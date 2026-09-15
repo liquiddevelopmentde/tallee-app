@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -14,6 +13,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
@@ -220,39 +220,10 @@ class _CreateGameViewState extends State<CreateGameView> {
           maintainBottomViewPadding: true,
           child: Column(
             children: [
-              Showcase(
-                key: createGameViewGameNameKey,
+              CustomShowcaseWidget(
+                showcaseKey: createGameViewGameNameKey,
+                identifier: createGameViewGameNameIdentifier,
                 description: 'Set a name for the game here',
-                targetShapeBorder: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                ),
-                onBarrierClick: () {
-                  showcaseProvider.markAsSeen(createGameViewGameNameIdentifier);
-                },
-                onToolTipClick: () {
-                  showcaseProvider.markAsSeen(createGameViewGameNameIdentifier);
-                },
-                disableMovingAnimation: true,
-                tooltipPosition: TooltipPosition.bottom,
-                floatingActionWidget: FloatingActionWidget(
-                  left: 16,
-                  bottom: 32,
-                  //TODO: change button
-                  child: TextButton(
-                    onPressed: () {
-                      HapticFeedback.selectionClick();
-                      Provider.of<ShowcaseProvider>(
-                        context,
-                        listen: false,
-                      ).skipTour();
-                      ShowcaseView.get().dismiss();
-                    },
-                    child: const Text(
-                      'Skip',
-                      style: TextStyle(color: CustomTheme.textColor),
-                    ),
-                  ),
-                ),
                 child: Container(
                   margin: CustomTheme.tileMargin,
                   child: TextInputField(
@@ -265,48 +236,10 @@ class _CreateGameViewState extends State<CreateGameView> {
 
               // Choose ruleset tile
               if (!isEditMode)
-                Showcase(
-                  key: createGameViewGameRulesetKey,
+                CustomShowcaseWidget(
+                  showcaseKey: createGameViewGameRulesetKey,
+                  identifier: createGameViewGameRulesetIdentifier,
                   description: 'By default the ruleset "Winner" is selected, for now on, we`ll use that. For other game types, other rulesets will fit the needs.',
-                  descTextStyle: const TextStyle(
-                    overflow: TextOverflow.visible,
-                    color: Colors.black,
-                  ),
-                  targetShapeBorder: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                  ),
-                  descriptionTextAlign: TextAlign.center,
-                  onBarrierClick: () {
-                    showcaseProvider.markAsSeen(
-                      createGameViewGameRulesetIdentifier,
-                    );
-                  },
-                  onToolTipClick: () {
-                    showcaseProvider.markAsSeen(
-                      createGameViewGameRulesetIdentifier,
-                    );
-                  },
-                  disableMovingAnimation: true,
-                  tooltipPosition: TooltipPosition.bottom,
-                  floatingActionWidget: FloatingActionWidget(
-                    left: 16,
-                    bottom: 32,
-                    //TODO: change button
-                    child: TextButton(
-                      onPressed: () {
-                        HapticFeedback.selectionClick();
-                        Provider.of<ShowcaseProvider>(
-                          context,
-                          listen: false,
-                        ).skipTour();
-                        ShowcaseView.get().dismiss();
-                      },
-                      child: const Text(
-                        'Skip',
-                        style: TextStyle(color: CustomTheme.textColor),
-                      ),
-                    ),
-                  ),
                   child: ChooseTile(
                     title: loc.ruleset,
                     trailing: widget.requiredRuleset != null
@@ -356,48 +289,10 @@ class _CreateGameViewState extends State<CreateGameView> {
               // Create/Edit game button
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: Showcase(
-                  key: createGameViewCreateGameKey,
+                child: CustomShowcaseWidget(
+                  showcaseKey: createGameViewCreateGameKey,
+                  identifier: createGameViewCreateGameIdentifier,
                   description: 'Hit the Create Game button once you`re ready. It will only work if a name is provided.',
-                  descTextStyle: const TextStyle(
-                    overflow: TextOverflow.visible,
-                    color: Colors.black,
-                  ),
-                  targetShapeBorder: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                  ),
-                  descriptionTextAlign: TextAlign.center,
-                  onBarrierClick: () {
-                    showcaseProvider.markAsSeen(
-                      createGameViewGameRulesetIdentifier,
-                    );
-                  },
-                  onToolTipClick: () {
-                    showcaseProvider.markAsSeen(
-                      createGameViewGameRulesetIdentifier,
-                    );
-                  },
-                  disableMovingAnimation: true,
-                  tooltipPosition: TooltipPosition.top,
-                  floatingActionWidget: FloatingActionWidget(
-                    left: 16,
-                    bottom: 32,
-                    //TODO: change button
-                    child: TextButton(
-                      onPressed: () {
-                        HapticFeedback.selectionClick();
-                        Provider.of<ShowcaseProvider>(
-                          context,
-                          listen: false,
-                        ).skipTour();
-                        ShowcaseView.get().dismiss();
-                      },
-                      child: const Text(
-                        'Skip',
-                        style: TextStyle(color: CustomTheme.textColor),
-                      ),
-                    ),
-                  ),
                   child: BottomAnimatedButton(
                     buttonText: isEditing ? loc.edit_game : loc.create_game,
                     sizeRelativeToWidth: 0.95,
