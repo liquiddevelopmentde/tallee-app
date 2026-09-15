@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
@@ -38,6 +39,7 @@ void main() async {
   await dotenv.load();
   await SharedPreferencesService.init();
   await PackageInfoService.init();
+  ShowcaseView.register(blurValue: 0.5);
   await SentryFlutter.init(
     (options) {
       // error reporting & feedback is disabled in debugMode

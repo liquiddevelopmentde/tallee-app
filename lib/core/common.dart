@@ -94,8 +94,6 @@ void handleShowcase({
   );
   if (identifiers.isEmpty) return;
 
-  ShowcaseView.register(blurValue: 0.5); //onFinish: onFinish
-
   final String firstIdentifier = identifiers.first;
 
   WidgetsBinding.instance.addPostFrameCallback((_) {

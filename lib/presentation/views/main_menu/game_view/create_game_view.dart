@@ -90,7 +90,6 @@ class _CreateGameViewState extends State<CreateGameView> {
 
     showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
 
-    /*
     handleShowcase(
       widgetKeys: [
         createGameViewGameNameKey,
@@ -105,17 +104,6 @@ class _CreateGameViewState extends State<CreateGameView> {
       showcaseProvider: showcaseProvider,
       context: context,
     );
-     */
-
-    ShowcaseView.register(blurValue: 0.5);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ShowcaseView.get().startShowCase([
-        createGameViewGameNameKey,
-        if (!isEditMode) createGameViewGameRulesetKey,
-        createGameViewCreateGameKey,
-      ]);
-    });
   }
 
   @override
