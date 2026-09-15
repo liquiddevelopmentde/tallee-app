@@ -43,7 +43,9 @@ void main() async {
   await SentryFlutter.init(
     (options) {
       // error reporting & feedback is disabled in debugMode
-      options.dsn = kReleaseMode ? dotenv.get('SENTRY_DSN', fallback: '') : '';
+      options.dsn = kReleaseMode
+          ? dotenv.get('SENTRY_DSN', fallback: '')
+          : dotenv.get('SENTRY_DSN', fallback: '');
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
       options.enableLogs = true;
@@ -55,8 +57,11 @@ void main() async {
       options.enableAutoSessionTracking = false;
 
       options.beforeSend = (event, hint) {
-        if (event.level == SentryLevel.error ||
-            event.level == SentryLevel.fatal) {
+        final skipSnackBar = hint.get('skipSnackBar') == true;
+
+        if (!skipSnackBar &&
+            (event.level == SentryLevel.error ||
+                event.level == SentryLevel.fatal)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final context = Tallee.navigatorKey.currentContext;
             if (context != null) {
