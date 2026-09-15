@@ -236,8 +236,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               Showcase(
                 key: navbarMatchViewKey,
                 description:
-                    "Now that we created a game, we can head to the match tab.",
-                descTextStyle: TextStyle(
+                    'Now that we created a game, we can head to the match tab.',
+                descTextStyle: const TextStyle(
                   overflow: TextOverflow.visible,
                   color: Colors.black,
                 ),
@@ -249,9 +249,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 disposeOnTap: true,
                 onTargetClick: () {
                   onTabTapped(0);
-                  print("marked navbarmatchview as seen todo");
+                  print('marked navbarmatchview as seen todo');
                   showcaseProvider.markAsSeen(navbarMatchViewIdentifier);
-                  print("marked navbarmatchview as seen done");
+                  print('marked navbarmatchview as seen done');
                 },
                 disableMovingAnimation: true,
                 tooltipPosition: TooltipPosition.top,
@@ -292,7 +292,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               Showcase(
                 key: navbarGameViewKey,
                 description: "Each match needs a specific game it belongs to, let's start by heading to the game tab.",
-                descTextStyle: TextStyle(
+                descTextStyle: const TextStyle(
                   overflow: TextOverflow.visible,
                   color: Colors.black,
                 ),

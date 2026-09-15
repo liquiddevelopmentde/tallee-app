@@ -167,7 +167,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   targetShapeBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
-                  descTextStyle: TextStyle(
+                  descTextStyle: const TextStyle(
                     overflow: TextOverflow.visible,
                     color: Colors.black,
                   ),
@@ -219,7 +219,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   targetShapeBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
-                  descTextStyle: TextStyle(
+                  descTextStyle: const TextStyle(
                     overflow: TextOverflow.visible,
                     color: Colors.black,
                   ),
@@ -325,7 +325,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 targetShapeBorder: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
-                descTextStyle: TextStyle(
+                descTextStyle: const TextStyle(
                   overflow: TextOverflow.visible,
                   color: Colors.black,
                 ),
@@ -389,7 +389,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   targetShapeBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
-                  descTextStyle: TextStyle(
+                  descTextStyle: const TextStyle(
                     overflow: TextOverflow.visible,
                     color: Colors.black,
                   ),

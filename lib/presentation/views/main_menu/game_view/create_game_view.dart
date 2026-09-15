@@ -268,7 +268,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                 Showcase(
                   key: createGameViewGameRulesetKey,
                   description: 'By default the ruleset "Winner" is selected, for now on, we`ll use that. For other game types, other rulesets will fit the needs.',
-                  descTextStyle: TextStyle(
+                  descTextStyle: const TextStyle(
                     overflow: TextOverflow.visible,
                     color: Colors.black,
                   ),
@@ -359,7 +359,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                 child: Showcase(
                   key: createGameViewCreateGameKey,
                   description: 'Hit the Create Game button once you`re ready. It will only work if a name is provided.',
-                  descTextStyle: TextStyle(
+                  descTextStyle: const TextStyle(
                     overflow: TextOverflow.visible,
                     color: Colors.black,
                   ),

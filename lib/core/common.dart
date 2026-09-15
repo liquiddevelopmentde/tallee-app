@@ -101,7 +101,10 @@ void handleShowcase({
         showcaseProvider.startTour();
       }
 
-      ShowcaseView.get().startShowCase(widgetKeys);
+      ShowcaseView.get().startShowCase(
+        widgetKeys,
+        delay: const Duration(milliseconds: 750),
+      );
     }
   });
 }

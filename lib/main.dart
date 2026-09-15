@@ -39,7 +39,7 @@ void main() async {
   await dotenv.load();
   await SharedPreferencesService.init();
   await PackageInfoService.init();
-  ShowcaseView.register(blurValue: 0.5);
+  ShowcaseView.register(blurValue: 0.4);
   await SentryFlutter.init(
     (options) {
       // error reporting & feedback is disabled in debugMode

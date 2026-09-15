@@ -77,7 +77,7 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
         targetShapeBorder: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
-        descTextStyle: TextStyle(
+        descTextStyle: const TextStyle(
           overflow: TextOverflow.visible,
           color: Colors.black,
         ),
