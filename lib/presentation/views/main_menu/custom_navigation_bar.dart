@@ -450,6 +450,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         'example-stats',
         callback: () async {
           final db = Provider.of<AppDatabase>(context, listen: false);
+
           final stat1 = Statistic(
             type: StatisticType.totalWins,
             color: AppColor.orange,
@@ -457,21 +458,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
             scopes: [StatisticScope.allPlayers],
           );
           final stat2 = Statistic(
-            type: StatisticType.averageScore,
-            color: AppColor.pink,
-            displayCount: 5,
-            scopes: [StatisticScope.allPlayers],
-          );
-          final stat3 = Statistic(
-            type: StatisticType.averageScore,
-            color: AppColor.green,
-            displayCount: 8,
+            type: StatisticType.totalMatches,
+            color: AppColor.orange,
+            displayCount: 3,
             scopes: [StatisticScope.allPlayers],
           );
 
-          await db.statisticDao.addStatisticsAsList(
-            statistics: [stat1, stat2, stat3],
-          );
+          await db.statisticDao.addStatisticsAsList(statistics: [stat1, stat2]);
         },
       );
     });
