@@ -224,7 +224,9 @@ class _MatchViewState extends State<MatchView> {
               key: matchViewCreateButtonKey,
               description:
                   "Let's track your first match, click the button below.",
-              targetShapeBorder: const CircleBorder(),
+              targetShapeBorder: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
               disableBarrierInteraction: true,
               disposeOnTap: true,
               onTargetClick: () {

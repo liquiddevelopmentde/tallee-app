@@ -242,7 +242,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                   color: Colors.black,
                 ),
                 descriptionTextAlign: TextAlign.center,
-                targetShapeBorder: const CircleBorder(),
+                targetShapeBorder: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
                 disableBarrierInteraction: true,
                 disposeOnTap: true,
                 onTargetClick: () {
@@ -295,7 +297,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                   color: Colors.black,
                 ),
                 descriptionTextAlign: TextAlign.center,
-                targetShapeBorder: const CircleBorder(),
+                targetShapeBorder: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
                 disableBarrierInteraction: true,
                 disposeOnTap: true,
                 onTargetClick: () {

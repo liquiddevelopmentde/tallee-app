@@ -85,16 +85,7 @@ class _CreateGameViewState extends State<CreateGameView> {
       selectedRuleset = widget.requiredRuleset;
     }
 
-    gameNameController.addListener(
-      () => setState(() {
-        // mark as seen once user starts typing
-        if (!showcaseProvider.hasSeen(createGameViewGameNameIdentifier)) {
-          showcaseProvider.markAsSeen(createGameViewGameNameIdentifier);
-          showcaseProvider.markAsSeen(createGameViewGameRulesetIdentifier);
-          showcaseProvider.markAsSeen(createGameViewCreateGameIdentifier);
-        }
-      }),
-    );
+    gameNameController.addListener(() => setState(() {}));
     gameDescriptionController.addListener(() => setState(() {}));
 
     if (!isEditMode) {
@@ -232,7 +223,9 @@ class _CreateGameViewState extends State<CreateGameView> {
               Showcase(
                 key: createGameViewGameNameKey,
                 description: 'Set a name for the game here',
-                targetShapeBorder: const CircleBorder(),
+                targetShapeBorder: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
                 onBarrierClick: () {
                   showcaseProvider.markAsSeen(createGameViewGameNameIdentifier);
                 },
@@ -279,7 +272,9 @@ class _CreateGameViewState extends State<CreateGameView> {
                     overflow: TextOverflow.visible,
                     color: Colors.black,
                   ),
-                  targetShapeBorder: const CircleBorder(),
+                  targetShapeBorder: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
                   descriptionTextAlign: TextAlign.center,
                   onBarrierClick: () {
                     showcaseProvider.markAsSeen(
@@ -368,7 +363,9 @@ class _CreateGameViewState extends State<CreateGameView> {
                     overflow: TextOverflow.visible,
                     color: Colors.black,
                   ),
-                  targetShapeBorder: const CircleBorder(),
+                  targetShapeBorder: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
                   descriptionTextAlign: TextAlign.center,
                   onBarrierClick: () {
                     showcaseProvider.markAsSeen(
@@ -410,6 +407,21 @@ class _CreateGameViewState extends State<CreateGameView> {
                             selectedRuleset != null &&
                             selectedColor != null
                         ? () async {
+                            // mark showcase as seen
+                            if (!showcaseProvider.hasSeen(
+                              createGameViewGameNameIdentifier,
+                            )) {
+                              showcaseProvider.markAsSeen(
+                                createGameViewGameNameIdentifier,
+                              );
+                              showcaseProvider.markAsSeen(
+                                createGameViewGameRulesetIdentifier,
+                              );
+                              showcaseProvider.markAsSeen(
+                                createGameViewCreateGameIdentifier,
+                              );
+                            }
+
                             Game newGame = Game(
                               name: gameNameController.text.trim(),
                               description: gameDescriptionController.text

@@ -164,7 +164,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 child: Showcase(
                   key: createMatchViewMatchNameKey,
                   description: 'Give your match a name',
-                  targetShapeBorder: const CircleBorder(),
+                  targetShapeBorder: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
                   descTextStyle: TextStyle(
                     overflow: TextOverflow.visible,
                     color: Colors.black,
@@ -214,7 +216,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   key: createMatchViewMatchGameKey,
                   description:
                       'Select the game you created earlier by tapping here',
-                  targetShapeBorder: const CircleBorder(),
+                  targetShapeBorder: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
                   descTextStyle: TextStyle(
                     overflow: TextOverflow.visible,
                     color: Colors.black,
@@ -318,7 +322,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               Showcase(
                 key: createMatchViewSelectPlayersKey,
                 description: 'Select the participating players here, to create new ones, tap the plus icon next to the searchbar after entering a name.',
-                targetShapeBorder: const CircleBorder(),
+                targetShapeBorder: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
                 descTextStyle: TextStyle(
                   overflow: TextOverflow.visible,
                   color: Colors.black,
@@ -380,7 +386,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 child: Showcase(
                   key: createMatchViewCreateMatchKey,
                   description: 'Once you`ve dialed all the settings in, click here to create the match.',
-                  targetShapeBorder: const CircleBorder(),
+                  targetShapeBorder: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
                   descTextStyle: TextStyle(
                     overflow: TextOverflow.visible,
                     color: Colors.black,
@@ -705,6 +713,14 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// If a match is being edited, updates the match in the database.
   /// Otherwise, creates a new match and navigates to the MatchResultView.
   void submitButtonNavigation(BuildContext context) async {
+    // mark showcase as seen
+    if (!showcaseProvider.hasSeen(createMatchViewMatchNameIdentifier)) {
+      showcaseProvider.markAsSeen(createMatchViewMatchNameIdentifier);
+      showcaseProvider.markAsSeen(createMatchViewMatchGameIdentifier);
+      showcaseProvider.markAsSeen(createMatchViewSelectPlayersIdentifier);
+      showcaseProvider.markAsSeen(createMatchViewCreateMatchIdentifier);
+    }
+
     if (widget.editMode) {
       await updateMatch();
       if (context.mounted) {

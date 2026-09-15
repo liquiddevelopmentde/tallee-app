@@ -238,7 +238,9 @@ class _GameViewState extends State<GameView> with RouteAware {
             child: Showcase(
               key: gameViewCreateButtonKey,
               description: "Click the button below to create a new game",
-              targetShapeBorder: const CircleBorder(),
+              targetShapeBorder: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
               disableBarrierInteraction: true,
               disposeOnTap: true,
               onTargetClick: () {
