@@ -1,6 +1,6 @@
 name: Enhancement
 about: Erstelle ein Enhancement-Ticket
-labels: 'Task/Enhancement'
+labels: 'Type/Enhancement'
 title: ''
 body:
   - type: textarea
