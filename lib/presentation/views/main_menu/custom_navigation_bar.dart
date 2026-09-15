@@ -84,10 +84,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       routeObserver.subscribe(this, route);
     }
 
-    bool createGameShowcaseDone = showcaseProvider.hasSeen(
-      'create_game_view_game_name',
-    );
-
     showTabShowcase();
     super.didChangeDependencies();
   }
@@ -355,12 +351,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     );
 
     bool matchTabShowcaseDone = showcaseProvider.hasSeen('navbar_match_view');
-
-    print("createGameShowcaseDone");
-    print(createGameShowcaseDone);
-
-    print("MatchTabShowcaseDone");
-    print(matchTabShowcaseDone);
 
     if (matchTabShowcaseDone) return;
 
