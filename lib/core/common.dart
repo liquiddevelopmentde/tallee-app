@@ -85,7 +85,6 @@ void handleShowcase({
   required List<String> identifiers,
   required BuildContext context,
   required ShowcaseProvider showcaseProvider,
-  //Function()? onFinish,
   bool isStart = false,
 }) {
   assert(

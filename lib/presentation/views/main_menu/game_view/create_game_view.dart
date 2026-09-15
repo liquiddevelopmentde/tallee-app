@@ -85,25 +85,36 @@ class _CreateGameViewState extends State<CreateGameView> {
       selectedRuleset = widget.requiredRuleset;
     }
 
-    gameNameController.addListener(() => setState(() {}));
+    gameNameController.addListener(
+      () => setState(() {
+        // mark as seen once user starts typing
+        if (!showcaseProvider.hasSeen(createGameViewGameNameIdentifier)) {
+          showcaseProvider.markAsSeen(createGameViewGameNameIdentifier);
+          showcaseProvider.markAsSeen(createGameViewGameRulesetIdentifier);
+          showcaseProvider.markAsSeen(createGameViewCreateGameIdentifier);
+        }
+      }),
+    );
     gameDescriptionController.addListener(() => setState(() {}));
 
-    showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
+    if (!isEditMode) {
+      showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
 
-    handleShowcase(
-      widgetKeys: [
-        createGameViewGameNameKey,
-        if (!isEditMode) createGameViewGameRulesetKey,
-        createGameViewCreateGameKey,
-      ],
-      identifiers: [
-        createGameViewGameNameIdentifier,
-        if (!isEditMode) createGameViewGameRulesetIdentifier,
-        createGameViewCreateGameIdentifier,
-      ],
-      showcaseProvider: showcaseProvider,
-      context: context,
-    );
+      handleShowcase(
+        widgetKeys: [
+          createGameViewGameNameKey,
+          createGameViewGameRulesetKey,
+          createGameViewCreateGameKey,
+        ],
+        identifiers: [
+          createGameViewGameNameIdentifier,
+          createGameViewGameRulesetIdentifier,
+          createGameViewCreateGameIdentifier,
+        ],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
+    }
   }
 
   @override

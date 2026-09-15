@@ -77,7 +77,21 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   List<Player> selectedPlayers = [];
   List<Team> selectedUnits = [];
 
-  final GlobalKey selectGameKey = GlobalKey();
+  final GlobalKey createMatchViewMatchNameKey = GlobalKey();
+  final String createMatchViewMatchNameIdentifier =
+      'create_match_view_game_name';
+
+  final GlobalKey createMatchViewMatchGameKey = GlobalKey();
+  final String createMatchViewMatchGameIdentifier =
+      'create_match_view_match_game';
+
+  final GlobalKey createMatchViewSelectPlayersKey = GlobalKey();
+  final String createMatchViewSelectPlayersIdentifier =
+      'create_match_view_select_players';
+
+  final GlobalKey createMatchViewCreateMatchKey = GlobalKey();
+  final String createMatchViewCreateMatchIdentifier =
+      'create_match_view_create_match';
 
   late final ShowcaseProvider showcaseProvider;
 
@@ -90,15 +104,28 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     matchNameController.addListener(() {
       setState(() {});
     });
+    loadData();
+
     showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (showcaseProvider.shouldShowShowcase('create_match_view_game_tile')) {
-        ShowcaseView.get().startShowCase([selectGameKey]);
-      }
-    });
-
-    loadData();
+    if (!widget.editMode) {
+      handleShowcase(
+        widgetKeys: [
+          createMatchViewMatchNameKey,
+          createMatchViewMatchGameKey,
+          createMatchViewSelectPlayersKey,
+          createMatchViewCreateMatchKey,
+        ],
+        identifiers: [
+          createMatchViewMatchNameIdentifier,
+          createMatchViewMatchGameIdentifier,
+          createMatchViewSelectPlayersIdentifier,
+          createMatchViewCreateMatchIdentifier,
+        ],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
+    }
   }
 
   @override
@@ -134,37 +161,27 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               // Match name input field.
               Container(
                 margin: CustomTheme.tileMargin,
-                child: TextInputField(
-                  controller: matchNameController,
-                  hintText: hintText ?? '',
-                  maxLength: MAX_MATCH_NAME_LENGTH,
-                ),
-              ),
-
-              if (!widget.editMode)
-                Showcase(
-                  key: selectGameKey,
-                  description: 'Now select the game you want to track',
+                child: Showcase(
+                  key: createMatchViewMatchNameKey,
+                  description: 'Give your match a name',
                   targetShapeBorder: const CircleBorder(),
-                  disableBarrierInteraction: true,
-                  disposeOnTap: true,
-                  onTargetClick: () {
-                    onChoosingGame();
-                    showcaseProvider.markAsSeen('create_match_view_game_tile');
-                    ShowcaseView.get().next();
+                  descTextStyle: TextStyle(
+                    overflow: TextOverflow.visible,
+                    color: Colors.black,
+                  ),
+                  descriptionTextAlign: TextAlign.center,
+                  onBarrierClick: () {
+                    showcaseProvider.markAsSeen(
+                      createMatchViewMatchNameIdentifier,
+                    );
                   },
                   onToolTipClick: () {
-                    onChoosingGame();
-                    showcaseProvider.markAsSeen('create_match_view_game_tile');
-                    ShowcaseView.get().next();
-                  },
-                  onBarrierClick: () {
-                    onChoosingGame();
-                    showcaseProvider.markAsSeen('create_match_view_game_tile');
-                    ShowcaseView.get().next();
+                    showcaseProvider.markAsSeen(
+                      createMatchViewMatchNameIdentifier,
+                    );
                   },
                   disableMovingAnimation: true,
-                  tooltipPosition: TooltipPosition.top,
+                  tooltipPosition: TooltipPosition.bottom,
                   floatingActionWidget: FloatingActionWidget(
                     left: 16,
                     bottom: 32,
@@ -172,7 +189,60 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     child: TextButton(
                       onPressed: () {
                         HapticFeedback.selectionClick();
-                        showcaseProvider.skipTour();
+                        Provider.of<ShowcaseProvider>(
+                          context,
+                          listen: false,
+                        ).skipTour();
+                        ShowcaseView.get().dismiss();
+                      },
+                      child: const Text(
+                        'Skip',
+                        style: TextStyle(color: CustomTheme.textColor),
+                      ),
+                    ),
+                  ),
+                  child: TextInputField(
+                    controller: matchNameController,
+                    hintText: hintText ?? '',
+                    maxLength: MAX_MATCH_NAME_LENGTH,
+                  ),
+                ),
+              ),
+
+              if (!widget.editMode)
+                Showcase(
+                  key: createMatchViewMatchGameKey,
+                  description:
+                      'Select the game you created earlier by tapping here',
+                  targetShapeBorder: const CircleBorder(),
+                  descTextStyle: TextStyle(
+                    overflow: TextOverflow.visible,
+                    color: Colors.black,
+                  ),
+                  descriptionTextAlign: TextAlign.center,
+                  onBarrierClick: () {
+                    showcaseProvider.markAsSeen(
+                      createMatchViewMatchGameIdentifier,
+                    );
+                  },
+                  onToolTipClick: () {
+                    showcaseProvider.markAsSeen(
+                      createMatchViewMatchGameIdentifier,
+                    );
+                  },
+                  disableMovingAnimation: true,
+                  tooltipPosition: TooltipPosition.bottom,
+                  floatingActionWidget: FloatingActionWidget(
+                    left: 16,
+                    bottom: 32,
+                    //TODO: change button
+                    child: TextButton(
+                      onPressed: () {
+                        HapticFeedback.selectionClick();
+                        Provider.of<ShowcaseProvider>(
+                          context,
+                          listen: false,
+                        ).skipTour();
                         ShowcaseView.get().dismiss();
                       },
                       child: const Text(
@@ -245,34 +315,116 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 ),
 
               // Player selection widget.
-              Expanded(
-                child: PlayerSelectionWidget.multiple(
-                  key: ValueKey(selectedGroup?.id ?? 'no_group'),
-                  initialSelectedUnits: selectedUnits,
-                  pairingEnabled: !isTeamMatch,
-                  onPlayerCreated: () => widget.onMatchesUpdated?.call(),
-                  onMultipleChanged: (players, units) {
-                    setState(() {
-                      selectedPlayers = players;
-                      selectedUnits = units;
-                      // Do not auto-enable team match.
-                      // Pairs are handled internally via selectedUnits.
-                      removeGroupWhenNoMemberLeft();
-                    });
-                  },
+              Showcase(
+                key: createMatchViewSelectPlayersKey,
+                description: 'Select the participating players here, to create new ones, tap the plus icon next to the searchbar after entering a name.',
+                targetShapeBorder: const CircleBorder(),
+                descTextStyle: TextStyle(
+                  overflow: TextOverflow.visible,
+                  color: Colors.black,
+                ),
+                descriptionTextAlign: TextAlign.center,
+                onBarrierClick: () {
+                  showcaseProvider.markAsSeen(
+                    createMatchViewSelectPlayersIdentifier,
+                  );
+                },
+                onToolTipClick: () {
+                  showcaseProvider.markAsSeen(
+                    createMatchViewSelectPlayersIdentifier,
+                  );
+                },
+                disableMovingAnimation: true,
+                tooltipPosition: TooltipPosition.bottom,
+                floatingActionWidget: FloatingActionWidget(
+                  left: 16,
+                  bottom: 32,
+                  //TODO: change button
+                  child: TextButton(
+                    onPressed: () {
+                      HapticFeedback.selectionClick();
+                      Provider.of<ShowcaseProvider>(
+                        context,
+                        listen: false,
+                      ).skipTour();
+                      ShowcaseView.get().dismiss();
+                    },
+                    child: const Text(
+                      'Skip',
+                      style: TextStyle(color: CustomTheme.textColor),
+                    ),
+                  ),
+                ),
+                child: Expanded(
+                  child: PlayerSelectionWidget.multiple(
+                    key: ValueKey(selectedGroup?.id ?? 'no_group'),
+                    initialSelectedUnits: selectedUnits,
+                    pairingEnabled: !isTeamMatch,
+                    onPlayerCreated: () => widget.onMatchesUpdated?.call(),
+                    onMultipleChanged: (players, units) {
+                      setState(() {
+                        selectedPlayers = players;
+                        selectedUnits = units;
+                        // Do not auto-enable team match.
+                        // Pairs are handled internally via selectedUnits.
+                        removeGroupWhenNoMemberLeft();
+                      });
+                    },
+                  ),
                 ),
               ),
 
               // Create or save button.
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: BottomAnimatedButton(
-                  sizeRelativeToWidth: 0.95,
-                  buttonType: ButtonType.primary,
-                  onPressed: isSubmitButtonEnabled()
-                      ? () => submitButtonNavigation(context)
-                      : null,
-                  buttonText: buttonText,
+                child: Showcase(
+                  key: createMatchViewCreateMatchKey,
+                  description: 'Once you`ve dialed all the settings in, click here to create the match.',
+                  targetShapeBorder: const CircleBorder(),
+                  descTextStyle: TextStyle(
+                    overflow: TextOverflow.visible,
+                    color: Colors.black,
+                  ),
+                  descriptionTextAlign: TextAlign.center,
+                  onBarrierClick: () {
+                    showcaseProvider.markAsSeen(
+                      createMatchViewCreateMatchIdentifier,
+                    );
+                  },
+                  onToolTipClick: () {
+                    showcaseProvider.markAsSeen(
+                      createMatchViewCreateMatchIdentifier,
+                    );
+                  },
+                  disableMovingAnimation: true,
+                  tooltipPosition: TooltipPosition.bottom,
+                  floatingActionWidget: FloatingActionWidget(
+                    left: 16,
+                    bottom: 32,
+                    //TODO: change button
+                    child: TextButton(
+                      onPressed: () {
+                        HapticFeedback.selectionClick();
+                        Provider.of<ShowcaseProvider>(
+                          context,
+                          listen: false,
+                        ).skipTour();
+                        ShowcaseView.get().dismiss();
+                      },
+                      child: const Text(
+                        'Skip',
+                        style: TextStyle(color: CustomTheme.textColor),
+                      ),
+                    ),
+                  ),
+                  child: BottomAnimatedButton(
+                    sizeRelativeToWidth: 0.95,
+                    buttonType: ButtonType.primary,
+                    onPressed: isSubmitButtonEnabled()
+                        ? () => submitButtonNavigation(context)
+                        : null,
+                    buttonText: buttonText,
+                  ),
                 ),
               ),
             ],

@@ -87,8 +87,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     bool createGameShowcaseDone = showcaseProvider.hasSeen(
       'create_game_view_game_name',
     );
-    print("seen create game showcase in change deps");
-    print(createGameShowcaseDone);
 
     showTabShowcase();
     super.didChangeDependencies();
@@ -252,8 +250,10 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 disableBarrierInteraction: true,
                 disposeOnTap: true,
                 onTargetClick: () {
-                  onTabTapped(2);
-                  showcaseProvider.markAsSeen(navbarGameViewIdentifier);
+                  onTabTapped(0);
+                  print("marked navbarmatchview as seen todo");
+                  showcaseProvider.markAsSeen(navbarMatchViewIdentifier);
+                  print("marked navbarmatchview as seen done");
                 },
                 disableMovingAnimation: true,
                 tooltipPosition: TooltipPosition.top,
@@ -354,8 +354,15 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       'create_game_view_game_name',
     );
 
-    print("seen create game showcase");
+    bool matchTabShowcaseDone = showcaseProvider.hasSeen('navbar_match_view');
+
+    print("createGameShowcaseDone");
     print(createGameShowcaseDone);
+
+    print("MatchTabShowcaseDone");
+    print(matchTabShowcaseDone);
+
+    if (matchTabShowcaseDone) return;
 
     handleShowcase(
       widgetKeys: [
