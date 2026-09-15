@@ -360,10 +360,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get favourites => 'Favoriten';
 
   @override
-  String get feedback_hint => 'Deine Nachricht oder Kritik';
+  String get feedback_helps_us => 'Feedback hilft uns, die App zu verbessern.';
 
   @override
-  String get feedback_helps_us => 'Feedback hilft uns, die App zu verbessern.';
+  String get feedback_hint => 'Deine Nachricht oder Kritik';
 
   @override
   String get feedback_info_text =>

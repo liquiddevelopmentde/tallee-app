@@ -39,8 +39,8 @@ void main() async {
 
   /* Initializing Services */
 
-  // Only init in production
-  if (IS_PROD_ENV) await RATE_MY_APP.init();
+  // Only init in prod or dev
+  if (!IS_TEST_ENV) await RATE_MY_APP.init();
 
   await dotenv.load();
   if (IS_DEV_ENV) HttpOverrides.global = SelfSignedCertHttpOverrides();

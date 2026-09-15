@@ -226,7 +226,8 @@ class _MatchViewState extends State<MatchView> {
 
   /// Triggers the rate dialog if the user has not rated the app yet and the conditions are met.
   Future<void> triggerRateDialog() async {
-    if (ENVIRONMENT == AppEnvironment.development) return;
+    // show only in prod or dev
+    if (IS_TEST_ENV) return;
     if (!RATE_MY_APP.shouldOpenDialog) return;
 
     final loc = AppLocalizations.of(context);
