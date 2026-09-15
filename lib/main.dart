@@ -216,16 +216,19 @@ class _TalleeState extends State<Tallee> {
     final path = pendingImportPath;
     pendingImportPath = null;
 
-    bool isFirstRun = SharedPreferencesService.isFirstRun();
+    bool isOnboardingCompleted =
+        SharedPreferencesService.isOnboardingCompleted();
 
-    final targetWidget = isFirstRun
+    final targetWidget = !isOnboardingCompleted
         ? OnboardingView(onCompleted: () => navigateToHomeAndHandleImport(path))
         : const CustomNavigationBar();
 
     navigator.pushReplacement(
       PageRouteBuilder(
         settings: RouteSettings(
-          name: isFirstRun ? RouteNames.onboarding : RouteNames.groupView,
+          name: !isOnboardingCompleted
+              ? RouteNames.onboarding
+              : RouteNames.groupView,
         ),
         pageBuilder: (context, animation, secondaryAnimation) => targetWidget,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -235,7 +238,7 @@ class _TalleeState extends State<Tallee> {
       ),
     );
 
-    if (!isFirstRun && path != null) {
+    if (isOnboardingCompleted && path != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) => openImport(path));
     }
   }

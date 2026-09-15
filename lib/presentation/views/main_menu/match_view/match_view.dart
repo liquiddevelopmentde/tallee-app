@@ -85,7 +85,7 @@ class _MatchViewState extends State<MatchView> {
 
     loadMatches();
 
-    if (showcaseProvider.hasSeen(navbarGameViewIdentifier)) {
+    if (!showcaseProvider.shouldShowShowcase(navbarGameViewIdentifier)) {
       handleShowcase(
         widgetKeys: [matchViewCreateButtonKey],
         identifiers: [matchViewCreateButtonIdentifier],

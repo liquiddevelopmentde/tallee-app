@@ -56,12 +56,22 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
 
     showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
 
-    handleShowcase(
-      widgetKeys: [selectWinnerWidgetListviewKey],
-      identifiers: [selectWinnerWidgetListviewIdentifier],
-      showcaseProvider: showcaseProvider,
-      context: context,
-    );
+    if (showcaseProvider.shouldShowShowcase(
+      selectWinnerWidgetListviewIdentifier,
+    )) {
+      handleShowcase(
+        widgetKeys: [selectWinnerWidgetListviewKey],
+        identifiers: [selectWinnerWidgetListviewIdentifier],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          showcaseProvider.completeTour();
+        }
+      });
+    }
 
     super.initState();
   }

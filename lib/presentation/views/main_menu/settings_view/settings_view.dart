@@ -125,6 +125,16 @@ class _SettingsViewState extends State<SettingsView> {
                       );
                     },
                   ),
+                  SettingsListTile(
+                    title: loc.show_app_walkthrough,
+                    icon: Icons.explore,
+                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onPressed: () {
+                      SharedPreferencesService.setTourSkipped(false);
+                      SharedPreferencesService.setTourCompleted(false);
+                      Navigator.of(context).pop();
+                    },
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(
                       left: 16,

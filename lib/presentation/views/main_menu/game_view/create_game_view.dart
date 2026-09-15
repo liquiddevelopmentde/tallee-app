@@ -303,7 +303,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                             selectedColor != null
                         ? () async {
                             // mark showcase as seen
-                            if (!showcaseProvider.hasSeen(
+                            if (showcaseProvider.shouldShowShowcase(
                               createGameViewGameNameIdentifier,
                             )) {
                               showcaseProvider.markAsSeen(

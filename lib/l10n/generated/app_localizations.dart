@@ -110,6 +110,12 @@ abstract class AppLocalizations {
   /// **'All'**
   String get all;
 
+  /// No description provided for @show_app_walkthrough.
+  ///
+  /// In en, this message translates to:
+  /// **'Show App Walkthrough'**
+  String get show_app_walkthrough;
+
   /// No description provided for @all_players.
   ///
   /// In en, this message translates to:

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
 
 class OnboardingPageData {
   final String title;
@@ -72,6 +73,7 @@ class _OnboardingViewState extends State<OnboardingView> {
               child: TextButton(
                 onPressed: () {
                   HapticFeedback.lightImpact();
+                  SharedPreferencesService.setOnboardingCompleted(true);
                   widget.onCompleted();
                 },
                 child: const Text(
@@ -163,6 +165,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     onPressed: () {
                       HapticFeedback.lightImpact();
                       if (isLastPage) {
+                        SharedPreferencesService.setOnboardingCompleted(true);
                         widget.onCompleted();
                       } else {
                         _pageController.nextPage(

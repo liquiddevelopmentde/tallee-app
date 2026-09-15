@@ -16,6 +16,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all => 'All';
 
   @override
+  String get show_app_walkthrough => 'Show App Walkthrough';
+
+  @override
   String get all_players => 'All players';
 
   @override

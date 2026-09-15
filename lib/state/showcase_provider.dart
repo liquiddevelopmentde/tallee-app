@@ -6,9 +6,13 @@ class ShowcaseProvider extends ChangeNotifier {
   final Set<String> _shownInCurrentTour = {};
 
   bool get isTourActive => _isTourActive;
+
   bool get isTourSkipped => SharedPreferencesService.isTourSkipped();
 
+  bool get isTourCompleted => SharedPreferencesService.isTourCompleted();
+
   void startTour() {
+    if (_isTourActive) return;
     _isTourActive = true;
     _shownInCurrentTour.clear();
     notifyListeners();
@@ -22,14 +26,17 @@ class ShowcaseProvider extends ChangeNotifier {
 
   void completeTour() {
     _isTourActive = false;
-    _shownInCurrentTour.clear();
+    SharedPreferencesService.setTourCompleted(true);
     notifyListeners();
   }
 
   bool shouldShowShowcase(String screenKey) {
-    if (isTourSkipped && !_isTourActive) return false;
+    if (isTourSkipped || !_isTourActive) return false;
 
     if (_isTourActive) {
+      if (screenKey == 'select_winner_widget_listview_key') {
+        print('should show ${!_shownInCurrentTour.contains(screenKey)}');
+      }
       return !_shownInCurrentTour.contains(screenKey);
     }
 
@@ -40,9 +47,5 @@ class ShowcaseProvider extends ChangeNotifier {
     SharedPreferencesService.setShowcaseSeen(screenKey);
     _shownInCurrentTour.add(screenKey);
     notifyListeners();
-  }
-
-  bool hasSeen(String screenKey) {
-    return SharedPreferencesService.hasSeenShowcase(screenKey);
   }
 }

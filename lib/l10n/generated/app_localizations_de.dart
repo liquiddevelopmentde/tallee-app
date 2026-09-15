@@ -16,6 +16,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get all => 'Alle';
 
   @override
+  String get show_app_walkthrough => 'App Führung anzeigen';
+
+  @override
   String get all_players => 'Alle Spieler:innen';
 
   @override

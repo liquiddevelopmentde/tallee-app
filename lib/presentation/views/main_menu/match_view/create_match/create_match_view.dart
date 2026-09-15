@@ -561,7 +561,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// Otherwise, creates a new match and navigates to the MatchResultView.
   void submitButtonNavigation(BuildContext context) async {
     // mark showcase as seen
-    if (!showcaseProvider.hasSeen(createMatchViewMatchNameIdentifier)) {
+    if (showcaseProvider.shouldShowShowcase(
+      createMatchViewMatchNameIdentifier,
+    )) {
       showcaseProvider.markAsSeen(createMatchViewMatchNameIdentifier);
       showcaseProvider.markAsSeen(createMatchViewMatchGameIdentifier);
       showcaseProvider.markAsSeen(createMatchViewSelectPlayersIdentifier);

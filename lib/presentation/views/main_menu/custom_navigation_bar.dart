@@ -59,6 +59,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   final GlobalKey navbarMatchViewKey = GlobalKey();
   final String navbarMatchViewIdentifier = 'navbar_match_view';
 
+  final String createGameViewGameNameIdentifier = 'create_game_view_game_name';
+
   late final ShowcaseProvider showcaseProvider;
 
   final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -295,27 +297,34 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   }
 
   void showTabShowcase() {
-    bool createGameShowcaseDone = showcaseProvider.hasSeen(
-      'create_game_view_game_name',
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!showcaseProvider.isTourCompleted) {
+        showcaseProvider.startTour();
+      }
+      bool createGameShowcaseDone = !showcaseProvider.shouldShowShowcase(
+        createGameViewGameNameIdentifier,
+      );
 
-    bool matchTabShowcaseDone = showcaseProvider.hasSeen('navbar_match_view');
+      bool matchTabShowcaseDone = !showcaseProvider.shouldShowShowcase(
+        navbarMatchViewIdentifier,
+      );
 
-    if (matchTabShowcaseDone) return;
+      if (matchTabShowcaseDone) return;
 
-    handleShowcase(
-      widgetKeys: [
-        createGameShowcaseDone ? navbarMatchViewKey : navbarGameViewKey,
-      ],
-      identifiers: [
-        createGameShowcaseDone
-            ? navbarMatchViewIdentifier
-            : navbarGameViewIdentifier,
-      ],
-      showcaseProvider: showcaseProvider,
-      context: context,
-      isStart: !createGameShowcaseDone,
-    );
+      handleShowcase(
+        widgetKeys: [
+          createGameShowcaseDone ? navbarMatchViewKey : navbarGameViewKey,
+        ],
+        identifiers: [
+          createGameShowcaseDone
+              ? navbarMatchViewIdentifier
+              : navbarGameViewIdentifier,
+        ],
+        showcaseProvider: showcaseProvider,
+        context: context,
+        //isStart: !createGameShowcaseDone,
+      );
+    });
   }
 
   /// Handles tab tap events. Updates the current [index] state.
