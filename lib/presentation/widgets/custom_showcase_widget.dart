@@ -54,6 +54,8 @@ class CustomShowcaseWidget extends StatelessWidget {
       onToolTipClick: () {
         showcaseProvider.markAsSeen(identifier);
       },
+      scaleAnimationDuration: const Duration(milliseconds: 200),
+      scaleAnimationCurve: Curves.fastEaseInToSlowEaseOut,
       onTargetClick: onTargetClick,
       disableBarrierInteraction: disableBarrierInteraction,
       disposeOnTap: disposeOnTap,
