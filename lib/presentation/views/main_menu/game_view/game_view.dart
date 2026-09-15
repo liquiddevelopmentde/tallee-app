@@ -76,42 +76,6 @@ class _GameViewState extends State<GameView> with RouteAware {
   }
 
   @override
-  void didChangeDependencies() {
-    print('did change deps');
-    super.didChangeDependencies();
-  }
-
-  @override
-  void didPop() {
-    print('did pop');
-    super.didPop();
-  }
-
-  @override
-  void didPush() {
-    print('did push');
-    super.didPush();
-  }
-
-  @override
-  void didPushNext() {
-    print('did push next');
-    super.didPushNext();
-  }
-
-  @override
-  void didUpdateWidget(covariant GameView oldWidget) {
-    print('did update widget');
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void didPopNext() {
-    print('did pop next');
-    super.didPopNext();
-  }
-
-  @override
   void dispose() {
     searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
