@@ -28,6 +28,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all_time => 'All time';
 
   @override
+  String get there_is_no_match_matching_your_filter =>
+      'There is no match matching your filter';
+
+  @override
+  String get active_matches => 'Active Matches';
+
+  @override
+  String get finished_matches => 'Finished Matches';
+
+  @override
+  String get team_matches => 'Team Matches';
+
+  @override
   String get app_name => 'Tallee';
 
   @override

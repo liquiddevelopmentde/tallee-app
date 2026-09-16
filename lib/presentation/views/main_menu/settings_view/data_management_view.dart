@@ -11,6 +11,7 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/local_share_service.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
 
 class DataManagementView extends StatefulWidget {
   const DataManagementView({super.key});
@@ -188,6 +189,7 @@ class _DataManagementViewState extends State<DataManagementView> {
     ).then((confirmed) {
       if (confirmed == true && mounted && scaffoldMessengerContext.mounted) {
         LocalShareService.deleteAllData(context);
+        SharedPreferencesService.deleteAllPreferences();
         showSnackbar(
           context: scaffoldMessengerContext,
           message: AppLocalizations.of(context).data_successfully_deleted,
