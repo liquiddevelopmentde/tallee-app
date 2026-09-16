@@ -92,6 +92,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   final String createMatchViewCreateMatchIdentifier =
       'create_match_view_create_match';
 
+  final String matchViewCreateButtonIdentifier =
+      'match_view_create_match_button';
+
   late final ShowcaseProvider showcaseProvider;
 
   /// GlobalKey for ScaffoldMessenger to show snackbars
@@ -107,7 +110,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
     showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
 
-    if (!widget.editMode) {
+    if (!widget.editMode &&
+        !showcaseProvider.shouldShowShowcase(matchViewCreateButtonIdentifier)) {
       handleShowcase(
         widgetKeys: [
           createMatchViewMatchNameKey,

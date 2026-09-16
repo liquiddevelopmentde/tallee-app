@@ -33,20 +33,15 @@ class ShowcaseProvider extends ChangeNotifier {
   bool shouldShowShowcase(String screenKey) {
     if (isTourSkipped || !_isTourActive) return false;
 
-    if (_isTourActive) {
-      if (screenKey == 'select_winner_widget_listview_key') {
-        print('should show ${!_shownInCurrentTour.contains(screenKey)}');
-      }
-      return !_shownInCurrentTour.contains(screenKey);
+    if (_shownInCurrentTour.isEmpty) {
+      _shownInCurrentTour.addAll(SharedPreferencesService.getShowcaseSeen());
     }
-
-    return !SharedPreferencesService.hasSeenShowcase(screenKey);
+    return !_shownInCurrentTour.contains(screenKey);
   }
 
   void markAsSeen(String screenKey) {
-    print("$screenKey markedAsSeen");
-    SharedPreferencesService.setShowcaseSeen(screenKey);
     _shownInCurrentTour.add(screenKey);
+    SharedPreferencesService.setShowcaseSeen(_shownInCurrentTour.toList());
     notifyListeners();
   }
 }

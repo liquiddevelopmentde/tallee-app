@@ -117,7 +117,8 @@ class _SettingsViewState extends State<SettingsView> {
                     onPressed: () {
                       SharedPreferencesService.setTourSkipped(false);
                       SharedPreferencesService.setTourCompleted(false);
-                      Navigator.of(context).pop();
+                      SharedPreferencesService.resetSeenShowcase();
+                      Navigator.of(context).pop(0);
                     },
                   ),
                   SettingsListTile(

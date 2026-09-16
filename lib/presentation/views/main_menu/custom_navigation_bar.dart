@@ -193,13 +193,16 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           HapticIconButton(
             onPressed: () async {
               final navigator = Navigator.of(context);
-              await navigator.push(
+              final tab = await navigator.push(
                 adaptivePageRoute(
                   settings: const RouteSettings(name: RouteNames.settingsView),
                   builder: (_) => const SettingsView(),
                 ),
               );
               setState(() {
+                if (tab is int) {
+                  currentIndex = tab;
+                }
                 tabKeyCount++;
               });
             },
@@ -271,8 +274,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 disposeOnTap: true,
                 onTargetClick: () {
                   onTabTapped(2);
-                  showcaseProvider.markAsSeen(navbarGameViewIdentifier);
-                  print("seen navbar game view");
                 },
                 tooltipPosition: TooltipPosition.top,
                 child: NavbarItem(
@@ -309,8 +310,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       bool matchTabShowcaseDone = !showcaseProvider.shouldShowShowcase(
         navbarMatchViewIdentifier,
       );
-
-      print("gameShowcaseDone ${createGameShowcaseDone}");
 
       if (matchTabShowcaseDone) return;
 

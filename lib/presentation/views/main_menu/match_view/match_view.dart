@@ -40,7 +40,7 @@ class _MatchViewState extends State<MatchView> {
   final String matchViewCreateButtonIdentifier =
       'match_view_create_match_button';
 
-  final String createGameViewGameNameIdentifier = 'create_game_view_game_name';
+  final String navbarMatchViewIdentifier = 'navbar_match_view';
 
   late final ShowcaseProvider showcaseProvider;
 
@@ -85,9 +85,7 @@ class _MatchViewState extends State<MatchView> {
 
     loadMatches();
 
-    if (!showcaseProvider.shouldShowShowcase(
-      createGameViewGameNameIdentifier,
-    )) {
+    if (!showcaseProvider.shouldShowShowcase(navbarMatchViewIdentifier)) {
       handleShowcase(
         widgetKeys: [matchViewCreateButtonKey],
         identifiers: [matchViewCreateButtonIdentifier],

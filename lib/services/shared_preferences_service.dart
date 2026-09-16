@@ -27,6 +27,7 @@ class SharedPreferencesService {
   static const String sharingConsentKey = 'share_consent';
   static const String showcaseTourSkippedKey = 'showcase_tour_skipped';
   static const String showcaseTourCompletedKey = 'showcase_tour_completed';
+  static const String showcaseSeenKey = 'showcase_seen';
   static const String onboardingCompletedKey = 'onboarding_completed';
 
   static void deleteAllFilters({required bool includeFavourites}) {
@@ -139,11 +140,22 @@ class SharedPreferencesService {
     return _instance.getBool(showcaseTourCompletedKey) ?? false;
   }
 
-  static void setShowcaseSeen(String screenKey) {
-    _instance.setBool('showcase_seen_$screenKey', true);
+  static void setShowcaseSeen(List<String> screenKeys) {
+    final currentKeys = getShowcaseSeen();
+    final updatedKeys = {...currentKeys, ...screenKeys}.toList();
+    _instance.setStringList(showcaseSeenKey, updatedKeys);
+  }
+
+  static List<String> getShowcaseSeen() {
+    return _instance.getStringList(showcaseSeenKey) ?? [];
   }
 
   static bool hasSeenShowcase(String screenKey) {
-    return _instance.getBool('showcase_seen_$screenKey') ?? false;
+    return _instance.getStringList(showcaseSeenKey)?.contains(screenKey) ??
+        false;
+  }
+
+  static void resetSeenShowcase() {
+    _instance.setStringList(showcaseSeenKey, []);
   }
 }
