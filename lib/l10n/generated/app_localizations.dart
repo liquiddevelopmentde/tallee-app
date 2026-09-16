@@ -710,12 +710,6 @@ abstract class AppLocalizations {
   /// **'Favourites'**
   String get favourites;
 
-  /// No description provided for @feedback_helps_us.
-  ///
-  /// In en, this message translates to:
-  /// **'Feedback helps us improving the app.'**
-  String get feedback_helps_us;
-
   /// No description provided for @feedback_hint.
   ///
   /// In en, this message translates to:

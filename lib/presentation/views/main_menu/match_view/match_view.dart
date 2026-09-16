@@ -253,7 +253,7 @@ class _MatchViewState extends State<MatchView> {
       context: context,
       builder: (context) => CustomAlertDialog(
         title: loc.do_you_like_the_app,
-        content: Text(loc.feedback_helps_us, overflow: TextOverflow.visible),
+        content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),
         actions: [
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(true),
