@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -90,191 +89,173 @@ class _StatisticsViewState extends State<StatisticsView> {
                         padding: CustomTheme.filterRowPadding,
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          spacing: 10,
+                          spacing: 5,
                           children: [
                             // All Chip
-                            Skeleton.unite(
-                              child: TextChip(
-                                text: isLoading ? 'skeleton' : loc.all,
-                                activated: noFilterActivated,
-                                onTap: () => {
-                                  showOnlyFavourites = false,
-                                  SharedPreferencesService.setShowFavourites(
-                                    false,
-                                  ),
-                                  resetFilter(includeFavourites: true),
-                                },
-                              ),
+                            TextChip(
+                              text: isLoading ? 'skeleton' : loc.all,
+                              activated: noFilterActivated,
+                              onTap: () => {
+                                showOnlyFavourites = false,
+                                SharedPreferencesService.setShowFavourites(
+                                  false,
+                                ),
+                                resetFilter(includeFavourites: true),
+                              },
                             ),
 
                             // Favourites chip
-                            Skeleton.unite(
-                              child: TextChip(
-                                text: loc.favourites,
-                                activated: showOnlyFavourites,
-                                onTap: () => {
-                                  setState(() {
-                                    showOnlyFavourites = true;
-                                    resetFilter(includeFavourites: false);
-                                  }),
-                                  SharedPreferencesService.setShowFavourites(
-                                    showOnlyFavourites,
-                                  ),
-                                  createFilteredStatisticTiles(),
-                                },
-                              ),
+                            TextChip(
+                              text: loc.favourites,
+                              activated: showOnlyFavourites,
+                              onTap: () => {
+                                setState(() {
+                                  showOnlyFavourites = true;
+                                  resetFilter(includeFavourites: false);
+                                }),
+                                SharedPreferencesService.setShowFavourites(
+                                  showOnlyFavourites,
+                                ),
+                                createFilteredStatisticTiles(),
+                              },
                             ),
 
                             // Groups Chip
-                            Skeleton.unite(
-                              child: TextChip(
-                                text: isLoading ? 'skeleton' : loc.groups,
-                                activated: filteredGroups.isNotEmpty,
-                                count: filteredGroups.length,
-                                onTap: () async {
-                                  final result = await Navigator.of(context)
-                                      .push(
-                                        adaptivePageRoute(
-                                          settings: const RouteSettings(
-                                            name: RouteNames.chooseGroupView,
-                                          ),
-                                          fullscreenDialog: true,
-                                          builder: (context) => ChooseGroupView(
-                                            groups: groups,
-                                            initialGroups: filteredGroups,
-                                            enableMultiSelection: true,
-                                          ),
-                                        ),
-                                      );
-                                  setState(() {
-                                    filteredGroups = result ?? [];
-                                    if (filteredGroups.isNotEmpty) {
-                                      resetFavourites();
-                                    }
-                                  });
-                                  SharedPreferencesService.setFilteredGroups(
-                                    filteredGroups,
-                                  );
-                                  createFilteredStatisticTiles();
-                                },
-                              ),
+                            TextChip(
+                              text: isLoading ? 'skeleton' : loc.groups,
+                              activated: filteredGroups.isNotEmpty,
+                              count: filteredGroups.length,
+                              onTap: () async {
+                                final result = await Navigator.of(context).push(
+                                  adaptivePageRoute(
+                                    settings: const RouteSettings(
+                                      name: RouteNames.chooseGroupView,
+                                    ),
+                                    fullscreenDialog: true,
+                                    builder: (context) => ChooseGroupView(
+                                      groups: groups,
+                                      initialGroups: filteredGroups,
+                                      enableMultiSelection: true,
+                                    ),
+                                  ),
+                                );
+                                setState(() {
+                                  filteredGroups = result ?? [];
+                                  if (filteredGroups.isNotEmpty) {
+                                    resetFavourites();
+                                  }
+                                });
+                                SharedPreferencesService.setFilteredGroups(
+                                  filteredGroups,
+                                );
+                                createFilteredStatisticTiles();
+                              },
                             ),
 
                             // Games Chip
-                            Skeleton.unite(
-                              child: TextChip(
-                                text: isLoading ? 'skeleton' : loc.games,
-                                count: filteredGames.length,
-                                activated: filteredGames.isNotEmpty,
-                                onTap: () async {
-                                  final result = await Navigator.of(context)
-                                      .push(
-                                        adaptivePageRoute(
-                                          settings: const RouteSettings(
-                                            name: RouteNames.chooseGameView,
-                                          ),
-                                          fullscreenDialog: true,
-                                          builder: (context) => ChooseGameView(
-                                            games: games,
-                                            initialSelectedGames: filteredGames,
-                                            enableMultiSelection: true,
-                                          ),
-                                        ),
-                                      );
-                                  setState(() {
-                                    filteredGames = result ?? [];
-                                    if (filteredGames.isNotEmpty) {
-                                      resetFavourites();
-                                    }
-                                  });
-                                  SharedPreferencesService.setFilteredGames(
-                                    filteredGames,
-                                  );
-                                  createFilteredStatisticTiles();
-                                },
-                              ),
+                            TextChip(
+                              text: isLoading ? 'skeleton' : loc.games,
+                              count: filteredGames.length,
+                              activated: filteredGames.isNotEmpty,
+                              onTap: () async {
+                                final result = await Navigator.of(context).push(
+                                  adaptivePageRoute(
+                                    settings: const RouteSettings(
+                                      name: RouteNames.chooseGameView,
+                                    ),
+                                    fullscreenDialog: true,
+                                    builder: (context) => ChooseGameView(
+                                      games: games,
+                                      initialSelectedGames: filteredGames,
+                                      enableMultiSelection: true,
+                                    ),
+                                  ),
+                                );
+                                setState(() {
+                                  filteredGames = result ?? [];
+                                  if (filteredGames.isNotEmpty) {
+                                    resetFavourites();
+                                  }
+                                });
+                                SharedPreferencesService.setFilteredGames(
+                                  filteredGames,
+                                );
+                                createFilteredStatisticTiles();
+                              },
                             ),
 
                             // Type Chip
-                            Skeleton.unite(
-                              child: TextChip(
-                                text: isLoading ? 'skeleton' : loc.type,
-                                count: filteredStatisticTypes.length,
-                                activated: filteredStatisticTypes.isNotEmpty,
-                                onTap: () async {
-                                  final result = await Navigator.of(context)
-                                      .push(
-                                        adaptivePageRoute(
-                                          settings: const RouteSettings(
-                                            name: RouteNames.chooseEnumView,
-                                          ),
-                                          fullscreenDialog: true,
-                                          builder: (context) =>
-                                              ChooseEnumView<StatisticType>(
-                                                enumValue: StatisticType.values,
+                            TextChip(
+                              text: isLoading ? 'skeleton' : loc.type,
+                              count: filteredStatisticTypes.length,
+                              activated: filteredStatisticTypes.isNotEmpty,
+                              onTap: () async {
+                                final result = await Navigator.of(context).push(
+                                  adaptivePageRoute(
+                                    settings: const RouteSettings(
+                                      name: RouteNames.chooseEnumView,
+                                    ),
+                                    fullscreenDialog: true,
+                                    builder: (context) =>
+                                        ChooseEnumView<StatisticType>(
+                                          enumValue: StatisticType.values,
 
-                                                initialEnums:
-                                                    filteredStatisticTypes,
-                                                enableMultiSelection: true,
-                                              ),
+                                          initialEnums: filteredStatisticTypes,
+                                          enableMultiSelection: true,
                                         ),
-                                      );
+                                  ),
+                                );
 
-                                  setState(() {
-                                    filteredStatisticTypes =
-                                        List<StatisticType>.from(
-                                          result ?? const <StatisticType>[],
-                                        );
-                                    if (filteredStatisticTypes.isNotEmpty) {
-                                      resetFavourites();
-                                    }
-                                  });
-                                  SharedPreferencesService.setFilteredStatisticTypes(
-                                    filteredStatisticTypes,
-                                  );
-                                  createFilteredStatisticTiles();
-                                },
-                              ),
+                                setState(() {
+                                  filteredStatisticTypes =
+                                      List<StatisticType>.from(
+                                        result ?? const <StatisticType>[],
+                                      );
+                                  if (filteredStatisticTypes.isNotEmpty) {
+                                    resetFavourites();
+                                  }
+                                });
+                                SharedPreferencesService.setFilteredStatisticTypes(
+                                  filteredStatisticTypes,
+                                );
+                                createFilteredStatisticTiles();
+                              },
                             ),
 
                             // Timeframe Chip
-                            Skeleton.unite(
-                              child: TextChip(
-                                text: isLoading ? 'skeleton' : loc.timeframe,
-                                count: filteredTimeframes.length,
-                                activated: filteredTimeframes.isNotEmpty,
-                                onTap: () async {
-                                  final result = await Navigator.of(context)
-                                      .push(
-                                        adaptivePageRoute(
-                                          settings: const RouteSettings(
-                                            name: RouteNames.chooseEnumView,
-                                          ),
-                                          fullscreenDialog: true,
-                                          builder: (context) =>
-                                              ChooseEnumView<Timeframe>(
-                                                enumValue: Timeframe.values,
+                            TextChip(
+                              text: isLoading ? 'skeleton' : loc.timeframe,
+                              count: filteredTimeframes.length,
+                              activated: filteredTimeframes.isNotEmpty,
+                              onTap: () async {
+                                final result = await Navigator.of(context).push(
+                                  adaptivePageRoute(
+                                    settings: const RouteSettings(
+                                      name: RouteNames.chooseEnumView,
+                                    ),
+                                    fullscreenDialog: true,
+                                    builder: (context) =>
+                                        ChooseEnumView<Timeframe>(
+                                          enumValue: Timeframe.values,
 
-                                                initialEnums:
-                                                    filteredTimeframes,
-                                                enableMultiSelection: true,
-                                              ),
+                                          initialEnums: filteredTimeframes,
+                                          enableMultiSelection: true,
                                         ),
-                                      );
-                                  setState(() {
-                                    filteredTimeframes = List<Timeframe>.from(
-                                      result ?? const <Timeframe>[],
-                                    );
-                                    if (filteredTimeframes.isNotEmpty) {
-                                      resetFavourites();
-                                    }
-                                  });
-                                  SharedPreferencesService.setFilteredTimeframes(
-                                    filteredTimeframes,
+                                  ),
+                                );
+                                setState(() {
+                                  filteredTimeframes = List<Timeframe>.from(
+                                    result ?? const <Timeframe>[],
                                   );
-                                  createFilteredStatisticTiles();
-                                },
-                              ),
+                                  if (filteredTimeframes.isNotEmpty) {
+                                    resetFavourites();
+                                  }
+                                });
+                                SharedPreferencesService.setFilteredTimeframes(
+                                  filteredTimeframes,
+                                );
+                                createFilteredStatisticTiles();
+                              },
                             ),
                           ],
                         ),

@@ -101,101 +101,103 @@ class _MatchViewState extends State<MatchView> {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          Column(
-            children: [
-              // Searchbar
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 500),
-                switchInCurve: Curves.easeOutCubic,
-                switchOutCurve: Curves.easeInCubic,
-                transitionBuilder: (child, animation) {
-                  final curvedAnimation = CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOutCubic,
-                    reverseCurve: Curves.easeInCubic,
-                  );
+          AppSkeleton(
+            enabled: isLoading,
 
-                  return ClipRect(
-                    child: SizeTransition(
-                      sizeFactor: curvedAnimation,
-                      alignment: Alignment.topCenter,
-                      child: FadeTransition(
-                        opacity: curvedAnimation,
-                        child: child,
-                      ),
-                    ),
-                  );
-                },
-                child: searchProvider.isSearching
-                    ? Padding(
-                        key: const ValueKey('match-searchbar-visible'),
-                        padding: const EdgeInsets.only(
-                          left: 10,
-                          right: 10,
-                          bottom: 10,
+            // No matches created
+            child: Column(
+              children: [
+                // Searchbar
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  transitionBuilder: (child, animation) {
+                    final curvedAnimation = CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutCubic,
+                      reverseCurve: Curves.easeInCubic,
+                    );
+
+                    return ClipRect(
+                      child: SizeTransition(
+                        sizeFactor: curvedAnimation,
+                        alignment: Alignment.topCenter,
+                        child: FadeTransition(
+                          opacity: curvedAnimation,
+                          child: child,
                         ),
-                        child: CustomSearchBar(
-                          controller: searchBarController,
-                          hintText: '',
-                          onChanged: (value) {
-                            setState(() {
-                              applySearch(value);
-                            });
-                          },
-                        ),
-                      )
-                    : const SizedBox.shrink(
-                        key: ValueKey('match-searchbar-hidden'),
                       ),
-              ),
-
-              // Filter row
-              SingleChildScrollView(
-                padding: CustomTheme.filterRowPadding,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  spacing: 12,
-                  children: [
-                    // All matches
-                    TextChip(
-                      text: loc.all,
-                      onTap: () => setFilter(MatchFilter.all),
-                      activated: selectedFilter == MatchFilter.all,
-                    ),
-
-                    // Active matches
-                    TextChip(
-                      text: loc.active_matches,
-                      onTap: () => setFilter(MatchFilter.active),
-                      activated: selectedFilter == MatchFilter.active,
-                    ),
-
-                    // Finished matches
-                    TextChip(
-                      text: loc.finished_matches,
-                      onTap: () => setFilter(MatchFilter.finished),
-                      activated: selectedFilter == MatchFilter.finished,
-                    ),
-
-                    // Team matches
-                    TextChip(
-                      text: loc.team_matches,
-                      onTap: () => setFilter(MatchFilter.team),
-                      activated: selectedFilter == MatchFilter.team,
-                    ),
-
-                    // To keep padding on the right side
-                    const SizedBox.shrink(),
-                  ],
+                    );
+                  },
+                  child: searchProvider.isSearching
+                      ? Padding(
+                          key: const ValueKey('match-searchbar-visible'),
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                            bottom: 10,
+                          ),
+                          child: CustomSearchBar(
+                            controller: searchBarController,
+                            hintText: '',
+                            onChanged: (value) {
+                              setState(() {
+                                applySearch(value);
+                              });
+                            },
+                          ),
+                        )
+                      : const SizedBox.shrink(
+                          key: ValueKey('match-searchbar-hidden'),
+                        ),
                 ),
-              ),
 
-              // Matches
-              Expanded(
-                child: AppSkeleton(
-                  enabled: isLoading,
+                // Filter row
+                SingleChildScrollView(
+                  padding: CustomTheme.filterRowPadding,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    spacing: 5,
+                    children: [
+                      // All matches
+                      TextChip(
+                        text: loc.all,
+                        onTap: () => setFilter(MatchFilter.all),
+                        activated: selectedFilter == MatchFilter.all,
+                      ),
 
+                      // Active matches
+                      TextChip(
+                        text: loc.active_matches,
+                        onTap: () => setFilter(MatchFilter.active),
+                        activated: selectedFilter == MatchFilter.active,
+                      ),
+
+                      // Finished matches
+                      TextChip(
+                        text: loc.finished_matches,
+                        onTap: () => setFilter(MatchFilter.finished),
+                        activated: selectedFilter == MatchFilter.finished,
+                      ),
+
+                      // Team matches
+                      TextChip(
+                        text: loc.team_matches,
+                        onTap: () => setFilter(MatchFilter.team),
+                        activated: selectedFilter == MatchFilter.team,
+                      ),
+
+                      // To keep padding on the right side
+                      const SizedBox.shrink(),
+                    ],
+                  ),
+                ),
+
+                // Matches
+                Expanded(
                   // No matches created
+
                   child: allMatches.isEmpty
                       ? Center(
                           child: TopCenteredMessage(
@@ -246,8 +248,8 @@ class _MatchViewState extends State<MatchView> {
                           },
                         ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
