@@ -170,6 +170,7 @@ class MatchProfileBody extends StatelessWidget {
                   ),
           ),
         ],
+
         const SizedBox(height: 15),
 
         // Game
@@ -201,31 +202,29 @@ class MatchProfileBody extends StatelessWidget {
           ),
         ),
 
-        if (isPreview) ...[
-          const SizedBox(height: 15),
-          InfoTile(
-            title: loc.group_members,
-            leadingWidget: const Icon(GROUP_ICON),
-            horizontalAlignment: CrossAxisAlignment.start,
-            content: match.players.isNotEmpty
-                ? Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
-                    spacing: 12,
-                    runSpacing: 8,
-                    children: match.players.map((player) {
-                      return PlayerTile(player: player);
-                    }).toList(),
-                  )
-                : Text(
-                    loc.no_players_available,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: CustomTheme.textColor,
-                    ),
+        if (isPreview) const SizedBox(height: 15),
+        InfoTile(
+          title: loc.group_members,
+          leadingWidget: const Icon(GROUP_ICON),
+          horizontalAlignment: CrossAxisAlignment.start,
+          content: match.players.isNotEmpty
+              ? Wrap(
+                  alignment: WrapAlignment.start,
+                  crossAxisAlignment: WrapCrossAlignment.start,
+                  spacing: 12,
+                  runSpacing: 8,
+                  children: match.players.map((player) {
+                    return PlayerTile(player: player);
+                  }).toList(),
+                )
+              : Text(
+                  loc.no_players_available,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: CustomTheme.textColor,
                   ),
-          ),
-        ],
+                ),
+        ),
       ],
     );
 
@@ -234,12 +233,12 @@ class MatchProfileBody extends StatelessWidget {
         children: [
           Expanded(child: content),
           BottomAnimatedButton(
-            buttonText: "Confirm",
+            buttonText: loc.import_match,
             sizeRelativeToWidth: 0.95,
             onPressed: onConfirm,
           ),
           BottomAnimatedButton(
-            buttonText: "Cancel",
+            buttonText: loc.cancel,
             sizeRelativeToWidth: 0.95,
             buttonType: ButtonType.secondary,
             onPressed: onCancel,
@@ -252,7 +251,7 @@ class MatchProfileBody extends StatelessWidget {
         children: [
           content,
           Positioned(
-            bottom: MediaQuery.viewPaddingOf(context).bottom,
+            bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: Row(
               spacing: 8,
               children: [

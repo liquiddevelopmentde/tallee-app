@@ -824,6 +824,12 @@ abstract class AppLocalizations {
   /// **'Import data'**
   String get import_data;
 
+  /// No description provided for @preview_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview match'**
+  String get preview_match;
+
   /// No description provided for @import_description.
   ///
   /// In en, this message translates to:

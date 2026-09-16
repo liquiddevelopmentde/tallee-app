@@ -416,6 +416,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get import_data => 'Import data';
 
   @override
+  String get preview_match => 'Preview match';
+
+  @override
   String get import_description =>
       'Import your Tallee data (.json) from a previously exported file. This is meant for restoring a backup or transferring data between devices. To import shared matches, tap the QR code icon in the match view.';
 

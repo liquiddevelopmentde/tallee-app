@@ -163,6 +163,7 @@
   "highest_score": "Highest Score",
   "import_canceled": "Import canceled",
   "import_data": "Import data",
+  "preview_match": "Preview match",
   "import_description": "Import your Tallee data (.json) from a previously exported file. This is meant for restoring a backup or transferring data between devices. To import shared matches, tap the QR code icon in the match view.",
   "import_file_instruction": "Select a match file (.tallee) exported from Tallee match share to import the data.",
   "import_match": "Import match",

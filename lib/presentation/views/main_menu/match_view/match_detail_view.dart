@@ -12,7 +12,6 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_result/matc
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/match_share_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/widgets/match_profile_body.dart';
 import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
-import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
@@ -85,60 +84,39 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ],
       ),
       body: SafeArea(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            MatchProfileBody(
-              match: match,
-              onPlayerTap: (player) {
-                Navigator.of(context).pushReplacement(
-                  adaptivePageRoute(
-                    settings: const RouteSettings(
-                      name: RouteNames.playerDetailView,
-                    ),
-                    builder: (context) => PlayerDetailView(
-                      player: player,
-                      onPlayerUpdated: widget.onMatchUpdate,
-                    ),
-                  ),
-                );
-              },
-            ),
-            Positioned(
-              bottom: MediaQuery.viewPaddingOf(context).bottom,
-              child: Row(
-                spacing: 8,
-                children: [
-                  FloatingAnimatedButton(
-                    icon: Icons.edit,
-                    onPressed: () => editMatchNavigation(loc),
-                  ),
-                  FloatingAnimatedButton(
-                    text: loc.enter_results,
-                    icon: Icons.emoji_events,
-                    onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        adaptivePageRoute(
-                          settings: const RouteSettings(
-                            name: RouteNames.matchResultView,
-                          ),
-                          fullscreenDialog: true,
-                          builder: (context) => MatchResultView(
-                            match: match,
-                            onWinnerChanged: () async {
-                              widget.onMatchUpdate.call();
-                              await updateScoresForCurrentMatch();
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+        child: MatchProfileBody(
+          match: match,
+          isPreview: false,
+          onEdit: () => editMatchNavigation(loc),
+          onEnterResults: () async {
+            await Navigator.push(
+              context,
+              adaptivePageRoute(
+                settings: const RouteSettings(name: RouteNames.matchResultView),
+                fullscreenDialog: true,
+                builder: (context) => MatchResultView(
+                  match: match,
+                  onWinnerChanged: () async {
+                    widget.onMatchUpdate.call();
+                    await updateScoresForCurrentMatch();
+                  },
+                ),
               ),
-            ),
-          ],
+            );
+          },
+          onPlayerTap: (player) {
+            Navigator.of(context).pushReplacement(
+              adaptivePageRoute(
+                settings: const RouteSettings(
+                  name: RouteNames.playerDetailView,
+                ),
+                builder: (context) => PlayerDetailView(
+                  player: player,
+                  onPlayerUpdated: widget.onMatchUpdate,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
