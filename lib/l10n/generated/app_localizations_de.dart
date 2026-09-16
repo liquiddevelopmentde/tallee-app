@@ -845,7 +845,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get update_app_export_desc =>
-      'Du hast nicht die neueste App-Version, was zu Problemen beim Importieren deiner Daten in eine andere Tallee-Instanz führen kann.';
+      'Du hast nicht die neueste App-Version, was zu Problemen beim Datenimport in eine anderen Tallee-Instanz führen kann.';
 
   @override
   String get update_app_import_desc =>

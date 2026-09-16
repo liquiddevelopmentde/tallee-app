@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:new_version_plus/model/version_status.dart';
 import 'package:new_version_plus/new_version_plus.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -127,10 +128,19 @@ class _DataManagementViewState extends State<DataManagementView> {
 
     try {
       status = await newVersionPlus.getVersionStatus();
-    } catch (error) {
+    } catch (error, stacktrace) {
       // ignore network errors, that come from a users network conditions
       if (isNetworkError(error)) return;
-      rethrow;
+      // send other errors to sentry
+      Sentry.captureException(
+        error,
+        stackTrace: stacktrace,
+        hint: Hint.withMap({'skipSnackBar': true}),
+        withScope: (scope) {
+          scope.level = SentryLevel.error;
+        },
+      );
+      return;
     }
 
     if (status != null && status.canUpdate && mounted) {
@@ -183,6 +193,8 @@ class _DataManagementViewState extends State<DataManagementView> {
 
   void handleExport(BuildContext scaffoldMessengerContext) async {
     await showVersionDialog(true);
+
+    if (!scaffoldMessengerContext.mounted) return;
 
     final String json = await LocalShareService.getAppDataAsJson(
       scaffoldMessengerContext,
