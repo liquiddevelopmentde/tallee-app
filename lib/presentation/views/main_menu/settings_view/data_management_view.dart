@@ -11,6 +11,7 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/local_share_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DataManagementView extends StatefulWidget {
   const DataManagementView({super.key});
@@ -112,7 +113,78 @@ class _DataManagementViewState extends State<DataManagementView> {
     );
   }
 
+  Future<void> showVersionDialog(bool isExport) async {
+    final loc = AppLocalizations.of(context);
+
+    /*    final newVersionPlus = NewVersionPlus(
+      iOSAppStoreCountry: 'de',
+      androidPlayStoreCountry: 'de',
+    );
+
+    VersionStatus? status;
+
+    try {
+      status = await newVersionPlus.getVersionStatus();
+    } catch (error) {
+      // ignore network errors, that come from a users network conditions
+      if (isNetworkError(error)) return;
+      rethrow;
+    }
+    */
+
+    //if (status != null && status.canUpdate && mounted) {
+    if (mounted) {
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return CustomAlertDialog(
+            title: loc.update_available,
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  isExport
+                      ? loc.update_app_export_desc
+                      : loc.update_app_import_desc,
+                  style: const TextStyle(
+                    color: CustomTheme.textColor,
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              CustomDialogAction(
+                text: loc.update_now,
+                buttonType: ButtonType.primary,
+                onPressed: () async {
+                  //final Uri url = Uri.parse(status!.appStoreLink);
+                  final Uri url = Uri.parse('https://google.com');
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
+                },
+              ),
+              CustomDialogAction(
+                text: loc.dont_update,
+                buttonType: ButtonType.secondary,
+                isDestructive: true,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   void handleExport(BuildContext scaffoldMessengerContext) async {
+    await showVersionDialog(true);
+
     final String json = await LocalShareService.getAppDataAsJson(
       scaffoldMessengerContext,
     );
@@ -129,6 +201,8 @@ class _DataManagementViewState extends State<DataManagementView> {
   }
 
   void handleImport(BuildContext scaffoldMessengerContext) async {
+    await showVersionDialog(false);
+
     final path = await LocalShareService.pickImportFilePath();
 
     if (path == null) {

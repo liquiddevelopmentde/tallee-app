@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:new_version_plus/model/version_status.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:once/once.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -354,16 +353,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         },
       );
     }
-  }
-
-  /// Helper function to classify connection/network exceptions
-  bool isNetworkError(Object error) {
-    return error is SocketException ||
-        error is TimeoutException ||
-        error is HandshakeException ||
-        error is http.ClientException ||
-        error.toString().contains('SocketException') ||
-        error.toString().contains('Failed host lookup');
   }
 
   /// Adds example statistics to the database the first time the user opens the app

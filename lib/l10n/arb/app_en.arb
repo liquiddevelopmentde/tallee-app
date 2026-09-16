@@ -320,7 +320,10 @@
       }
     }
   },
+  "update_app_export_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data into another Tallee instance.",
+  "update_app_import_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data.",
   "share_match_title": "Tallee Match Share",
+  "dont_update": "Don't update",
   "share_token_format_info": "Share tokens consist of 6 alphanumeric characters.",
   "statistic": "Statistic",
   "statistics": "Statistics",
