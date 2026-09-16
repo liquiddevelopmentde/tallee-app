@@ -1,7 +1,7 @@
 name: Renovate
 on:
   schedule:
-    - cron: 'TZ=Europe/Berlin 35 22 * * *'
+    - cron: 'TZ=Europe/Berlin 38 22 * * *'
 
 jobs:
   renovate:
