@@ -46,7 +46,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
     if (widget.groupToEdit != null) {
       groupNameController.text = widget.groupToEdit!.name;
       groupDescriptionController.text = widget.groupToEdit!.description;

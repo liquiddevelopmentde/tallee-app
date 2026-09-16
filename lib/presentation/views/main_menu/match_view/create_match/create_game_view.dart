@@ -64,7 +64,7 @@ class _CreateGameViewState extends State<CreateGameView> {
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
 
     if (widget.requiredRuleset != null) {
       selectedRuleset = widget.requiredRuleset;

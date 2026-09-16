@@ -161,7 +161,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
   }
 
   Future<void> saveMatch() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final loc = AppLocalizations.of(context);
 
     // Filter null values and cast to Map<String, Player>
@@ -189,7 +189,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
 
     if (!mounted) return;
 
-    Provider.of<DataRefreshProvider>(context, listen: false).refresh();
+    context.read<DataRefreshProvider>().refresh();
 
     ScaffoldMessenger.of(context)
         .showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
@@ -198,7 +198,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
   }
 
   Future<void> navigateToGroupSelection() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final allGroups = await db.groupDao.getAllGroups();
 
     final importedGroup = widget.match.group!;
@@ -231,7 +231,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
   }
 
   Future<void> autoAssociateGroup() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final allGroups = await db.groupDao.getAllGroups();
 
     if (!mounted) return;

@@ -65,9 +65,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
-    final matchSearchProvider = Provider.of<MatchSearchProvider>(context);
-    final groupSearchProvider = Provider.of<GroupSearchProvider>(context);
-    final gameSearchProvider = Provider.of<GameSearchProvider>(context);
+    final matchSearchProvider = context.read<MatchSearchProvider>();
+    final groupSearchProvider = context.read<GroupSearchProvider>();
+    final gameSearchProvider = context.read<GameSearchProvider>();
 
     final refreshRevision = context.watch<DataRefreshProvider>().revision;
 
@@ -372,7 +372,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       Once.runOnce(
         'example-stats',
         callback: () async {
-          final db = Provider.of<AppDatabase>(context, listen: false);
+          final db = context.read<AppDatabase>();
           final stat1 = Statistic(
             type: StatisticType.totalWins,
             color: AppColor.orange,

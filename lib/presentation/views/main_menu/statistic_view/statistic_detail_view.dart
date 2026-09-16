@@ -310,7 +310,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
 
   // Handles saving the display count and giving it to statistics view
   Future<void> updateCount() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     await db.statisticDao.updateDisplayCount(widget.statistic.id, displayCount);
     await widget.refreshStatistic(widget.statistic.id);
     if (mounted) Navigator.of(context).pop(displayCount);
@@ -318,7 +318,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
 
   void toggleIsFavourite(BuildContext context) async {
     final updatedIsFavourite = !isFavourite;
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     await db.statisticDao.updateIsFavourite(
       widget.statistic.id,
       updatedIsFavourite,
@@ -330,7 +330,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   }
 
   void deleteStatistic() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     await db.statisticDao.deleteStatistic(widget.statistic.id);
     widget.refreshStatistic(widget.statistic.id);
     if (mounted) Navigator.of(context).pop();

@@ -64,7 +64,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   @override
   void initState() {
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
     ruleset = widget.match.game.ruleset;
     canSave = ruleset == Ruleset.placement || ruleset == Ruleset.lives;
 

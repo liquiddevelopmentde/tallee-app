@@ -57,7 +57,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
     match = widget.match;
     nameController = TextEditingController();
   }

@@ -71,7 +71,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   void initState() {
     super.initState();
     player = widget.player;
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
     loadData();
   }
 

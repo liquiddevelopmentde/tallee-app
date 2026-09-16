@@ -68,9 +68,9 @@ class _MatchViewState extends State<MatchView> {
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
 
-    searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
+    searchProvider = context.read<MatchSearchProvider>();
     searchProvider.addListener(handleSearchToggle);
 
     rateProvider = context.read<RateDialogProvider>();
@@ -90,7 +90,7 @@ class _MatchViewState extends State<MatchView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final searchProvider = Provider.of<MatchSearchProvider>(context);
+    final searchProvider = context.read<MatchSearchProvider>();
 
     // Reset filtered matches when search is disabled
     if (!searchProvider.isSearching) {

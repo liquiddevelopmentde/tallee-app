@@ -77,7 +77,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
 
   @override
   void initState() {
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
     fetchGameCounts();
 
     selectedGames = widget.initialSelectedGames ?? [];
@@ -259,7 +259,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   /// and pops until the first route to update the statistic overview.
   Future<void> submitStatistic() async {
     final statistic = widget.statistic!.copyWith(selectedGames: selectedGames);
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     await db.statisticDao.addStatistic(statistic: statistic);
     if (!mounted) return;
     Navigator.of(context).pop(statistic);

@@ -225,7 +225,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   }
 
   void loadData() {
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
 
     Future.wait([
       db.groupDao.getAllGroups(),

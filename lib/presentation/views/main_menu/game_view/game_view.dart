@@ -51,8 +51,8 @@ class _GameViewState extends State<GameView> {
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
-    searchProvider = Provider.of<GameSearchProvider>(context, listen: false);
+    db = context.read<AppDatabase>();
+    searchProvider = context.read<GameSearchProvider>();
     searchProvider.addListener(handleSearchToggle);
 
     loadGames();
@@ -68,7 +68,7 @@ class _GameViewState extends State<GameView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final searchProvider = Provider.of<GameSearchProvider>(context);
+    final searchProvider = context.read<GameSearchProvider>();
 
     // Reset filtered matches when search is disabled
     if (!searchProvider.isSearching) {
