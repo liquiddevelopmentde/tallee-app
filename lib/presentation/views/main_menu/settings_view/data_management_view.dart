@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:new_version_plus/model/version_status.dart';
+import 'package:new_version_plus/new_version_plus.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -116,7 +118,7 @@ class _DataManagementViewState extends State<DataManagementView> {
   Future<void> showVersionDialog(bool isExport) async {
     final loc = AppLocalizations.of(context);
 
-    /*    final newVersionPlus = NewVersionPlus(
+    final newVersionPlus = NewVersionPlus(
       iOSAppStoreCountry: 'de',
       androidPlayStoreCountry: 'de',
     );
@@ -130,10 +132,8 @@ class _DataManagementViewState extends State<DataManagementView> {
       if (isNetworkError(error)) return;
       rethrow;
     }
-    */
 
-    //if (status != null && status.canUpdate && mounted) {
-    if (mounted) {
+    if (status != null && status.canUpdate && mounted) {
       await showDialog(
         context: context,
         barrierDismissible: false,
@@ -160,8 +160,7 @@ class _DataManagementViewState extends State<DataManagementView> {
                 text: loc.update_now,
                 buttonType: ButtonType.primary,
                 onPressed: () async {
-                  //final Uri url = Uri.parse(status!.appStoreLink);
-                  final Uri url = Uri.parse('https://google.com');
+                  final Uri url = Uri.parse(status!.appStoreLink);
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
                   }
