@@ -87,12 +87,7 @@ class PullDownMenu extends PopupRoute<void> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(14),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < items.length; i++) ...[items[i]],
-            ],
-          ),
+          child: Column(mainAxisSize: MainAxisSize.min, children: items),
         ),
       ),
     );
