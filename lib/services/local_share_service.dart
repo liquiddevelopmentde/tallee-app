@@ -10,7 +10,6 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/services/shared.dart';
-import 'package:tallee/services/shared_preferences_service.dart';
 
 class LocalShareService {
   /// Deletes all data from the database.
@@ -23,7 +22,6 @@ class LocalShareService {
     await db.groupDao.deleteAllGroups();
     await db.gameDao.deleteAllGames();
     await db.playerDao.deleteAllPlayers();
-    SharedPreferencesService.deleteAllFilters(includeFavourites: true);
   }
 
   /// Retrieves all application data and converts it to a JSON string.

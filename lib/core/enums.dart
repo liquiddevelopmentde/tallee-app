@@ -12,6 +12,13 @@ enum AppEnvironment { development, testing, production }
 /// - [ButtonType.tertiary]: Tertiary button style.
 enum ButtonType { primary, secondary, tertiary }
 
+/// Filtering options for matches in the [MatchView]
+/// - [MatchFilter.all]: Show all matches
+/// - [MatchFilter.active]: Show all unfinished matches
+/// - [MatchFilter.finished]: Show all finished matches
+/// - [MatchFilter.team]: Show all team matches
+enum MatchFilter { all, active, finished, team }
+
 /// States for the [ApiActionAnimatedButton] that triggers API calls
 /// - [ApiButtonState.idle]: Initial state, button is ready to be pressed.
 /// - [ApiButtonState.loading]: API call is in progress.

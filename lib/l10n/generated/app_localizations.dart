@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// No description provided for @active_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Matches'**
+  String get active_matches;
+
   /// No description provided for @add_team.
   ///
   /// In en, this message translates to:
@@ -572,6 +578,12 @@ abstract class AppLocalizations {
   /// **'Drag to set placement'**
   String get drag_to_set_placement;
 
+  /// No description provided for @duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicate;
+
   /// No description provided for @edit_game.
   ///
   /// In en, this message translates to:
@@ -739,6 +751,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Filter'**
   String get filter;
+
+  /// No description provided for @finished_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished Matches'**
+  String get finished_matches;
 
   /// No description provided for @format_exception.
   ///
@@ -1556,6 +1574,12 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
   /// No description provided for @share_as_qr_code_info.
   ///
   /// In en, this message translates to:
@@ -1652,6 +1676,12 @@ abstract class AppLocalizations {
   /// **'Team Match'**
   String get team_match;
 
+  /// No description provided for @team_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Matches'**
+  String get team_matches;
+
   /// No description provided for @teams.
   ///
   /// In en, this message translates to:
@@ -1687,6 +1717,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'There is no group matching your search'**
   String get there_is_no_group_matching_your_search;
+
+  /// No description provided for @there_is_no_match_matching_your_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no match matching your filter'**
+  String get there_is_no_match_matching_your_filter;
 
   /// No description provided for @there_is_no_match_matching_your_search.
   ///
