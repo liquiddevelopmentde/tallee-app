@@ -1,6 +1,6 @@
 name: Bug Report
 about: Erstelle eine Bug Report
-labels: 'Task/Bug'
+labels: 'Type/Bug'
 title: ''
 body:
   - type: textarea

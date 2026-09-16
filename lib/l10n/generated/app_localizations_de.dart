@@ -284,6 +284,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get drag_to_set_placement => 'Ziehen um Platzierung zu setzen';
 
   @override
+  String get duplicate => 'Duplizieren';
+
+  @override
   String get edit_game => 'Spielvorlage bearbeiten';
 
   @override
@@ -842,6 +845,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settings => 'Einstellungen';
+
+  @override
+  String get share => 'Teilen';
 
   @override
   String get share_as_qr_code_info =>

@@ -584,6 +584,12 @@ abstract class AppLocalizations {
   /// **'Drag to set placement'**
   String get drag_to_set_placement;
 
+  /// No description provided for @duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicate;
+
   /// No description provided for @edit_game.
   ///
   /// In en, this message translates to:
@@ -1561,6 +1567,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
 
   /// No description provided for @share_as_qr_code_info.
   ///
