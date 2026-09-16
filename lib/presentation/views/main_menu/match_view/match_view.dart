@@ -231,23 +231,19 @@ class _MatchViewState extends State<MatchView> {
     if (!RATE_MY_APP.shouldOpenDialog) return;
 
     final loc = AppLocalizations.of(context);
-    bool? result;
+    bool? didUserLikeApp;
 
     await Future.delayed(const Duration(milliseconds: 500), () async {
-      result = await showPreRateDialog(loc);
+      didUserLikeApp = await showPreRateDialog(loc);
     });
 
-    if (result is bool) {
-      if (result! && mounted) {
-        // Pre rating is good
-        RATE_MY_APP.showStarRateDialog(context);
-      } else if (mounted) {
-        // Pre rating is bad
-        await Future.delayed(
-          const Duration(milliseconds: 500),
-          () => showBadRatingDialog(loc),
-        );
-      }
+    if (didUserLikeApp is bool && mounted) {
+      didUserLikeApp!
+          ? RATE_MY_APP.showStarRateDialog(context)
+          : await Future.delayed(
+              const Duration(milliseconds: 500),
+              () => showBadRatingDialog(loc),
+            );
     }
   }
 
