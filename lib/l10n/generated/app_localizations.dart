@@ -344,18 +344,6 @@ abstract class AppLocalizations {
   /// **'Copy Code'**
   String get copy_code;
 
-  /// No description provided for @duplicate.
-  ///
-  /// In en, this message translates to:
-  /// **'Duplicate'**
-  String get duplicate;
-
-  /// No description provided for @share.
-  ///
-  /// In en, this message translates to:
-  /// **'Share'**
-  String get share;
-
   /// No description provided for @could_not_add_player.
   ///
   /// In en, this message translates to:
@@ -571,6 +559,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Drag to set placement'**
   String get drag_to_set_placement;
+
+  /// No description provided for @duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicate;
 
   /// No description provided for @edit_game.
   ///
@@ -1549,6 +1543,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
 
   /// No description provided for @share_as_qr_code_info.
   ///

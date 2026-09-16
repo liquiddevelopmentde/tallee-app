@@ -135,12 +135,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy_code => 'Copy Code';
 
   @override
-  String get duplicate => 'Duplicate';
-
-  @override
-  String get share => 'Share';
-
-  @override
   String could_not_add_player(String playerName) {
     return 'Could not add player $playerName';
   }
@@ -272,6 +266,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get drag_to_set_placement => 'Drag to set placement';
+
+  @override
+  String get duplicate => 'Duplicate';
 
   @override
   String get edit_game => 'Edit Game';
@@ -828,6 +825,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get share => 'Share';
 
   @override
   String get share_as_qr_code_info =>

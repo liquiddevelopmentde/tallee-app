@@ -77,7 +77,6 @@ class PullDownMenu extends PopupRoute<void> {
         decoration: BoxDecoration(
           color: CustomTheme.boxColor,
           borderRadius: BorderRadius.circular(14),
-          //border: Border.all(color: CustomTheme.boxBorderColor),
           boxShadow: const [
             BoxShadow(
               color: Colors.black26,
@@ -91,17 +90,7 @@ class PullDownMenu extends PopupRoute<void> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (var i = 0; i < items.length; i++) ...[
-                if (i > 0)
-                  const Divider(
-                    endIndent: 15,
-                    indent: 15,
-                    height: 1,
-                    thickness: 1,
-                    color: CustomTheme.boxBorderColor,
-                  ),
-                items[i],
-              ],
+              for (var i = 0; i < items.length; i++) ...[items[i]],
             ],
           ),
         ),
