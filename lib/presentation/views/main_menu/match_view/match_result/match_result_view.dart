@@ -9,6 +9,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_result/plac
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/select_looser_widget.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/select_winner_widget.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/state/rate_dialog_provider.dart';
 
 class MatchResultView extends StatefulWidget {
   /// A view that allows selecting and saving the winner of a match
@@ -189,18 +190,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                 BottomAnimatedButton(
                   sizeRelativeToWidth: 0.95,
                   buttonText: loc.save_changes,
-                  onPressed: canSave
-                      ? () async {
-                          final ending = DateTime.now();
-                          await db.matchDao.updateMatchEndedAt(
-                            matchId: widget.match.id,
-                            endedAt: ending,
-                          );
-                          await handleSaving();
-                          if (!context.mounted) return;
-                          Navigator.pop(context);
-                        }
-                      : null,
+                  onPressed: canSave ? () async => await handleSaving() : null,
                 ),
               ],
             ),
@@ -259,6 +249,12 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Handles saving or removing the winner in the database
   /// based on the current selection.
   Future<void> handleSaving() async {
+    final ending = DateTime.now();
+    await db.matchDao.updateMatchEndedAt(
+      matchId: widget.match.id,
+      endedAt: ending,
+    );
+
     if (ruleset == Ruleset.winner) {
       await handleWinners();
     } else if (ruleset == Ruleset.loser) {
@@ -273,6 +269,11 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
 
     widget.onWinnerChanged?.call();
+
+    if (!mounted) return;
+    final rateProvider = context.read<RateDialogProvider>();
+    rateProvider.request();
+    Navigator.pop(context);
   }
 
   /// Handles saving or removing the (single) winner in the database.

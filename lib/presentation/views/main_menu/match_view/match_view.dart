@@ -20,6 +20,7 @@ import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/state/rate_dialog_provider.dart';
 
 class MatchView extends StatefulWidget {
   /// A view that displays a list of matches
@@ -32,8 +33,10 @@ class MatchView extends StatefulWidget {
 class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
   late final MatchSearchProvider searchProvider;
-  bool isLoading = true;
+  late RateDialogProvider rateProvider;
+  late List<Match> filteredMatches = [...matches];
 
+  bool isLoading = true;
   TextEditingController searchBarController = TextEditingController();
 
   /// Loaded matches from the database, initially filled with skeleton matches
@@ -62,14 +65,16 @@ class _MatchViewState extends State<MatchView> {
     ),
   );
 
-  late List<Match> filteredMatches = [...matches];
-
   @override
   void initState() {
     super.initState();
     db = Provider.of<AppDatabase>(context, listen: false);
+
     searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
     searchProvider.addListener(handleSearchToggle);
+
+    rateProvider = context.read<RateDialogProvider>();
+    rateProvider.addListener(handleRatePrompt);
 
     loadMatches();
   }
@@ -77,6 +82,7 @@ class _MatchViewState extends State<MatchView> {
   @override
   void dispose() {
     searchProvider.removeListener(handleSearchToggle);
+    rateProvider.removeListener(handleRatePrompt);
     searchBarController.dispose();
     super.dispose();
   }
@@ -202,8 +208,8 @@ class _MatchViewState extends State<MatchView> {
               text: loc.create_match,
               icon: MATCH_ICON,
               showAddBadge: true,
-              onPressed: () async {
-                await Navigator.push(
+              onPressed: () {
+                Navigator.push(
                   context,
                   adaptivePageRoute(
                     settings: const RouteSettings(
@@ -215,13 +221,22 @@ class _MatchViewState extends State<MatchView> {
                     ),
                   ),
                 );
-                triggerRateDialog();
               },
             ),
           ),
         ],
       ),
     );
+  }
+
+  void handleRatePrompt() {
+    if (!mounted || !rateProvider.shouldShow) return;
+
+    rateProvider.markAsShown();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) triggerRateDialog();
+    });
   }
 
   /// Triggers the rate dialog if the user has not rated the app yet and the conditions are met.

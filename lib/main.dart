@@ -29,6 +29,7 @@ import 'package:tallee/state/data_refresh_provider.dart';
 import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/state/rate_dialog_provider.dart';
 
 void main() async {
   ENVIRONMENT = kDebugMode
@@ -113,6 +114,7 @@ void main() async {
             ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
             ChangeNotifierProvider(create: (context) => GameSearchProvider()),
             ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
+            ChangeNotifierProvider(create: (context) => RateDialogProvider()),
           ],
           child: DefaultAssetBundle(
             bundle: SentryAssetBundle(),
