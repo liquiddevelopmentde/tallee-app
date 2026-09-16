@@ -152,8 +152,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
                 ],
+
+                const SizedBox(height: 15),
 
                 // Teams or Players
                 if (useTeamLogic) ...[

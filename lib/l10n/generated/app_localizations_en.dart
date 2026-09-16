@@ -701,6 +701,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get players => 'Players';
 
   @override
+  String get group_members => 'Group Members';
+
+  @override
   String get point => 'Point';
 
   @override

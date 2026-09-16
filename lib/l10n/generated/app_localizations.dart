@@ -1304,6 +1304,12 @@ abstract class AppLocalizations {
   /// **'Players'**
   String get players;
 
+  /// No description provided for @group_members.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Members'**
+  String get group_members;
+
   /// No description provided for @point.
   ///
   /// In en, this message translates to:

@@ -708,6 +708,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get players => 'Spieler:innen';
 
   @override
+  String get group_members => 'Gruppenmitglieder';
+
+  @override
   String get point => 'Punkt';
 
   @override
