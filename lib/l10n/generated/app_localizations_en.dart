@@ -10,6 +10,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get active_matches => 'Active Matches';
+
+  @override
   String get add_team => 'Add Team';
 
   @override
@@ -26,19 +29,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get all_time => 'All time';
-
-  @override
-  String get there_is_no_match_matching_your_filter =>
-      'There is no match matching your filter';
-
-  @override
-  String get active_matches => 'Active Matches';
-
-  @override
-  String get finished_matches => 'Finished Matches';
-
-  @override
-  String get team_matches => 'Team Matches';
 
   @override
   String get app_name => 'Tallee';
@@ -380,6 +370,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filter => 'Filter';
+
+  @override
+  String get finished_matches => 'Finished Matches';
 
   @override
   String get format_exception => 'Format Exception (see console)';
@@ -900,6 +893,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get team_match => 'Team Match';
 
   @override
+  String get team_matches => 'Team Matches';
+
+  @override
   String get teams => 'Teams';
 
   @override
@@ -919,6 +915,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get there_is_no_group_matching_your_search =>
       'There is no group matching your search';
+
+  @override
+  String get there_is_no_match_matching_your_filter =>
+      'There is no match matching your filter';
 
   @override
   String get there_is_no_match_matching_your_search =>
