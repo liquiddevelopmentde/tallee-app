@@ -7,12 +7,14 @@ import 'package:tallee/presentation/widgets/tiles/file_tile.dart';
 class DisplaySelectedFileWidget extends StatelessWidget {
   const DisplaySelectedFileWidget({
     required this.match,
-    super.key,
     this.fileName,
+    this.showDetails = true,
+    super.key,
   });
 
   final Match match;
   final String? fileName;
+  final bool showDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class DisplaySelectedFileWidget extends StatelessWidget {
         MatchFileTile(
           match: match,
           fileName: fileName,
+          showDetails: showDetails,
           margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
         ),
         const SizedBox(height: 20),
