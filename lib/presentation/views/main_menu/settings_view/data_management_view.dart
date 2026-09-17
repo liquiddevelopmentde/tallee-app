@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:new_version_plus/model/version_status.dart';
-import 'package:new_version_plus/new_version_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -15,8 +14,8 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/local_share_service.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DataManagementView extends StatefulWidget {
   const DataManagementView({super.key});
