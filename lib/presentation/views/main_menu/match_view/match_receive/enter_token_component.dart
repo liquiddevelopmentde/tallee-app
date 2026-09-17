@@ -222,7 +222,10 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
         });
         if (mounted) {
           Navigator.of(context).push(
-            adaptivePageRoute(builder: (_) => PreviewMatchView(match: match)),
+            adaptivePageRoute(
+              builder: (_) => PreviewMatchView(match: match),
+              fullscreenDialog: true,
+            ),
           );
         }
       }
