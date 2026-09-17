@@ -271,6 +271,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get displayed_entries => 'Angezeigte Einträge';
 
   @override
+  String get dont_update => 'Nicht aktualisieren';
+
+  @override
   String get drag_to_set_placement => 'Ziehen um Platzierung zu setzen';
 
   @override
@@ -404,6 +407,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get group_associated => 'Gruppe erfolgreich verknüpft';
 
   @override
+  String get group_members => 'Gruppenmitglieder';
+
+  @override
   String get group_name => 'Gruppenname';
 
   @override
@@ -425,9 +431,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get import_data => 'Daten importieren';
-
-  @override
-  String get preview_match => 'Spielvorschau';
 
   @override
   String get import_description =>
@@ -717,13 +720,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get players => 'Spieler:innen';
 
   @override
-  String get group_members => 'Gruppenmitglieder';
-
-  @override
   String get point => 'Punkt';
 
   @override
   String get points => 'Punkte';
+
+  @override
+  String get preview_match => 'Spielvorschau';
 
   @override
   String get privacy_policy => 'Datenschutzerklärung';
@@ -862,18 +865,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get update_app_export_desc =>
-      'Du hast nicht die neueste App-Version, was zu Problemen beim Datenimport in eine andere Tallee-App führen kann.';
-
-  @override
-  String get update_app_import_desc =>
-      'Du hast nicht die neueste App-Version, was zu Problemen beim Importieren deiner Daten führen kann.';
-
-  @override
   String get share_match_title => 'Tallee Match teilen';
-
-  @override
-  String get dont_update => 'Nicht aktualisieren';
 
   @override
   String get share_token_format_info =>
@@ -988,6 +980,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get unknown_exception => 'Unbekannter Fehler (siehe Konsole)';
+
+  @override
+  String get update_app_export_desc =>
+      'Du hast nicht die neueste App-Version, was zu Problemen beim Datenimport in eine andere Tallee-App führen kann.';
+
+  @override
+  String get update_app_import_desc =>
+      'Du hast nicht die neueste App-Version, was zu Problemen beim Importieren deiner Daten führen kann.';
 
   @override
   String get update_app_version =>
