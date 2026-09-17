@@ -751,11 +751,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scan_qr_code_instruction =>
-      'Scan the qr code with another Tallee instance to share the match.';
+      'Scan the qr code with another Tallee app to share the match.';
 
   @override
   String get scan_qr_receive_instruction =>
-      'Scan the QR code of another Tallee instance to receive the match.';
+      'Scan the QR code of another Tallee app to receive the match.';
 
   @override
   String get scope => 'Scope';
@@ -850,7 +850,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get update_app_export_desc =>
-      'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee instance.';
+      'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.';
 
   @override
   String get update_app_import_desc =>

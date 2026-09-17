@@ -1403,13 +1403,13 @@ abstract class AppLocalizations {
   /// No description provided for @scan_qr_code_instruction.
   ///
   /// In en, this message translates to:
-  /// **'Scan the qr code with another Tallee instance to share the match.'**
+  /// **'Scan the qr code with another Tallee app to share the match.'**
   String get scan_qr_code_instruction;
 
   /// No description provided for @scan_qr_receive_instruction.
   ///
   /// In en, this message translates to:
-  /// **'Scan the QR code of another Tallee instance to receive the match.'**
+  /// **'Scan the QR code of another Tallee app to receive the match.'**
   String get scan_qr_receive_instruction;
 
   /// No description provided for @scope.
@@ -1583,7 +1583,7 @@ abstract class AppLocalizations {
   /// No description provided for @update_app_export_desc.
   ///
   /// In en, this message translates to:
-  /// **'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee instance.'**
+  /// **'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.'**
   String get update_app_export_desc;
 
   /// No description provided for @update_app_import_desc.
