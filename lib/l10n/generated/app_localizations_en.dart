@@ -10,6 +10,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get active_matches => 'Active Matches';
+
+  @override
   String get add_team => 'Add Team';
 
   @override
@@ -268,6 +271,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drag_to_set_placement => 'Drag to set placement';
 
   @override
+  String get duplicate => 'Duplicate';
+
+  @override
   String get edit_game => 'Edit Game';
 
   @override
@@ -364,6 +370,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filter => 'Filter';
+
+  @override
+  String get finished_matches => 'Finished Matches';
 
   @override
   String get format_exception => 'Format Exception (see console)';
@@ -824,6 +833,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
+  String get share => 'Share';
+
+  @override
   String get share_as_qr_code_info =>
       'To share a match as a QR code with others, online sharing must be enabled';
 
@@ -892,6 +904,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get team_match => 'Team Match';
 
   @override
+  String get team_matches => 'Team Matches';
+
+  @override
   String get teams => 'Teams';
 
   @override
@@ -911,6 +926,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get there_is_no_group_matching_your_search =>
       'There is no group matching your search';
+
+  @override
+  String get there_is_no_match_matching_your_filter =>
+      'There is no match matching your filter';
 
   @override
   String get there_is_no_match_matching_your_search =>

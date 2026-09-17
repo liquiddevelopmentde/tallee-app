@@ -10,6 +10,9 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get active_matches => 'Aktive Spiele';
+
+  @override
   String get add_team => 'Team hinzufügen';
 
   @override
@@ -271,6 +274,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get drag_to_set_placement => 'Ziehen um Platzierung zu setzen';
 
   @override
+  String get duplicate => 'Duplizieren';
+
+  @override
   String get edit_game => 'Spielvorlage bearbeiten';
 
   @override
@@ -369,6 +375,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get filter => 'Filter';
+
+  @override
+  String get finished_matches => 'Beendete Spiele';
 
   @override
   String get format_exception => 'Formatfehler (siehe Konsole)';
@@ -831,6 +840,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings => 'Einstellungen';
 
   @override
+  String get share => 'Teilen';
+
+  @override
   String get share_as_qr_code_info =>
       'Damit du ein Spiel als QR-Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein';
 
@@ -900,6 +912,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get team_match => 'Teamspiel';
 
   @override
+  String get team_matches => 'Teamspiele';
+
+  @override
   String get teams => 'Teams';
 
   @override
@@ -919,6 +934,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get there_is_no_group_matching_your_search =>
       'Es gibt keine Gruppe, die deiner Suche entspricht';
+
+  @override
+  String get there_is_no_match_matching_your_filter =>
+      'Es gibt kein Spiel, das deinem Filter entspricht';
 
   @override
   String get there_is_no_match_matching_your_search =>

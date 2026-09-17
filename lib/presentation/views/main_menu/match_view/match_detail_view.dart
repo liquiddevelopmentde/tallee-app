@@ -19,6 +19,7 @@ import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
 import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
@@ -71,73 +72,25 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       appBar: AppBar(
         title: Text(loc.match_profile),
         actions: [
-          HapticIconButton(
-            icon: const Icon(Icons.copy),
-            onPressed: () => Navigator.of(context).push(
-              adaptivePageRoute(
-                settings: const RouteSettings(name: RouteNames.createMatchView),
-                builder: (context) => CreateMatchView(
-                  matchToPrefill: templateMatch,
-                  onWinnerChanged: widget.onMatchUpdate,
-                  onMatchesUpdated: widget.onMatchUpdate,
-                ),
+          PullDownMenuButton(
+            items: [
+              PullDownMenuTile(
+                icon: Icons.copy,
+                label: loc.duplicate,
+                onTap: duplicateMatch,
               ),
-            ),
-          ),
-          HapticIconButton(
-            onPressed: () {
-              if (match.endedAt != null) {
-                Navigator.of(context).push(
-                  adaptivePageRoute(
-                    builder: (context) => MatchShareView(match: match),
-                    fullscreenDialog: true,
-                  ),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  CustomSnackBar(message: loc.match_not_ended_share_warning),
-                );
-              }
-            },
-            icon: Icon(
-              Icons.share,
-              color: match.endedAt != null
-                  ? Colors.white
-                  : Colors.white.withAlpha(150),
-            ),
-          ),
-          HapticIconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () async {
-              showDialog<bool>(
-                context: context,
-                builder: (context) => CustomAlertDialog(
-                  title: '${loc.delete_match}?',
-                  content: Text(
-                    loc.this_cannot_be_undone,
-                    overflow: TextOverflow.visible,
-                  ),
-                  actions: [
-                    CustomDialogAction(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      text: loc.delete,
-                    ),
-                    CustomDialogAction(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      buttonType: ButtonType.secondary,
-                      text: loc.cancel,
-                    ),
-                  ],
-                ),
-              ).then((confirmed) async {
-                if (confirmed! && context.mounted) {
-                  await db.matchDao.deleteMatch(matchId: match.id);
-                  if (!context.mounted) return;
-                  Navigator.pop(context);
-                  widget.onMatchUpdate.call();
-                }
-              });
-            },
+              PullDownMenuTile(
+                icon: Icons.share,
+                label: loc.share,
+                onTap: shareMatch,
+              ),
+              PullDownMenuTile(
+                icon: Icons.delete,
+                label: loc.delete,
+                isDestructive: true,
+                onTap: confirmDeleteMatch,
+              ),
+            ],
           ),
         ],
       ),
@@ -375,6 +328,67 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ),
       ),
     );
+  }
+
+  void duplicateMatch() {
+    Navigator.of(context).push(
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.createMatchView),
+        builder: (context) => CreateMatchView(
+          matchToPrefill: templateMatch,
+          onWinnerChanged: widget.onMatchUpdate,
+          onMatchesUpdated: widget.onMatchUpdate,
+        ),
+      ),
+    );
+  }
+
+  void shareMatch() {
+    final loc = AppLocalizations.of(context);
+    if (match.endedAt != null) {
+      Navigator.of(context).push(
+        adaptivePageRoute(
+          builder: (context) => MatchShareView(match: match),
+          fullscreenDialog: true,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackBar(message: loc.match_not_ended_share_warning),
+      );
+    }
+  }
+
+  void confirmDeleteMatch() {
+    final loc = AppLocalizations.of(context);
+    showDialog<bool>(
+      context: context,
+      builder: (context) => CustomAlertDialog(
+        title: '${loc.delete_match}?',
+        content: Text(
+          loc.this_cannot_be_undone,
+          overflow: TextOverflow.visible,
+        ),
+        actions: [
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(true),
+            text: loc.delete,
+          ),
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(false),
+            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+          ),
+        ],
+      ),
+    ).then((confirmed) async {
+      if (confirmed! && mounted) {
+        await db.matchDao.deleteMatch(matchId: match.id);
+        if (!mounted) return;
+        Navigator.pop(context);
+        widget.onMatchUpdate.call();
+      }
+    });
   }
 
   /// Returns a copy of the current match without the previous match ID and
