@@ -12,6 +12,51 @@ void main() {
   });
 
   group('SharedPreferencesService', () {
+    test('Delete all preferences works correctly', () async {
+      final game1 = Game(
+        id: 'game1',
+        name: 'Game 1',
+        ruleset: Ruleset.highestScore,
+      );
+      final game2 = Game(
+        id: 'game2',
+        name: 'Game 2',
+        ruleset: Ruleset.highestScore,
+      );
+
+      SharedPreferencesService.setFilteredGames([game1, game2]);
+      SharedPreferencesService.setFilteredStatisticTypes([
+        StatisticType.totalMatches,
+        StatisticType.totalWins,
+        StatisticType.bestScore,
+      ]);
+      SharedPreferencesService.setFilteredTimeframes([
+        Timeframe.last7Days,
+        Timeframe.last30Days,
+        Timeframe.allTime,
+      ]);
+      SharedPreferencesService.setMatchFilter(MatchFilter.team);
+      SharedPreferencesService.setSharingConsent(true);
+
+      SharedPreferencesService.deleteAllPreferences();
+
+      final filteredGroups = SharedPreferencesService.getFilteredGroups();
+      final filteredGames = SharedPreferencesService.getFilteredGames();
+      final filteredTypes =
+          SharedPreferencesService.getFilteredStatisticTypes();
+      final filteredTimeframes =
+          SharedPreferencesService.getFilteredTimeframes();
+      final matchFilter = SharedPreferencesService.getMatchFilter();
+      final sharingConsent = SharedPreferencesService.getSharingConsent();
+
+      expect(filteredGroups, isEmpty);
+      expect(filteredGames, isEmpty);
+      expect(filteredTypes, isEmpty);
+      expect(filteredTimeframes, isEmpty);
+      expect(matchFilter, isNull);
+      expect(sharingConsent, isNull);
+    });
+
     test('Reset all filter works correctly', () async {
       final game1 = Game(
         id: 'game1',
@@ -38,7 +83,7 @@ void main() {
         Timeframe.allTime,
       ]);
 
-      SharedPreferencesService.deleteAllFilters(includeFavourites: false);
+      SharedPreferencesService.resetStatisticFilter(includeFavourites: false);
 
       final filteredGroups = SharedPreferencesService.getFilteredGroups();
       final filteredGames = SharedPreferencesService.getFilteredGames();
@@ -72,17 +117,6 @@ void main() {
 
       final filteredGames = SharedPreferencesService.getFilteredGames();
       expect(filteredGames, [game1.id, game2.id]);
-    });
-
-    test('Get and set sharing consent works correctly', () async {
-      // initially null
-      expect(SharedPreferencesService.getStoredSharingConsent(), isNull);
-
-      await SharedPreferencesService.setSharingConsent(true);
-      expect(SharedPreferencesService.getStoredSharingConsent(), isTrue);
-
-      await SharedPreferencesService.setSharingConsent(false);
-      expect(SharedPreferencesService.getStoredSharingConsent(), isFalse);
     });
 
     test('Get and set filtered groups works correctly', () async {
@@ -126,6 +160,29 @@ void main() {
         Timeframe.last30Days,
         Timeframe.allTime,
       ]);
+    });
+
+    test('Get and set sharing consent works correctly', () async {
+      expect(SharedPreferencesService.getSharingConsent(), isNull);
+
+      await SharedPreferencesService.setSharingConsent(true);
+      expect(SharedPreferencesService.getSharingConsent(), isTrue);
+
+      await SharedPreferencesService.setSharingConsent(false);
+      expect(SharedPreferencesService.getSharingConsent(), isFalse);
+    });
+
+    test('Get and set match filters works correctly', () async {
+      var matchFilter = SharedPreferencesService.getMatchFilter();
+      expect(matchFilter, isNull);
+
+      SharedPreferencesService.setMatchFilter(MatchFilter.finished);
+      matchFilter = SharedPreferencesService.getMatchFilter();
+      expect(matchFilter, MatchFilter.finished);
+
+      SharedPreferencesService.setMatchFilter(MatchFilter.active);
+      matchFilter = SharedPreferencesService.getMatchFilter();
+      expect(matchFilter, MatchFilter.active);
     });
   });
 }
