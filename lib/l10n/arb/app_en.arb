@@ -289,8 +289,8 @@
   "save_changes": "Save Changes",
   "save_file": "Save File",
   "save_match": "Save match",
-  "scan_qr_code_instruction": "Scan the qr code with another Tallee instance to share the match.",
-  "scan_qr_receive_instruction": "Scan the QR code of another Tallee instance to receive the match.",
+  "scan_qr_code_instruction": "Scan the qr code with another Tallee app to share the match.",
+  "scan_qr_receive_instruction": "Scan the QR code of another Tallee app to receive the match.",
   "scope": "Scope",
   "scope_description": "Choose which games or players are included in the calculation.",
   "search_for_games": "Search for games",
@@ -326,7 +326,10 @@
       }
     }
   },
+  "update_app_export_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.",
+  "update_app_import_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data.",
   "share_match_title": "Tallee Match Share",
+  "dont_update": "Don't update",
   "share_token_format_info": "Share tokens consist of 6 alphanumeric characters.",
   "statistic": "Statistic",
   "statistics": "Statistics",
