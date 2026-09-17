@@ -13,10 +13,6 @@ class NewsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final locale = loc.localeName;
-    final news = localizedNews.containsKey(locale)
-        ? localizedNews[locale]!
-        : localizedNews['en']!;
 
     final PackageInfo packageInfo = PackageInfoService.info;
 
@@ -85,7 +81,7 @@ class NewsView extends StatelessWidget {
                       child: Column(
                         spacing: 20,
                         children: [
-                          for (final entry in news) NewsCard(newsEntry: entry),
+                          for (final item in news) NewsCard(newsItem: item),
                         ],
                       ),
                     ),
