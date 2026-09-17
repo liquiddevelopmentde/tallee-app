@@ -402,7 +402,6 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   /// Loads all statistics and needed data from the database
   Future<void> loadStatistics() async {
-    if (!mounted) return;
     setState(() => isLoading = true);
 
     final db = Provider.of<AppDatabase>(context, listen: false);
