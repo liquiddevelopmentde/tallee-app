@@ -366,26 +366,26 @@ class _MatchViewState extends State<MatchView> {
 
   /// Loads the matches from the database and sorts them by creation date.
   void loadMatches() {
-    isLoading = true;
+    setState(() => isLoading = true);
+
     Future.wait([
       db.matchDao.getAllMatches(includeDeletedPlayer: true),
       Future.delayed(MINIMUM_SKELETON_DURATION),
     ]).then((results) {
-      if (mounted) {
-        setState(() {
-          final loadedMatches = results[0] as List<Match>;
+      if (!mounted) return;
 
-          allMatches = [...loadedMatches]
-            ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-          filteredMatches = [...allMatches];
+      final loadedMatches = results[0] as List<Match>;
+      setState(() {
+        allMatches = [...loadedMatches]
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        filteredMatches = [...allMatches];
 
-          searchBarController.text.isEmpty
-              ? displayedMatches = [...allMatches]
-              : applySearch(searchBarController.text);
+        searchBarController.text.isEmpty
+            ? displayedMatches = [...allMatches]
+            : applySearch(searchBarController.text);
 
-          isLoading = false;
-        });
-      }
+        isLoading = false;
+      });
     });
   }
 }
