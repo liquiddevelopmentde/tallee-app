@@ -51,8 +51,11 @@ void main() async {
       options.enableAutoSessionTracking = false;
 
       options.beforeSend = (event, hint) {
-        if (event.level == SentryLevel.error ||
-            event.level == SentryLevel.fatal) {
+        final skipSnackBar = hint.get('skipSnackBar') == true;
+
+        if (!skipSnackBar &&
+            (event.level == SentryLevel.error ||
+                event.level == SentryLevel.fatal)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final context = Tallee.navigatorKey.currentContext;
             if (context != null) {
