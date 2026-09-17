@@ -11,6 +11,7 @@ class PairTile extends StatelessWidget {
     this.onTileTap,
     this.backgroundColor,
     this.pairIconLeft = false,
+    this.showIcon = false,
   });
 
   final Team pair;
@@ -18,10 +19,12 @@ class PairTile extends StatelessWidget {
   final VoidCallback? onTileTap;
   final Color? backgroundColor;
   final bool pairIconLeft;
+  final bool showIcon;
 
   @override
   Widget build(BuildContext context) {
     return TextIconTile(
+      showIcon: showIcon,
       onIconTap: onIconTap,
       onTileTap: onTileTap,
       content: buildUnitNameWidget(

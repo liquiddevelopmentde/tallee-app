@@ -362,7 +362,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         return TextIconListTile(
           player: player,
           icon: Icons.add,
-          onPressed: () async {
+          onTileTap: () async {
             await HapticFeedback.selectionClick();
             setState(() {
               if (!selectedPlayers.any((p) => p.id == player.id)) {
@@ -384,28 +384,27 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     return Opacity(
       opacity: 1.0,
       child: GestureDetector(
+        onTap: () => setState(() {
+          selectedUnits.remove(unit);
+          pairingSelection.remove(unit.id);
+          isPairingMode = pairingSelection.isNotEmpty;
+          widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+
+          final player = unit.members.first;
+          final currentSearch = searchBarController.text.toLowerCase();
+          if (currentSearch.isEmpty ||
+              player.name.toLowerCase().contains(currentSearch)) {
+            suggestedPlayers.add(player);
+            suggestedPlayers.sort((a, b) => a.name.compareTo(b.name));
+          }
+        }),
         onLongPressDown: !isPaired && widget.pairingEnabled
             ? (_) => setState(() => pressingId = unit.id)
             : null,
         onLongPressCancel: () => setState(() => pressingId = null),
         onLongPressEnd: (_) => setState(() => pressingId = null),
         onLongPress: !isPaired && widget.pairingEnabled
-            ? () async {
-                await HapticFeedback.selectionClick();
-                setState(() {
-                  pressingId = null;
-                  if (isSelectedForPairing) {
-                    pairingSelection.remove(unit.id);
-                  } else {
-                    pairingSelection.add(unit.id);
-                  }
-                  isPairingMode = pairingSelection.isNotEmpty;
-                  widget.onMultipleChanged?.call(
-                    selectedPlayers,
-                    selectedUnits,
-                  );
-                });
-              }
+            ? () async => onTileTap(unit)
             : null,
         child: Container(
           decoration: isSelectedForPairing
@@ -416,11 +415,13 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
               : null,
           child: isPaired
               ? PairTile(
+                  showIcon: true,
                   pair: unit,
                   pairIconLeft: true,
-                  onIconTap: () => unmergeUnit(unit),
+                  onTileTap: () => unmergeUnit(unit),
                 )
               : PlayerTile(
+                  showIcon: true,
                   player: unit.members.first,
                   backgroundColor: pressingId == unit.id
                       ? Colors.grey.shade800
@@ -430,44 +431,25 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
                           widget.pairingEnabled &&
                           pairingSelection.isNotEmpty &&
                           !isSelectedForPairing
-                      ? () async {
-                          await HapticFeedback.selectionClick();
-                          setState(() {
-                            pairingSelection.add(unit.id);
-                            isPairingMode = pairingSelection.isNotEmpty;
-                            if (pairingSelection.length == 2) {
-                              autoMergePairingSelection();
-                              isPairingMode = pairingSelection.isNotEmpty;
-                            }
-                            widget.onMultipleChanged?.call(
-                              selectedPlayers,
-                              selectedUnits,
-                            );
-                          });
-                        }
+                      ? () async => onTileTap(unit)
                       : null,
-                  onIconTap: () => setState(() {
-                    selectedUnits.remove(unit);
-                    pairingSelection.remove(unit.id);
-                    isPairingMode = pairingSelection.isNotEmpty;
-                    widget.onMultipleChanged?.call(
-                      selectedPlayers,
-                      selectedUnits,
-                    );
-
-                    final player = unit.members.first;
-                    final currentSearch = searchBarController.text
-                        .toLowerCase();
-                    if (currentSearch.isEmpty ||
-                        player.name.toLowerCase().contains(currentSearch)) {
-                      suggestedPlayers.add(player);
-                      suggestedPlayers.sort((a, b) => a.name.compareTo(b.name));
-                    }
-                  }),
                 ),
         ),
       ),
     );
+  }
+
+  Future<void> onTileTap(Team unit) async {
+    await HapticFeedback.selectionClick();
+    setState(() {
+      pairingSelection.add(unit.id);
+      isPairingMode = pairingSelection.isNotEmpty;
+      if (pairingSelection.length == 2) {
+        autoMergePairingSelection();
+        isPairingMode = pairingSelection.isNotEmpty;
+      }
+      widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+    });
   }
 
   void autoMergePairingSelection() {

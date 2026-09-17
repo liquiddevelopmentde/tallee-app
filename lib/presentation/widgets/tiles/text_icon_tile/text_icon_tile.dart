@@ -21,10 +21,12 @@ class TextIconTile extends StatelessWidget {
     this.onIconTap,
     this.onTileTap,
     this.highlighted = false,
+    this.showIcon = false,
   });
 
   final Widget content;
   final Color? backgroundColor;
+  final bool showIcon;
   final IconData? icon;
   final VoidCallback? onIconTap;
   final VoidCallback? onTileTap;
@@ -32,7 +34,6 @@ class TextIconTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconEnabled = onIconTap != null && icon != null;
     final effectiveBgColor = backgroundColor ?? CustomTheme.onBoxColor;
     final tileBgColor = highlighted
         ? effectiveBgColor.withAlpha((140).round())
@@ -54,9 +55,9 @@ class TextIconTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (iconEnabled) const SizedBox(width: 3),
+            if (showIcon) const SizedBox(width: 3),
             Flexible(child: content),
-            if (iconEnabled) ...<Widget>[
+            if (showIcon) ...<Widget>[
               const SizedBox(width: 3),
               GestureDetector(
                 onTap: () {
