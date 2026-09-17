@@ -1,7 +1,7 @@
 name: Renovate
 on:
   schedule:
-    - cron: '5/1 * * * *'
+    - cron: '0 9 * * 5'
 
 jobs:
   renovate:
@@ -15,7 +15,7 @@ jobs:
       - name: Run Renovate
         env:
           RENOVATE_TOKEN: ${{ secrets.BOT_TOKEN }}
-          GITHUB_COM_TOKEN: ${{ secrets.GITHUB }}
+          GITHUB_COM_TOKEN: ${{ secrets.PUBLIC_GITHUB_TOKEN }}
           RENOVATE_PLATFORM: gitea
           RENOVATE_ENDPOINT: https://git.yannick-weigert.com
           RENOVATE_REPOSITORIES: liquid-development/tallee-app
