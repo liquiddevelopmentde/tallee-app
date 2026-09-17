@@ -366,7 +366,9 @@ class _MatchViewState extends State<MatchView> {
 
   /// Loads the matches from the database and sorts them by creation date.
   void loadMatches() {
-    isLoading = true;
+    if (!mounted) return;
+    setState(() => isLoading = true);
+
     Future.wait([
       db.matchDao.getAllMatches(includeDeletedPlayer: true),
       Future.delayed(MINIMUM_SKELETON_DURATION),

@@ -250,9 +250,9 @@ class _GroupViewState extends State<GroupView> {
   }
 
   void loadGroups() {
-    setState(() {
-      isLoading = true;
-    });
+    if (!mounted) return;
+    setState(() => isLoading = true);
+
     Future.wait([
       db.groupDao.getAllGroups(),
       Future.delayed(MINIMUM_SKELETON_DURATION),

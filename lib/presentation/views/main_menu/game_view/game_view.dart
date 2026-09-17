@@ -250,7 +250,9 @@ class _GameViewState extends State<GameView> {
 
   /// Loads the games from the database and sorts them by creation date.
   void loadGames() {
-    isLoading = true;
+    if (!mounted) return;
+    setState(() => isLoading = true);
+
     Future.wait([
       db.gameDao.getAllGames(),
       db.gameDao.getAllGameCounts(),
