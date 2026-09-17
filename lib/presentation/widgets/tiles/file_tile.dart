@@ -16,12 +16,14 @@ class MatchFileTile extends StatelessWidget {
     required this.match,
     this.fileName,
     this.margin,
+    this.showDetails = true,
     super.key,
   });
 
   final Match match;
   final String? fileName;
   final EdgeInsets? margin;
+  final bool showDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -84,17 +86,20 @@ class MatchFileTile extends StatelessWidget {
                 ),
 
                 // Content
-                Wrap(
-                  spacing: 4,
-                  children: getContentAsStrings(loc)
-                      .map(
-                        (item) => Text(
-                          item,
-                          style: const TextStyle(color: CustomTheme.hintColor),
-                        ),
-                      )
-                      .toList(),
-                ),
+                if (showDetails)
+                  Wrap(
+                    spacing: 4,
+                    children: getContentAsStrings(loc)
+                        .map(
+                          (item) => Text(
+                            item,
+                            style: const TextStyle(
+                              color: CustomTheme.hintColor,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
               ],
             ),
           ),
