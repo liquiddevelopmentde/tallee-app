@@ -24,9 +24,7 @@ Future<bool> validateJsonSchema({
     final result = schema.validate(jsonData);
 
     return result.isValid;
-  } catch (e, stack) {
-    print('[validateJsonSchema] $e');
-    print(stack);
+  } catch (exception) {
     return false;
   }
 }

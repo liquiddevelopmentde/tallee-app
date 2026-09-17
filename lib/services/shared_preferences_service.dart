@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/data/models/models.dart';
 
@@ -25,20 +26,40 @@ class SharedPreferencesService {
   static const String filteredStatisticTypesKey = 'filtered_statistic_types';
   static const String showFavouritesKey = 'show_favourites';
   static const String sharingConsentKey = 'share_consent';
+  static const String matchFilterKey = 'match_filter';
 
-  static void deleteAllFilters({required bool includeFavourites}) {
-    final SharedPreferences prefs = _instance;
-    prefs.remove(filteredGroupsKey);
-    prefs.remove(filteredGamesKey);
-    prefs.remove(filteredTimeframesKey);
-    prefs.remove(filteredStatisticTypesKey);
-    if (includeFavourites) {
-      prefs.remove(showFavouritesKey);
-    }
+  static void deleteAllPreferences() {
+    _instance.remove(filteredGroupsKey);
+    _instance.remove(filteredGamesKey);
+    _instance.remove(filteredTimeframesKey);
+    _instance.remove(filteredStatisticTypesKey);
+    _instance.remove(showFavouritesKey);
+    _instance.remove(sharingConsentKey);
+    _instance.remove(matchFilterKey);
+  }
+
+  static void resetStatisticFilter({required bool includeFavourites}) {
+    setFilteredGroups([]);
+    setFilteredGames([]);
+    setFilteredTimeframes([]);
+    setFilteredStatisticTypes([]);
+    if (includeFavourites) setShowFavourites(false);
+  }
+
+  static void setMatchFilter(MatchFilter filter) {
+    _instance.setString(matchFilterKey, filter.toString());
+  }
+
+  static MatchFilter? getMatchFilter() {
+    final filterString = _instance.getString(matchFilterKey);
+
+    return MatchFilter.values.firstWhereOrNull(
+      (filter) => filter.toString() == filterString,
+    );
   }
 
   /// Returns null when the key is not set, so user wasn't asked yet
-  static bool? getStoredSharingConsent() {
+  static bool? getSharingConsent() {
     return _instance.getBool(sharingConsentKey);
   }
 
