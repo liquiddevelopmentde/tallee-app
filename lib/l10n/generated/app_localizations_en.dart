@@ -849,7 +849,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get update_app_export_desc =>
+      'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee instance.';
+
+  @override
+  String get update_app_import_desc =>
+      'You don\'t have the newest App-Version, this can lead to problems when trying to import your data.';
+
+  @override
   String get share_match_title => 'Tallee Match Share';
+
+  @override
+  String get dont_update => 'Don\'t update';
 
   @override
   String get share_token_format_info =>
