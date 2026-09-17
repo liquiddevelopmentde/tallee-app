@@ -427,6 +427,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get import_data => 'Daten importieren';
 
   @override
+  String get preview_match => 'Spielvorschau';
+
+  @override
   String get import_description =>
       'Importiere deine Tallee-Daten (.json) aus einer zuvor exportierten Datei. Dies dient zum Wiederherstellen eines Backups oder zum Übertragen von Daten auf ein neues Gerät. Um geteilte Spiele zu importieren, tippe auf das QR-Code-Symbol in der Spielansicht.';
 
@@ -712,6 +715,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get players => 'Spieler:innen';
+
+  @override
+  String get group_members => 'Gruppenmitglieder';
 
   @override
   String get point => 'Punkt';

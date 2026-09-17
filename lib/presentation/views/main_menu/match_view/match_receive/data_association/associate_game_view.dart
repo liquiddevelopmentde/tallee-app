@@ -10,16 +10,16 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_receive/dat
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
 
-class AssociateGamesView extends StatefulWidget {
-  const AssociateGamesView({required this.match, super.key});
+class AssociateGameView extends StatefulWidget {
+  const AssociateGameView({required this.match, super.key});
 
   final Match match;
 
   @override
-  State<AssociateGamesView> createState() => _AssociateGamesViewState();
+  State<AssociateGameView> createState() => _AssociateGameViewState();
 }
 
-class _AssociateGamesViewState extends State<AssociateGamesView> {
+class _AssociateGameViewState extends State<AssociateGameView> {
   Game? associatedGame;
 
   @override

@@ -836,6 +836,12 @@ abstract class AppLocalizations {
   /// **'Import data'**
   String get import_data;
 
+  /// No description provided for @preview_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview match'**
+  String get preview_match;
+
   /// No description provided for @import_description.
   ///
   /// In en, this message translates to:
@@ -1315,6 +1321,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Players'**
   String get players;
+
+  /// No description provided for @group_members.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Members'**
+  String get group_members;
 
   /// No description provided for @point.
   ///

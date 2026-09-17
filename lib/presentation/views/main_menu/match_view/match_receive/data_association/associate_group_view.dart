@@ -12,8 +12,8 @@ import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
 import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
 
-class AssociateGroupsView extends StatefulWidget {
-  const AssociateGroupsView({
+class AssociateGroupView extends StatefulWidget {
+  const AssociateGroupView({
     required this.match,
     required this.associations,
     this.associatedGame,
@@ -27,10 +27,10 @@ class AssociateGroupsView extends StatefulWidget {
   final Game? associatedGame;
 
   @override
-  State<AssociateGroupsView> createState() => _AssociateGroupsViewState();
+  State<AssociateGroupView> createState() => _AssociateGroupViewState();
 }
 
-class _AssociateGroupsViewState extends State<AssociateGroupsView> {
+class _AssociateGroupViewState extends State<AssociateGroupView> {
   Group? associatedGroup;
 
   @override
