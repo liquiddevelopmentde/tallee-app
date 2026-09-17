@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:new_version_plus/model/version_status.dart';
-import 'package:new_version_plus/new_version_plus.dart';
 import 'package:once/once.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
@@ -284,11 +283,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   /// Checks for a new version and shows an update dialog if available.
   Future<void> checkVersionAndUpdate(BuildContext context) async {
     final loc = AppLocalizations.of(context);
-
-    final newVersionPlus = NewVersionPlus(
-      iOSAppStoreCountry: 'de',
-      androidPlayStoreCountry: 'de',
-    );
 
     VersionStatus? status;
 

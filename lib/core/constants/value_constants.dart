@@ -1,3 +1,5 @@
+import 'package:new_version_plus/new_version_plus.dart';
+
 /// URL to the LIQUID website
 const String LIQUID_WEBSITE_URL = 'https://liquid-dev.de/';
 
@@ -69,3 +71,9 @@ const String MATCH_FILE_EXTENSION = 'tallee';
 
 /// File extension for app data
 const String APP_DATA_FILE_EXTENSION = 'json';
+
+/// Version checking object
+final newVersionPlus = NewVersionPlus(
+  iOSAppStoreCountry: 'de',
+  androidPlayStoreCountry: 'de',
+);

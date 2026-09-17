@@ -4,6 +4,7 @@ import 'package:new_version_plus/model/version_status.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -118,11 +119,6 @@ class _DataManagementViewState extends State<DataManagementView> {
 
   Future<void> showVersionDialog(bool isExport) async {
     final loc = AppLocalizations.of(context);
-
-    final newVersionPlus = NewVersionPlus(
-      iOSAppStoreCountry: 'de',
-      androidPlayStoreCountry: 'de',
-    );
 
     VersionStatus? status;
 
