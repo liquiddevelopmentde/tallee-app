@@ -155,7 +155,6 @@ class _GroupViewState extends State<GroupView> {
                         itemCount: filteredGroups.length,
                         itemBuilder: (BuildContext context, int index) {
                           return GroupTile(
-                            onPlayerChanged: loadGroups,
                             group: filteredGroups[index],
                             onTap: () async {
                               await Navigator.push(
