@@ -67,8 +67,8 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
-    - assets/app_schema.json
-    - assets/match_schema.json
+    - assets/schemas/app_schema.json
+    - assets/schemas/match_schema.json
     - .env
     - assets/logo-animation.json
     - assets/privacy_policy/privacy_policy_en.md
@@ -77,8 +77,8 @@ flutter:
   fonts:
     - family: Inter
       fonts:
-        - asset: assets/Inter.ttf
-        - asset: assets/Inter-Italic.ttf
+        - asset: assets/fonts/Inter.ttf
+        - asset: assets/fonts/Inter-Italic.ttf
           style: italic
 
 sentry:
