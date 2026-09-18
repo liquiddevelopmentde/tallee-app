@@ -22,19 +22,16 @@ class MatchTile extends StatefulWidget {
   /// creation date, associated group, winner, and players.
   /// - [match]: The match data to be displayed.
   /// - [onTap]: The callback invoked when the tile is tapped.
-  /// - [onPlayerEdited]: The callback invoked when the players are edited.
   /// - [width]: Optional width for the tile.
   const MatchTile({
     super.key,
     required this.match,
     required this.onTap,
-    this.onPlayerEdited,
     this.width,
   });
 
   final Match match;
   final VoidCallback onTap;
-  final VoidCallback? onPlayerEdited;
   final double? width;
 
   @override
@@ -266,25 +263,7 @@ class _MatchTileState extends State<MatchTile> {
                   if (pair.members.length > 1) {
                     return PairTile(pair: pair);
                   } else {
-                    return PlayerTile(
-                      player: pair.members.first,
-                      onTileTap: () {
-                        Navigator.push(
-                          context,
-                          adaptivePageRoute(
-                            settings: const RouteSettings(
-                              name: RouteNames.playerDetailView,
-                            ),
-                            builder: (context) => PlayerDetailView(
-                              player: pair.members.first,
-                              onPlayerUpdated: () {
-                                widget.onPlayerEdited?.call();
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    );
+                    return PlayerTile(player: pair.members.first);
                   }
                 }).toList(),
               ),
