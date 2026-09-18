@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -40,6 +41,8 @@ class _GroupViewState extends State<GroupView> {
 
   TextEditingController searchBarController = TextEditingController();
 
+  bool isSearchBarVisible = true;
+
   List<Group> groups = List.filled(
     7,
     Group(
@@ -75,6 +78,7 @@ class _GroupViewState extends State<GroupView> {
     // Reset filtered groups when search is disabled
     if (!searchProvider.isSearching) {
       filteredGroups = [...groups];
+      isSearchBarVisible = true;
     }
 
     return Scaffold(
@@ -107,7 +111,7 @@ class _GroupViewState extends State<GroupView> {
                     ),
                   );
                 },
-                child: searchProvider.isSearching
+                child: searchProvider.isSearching && isSearchBarVisible
                     ? Padding(
                         key: const ValueKey('group-searchbar-visible'),
                         padding: const EdgeInsets.only(
@@ -150,31 +154,45 @@ class _GroupViewState extends State<GroupView> {
                           message: loc.there_is_no_group_matching_your_search,
                         ),
                       ),
-                      child: ListView.builder(
-                        padding: CustomTheme.listViewPadding(context),
-                        itemCount: filteredGroups.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return GroupTile(
-                            onPlayerChanged: loadGroups,
-                            group: filteredGroups[index],
-                            onTap: () async {
-                              await Navigator.push(
-                                context,
-                                adaptivePageRoute(
-                                  settings: const RouteSettings(
-                                    name: RouteNames.groupDetailView,
-                                  ),
-                                  builder: (context) {
-                                    return GroupDetailView(
-                                      group: filteredGroups[index],
-                                      callback: loadGroups,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                          );
+                      child: NotificationListener<UserScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification.direction ==
+                                  ScrollDirection.reverse &&
+                              isSearchBarVisible) {
+                            setState(() => isSearchBarVisible = false);
+                          } else if (notification.direction ==
+                                  ScrollDirection.forward &&
+                              !isSearchBarVisible) {
+                            setState(() => isSearchBarVisible = true);
+                          }
+                          return true;
                         },
+                        child: ListView.builder(
+                          padding: CustomTheme.listViewPadding(context),
+                          itemCount: filteredGroups.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GroupTile(
+                              onPlayerChanged: loadGroups,
+                              group: filteredGroups[index],
+                              onTap: () async {
+                                await Navigator.push(
+                                  context,
+                                  adaptivePageRoute(
+                                    settings: const RouteSettings(
+                                      name: RouteNames.groupDetailView,
+                                    ),
+                                    builder: (context) {
+                                      return GroupDetailView(
+                                        group: filteredGroups[index],
+                                        callback: loadGroups,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -242,9 +260,12 @@ class _GroupViewState extends State<GroupView> {
   void _handleSearchToggle() {
     if (!mounted) return;
 
-    if (!_searchProvider.isSearching) {
-      searchBarController.clear();
-    }
+    setState(() {
+      isSearchBarVisible = true;
+      if (!_searchProvider.isSearching) {
+        searchBarController.clear();
+      }
+    });
   }
 
   void loadGroups() {
