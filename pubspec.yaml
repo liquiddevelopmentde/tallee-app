@@ -74,6 +74,13 @@ flutter:
     - assets/privacy_policy/privacy_policy_en.md
     - assets/privacy_policy/privacy_policy_de.md
 
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/Inter.ttf
+        - asset: assets/Inter-Italic.ttf
+          style: italic
+
 sentry:
   upload_debug_symbols: true
   upload_source_maps: true
