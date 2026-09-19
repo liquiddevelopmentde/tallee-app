@@ -16,9 +16,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get all => 'Alle';
 
   @override
-  String get show_app_walkthrough => 'App Führung anzeigen';
-
-  @override
   String get all_players => 'Alle Spieler:innen';
 
   @override
@@ -852,6 +849,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get share_token_format_info =>
       'Share-Token bestehen aus 6 alphanumerischen Zeichen.';
+
+  @override
+  String get show_app_walkthrough => 'App Führung anzeigen';
 
   @override
   String get statistic => 'Statistik';

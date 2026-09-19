@@ -16,9 +16,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all => 'All';
 
   @override
-  String get show_app_walkthrough => 'Show App Walkthrough';
-
-  @override
   String get all_players => 'All players';
 
   @override
@@ -845,6 +842,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get share_token_format_info =>
       'Share tokens consist of 6 alphanumeric characters.';
+
+  @override
+  String get show_app_walkthrough => 'Show App Walkthrough';
 
   @override
   String get statistic => 'Statistic';

@@ -210,9 +210,9 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
             .toList();
         await Future.wait(
           inserts.map(
-            (c) => into(
-              playerMatchTable,
-            ).insert(c, mode: InsertMode.insertOrIgnore),
+            (c) =>
+                into(playerMatchTable)
+                    .insert(c, mode: InsertMode.insertOrIgnore),
           ),
         );
       }

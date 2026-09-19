@@ -110,12 +110,6 @@ abstract class AppLocalizations {
   /// **'All'**
   String get all;
 
-  /// No description provided for @show_app_walkthrough.
-  ///
-  /// In en, this message translates to:
-  /// **'Show App Walkthrough'**
-  String get show_app_walkthrough;
-
   /// No description provided for @all_players.
   ///
   /// In en, this message translates to:
@@ -1573,6 +1567,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share tokens consist of 6 alphanumeric characters.'**
   String get share_token_format_info;
+
+  /// No description provided for @show_app_walkthrough.
+  ///
+  /// In en, this message translates to:
+  /// **'Show App Walkthrough'**
+  String get show_app_walkthrough;
 
   /// No description provided for @statistic.
   ///

@@ -21,11 +21,14 @@ void main() {
       expect('file.name_v1-final'.toSafeFilename(), 'file.name_v1-final');
     });
 
-    test('should handle empty or special character only strings with fallback', () {
-      expect(''.toSafeFilename(), 'match');
-      expect('!@#%^&*()'.toSafeFilename(), 'match');
-      expect('🔥🔥🔥'.toSafeFilename(fallback: 'custom'), 'custom');
-    });
+    test(
+      'should handle empty or special character only strings with fallback',
+      () {
+        expect(''.toSafeFilename(), 'match');
+        expect('!@#%^&*()'.toSafeFilename(), 'match');
+        expect('🔥🔥🔥'.toSafeFilename(fallback: 'custom'), 'custom');
+      },
+    );
 
     test('should strip emojis from mixed strings', () {
       expect('Match 🔥'.toSafeFilename(), 'Match_');
