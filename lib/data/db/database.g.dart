@@ -4832,7 +4832,7 @@ class $$PlayerTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PlayerTableTable, PlayerTableData>(table),
                   $$PlayerTableTableReferences(db, table, e),
                 ),
               )
@@ -5320,7 +5320,7 @@ class $$GroupTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$GroupTableTable, GroupTableData>(table),
                   $$GroupTableTableReferences(db, table, e),
                 ),
               )
@@ -5777,7 +5777,7 @@ class $$GameTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$GameTableTable, GameTableData>(table),
                   $$GameTableTableReferences(db, table, e),
                 ),
               )
@@ -6385,7 +6385,7 @@ class $$MatchTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$MatchTableTable, MatchTableData>(table),
                   $$MatchTableTableReferences(db, table, e),
                 ),
               )
@@ -6795,7 +6795,9 @@ class $$PlayerGroupTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PlayerGroupTableTable, PlayerGroupTableData>(
+                    table,
+                  ),
                   $$PlayerGroupTableTableReferences(db, table, e),
                 ),
               )
@@ -7117,7 +7119,7 @@ class $$TeamTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$TeamTableTable, TeamTableData>(table),
                   $$TeamTableTableReferences(db, table, e),
                 ),
               )
@@ -7544,7 +7546,9 @@ class $$PlayerMatchTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PlayerMatchTableTable, PlayerMatchTableData>(
+                    table,
+                  ),
                   $$PlayerMatchTableTableReferences(db, table, e),
                 ),
               )
@@ -7968,7 +7972,9 @@ class $$ScoreEntryTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ScoreEntryTableTable, ScoreEntryTableData>(
+                    table,
+                  ),
                   $$ScoreEntryTableTableReferences(db, table, e),
                 ),
               )
@@ -8563,7 +8569,7 @@ class $$StatisticTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$StatisticTableTable, StatisticTableData>(table),
                   $$StatisticTableTableReferences(db, table, e),
                 ),
               )
@@ -8888,7 +8894,10 @@ class $$StatisticScopeTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<
+                    $StatisticScopeTableTable,
+                    StatisticScopeTableData
+                  >(table),
                   $$StatisticScopeTableTableReferences(db, table, e),
                 ),
               )
@@ -9234,7 +9243,9 @@ class $$StatisticGameTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$StatisticGameTableTable, StatisticGameTableData>(
+                    table,
+                  ),
                   $$StatisticGameTableTableReferences(db, table, e),
                 ),
               )
@@ -9594,7 +9605,10 @@ class $$StatisticGroupTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<
+                    $StatisticGroupTableTable,
+                    StatisticGroupTableData
+                  >(table),
                   $$StatisticGroupTableTableReferences(db, table, e),
                 ),
               )
