@@ -566,6 +566,12 @@ abstract class AppLocalizations {
   /// **'Displayed entries'**
   String get displayed_entries;
 
+  /// No description provided for @dont_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t update'**
+  String get dont_update;
+
   /// No description provided for @do_you_like_the_app.
   ///
   /// In en, this message translates to:
@@ -805,6 +811,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Group successfully associated'**
   String get group_associated;
+
+  /// No description provided for @group_members.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Members'**
+  String get group_members;
 
   /// No description provided for @group_name.
   ///
@@ -1346,6 +1358,12 @@ abstract class AppLocalizations {
   /// **'Points'**
   String get points;
 
+  /// No description provided for @preview_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview match'**
+  String get preview_match;
+
   /// No description provided for @privacy_policy.
   ///
   /// In en, this message translates to:
@@ -1598,29 +1616,11 @@ abstract class AppLocalizations {
   /// **'Here is the match data for our game! Enter code {code} in Tallee.'**
   String share_match_text(String code);
 
-  /// No description provided for @update_app_export_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.'**
-  String get update_app_export_desc;
-
-  /// No description provided for @update_app_import_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'You don\'t have the newest App-Version, this can lead to problems when trying to import your data.'**
-  String get update_app_import_desc;
-
   /// No description provided for @share_match_title.
   ///
   /// In en, this message translates to:
   /// **'Tallee Match Share'**
   String get share_match_title;
-
-  /// No description provided for @dont_update.
-  ///
-  /// In en, this message translates to:
-  /// **'Don\'t update'**
-  String get dont_update;
 
   /// No description provided for @share_token_format_info.
   ///
@@ -1831,6 +1831,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unsatisfied?'**
   String get unsatisfied;
+
+  /// No description provided for @update_app_export_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.'**
+  String get update_app_export_desc;
+
+  /// No description provided for @update_app_import_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have the newest App-Version, this can lead to problems when trying to import your data.'**
+  String get update_app_import_desc;
 
   /// No description provided for @update_app_version.
   ///

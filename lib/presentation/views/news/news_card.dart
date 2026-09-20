@@ -2,17 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/views/news/news.dart';
+import 'package:tallee/data/dto/news_item.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
 class NewsCard extends StatelessWidget {
-  const NewsCard({super.key, required this.newsEntry});
+  const NewsCard({super.key, required this.newsItem});
 
-  final News newsEntry;
+  final NewsItem newsItem;
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = getColorFromAppColor(newsEntry.iconColor);
+    final locale = AppLocalizations.of(context).localeName;
+    final heading =
+        newsItem.localizedHeading[locale] ?? newsItem.localizedHeading['en']!;
+    final text =
+        newsItem.localizedText[locale] ?? newsItem.localizedText['en']!;
+
+    final iconColor = getColorFromAppColor(newsItem.iconColor);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -21,7 +28,7 @@ class NewsCard extends StatelessWidget {
         spacing: 2,
         children: [
           ColoredIconContainer(
-            icon: newsEntry.icon,
+            icon: newsItem.icon,
             containerSize: 44,
             color: iconColor,
           ),
@@ -31,7 +38,7 @@ class NewsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  newsEntry.heading,
+                  heading,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -41,7 +48,7 @@ class NewsCard extends StatelessWidget {
                   style: const TextStyle(overflow: TextOverflow.visible),
                   softWrap: true,
                   child: MarkdownBody(
-                    data: newsEntry.text,
+                    data: text,
                     styleSheet: buildMarkdownSheet(context),
                   ),
                 ),

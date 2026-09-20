@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/match_share_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/widgets/match_profile_body.dart';
 import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
-import 'package:tallee/presentation/widgets/buttons/buttons.dart';
-import 'package:tallee/presentation/widgets/cards/team_card.dart';
-import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
-import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
-import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class MatchDetailView extends StatefulWidget {
   /// A view that displays the profile of a match
@@ -52,8 +43,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   late Match match;
 
   late TextEditingController nameController;
-
-  bool get useTeamLogic => match.useTeamLogic;
 
   @override
   void initState() {
@@ -95,236 +84,39 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ],
       ),
       body: SafeArea(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            ListView(
-              padding: const EdgeInsets.only(
-                left: 12,
-                right: 12,
-                top: 20,
-                bottom: 100,
+        child: MatchProfileBody(
+          match: match,
+          isPreview: false,
+          onEdit: () => editMatchNavigation(loc),
+          onEnterResults: () async {
+            await Navigator.push(
+              context,
+              adaptivePageRoute(
+                settings: const RouteSettings(name: RouteNames.matchResultView),
+                fullscreenDialog: true,
+                builder: (context) => MatchResultView(
+                  match: match,
+                  onWinnerChanged: () async {
+                    widget.onMatchUpdate.call();
+                    await updateScoresForCurrentMatch();
+                  },
+                ),
               ),
-              children: [
-                // Icon
-                const Center(
-                  child: ColoredIconContainer(
-                    icon: MATCH_ICON,
-                    containerSize: 55,
-                  ),
+            );
+          },
+          onPlayerTap: (player) {
+            Navigator.of(context).pushReplacement(
+              adaptivePageRoute(
+                settings: const RouteSettings(
+                  name: RouteNames.playerDetailView,
                 ),
-                const SizedBox(height: 10),
-
-                // Match Name
-                Text(
-                  match.name,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: CustomTheme.textColor,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
+                builder: (context) => PlayerDetailView(
+                  player: player,
+                  onPlayerUpdated: widget.onMatchUpdate,
                 ),
-                const SizedBox(height: 5),
-
-                // Creation Date
-                Text(
-                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(match.createdAt)}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: CustomTheme.textColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-
-                // Group Name
-                if (match.group != null) ...[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(GROUP_ICON),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${match.group!.name}${getExtraPlayerCount(match)}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                ],
-
-                // Teams or Players
-                if (useTeamLogic) ...[
-                  // Teams or Pairs
-                  InfoTile(
-                    title: match.isTeamMatch ? loc.teams : loc.players,
-                    leadingWidget: Icon(
-                      match.isTeamMatch ? Icons.scoreboard : Icons.people,
-                    ),
-                    horizontalAlignment: CrossAxisAlignment.start,
-                    content: match.teams != null && match.teams!.isNotEmpty
-                        ? match.isTeamMatch
-                              ? Column(
-                                  children: (match.teams ?? []).map((team) {
-                                    return TeamCard(team: team);
-                                  }).toList(),
-                                )
-                              : Wrap(
-                                  alignment: WrapAlignment.start,
-                                  crossAxisAlignment: WrapCrossAlignment.start,
-                                  spacing: 12,
-                                  runSpacing: 8,
-                                  children: (match.teams ?? []).map((team) {
-                                    if (team.members.length > 1) {
-                                      return PairTile(pair: team);
-                                    } else {
-                                      return PlayerTile(
-                                        player: team.members.first,
-                                        onTileTap: () => Navigator.of(context)
-                                            .pushReplacement(
-                                              adaptivePageRoute(
-                                                settings: const RouteSettings(
-                                                  name: RouteNames
-                                                      .playerDetailView,
-                                                ),
-                                                builder: (context) =>
-                                                    PlayerDetailView(
-                                                      player:
-                                                          team.members.first,
-                                                      onPlayerUpdated:
-                                                          widget.onMatchUpdate,
-                                                    ),
-                                              ),
-                                            ),
-                                      );
-                                    }
-                                  }).toList(),
-                                )
-                        : Text(
-                            match.isTeamMatch
-                                ? loc.no_teams_available
-                                : loc.no_players_available,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: CustomTheme.textColor,
-                            ),
-                          ),
-                  ),
-                ] else ...[
-                  // Players
-                  InfoTile(
-                    title: loc.players,
-                    leadingWidget: const Icon(Icons.people),
-                    horizontalAlignment: CrossAxisAlignment.start,
-                    content: match.players.isNotEmpty
-                        ? Wrap(
-                            alignment: WrapAlignment.start,
-                            crossAxisAlignment: WrapCrossAlignment.start,
-                            spacing: 12,
-                            runSpacing: 8,
-                            children: match.players.map((player) {
-                              return PlayerTile(
-                                player: player,
-                                onTileTap: () {
-                                  Navigator.of(context).pushReplacement(
-                                    adaptivePageRoute(
-                                      settings: const RouteSettings(
-                                        name: RouteNames.playerDetailView,
-                                      ),
-                                      builder: (context) => PlayerDetailView(
-                                        player: player,
-                                        onPlayerUpdated: widget.onMatchUpdate,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          )
-                        : Text(
-                            loc.no_players_available,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: CustomTheme.textColor,
-                            ),
-                          ),
-                  ),
-                ],
-                const SizedBox(height: 15),
-
-                // Game
-                InfoTile(
-                  title: loc.game,
-                  leadingWidget: const Icon(GAME_ICON),
-                  horizontalAlignment: CrossAxisAlignment.start,
-                  content: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 4,
-                      horizontal: 8,
-                    ),
-                    child: GameLabel(
-                      title: match.game.name,
-                      description: translateRulesetToString(
-                        match.game.ruleset,
-                        context,
-                      ),
-                      color: match.game.color,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 15),
-
-                // Results
-                InfoTile(
-                  title: loc.results,
-                  leadingWidget: const Icon(Icons.emoji_events),
-                  content: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 4,
-                      horizontal: 8,
-                    ),
-                    child: getResultWidget(loc),
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              bottom: MediaQuery.viewPaddingOf(context).bottom,
-              child: Row(
-                spacing: 8,
-                children: [
-                  FloatingAnimatedButton(
-                    icon: Icons.edit,
-                    onPressed: () => editMatchNavigation(loc),
-                  ),
-                  FloatingAnimatedButton(
-                    text: loc.enter_results,
-                    icon: Icons.emoji_events,
-                    onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        adaptivePageRoute(
-                          settings: const RouteSettings(
-                            name: RouteNames.matchResultView,
-                          ),
-                          fullscreenDialog: true,
-                          builder: (context) => MatchResultView(
-                            match: match,
-                            onWinnerChanged: () async {
-                              widget.onMatchUpdate.call();
-                              await updateScoresForCurrentMatch();
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -382,7 +174,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ],
       ),
     ).then((confirmed) async {
-      if (confirmed! && mounted) {
+      if (confirmed != null && confirmed && mounted) {
         await db.matchDao.deleteMatch(matchId: match.id);
         if (!mounted) return;
         Navigator.pop(context);
@@ -412,238 +204,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       match = editedMatch;
     });
     widget.onMatchUpdate.call();
-  }
-
-  /// Returns the widget to be displayed in the result [InfoTile]
-  Widget getResultWidget(AppLocalizations loc) {
-    if (isSingleRowResult()) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: getSingleResultRow(loc),
-      );
-    } else {
-      return getMultiResultRows(loc);
-    }
-  }
-
-  /// Returns the result row for single winner/loser rulesets or a placeholder
-  /// if no result is entered yet
-  List<Widget> getSingleResultRow(AppLocalizations loc) {
-    final ruleset = match.game.ruleset;
-
-    if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
-      final label = ruleset == Ruleset.loser ? loc.loser : loc.winner;
-
-      return [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
-        ),
-        const SizedBox(width: 20),
-        Expanded(child: buildWinnerNameWidget()),
-      ];
-    } else {
-      // No result yet
-      return [
-        Text(
-          loc.no_results_entered_yet,
-          style: const TextStyle(fontSize: 14, color: CustomTheme.textColor),
-        ),
-      ];
-    }
-  }
-
-  /// Builds the widget that displays the winner(s) or loser(s) name(s)
-  Widget buildWinnerNameWidget() {
-    final mvtTeams = match.mvt;
-    final mvpPlayers = match.mvp;
-
-    const winnerStyle = TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-      color: CustomTheme.primaryColor,
-    );
-
-    if (useTeamLogic) {
-      return Wrap(
-        alignment: WrapAlignment.end,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 6,
-        runSpacing: 4,
-        children: [
-          for (var i = 0; i < mvtTeams.length; i++)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                buildUnitNameWidget(
-                  mvtTeams[i],
-                  isTeamMatch: match.isTeamMatch,
-                  mainStyle: winnerStyle,
-                ),
-                if (i != mvtTeams.length - 1) const Text(','),
-              ],
-            ),
-        ],
-      );
-    }
-
-    return Text.rich(
-      TextSpan(
-        children: [
-          for (var i = 0; i < mvpPlayers.length; i++) ...[
-            if (i > 0) const TextSpan(text: ', '),
-            buildPlayerNameCountSpan(mvpPlayers[i], mainStyle: winnerStyle),
-          ],
-        ],
-      ),
-      textAlign: TextAlign.end,
-      overflow: TextOverflow.visible,
-    );
-  }
-
-  /// Returns the result widget for scores or placement
-  Widget getMultiResultRows(AppLocalizations loc) {
-    List<(Widget, int)> scores = getSortedScores();
-    bool hasMatchEnded = match.endedAt != null;
-
-    return Column(
-      children: [
-        for (var i = 0; i < scores.length; i++)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(child: scores[i].$1),
-              hasMatchEnded
-                  ? getResultValueText(loc, i, scores[i].$2)
-                  : const Text('-'),
-            ],
-          ),
-      ],
-    );
-  }
-
-  /// Returns a list of player/team widgets and their corresponding scores, sorted by score according to the ruleset
-  List<(Widget, int)> getSortedScores() {
-    List<(Widget, int)> namedScores = [];
-
-    if (useTeamLogic) {
-      final teams = match.teams ?? [];
-      for (var team in teams) {
-        Widget nameWidget = buildUnitNameWidget(
-          team,
-          isTeamMatch: match.isTeamMatch,
-          countStyle: const TextStyle(color: CustomTheme.hintColor),
-        );
-        namedScores.add((nameWidget, team.score ?? 0));
-      }
-    } else {
-      final scores = match.scores;
-      final players = match.players
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-      for (var player in players) {
-        int score = scores[player.id]?.score ?? 0;
-        namedScores.add((
-          buildUnitNameWidget(
-            player,
-            countStyle: const TextStyle(color: CustomTheme.hintColor),
-          ),
-          score,
-        ));
-      }
-    }
-
-    final ruleset = match.game.ruleset;
-    if (ruleset == Ruleset.highestScore ||
-        ruleset == Ruleset.placement ||
-        ruleset == Ruleset.lives) {
-      namedScores.sort((a, b) => b.$2.compareTo(a.$2));
-    } else if (ruleset == Ruleset.lowestScore) {
-      namedScores.sort((a, b) => a.$2.compareTo(b.$2));
-    }
-
-    return namedScores;
-  }
-
-  /// Returns the text widget for the score or placement value, styled according to the ruleset
-  Widget getResultValueText(AppLocalizations loc, int index, int score) {
-    final ruleset = match.game.ruleset;
-
-    if (ruleset == Ruleset.placement) {
-      return Text(
-        getPlacementText(context, index + 1),
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: getPlacementTextcolor(index),
-        ),
-      );
-    } else if (ruleset == Ruleset.lives) {
-      return Text(
-        getLifeLabel(loc, score),
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: score > 0 ? CustomTheme.primaryColor : CustomTheme.hintColor,
-        ),
-      );
-    } else {
-      return Text(
-        getPointLabel(loc, score),
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: CustomTheme.primaryColor,
-        ),
-      );
-    }
-  }
-
-  Color getPlacementTextcolor(int placement) {
-    switch (placement) {
-      case 0:
-        return const Color(0xFFFFBF00);
-      case 1:
-        return const Color(0xBBFFFFFF);
-      case 2:
-        return const Color(0xFFCD7F32);
-      default:
-        return CustomTheme.textColor;
-    }
-  }
-
-  // Returns if the result can be displayed in a single row
-  bool isSingleRowResult() {
-    return match.game.ruleset == Ruleset.winner ||
-        match.game.ruleset == Ruleset.loser;
-  }
-
-  String getPlacementText(BuildContext context, int rank) {
-    final loc = AppLocalizations.of(context);
-    final locale = Localizations.localeOf(context).languageCode;
-
-    if (locale == 'de') {
-      return '$rank. ${loc.place}';
-    }
-
-    return '${_ordinalEn(rank)} ${loc.place}';
-  }
-
-  String _ordinalEn(int number) {
-    if (number % 100 >= 11 && number % 100 <= 13) {
-      return '${number}th';
-    }
-
-    switch (number % 10) {
-      case 1:
-        return '${number}st';
-      case 2:
-        return '${number}nd';
-      case 3:
-        return '${number}rd';
-      default:
-        return '${number}th';
-    }
   }
 
   Future<void> updateScoresForCurrentMatch() async {
@@ -704,7 +264,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           },
         ),
       ).then((confirmed) async {
-        if (confirmed! && context.mounted) {
+        if (confirmed != null && confirmed && context.mounted) {
           final newName = nameController.text.trim();
 
           if (newName != match.name) {

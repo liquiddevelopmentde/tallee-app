@@ -240,9 +240,7 @@ class _GroupViewState extends State<GroupView> {
   }
 
   void handleSearchToggle() {
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
 
     if (!_searchProvider.isSearching) {
       searchBarController.clear();
@@ -250,24 +248,22 @@ class _GroupViewState extends State<GroupView> {
   }
 
   void loadGroups() {
-    setState(() {
-      isLoading = true;
-    });
+    //if (!mounted) return;
+    setState(() => isLoading = true);
+
     Future.wait([
       db.groupDao.getAllGroups(),
       Future.delayed(MINIMUM_SKELETON_DURATION),
     ]).then((results) {
+      if (!mounted) return;
+
       loadedGroups = results[0] as List<Group>;
       setState(() {
         groups = loadedGroups
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
         filteredGroups = [...loadedGroups];
+        isLoading = false;
       });
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
     });
   }
 }

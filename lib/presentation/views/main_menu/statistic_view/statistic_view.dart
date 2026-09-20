@@ -58,8 +58,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      loadStatistics(context);
+      loadStatistics();
     });
   }
 
@@ -399,10 +398,8 @@ class _StatisticsViewState extends State<StatisticsView> {
   }
 
   /// Loads all statistics and needed data from the database
-  Future<void> loadStatistics(BuildContext context) async {
-    setState(() {
-      isLoading = true;
-    });
+  Future<void> loadStatistics() async {
+    setState(() => isLoading = true);
 
     final db = context.read<AppDatabase>();
 

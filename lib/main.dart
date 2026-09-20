@@ -67,6 +67,7 @@ void main() async {
 
       options.beforeSend = (event, hint) {
         final skipSnackBar = hint.get('skipSnackBar') == true;
+
         if (!skipSnackBar &&
             (event.level == SentryLevel.error ||
                 event.level == SentryLevel.fatal)) {
