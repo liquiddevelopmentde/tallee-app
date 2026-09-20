@@ -5,27 +5,38 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_players_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
+import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
+import 'package:tallee/services/remote_share_service.dart';
+import 'package:tallee/state/data_refresh_provider.dart';
 
-class AssociateGamesView extends StatefulWidget {
-  const AssociateGamesView({required this.match, super.key});
+class AssociateGroupView extends StatefulWidget {
+  const AssociateGroupView({
+    required this.match,
+    required this.associations,
+    this.associatedGame,
+    super.key,
+  });
 
   final Match match;
 
+  final Map<String, Player?> associations;
+
+  final Game? associatedGame;
+
   @override
-  State<AssociateGamesView> createState() => _AssociateGamesViewState();
+  State<AssociateGroupView> createState() => _AssociateGroupViewState();
 }
 
-class _AssociateGamesViewState extends State<AssociateGamesView> {
-  Game? associatedGame;
+class _AssociateGroupViewState extends State<AssociateGroupView> {
+  Group? associatedGroup;
 
   @override
   void initState() {
     super.initState();
-    autoAssociateGame();
+    autoAssociateGroup();
   }
 
   @override
@@ -33,7 +44,7 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
     final loc = AppLocalizations.of(context);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text(loc.associate_game), centerTitle: true),
+        appBar: AppBar(title: Text(loc.associate_group)),
         body: Column(
           children: [
             Align(
@@ -42,28 +53,26 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                 margin: CustomTheme.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
-                  color: associatedGame == null ? Colors.orange : Colors.green,
+                  color: associatedGroup == null ? Colors.orange : Colors.green,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
                 child: Text(
-                  associatedGame != null
-                      ? loc.game_associated
-                      : loc.new_game_will_be_created,
+                  associatedGroup != null
+                      ? loc.group_associated
+                      : loc.new_group_will_be_created,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    overflow: TextOverflow.visible,
                   ),
-                  softWrap: true,
                 ),
               ),
             ),
             const SizedBox(height: 10),
-            GameTile(game: widget.match.game),
+            GroupTile(group: widget.match.group!, playersClickable: false),
             const Icon(Icons.arrow_downward, size: 30),
             const SizedBox(height: 10),
             AnimatedSwitcher(
-              duration: const Duration(milliseconds: 150),
+              duration: const Duration(milliseconds: 300),
               layoutBuilder:
                   (Widget? currentChild, List<Widget> previousChildren) {
                     return Stack(
@@ -74,13 +83,13 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
               transitionBuilder: (Widget child, Animation<double> animation) {
                 return FadeTransition(opacity: animation, child: child);
               },
-              child: associatedGame == null
+              child: associatedGroup == null
                   ? GestureDetector(
-                      onTap: navigateToGameSelection,
+                      onTap: navigateToGroupSelection,
                       child: Container(
                         key: const ValueKey('no_association'),
                         margin: CustomTheme.tileMargin,
-                        height: 138,
+                        height: 150,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: CustomTheme.standardBoxDecoration.copyWith(
                           border: Border.all(
@@ -93,13 +102,13 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(
-                                Icons.add_box,
+                                Icons.group_add,
                                 size: 35,
                                 color: Colors.orange,
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                loc.no_matching_local_game_found,
+                                loc.no_matching_local_group_found,
                                 style: const TextStyle(
                                   color: CustomTheme.textColor,
                                   fontSize: 16,
@@ -107,34 +116,31 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
                                   overflow: TextOverflow.visible,
                                 ),
                                 textAlign: TextAlign.center,
-                                softWrap: true,
                               ),
                               Text(
                                 loc.tap_to_choose_existing,
                                 style: const TextStyle(
                                   color: CustomTheme.hintColor,
                                   fontSize: 14,
-                                  overflow: TextOverflow.visible,
                                 ),
-                                softWrap: true,
                               ),
                             ],
                           ),
                         ),
                       ),
                     )
-                  : GameTile(
-                      game: associatedGame!,
-                      key: ValueKey(associatedGame!.id),
-                      onTap: navigateToGameSelection,
-                      isHighlighted: true,
+                  : GroupTile(
+                      key: ValueKey(associatedGroup!.id),
+                      group: associatedGroup!,
+                      onTap: navigateToGroupSelection,
                       borderColor: Colors.green.withAlpha(150),
+                      playersClickable: false,
                     ),
             ),
             const SizedBox(height: 2),
-            if (associatedGame != null)
+            if (associatedGroup != null)
               Text(
-                loc.tap_to_choose_different_game,
+                loc.tap_to_choose_different_group,
                 style: const TextStyle(
                   color: CustomTheme.hintColor,
                   fontSize: 14,
@@ -144,20 +150,11 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
               ),
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.all(8.0),
               child: BottomAnimatedButton(
-                buttonText: loc.confirm,
+                buttonText: loc.save_match,
                 sizeRelativeToWidth: 0.95,
-                onPressed: () {
-                  Navigator.of(context).push(
-                    adaptivePageRoute(
-                      builder: (context) => AssociatePlayersView(
-                        match: widget.match,
-                        associatedGame: associatedGame,
-                      ),
-                    ),
-                  );
-                },
+                onPressed: saveMatch,
               ),
             ),
           ],
@@ -166,48 +163,102 @@ class _AssociateGamesViewState extends State<AssociateGamesView> {
     );
   }
 
-  Future<void> navigateToGameSelection() async {
+  Future<void> saveMatch() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final allGames = await db.gameDao.getAllGames();
+    final loc = AppLocalizations.of(context);
 
-    // Filter games by ruleset
-    final filteredGames = allGames
-        .where((g) => g.ruleset == widget.match.game.ruleset)
-        .toList();
+    // Filter null values and cast to Map<String, Player>
+    final playerAssociations = <String, Player>{};
+    for (var entry in widget.associations.entries) {
+      if (entry.value != null) {
+        playerAssociations[entry.key] = entry.value!;
+      }
+    }
+
+    try {
+      await RemoteShareService().saveImportedMatch(
+        db: db,
+        importedMatch: widget.match,
+        playerAssociations: playerAssociations,
+        associatedGame: widget.associatedGame,
+        associatedGroup: associatedGroup,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(CustomSnackBar(message: loc.unexpected_error));
+      return;
+    }
 
     if (!mounted) return;
 
-    final selected = await Navigator.push<Game>(
+    Provider.of<DataRefreshProvider>(context, listen: false).refresh();
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
+
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
+  Future<void> navigateToGroupSelection() async {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final allGroups = await db.groupDao.getAllGroups();
+
+    final importedGroup = widget.match.group!;
+    final mappedLocalPlayerIds = importedGroup.members
+        .map((m) => widget.associations[m.id]?.id)
+        .whereType<String>()
+        .toSet();
+
+    final validGroups = allGroups.where((localGroup) {
+      final localMemberIds = localGroup.members.map((m) => m.id).toSet();
+      return localMemberIds.length == mappedLocalPlayerIds.length &&
+          localMemberIds.containsAll(mappedLocalPlayerIds);
+    }).toList();
+
+    if (!mounted) return;
+
+    final selected = await Navigator.push<Group>(
       context,
       adaptivePageRoute(
-        builder: (context) => ChooseGameView(
-          games: filteredGames,
-          initialSelectedGames: [?associatedGame],
+        builder: (context) => ChooseGroupView(
+          groups: validGroups,
+          initialGroups: [?associatedGroup],
         ),
       ),
     );
 
     setState(() {
-      associatedGame = selected;
+      associatedGroup = selected;
     });
   }
 
-  Future<void> autoAssociateGame() async {
+  Future<void> autoAssociateGroup() async {
     final db = Provider.of<AppDatabase>(context, listen: false);
-    final allGames = await db.gameDao.getAllGames();
+    final allGroups = await db.groupDao.getAllGroups();
 
     if (!mounted) return;
 
-    final importedGame = widget.match.game;
-    final match = allGames.where((localGame) {
-      return localGame.name.toLowerCase() == importedGame.name.toLowerCase() &&
-          localGame.ruleset == importedGame.ruleset;
-    }).firstOrNull;
+    final importedGroup = widget.match.group;
+    if (importedGroup != null) {
+      final mappedLocalPlayerIds = importedGroup.members
+          .map((m) => widget.associations[m.id]?.id)
+          .whereType<String>()
+          .toSet();
 
-    if (match != null) {
-      setState(() {
-        associatedGame = match;
-      });
+      if (mappedLocalPlayerIds.length != importedGroup.members.length) return;
+
+      final match = allGroups.where((localGroup) {
+        final localMemberIds = localGroup.members.map((m) => m.id).toSet();
+        return localMemberIds.length == mappedLocalPlayerIds.length &&
+            localMemberIds.containsAll(mappedLocalPlayerIds);
+      }).firstOrNull;
+
+      if (match != null) {
+        setState(() {
+          associatedGroup = match;
+        });
+      }
     }
   }
 }

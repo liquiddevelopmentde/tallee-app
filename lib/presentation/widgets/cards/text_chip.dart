@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tallee/core/custom_theme.dart';
 
 class TextChip extends StatefulWidget {
@@ -33,50 +34,52 @@ class _TextChipState extends State<TextChip> {
   @override
   Widget build(BuildContext context) {
     final text = widget.text + (widget.count > 0 ? ' (${widget.count})' : '');
-    return GestureDetector(
-      onTapDown: (_) {
-        setState(() {
-          isPressed = true;
-        });
-      },
-      onTapUp: (_) {
-        Future.delayed(Duration(milliseconds: delay), () {
+    return Skeleton.unite(
+      child: GestureDetector(
+        onTapDown: (_) {
+          setState(() {
+            isPressed = true;
+          });
+        },
+        onTapUp: (_) {
+          Future.delayed(Duration(milliseconds: delay), () {
+            setState(() {
+              isPressed = false;
+            });
+          });
+        },
+        onTapCancel: () {
           setState(() {
             isPressed = false;
           });
-        });
-      },
-      onTapCancel: () {
-        setState(() {
-          isPressed = false;
-        });
-      },
-      onTap: () {
-        HapticFeedback.selectionClick();
-        widget.onTap();
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: CustomTheme.onBoxColor,
-          border: Border.all(
-            color: widget.activated
-                ? CustomTheme.textColor.withAlpha(150)
-                : CustomTheme.textColor.withAlpha(50),
-            width: 1,
-            strokeAlign: BorderSide.strokeAlignInside,
+        },
+        onTap: () {
+          HapticFeedback.selectionClick();
+          widget.onTap();
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: CustomTheme.onBoxColor,
+            border: Border.all(
+              color: widget.activated
+                  ? CustomTheme.textColor.withAlpha(150)
+                  : CustomTheme.textColor.withAlpha(50),
+              width: 1,
+              strokeAlign: BorderSide.strokeAlignInside,
+            ),
+            borderRadius: BorderRadius.circular(6),
           ),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: AnimatedDefaultTextStyle(
-          curve: Curves.easeInOut,
-          duration: Duration(milliseconds: delay),
-          style: TextStyle(
-            color: isPressed
-                ? CustomTheme.textColor.withAlpha(150)
-                : CustomTheme.textColor.withAlpha(255),
+          child: AnimatedDefaultTextStyle(
+            curve: Curves.easeInOut,
+            duration: Duration(milliseconds: delay),
+            style: TextStyle(
+              color: isPressed
+                  ? CustomTheme.textColor.withAlpha(150)
+                  : CustomTheme.textColor.withAlpha(255),
+            ),
+            child: Text(text),
           ),
-          child: Text(text),
         ),
       ),
     );

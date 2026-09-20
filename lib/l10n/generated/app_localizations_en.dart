@@ -10,6 +10,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get active_matches => 'Active Matches';
+
+  @override
   String get add_team => 'Add Team';
 
   @override
@@ -265,7 +268,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get displayed_entries => 'Displayed entries';
 
   @override
+  String get dont_update => 'Don\'t update';
+
+  @override
   String get drag_to_set_placement => 'Drag to set placement';
+
+  @override
+  String get duplicate => 'Duplicate';
 
   @override
   String get edit_game => 'Edit Game';
@@ -366,6 +375,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filter => 'Filter';
 
   @override
+  String get finished_matches => 'Finished Matches';
+
+  @override
   String get format_exception => 'Format Exception (see console)';
 
   @override
@@ -388,6 +400,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get group_associated => 'Group successfully associated';
+
+  @override
+  String get group_members => 'Group Members';
 
   @override
   String get group_name => 'Group name';
@@ -704,6 +719,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get points => 'Points';
 
   @override
+  String get preview_match => 'Preview match';
+
+  @override
   String get privacy_policy => 'Privacy Policy';
 
   @override
@@ -742,11 +760,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scan_qr_code_instruction =>
-      'Scan the qr code with another Tallee instance to share the match.';
+      'Scan the qr code with another Tallee app to share the match.';
 
   @override
   String get scan_qr_receive_instruction =>
-      'Scan the QR code of another Tallee instance to receive the match.';
+      'Scan the QR code of another Tallee app to receive the match.';
 
   @override
   String get scope => 'Scope';
@@ -822,6 +840,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get share => 'Share';
 
   @override
   String get share_as_qr_code_info =>
@@ -933,6 +954,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get team_match => 'Team Match';
 
   @override
+  String get team_matches => 'Team Matches';
+
+  @override
   String get teams => 'Teams';
 
   @override
@@ -952,6 +976,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get there_is_no_group_matching_your_search =>
       'There is no group matching your search';
+
+  @override
+  String get there_is_no_match_matching_your_filter =>
+      'There is no match matching your filter';
 
   @override
   String get there_is_no_match_matching_your_search =>
@@ -995,6 +1023,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unknown_exception => 'Unknown Exception (see console)';
+
+  @override
+  String get update_app_export_desc =>
+      'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.';
+
+  @override
+  String get update_app_import_desc =>
+      'You don\'t have the newest App-Version, this can lead to problems when trying to import your data.';
 
   @override
   String get update_app_version =>

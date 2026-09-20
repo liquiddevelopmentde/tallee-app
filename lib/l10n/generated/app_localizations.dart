@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// No description provided for @active_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Matches'**
+  String get active_matches;
+
   /// No description provided for @add_team.
   ///
   /// In en, this message translates to:
@@ -554,11 +560,23 @@ abstract class AppLocalizations {
   /// **'Displayed entries'**
   String get displayed_entries;
 
+  /// No description provided for @dont_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t update'**
+  String get dont_update;
+
   /// No description provided for @drag_to_set_placement.
   ///
   /// In en, this message translates to:
   /// **'Drag to set placement'**
   String get drag_to_set_placement;
+
+  /// No description provided for @duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicate;
 
   /// No description provided for @edit_game.
   ///
@@ -728,6 +746,12 @@ abstract class AppLocalizations {
   /// **'Filter'**
   String get filter;
 
+  /// No description provided for @finished_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished Matches'**
+  String get finished_matches;
+
   /// No description provided for @format_exception.
   ///
   /// In en, this message translates to:
@@ -775,6 +799,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Group successfully associated'**
   String get group_associated;
+
+  /// No description provided for @group_members.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Members'**
+  String get group_members;
 
   /// No description provided for @group_name.
   ///
@@ -1310,6 +1340,12 @@ abstract class AppLocalizations {
   /// **'Points'**
   String get points;
 
+  /// No description provided for @preview_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview match'**
+  String get preview_match;
+
   /// No description provided for @privacy_policy.
   ///
   /// In en, this message translates to:
@@ -1385,13 +1421,13 @@ abstract class AppLocalizations {
   /// No description provided for @scan_qr_code_instruction.
   ///
   /// In en, this message translates to:
-  /// **'Scan the qr code with another Tallee instance to share the match.'**
+  /// **'Scan the qr code with another Tallee app to share the match.'**
   String get scan_qr_code_instruction;
 
   /// No description provided for @scan_qr_receive_instruction.
   ///
   /// In en, this message translates to:
-  /// **'Scan the QR code of another Tallee instance to receive the match.'**
+  /// **'Scan the QR code of another Tallee app to receive the match.'**
   String get scan_qr_receive_instruction;
 
   /// No description provided for @scope.
@@ -1537,6 +1573,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
 
   /// No description provided for @share_as_qr_code_info.
   ///
@@ -1718,6 +1760,12 @@ abstract class AppLocalizations {
   /// **'Team Match'**
   String get team_match;
 
+  /// No description provided for @team_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Matches'**
+  String get team_matches;
+
   /// No description provided for @teams.
   ///
   /// In en, this message translates to:
@@ -1753,6 +1801,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'There is no group matching your search'**
   String get there_is_no_group_matching_your_search;
+
+  /// No description provided for @there_is_no_match_matching_your_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no match matching your filter'**
+  String get there_is_no_match_matching_your_filter;
 
   /// No description provided for @there_is_no_match_matching_your_search.
   ///
@@ -1837,6 +1891,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unknown Exception (see console)'**
   String get unknown_exception;
+
+  /// No description provided for @update_app_export_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.'**
+  String get update_app_export_desc;
+
+  /// No description provided for @update_app_import_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have the newest App-Version, this can lead to problems when trying to import your data.'**
+  String get update_app_import_desc;
 
   /// No description provided for @update_app_version.
   ///

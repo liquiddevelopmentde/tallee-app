@@ -163,8 +163,7 @@ class _MatchShareViewState extends State<MatchShareView>
     late bool? hasStoredSharingConsent;
 
     if (initialSharingConsent == null) {
-      hasStoredSharingConsent =
-          SharedPreferencesService.getStoredSharingConsent();
+      hasStoredSharingConsent = SharedPreferencesService.getSharingConsent();
       if (hasStoredSharingConsent == null) {
         bool? userDecision = await showConsentDialog();
         if (userDecision != null) {

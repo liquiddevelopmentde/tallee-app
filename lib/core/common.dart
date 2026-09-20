@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'dart:async';
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
@@ -78,6 +82,16 @@ List<Ruleset> getRulesetForTypes(StatisticType type) {
     case StatisticType.totalWins:
       return allRulesets;
   }
+}
+
+/// Helper function to classify connection/network exceptions
+bool isNetworkError(Object error) {
+  return error is SocketException ||
+      error is TimeoutException ||
+      error is HandshakeException ||
+      error is http.ClientException ||
+      error.toString().contains('SocketException') ||
+      error.toString().contains('Failed host lookup');
 }
 
 void handleShowcase({

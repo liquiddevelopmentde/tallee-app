@@ -25,7 +25,7 @@
     {
       "matchManagers": ["pub"],
       "matchUpdateTypes": ["major"],
-      "groupName": "dart dependencies (major)",
+      "groupName": "dart dependencies",
       "groupSlug": "dart-major"
     }
   ]

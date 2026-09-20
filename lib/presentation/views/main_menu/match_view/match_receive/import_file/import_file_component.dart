@@ -8,6 +8,8 @@ import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/preview_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file/choose_match_file_widget.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file/display_selected_file_widget.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
@@ -92,6 +94,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                       : DisplaySelectedFileWidget(
                           match: data.match!,
                           fileName: fileName,
+                          showDetails: false,
                         ),
                 ),
               ),
@@ -128,6 +131,8 @@ class _ImportFileCardState extends State<ImportFileCard> {
                           adaptivePageRoute(
                             builder: (_) =>
                                 AssociateGamesView(match: data.match!),
+                            fullscreenDialog: true,
+
                           ),
                         );
                       }
