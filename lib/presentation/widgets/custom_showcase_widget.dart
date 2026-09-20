@@ -49,18 +49,6 @@ class CustomShowcaseWidget extends StatelessWidget {
         color: Colors.black,
       ),
       descriptionTextAlign: TextAlign.center,
-      /*
-      onBarrierClick: disableBarrierInteraction
-          ? null
-          : () {
-              showcaseProvider.markAsSeen(identifier);
-            },
-       */
-      /*
-      onToolTipClick: () {
-        showcaseProvider.markAsSeen(identifier);
-      },
-       */
       scaleAnimationDuration: const Duration(milliseconds: 300),
       scaleAnimationCurve: Curves.easeInOut,
       onTargetClick: onTargetClick,
