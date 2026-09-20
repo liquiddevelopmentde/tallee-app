@@ -6,7 +6,6 @@ import 'package:new_version_plus/model/version_status.dart';
 import 'package:once/once.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:tallee/core/common.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';

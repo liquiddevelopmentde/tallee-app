@@ -69,10 +69,9 @@ class SharedPreferencesService {
     final filterString = _instance.getString(matchFilterKey);
 
     return MatchFilter.values.firstWhereOrNull(
-          (filter) => filter.toString() == filterString,
+      (filter) => filter.toString() == filterString,
     );
   }
-
 
   /// Returns null when the key is not set, so user wasn't asked yet
   static bool? getSharingConsent() {
