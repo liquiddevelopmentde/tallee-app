@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
@@ -79,11 +80,12 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Expanded(
       child: CustomShowcaseWidget(
         showcaseKey: selectWinnerWidgetListviewKey,
         identifier: selectWinnerWidgetListviewIdentifier,
-        description: 'To track your winners, just select them here and click the save button below.',
+        description: loc.showcase_select_winner,
         tooltipPosition: TooltipPosition.top,
         child: useTeamLogic
             ? ListView.builder(

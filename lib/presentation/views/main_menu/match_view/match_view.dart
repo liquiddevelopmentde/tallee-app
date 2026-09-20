@@ -222,8 +222,7 @@ class _MatchViewState extends State<MatchView> {
             child: CustomShowcaseWidget(
               showcaseKey: matchViewCreateButtonKey,
               identifier: matchViewCreateButtonIdentifier,
-              description:
-                  "Let's track your first match, click the button below.",
+              description: loc.showcase_match_view_create,
               disableBarrierInteraction: true,
               disposeOnTap: true,
               onTargetClick: () {

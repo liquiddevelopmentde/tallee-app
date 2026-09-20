@@ -847,6 +847,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get show_app_walkthrough => 'Show App Walkthrough';
 
   @override
+  String get showcase_create_game_button =>
+      'Hit the Create Game button once you\'re ready. It will only work if a name is provided.';
+
+  @override
+  String get showcase_create_game_name => 'Set a name for the game here';
+
+  @override
+  String get showcase_create_game_ruleset =>
+      'By default the ruleset \"Winner\" is selected, for now on, we\'ll use that. For other game types, other rulesets will fit the needs.';
+
+  @override
+  String get showcase_create_match_button =>
+      'Once you\'ve dialed all the settings in, click here to create the match.';
+
+  @override
+  String get showcase_create_match_game =>
+      'Select the game you created earlier by tapping here';
+
+  @override
+  String get showcase_create_match_name => 'Give your match a name';
+
+  @override
+  String get showcase_create_match_players =>
+      'Select the participating players here, to create new ones, tap the plus icon next to the searchbar after entering a name.';
+
+  @override
+  String get showcase_game_view_create =>
+      'Click the button below to create a new game';
+
+  @override
+  String get showcase_match_view_create =>
+      'Let\'s track your first match, click the button below.';
+
+  @override
+  String get showcase_nav_game =>
+      'Each match needs a specific game it belongs to, let\'s start by heading to the game tab.';
+
+  @override
+  String get showcase_nav_match =>
+      'Now that we created a game, we can head to the match tab.';
+
+  @override
+  String get showcase_select_winner =>
+      'To track your winners, just select them here and click the save button below.';
+
+  @override
+  String get showcase_skip => 'Skip';
+
+  @override
   String get statistic => 'Statistic';
 
   @override

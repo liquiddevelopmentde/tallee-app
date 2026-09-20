@@ -202,7 +202,7 @@ class _GameViewState extends State<GameView> with RouteAware {
             child: CustomShowcaseWidget(
               showcaseKey: gameViewCreateButtonKey,
               identifier: gameViewCreateButtonIdentifier,
-              description: 'Click the button below to create a new game',
+              description: loc.showcase_game_view_create,
               disableBarrierInteraction: true,
               disposeOnTap: true,
               onTargetClick: () {

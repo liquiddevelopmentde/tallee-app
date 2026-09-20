@@ -854,6 +854,56 @@ class AppLocalizationsDe extends AppLocalizations {
   String get show_app_walkthrough => 'App Führung anzeigen';
 
   @override
+  String get showcase_create_game_button =>
+      'Tippe auf „Spielvorlage erstellen“, sobald du bereit bist. Das funktioniert nur, wenn ein Name eingegeben wurde.';
+
+  @override
+  String get showcase_create_game_name =>
+      'Gib der Spielvorlage hier einen Namen.';
+
+  @override
+  String get showcase_create_game_ruleset =>
+      'Standardmäßig ist der Regelsatz „Gewinner“ ausgewählt, den wir vorerst verwenden. Für andere Spielarten passen andere Regelsätze besser.';
+
+  @override
+  String get showcase_create_match_button =>
+      'Sobald du alle Einstellungen vorgenommen hast, klicke hier, um das Spiel zu erstellen.';
+
+  @override
+  String get showcase_create_match_game =>
+      'Wähle hier die zuvor erstellte Spielvorlage aus, indem du hierhin tippst.';
+
+  @override
+  String get showcase_create_match_name => 'Gib deinem Spiel einen Namen.';
+
+  @override
+  String get showcase_create_match_players =>
+      'Wähle hier die teilnehmenden Spieler:innen aus. Um neue zu erstellen, tippe nach der Namenseingabe auf das Plus-Symbol neben der Suchleiste.';
+
+  @override
+  String get showcase_game_view_create =>
+      'Klicke auf die Schaltfläche unten, um eine neue Spielvorlage zu erstellen.';
+
+  @override
+  String get showcase_match_view_create =>
+      'Lass uns dein erstes Spiel erfassen, klicke auf die Schaltfläche unten.';
+
+  @override
+  String get showcase_nav_game =>
+      'Jedes Spiel benötigt eine bestimmte Spielvorlage, zu der es gehört. Beginnen wir damit, zum Spielvorlagen-Reiter zu wechseln.';
+
+  @override
+  String get showcase_nav_match =>
+      'Da wir nun eine Spielvorlage erstellt haben, können wir zum Spiele-Reiter wechseln.';
+
+  @override
+  String get showcase_select_winner =>
+      'Um deine Gewinner:innen festzulegen, wähle sie einfach hier aus und klicke unten auf die Speichern-Schaltfläche.';
+
+  @override
+  String get showcase_skip => 'Überspringen';
+
+  @override
   String get statistic => 'Statistik';
 
   @override

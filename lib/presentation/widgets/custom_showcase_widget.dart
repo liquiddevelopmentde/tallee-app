@@ -4,6 +4,7 @@ import 'package:flutter_popup/flutter_popup.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
 class CustomShowcaseWidget extends StatelessWidget {
@@ -65,9 +66,9 @@ class CustomShowcaseWidget extends StatelessWidget {
             showcaseProvider.skipTour();
             ShowcaseView.get().dismiss();
           },
-          child: const Text(
-            'Skip',
-            style: TextStyle(color: CustomTheme.textColor),
+          child: Text(
+            AppLocalizations.of(context).showcase_skip,
+            style: const TextStyle(color: CustomTheme.textColor),
           ),
         ),
       ),

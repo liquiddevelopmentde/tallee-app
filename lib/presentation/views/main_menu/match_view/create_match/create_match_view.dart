@@ -167,7 +167,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 child: CustomShowcaseWidget(
                   showcaseKey: createMatchViewMatchNameKey,
                   identifier: createMatchViewMatchNameIdentifier,
-                  description: 'Give your match a name',
+                  description: loc.showcase_create_match_name,
                   child: TextInputField(
                     controller: matchNameController,
                     hintText: hintText ?? '',
@@ -182,8 +182,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   child: CustomShowcaseWidget(
                     showcaseKey: createMatchViewMatchGameKey,
                     identifier: createMatchViewMatchGameIdentifier,
-                    description:
-                        'Select the game you created earlier by tapping here',
+                    description: loc.showcase_create_match_game,
                     child: ChooseTile(
                       title: loc.game,
                       trailing: selectedGame == null
@@ -264,7 +263,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               CustomShowcaseWidget(
                 showcaseKey: createMatchViewSelectPlayersKey,
                 identifier: createMatchViewSelectPlayersIdentifier,
-                description: 'Select the participating players here, to create new ones, tap the plus icon next to the searchbar after entering a name.',
+                description: loc.showcase_create_match_players,
                 targetPadding: const .only(top: 10),
                 child: Expanded(
                   child: PlayerSelectionWidget.multiple(
@@ -294,7 +293,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 child: CustomShowcaseWidget(
                   showcaseKey: createMatchViewCreateMatchKey,
                   identifier: createMatchViewCreateMatchIdentifier,
-                  description: 'Once you`ve dialed all the settings in, click here to create the match.',
+                  description: loc.showcase_create_match_button,
                   child: BottomAnimatedButton(
                     sizeRelativeToWidth: 0.95,
                     buttonType: ButtonType.primary,

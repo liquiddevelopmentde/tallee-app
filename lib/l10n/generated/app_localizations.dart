@@ -1574,6 +1574,84 @@ abstract class AppLocalizations {
   /// **'Show App Walkthrough'**
   String get show_app_walkthrough;
 
+  /// No description provided for @showcase_create_game_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Hit the Create Game button once you\'re ready. It will only work if a name is provided.'**
+  String get showcase_create_game_button;
+
+  /// No description provided for @showcase_create_game_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a name for the game here'**
+  String get showcase_create_game_name;
+
+  /// No description provided for @showcase_create_game_ruleset.
+  ///
+  /// In en, this message translates to:
+  /// **'By default the ruleset \"Winner\" is selected, for now on, we\'ll use that. For other game types, other rulesets will fit the needs.'**
+  String get showcase_create_game_ruleset;
+
+  /// No description provided for @showcase_create_match_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Once you\'ve dialed all the settings in, click here to create the match.'**
+  String get showcase_create_match_button;
+
+  /// No description provided for @showcase_create_match_game.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the game you created earlier by tapping here'**
+  String get showcase_create_match_game;
+
+  /// No description provided for @showcase_create_match_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your match a name'**
+  String get showcase_create_match_name;
+
+  /// No description provided for @showcase_create_match_players.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the participating players here, to create new ones, tap the plus icon next to the searchbar after entering a name.'**
+  String get showcase_create_match_players;
+
+  /// No description provided for @showcase_game_view_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Click the button below to create a new game'**
+  String get showcase_game_view_create;
+
+  /// No description provided for @showcase_match_view_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s track your first match, click the button below.'**
+  String get showcase_match_view_create;
+
+  /// No description provided for @showcase_nav_game.
+  ///
+  /// In en, this message translates to:
+  /// **'Each match needs a specific game it belongs to, let\'s start by heading to the game tab.'**
+  String get showcase_nav_game;
+
+  /// No description provided for @showcase_nav_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Now that we created a game, we can head to the match tab.'**
+  String get showcase_nav_match;
+
+  /// No description provided for @showcase_select_winner.
+  ///
+  /// In en, this message translates to:
+  /// **'To track your winners, just select them here and click the save button below.'**
+  String get showcase_select_winner;
+
+  /// No description provided for @showcase_skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get showcase_skip;
+
   /// No description provided for @statistic.
   ///
   /// In en, this message translates to:

@@ -242,8 +242,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               CustomShowcaseWidget(
                 showcaseKey: navbarMatchViewKey,
                 identifier: navbarMatchViewIdentifier,
-                description:
-                    'Now that we created a game, we can head to the match tab.',
+                description: loc.showcase_nav_match,
                 disableBarrierInteraction: true,
                 disposeOnTap: true,
                 onTargetClick: () {
@@ -269,7 +268,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               CustomShowcaseWidget(
                 showcaseKey: navbarGameViewKey,
                 identifier: navbarGameViewIdentifier,
-                description: "Each match needs a specific game it belongs to, let's start by heading to the game tab.",
+                description: loc.showcase_nav_game,
                 disableBarrierInteraction: true,
                 disposeOnTap: true,
                 onTargetClick: () {

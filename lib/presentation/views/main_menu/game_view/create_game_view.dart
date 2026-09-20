@@ -225,7 +225,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                 child: CustomShowcaseWidget(
                   showcaseKey: createGameViewGameNameKey,
                   identifier: createGameViewGameNameIdentifier,
-                  description: 'Set a name for the game here',
+                  description: loc.showcase_create_game_name,
                   child: TextInputField(
                     controller: gameNameController,
                     maxLength: MAX_MATCH_NAME_LENGTH,
@@ -241,7 +241,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                   child: CustomShowcaseWidget(
                     showcaseKey: createGameViewGameRulesetKey,
                     identifier: createGameViewGameRulesetIdentifier,
-                    description: 'By default the ruleset "Winner" is selected, for now on, we`ll use that. For other game types, other rulesets will fit the needs.',
+                    description: loc.showcase_create_game_ruleset,
                     child: ChooseTile(
                       title: loc.ruleset,
                       trailing: widget.requiredRuleset != null
@@ -304,7 +304,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                 child: CustomShowcaseWidget(
                   showcaseKey: createGameViewCreateGameKey,
                   identifier: createGameViewCreateGameIdentifier,
-                  description: 'Hit the Create Game button once you`re ready. It will only work if a name is provided.',
+                  description: loc.showcase_create_game_button,
                   child: BottomAnimatedButton(
                     buttonText: isEditing ? loc.edit_game : loc.create_game,
                     sizeRelativeToWidth: 0.95,
