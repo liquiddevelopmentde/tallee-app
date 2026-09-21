@@ -18,19 +18,13 @@ import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class GroupDetailView extends StatefulWidget {
-  /// A view that displays the profile of a group.
-  const GroupDetailView({
-    super.key,
-    required this.group,
-    required this.onDataChanged,
-  });
+  /// A view that displays the profile of a group
+  /// - [group]: The group to display
+  /// - [onGroupUpdated]: Callback invoked when a group is updated
+  const GroupDetailView({super.key, required this.group, this.onGroupUpdated});
 
-  /// The group to display.
   final Group group;
-
-  /// Callback that is invoked when the group data has changed
-  /// (e.g. edited, deleted, or members updated).
-  final VoidCallback onDataChanged;
+  final VoidCallback? onGroupUpdated;
 
   @override
   State<GroupDetailView> createState() => _GroupDetailViewState();
@@ -92,7 +86,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   await db.groupDao.deleteGroup(groupId: group.id);
                   if (!context.mounted) return;
                   Navigator.pop(context);
-                  widget.onDataChanged();
+                  widget.onGroupUpdated?.call();
                 }
               });
             },
@@ -170,7 +164,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                               ),
                               builder: (context) => PlayerDetailView(
                                 player: member,
-                                onPlayerUpdated: widget.onDataChanged,
+                                onPlayerUpdated: widget.onGroupUpdated,
                               ),
                             ),
                           );
@@ -218,7 +212,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                       group = updatedGroup;
                     });
                     loadStatistics();
-                    widget.onDataChanged();
+                    widget.onGroupUpdated?.call();
                   }
                 },
               ),

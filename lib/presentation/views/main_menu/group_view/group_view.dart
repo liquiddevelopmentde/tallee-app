@@ -196,7 +196,7 @@ class _GroupViewState extends State<GroupView> {
                                     builder: (context) {
                                       return GroupDetailView(
                                         group: filteredGroups[index],
-                                        onDataChanged: loadGroups,
+                                        onGroupUpdated: loadGroups,
                                       );
                                     },
                                   ),
@@ -289,7 +289,7 @@ class _GroupViewState extends State<GroupView> {
   }
 
   void loadGroups() {
-    //if (!mounted) return;
+    if (!mounted) return;
     setState(() => isLoading = true);
 
     Future.wait([
