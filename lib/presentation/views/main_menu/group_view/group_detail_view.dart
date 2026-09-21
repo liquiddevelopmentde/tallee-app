@@ -20,11 +20,11 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dar
 class GroupDetailView extends StatefulWidget {
   /// A view that displays the profile of a group
   /// - [group]: The group to display
-  /// - [onChanged]: Callback invoked when a group is updated
-  const GroupDetailView({super.key, required this.group, this.onChanged});
+  /// - [onGroupUpdated]: Callback invoked when a group is updated
+  const GroupDetailView({super.key, required this.group, this.onGroupUpdated});
 
   final Group group;
-  final VoidCallback? onChanged;
+  final VoidCallback? onGroupUpdated;
 
   @override
   State<GroupDetailView> createState() => _GroupDetailViewState();
@@ -86,7 +86,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   await db.groupDao.deleteGroup(groupId: group.id);
                   if (!context.mounted) return;
                   Navigator.pop(context);
-                  widget.onChanged?.call();
+                  widget.onGroupUpdated?.call();
                 }
               });
             },
@@ -164,7 +164,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                               ),
                               builder: (context) => PlayerDetailView(
                                 player: member,
-                                onPlayerUpdated: widget.onChanged,
+                                onPlayerUpdated: widget.onGroupUpdated,
                               ),
                             ),
                           );
@@ -212,7 +212,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                       group = updatedGroup;
                     });
                     loadStatistics();
-                    widget.onChanged?.call();
+                    widget.onGroupUpdated?.call();
                   }
                 },
               ),

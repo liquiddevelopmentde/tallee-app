@@ -166,7 +166,7 @@ class _GroupViewState extends State<GroupView> {
                                   builder: (context) {
                                     return GroupDetailView(
                                       group: filteredGroups[index],
-                                      onChanged: loadGroups,
+                                      onGroupUpdated: loadGroups,
                                     );
                                   },
                                 ),
