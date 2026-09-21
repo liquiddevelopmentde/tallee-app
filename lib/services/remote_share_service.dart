@@ -130,7 +130,7 @@ class RemoteShareService {
 
       final isValidSchema = await validateJsonSchema(
         jsonString: jsonString,
-        schemaAssetPath: 'assets/match_schema.json',
+        schemaAssetPath: 'assets/schemas/match_schema.json',
       );
 
       if (!isValidSchema) {
