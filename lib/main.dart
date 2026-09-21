@@ -184,6 +184,7 @@ class _TalleeState extends State<Tallee> {
       themeMode: ThemeMode.dark,
       navigatorObservers: [SentryNavigatorObserver()],
       theme: ThemeData(
+        fontFamily: 'Inter',
         // main colors
         primaryColor: CustomTheme.primaryColor,
         scaffoldBackgroundColor: CustomTheme.backgroundColor,

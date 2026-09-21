@@ -307,7 +307,7 @@ void main() {
 
       final isValid = await validateJsonSchema(
         jsonString: jsonString,
-        schemaAssetPath: 'assets/match_schema.json',
+        schemaAssetPath: 'assets/schemas/match_schema.json',
       );
       expect(isValid, isTrue);
     });
