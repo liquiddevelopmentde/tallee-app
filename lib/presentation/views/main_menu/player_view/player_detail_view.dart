@@ -225,7 +225,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                         ),
                                         builder: (context) => GroupDetailView(
                                           group: group,
-                                          callback: widget.onPlayerUpdated,
+                                          onChanged: widget.onPlayerUpdated,
                                         ),
                                       ),
                                     );
