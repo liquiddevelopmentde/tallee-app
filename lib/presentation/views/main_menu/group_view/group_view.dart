@@ -33,6 +33,8 @@ class _GroupViewState extends State<GroupView> {
   late final AppDatabase db;
   late final GroupSearchProvider _searchProvider;
 
+  final ScrollController scrollController = ScrollController();
+
   /// Loaded groups from the database
   late List<Group> loadedGroups;
 
@@ -67,6 +69,7 @@ class _GroupViewState extends State<GroupView> {
   void dispose() {
     _searchProvider.removeListener(_handleSearchToggle);
     searchBarController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -122,6 +125,14 @@ class _GroupViewState extends State<GroupView> {
                         child: CustomSearchBar(
                           controller: searchBarController,
                           hintText: '',
+                          trailingButtonShown:
+                              searchBarController.text.isNotEmpty,
+                          onTrailingButtonPressed: () {
+                            searchBarController.clear();
+                            setState(() {
+                              filterGroups('');
+                            });
+                          },
                           onChanged: (value) {
                             setState(() {
                               filterGroups(value);
@@ -168,6 +179,7 @@ class _GroupViewState extends State<GroupView> {
                           return true;
                         },
                         child: ListView.builder(
+                          controller: scrollController,
                           padding: CustomTheme.listViewPadding(context),
                           itemCount: filteredGroups.length,
                           itemBuilder: (BuildContext context, int index) {
@@ -184,7 +196,7 @@ class _GroupViewState extends State<GroupView> {
                                     builder: (context) {
                                       return GroupDetailView(
                                         group: filteredGroups[index],
-                                        callback: loadGroups,
+                                        onDataChanged: loadGroups,
                                       );
                                     },
                                   ),
@@ -264,6 +276,14 @@ class _GroupViewState extends State<GroupView> {
       isSearchBarVisible = true;
       if (!_searchProvider.isSearching) {
         searchBarController.clear();
+      } else {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
+        }
       }
     });
   }

@@ -33,6 +33,9 @@ class MatchView extends StatefulWidget {
 class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
   late final MatchSearchProvider searchProvider;
+
+  final ScrollController scrollController = ScrollController();
+
   bool isLoading = true;
   MatchFilter selectedFilter =
       SharedPreferencesService.getMatchFilter() ?? MatchFilter.all;
@@ -87,6 +90,7 @@ class _MatchViewState extends State<MatchView> {
   void dispose() {
     searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -147,6 +151,14 @@ class _MatchViewState extends State<MatchView> {
                           child: CustomSearchBar(
                             controller: searchBarController,
                             hintText: '',
+                            trailingButtonShown:
+                                searchBarController.text.isNotEmpty,
+                            onTrailingButtonPressed: () {
+                              searchBarController.clear();
+                              setState(() {
+                                applySearch('');
+                              });
+                            },
                             onChanged: (value) {
                               setState(() {
                                 applySearch(value);
@@ -242,6 +254,7 @@ class _MatchViewState extends State<MatchView> {
                             return true;
                           },
                           child: ListView.builder(
+                            controller: scrollController,
                             padding: CustomTheme.listViewPadding(context),
                             itemCount: displayedMatches.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -383,6 +396,14 @@ class _MatchViewState extends State<MatchView> {
       isSearchBarVisible = true;
       if (!searchProvider.isSearching) {
         searchBarController.clear();
+      } else {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
+        }
       }
     });
   }

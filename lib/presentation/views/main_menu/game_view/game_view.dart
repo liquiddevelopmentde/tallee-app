@@ -31,6 +31,8 @@ class _GameViewState extends State<GameView> {
   late final AppDatabase db;
   late final GameSearchProvider searchProvider;
 
+  final ScrollController scrollController = ScrollController();
+
   bool isLoading = true;
   late List<(Game, int)> gameCounts = [];
 
@@ -65,6 +67,7 @@ class _GameViewState extends State<GameView> {
   void dispose() {
     searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -120,6 +123,14 @@ class _GameViewState extends State<GameView> {
                         child: CustomSearchBar(
                           controller: searchBarController,
                           hintText: '',
+                          trailingButtonShown:
+                              searchBarController.text.isNotEmpty,
+                          onTrailingButtonPressed: () {
+                            searchBarController.clear();
+                            setState(() {
+                              filterGames('');
+                            });
+                          },
                           onChanged: (value) {
                             setState(() {
                               filterGames(value);
@@ -166,6 +177,7 @@ class _GameViewState extends State<GameView> {
                           return true;
                         },
                         child: ListView.builder(
+                          controller: scrollController,
                           padding: CustomTheme.listViewPadding(context),
                           itemCount: filteredGames.length,
                           itemBuilder: (BuildContext context, int index) {
@@ -264,6 +276,14 @@ class _GameViewState extends State<GameView> {
       isSearchBarVisible = true;
       if (!searchProvider.isSearching) {
         searchBarController.clear();
+      } else {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
+        }
       }
     });
   }
