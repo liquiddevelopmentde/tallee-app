@@ -259,7 +259,6 @@ class _MatchViewState extends State<MatchView> {
                             itemCount: displayedMatches.length,
                             itemBuilder: (BuildContext context, int index) {
                               return MatchTile(
-                                onPlayerEdited: loadMatches,
                                 width: MediaQuery.sizeOf(context).width * 0.95,
                                 onTap: () async {
                                   Navigator.push(
