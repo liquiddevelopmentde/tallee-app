@@ -24,11 +24,11 @@ class PlayerDetailView extends StatefulWidget {
   const PlayerDetailView({
     super.key,
     required this.player,
-    required this.onPlayerUpdated,
+    this.onPlayerUpdated,
   });
 
   final Player player;
-  final VoidCallback onPlayerUpdated;
+  final VoidCallback? onPlayerUpdated;
 
   @override
   State<PlayerDetailView> createState() => _PlayerDetailViewState();
@@ -120,7 +120,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     await db.playerDao.deletePlayer(playerId: widget.player.id);
                     if (!context.mounted) return;
                     Navigator.pop(context);
-                    widget.onPlayerUpdated();
+                    widget.onPlayerUpdated?.call();
                   }
                 });
               },
@@ -225,7 +225,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                         ),
                                         builder: (context) => GroupDetailView(
                                           group: group,
-                                          callback: widget.onPlayerUpdated,
+                                          onGroupUpdated:
+                                              widget.onPlayerUpdated,
                                         ),
                                       ),
                                     );
@@ -272,7 +273,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                       ),
                                       builder: (context) => MatchDetailView(
                                         match: match,
-                                        onMatchUpdate: widget.onPlayerUpdated,
+                                        onMatchUpdate: () =>
+                                            widget.onPlayerUpdated?.call(),
                                       ),
                                     ),
                                   );

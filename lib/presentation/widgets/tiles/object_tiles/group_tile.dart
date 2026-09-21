@@ -3,9 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
-import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
-import 'package:tallee/presentation/utils/navigation/route_names.dart';
-import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
@@ -21,7 +18,6 @@ class GroupTile extends StatefulWidget {
     this.onTap,
     this.onPlayerChanged,
     this.borderColor,
-    this.playersClickable = true,
   });
 
   final Group group;
@@ -29,7 +25,6 @@ class GroupTile extends StatefulWidget {
   final VoidCallback? onTap;
   final VoidCallback? onPlayerChanged;
   final Color? borderColor;
-  final bool playersClickable;
 
   @override
   State<GroupTile> createState() => _GroupTileState();
@@ -140,27 +135,7 @@ class _GroupTileState extends State<GroupTile> {
                 for (var member in [
                   ...widget.group.members,
                 ]..sort((a, b) => a.name.compareIgnoringCaseTo(b.name)))
-                  PlayerTile(
-                    player: member,
-                    onTileTap: widget.playersClickable
-                        ? () {
-                            Navigator.push(
-                              context,
-                              adaptivePageRoute(
-                                settings: const RouteSettings(
-                                  name: RouteNames.playerDetailView,
-                                ),
-                                builder: (context) => PlayerDetailView(
-                                  player: member,
-                                  onPlayerUpdated: () {
-                                    widget.onPlayerChanged?.call();
-                                  },
-                                ),
-                              ),
-                            );
-                          }
-                        : null,
-                  ),
+                  PlayerTile(player: member),
               ],
             ),
           ],
