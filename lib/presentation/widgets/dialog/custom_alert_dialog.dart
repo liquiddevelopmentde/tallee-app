@@ -32,15 +32,15 @@ class CustomAlertDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       titlePadding: showCloseButton
-          ? const EdgeInsets.fromLTRB(24.0, 12.0, 12.0, 0.0)
+          ? const EdgeInsets.only(left: 24.0, top: 12.0, right: 12.0)
           : null,
       title: showCloseButton
-          ? Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
+          ? Padding(
+              padding: const EdgeInsets.only(top: 0.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
                     child: Text(
                       title,
                       style: const TextStyle(
@@ -49,9 +49,9 @@ class CustomAlertDialog extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-                HapticCloseButton(color: closeButtonColor),
-              ],
+                  HapticCloseButton(color: closeButtonColor),
+                ],
+              ),
             )
           : Text(
               title,
