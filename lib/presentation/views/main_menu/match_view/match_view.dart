@@ -24,6 +24,7 @@ import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MatchView extends StatefulWidget {
   /// A view that displays a list of matches
@@ -406,7 +407,7 @@ class _MatchViewState extends State<MatchView> {
   Future<void> triggerRatingDialog() async {
     // show only in prod or dev
     if (IS_TEST_ENV) return;
-    if (!RATE_MY_APP.shouldOpenDialog) return;
+    //if (!RATE_MY_APP.shouldOpenDialog) return;
 
     final loc = AppLocalizations.of(context);
     bool? didUserLikeApp;
@@ -462,7 +463,10 @@ class _MatchViewState extends State<MatchView> {
         ),
         actions: [
           CustomDialogAction(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () {
+              Navigator.of(context).pop();
+              launchUrl(Uri.parse('mailto:$LIQUID_CONTACT_EMAIL'));
+            },
             text: loc.write_email,
           ),
           CustomDialogAction(
