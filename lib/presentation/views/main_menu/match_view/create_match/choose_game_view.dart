@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
@@ -51,6 +52,8 @@ class _ChooseGameViewState extends State<ChooseGameView> {
 
   /// Controller for the search bar
   final TextEditingController searchBarController = TextEditingController();
+
+  bool isSearchBarVisible = true;
 
   /// Currently selected game(s)
   List<Game> selectedGames = [];
@@ -109,15 +112,41 @@ class _ChooseGameViewState extends State<ChooseGameView> {
         child: Column(
           children: [
             // Search Bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: CustomSearchBar(
-                controller: searchBarController,
-                hintText: loc.search_for_games,
-                onChanged: (value) {
-                  applySearchFilter(value);
-                },
-              ),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              transitionBuilder: (child, animation) {
+                final curvedAnimation = CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutCubic,
+                  reverseCurve: Curves.easeInCubic,
+                );
+
+                return ClipRect(
+                  child: SizeTransition(
+                    sizeFactor: curvedAnimation,
+                    alignment: Alignment.topCenter,
+                    child: FadeTransition(
+                      opacity: curvedAnimation,
+                      child: child,
+                    ),
+                  ),
+                );
+              },
+              child: isSearchBarVisible
+                  ? Padding(
+                      key: const ValueKey('searchbar-visible'),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: CustomSearchBar(
+                        controller: searchBarController,
+                        hintText: loc.search_for_games,
+                        onChanged: (value) {
+                          applySearchFilter(value);
+                        },
+                      ),
+                    )
+                  : const SizedBox.shrink(key: ValueKey('searchbar-hidden')),
             ),
 
             // Game list
@@ -138,46 +167,59 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                         .there_are_no_games_matching_your_search,
                   ),
                 ),
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 85, top: 10),
-                  itemCount: filteredGames.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final game = filteredGames[index];
-                    return GameTile(
-                      game: game,
-                      isHighlighted: selectedGames.any(
-                        (selected) => selected.id == game.id,
-                      ),
-                      onTap: () async {
-                        setState(() {
-                          if (selectedGames.contains(filteredGames[index])) {
-                            selectedGames.removeWhere(
-                              (group) => group.id == filteredGames[index].id,
-                            );
-                          } else {
-                            // In single select mode only allow one group
-                            if (!enableMultiSelection) {
-                              selectedGames.clear();
-                            }
-                            selectedGames.add(filteredGames[index]);
-                          }
-                        });
-
-                        // Navigate back to create match view instantly
-                        if (!enableMultiSelection) {
-                          await Future.delayed(MINIMUM_SKELETON_DURATION)
-                              .then((_) {
-                                if (!context.mounted) return;
-                                Navigator.of(context).pop(
-                                  selectedGames.isEmpty
-                                      ? null
-                                      : selectedGames.first,
-                                );
-                              });
-                        }
-                      },
-                    );
+                child: NotificationListener<UserScrollNotification>(
+                  onNotification: (notification) {
+                    if (notification.direction == ScrollDirection.reverse &&
+                        isSearchBarVisible) {
+                      setState(() => isSearchBarVisible = false);
+                    } else if (notification.direction ==
+                            ScrollDirection.forward &&
+                        !isSearchBarVisible) {
+                      setState(() => isSearchBarVisible = true);
+                    }
+                    return true;
                   },
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 85, top: 10),
+                    itemCount: filteredGames.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final game = filteredGames[index];
+                      return GameTile(
+                        game: game,
+                        isHighlighted: selectedGames.any(
+                          (selected) => selected.id == game.id,
+                        ),
+                        onTap: () async {
+                          setState(() {
+                            if (selectedGames.contains(filteredGames[index])) {
+                              selectedGames.removeWhere(
+                                (group) => group.id == filteredGames[index].id,
+                              );
+                            } else {
+                              // In single select mode only allow one group
+                              if (!enableMultiSelection) {
+                                selectedGames.clear();
+                              }
+                              selectedGames.add(filteredGames[index]);
+                            }
+                          });
+
+                          // Navigate back to create match view instantly
+                          if (!enableMultiSelection) {
+                            await Future.delayed(MINIMUM_SKELETON_DURATION)
+                                .then((_) {
+                                  if (!context.mounted) return;
+                                  Navigator.of(context).pop(
+                                    selectedGames.isEmpty
+                                        ? null
+                                        : selectedGames.first,
+                                  );
+                                });
+                          }
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
