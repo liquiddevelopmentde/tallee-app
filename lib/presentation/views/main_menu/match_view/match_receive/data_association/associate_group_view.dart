@@ -68,7 +68,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
               ),
             ),
             const SizedBox(height: 10),
-            GroupTile(group: widget.match.group!),
+            GroupTile(group: widget.match.group!, playersClickable: false),
             const Icon(Icons.arrow_downward, size: 30),
             const SizedBox(height: 10),
             AnimatedSwitcher(
@@ -134,6 +134,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                       group: associatedGroup!,
                       onTap: navigateToGroupSelection,
                       borderColor: Colors.green.withAlpha(150),
+                      playersClickable: false,
                     ),
             ),
             const SizedBox(height: 2),

@@ -40866,7 +40866,7 @@ const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-  version: '0.1.27+670',
+    version: '0.1.27+670',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
