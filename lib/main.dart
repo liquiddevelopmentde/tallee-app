@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -183,40 +182,7 @@ class _TalleeState extends State<Tallee> {
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
       themeMode: ThemeMode.dark,
       navigatorObservers: [SentryNavigatorObserver()],
-      theme: ThemeData(
-        fontFamily: 'Inter',
-        // main colors
-        primaryColor: CustomTheme.primaryColor,
-        scaffoldBackgroundColor: CustomTheme.backgroundColor,
-        // themes
-        appBarTheme: CustomTheme.appBarTheme,
-        textTheme: CustomTheme.textTheme,
-        actionIconTheme: CustomTheme.actionIconTheme,
-        inputDecorationTheme: CustomTheme.inputDecorationTheme,
-        searchBarTheme: CustomTheme.searchBarTheme,
-        radioTheme: CustomTheme.radioTheme,
-        // deactivate splash effects
-        splashFactory: NoSplash.splashFactory,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        // color scheme
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: CustomTheme.textColor,
-          brightness: Brightness.dark,
-          primary: CustomTheme.primaryColor,
-          onPrimary: CustomTheme.textColor,
-          surface: CustomTheme.backgroundColor,
-          onSurface: CustomTheme.textColor,
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
-          },
-        ),
-      ),
+      theme: CustomTheme.themeData,
       home: SplashScreen(onFinished: handleSplashFinished),
     );
   }

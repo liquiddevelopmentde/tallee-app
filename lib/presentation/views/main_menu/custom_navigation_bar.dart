@@ -101,7 +101,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
         leading: currentIndex == 0
-            ? IconButton(
+            ? HapticIconButton(
                 onPressed: () async {
                   await Navigator.push(
                     context,

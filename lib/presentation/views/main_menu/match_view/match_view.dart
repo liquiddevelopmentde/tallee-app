@@ -402,6 +402,7 @@ class _MatchViewState extends State<MatchView> {
     return await showDialog<bool>(
       context: context,
       builder: (context) => CustomAlertDialog(
+        closeButtonColor: CustomTheme.hintColor,
         showCloseButton: true,
         title: loc.do_you_like_the_app,
         content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),
