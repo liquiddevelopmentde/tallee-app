@@ -132,24 +132,21 @@ void main() {
         expect(scopes.toSet().contains(StatisticScope.selectedGroups), isTrue);
       });
 
-      test(
-        'addStatisticScopes() with duplicate scope does not create duplicate entries',
-        () async {
-          await database.statisticScopeDao.addStatisticScopes(
-            statisticId: testStatistic.id,
-            scopes: [StatisticScope.allPlayers],
-          );
-          await database.statisticScopeDao.addStatisticScopes(
-            statisticId: testStatistic.id,
-            scopes: [StatisticScope.allPlayers],
-          );
+      test('addStatisticScopes() with duplicate scope does not create duplicate entries', () async {
+        await database.statisticScopeDao.addStatisticScopes(
+          statisticId: testStatistic.id,
+          scopes: [StatisticScope.allPlayers],
+        );
+        await database.statisticScopeDao.addStatisticScopes(
+          statisticId: testStatistic.id,
+          scopes: [StatisticScope.allPlayers],
+        );
 
-          final scopes = await database.statisticScopeDao.getScopeForStatistic(
-            testStatistic.id,
-          );
-          expect(scopes.where((s) => s == StatisticScope.allPlayers).length, 1);
-        },
-      );
+        final scopes = await database.statisticScopeDao.getScopeForStatistic(
+          testStatistic.id,
+        );
+        expect(scopes.where((s) => s == StatisticScope.allPlayers).length, 1);
+      });
     });
   });
 }

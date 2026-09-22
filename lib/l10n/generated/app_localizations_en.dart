@@ -272,10 +272,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get displayed_entries => 'Displayed entries';
 
   @override
-  String get dont_update => 'Don\'t update';
+  String get do_you_like_the_app => 'Do you like the app?';
 
   @override
-  String get do_you_like_the_app => 'Do you like the app?';
+  String get dont_update => 'Don\'t update';
 
   @override
   String get drag_to_set_placement => 'Drag to set placement';

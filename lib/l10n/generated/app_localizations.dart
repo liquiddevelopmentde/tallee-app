@@ -566,17 +566,17 @@ abstract class AppLocalizations {
   /// **'Displayed entries'**
   String get displayed_entries;
 
-  /// No description provided for @dont_update.
-  ///
-  /// In en, this message translates to:
-  /// **'Don\'t update'**
-  String get dont_update;
-
   /// No description provided for @do_you_like_the_app.
   ///
   /// In en, this message translates to:
   /// **'Do you like the app?'**
   String get do_you_like_the_app;
+
+  /// No description provided for @dont_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t update'**
+  String get dont_update;
 
   /// No description provided for @drag_to_set_placement.
   ///

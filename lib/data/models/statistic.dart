@@ -110,9 +110,12 @@ class Statistic {
         (e) => e.name == json['timeframe'],
         orElse: () => Timeframe.allTime,
       ),
-      startDate =
-          json['startDate'] != null ? DateTime.parse(json['startDate']) : null,
-      endDate = json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
+      startDate = json['startDate'] != null
+          ? DateTime.parse(json['startDate'])
+          : null,
+      endDate = json['endDate'] != null
+          ? DateTime.parse(json['endDate'])
+          : null,
       color = AppColor.values.firstWhere(
         (e) => e.name == json['color'],
         orElse: () => AppColor.orange,

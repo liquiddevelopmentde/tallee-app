@@ -402,6 +402,7 @@ class _MatchViewState extends State<MatchView> {
     return await showDialog<bool>(
       context: context,
       builder: (context) => CustomAlertDialog(
+        showCloseButton: true,
         title: loc.do_you_like_the_app,
         content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),
         actions: [
@@ -414,11 +415,6 @@ class _MatchViewState extends State<MatchView> {
             onPressed: () => Navigator.of(context).pop(false),
             buttonType: ButtonType.primary,
             text: loc.no,
-          ),
-          CustomDialogAction(
-            onPressed: () => Navigator.of(context).pop(),
-            buttonType: ButtonType.secondary,
-            text: loc.cancel,
           ),
         ],
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/widgets/dialog/custom_dialog_action.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 export 'custom_dialog_action.dart';
 
@@ -11,26 +11,55 @@ class CustomAlertDialog extends StatelessWidget {
   /// - [content]: The main content text displayed in the body of the dialog.
   /// - [actions]: A list of action widgets (typically buttons) displayed at the bottom
   ///   of the dialog. These actions are horizontally spaced around the dialog's width.
+  /// - [showCloseButton]: Whether to show a close (X) button in the top right corner.
+  /// - [closeButtonColor]: Optional custom color for the close button.
   const CustomAlertDialog({
     super.key,
     required this.title,
     required this.content,
     required this.actions,
+    this.showCloseButton = false,
+    this.closeButtonColor,
   });
 
   final String title;
   final Widget content;
-  final List<CustomDialogAction> actions;
+  final List<Widget> actions;
+  final bool showCloseButton;
+  final Color? closeButtonColor;
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          color: CustomTheme.textColor,
-        ),
-      ),
+      titlePadding: showCloseButton
+          ? const EdgeInsets.fromLTRB(24.0, 12.0, 12.0, 0.0)
+          : null,
+      title: showCloseButton
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: CustomTheme.textColor,
+                      ),
+                    ),
+                  ),
+                ),
+                HapticCloseButton(color: closeButtonColor),
+              ],
+            )
+          : Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: CustomTheme.textColor,
+              ),
+            ),
       content: content,
       actions: actions,
       backgroundColor: CustomTheme.boxColor,

@@ -125,11 +125,7 @@ class CustomTheme {
     labelLarge: TextStyle(overflow: TextOverflow.ellipsis),
     labelMedium: TextStyle(overflow: TextOverflow.ellipsis),
     labelSmall: TextStyle(overflow: TextOverflow.ellipsis),
-  ).apply(
-    bodyColor: textColor,
-    displayColor: textColor,
-    fontFamily: 'Inter',
-  );
+  ).apply(bodyColor: textColor, displayColor: textColor, fontFamily: 'Inter');
 
   static final ActionIconThemeData actionIconTheme = ActionIconThemeData(
     backButtonIconBuilder: (context) => const HapticBackButton(),
