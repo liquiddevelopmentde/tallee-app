@@ -97,7 +97,6 @@ class CustomTheme {
   // ==================== Component Themes ====================
   static const AppBarTheme appBarTheme = AppBarTheme(
     backgroundColor: backgroundColor,
-    foregroundColor: textColor,
     elevation: 0,
     scrolledUnderElevation: 0,
     centerTitle: true,
@@ -107,7 +106,6 @@ class CustomTheme {
       fontWeight: FontWeight.bold,
       overflow: TextOverflow.ellipsis,
     ),
-    iconTheme: IconThemeData(color: textColor),
   );
 
   static final TextTheme textTheme = const TextTheme(

@@ -19,11 +19,7 @@ class HapticCloseButton extends StatelessWidget {
 
     return HapticIconButton(
       icon: Icon(iconData, color: color ?? CustomTheme.textColor),
-      onPressed:
-          onPressed ??
-          () async {
-            Navigator.of(context).maybePop();
-          },
+      onPressed: onPressed ?? () async => Navigator.of(context).maybePop(),
     );
   }
 }
