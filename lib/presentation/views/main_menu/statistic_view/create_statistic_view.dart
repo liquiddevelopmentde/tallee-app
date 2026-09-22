@@ -450,11 +450,6 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         return Theme(
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
-            textButtonTheme: TextButtonThemeData(
-              style: ButtonStyle(
-                overlayColor: WidgetStateProperty.all(Colors.transparent),
-              ),
-            ),
             colorScheme: const ColorScheme.dark(
               primary: CustomTheme.primaryColor,
               onPrimary: CustomTheme.textColor,

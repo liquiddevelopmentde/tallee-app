@@ -135,6 +135,7 @@ class CustomTheme {
   static const SearchBarThemeData searchBarTheme = SearchBarThemeData(
     textStyle: WidgetStatePropertyAll(TextStyle(color: textColor)),
     hintStyle: WidgetStatePropertyAll(TextStyle(color: hintColor)),
+    overlayColor: WidgetStatePropertyAll(Colors.transparent),
   );
 
   static final RadioThemeData radioTheme = RadioThemeData(
@@ -150,4 +151,30 @@ class CustomTheme {
     labelStyle: TextStyle(color: textColor),
     hintStyle: TextStyle(color: hintColor),
   );
+
+  static const TextButtonThemeData textButtonTheme = TextButtonThemeData(
+    style: ButtonStyle(
+      overlayColor: WidgetStatePropertyAll(Colors.transparent),
+    ),
+  );
+
+  static const IconButtonThemeData iconButtonTheme = IconButtonThemeData(
+    style: ButtonStyle(
+      overlayColor: WidgetStatePropertyAll(Colors.transparent),
+    ),
+  );
+
+  static const ElevatedButtonThemeData elevatedButtonTheme =
+      ElevatedButtonThemeData(
+        style: ButtonStyle(
+          overlayColor: WidgetStatePropertyAll(Colors.transparent),
+        ),
+      );
+
+  static const OutlinedButtonThemeData outlinedButtonTheme =
+      OutlinedButtonThemeData(
+        style: ButtonStyle(
+          overlayColor: WidgetStatePropertyAll(Colors.transparent),
+        ),
+      );
 }

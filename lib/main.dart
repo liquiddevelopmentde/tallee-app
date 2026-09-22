@@ -183,6 +183,10 @@ class _TalleeState extends State<Tallee> {
         inputDecorationTheme: CustomTheme.inputDecorationTheme,
         searchBarTheme: CustomTheme.searchBarTheme,
         radioTheme: CustomTheme.radioTheme,
+        textButtonTheme: CustomTheme.textButtonTheme,
+        iconButtonTheme: CustomTheme.iconButtonTheme,
+        elevatedButtonTheme: CustomTheme.elevatedButtonTheme,
+        outlinedButtonTheme: CustomTheme.outlinedButtonTheme,
         // deactivate splash effects
         splashFactory: NoSplash.splashFactory,
         splashColor: Colors.transparent,

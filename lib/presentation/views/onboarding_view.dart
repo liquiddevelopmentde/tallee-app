@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 
 class OnboardingPageData {
@@ -69,17 +69,12 @@ class _OnboardingViewState extends State<OnboardingView> {
           children: [
             Align(
               alignment: Alignment.centerRight,
-              //TODO: remove splash and implement custom button (maybe)
-              child: TextButton(
+              child: CustomTextButton(
+                text: 'Skip',
                 onPressed: () {
-                  HapticFeedback.lightImpact();
                   SharedPreferencesService.setOnboardingCompleted(true);
                   widget.onCompleted();
                 },
-                child: const Text(
-                  'Skip',
-                  style: TextStyle(color: CustomTheme.textColor),
-                ),
               ),
             ),
 

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_popup/flutter_popup.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/buttons/custom_text_button.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
 class CustomShowcaseWidget extends StatelessWidget {
@@ -57,19 +55,16 @@ class CustomShowcaseWidget extends StatelessWidget {
       disposeOnTap: disposeOnTap,
       disableMovingAnimation: true,
       tooltipPosition: tooltipPosition,
-      floatingActionWidget: FloatingActionWidget(
-        left: Screen.width * 0.82,
-        bottom: Screen.height * 0.89,
-        child: TextButton(
+      floatingActionWidget: FloatingActionWidget.directional(
+        textDirection: Directionality.of(context),
+        top: MediaQuery.paddingOf(context).top + 55,
+        end: 0,
+        child: CustomTextButton(
+          text: AppLocalizations.of(context).showcase_skip,
           onPressed: () {
-            HapticFeedback.selectionClick();
             showcaseProvider.skipTour();
             ShowcaseView.get().dismiss();
           },
-          child: Text(
-            AppLocalizations.of(context).showcase_skip,
-            style: const TextStyle(color: CustomTheme.textColor),
-          ),
         ),
       ),
       child: child,
