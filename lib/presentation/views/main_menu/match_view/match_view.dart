@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/configs.dart';
@@ -37,17 +38,12 @@ class _MatchViewState extends State<MatchView> {
   late final MatchSearchProvider searchProvider;
   late RateDialogProvider rateProvider;
 
-  /// Matches based on the selected filter
-  late List<Match> filteredMatches = [...allMatches];
-
-  /// Matches based on the search query
-  late List<Match> displayedMatches = [...allMatches];
-
   bool isLoading = true;
   MatchFilter selectedFilter =
       SharedPreferencesService.getMatchFilter() ?? MatchFilter.all;
-
   TextEditingController searchBarController = TextEditingController();
+  bool isSearchBarVisible = true;
+  final ScrollController scrollController = ScrollController();
 
   /// Loaded matches from the database, initially filled with skeleton matches
   List<Match> allMatches = List.filled(
@@ -75,6 +71,12 @@ class _MatchViewState extends State<MatchView> {
     ),
   );
 
+  /// Matches based on the selected filter
+  late List<Match> filteredMatches = [...allMatches];
+
+  /// Matches based on the search query
+  late List<Match> displayedMatches = [...allMatches];
+
   @override
   void initState() {
     super.initState();
@@ -94,6 +96,7 @@ class _MatchViewState extends State<MatchView> {
     searchProvider.removeListener(handleSearchToggle);
     rateProvider.removeListener(handleRatingDialog);
     searchBarController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -103,7 +106,10 @@ class _MatchViewState extends State<MatchView> {
     final searchProvider = context.read<MatchSearchProvider>();
 
     // Reset filtered matches when search is disabled
-    if (!searchProvider.isSearching) applySearch('');
+    if (!searchProvider.isSearching) {
+      applySearch('');
+      isSearchBarVisible = true;
+    }
 
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
@@ -140,7 +146,7 @@ class _MatchViewState extends State<MatchView> {
                       ),
                     );
                   },
-                  child: searchProvider.isSearching
+                  child: searchProvider.isSearching && isSearchBarVisible
                       ? Padding(
                           key: const ValueKey('match-searchbar-visible'),
                           padding: const EdgeInsets.only(
@@ -151,6 +157,14 @@ class _MatchViewState extends State<MatchView> {
                           child: CustomSearchBar(
                             controller: searchBarController,
                             hintText: '',
+                            trailingButtonShown:
+                                searchBarController.text.isNotEmpty,
+                            onTrailingButtonPressed: () {
+                              searchBarController.clear();
+                              setState(() {
+                                applySearch('');
+                              });
+                            },
                             onChanged: (value) {
                               setState(() {
                                 applySearch(value);
@@ -232,30 +246,44 @@ class _MatchViewState extends State<MatchView> {
                           title: loc.info,
                           message: loc.there_is_no_match_matching_your_search,
                         )
-                      : ListView.builder(
-                          padding: CustomTheme.listViewPadding(context),
-                          itemCount: displayedMatches.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return MatchTile(
-                              onPlayerEdited: loadMatches,
-                              width: MediaQuery.sizeOf(context).width * 0.95,
-                              onTap: () async {
-                                Navigator.push(
-                                  context,
-                                  adaptivePageRoute(
-                                    settings: const RouteSettings(
-                                      name: RouteNames.matchDetailView,
-                                    ),
-                                    builder: (context) => MatchDetailView(
-                                      match: displayedMatches[index],
-                                      onMatchUpdate: loadMatches,
-                                    ),
-                                  ),
-                                );
-                              },
-                              match: displayedMatches[index],
-                            );
+                      : NotificationListener<UserScrollNotification>(
+                          onNotification: (notification) {
+                            if (notification.direction ==
+                                    ScrollDirection.reverse &&
+                                isSearchBarVisible) {
+                              setState(() => isSearchBarVisible = false);
+                            } else if (notification.direction ==
+                                    ScrollDirection.forward &&
+                                !isSearchBarVisible) {
+                              setState(() => isSearchBarVisible = true);
+                            }
+                            return true;
                           },
+                          child: ListView.builder(
+                            controller: scrollController,
+                            padding: CustomTheme.listViewPadding(context),
+                            itemCount: displayedMatches.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return MatchTile(
+                                width: MediaQuery.sizeOf(context).width * 0.95,
+                                onTap: () async {
+                                  Navigator.push(
+                                    context,
+                                    adaptivePageRoute(
+                                      settings: const RouteSettings(
+                                        name: RouteNames.matchDetailView,
+                                      ),
+                                      builder: (context) => MatchDetailView(
+                                        match: displayedMatches[index],
+                                        onMatchUpdate: loadMatches,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                match: displayedMatches[index],
+                              );
+                            },
+                          ),
                         ),
                 ),
               ],
@@ -450,9 +478,20 @@ class _MatchViewState extends State<MatchView> {
   void handleSearchToggle() {
     if (!mounted) return;
 
-    if (!searchProvider.isSearching) {
-      searchBarController.clear();
-    }
+    setState(() {
+      isSearchBarVisible = true;
+      if (!searchProvider.isSearching) {
+        searchBarController.clear();
+      } else {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      }
+    });
   }
 
   /// Loads the matches from the database and sorts them by creation date.
