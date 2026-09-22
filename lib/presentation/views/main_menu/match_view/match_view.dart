@@ -407,7 +407,7 @@ class _MatchViewState extends State<MatchView> {
   Future<void> triggerRatingDialog() async {
     // show only in prod or dev
     if (IS_TEST_ENV) return;
-    //if (!RATE_MY_APP.shouldOpenDialog) return;
+    if (!RATE_MY_APP.shouldOpenDialog) return;
 
     final loc = AppLocalizations.of(context);
     bool? didUserLikeApp;

@@ -19,9 +19,9 @@ bool get IS_TEST_ENV => ENVIRONMENT == AppEnvironment.testing;
 // ignore: non_constant_identifier_names
 final RateMyApp RATE_MY_APP = RateMyApp(
   preferencesPrefix: 'rateMyApp_',
-  minDays: 28,
-  minLaunches: 20,
-  remindDays: 28,
+  minDays: 7,
+  minLaunches: 10,
+  remindDays: 7,
   remindLaunches: 10,
   googlePlayIdentifier: '',
   appStoreIdentifier: '',
