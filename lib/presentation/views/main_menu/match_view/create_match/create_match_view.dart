@@ -158,104 +158,88 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         appBar: AppBar(title: Text(viewTitle)),
         body: SafeArea(
           maintainBottomViewPadding: true,
+          minimum: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
+            spacing: 10,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               // Match name input field.
-              Container(
-                margin: CustomTheme.tileMargin,
-                child: CustomShowcaseWidget(
-                  showcaseKey: createMatchViewMatchNameKey,
-                  identifier: createMatchViewMatchNameIdentifier,
-                  description: loc.showcase_create_match_name,
-                  child: TextInputField(
-                    controller: matchNameController,
-                    hintText: hintText ?? '',
-                    maxLength: MAX_MATCH_NAME_LENGTH,
-                  ),
+              CustomShowcaseWidget(
+                showcaseKey: createMatchViewMatchNameKey,
+                identifier: createMatchViewMatchNameIdentifier,
+                description: loc.showcase_create_match_name,
+                child: TextInputField(
+                  controller: matchNameController,
+                  hintText: hintText ?? '',
+                  maxLength: MAX_MATCH_NAME_LENGTH,
                 ),
               ),
 
               if (!widget.editMode)
-                Container(
-                  margin: CustomTheme.tileMargin,
-                  child: CustomShowcaseWidget(
-                    showcaseKey: createMatchViewMatchGameKey,
-                    identifier: createMatchViewMatchGameIdentifier,
-                    description: loc.showcase_create_match_game,
-                    child: ChooseTile(
-                      title: loc.game,
-                      trailing: selectedGame == null
-                          ? Text(loc.none_group)
-                          : Text(selectedGame!.name),
-                      onPressed: () async => await onChoosingGame(),
-                    ),
+                CustomShowcaseWidget(
+                  showcaseKey: createMatchViewMatchGameKey,
+                  identifier: createMatchViewMatchGameIdentifier,
+                  description: loc.showcase_create_match_game,
+                  child: ChooseTile(
+                    title: loc.game,
+                    trailing: selectedGame == null
+                        ? Text(loc.none_group)
+                        : Text(selectedGame!.name),
+                    onPressed: () async => await onChoosingGame(),
                   ),
                 ),
 
               // Choose the default lives
               if (selectedGame?.ruleset == Ruleset.lives && !widget.editMode)
-                Container(
-                  margin: CustomTheme.tileMargin,
-                  child: ChooseTile(
-                    title: getLifeLabel(loc, selectedLives),
-                    trailing: CustomStepper(
-                      value: selectedLives,
-                      onChanged: (int newValue) =>
-                          setState(() => selectedLives = newValue),
-                      minValue: 1,
-                      maxValue: 99,
-                    ),
+                ChooseTile(
+                  title: getLifeLabel(loc, selectedLives),
+                  trailing: CustomStepper(
+                    value: selectedLives,
+                    onChanged: (int newValue) =>
+                        setState(() => selectedLives = newValue),
+                    minValue: 1,
+                    maxValue: 99,
                   ),
                 ),
 
               // Group selection tile.
-              Container(
-                margin: CustomTheme.tileMargin,
-                child: ChooseTile(
-                  title: loc.group,
-                  trailing: selectedGroup == null
-                      ? Text(loc.none_group)
-                      : Text(selectedGroup!.name),
-                  onPressed: () async => onChoosingGroup(),
-                ),
+              ChooseTile(
+                title: loc.group,
+                trailing: selectedGroup == null
+                    ? Text(loc.none_group)
+                    : Text(selectedGroup!.name),
+                onPressed: () async => onChoosingGroup(),
               ),
 
               // Creation date selection tile.
               if (widget.editMode)
-                Container(
-                  margin: CustomTheme.standardMargin,
-                  child: ChooseTile(
-                    title: loc.creation_date,
-                    trailing: selectedCreationDate == null
-                        ? Text(loc.today)
-                        : Text(
-                            DateFormat.yMMMd(
-                              Localizations.localeOf(context).toString(),
-                            ).format(selectedCreationDate!),
-                          ),
-                    onPressed: () async => onCreationDateSelection(),
-                  ),
+                ChooseTile(
+                  title: loc.creation_date,
+                  trailing: selectedCreationDate == null
+                      ? Text(loc.today)
+                      : Text(
+                          DateFormat.yMMMd(
+                            Localizations.localeOf(context).toString(),
+                          ).format(selectedCreationDate!),
+                        ),
+                  onPressed: () async => onCreationDateSelection(),
                 ),
 
               // Team match switch
               if (!widget.editMode)
-                Container(
-                  margin: CustomTheme.tileMargin,
-                  child: ChooseTile(
-                    title: loc.team_match,
-                    trailing: CustomAdaptiveSwitch(
-                      padding: const EdgeInsets.symmetric(vertical: -15),
-                      value: isTeamMatch,
-                      onChanged: (value) => setState(() {
-                        isTeamMatch = value;
-                        // Always reset pairs to individual units when team match is active
-                        // or when explicitly disabled, to ensure a clean state.
-                        selectedUnits = selectedPlayers
-                            .map((p) => Team(name: '', members: [p]))
-                            .toList();
-                      }),
-                    ),
+                ChooseTile(
+                  title: loc.team_match,
+                  trailing: CustomAdaptiveSwitch(
+                    padding: const EdgeInsets.symmetric(vertical: -15),
+                    value: isTeamMatch,
+                    onChanged: (value) => setState(() {
+                      isTeamMatch = value;
+                      // Always reset pairs to individual units when team match is active
+                      // or when explicitly disabled, to ensure a clean state.
+                      selectedUnits = selectedPlayers
+                          .map((p) => Team(name: '', members: [p]))
+                          .toList();
+                    }),
                   ),
                 ),
 
@@ -285,23 +269,17 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               ),
 
               // Create or save button.
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                child: CustomShowcaseWidget(
-                  showcaseKey: createMatchViewCreateMatchKey,
-                  identifier: createMatchViewCreateMatchIdentifier,
-                  description: loc.showcase_create_match_button,
-                  child: BottomAnimatedButton(
-                    sizeRelativeToWidth: 0.95,
-                    buttonType: ButtonType.primary,
-                    onPressed: isSubmitButtonEnabled()
-                        ? () => submitButtonNavigation(context)
-                        : null,
-                    buttonText: buttonText,
-                  ),
+              CustomShowcaseWidget(
+                showcaseKey: createMatchViewCreateMatchKey,
+                identifier: createMatchViewCreateMatchIdentifier,
+                description: loc.showcase_create_match_button,
+                child: BottomAnimatedButton(
+                  sizeRelativeToWidth: 0.95,
+                  buttonType: ButtonType.primary,
+                  onPressed: isSubmitButtonEnabled()
+                      ? () => submitButtonNavigation(context)
+                      : null,
+                  buttonText: buttonText,
                 ),
               ),
             ],
