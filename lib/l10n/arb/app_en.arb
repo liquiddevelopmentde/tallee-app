@@ -343,6 +343,8 @@
   "showcase_nav_match": "Now that we've created a game, we can switch to the Matches tab.",
   "showcase_select_winner": "To set your winners, simply select them here and tap the Save button below.",
   "showcase_skip": "Skip",
+  "get_started": "Get started",
+  "next": "Next",
   "statistic": "Statistic",
   "statistics": "Statistics",
   "successfully_added_player": "Successfully added player {playerName}",
