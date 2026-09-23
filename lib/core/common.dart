@@ -111,10 +111,6 @@ void handleShowcase({
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     if (showcaseProvider.shouldShowShowcase(firstIdentifier)) {
-      print(
-        'handleShowcase for $firstIdentifier is ${showcaseProvider.shouldShowShowcase(firstIdentifier)}',
-      );
-
       ShowcaseView.get().startShowCase(
         widgetKeys,
         delay: const Duration(milliseconds: 400),
