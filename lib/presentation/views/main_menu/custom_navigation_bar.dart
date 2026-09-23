@@ -198,9 +198,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 ),
               );
               setState(() {
-                if (tab is int) {
-                  currentIndex = tab;
-                }
+                if (tab is int) currentIndex = tab;
                 tabKeyCount++;
               });
             },
