@@ -401,6 +401,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get general => 'Allgemein';
 
   @override
+  String get get_started => 'Loslegen';
+
+  @override
   String get group => 'Gruppe';
 
   @override
@@ -592,6 +595,9 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get next => 'Weiter';
+
+  @override
   String get no_data_available => 'Keine Daten verfügbar';
 
   @override
@@ -668,6 +674,41 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get online_sharing_title => 'Online-Teilen aktivieren';
+
+  @override
+  String get onboarding_welcome_title => 'Willkommen bei Tallee';
+
+  @override
+  String get onboarding_welcome_desc =>
+      'Dein Begleiter für Spieleabende. Erfasse Spiele, verfolge Sieger und verwalte deine Spielhistorie.';
+
+  @override
+  String get onboarding_rulesets_title => 'Flexible Regelsätze';
+
+  @override
+  String get onboarding_rulesets_desc =>
+      'Erstelle eigene Spielvorlagen und wähle den passenden Regelsatz: Höchste Punktzahl, Leben, Platzierung und mehr.';
+
+  @override
+  String get onboarding_players_teams_title => 'Spieler:innen & Teams';
+
+  @override
+  String get onboarding_players_teams_desc =>
+      'Organisiere deine Spielrunde in Gruppen und teile Spieler:innen für jedes Spiel in Teams ein.';
+
+  @override
+  String get onboarding_statistics_title => 'Spielstatistiken';
+
+  @override
+  String get onboarding_statistics_desc =>
+      'Erhalte aussagekräftige Einblicke in deine Leistung mit individuellen Statistiken, die auf deine Bedürfnisse zugeschnitten sind.';
+
+  @override
+  String get onboarding_privacy_title => 'Teilen & Datenschutz';
+
+  @override
+  String get onboarding_privacy_desc =>
+      'Teile Spiele ganz einfach per QR-Code oder exportiere bestimmte Spiele und vollständige Backups als lokale Dateien. Deine Daten bleiben standardmäßig privat.';
 
   @override
   String get open_settings => 'Einstellungen öffnen';
@@ -872,11 +913,11 @@ class AppLocalizationsDe extends AppLocalizations {
       'Share-Token bestehen aus 6 alphanumerischen Zeichen.';
 
   @override
-  String get show_app_walkthrough => 'App Führung anzeigen';
+  String get show_app_walkthrough => 'App-Führung';
 
   @override
   String get showcase_create_game_button =>
-      'Tippe auf „Spielvorlage erstellen“, sobald du bereit bist. Das funktioniert nur, wenn ein Name eingegeben wurde.';
+      'Tippe auf „Spielvorlage erstellen“, sobald du bereit bist.';
 
   @override
   String get showcase_create_game_name =>
@@ -884,15 +925,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get showcase_create_game_ruleset =>
-      'Standardmäßig ist der Regelsatz „Gewinner“ ausgewählt, den wir vorerst verwenden. Für andere Spielarten passen andere Regelsätze besser.';
+      'Standardmäßig ist der Regelsatz „Gewinner“ ausgewählt, den wir für dieses Beispiel verwenden. Für andere Regelsätze tippe auf die Kachel..';
 
   @override
   String get showcase_create_match_button =>
-      'Sobald du alle Einstellungen vorgenommen hast, klicke hier, um das Spiel zu erstellen.';
+      'Sobald du alle Einstellungen vorgenommen hast, tippe hier, um das Spiel zu erstellen.';
 
   @override
   String get showcase_create_match_game =>
-      'Wähle hier die zuvor erstellte Spielvorlage aus, indem du hierhin tippst.';
+      'Wähle die zuvor erstellte Spielvorlage aus, indem du hier tippst.';
 
   @override
   String get showcase_create_match_name => 'Gib deinem Spiel einen Namen.';
@@ -903,15 +944,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get showcase_game_view_create =>
-      'Klicke auf die Schaltfläche unten, um eine neue Spielvorlage zu erstellen.';
+      'Tippe auf die Schaltfläche unten, um eine neue Spielvorlage zu erstellen.';
 
   @override
   String get showcase_match_view_create =>
-      'Lass uns dein erstes Spiel erfassen, klicke auf die Schaltfläche unten.';
+      'Lass uns dein erstes Spiel erfassen. Tippe dazu auf die Schaltfläche \"Spiel erstellen\".';
 
   @override
   String get showcase_nav_game =>
-      'Jedes Spiel benötigt eine bestimmte Spielvorlage, zu der es gehört. Beginnen wir damit, zum Spielvorlagen-Reiter zu wechseln.';
+      'Um ein Spiel zu erstellen zu können, musst du zuerst eine Spielvorlage erstellen. Lass uns damit anfangen, zum Spielvorlagen-Reiter zu wechseln.';
 
   @override
   String get showcase_nav_match =>
@@ -919,10 +960,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get showcase_select_winner =>
-      'Um deine Gewinner:innen festzulegen, wähle sie einfach hier aus und klicke unten auf die Speichern-Schaltfläche.';
+      'Um deine Gewinner:innen festzulegen, wähle sie einfach hier aus und tippe unten auf die Speichern-Schaltfläche.';
 
   @override
-  String get showcase_skip => 'Überspringen';
+  String get skip => 'Überspringen';
 
   @override
   String get statistic => 'Statistik';

@@ -396,6 +396,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get general => 'General';
 
   @override
+  String get get_started => 'Get started';
+
+  @override
   String get group => 'Group';
 
   @override
@@ -586,6 +589,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get next => 'Next';
+
+  @override
   String get no_data_available => 'No data available';
 
   @override
@@ -662,6 +668,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get online_sharing_title => 'Activate Online Sharing';
+
+  @override
+  String get onboarding_welcome_title => 'Welcome to Tallee';
+
+  @override
+  String get onboarding_welcome_desc =>
+      'Your companion for game nights. Record matches, track winners, and manage your play history.';
+
+  @override
+  String get onboarding_rulesets_title => 'Flexible Rulesets';
+
+  @override
+  String get onboarding_rulesets_desc =>
+      'Create custom games and pick the ruleset that fits: highest score, lives, placement, and more.';
+
+  @override
+  String get onboarding_players_teams_title => 'Players & Teams';
+
+  @override
+  String get onboarding_players_teams_desc =>
+      'Organize your gaming circle into groups and split players into teams for any match.';
+
+  @override
+  String get onboarding_statistics_title => 'Game Statistics';
+
+  @override
+  String get onboarding_statistics_desc =>
+      'Get meaningful insights into your performance with custom statistics scoped to your needs.';
+
+  @override
+  String get onboarding_privacy_title => 'Sharing & Privacy';
+
+  @override
+  String get onboarding_privacy_desc =>
+      'Share matches easily via QR-codes or export specific matches and full backups as local files. Your data stays private by default.';
 
   @override
   String get open_settings => 'Open Settings';
@@ -865,56 +906,56 @@ class AppLocalizationsEn extends AppLocalizations {
       'Share tokens consist of 6 alphanumeric characters.';
 
   @override
-  String get show_app_walkthrough => 'Show App Walkthrough';
+  String get show_app_walkthrough => 'App Walkthrough';
 
   @override
   String get showcase_create_game_button =>
-      'Hit the Create Game button once you\'re ready. It will only work if a name is provided.';
+      'Tap \"Create Game\" once you\'re ready.';
 
   @override
-  String get showcase_create_game_name => 'Set a name for the game here';
+  String get showcase_create_game_name => 'Set a name for the game here.';
 
   @override
   String get showcase_create_game_ruleset =>
-      'By default the ruleset \"Winner\" is selected, for now on, we\'ll use that. For other game types, other rulesets will fit the needs.';
+      'By default, the \"Winner\" ruleset is selected, which we\'ll use for this example. For other rulesets, tap the tile.';
 
   @override
   String get showcase_create_match_button =>
-      'Once you\'ve dialed all the settings in, click here to create the match.';
+      'Once you\'ve configured all the settings, tap here to create the match.';
 
   @override
   String get showcase_create_match_game =>
-      'Select the game you created earlier by tapping here';
+      'Select the game you created earlier by tapping here.';
 
   @override
-  String get showcase_create_match_name => 'Give your match a name';
+  String get showcase_create_match_name => 'Give your match a name.';
 
   @override
   String get showcase_create_match_players =>
-      'Select the participating players here, to create new ones, tap the plus icon next to the searchbar after entering a name.';
+      'Select the participating players here. To create new ones, tap the plus icon next to the search bar after entering a name.';
 
   @override
   String get showcase_game_view_create =>
-      'Click the button below to create a new game';
+      'Tap the button below to create a new game template.';
 
   @override
   String get showcase_match_view_create =>
-      'Let\'s track your first match, click the button below.';
+      'Let\'s track your first match. Tap the \"Create Match\" button to get started.';
 
   @override
   String get showcase_nav_game =>
-      'Each match needs a specific game it belongs to, let\'s start by heading to the game tab.';
+      'To create a match, you first need to create a game. Let\'s start by switching to the Games tab.';
 
   @override
   String get showcase_nav_match =>
-      'Now that we created a game, we can head to the match tab.';
+      'Now that we\'ve created a game, we can switch to the Matches tab.';
 
   @override
   String get showcase_select_winner =>
-      'To track your winners, just select them here and click the save button below.';
+      'To set your winners, simply select them here and tap the Save button below.';
 
   @override
-  String get showcase_skip => 'Skip';
+  String get skip => 'Skip';
 
   @override
   String get statistic => 'Statistic';

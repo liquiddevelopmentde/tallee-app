@@ -40,29 +40,29 @@ class _OnboardingViewState extends State<OnboardingView> {
     final loc = AppLocalizations.of(context);
 
     final pages = [
-      const OnboardingPageData(
-        title: 'Welcome to Tallee',
-        description: 'Your companion for game nights. Record matches, track winners, and manage your play history.',
+      OnboardingPageData(
+        title: loc.onboarding_welcome_title,
+        description: loc.onboarding_welcome_desc,
         icon: Icons.style_rounded,
       ),
-      const OnboardingPageData(
-        title: 'Flexible Rulesets',
-        description: 'Create custom games and pick the ruleset that fits: highest score, lives, placement, and more.',
+      OnboardingPageData(
+        title: loc.onboarding_rulesets_title,
+        description: loc.onboarding_rulesets_desc,
         icon: Icons.rule_rounded,
       ),
-      const OnboardingPageData(
-        title: 'Players & Teams',
-        description: 'Organize your gaming circle into groups and split players into teams for any match.',
+      OnboardingPageData(
+        title: loc.onboarding_players_teams_title,
+        description: loc.onboarding_players_teams_desc,
         icon: Icons.groups_rounded,
       ),
-      const OnboardingPageData(
-        title: 'Game Statistics',
-        description: 'Get meaningful insights into your performance with custom statistics scoped to your needs.',
+      OnboardingPageData(
+        title: loc.onboarding_statistics_title,
+        description: loc.onboarding_statistics_desc,
         icon: Icons.query_stats_rounded,
       ),
-      const OnboardingPageData(
-        title: 'Sharing & Privacy',
-        description: 'Share matches easily via QR-codes or export specific matches and full backups as local files. Your data stays private by default.',
+      OnboardingPageData(
+        title: loc.onboarding_privacy_title,
+        description: loc.onboarding_privacy_desc,
         icon: Icons.share,
       ),
     ];

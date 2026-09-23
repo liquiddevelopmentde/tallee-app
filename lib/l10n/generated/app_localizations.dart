@@ -788,6 +788,12 @@ abstract class AppLocalizations {
   /// **'General'**
   String get general;
 
+  /// No description provided for @get_started.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get get_started;
+
   /// No description provided for @group.
   ///
   /// In en, this message translates to:
@@ -1118,6 +1124,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 new player will be created} other{{count} new players will be created}}'**
   String new_players_will_be_created(int count);
 
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
   /// No description provided for @no_data_available.
   ///
   /// In en, this message translates to:
@@ -1261,6 +1273,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Activate Online Sharing'**
   String get online_sharing_title;
+
+  /// No description provided for @onboarding_welcome_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Tallee'**
+  String get onboarding_welcome_title;
+
+  /// No description provided for @onboarding_welcome_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your companion for game nights. Record matches, track winners, and manage your play history.'**
+  String get onboarding_welcome_desc;
+
+  /// No description provided for @onboarding_rulesets_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexible Rulesets'**
+  String get onboarding_rulesets_title;
+
+  /// No description provided for @onboarding_rulesets_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Create custom games and pick the ruleset that fits: highest score, lives, placement, and more.'**
+  String get onboarding_rulesets_desc;
+
+  /// No description provided for @onboarding_players_teams_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Players & Teams'**
+  String get onboarding_players_teams_title;
+
+  /// No description provided for @onboarding_players_teams_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Organize your gaming circle into groups and split players into teams for any match.'**
+  String get onboarding_players_teams_desc;
+
+  /// No description provided for @onboarding_statistics_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Game Statistics'**
+  String get onboarding_statistics_title;
+
+  /// No description provided for @onboarding_statistics_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get meaningful insights into your performance with custom statistics scoped to your needs.'**
+  String get onboarding_statistics_desc;
+
+  /// No description provided for @onboarding_privacy_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing & Privacy'**
+  String get onboarding_privacy_title;
+
+  /// No description provided for @onboarding_privacy_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Share matches easily via QR-codes or export specific matches and full backups as local files. Your data stays private by default.'**
+  String get onboarding_privacy_desc;
 
   /// No description provided for @open_settings.
   ///
@@ -1613,86 +1685,86 @@ abstract class AppLocalizations {
   /// No description provided for @show_app_walkthrough.
   ///
   /// In en, this message translates to:
-  /// **'Show App Walkthrough'**
+  /// **'App Walkthrough'**
   String get show_app_walkthrough;
 
   /// No description provided for @showcase_create_game_button.
   ///
   /// In en, this message translates to:
-  /// **'Hit the Create Game button once you\'re ready. It will only work if a name is provided.'**
+  /// **'Tap \"Create Game\" once you\'re ready.'**
   String get showcase_create_game_button;
 
   /// No description provided for @showcase_create_game_name.
   ///
   /// In en, this message translates to:
-  /// **'Set a name for the game here'**
+  /// **'Set a name for the game here.'**
   String get showcase_create_game_name;
 
   /// No description provided for @showcase_create_game_ruleset.
   ///
   /// In en, this message translates to:
-  /// **'By default the ruleset \"Winner\" is selected, for now on, we\'ll use that. For other game types, other rulesets will fit the needs.'**
+  /// **'By default, the \"Winner\" ruleset is selected, which we\'ll use for this example. For other rulesets, tap the tile.'**
   String get showcase_create_game_ruleset;
 
   /// No description provided for @showcase_create_match_button.
   ///
   /// In en, this message translates to:
-  /// **'Once you\'ve dialed all the settings in, click here to create the match.'**
+  /// **'Once you\'ve configured all the settings, tap here to create the match.'**
   String get showcase_create_match_button;
 
   /// No description provided for @showcase_create_match_game.
   ///
   /// In en, this message translates to:
-  /// **'Select the game you created earlier by tapping here'**
+  /// **'Select the game you created earlier by tapping here.'**
   String get showcase_create_match_game;
 
   /// No description provided for @showcase_create_match_name.
   ///
   /// In en, this message translates to:
-  /// **'Give your match a name'**
+  /// **'Give your match a name.'**
   String get showcase_create_match_name;
 
   /// No description provided for @showcase_create_match_players.
   ///
   /// In en, this message translates to:
-  /// **'Select the participating players here, to create new ones, tap the plus icon next to the searchbar after entering a name.'**
+  /// **'Select the participating players here. To create new ones, tap the plus icon next to the search bar after entering a name.'**
   String get showcase_create_match_players;
 
   /// No description provided for @showcase_game_view_create.
   ///
   /// In en, this message translates to:
-  /// **'Click the button below to create a new game'**
+  /// **'Tap the button below to create a new game template.'**
   String get showcase_game_view_create;
 
   /// No description provided for @showcase_match_view_create.
   ///
   /// In en, this message translates to:
-  /// **'Let\'s track your first match, click the button below.'**
+  /// **'Let\'s track your first match. Tap the \"Create Match\" button to get started.'**
   String get showcase_match_view_create;
 
   /// No description provided for @showcase_nav_game.
   ///
   /// In en, this message translates to:
-  /// **'Each match needs a specific game it belongs to, let\'s start by heading to the game tab.'**
+  /// **'To create a match, you first need to create a game. Let\'s start by switching to the Games tab.'**
   String get showcase_nav_game;
 
   /// No description provided for @showcase_nav_match.
   ///
   /// In en, this message translates to:
-  /// **'Now that we created a game, we can head to the match tab.'**
+  /// **'Now that we\'ve created a game, we can switch to the Matches tab.'**
   String get showcase_nav_match;
 
   /// No description provided for @showcase_select_winner.
   ///
   /// In en, this message translates to:
-  /// **'To track your winners, just select them here and click the save button below.'**
+  /// **'To set your winners, simply select them here and tap the Save button below.'**
   String get showcase_select_winner;
 
-  /// No description provided for @showcase_skip.
+  /// No description provided for @skip.
   ///
   /// In en, this message translates to:
   /// **'Skip'**
-  String get showcase_skip;
+  String get skip;
 
   /// No description provided for @statistic.
   ///
