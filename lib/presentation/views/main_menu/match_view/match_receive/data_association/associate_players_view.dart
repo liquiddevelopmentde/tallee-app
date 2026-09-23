@@ -153,7 +153,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   }
 
   Future<void> saveMatch() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
     // Filter null values and cast to Map<String, Player>
     final playerAssociations = <String, Player>{};
@@ -180,7 +180,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
     if (!mounted) return;
 
-    Provider.of<DataRefreshProvider>(context, listen: false).refresh();
+    context.read<DataRefreshProvider>().refresh();
 
     final loc = AppLocalizations.of(context);
     ScaffoldMessenger.of(context)
@@ -190,7 +190,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   }
 
   Future<Player?> showPlayerSelectionSheet(Player? currentSelection) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     cachedAllPlayers ??= await db.playerDao.getAllPlayers();
     final allPlayers = cachedAllPlayers!;
 
@@ -238,7 +238,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   }
 
   Future<void> autoAssociatePlayers() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     cachedAllPlayers = await db.playerDao.getAllPlayers();
     final allPlayers = cachedAllPlayers!;
 

@@ -41,7 +41,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
 
     final hasAssignedPlayers = teams.any((t) => t.members.isNotEmpty);
     if (!hasAssignedPlayers) redistributePlayers();

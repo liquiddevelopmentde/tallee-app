@@ -164,7 +164,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
   }
 
   Future<void> navigateToGameSelection() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final allGames = await db.gameDao.getAllGames();
 
     // Filter games by ruleset
@@ -190,7 +190,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
   }
 
   Future<void> autoAssociateGame() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final allGames = await db.gameDao.getAllGames();
 
     if (!mounted) return;

@@ -40,6 +40,7 @@
   "color_teal": "Teal",
   "color_yellow": "Yellow",
   "confirm": "Confirm",
+  "contact_us_through_mail": "Feel free to contact us via email directly so we can solve your problem!",
   "continue_": "Continue",
   "copy_code": "Copy Code",
   "could_not_add_player": "Could not add player {playerName}",
@@ -98,6 +99,7 @@
   "deleted": "Deleted",
   "description": "Description",
   "displayed_entries": "Displayed entries",
+  "do_you_like_the_app": "Do you like the app?",
   "dont_update": "Don't update",
   "drag_to_set_placement": "Drag to set placement",
   "duplicate": "Duplicate",
@@ -226,6 +228,7 @@
       }
     }
   },
+  "no": "No",
   "no_data_available": "No data available",
   "no_data_to_export": "No data to export",
   "no_games_created_yet": "No games created yet",
@@ -371,6 +374,7 @@
   "type": "Type",
   "unexpected_error": "An unexpected error occurred.",
   "unknown_exception": "Unknown Exception (see console)",
+  "unsatisfied": "Unsatisfied?",
   "update_app_export_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.",
   "update_app_import_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data.",
   "update_app_version": "Please update your apps to the newest version and try it again.",
@@ -383,5 +387,7 @@
   "winner": "Winner",
   "winrate": "Winrate",
   "worst_score": "Worst score",
+  "write_email": "Write an email",
+  "yes": "Yes",
   "yesterday_at": "Yesterday at"
 }

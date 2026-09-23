@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -16,11 +17,14 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/text_chip.dart';
+import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/state/rate_dialog_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MatchView extends StatefulWidget {
   /// A view that displays a list of matches
@@ -33,16 +37,14 @@ class MatchView extends StatefulWidget {
 class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
   late final MatchSearchProvider searchProvider;
-
-  final ScrollController scrollController = ScrollController();
+  late RateDialogProvider rateProvider;
 
   bool isLoading = true;
   MatchFilter selectedFilter =
       SharedPreferencesService.getMatchFilter() ?? MatchFilter.all;
-
   TextEditingController searchBarController = TextEditingController();
-
   bool isSearchBarVisible = true;
+  final ScrollController scrollController = ScrollController();
 
   /// Loaded matches from the database, initially filled with skeleton matches
   List<Match> allMatches = List.filled(
@@ -79,9 +81,13 @@ class _MatchViewState extends State<MatchView> {
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
-    searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
+    db = context.read<AppDatabase>();
+
+    searchProvider = context.read<MatchSearchProvider>();
     searchProvider.addListener(handleSearchToggle);
+
+    rateProvider = context.read<RateDialogProvider>();
+    rateProvider.addListener(handleRatingDialog);
 
     loadMatches();
   }
@@ -89,6 +95,7 @@ class _MatchViewState extends State<MatchView> {
   @override
   void dispose() {
     searchProvider.removeListener(handleSearchToggle);
+    rateProvider.removeListener(handleRatingDialog);
     searchBarController.dispose();
     scrollController.dispose();
     super.dispose();
@@ -97,7 +104,7 @@ class _MatchViewState extends State<MatchView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final searchProvider = Provider.of<MatchSearchProvider>(context);
+    final searchProvider = context.read<MatchSearchProvider>();
 
     // Reset filtered matches when search is disabled
     if (!searchProvider.isSearching) {
@@ -289,7 +296,7 @@ class _MatchViewState extends State<MatchView> {
               text: loc.create_match,
               icon: MATCH_ICON,
               showAddBadge: true,
-              onPressed: () async {
+              onPressed: () {
                 Navigator.push(
                   context,
                   adaptivePageRoute(
@@ -386,10 +393,94 @@ class _MatchViewState extends State<MatchView> {
     });
   }
 
-  void handleSearchToggle() {
-    if (!mounted) {
-      return;
+  void handleRatingDialog() {
+    if (!mounted || !rateProvider.shouldShow) return;
+
+    rateProvider.markAsShown();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) triggerRatingDialog();
+    });
+  }
+
+  /// Triggers the rate dialog if the user has not rated the app yet and the conditions are met.
+  Future<void> triggerRatingDialog() async {
+    // show only in prod or dev
+    if (IS_TEST_ENV) return;
+    if (!RATE_MY_APP.shouldOpenDialog) return;
+
+    final loc = AppLocalizations.of(context);
+    bool? didUserLikeApp;
+
+    await Future.delayed(const Duration(milliseconds: 500), () async {
+      didUserLikeApp = await showPreRateDialog(loc);
+    });
+
+    if (didUserLikeApp is bool && mounted) {
+      didUserLikeApp!
+          ? RATE_MY_APP.showStarRateDialog(context)
+          : await Future.delayed(
+              const Duration(milliseconds: 500),
+              () => showBadRatingDialog(loc),
+            );
     }
+  }
+
+  /// Shows a dialog to check for the users opinion on the app
+  Future<bool?> showPreRateDialog(AppLocalizations loc) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => CustomAlertDialog(
+        closeButtonColor: CustomTheme.hintColor,
+        showCloseButton: true,
+        title: loc.do_you_like_the_app,
+        content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),
+        actions: [
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(true),
+            isEmphasized: true,
+            text: loc.yes,
+          ),
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(false),
+            buttonType: ButtonType.primary,
+            text: loc.no,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Shows a dialog prompting the user to contact support via email if they are unsatisfied with the app.
+  void showBadRatingDialog(AppLocalizations loc) {
+    showDialog<bool>(
+      context: context,
+      builder: (context) => CustomAlertDialog(
+        title: loc.unsatisfied,
+        content: Text(
+          loc.contact_us_through_mail,
+          overflow: TextOverflow.visible,
+        ),
+        actions: [
+          CustomDialogAction(
+            onPressed: () {
+              Navigator.of(context).pop();
+              launchUrl(Uri.parse('mailto:$LIQUID_CONTACT_EMAIL'));
+            },
+            text: loc.write_email,
+          ),
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(),
+            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void handleSearchToggle() {
+    if (!mounted) return;
 
     setState(() {
       isSearchBarVisible = true;

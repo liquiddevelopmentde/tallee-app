@@ -338,6 +338,12 @@ abstract class AppLocalizations {
   /// **'Confirm'**
   String get confirm;
 
+  /// No description provided for @contact_us_through_mail.
+  ///
+  /// In en, this message translates to:
+  /// **'Feel free to contact us via email directly so we can solve your problem!'**
+  String get contact_us_through_mail;
+
   /// No description provided for @continue_.
   ///
   /// In en, this message translates to:
@@ -559,6 +565,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Displayed entries'**
   String get displayed_entries;
+
+  /// No description provided for @do_you_like_the_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you like the app?'**
+  String get do_you_like_the_app;
 
   /// No description provided for @dont_update.
   ///
@@ -1117,6 +1129,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 new player will be created} other{{count} new players will be created}}'**
   String new_players_will_be_created(int count);
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
 
   /// No description provided for @no_data_available.
   ///
@@ -1808,6 +1826,12 @@ abstract class AppLocalizations {
   /// **'Unknown Exception (see console)'**
   String get unknown_exception;
 
+  /// No description provided for @unsatisfied.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsatisfied?'**
+  String get unsatisfied;
+
   /// No description provided for @update_app_export_desc.
   ///
   /// In en, this message translates to:
@@ -1879,6 +1903,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Worst score'**
   String get worst_score;
+
+  /// No description provided for @write_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Write an email'**
+  String get write_email;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
 
   /// No description provided for @yesterday_at.
   ///

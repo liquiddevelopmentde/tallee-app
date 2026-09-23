@@ -14,7 +14,7 @@ import 'package:tallee/services/shared.dart';
 class LocalShareService {
   /// Deletes all data from the database.
   static Future<void> deleteAllData(BuildContext context) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
     await db.statisticDao.deleteAllStatistics();
     await db.matchDao.deleteAllMatches();
@@ -27,7 +27,7 @@ class LocalShareService {
   /// Retrieves all application data and converts it to a JSON string.
   /// Returns the JSON string representation of the data in normalized format.
   static Future<String> getAppDataAsJson(BuildContext context) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
     final matches = await db.matchDao.getAllMatches(includeDeletedPlayer: true);
     final groups = await db.groupDao.getAllGroups();

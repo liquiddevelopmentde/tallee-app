@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
@@ -49,8 +48,6 @@ class ChooseGroupView extends StatefulWidget {
 class _ChooseGroupViewState extends State<ChooseGroupView> {
   final TextEditingController controller = TextEditingController();
 
-  bool isSearchBarVisible = true;
-
   late final List<Group> filteredGroups;
   late List<Group> selectedGroups;
 
@@ -89,43 +86,17 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
         },
         child: Column(
           children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 500),
-              switchInCurve: Curves.easeOutCubic,
-              switchOutCurve: Curves.easeInCubic,
-              transitionBuilder: (child, animation) {
-                final curvedAnimation = CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.easeOutCubic,
-                  reverseCurve: Curves.easeInCubic,
-                );
-
-                return ClipRect(
-                  child: SizeTransition(
-                    sizeFactor: curvedAnimation,
-                    alignment: Alignment.topCenter,
-                    child: FadeTransition(
-                      opacity: curvedAnimation,
-                      child: child,
-                    ),
-                  ),
-                );
-              },
-              child: isSearchBarVisible
-                  ? Padding(
-                      key: const ValueKey('searchbar-visible'),
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: CustomSearchBar(
-                        controller: controller,
-                        hintText: loc.search_for_groups,
-                        onChanged: (value) {
-                          setState(() {
-                            filterGroups(value);
-                          });
-                        },
-                      ),
-                    )
-                  : const SizedBox.shrink(key: ValueKey('searchbar-hidden')),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: CustomSearchBar(
+                controller: controller,
+                hintText: loc.search_for_groups,
+                onChanged: (value) {
+                  setState(() {
+                    filterGroups(value);
+                  });
+                },
+              ),
             ),
             Expanded(
               child: Visibility(
@@ -144,60 +115,45 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                         .there_is_no_group_matching_your_search,
                   ),
                 ),
-                child: NotificationListener<UserScrollNotification>(
-                  onNotification: (notification) {
-                    if (notification.direction == ScrollDirection.reverse &&
-                        isSearchBarVisible) {
-                      setState(() => isSearchBarVisible = false);
-                    } else if (notification.direction ==
-                            ScrollDirection.forward &&
-                        !isSearchBarVisible) {
-                      setState(() => isSearchBarVisible = true);
-                    }
-                    return true;
-                  },
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 85, top: 10),
-                    itemCount: filteredGroups.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GroupTile(
-                        group: filteredGroups[index],
-                        isHighlighted: selectedGroups.any(
-                          (group) => group.id == filteredGroups[index].id,
-                        ),
-                        onTap: () async {
-                          setState(() {
-                            if (selectedGroups.contains(
-                              filteredGroups[index],
-                            )) {
-                              selectedGroups.removeWhere(
-                                (group) => group.id == filteredGroups[index].id,
-                              );
-                            } else {
-                              // In single select mode only allow one group
-                              if (!enableMultiSelection) {
-                                selectedGroups.clear();
-                              }
-                              selectedGroups.add(filteredGroups[index]);
+                child: ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 85, top: 10),
+                  itemCount: filteredGroups.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GroupTile(
+                      group: filteredGroups[index],
+                      isHighlighted: selectedGroups.any(
+                        (group) => group.id == filteredGroups[index].id,
+                      ),
+                      onTap: () async {
+                        setState(() {
+                          if (selectedGroups.contains(filteredGroups[index])) {
+                            selectedGroups.removeWhere(
+                              (group) => group.id == filteredGroups[index].id,
+                            );
+                          } else {
+                            // In single select mode only allow one group
+                            if (!enableMultiSelection) {
+                              selectedGroups.clear();
                             }
-                          });
-
-                          // Navigate back to create match view instantly
-                          if (!enableMultiSelection) {
-                            await Future.delayed(MINIMUM_SKELETON_DURATION)
-                                .then((_) {
-                                  if (!context.mounted) return;
-                                  Navigator.of(context).pop(
-                                    selectedGroups.isEmpty
-                                        ? null
-                                        : selectedGroups.first,
-                                  );
-                                });
+                            selectedGroups.add(filteredGroups[index]);
                           }
-                        },
-                      );
-                    },
-                  ),
+                        });
+
+                        // Navigate back to create match view instantly
+                        if (!enableMultiSelection) {
+                          await Future.delayed(MINIMUM_SKELETON_DURATION)
+                              .then((_) {
+                                if (!context.mounted) return;
+                                Navigator.of(context).pop(
+                                  selectedGroups.isEmpty
+                                      ? null
+                                      : selectedGroups.first,
+                                );
+                              });
+                        }
+                      },
+                    );
+                  },
                 ),
               ),
             ),
@@ -236,7 +192,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
     final statistic = widget.statistic!.copyWith(
       selectedGroups: selectedGroups,
     );
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
     if (widget.statistic!.scopes.contains(StatisticScope.selectedGames)) {
       // Choose a game

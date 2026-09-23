@@ -132,6 +132,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm => 'Confirm';
 
   @override
+  String get contact_us_through_mail =>
+      'Feel free to contact us via email directly so we can solve your problem!';
+
+  @override
   String get continue_ => 'Continue';
 
   @override
@@ -266,6 +270,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get displayed_entries => 'Displayed entries';
+
+  @override
+  String get do_you_like_the_app => 'Do you like the app?';
 
   @override
   String get dont_update => 'Don\'t update';
@@ -584,6 +591,9 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get no => 'No';
 
   @override
   String get no_data_available => 'No data available';
@@ -973,6 +983,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknown_exception => 'Unknown Exception (see console)';
 
   @override
+  String get unsatisfied => 'Unsatisfied?';
+
+  @override
   String get update_app_export_desc =>
       'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.';
 
@@ -1011,6 +1024,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get worst_score => 'Worst score';
+
+  @override
+  String get write_email => 'Write an email';
+
+  @override
+  String get yes => 'Yes';
 
   @override
   String get yesterday_at => 'Yesterday at';
