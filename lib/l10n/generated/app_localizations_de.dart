@@ -911,7 +911,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get showcase_nav_game =>
-      'Jedes Spiel benötigt eine bestimmte Spielvorlage, zu der es gehört. Beginnen wir damit, zum Spielvorlagen-Reiter zu wechseln.';
+      'Jedes Spiel benötigt eine bestimmte Spielvorlage, zu der es gehört. Lass uns damit anfangen, zum Spielvorlagen-Reiter zu wechseln.';
 
   @override
   String get showcase_nav_match =>

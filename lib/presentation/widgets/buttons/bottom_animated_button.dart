@@ -81,7 +81,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
                     horizontal: 16,
                     vertical: 12,
                   ),
-                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  margin: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
                     widget.buttonText,
                     style: textStyling,

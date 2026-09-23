@@ -218,79 +218,66 @@ class _CreateGameViewState extends State<CreateGameView> {
         // Game name input field
         body: SafeArea(
           maintainBottomViewPadding: true,
+          minimum: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
+            spacing: 10,
             children: [
-              Container(
-                margin: CustomTheme.tileMargin,
-                child: CustomShowcaseWidget(
-                  showcaseKey: createGameViewGameNameKey,
-                  identifier: createGameViewGameNameIdentifier,
-                  description: loc.showcase_create_game_name,
-                  child: TextInputField(
-                    controller: gameNameController,
-                    maxLength: MAX_MATCH_NAME_LENGTH,
-                    hintText: loc.game_name,
-                  ),
+              CustomShowcaseWidget(
+                showcaseKey: createGameViewGameNameKey,
+                identifier: createGameViewGameNameIdentifier,
+                description: loc.showcase_create_game_name,
+                child: TextInputField(
+                  controller: gameNameController,
+                  maxLength: MAX_MATCH_NAME_LENGTH,
+                  hintText: loc.game_name,
                 ),
               ),
 
               // Choose ruleset tile
               if (!isEditMode)
-                Container(
-                  margin: CustomTheme.tileMargin,
-                  child: CustomShowcaseWidget(
-                    showcaseKey: createGameViewGameRulesetKey,
-                    identifier: createGameViewGameRulesetIdentifier,
-                    description: loc.showcase_create_game_ruleset,
-                    child: ChooseTile(
-                      title: loc.ruleset,
-                      trailing: widget.requiredRuleset != null
-                          ? Padding(
-                              padding: const EdgeInsets.only(right: 5),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                spacing: 8,
-                                children: [
-                                  Icon(
-                                    getRulesetIcon(selectedRuleset!),
-                                    size: 16,
+                CustomShowcaseWidget(
+                  showcaseKey: createGameViewGameRulesetKey,
+                  identifier: createGameViewGameRulesetIdentifier,
+                  description: loc.showcase_create_game_ruleset,
+                  child: ChooseTile(
+                    title: loc.ruleset,
+                    trailing: widget.requiredRuleset != null
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              spacing: 8,
+                              children: [
+                                Icon(
+                                  getRulesetIcon(selectedRuleset!),
+                                  size: 16,
+                                ),
+                                Text(
+                                  translateRulesetToString(
+                                    selectedRuleset!,
+                                    context,
                                   ),
-                                  Text(
-                                    translateRulesetToString(
-                                      selectedRuleset!,
-                                      context,
-                                    ),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ],
-                              ),
-                            )
-                          : getRulesetDropdown(loc),
-                    ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+                          )
+                        : getRulesetDropdown(loc),
                   ),
                 ),
 
               // Choose color tile
-              Container(
-                margin: CustomTheme.tileMargin,
-                child: ChooseTile(
-                  title: loc.color,
-                  trailing: getColorDropdown(loc),
-                ),
-              ),
+              ChooseTile(title: loc.color, trailing: getColorDropdown(loc)),
 
               // Description input field
-              Container(
-                margin: CustomTheme.tileMargin,
-                child: TextInputField(
-                  controller: gameDescriptionController,
-                  hintText: loc.description,
-                  minLines: 6,
-                  maxLines: 6,
-                  maxLength: MAX_GAME_DESCRIPTION_LENGTH,
-                  showCounterText: true,
-                  textInputAction: TextInputAction.done,
-                ),
+              TextInputField(
+                controller: gameDescriptionController,
+                hintText: loc.description,
+                minLines: 6,
+                maxLines: 6,
+                maxLength: MAX_GAME_DESCRIPTION_LENGTH,
+                showCounterText: true,
+                textInputAction: TextInputAction.done,
               ),
 
               const Spacer(),
