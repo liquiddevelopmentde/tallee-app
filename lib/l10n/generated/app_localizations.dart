@@ -1250,6 +1250,66 @@ abstract class AppLocalizations {
   /// **'Not part of any group yet'**
   String get not_part_of_any_group;
 
+  /// No description provided for @onboarding_players_teams_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Organize your gaming circle into groups and split players into teams for any match.'**
+  String get onboarding_players_teams_desc;
+
+  /// No description provided for @onboarding_players_teams_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Players & Teams'**
+  String get onboarding_players_teams_title;
+
+  /// No description provided for @onboarding_privacy_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Share matches easily via QR-codes or export specific matches and full backups as local files. Your data stays private by default.'**
+  String get onboarding_privacy_desc;
+
+  /// No description provided for @onboarding_privacy_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing & Privacy'**
+  String get onboarding_privacy_title;
+
+  /// No description provided for @onboarding_rulesets_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Create custom games and pick the ruleset that fits: highest score, lives, placement, and more.'**
+  String get onboarding_rulesets_desc;
+
+  /// No description provided for @onboarding_rulesets_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexible Rulesets'**
+  String get onboarding_rulesets_title;
+
+  /// No description provided for @onboarding_statistics_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get meaningful insights into your games with custom statistics scoped to your needs.'**
+  String get onboarding_statistics_desc;
+
+  /// No description provided for @onboarding_statistics_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Game Statistics'**
+  String get onboarding_statistics_title;
+
+  /// No description provided for @onboarding_welcome_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your companion for game nights. Record matches, track winners, and manage your play history.'**
+  String get onboarding_welcome_desc;
+
+  /// No description provided for @onboarding_welcome_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Tallee'**
+  String get onboarding_welcome_title;
+
   /// No description provided for @online_sharing_consent_text.
   ///
   /// In en, this message translates to:
@@ -1273,66 +1333,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Activate Online Sharing'**
   String get online_sharing_title;
-
-  /// No description provided for @onboarding_welcome_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Welcome to Tallee'**
-  String get onboarding_welcome_title;
-
-  /// No description provided for @onboarding_welcome_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Your companion for game nights. Record matches, track winners, and manage your play history.'**
-  String get onboarding_welcome_desc;
-
-  /// No description provided for @onboarding_rulesets_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Flexible Rulesets'**
-  String get onboarding_rulesets_title;
-
-  /// No description provided for @onboarding_rulesets_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Create custom games and pick the ruleset that fits: highest score, lives, placement, and more.'**
-  String get onboarding_rulesets_desc;
-
-  /// No description provided for @onboarding_players_teams_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Players & Teams'**
-  String get onboarding_players_teams_title;
-
-  /// No description provided for @onboarding_players_teams_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Organize your gaming circle into groups and split players into teams for any match.'**
-  String get onboarding_players_teams_desc;
-
-  /// No description provided for @onboarding_statistics_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Game Statistics'**
-  String get onboarding_statistics_title;
-
-  /// No description provided for @onboarding_statistics_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Get meaningful insights into your performance with custom statistics scoped to your needs.'**
-  String get onboarding_statistics_desc;
-
-  /// No description provided for @onboarding_privacy_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Sharing & Privacy'**
-  String get onboarding_privacy_title;
-
-  /// No description provided for @onboarding_privacy_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Share matches easily via QR-codes or export specific matches and full backups as local files. Your data stays private by default.'**
-  String get onboarding_privacy_desc;
 
   /// No description provided for @open_settings.
   ///

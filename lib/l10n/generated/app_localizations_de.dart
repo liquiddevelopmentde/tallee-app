@@ -662,6 +662,41 @@ class AppLocalizationsDe extends AppLocalizations {
   String get not_part_of_any_group => 'Noch keiner Gruppe hinzugefügt';
 
   @override
+  String get onboarding_players_teams_desc =>
+      'Organisiere deine Spielrunde in Gruppen und teile Spieler:innen in Teams ein.';
+
+  @override
+  String get onboarding_players_teams_title => 'Spieler:innen & Teams';
+
+  @override
+  String get onboarding_privacy_desc =>
+      'Teile Spiele ganz einfach per QR-Code oder exportiere bestimmte Spiele und vollständige Backups als lokale Dateien. Deine Daten bleiben standardmäßig privat.';
+
+  @override
+  String get onboarding_privacy_title => 'Teilen & Datenschutz';
+
+  @override
+  String get onboarding_rulesets_desc =>
+      'Erstelle eigene Spielvorlagen und wähle den passenden Regelsatz: Höchste Punktzahl, Leben, Platzierung und mehr.';
+
+  @override
+  String get onboarding_rulesets_title => 'Flexible Regelsätze';
+
+  @override
+  String get onboarding_statistics_desc =>
+      'Erhalte aussagekräftige Einblicke in deine Spiele mit Statistiken, die individuell auf deine Bedürfnisse zugeschnitten sind.';
+
+  @override
+  String get onboarding_statistics_title => 'Spielstatistiken';
+
+  @override
+  String get onboarding_welcome_desc =>
+      'Dein Begleiter für Spieleabende. Erfasse Spiele, verfolge Sieger und verwalte deine Spielhistorie.';
+
+  @override
+  String get onboarding_welcome_title => 'Willkommen bei Tallee';
+
+  @override
   String get online_sharing_consent_text =>
       'Damit andere dein Match laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Share-Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du Online-Teilen aktivieren?';
 
@@ -674,41 +709,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get online_sharing_title => 'Online-Teilen aktivieren';
-
-  @override
-  String get onboarding_welcome_title => 'Willkommen bei Tallee';
-
-  @override
-  String get onboarding_welcome_desc =>
-      'Dein Begleiter für Spieleabende. Erfasse Spiele, verfolge Sieger und verwalte deine Spielhistorie.';
-
-  @override
-  String get onboarding_rulesets_title => 'Flexible Regelsätze';
-
-  @override
-  String get onboarding_rulesets_desc =>
-      'Erstelle eigene Spielvorlagen und wähle den passenden Regelsatz: Höchste Punktzahl, Leben, Platzierung und mehr.';
-
-  @override
-  String get onboarding_players_teams_title => 'Spieler:innen & Teams';
-
-  @override
-  String get onboarding_players_teams_desc =>
-      'Organisiere deine Spielrunde in Gruppen und teile Spieler:innen für jedes Spiel in Teams ein.';
-
-  @override
-  String get onboarding_statistics_title => 'Spielstatistiken';
-
-  @override
-  String get onboarding_statistics_desc =>
-      'Erhalte aussagekräftige Einblicke in deine Leistung mit individuellen Statistiken, die auf deine Bedürfnisse zugeschnitten sind.';
-
-  @override
-  String get onboarding_privacy_title => 'Teilen & Datenschutz';
-
-  @override
-  String get onboarding_privacy_desc =>
-      'Teile Spiele ganz einfach per QR-Code oder exportiere bestimmte Spiele und vollständige Backups als lokale Dateien. Deine Daten bleiben standardmäßig privat.';
 
   @override
   String get open_settings => 'Einstellungen öffnen';

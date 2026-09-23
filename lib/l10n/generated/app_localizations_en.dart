@@ -656,6 +656,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get not_part_of_any_group => 'Not part of any group yet';
 
   @override
+  String get onboarding_players_teams_desc =>
+      'Organize your gaming circle into groups and split players into teams for any match.';
+
+  @override
+  String get onboarding_players_teams_title => 'Players & Teams';
+
+  @override
+  String get onboarding_privacy_desc =>
+      'Share matches easily via QR-codes or export specific matches and full backups as local files. Your data stays private by default.';
+
+  @override
+  String get onboarding_privacy_title => 'Sharing & Privacy';
+
+  @override
+  String get onboarding_rulesets_desc =>
+      'Create custom games and pick the ruleset that fits: highest score, lives, placement, and more.';
+
+  @override
+  String get onboarding_rulesets_title => 'Flexible Rulesets';
+
+  @override
+  String get onboarding_statistics_desc =>
+      'Get meaningful insights into your games with custom statistics scoped to your needs.';
+
+  @override
+  String get onboarding_statistics_title => 'Game Statistics';
+
+  @override
+  String get onboarding_welcome_desc =>
+      'Your companion for game nights. Record matches, track winners, and manage your play history.';
+
+  @override
+  String get onboarding_welcome_title => 'Welcome to Tallee';
+
+  @override
   String get online_sharing_consent_text =>
       'To allow others to load your match, the game data needs to be transferred to our server. The share token is only temporarily valid, and the data will be deleted automatically after 10 minutes. Would you like to enable online sharing?';
 
@@ -668,41 +703,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get online_sharing_title => 'Activate Online Sharing';
-
-  @override
-  String get onboarding_welcome_title => 'Welcome to Tallee';
-
-  @override
-  String get onboarding_welcome_desc =>
-      'Your companion for game nights. Record matches, track winners, and manage your play history.';
-
-  @override
-  String get onboarding_rulesets_title => 'Flexible Rulesets';
-
-  @override
-  String get onboarding_rulesets_desc =>
-      'Create custom games and pick the ruleset that fits: highest score, lives, placement, and more.';
-
-  @override
-  String get onboarding_players_teams_title => 'Players & Teams';
-
-  @override
-  String get onboarding_players_teams_desc =>
-      'Organize your gaming circle into groups and split players into teams for any match.';
-
-  @override
-  String get onboarding_statistics_title => 'Game Statistics';
-
-  @override
-  String get onboarding_statistics_desc =>
-      'Get meaningful insights into your performance with custom statistics scoped to your needs.';
-
-  @override
-  String get onboarding_privacy_title => 'Sharing & Privacy';
-
-  @override
-  String get onboarding_privacy_desc =>
-      'Share matches easily via QR-codes or export specific matches and full backups as local files. Your data stays private by default.';
 
   @override
   String get open_settings => 'Open Settings';
