@@ -60,7 +60,7 @@ class CustomShowcaseWidget extends StatelessWidget {
         top: MediaQuery.paddingOf(context).top + 55,
         end: 0,
         child: CustomTextButton(
-          text: AppLocalizations.of(context).showcase_skip,
+          text: AppLocalizations.of(context).skip,
           onPressed: () {
             showcaseProvider.skipTour();
             ShowcaseView.get().dismiss();
