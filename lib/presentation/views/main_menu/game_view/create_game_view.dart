@@ -89,7 +89,7 @@ class _CreateGameViewState extends State<CreateGameView> {
     gameDescriptionController.addListener(() => setState(() {}));
 
     if (!isEditMode) {
-      showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
+      showcaseProvider = context.read<ShowcaseProvider>();
 
       handleShowcase(
         widgetKeys: [

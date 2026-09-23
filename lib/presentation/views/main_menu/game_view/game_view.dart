@@ -64,7 +64,7 @@ class _GameViewState extends State<GameView> with RouteAware {
     searchProvider = Provider.of<GameSearchProvider>(context, listen: false);
     searchProvider.addListener(handleSearchToggle);
 
-    showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
+    showcaseProvider = context.read<ShowcaseProvider>();
 
     loadGames();
 

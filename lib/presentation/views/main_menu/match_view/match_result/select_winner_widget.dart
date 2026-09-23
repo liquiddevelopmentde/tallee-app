@@ -56,7 +56,7 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
       selectedPlayers = widget.match.mvp;
     }
 
-    showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
+    showcaseProvider = context.read<ShowcaseProvider>();
 
     if (showcaseProvider.shouldShowShowcase(
       selectWinnerWidgetListviewIdentifier,

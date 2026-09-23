@@ -89,7 +89,7 @@ class _MatchViewState extends State<MatchView> {
     searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
     searchProvider.addListener(handleSearchToggle);
 
-    showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
+    showcaseProvider = context.read<ShowcaseProvider>();
 
     loadMatches();
 

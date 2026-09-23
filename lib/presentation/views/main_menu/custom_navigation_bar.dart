@@ -74,7 +74,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       openNewsDialog();
     });
 
-    showcaseProvider = Provider.of<ShowcaseProvider>(context, listen: false);
+    showcaseProvider = context.read<ShowcaseProvider>();
     showTabShowcase();
   }
 
