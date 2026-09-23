@@ -2,19 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 
+/// Data model representing a single page in the onboarding carousel.
+/// [title] -   /// The headline title displayed on the onboarding page.
+/// [description] -   /// The detailed description text displayed below the title.
+/// [icon] -   /// The icon displayed prominently on the onboarding page.
 class OnboardingPageData {
-  final String title;
-  final String description;
-  final IconData icon;
-
   const OnboardingPageData({
     required this.title,
     required this.description,
     required this.icon,
   });
+
+  final String title;
+  final String description;
+  final IconData icon;
 }
 
 class OnboardingView extends StatefulWidget {
@@ -27,11 +32,13 @@ class OnboardingView extends StatefulWidget {
 }
 
 class _OnboardingViewState extends State<OnboardingView> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
+  final PageController pageController = PageController();
+  int currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     final pages = [
       const OnboardingPageData(
         title: 'Welcome to Tallee',
@@ -60,7 +67,7 @@ class _OnboardingViewState extends State<OnboardingView> {
       ),
     ];
 
-    final isLastPage = _currentPage == pages.length - 1;
+    final isLastPage = currentPage == pages.length - 1;
 
     return Scaffold(
       backgroundColor: CustomTheme.backgroundColor,
@@ -70,7 +77,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             Align(
               alignment: Alignment.centerRight,
               child: CustomTextButton(
-                text: 'Skip',
+                text: loc.skip,
                 onPressed: () {
                   SharedPreferencesService.setOnboardingCompleted(true);
                   widget.onCompleted();
@@ -81,10 +88,10 @@ class _OnboardingViewState extends State<OnboardingView> {
             // Carousel
             Expanded(
               child: PageView.builder(
-                controller: _pageController,
+                controller: pageController,
                 itemCount: pages.length,
                 onPageChanged: (index) {
-                  setState(() => _currentPage = index);
+                  setState(() => currentPage = index);
                 },
                 itemBuilder: (context, index) {
                   final page = pages[index];
@@ -137,9 +144,9 @@ class _OnboardingViewState extends State<OnboardingView> {
                   duration: const Duration(milliseconds: 300),
                   margin: const EdgeInsets.only(right: 8),
                   height: 8,
-                  width: _currentPage == index ? 24 : 8,
+                  width: currentPage == index ? 24 : 8,
                   decoration: BoxDecoration(
-                    color: _currentPage == index
+                    color: currentPage == index
                         ? CustomTheme.primaryColor
                         : CustomTheme.textColor.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(4),
@@ -155,7 +162,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                 children: [
                   BottomAnimatedButton(
                     buttonType: ButtonType.primary,
-                    buttonText: isLastPage ? 'Get Started' : 'Next',
+                    buttonText: isLastPage ? loc.get_started : loc.next,
                     sizeRelativeToWidth: 0.6,
                     onPressed: () {
                       HapticFeedback.lightImpact();
@@ -163,7 +170,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                         SharedPreferencesService.setOnboardingCompleted(true);
                         widget.onCompleted();
                       } else {
-                        _pageController.nextPage(
+                        pageController.nextPage(
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.fastOutSlowIn,
                         );
