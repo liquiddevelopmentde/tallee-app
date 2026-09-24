@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
@@ -34,7 +35,8 @@ class _GameViewState extends State<GameView> {
   bool isLoading = true;
   late List<(Game, int)> gameCounts = [];
 
-  TextEditingController searchBarController = TextEditingController();
+  final TextEditingController searchBarController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
 
   /// Loaded games from the database, initially filled with skeleton games
   List<Game> allGames = List.filled(
@@ -48,6 +50,7 @@ class _GameViewState extends State<GameView> {
   );
 
   late List<Game> displayedGames = [...allGames];
+  bool isSearchBarVisible = true;
 
   @override
   void initState() {
@@ -63,6 +66,7 @@ class _GameViewState extends State<GameView> {
   void dispose() {
     searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -74,6 +78,7 @@ class _GameViewState extends State<GameView> {
     // Reset filtered matches when search is disabled
     if (!searchProvider.isSearching) {
       displayedGames = [...allGames];
+      isSearchBarVisible = true;
     }
 
     return Scaffold(
@@ -107,7 +112,7 @@ class _GameViewState extends State<GameView> {
                     ),
                   );
                 },
-                child: searchProvider.isSearching
+                child: searchProvider.isSearching && isSearchBarVisible
                     ? Padding(
                         key: const ValueKey('match-searchbar-visible'),
                         padding: const EdgeInsets.only(
@@ -118,6 +123,15 @@ class _GameViewState extends State<GameView> {
                         child: CustomSearchBar(
                           controller: searchBarController,
                           hintText: '',
+                          trailingButtonShown:
+                              searchBarController.text.isNotEmpty,
+                          onTrailingButtonPressed: () {
+                            searchBarController.clear();
+                            setState(() {
+                              applySearch('');
+                            });
+                          },
+
                           onChanged: (value) {
                             setState(() {
                               applySearch(value);
@@ -152,32 +166,46 @@ class _GameViewState extends State<GameView> {
                           )
                         else
                           Expanded(
-                            child: ListView.builder(
-                              padding: CustomTheme.listViewPadding(context),
-                              itemCount: displayedGames.length,
+                            child: NotificationListener<UserScrollNotification>(
+                              onNotification: (notification) {
+                                if (notification.direction ==
+                                        ScrollDirection.reverse &&
+                                    isSearchBarVisible) {
+                                  setState(() => isSearchBarVisible = false);
+                                } else if (notification.direction ==
+                                        ScrollDirection.forward &&
+                                    !isSearchBarVisible) {
+                                  setState(() => isSearchBarVisible = true);
+                                }
+                                return true;
+                              },
+                              child: ListView.builder(
+                                padding: CustomTheme.listViewPadding(context),
+                                itemCount: displayedGames.length,
 
-                              itemBuilder: (BuildContext context, int index) {
-                                return GameTile(
-                                  gameCount: getGameCount(
-                                    displayedGames[index],
-                                  ),
-                                  onTap: () async {
-                                    Navigator.push(
-                                      context,
-                                      adaptivePageRoute(
-                                        builder: (context) => CreateGameView(
-                                          gameToEdit: displayedGames[index],
-                                          onGameChanged: loadGames,
-                                          gameCount: getGameCount(
-                                            displayedGames[index],
+                                itemBuilder: (BuildContext context, int index) {
+                                  return GameTile(
+                                    gameCount: getGameCount(
+                                      displayedGames[index],
+                                    ),
+                                    onTap: () async {
+                                      Navigator.push(
+                                        context,
+                                        adaptivePageRoute(
+                                          builder: (context) => CreateGameView(
+                                            gameToEdit: displayedGames[index],
+                                            onGameChanged: loadGames,
+                                            gameCount: getGameCount(
+                                              displayedGames[index],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                  game: displayedGames[index],
-                                );
-                              },
+                                      );
+                                    },
+                                    game: displayedGames[index],
+                                  );
+                                },
+                              ),
                             ),
                           )
                       // No games
@@ -257,9 +285,20 @@ class _GameViewState extends State<GameView> {
       return;
     }
 
-    if (!searchProvider.isSearching) {
-      searchBarController.clear();
-    }
+    setState(() {
+      isSearchBarVisible = true;
+      if (!searchProvider.isSearching) {
+        searchBarController.clear();
+      } else {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      }
+    });
   }
 
   /// Loads the games from the database and sorts them by creation date.

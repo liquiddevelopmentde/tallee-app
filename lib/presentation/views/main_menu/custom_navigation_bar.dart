@@ -64,9 +64,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
-    final matchSearchProvider = context.read<MatchSearchProvider>();
-    final groupSearchProvider = context.read<GroupSearchProvider>();
-    final gameSearchProvider = context.read<GameSearchProvider>();
+    final matchSearchProvider = context.watch<MatchSearchProvider>();
+    final groupSearchProvider = context.watch<GroupSearchProvider>();
+    final gameSearchProvider = context.watch<GameSearchProvider>();
 
     final refreshRevision = context.watch<DataRefreshProvider>().revision;
 
@@ -120,27 +120,25 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           // Only in MatchView
           if (currentIndex == 0)
             HapticIconButton(
-              key: ValueKey(
-                matchSearchProvider.isSearching
-                    ? 'match_search_close_button'
-                    : 'match_search_open_button',
+              key: const ValueKey('match_search_button'),
+              icon: Icon(
+                Icons.search,
+                color: matchSearchProvider.isSearching
+                    ? CustomTheme.primaryColor
+                    : null,
               ),
-              icon: matchSearchProvider.isSearching
-                  ? const Icon(Icons.close)
-                  : const Icon(Icons.search),
               onPressed: () => matchSearchProvider.toggleSearch(),
             ),
 
           // Only in GroupView
           if (currentIndex == 1)
             HapticIconButton(
-              key: ValueKey(
-                groupSearchProvider.isSearching
-                    ? 'group_search_close_button'
-                    : 'group_search_open_button',
-              ),
+              key: const ValueKey('group_search_button'),
               icon: Icon(
-                groupSearchProvider.isSearching ? Icons.close : Icons.search,
+                Icons.search,
+                color: groupSearchProvider.isSearching
+                    ? CustomTheme.primaryColor
+                    : null,
               ),
               onPressed: () => groupSearchProvider.toggleSearch(),
             ),
@@ -148,13 +146,12 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           // Only in GameView
           if (currentIndex == 2)
             HapticIconButton(
-              key: ValueKey(
-                gameSearchProvider.isSearching
-                    ? 'game_search_close_button'
-                    : 'game_search_open_button',
-              ),
+              key: const ValueKey('game_search_button'),
               icon: Icon(
-                gameSearchProvider.isSearching ? Icons.close : Icons.search,
+                Icons.search,
+                color: gameSearchProvider.isSearching
+                    ? CustomTheme.primaryColor
+                    : null,
               ),
               onPressed: () => gameSearchProvider.toggleSearch(),
             ),

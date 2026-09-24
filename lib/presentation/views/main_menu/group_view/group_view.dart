@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -31,7 +32,7 @@ class GroupView extends StatefulWidget {
 
 class _GroupViewState extends State<GroupView> {
   late final AppDatabase db;
-  late final GroupSearchProvider _searchProvider;
+  late final GroupSearchProvider searchProvider;
 
   /// Loaded groups from the database
   late List<Group> loadedGroups;
@@ -39,7 +40,8 @@ class _GroupViewState extends State<GroupView> {
   /// Loading state
   bool isLoading = true;
 
-  TextEditingController searchBarController = TextEditingController();
+  final TextEditingController searchBarController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
 
   List<Group> allGroups = List.filled(
     7,
@@ -51,20 +53,22 @@ class _GroupViewState extends State<GroupView> {
   );
 
   late List<Group> displayedGroups = [...allGroups];
+  bool isSearchBarVisible = true;
 
   @override
   void initState() {
     super.initState();
     db = context.read<AppDatabase>();
-    _searchProvider = context.read<GroupSearchProvider>();
-    _searchProvider.addListener(handleSearchToggle);
+    searchProvider = context.read<GroupSearchProvider>();
+    searchProvider.addListener(handleSearchToggle);
     loadGroups();
   }
 
   @override
   void dispose() {
-    _searchProvider.removeListener(handleSearchToggle);
+    searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -76,6 +80,7 @@ class _GroupViewState extends State<GroupView> {
     // Reset filtered groups when search is disabled
     if (!searchProvider.isSearching) {
       displayedGroups = [...allGroups];
+      isSearchBarVisible = true;
     }
 
     return Scaffold(
@@ -109,7 +114,7 @@ class _GroupViewState extends State<GroupView> {
                     ),
                   );
                 },
-                child: searchProvider.isSearching
+                child: searchProvider.isSearching && isSearchBarVisible
                     ? Padding(
                         key: const ValueKey('group-searchbar-visible'),
                         padding: const EdgeInsets.only(
@@ -120,6 +125,14 @@ class _GroupViewState extends State<GroupView> {
                         child: CustomSearchBar(
                           controller: searchBarController,
                           hintText: '',
+                          trailingButtonShown:
+                              searchBarController.text.isNotEmpty,
+                          onTrailingButtonPressed: () {
+                            searchBarController.clear();
+                            setState(() {
+                              applySearch('');
+                            });
+                          },
                           onChanged: (value) {
                             setState(() {
                               applySearch(value);
@@ -155,31 +168,46 @@ class _GroupViewState extends State<GroupView> {
                           )
                         else
                           Expanded(
-                            child: ListView.builder(
-                              padding: CustomTheme.listViewPadding(context),
-                              itemCount: displayedGroups.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return GroupTile(
-                                  onPlayerChanged: loadGroups,
-                                  group: displayedGroups[index],
-                                  onTap: () async {
-                                    await Navigator.push(
-                                      context,
-                                      adaptivePageRoute(
-                                        settings: const RouteSettings(
-                                          name: RouteNames.groupDetailView,
-                                        ),
-                                        builder: (context) {
-                                          return GroupDetailView(
-                                            group: displayedGroups[index],
-                                            callback: loadGroups,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-                                );
+                            child: NotificationListener<UserScrollNotification>(
+                              onNotification: (notification) {
+                                if (notification.direction ==
+                                        ScrollDirection.reverse &&
+                                    isSearchBarVisible) {
+                                  setState(() => isSearchBarVisible = false);
+                                } else if (notification.direction ==
+                                        ScrollDirection.forward &&
+                                    !isSearchBarVisible) {
+                                  setState(() => isSearchBarVisible = true);
+                                }
+                                return true;
                               },
+
+                              child: ListView.builder(
+                                padding: CustomTheme.listViewPadding(context),
+                                itemCount: displayedGroups.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return GroupTile(
+                                    onPlayerChanged: loadGroups,
+                                    group: displayedGroups[index],
+                                    onTap: () async {
+                                      await Navigator.push(
+                                        context,
+                                        adaptivePageRoute(
+                                          settings: const RouteSettings(
+                                            name: RouteNames.groupDetailView,
+                                          ),
+                                          builder: (context) {
+                                            return GroupDetailView(
+                                              group: displayedGroups[index],
+                                              callback: loadGroups,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
                             ),
                           )
                       else if (!isLoading)
@@ -255,9 +283,20 @@ class _GroupViewState extends State<GroupView> {
   void handleSearchToggle() {
     if (!mounted) return;
 
-    if (!_searchProvider.isSearching) {
-      searchBarController.clear();
-    }
+    setState(() {
+      isSearchBarVisible = true;
+      if (!searchProvider.isSearching) {
+        searchBarController.clear();
+      } else {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      }
+    });
   }
 
   void loadGroups() {
