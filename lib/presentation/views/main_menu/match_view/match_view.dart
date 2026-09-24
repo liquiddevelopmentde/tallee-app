@@ -21,7 +21,6 @@ import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
@@ -240,25 +239,21 @@ class _MatchViewState extends State<MatchView> {
                               if (filteredMatches.isEmpty)
                                 // No matches in filter
                                 Expanded(
-                                  child: Center(
-                                    child: TopCenteredMessage(
-                                      icon: Icons.filter_alt,
-                                      title: loc.info,
-                                      message: loc
-                                          .there_is_no_match_matching_your_filter,
-                                    ),
+                                  child: EmptyMessage(
+                                    icon: Icons.filter_alt,
+                                    title: loc.no_results,
+                                    message: loc
+                                        .there_is_no_match_matching_your_filter,
                                   ),
                                 )
                               else if (displayedMatches.isEmpty)
                                 // No matches in search
                                 Expanded(
-                                  child: Center(
-                                    child: TopCenteredMessage(
-                                      icon: Icons.search,
-                                      title: loc.info,
-                                      message: loc
-                                          .there_is_no_match_matching_your_search,
-                                    ),
+                                  child: EmptyMessage(
+                                    icon: Icons.search,
+                                    title: loc.no_results,
+                                    message: loc
+                                        .there_is_no_match_matching_your_search,
                                   ),
                                 )
                               else

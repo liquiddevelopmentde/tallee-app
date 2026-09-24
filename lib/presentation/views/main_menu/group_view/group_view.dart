@@ -19,7 +19,6 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/state/group_search_provider.dart';
 
 class GroupView extends StatefulWidget {
@@ -157,13 +156,11 @@ class _GroupViewState extends State<GroupView> {
                         if (displayedGroups.isEmpty)
                           // No filtered groups
                           Expanded(
-                            child: Center(
-                              child: TopCenteredMessage(
-                                icon: Icons.search,
-                                title: loc.info,
-                                message:
-                                    loc.there_is_no_group_matching_your_search,
-                              ),
+                            child: EmptyMessage(
+                              icon: Icons.search,
+                              title: loc.no_results,
+                              message:
+                                  loc.there_is_no_group_matching_your_search,
                             ),
                           )
                         else

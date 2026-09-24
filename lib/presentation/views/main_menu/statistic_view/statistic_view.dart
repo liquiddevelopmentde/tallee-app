@@ -22,7 +22,6 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/text_chip.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 
 class StatisticsView extends StatefulWidget {
@@ -262,8 +261,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                       ),
                       footer: statisticTiles.isEmpty && !isLoading
                           ? Padding(
-                              padding: const EdgeInsets.only(top: 20),
-                              child: TopCenteredMessage(
+                              padding: const EdgeInsets.only(top: 150),
+                              child: EmptyMessage(
                                 icon: Icons.filter_alt,
                                 title: loc.info,
                                 message: loc.no_statistics_with_filter,

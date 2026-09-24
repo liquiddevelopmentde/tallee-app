@@ -18,7 +18,6 @@ import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dar
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/state/game_search_provider.dart';
 
 class GameView extends StatefulWidget {
@@ -155,13 +154,11 @@ class _GameViewState extends State<GameView> {
                         if (displayedGames.isEmpty)
                           // No filtered games
                           Expanded(
-                            child: Center(
-                              child: TopCenteredMessage(
-                                icon: Icons.search,
-                                title: loc.info,
-                                message:
-                                    loc.there_is_no_game_matching_your_search,
-                              ),
+                            child: EmptyMessage(
+                              icon: Icons.search,
+                              title: loc.no_results,
+                              message:
+                                  loc.there_is_no_game_matching_your_search,
                             ),
                           )
                         else
