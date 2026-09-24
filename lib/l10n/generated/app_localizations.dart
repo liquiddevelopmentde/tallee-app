@@ -668,6 +668,30 @@ abstract class AppLocalizations {
   /// **'Error loading match: {error}'**
   String error_loading_match(String error);
 
+  /// No description provided for @no_statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'No Statistics'**
+  String get no_statistics;
+
+  /// No description provided for @no_games.
+  ///
+  /// In en, this message translates to:
+  /// **'No Games'**
+  String get no_games;
+
+  /// No description provided for @no_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No Matches'**
+  String get no_matches;
+
+  /// No description provided for @no_groups.
+  ///
+  /// In en, this message translates to:
+  /// **'No Groups'**
+  String get no_groups;
+
   /// No description provided for @error_loading_privacy_policy.
   ///
   /// In en, this message translates to:
@@ -1151,13 +1175,13 @@ abstract class AppLocalizations {
   /// No description provided for @no_games_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No games created yet'**
+  /// **'You haven\'t created any games yet. Create a new game so it will appear here.'**
   String get no_games_created_yet;
 
   /// No description provided for @no_groups_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No groups created yet'**
+  /// **'You haven\'t created any groups yet. Create a new group so it will appear here.'**
   String get no_groups_created_yet;
 
   /// No description provided for @no_license_text_available.
@@ -1169,7 +1193,7 @@ abstract class AppLocalizations {
   /// No description provided for @no_matches_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No matches created yet'**
+  /// **'You haven\'t created any matches yet. Create a new match so it will appear here.'**
   String get no_matches_created_yet;
 
   /// No description provided for @no_matches_played_yet.
@@ -1223,7 +1247,7 @@ abstract class AppLocalizations {
   /// No description provided for @no_statistics_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No statistics created yet'**
+  /// **'You haven\'t created any statistics yet. Create a new statistic so it will appear here.'**
   String get no_statistics_created_yet;
 
   /// No description provided for @no_statistics_with_filter.

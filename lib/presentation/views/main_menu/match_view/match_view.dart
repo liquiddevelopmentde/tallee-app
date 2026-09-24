@@ -18,6 +18,7 @@ import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/text_chip.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -118,10 +119,7 @@ class _MatchViewState extends State<MatchView> {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          AppSkeleton(
-            enabled: isLoading,
-
-            // No matches created
+          SafeArea(
             child: Column(
               children: [
                 // Searchbar
@@ -178,124 +176,171 @@ class _MatchViewState extends State<MatchView> {
                         ),
                 ),
 
-                // Filter row
-                SingleChildScrollView(
-                  padding: CustomTheme.filterRowPadding,
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 5,
-                    children: [
-                      // All matches
-                      TextChip(
-                        text: loc.all,
-                        onTap: () => setFilter(MatchFilter.all),
-                        activated: selectedFilter == MatchFilter.all,
-                      ),
-
-                      // Active matches
-                      TextChip(
-                        text: loc.active_matches,
-                        onTap: () => setFilter(MatchFilter.active),
-                        activated: selectedFilter == MatchFilter.active,
-                      ),
-
-                      // Finished matches
-                      TextChip(
-                        text: loc.finished_matches,
-                        onTap: () => setFilter(MatchFilter.finished),
-                        activated: selectedFilter == MatchFilter.finished,
-                      ),
-
-                      // Team matches
-                      TextChip(
-                        text: loc.team_matches,
-                        onTap: () => setFilter(MatchFilter.team),
-                        activated: selectedFilter == MatchFilter.team,
-                      ),
-
-                      // To keep padding on the right side
-                      const SizedBox.shrink(),
-                    ],
-                  ),
-                ),
-
-                // Matches
+                // Content
                 Expanded(
-                  // No matches created
-
-                  child: allMatches.isEmpty
-                      ? Center(
-                          child: TopCenteredMessage(
-                            icon: Icons.info,
-                            title: loc.info,
-                            message: loc.no_matches_created_yet,
-                          ),
-                        )
-                      // No matches in filter
-                      : filteredMatches.isEmpty
-                      ? Center(
-                          child: TopCenteredMessage(
-                            icon: Icons.info,
-                            title: loc.info,
-                            message: loc.there_is_no_match_matching_your_filter,
-                          ),
-                        )
-                      // No matches in search
-                      : displayedMatches.isEmpty
-                      ? TopCenteredMessage(
-                          icon: Icons.info,
-                          title: loc.info,
-                          message: loc.there_is_no_match_matching_your_search,
-                        )
-                      : NotificationListener<UserScrollNotification>(
-                          onNotification: (notification) {
-                            if (notification.direction ==
-                                    ScrollDirection.reverse &&
-                                isSearchBarVisible) {
-                              setState(() => isSearchBarVisible = false);
-                            } else if (notification.direction ==
-                                    ScrollDirection.forward &&
-                                !isSearchBarVisible) {
-                              setState(() => isSearchBarVisible = true);
-                            }
-                            return true;
-                          },
-                          child: ListView.builder(
-                            controller: scrollController,
-                            padding: CustomTheme.listViewPadding(context),
-                            itemCount: displayedMatches.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return MatchTile(
-                                width: MediaQuery.sizeOf(context).width * 0.95,
-                                onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    adaptivePageRoute(
-                                      settings: const RouteSettings(
-                                        name: RouteNames.matchDetailView,
-                                      ),
-                                      builder: (context) => MatchDetailView(
-                                        match: displayedMatches[index],
-                                        onMatchUpdate: loadMatches,
-                                      ),
+                  child: AppSkeleton(
+                    enabled: isLoading,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            // Filter row
+                            if (allMatches.isNotEmpty) ...[
+                              SingleChildScrollView(
+                                padding: CustomTheme.filterRowPadding,
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  spacing: 5,
+                                  children: [
+                                    // All matches
+                                    TextChip(
+                                      text: loc.all,
+                                      onTap: () => setFilter(MatchFilter.all),
+                                      activated:
+                                          selectedFilter == MatchFilter.all,
                                     ),
-                                  );
-                                },
-                                match: displayedMatches[index],
-                              );
-                            },
-                          ),
+
+                                    // Active matches
+                                    TextChip(
+                                      text: loc.active_matches,
+                                      onTap: () =>
+                                          setFilter(MatchFilter.active),
+                                      activated:
+                                          selectedFilter == MatchFilter.active,
+                                    ),
+
+                                    // Finished matches
+                                    TextChip(
+                                      text: loc.finished_matches,
+                                      onTap: () =>
+                                          setFilter(MatchFilter.finished),
+                                      activated:
+                                          selectedFilter ==
+                                          MatchFilter.finished,
+                                    ),
+
+                                    // Team matches
+                                    TextChip(
+                                      text: loc.team_matches,
+                                      onTap: () => setFilter(MatchFilter.team),
+                                      activated:
+                                          selectedFilter == MatchFilter.team,
+                                    ),
+
+                                    // To keep padding on the right side
+                                    const SizedBox.shrink(),
+                                  ],
+                                ),
+                              ),
+
+                              if (filteredMatches.isEmpty)
+                                // No matches in filter
+                                Expanded(
+                                  child: Center(
+                                    child: TopCenteredMessage(
+                                      icon: Icons.info,
+                                      title: loc.info,
+                                      message: loc
+                                          .there_is_no_match_matching_your_filter,
+                                    ),
+                                  ),
+                                )
+                              else if (displayedMatches.isEmpty)
+                                // No matches in search
+                                Expanded(
+                                  child: Center(
+                                    child: TopCenteredMessage(
+                                      icon: Icons.info,
+                                      title: loc.info,
+                                      message: loc
+                                          .there_is_no_match_matching_your_search,
+                                    ),
+                                  ),
+                                )
+                              else
+                                // Normal matches
+                                Expanded(
+                                  child: NotificationListener<UserScrollNotification>(
+                                    onNotification: (notification) {
+                                      if (notification.direction ==
+                                              ScrollDirection.reverse &&
+                                          isSearchBarVisible) {
+                                        setState(
+                                          () => isSearchBarVisible = false,
+                                        );
+                                      } else if (notification.direction ==
+                                              ScrollDirection.forward &&
+                                          !isSearchBarVisible) {
+                                        setState(
+                                          () => isSearchBarVisible = true,
+                                        );
+                                      }
+                                      return true;
+                                    },
+                                    child: ListView.builder(
+                                      controller: scrollController,
+                                      padding: CustomTheme.listViewPadding(
+                                        context,
+                                      ),
+                                      itemCount: displayedMatches.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                            return MatchTile(
+                                              width:
+                                                  MediaQuery.sizeOf(context)
+                                                      .width *
+                                                  0.95,
+                                              onTap: () async {
+                                                Navigator.push(
+                                                  context,
+                                                  adaptivePageRoute(
+                                                    settings:
+                                                        const RouteSettings(
+                                                          name: RouteNames
+                                                              .matchDetailView,
+                                                        ),
+                                                    builder: (context) =>
+                                                        MatchDetailView(
+                                                          match:
+                                                              displayedMatches[index],
+                                                          onMatchUpdate:
+                                                              loadMatches,
+                                                        ),
+                                                  ),
+                                                );
+                                              },
+                                              match: displayedMatches[index],
+                                            );
+                                          },
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ],
                         ),
+
+                        // Empty screen
+                        if (allMatches.isEmpty && !isLoading)
+                          EmptyMessage(
+                            icon: MATCH_ICON,
+                            spacing: 15,
+                            title: loc.no_matches,
+                            description: loc.no_matches_created_yet,
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
+          // Outside the skeleton so it is not cross-faded on loading changes
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: FloatingAnimatedButton(
               text: loc.create_match,
-              icon: MATCH_ICON,
-              showAddBadge: true,
+              icon: Icons.add,
               onPressed: () {
                 Navigator.push(
                   context,

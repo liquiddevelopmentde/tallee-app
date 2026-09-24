@@ -14,6 +14,7 @@ import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -83,6 +84,7 @@ class _GameViewState extends State<GameView> {
         children: [
           Column(
             children: [
+              // Searchbar
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
                 switchInCurve: Curves.easeOutCubic,
@@ -127,64 +129,74 @@ class _GameViewState extends State<GameView> {
                         key: ValueKey('match-searchbar-hidden'),
                       ),
               ),
+
+              // Content
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
-                  child: Visibility(
-                    visible: games.isNotEmpty,
-                    replacement: Center(
-                      child: TopCenteredMessage(
-                        icon: Icons.info,
-                        title: loc.info,
-                        message: loc.no_games_created_yet,
-                      ),
-                    ),
-                    child: Visibility(
-                      visible: filteredGames.isNotEmpty,
-                      replacement: Center(
-                        child: TopCenteredMessage(
-                          icon: Icons.info,
-                          title: loc.info,
-                          message: loc.there_is_no_game_matching_your_search,
-                        ),
-                      ),
-                      child: ListView.builder(
-                        padding: CustomTheme.listViewPadding(context),
-                        itemCount: filteredGames.length,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      if (games.isNotEmpty)
+                        if (filteredGames.isEmpty)
+                          // No filtered games
+                          Expanded(
+                            child: Center(
+                              child: TopCenteredMessage(
+                                icon: Icons.info,
+                                title: loc.info,
+                                message:
+                                    loc.there_is_no_game_matching_your_search,
+                              ),
+                            ),
+                          )
+                        else
+                          Expanded(
+                            child: ListView.builder(
+                              padding: CustomTheme.listViewPadding(context),
+                              itemCount: filteredGames.length,
 
-                        itemBuilder: (BuildContext context, int index) {
-                          return GameTile(
-                            gameCount: getGameCount(filteredGames[index]),
-                            onTap: () async {
-                              Navigator.push(
-                                context,
-                                adaptivePageRoute(
-                                  builder: (context) => CreateGameView(
-                                    gameToEdit: filteredGames[index],
-                                    onGameChanged: loadGames,
-                                    gameCount: getGameCount(
-                                      filteredGames[index],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            game: filteredGames[index],
-                          );
-                        },
-                      ),
-                    ),
+                              itemBuilder: (BuildContext context, int index) {
+                                return GameTile(
+                                  gameCount: getGameCount(filteredGames[index]),
+                                  onTap: () async {
+                                    Navigator.push(
+                                      context,
+                                      adaptivePageRoute(
+                                        builder: (context) => CreateGameView(
+                                          gameToEdit: filteredGames[index],
+                                          onGameChanged: loadGames,
+                                          gameCount: getGameCount(
+                                            filteredGames[index],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  game: filteredGames[index],
+                                );
+                              },
+                            ),
+                          )
+                      // No games
+                      else if (!isLoading)
+                        EmptyMessage(
+                          icon: GAME_ICON,
+                          title: loc.no_games,
+                          description: loc.no_games_created_yet,
+                        ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
+          // Outside the skeleton so it is not cross-faded on loading changes
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: FloatingAnimatedButton(
               text: loc.create_game,
-              icon: GAME_ICON,
-              showAddBadge: true,
+              icon: Icons.add,
               onPressed: () async {
                 Navigator.push(
                   context,

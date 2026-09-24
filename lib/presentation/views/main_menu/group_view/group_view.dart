@@ -15,6 +15,7 @@ import 'package:tallee/presentation/views/main_menu/group_view/create_group_view
 import 'package:tallee/presentation/views/main_menu/group_view/group_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
@@ -85,6 +86,7 @@ class _GroupViewState extends State<GroupView> {
         children: [
           Column(
             children: [
+              // Searchbar
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
                 switchInCurve: Curves.easeOutCubic,
@@ -129,65 +131,76 @@ class _GroupViewState extends State<GroupView> {
                         key: ValueKey('group-searchbar-hidden'),
                       ),
               ),
+
+              // Content
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
-                  child: Visibility(
-                    visible: groups.isNotEmpty,
-                    replacement: Center(
-                      child: TopCenteredMessage(
-                        icon: Icons.info,
-                        title: loc.info,
-                        message: loc.no_groups_created_yet,
-                      ),
-                    ),
-                    child: Visibility(
-                      visible: filteredGroups.isNotEmpty,
-                      replacement: Center(
-                        child: TopCenteredMessage(
-                          icon: Icons.info,
-                          title: loc.info,
-                          message: loc.there_is_no_group_matching_your_search,
-                        ),
-                      ),
-                      child: ListView.builder(
-                        padding: CustomTheme.listViewPadding(context),
-                        itemCount: filteredGroups.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return GroupTile(
-                            onPlayerChanged: loadGroups,
-                            group: filteredGroups[index],
-                            onTap: () async {
-                              await Navigator.push(
-                                context,
-                                adaptivePageRoute(
-                                  settings: const RouteSettings(
-                                    name: RouteNames.groupDetailView,
-                                  ),
-                                  builder: (context) {
-                                    return GroupDetailView(
-                                      group: filteredGroups[index],
-                                      callback: loadGroups,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Groups
+                      if (groups.isNotEmpty)
+                        if (filteredGroups.isEmpty)
+                          // No filtered groups
+                          Expanded(
+                            child: Center(
+                              child: TopCenteredMessage(
+                                icon: Icons.info,
+                                title: loc.info,
+                                message:
+                                    loc.there_is_no_group_matching_your_search,
+                              ),
+                            ),
+                          )
+                        else
+                          Expanded(
+                            child: ListView.builder(
+                              padding: CustomTheme.listViewPadding(context),
+                              itemCount: filteredGroups.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return GroupTile(
+                                  onPlayerChanged: loadGroups,
+                                  group: filteredGroups[index],
+                                  onTap: () async {
+                                    await Navigator.push(
+                                      context,
+                                      adaptivePageRoute(
+                                        settings: const RouteSettings(
+                                          name: RouteNames.groupDetailView,
+                                        ),
+                                        builder: (context) {
+                                          return GroupDetailView(
+                                            group: filteredGroups[index],
+                                            callback: loadGroups,
+                                          );
+                                        },
+                                      ),
                                     );
                                   },
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
+                                );
+                              },
+                            ),
+                          )
+                      else if (!isLoading)
+                        // No groups
+                        EmptyMessage(
+                          icon: GROUP_ICON,
+                          title: loc.no_groups,
+                          description: loc.no_groups_created_yet,
+                        ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
+          // Outside the skeleton so it is not cross-faded on loading changes
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: FloatingAnimatedButton(
               text: loc.create_group,
-              icon: GROUP_ICON,
-              showAddBadge: true,
+              icon: Icons.add,
               onPressed: () async {
                 await Navigator.push(
                   context,

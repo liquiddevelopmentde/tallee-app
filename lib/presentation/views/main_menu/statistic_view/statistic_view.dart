@@ -20,6 +20,7 @@ import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_det
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/text_chip.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -40,7 +41,11 @@ class _StatisticsViewState extends State<StatisticsView> {
   List<Player> players = [];
   List<Group> groups = [];
   List<Game> games = [];
-  List<Statistic> statistics = [];
+  late List<Statistic> statistics = List.generate(
+    4,
+    (_) => getSkeletonStatistic(),
+  );
+  late List<Statistic> filteredStatistics = [...statistics];
   List<Widget> statisticTiles = List.generate(
     4,
     (index) => buildSkeletonStatisticTile(),
@@ -74,15 +79,11 @@ class _StatisticsViewState extends State<StatisticsView> {
               enabled: isLoading,
               fixLayoutBuilder: true,
               alignment: Alignment.topCenter,
-              child: statistics.isEmpty && !isLoading
-                  ? Center(
-                      child: TopCenteredMessage(
-                        icon: Icons.info,
-                        title: loc.info,
-                        message: loc.no_statistics_created_yet,
-                      ),
-                    )
-                  : ReorderableListView.builder(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (statisticTiles.isNotEmpty)
+                    ReorderableListView.builder(
                       padding: CustomTheme.listViewPadding(context),
                       header: SingleChildScrollView(
                         padding: CustomTheme.filterRowPadding,
@@ -336,7 +337,18 @@ class _StatisticsViewState extends State<StatisticsView> {
                         return statisticTiles[index];
                       },
                     ),
+
+                  if (!isLoading && statistics.isEmpty)
+                    EmptyMessage(
+                      icon: STATISTIC_ICON,
+                      title: loc.no_statistics,
+                      description: loc.no_statistics_created_yet,
+                    ),
+                ],
+              ),
             ),
+
+            // Outside the skeleton so it is not cross-faded on loading changes
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom + 20,
               child: FloatingAnimatedButton(
@@ -397,6 +409,16 @@ class _StatisticsViewState extends State<StatisticsView> {
     );
   }
 
+  Statistic getSkeletonStatistic() {
+    return Statistic(
+      type: StatisticType.totalWins,
+      scopes: [StatisticScope.allPlayers],
+      color: getRandomAppColor(),
+      selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
+      selectedGroups: [Group(name: 'Group 1', members: [])],
+    );
+  }
+
   /// Loads all statistics and needed data from the database
   Future<void> loadStatistics() async {
     setState(() => isLoading = true);
@@ -416,11 +438,13 @@ class _StatisticsViewState extends State<StatisticsView> {
 
     statistics = results[0] as List<Statistic>
       ..sort((a, b) => a.position.compareTo(b.position));
+    filteredStatistics = [...statistics];
     matches = results[1] as List<Match>;
     players = results[2] as List<Player>;
     groups = results[3] as List<Group>;
     games = results[4] as List<Game>;
 
+    print(statistics);
     loadFilterData();
 
     setState(() {
@@ -485,11 +509,11 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   // Create the statistic tiles based on the active filters
   void createFilteredStatisticTiles() {
-    final displayedStats = statistics.where(matchesActiveFilters).toList()
+    filteredStatistics = statistics.where(matchesActiveFilters).toList()
       ..sort((a, b) => a.position.compareTo(b.position));
 
     setState(() {
-      statisticTiles = displayedStats
+      statisticTiles = filteredStatistics
           .map((stat) => buildStatisticTile(context: context, statistic: stat))
           .toList();
     });

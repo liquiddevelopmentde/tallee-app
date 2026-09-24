@@ -329,6 +329,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get no_statistics => 'No Statistics';
+
+  @override
+  String get no_games => 'No Games';
+
+  @override
+  String get no_matches => 'No Matches';
+
+  @override
+  String get no_groups => 'No Groups';
+
+  @override
   String get error_loading_privacy_policy => 'Error loading privacy policy';
 
   @override
@@ -602,16 +614,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_data_to_export => 'No data to export';
 
   @override
-  String get no_games_created_yet => 'No games created yet';
+  String get no_games_created_yet =>
+      'You haven\'t created any games yet. Create a new game so it will appear here.';
 
   @override
-  String get no_groups_created_yet => 'No groups created yet';
+  String get no_groups_created_yet =>
+      'You haven\'t created any groups yet. Create a new group so it will appear here.';
 
   @override
   String get no_license_text_available => 'No license text available';
 
   @override
-  String get no_matches_created_yet => 'No matches created yet';
+  String get no_matches_created_yet =>
+      'You haven\'t created any matches yet. Create a new match so it will appear here.';
 
   @override
   String get no_matches_played_yet => 'No games played yet';
@@ -641,7 +656,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_results_entered_yet => 'No results entered yet';
 
   @override
-  String get no_statistics_created_yet => 'No statistics created yet';
+  String get no_statistics_created_yet =>
+      'You haven\'t created any statistics yet. Create a new statistic so it will appear here.';
 
   @override
   String get no_statistics_with_filter =>
