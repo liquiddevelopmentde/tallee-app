@@ -401,7 +401,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get general => 'Allgemein';
 
   @override
-  String get get_started => 'Loslegen';
+  String get get_started => 'Los geht\'s!';
 
   @override
   String get group => 'Gruppe';
