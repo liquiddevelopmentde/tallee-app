@@ -229,8 +229,8 @@
       }
     }
   },
-  "no": "No",
   "next": "Next",
+  "no": "No",
   "no_data_available": "No data available",
   "no_data_to_export": "No data to export",
   "no_games_created_yet": "No games created yet",

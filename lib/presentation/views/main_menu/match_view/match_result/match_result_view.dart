@@ -190,22 +190,25 @@ class _MatchResultViewState extends State<MatchResultView> {
                     ),
             ),
 
-          // Saving button
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Save Changes Button
-                BottomAnimatedButton(
-                  sizeRelativeToWidth: 0.95,
-                  buttonText: loc.save_changes,
-                  onPressed: canSave ? () async => await handleSaving() : null,
-                ),
-              ],
+            // Saving button
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Save Changes Button
+                  BottomAnimatedButton(
+                    sizeRelativeToWidth: 0.95,
+                    buttonText: loc.save_changes,
+                    onPressed: canSave
+                        ? () async => await handleSaving()
+                        : null,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
