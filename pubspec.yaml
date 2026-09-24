@@ -68,6 +68,7 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
+    - assets/App-Icon-Rounded.png
     - assets/app_schema.json
     - assets/match_schema.json
     - .env

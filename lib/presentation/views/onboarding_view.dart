@@ -7,19 +7,22 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 
 /// Data model representing a single page in the onboarding carousel.
-/// [title] -   /// The headline title displayed on the onboarding page.
-/// [description] -   /// The detailed description text displayed below the title.
-/// [icon] -   /// The icon displayed prominently on the onboarding page.
+/// [title] - The headline title displayed on the onboarding page.
+/// [description] - The detailed description text displayed below the title.
+/// [icon] - The icon displayed prominently on the onboarding page.
+/// [imagePath] - The image asset path displayed prominently on the onboarding page.
 class OnboardingPageData {
   const OnboardingPageData({
     required this.title,
     required this.description,
-    required this.icon,
+    this.icon,
+    this.imagePath,
   });
 
   final String title;
   final String description;
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
 }
 
 class OnboardingView extends StatefulWidget {
@@ -43,7 +46,7 @@ class _OnboardingViewState extends State<OnboardingView> {
       OnboardingPageData(
         title: loc.onboarding_welcome_title,
         description: loc.onboarding_welcome_desc,
-        icon: Icons.style_rounded,
+        imagePath: 'assets/App-Icon-Rounded.png',
       ),
       OnboardingPageData(
         title: loc.onboarding_rulesets_title,
@@ -100,12 +103,20 @@ class _OnboardingViewState extends State<OnboardingView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          page.icon,
-                          size: 100,
-                          color: CustomTheme.primaryColor,
-                        ),
-                        const SizedBox(height: 40),
+                        if (page.imagePath != null)
+                          Image.asset(
+                            page.imagePath!,
+                            width: 150,
+                            height: 150,
+                            fit: BoxFit.contain,
+                          )
+                        else if (page.icon != null)
+                          Icon(
+                            page.icon,
+                            size: 100,
+                            color: CustomTheme.primaryColor,
+                          ),
+                        SizedBox(height: 20),
                         Text(
                           page.title,
                           textAlign: TextAlign.center,
