@@ -366,6 +366,7 @@ class _MatchViewState extends State<MatchView> {
     setState(() {
       selectedFilter = filter;
       applyFilter(filter);
+      applySearch(searchBarController.text);
     });
     SharedPreferencesService.setMatchFilter(filter);
   }
@@ -397,7 +398,7 @@ class _MatchViewState extends State<MatchView> {
       } else {
         final List<({Match match, int score})> scoredMatches = [];
 
-        for (final match in allMatches) {
+        for (final match in filteredMatches) {
           int maxScore = 0;
 
           // Check match name
