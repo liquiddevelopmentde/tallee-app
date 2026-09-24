@@ -18,6 +18,15 @@ class ShowcaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void restartTour() {
+    SharedPreferencesService.setTourSkipped(false);
+    SharedPreferencesService.setTourCompleted(false);
+    SharedPreferencesService.resetSeenShowcase();
+    _shownInCurrentTour.clear();
+    _isTourActive = true;
+    notifyListeners();
+  }
+
   void skipTour() {
     _isTourActive = false;
     SharedPreferencesService.setTourSkipped(true);
