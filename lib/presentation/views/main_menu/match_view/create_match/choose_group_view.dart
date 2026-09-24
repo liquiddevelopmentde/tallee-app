@@ -102,7 +102,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
             if (widget.groups.isEmpty)
               // No groups created
               Expanded(
-                child: EmptyMessage(
+                child: EmptyViewMessage(
                   icon: GROUP_ICON,
                   title: loc.no_groups,
                   message: loc.no_groups_created_yet,
@@ -111,7 +111,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
             else if (filteredGroups.isEmpty)
               // No groups matching search query
               Expanded(
-                child: EmptyMessage(
+                child: EmptyViewMessage(
                   icon: GROUP_ICON,
                   title: loc.no_results,
                   message: loc.there_is_no_group_matching_your_search,

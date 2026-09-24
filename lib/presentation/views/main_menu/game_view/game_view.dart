@@ -154,7 +154,7 @@ class _GameViewState extends State<GameView> {
                         if (displayedGames.isEmpty)
                           // No filtered games
                           Expanded(
-                            child: EmptyMessage(
+                            child: EmptyViewMessage(
                               icon: Icons.search,
                               title: loc.no_results,
                               message:
@@ -207,7 +207,7 @@ class _GameViewState extends State<GameView> {
                           )
                       // No games
                       else if (!isLoading)
-                        EmptyMessage(
+                        EmptyViewMessage(
                           icon: GAME_ICON,
                           title: loc.no_games,
                           message: loc.no_games_created_yet,

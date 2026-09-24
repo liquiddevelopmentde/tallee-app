@@ -262,7 +262,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                       footer: statisticTiles.isEmpty && !isLoading
                           ? Padding(
                               padding: const EdgeInsets.only(top: 150),
-                              child: EmptyMessage(
+                              child: EmptyViewMessage(
                                 icon: Icons.filter_alt,
                                 title: loc.info,
                                 message: loc.no_statistics_with_filter,
@@ -337,7 +337,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                       },
                     )
                   else if (!isLoading)
-                    EmptyMessage(
+                    EmptyViewMessage(
                       icon: STATISTIC_ICON,
                       title: loc.no_statistics,
                       message: loc.no_statistics_created_yet,

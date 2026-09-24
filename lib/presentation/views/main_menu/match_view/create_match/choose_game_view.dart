@@ -124,7 +124,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
             if (games.isEmpty)
               // No games created
               Expanded(
-                child: EmptyMessage(
+                child: EmptyViewMessage(
                   icon: GAME_ICON,
                   title: loc.no_games,
                   message: loc.no_games_created_yet,
@@ -133,7 +133,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
             else if (filteredGames.isEmpty)
               // No games matching search query
               Expanded(
-                child: EmptyMessage(
+                child: EmptyViewMessage(
                   icon: GAME_ICON,
                   title: loc.no_results,
                   message: loc.there_are_no_games_matching_your_search,

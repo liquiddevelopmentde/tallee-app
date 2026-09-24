@@ -156,7 +156,7 @@ class _GroupViewState extends State<GroupView> {
                         if (displayedGroups.isEmpty)
                           // No filtered groups
                           Expanded(
-                            child: EmptyMessage(
+                            child: EmptyViewMessage(
                               icon: Icons.search,
                               title: loc.no_results,
                               message:
@@ -209,7 +209,7 @@ class _GroupViewState extends State<GroupView> {
                           )
                       else if (!isLoading)
                         // No groups
-                        EmptyMessage(
+                        EmptyViewMessage(
                           icon: GROUP_ICON,
                           title: loc.no_groups,
                           message: loc.no_groups_created_yet,

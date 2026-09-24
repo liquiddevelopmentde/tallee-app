@@ -239,7 +239,7 @@ class _MatchViewState extends State<MatchView> {
                               if (filteredMatches.isEmpty)
                                 // No matches in filter
                                 Expanded(
-                                  child: EmptyMessage(
+                                  child: EmptyViewMessage(
                                     icon: Icons.filter_alt,
                                     title: loc.no_results,
                                     message: loc
@@ -249,7 +249,7 @@ class _MatchViewState extends State<MatchView> {
                               else if (displayedMatches.isEmpty)
                                 // No matches in search
                                 Expanded(
-                                  child: EmptyMessage(
+                                  child: EmptyViewMessage(
                                     icon: Icons.search,
                                     title: loc.no_results,
                                     message: loc
@@ -320,7 +320,7 @@ class _MatchViewState extends State<MatchView> {
 
                         // Empty screen
                         if (allMatches.isEmpty && !isLoading)
-                          EmptyMessage(
+                          EmptyViewMessage(
                             icon: MATCH_ICON,
                             spacing: 15,
                             title: loc.no_matches,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:tallee/core/custom_theme.dart';
 
-class EmptyMessage extends StatelessWidget {
-  const EmptyMessage({
+class EmptyViewMessage extends StatelessWidget {
+  const EmptyViewMessage({
     super.key,
     required this.icon,
     required this.title,
