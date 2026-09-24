@@ -34,7 +34,7 @@ class _EditPlayerViewState extends State<EditPlayerView> {
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
 
     playerNameController.text = widget.playerToEdit.name;
     playerNameController.addListener(() => setState(() {}));

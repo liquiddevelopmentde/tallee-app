@@ -54,15 +54,15 @@ class _GroupViewState extends State<GroupView> {
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
-    _searchProvider = Provider.of<GroupSearchProvider>(context, listen: false);
-    _searchProvider.addListener(_handleSearchToggle);
+    db = context.read<AppDatabase>();
+    _searchProvider = context.read<GroupSearchProvider>();
+    _searchProvider.addListener(handleSearchToggle);
     loadGroups();
   }
 
   @override
   void dispose() {
-    _searchProvider.removeListener(_handleSearchToggle);
+    _searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
     super.dispose();
   }
@@ -70,7 +70,7 @@ class _GroupViewState extends State<GroupView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final searchProvider = Provider.of<GroupSearchProvider>(context);
+    final searchProvider = context.read<GroupSearchProvider>();
 
     // Reset filtered groups when search is disabled
     if (!searchProvider.isSearching) {
@@ -239,10 +239,8 @@ class _GroupViewState extends State<GroupView> {
     });
   }
 
-  void _handleSearchToggle() {
-    if (!mounted) {
-      return;
-    }
+  void handleSearchToggle() {
+    if (!mounted) return;
 
     if (!_searchProvider.isSearching) {
       searchBarController.clear();
@@ -250,24 +248,22 @@ class _GroupViewState extends State<GroupView> {
   }
 
   void loadGroups() {
-    setState(() {
-      isLoading = true;
-    });
+    //if (!mounted) return;
+    setState(() => isLoading = true);
+
     Future.wait([
       db.groupDao.getAllGroups(),
       Future.delayed(MINIMUM_SKELETON_DURATION),
     ]).then((results) {
+      if (!mounted) return;
+
       loadedGroups = results[0] as List<Group>;
       setState(() {
         groups = loadedGroups
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
         filteredGroups = [...loadedGroups];
+        isLoading = false;
       });
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
     });
   }
 }

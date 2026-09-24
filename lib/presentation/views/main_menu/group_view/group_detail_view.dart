@@ -50,7 +50,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
   void initState() {
     super.initState();
     group = widget.group;
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
     loadStatistics();
   }
 

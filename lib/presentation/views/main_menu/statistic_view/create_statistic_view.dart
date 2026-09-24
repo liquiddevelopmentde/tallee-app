@@ -315,7 +315,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     setState(() {
       isLoading = true;
     });
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
     Future.wait([
           db.playerDao.getAllPlayers(),
@@ -344,7 +344,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   /// Creates the statistic based on the user selections. Navigates to the
   /// ChooseViews if their type has been selected
   Future<void> submitStatistic() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
     final result = await resolveBaseStatistic();
     if (result == null) return; // User cancelled the picker.

@@ -132,6 +132,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm => 'Confirm';
 
   @override
+  String get contact_us_through_mail =>
+      'Feel free to contact us via email directly so we can solve your problem!';
+
+  @override
   String get continue_ => 'Continue';
 
   @override
@@ -268,6 +272,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get displayed_entries => 'Displayed entries';
 
   @override
+  String get do_you_like_the_app => 'Do you like the app?';
+
+  @override
+  String get dont_update => 'Don\'t update';
+
+  @override
   String get drag_to_set_placement => 'Drag to set placement';
 
   @override
@@ -397,6 +407,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get group_associated => 'Group successfully associated';
+
+  @override
+  String get group_members => 'Group Members';
 
   @override
   String get group_name => 'Group name';
@@ -580,6 +593,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get no => 'No';
+
+  @override
   String get no_data_available => 'No data available';
 
   @override
@@ -711,6 +727,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get points => 'Points';
+
+  @override
+  String get preview_match => 'Preview match';
 
   @override
   String get privacy_policy => 'Privacy Policy';
@@ -849,18 +868,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get update_app_export_desc =>
-      'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.';
-
-  @override
-  String get update_app_import_desc =>
-      'You don\'t have the newest App-Version, this can lead to problems when trying to import your data.';
-
-  @override
   String get share_match_title => 'Tallee Match Share';
-
-  @override
-  String get dont_update => 'Don\'t update';
 
   @override
   String get share_token_format_info =>
@@ -975,6 +983,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknown_exception => 'Unknown Exception (see console)';
 
   @override
+  String get unsatisfied => 'Unsatisfied?';
+
+  @override
+  String get update_app_export_desc =>
+      'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.';
+
+  @override
+  String get update_app_import_desc =>
+      'You don\'t have the newest App-Version, this can lead to problems when trying to import your data.';
+
+  @override
   String get update_app_version =>
       'Please update your apps to the newest version and try it again.';
 
@@ -1005,6 +1024,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get worst_score => 'Worst score';
+
+  @override
+  String get write_email => 'Write an email';
+
+  @override
+  String get yes => 'Yes';
 
   @override
   String get yesterday_at => 'Yesterday at';

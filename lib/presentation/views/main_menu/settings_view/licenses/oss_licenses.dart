@@ -75,6 +75,7 @@ const allDependencies = <Package>[
   _flutter_numeric_text,
   _flutter_plugin_android_lifecycle,
   _flutter_popup,
+  _flutter_rating_bar,
   _flutter_test,
   _flutter_web_plugins,
   _fluttericon,
@@ -146,6 +147,7 @@ const allDependencies = <Package>[
   _pubspec_parse,
   _qr,
   _quiver,
+  _rate_my_app,
   _recase,
   _record_use,
   _remove_unused_localizations,
@@ -256,6 +258,7 @@ const dependencies = <Package>[
   _pinput,
   _pretty_qr_code,
   _provider,
+  _rate_my_app,
   _remove_unused_localizations,
   _sentry_flutter,
   _share_plus,
@@ -3546,13 +3549,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// flutter 3.47.4
+/// flutter 3.47.5
 const _flutter = Package(
     name: 'flutter',
     description: 'A framework for writing Flutter applications',
     homepage: 'https://flutter.dev',
     authors: [],
-    version: '3.47.4',
+    version: '3.47.5',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: true,
@@ -3800,6 +3803,42 @@ const _flutter_popup = Package(
     license: '''MIT License
 
 Copyright (c) 2023 mopriestt
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// flutter_rating_bar 4.0.1
+const _flutter_rating_bar = Package(
+    name: 'flutter_rating_bar',
+    description: 'A simple yet fully customizable ratingbar for flutter which also include a rating bar indicator, supporting any fraction of rating.',
+    homepage: 'https://sarbagyastha.com.np',
+    repository: 'https://github.com/sarbagyastha/flutter_rating_bar',
+    authors: [],
+    version: '4.0.1',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter')],
+    devDependencies: [PackageRef('flutter_test')],
+    license: '''The MIT License (MIT)
+
+Copyright (c) 2021 Sarbagya Dhaubanjar
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -7569,6 +7608,41 @@ const _quiver = Package(
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.''',
+  );
+
+/// rate_my_app 2.4.1
+const _rate_my_app = Package(
+    name: 'rate_my_app',
+    description: 'Allows to kindly ask users to rate your app if custom conditions are met (eg. install time, number of launches, etc...).',
+    homepage: 'https://github.com/Skyost/RateMyApp',
+    authors: [],
+    version: '2.4.1',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('shared_preferences'), PackageRef('flutter_rating_bar'), PackageRef('flutter')],
+    devDependencies: [PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2019 Hugo DELAUNAY "Skyost"
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
   );
 
 /// recase 4.1.0
@@ -40861,16 +40935,16 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// tallee 0.1.20+663
+/// tallee 0.1.26+669
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.1.20+663',
+    version: '0.1.26+669',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('dotted_border'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_dotenv'), PackageRef('flutter_localizations'), PackageRef('flutter_markdown_plus'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('http'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('mobile_scanner'), PackageRef('new_version_plus'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('pinput'), PackageRef('pretty_qr_code'), PackageRef('provider'), PackageRef('remove_unused_localizations'), PackageRef('sentry_flutter'), PackageRef('share_plus'), PackageRef('shared_preferences'), PackageRef('skeletonizer'), PackageRef('syncfusion_flutter_datepicker'), PackageRef('url_launcher'), PackageRef('uuid')],
+    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('dotted_border'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_dotenv'), PackageRef('flutter_localizations'), PackageRef('flutter_markdown_plus'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('http'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('mobile_scanner'), PackageRef('new_version_plus'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('pinput'), PackageRef('pretty_qr_code'), PackageRef('provider'), PackageRef('rate_my_app'), PackageRef('remove_unused_localizations'), PackageRef('sentry_flutter'), PackageRef('share_plus'), PackageRef('shared_preferences'), PackageRef('skeletonizer'), PackageRef('syncfusion_flutter_datepicker'), PackageRef('url_launcher'), PackageRef('uuid')],
     devDependencies: [PackageRef('arb_utils'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('sentry_dart_plugin'), PackageRef('sort_pubspec_dependencies')],
     license: '''GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

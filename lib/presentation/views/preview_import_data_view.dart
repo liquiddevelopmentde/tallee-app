@@ -326,7 +326,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     final jsonString = this.jsonString;
     if (jsonString == null) return;
 
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final result = await LocalShareService.commitImport(db, jsonString);
 
     if (!mounted) return;
@@ -345,7 +345,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
     if (importResult == ImportResult.success) {
       // Refresh on success
-      Provider.of<DataRefreshProvider>(context, listen: false).refresh();
+      context.read<DataRefreshProvider>().refresh();
     }
 
     Navigator.of(context).maybePop(importResult);

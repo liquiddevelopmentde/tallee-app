@@ -118,7 +118,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
     suggestedPlayers = skeletonData;
 
     if (widget.mode == SelectionMode.single) {

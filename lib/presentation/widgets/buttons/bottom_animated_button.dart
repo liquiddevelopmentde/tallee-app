@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 
 class BottomAnimatedButton extends StatefulWidget {
@@ -18,20 +19,17 @@ class BottomAnimatedButton extends StatefulWidget {
     this.buttonConstraints,
     this.sizeRelativeToWidth,
     this.buttonType = ButtonType.primary,
-    this.isDescructive = false,
+    this.isDestructive = false,
+    this.isEmphasized = false,
   });
 
   final String buttonText;
-
   final VoidCallback? onPressed;
-
   final BoxConstraints? buttonConstraints;
-
   final double? sizeRelativeToWidth;
-
   final ButtonType buttonType;
-
-  final bool isDescructive;
+  final bool isDestructive;
+  final bool isEmphasized;
 
   @override
   State<BottomAnimatedButton> createState() => _BottomAnimatedButtonState();
@@ -40,10 +38,65 @@ class BottomAnimatedButton extends StatefulWidget {
 class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
   bool _isPressed = false;
 
+  TextStyle get textStyle {
+    late Color textColor;
+
+    switch (widget.buttonType) {
+      case ButtonType.primary:
+        textColor = widget.isDestructive || widget.isEmphasized
+            ? Colors.white
+            : Colors.black;
+        break;
+      default:
+        if (widget.isDestructive) {
+          textColor = Colors.red;
+        } else if (widget.isEmphasized) {
+          textColor = CustomTheme.primaryColor;
+        } else {
+          textColor = Colors.white;
+        }
+        break;
+    }
+
+    return TextStyle(
+      color: textColor,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  BoxDecoration get buttonDecoration {
+    if (widget.buttonType == ButtonType.primary) {
+      // Primary
+      return BoxDecoration(
+        color: widget.isDestructive
+            ? Colors.red
+            : widget.isEmphasized
+            ? CustomTheme.primaryColor
+            : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      );
+    } else if (widget.buttonType == ButtonType.secondary) {
+      // Secondary
+      return BoxDecoration(
+        border: BoxBorder.all(
+          color: widget.isDestructive
+              ? Colors.red
+              : widget.isEmphasized
+              ? CustomTheme.primaryColor
+              : Colors.white,
+          width: 2,
+          strokeAlign: BorderSide.strokeAlignInside,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      );
+    }
+    // Tertiary
+    return const BoxDecoration();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final textStyling = _getTextStyling();
-    final buttonDecoration = _getButtonDecoration();
     final isDisabled = widget.onPressed == null;
 
     return IgnorePointer(
@@ -84,7 +137,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(
                     widget.buttonText,
-                    style: textStyling,
+                    style: textStyle,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -94,43 +147,5 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
         ),
       ),
     );
-  }
-
-  TextStyle _getTextStyling() {
-    late Color textColor;
-    if (widget.buttonType == ButtonType.primary) {
-      textColor = widget.isDescructive ? Colors.white : Colors.black;
-    } else if (widget.buttonType == ButtonType.secondary) {
-      textColor = widget.isDescructive ? Colors.red : Colors.white;
-    } else {
-      textColor = widget.isDescructive ? Colors.red : Colors.white;
-    }
-
-    return TextStyle(
-      color: textColor,
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-    );
-  }
-
-  BoxDecoration _getButtonDecoration() {
-    if (widget.buttonType == ButtonType.primary) {
-      // Primary
-      return BoxDecoration(
-        color: widget.isDescructive ? Colors.red : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      );
-    } else if (widget.buttonType == ButtonType.secondary) {
-      // Secondary
-      return BoxDecoration(
-        border: BoxBorder.all(
-          color: widget.isDescructive ? Colors.red : Colors.white,
-          width: 2,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      );
-    }
-    // Tertiary
-    return const BoxDecoration();
   }
 }

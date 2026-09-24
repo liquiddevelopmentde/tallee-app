@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:new_version_plus/model/version_status.dart';
 import 'package:once/once.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -63,9 +64,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
-    final matchSearchProvider = Provider.of<MatchSearchProvider>(context);
-    final groupSearchProvider = Provider.of<GroupSearchProvider>(context);
-    final gameSearchProvider = Provider.of<GameSearchProvider>(context);
+    final matchSearchProvider = context.read<MatchSearchProvider>();
+    final groupSearchProvider = context.read<GroupSearchProvider>();
+    final gameSearchProvider = context.read<GameSearchProvider>();
 
     final refreshRevision = context.watch<DataRefreshProvider>().revision;
 
@@ -100,7 +101,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         backgroundColor: CustomTheme.backgroundColor,
         scrolledUnderElevation: 0,
         leading: currentIndex == 0
-            ? IconButton(
+            ? HapticIconButton(
                 onPressed: () async {
                   await Navigator.push(
                     context,
@@ -288,10 +289,16 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
 
     try {
       status = await newVersionPlus.getVersionStatus();
-    } catch (error) {
-      // ignore network errors, that come from a users network conditions
+    } catch (error, stacktrace) {
       if (isNetworkError(error)) return;
-      rethrow;
+      Sentry.captureException(
+        error,
+        stackTrace: stacktrace,
+        hint: Hint.withMap({'skipSnackBar': true}),
+        withScope: (scope) {
+          scope.level = SentryLevel.error;
+        },
+      );
     }
 
     if (status != null && status.canUpdate) {
@@ -355,7 +362,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       Once.runOnce(
         'example-stats',
         callback: () async {
-          final db = Provider.of<AppDatabase>(context, listen: false);
+          final db = context.read<AppDatabase>();
           final stat1 = Statistic(
             type: StatisticType.totalWins,
             color: AppColor.orange,

@@ -12,8 +12,8 @@ import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
 import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
 
-class AssociateGroupsView extends StatefulWidget {
-  const AssociateGroupsView({
+class AssociateGroupView extends StatefulWidget {
+  const AssociateGroupView({
     required this.match,
     required this.associations,
     this.associatedGame,
@@ -27,10 +27,10 @@ class AssociateGroupsView extends StatefulWidget {
   final Game? associatedGame;
 
   @override
-  State<AssociateGroupsView> createState() => _AssociateGroupsViewState();
+  State<AssociateGroupView> createState() => _AssociateGroupViewState();
 }
 
-class _AssociateGroupsViewState extends State<AssociateGroupsView> {
+class _AssociateGroupViewState extends State<AssociateGroupView> {
   Group? associatedGroup;
 
   @override
@@ -161,7 +161,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
   }
 
   Future<void> saveMatch() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final loc = AppLocalizations.of(context);
 
     // Filter null values and cast to Map<String, Player>
@@ -189,7 +189,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
 
     if (!mounted) return;
 
-    Provider.of<DataRefreshProvider>(context, listen: false).refresh();
+    context.read<DataRefreshProvider>().refresh();
 
     ScaffoldMessenger.of(context)
         .showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
@@ -198,7 +198,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
   }
 
   Future<void> navigateToGroupSelection() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final allGroups = await db.groupDao.getAllGroups();
 
     final importedGroup = widget.match.group!;
@@ -231,7 +231,7 @@ class _AssociateGroupsViewState extends State<AssociateGroupsView> {
   }
 
   Future<void> autoAssociateGroup() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final allGroups = await db.groupDao.getAllGroups();
 
     if (!mounted) return;

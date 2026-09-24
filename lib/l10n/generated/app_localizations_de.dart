@@ -135,6 +135,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get confirm => 'Bestätigen';
 
   @override
+  String get contact_us_through_mail =>
+      'Kontaktiere uns gerne direkt per E-Mail, damit wir dein Problem lösen können!';
+
+  @override
   String get continue_ => 'Weiter';
 
   @override
@@ -271,6 +275,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get displayed_entries => 'Angezeigte Einträge';
 
   @override
+  String get do_you_like_the_app => 'Gefällt dir die App?';
+
+  @override
+  String get dont_update => 'Nicht aktualisieren';
+
+  @override
   String get drag_to_set_placement => 'Ziehen um Platzierung zu setzen';
 
   @override
@@ -402,6 +412,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get group_associated => 'Gruppe erfolgreich verknüpft';
+
+  @override
+  String get group_members => 'Gruppenmitglieder';
 
   @override
   String get group_name => 'Gruppenname';
@@ -586,6 +599,9 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get no => 'Nein';
+
+  @override
   String get no_data_available => 'Keine Daten verfügbar';
 
   @override
@@ -718,6 +734,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get points => 'Punkte';
+
+  @override
+  String get preview_match => 'Spielvorschau';
 
   @override
   String get privacy_policy => 'Datenschutzerklärung';
@@ -856,18 +875,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get update_app_export_desc =>
-      'Du hast nicht die neueste App-Version, was zu Problemen beim Datenimport in eine andere Tallee-App führen kann.';
-
-  @override
-  String get update_app_import_desc =>
-      'Du hast nicht die neueste App-Version, was zu Problemen beim Importieren deiner Daten führen kann.';
-
-  @override
   String get share_match_title => 'Tallee Match teilen';
-
-  @override
-  String get dont_update => 'Nicht aktualisieren';
 
   @override
   String get share_token_format_info =>
@@ -960,7 +968,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get today_at => 'Heute um';
 
   @override
-  String get token_expired => 'Token expired';
+  String get token_expired => 'Token abgelaufen';
 
   @override
   String get total_losses => 'Niederlagen insgesamt';
@@ -982,6 +990,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get unknown_exception => 'Unbekannter Fehler (siehe Konsole)';
+
+  @override
+  String get unsatisfied => 'Unzufrieden?';
+
+  @override
+  String get update_app_export_desc =>
+      'Du hast nicht die neueste App-Version, was zu Problemen beim Datenimport in eine andere Tallee-App führen kann.';
+
+  @override
+  String get update_app_import_desc =>
+      'Du hast nicht die neueste App-Version, was zu Problemen beim Importieren deiner Daten führen kann.';
 
   @override
   String get update_app_version =>
@@ -1014,6 +1033,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get worst_score => 'Schlechteste Punktzahl';
+
+  @override
+  String get write_email => 'Eine E-Mail schreiben';
+
+  @override
+  String get yes => 'Ja';
 
   @override
   String get yesterday_at => 'Gestern um';

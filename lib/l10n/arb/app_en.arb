@@ -40,6 +40,7 @@
   "color_teal": "Teal",
   "color_yellow": "Yellow",
   "confirm": "Confirm",
+  "contact_us_through_mail": "Feel free to contact us via email directly so we can solve your problem!",
   "continue_": "Continue",
   "copy_code": "Copy Code",
   "could_not_add_player": "Could not add player {playerName}",
@@ -98,6 +99,8 @@
   "deleted": "Deleted",
   "description": "Description",
   "displayed_entries": "Displayed entries",
+  "do_you_like_the_app": "Do you like the app?",
+  "dont_update": "Don't update",
   "drag_to_set_placement": "Drag to set placement",
   "duplicate": "Duplicate",
   "edit_game": "Edit Game",
@@ -151,6 +154,7 @@
   "general": "General",
   "group": "Group",
   "group_associated": "Group successfully associated",
+  "group_members": "Group Members",
   "group_name": "Group name",
   "group_profile": "Group Profile",
   "groups": "Groups",
@@ -224,6 +228,7 @@
       }
     }
   },
+  "no": "No",
   "no_data_available": "No data available",
   "no_data_to_export": "No data to export",
   "no_games_created_yet": "No games created yet",
@@ -275,6 +280,7 @@
   "players": "Players",
   "point": "Point",
   "points": "Points",
+  "preview_match": "Preview match",
   "privacy_policy": "Privacy Policy",
   "qr_code_expired": "QR Code expired",
   "qr_code_parsing_error": "The scanned code does not contain valid match data.",
@@ -324,10 +330,7 @@
       }
     }
   },
-  "update_app_export_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.",
-  "update_app_import_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data.",
   "share_match_title": "Tallee Match Share",
-  "dont_update": "Don't update",
   "share_token_format_info": "Share tokens consist of 6 alphanumeric characters.",
   "statistic": "Statistic",
   "statistics": "Statistics",
@@ -371,6 +374,9 @@
   "type": "Type",
   "unexpected_error": "An unexpected error occurred.",
   "unknown_exception": "Unknown Exception (see console)",
+  "unsatisfied": "Unsatisfied?",
+  "update_app_export_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.",
+  "update_app_import_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data.",
   "update_app_version": "Please update your apps to the newest version and try it again.",
   "update_available": "Update Available",
   "update_available_content": "A new version is available.",
@@ -381,5 +387,7 @@
   "winner": "Winner",
   "winrate": "Winrate",
   "worst_score": "Worst score",
+  "write_email": "Write an email",
+  "yes": "Yes",
   "yesterday_at": "Yesterday at"
 }

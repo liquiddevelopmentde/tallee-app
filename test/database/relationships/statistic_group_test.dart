@@ -162,24 +162,21 @@ void main() {
         expect(groups!.length, 2);
       });
 
-      test(
-        'addStatisticGroups() with duplicate groups does not create duplicate entries',
-        () async {
-          await database.statisticGroupDao.addStatisticGroups(
-            statisticId: testStatistic.id,
-            groups: [testGroup1],
-          );
-          await database.statisticGroupDao.addStatisticGroups(
-            statisticId: testStatistic.id,
-            groups: [testGroup1],
-          );
+      test('addStatisticGroups() with duplicate groups does not create duplicate entries', () async {
+        await database.statisticGroupDao.addStatisticGroups(
+          statisticId: testStatistic.id,
+          groups: [testGroup1],
+        );
+        await database.statisticGroupDao.addStatisticGroups(
+          statisticId: testStatistic.id,
+          groups: [testGroup1],
+        );
 
-          final groups = await database.statisticGroupDao.getGroupsForStatistic(
-            testStatistic.id,
-          );
-          expect(groups!.length, 1);
-        },
-      );
+        final groups = await database.statisticGroupDao.getGroupsForStatistic(
+          testStatistic.id,
+        );
+        expect(groups!.length, 1);
+      });
     });
   });
 }

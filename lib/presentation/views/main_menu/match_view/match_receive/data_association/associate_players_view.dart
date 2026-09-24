@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_groups_view.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/player_selection_widget.dart';
@@ -135,7 +135,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                       } else {
                         await Navigator.of(context).push(
                           adaptivePageRoute(
-                            builder: (context) => AssociateGroupsView(
+                            builder: (context) => AssociateGroupView(
                               match: widget.match,
                               associations: associations,
                               associatedGame: widget.associatedGame,
@@ -153,7 +153,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   }
 
   Future<void> saveMatch() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
     // Filter null values and cast to Map<String, Player>
     final playerAssociations = <String, Player>{};
@@ -180,7 +180,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
     if (!mounted) return;
 
-    Provider.of<DataRefreshProvider>(context, listen: false).refresh();
+    context.read<DataRefreshProvider>().refresh();
 
     final loc = AppLocalizations.of(context);
     ScaffoldMessenger.of(context)
@@ -190,7 +190,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   }
 
   Future<Player?> showPlayerSelectionSheet(Player? currentSelection) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     cachedAllPlayers ??= await db.playerDao.getAllPlayers();
     final allPlayers = cachedAllPlayers!;
 
@@ -238,7 +238,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   }
 
   Future<void> autoAssociatePlayers() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     cachedAllPlayers = await db.playerDao.getAllPlayers();
     final allPlayers = cachedAllPlayers!;
 

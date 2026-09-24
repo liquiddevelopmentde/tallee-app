@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_back_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_close_button.dart';
 
-/// Theme class that defines colors, border radius, padding, and decorations
+/// Theme class that defines colors, border radius, padding, decorations, and ThemeData
 class CustomTheme {
   CustomTheme._(); // Private constructor to prevent instantiation
 
@@ -96,7 +97,6 @@ class CustomTheme {
   // ==================== Component Themes ====================
   static const AppBarTheme appBarTheme = AppBarTheme(
     backgroundColor: backgroundColor,
-    foregroundColor: textColor,
     elevation: 0,
     scrolledUnderElevation: 0,
     centerTitle: true,
@@ -106,7 +106,6 @@ class CustomTheme {
       fontWeight: FontWeight.bold,
       overflow: TextOverflow.ellipsis,
     ),
-    iconTheme: IconThemeData(color: textColor),
   );
 
   static final TextTheme textTheme = const TextTheme(
@@ -125,7 +124,7 @@ class CustomTheme {
     labelLarge: TextStyle(overflow: TextOverflow.ellipsis),
     labelMedium: TextStyle(overflow: TextOverflow.ellipsis),
     labelSmall: TextStyle(overflow: TextOverflow.ellipsis),
-  ).apply(bodyColor: textColor, displayColor: textColor);
+  ).apply(bodyColor: textColor, displayColor: textColor, fontFamily: 'Inter');
 
   static final ActionIconThemeData actionIconTheme = ActionIconThemeData(
     backButtonIconBuilder: (context) => const HapticBackButton(),
@@ -149,5 +148,93 @@ class CustomTheme {
   static const InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
     labelStyle: TextStyle(color: textColor),
     hintStyle: TextStyle(color: hintColor),
+  );
+
+  static final IconButtonThemeData iconButtonTheme = IconButtonThemeData(
+    style: IconButton.styleFrom(
+      splashFactory: NoSplash.splashFactory,
+      overlayColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+    ),
+  );
+
+  static final TextButtonThemeData textButtonTheme = TextButtonThemeData(
+    style: TextButton.styleFrom(
+      splashFactory: NoSplash.splashFactory,
+      overlayColor: Colors.transparent,
+    ),
+  );
+
+  static final ElevatedButtonThemeData elevatedButtonTheme =
+      ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: Colors.transparent,
+        ),
+      );
+
+  static final OutlinedButtonThemeData outlinedButtonTheme =
+      OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: Colors.transparent,
+        ),
+      );
+
+  static final FilledButtonThemeData filledButtonTheme = FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      splashFactory: NoSplash.splashFactory,
+      overlayColor: Colors.transparent,
+    ),
+  );
+
+  static ThemeData get themeData => ThemeData(
+    useMaterial3: true,
+    fontFamily: 'Inter',
+    scaffoldBackgroundColor: backgroundColor,
+    primaryColor: primaryColor,
+
+    // Global splash, focus, hover, and highlight overrides
+    splashFactory: NoSplash.splashFactory,
+    splashColor: Colors.transparent,
+    highlightColor: Colors.transparent,
+    hoverColor: Colors.transparent,
+    focusColor: Colors.transparent,
+
+    // Global tooltip override to prevent default long-tap popups
+    tooltipTheme: const TooltipThemeData(
+      triggerMode: TooltipTriggerMode.manual,
+    ),
+
+    // Page transitions
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+      },
+    ),
+
+    // Color Scheme
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: textColor,
+      brightness: Brightness.dark,
+      primary: primaryColor,
+      onPrimary: textColor,
+      surface: backgroundColor,
+      onSurface: textColor,
+    ),
+
+    // Sub-themes
+    appBarTheme: appBarTheme,
+    textTheme: textTheme,
+    actionIconTheme: actionIconTheme,
+    searchBarTheme: searchBarTheme,
+    radioTheme: radioTheme,
+    inputDecorationTheme: inputDecorationTheme,
+    iconButtonTheme: iconButtonTheme,
+    textButtonTheme: textButtonTheme,
+    elevatedButtonTheme: elevatedButtonTheme,
+    outlinedButtonTheme: outlinedButtonTheme,
+    filledButtonTheme: filledButtonTheme,
   );
 }

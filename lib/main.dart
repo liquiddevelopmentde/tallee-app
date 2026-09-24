@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -27,31 +28,45 @@ import 'package:tallee/state/data_refresh_provider.dart';
 import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/state/rate_dialog_provider.dart';
 
 void main() async {
+  ENVIRONMENT = kDebugMode
+      ? AppEnvironment.development
+      : AppEnvironment.testing;
+
   SentryWidgetsFlutterBinding.ensureInitialized();
 
-  if (kDebugMode) HttpOverrides.global = SelfSignedCertHttpOverrides();
+  /* Initializing Services */
+
+  // Only init in prod or dev
+  if (!IS_TEST_ENV) await RATE_MY_APP.init();
 
   await dotenv.load();
+  if (IS_DEV_ENV) HttpOverrides.global = SelfSignedCertHttpOverrides();
   await SharedPreferencesService.init();
   await PackageInfoService.init();
   await SentryFlutter.init(
     (options) {
-      // error reporting & feedback is disabled in debugMode
-      options.dsn = kReleaseMode ? dotenv.get('SENTRY_DSN', fallback: '') : '';
+      // error reporting & feedback is disabled in development
+      options.dsn = IS_DEV_ENV ? '' : dotenv.get('SENTRY_DSN', fallback: '');
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
       options.enableLogs = true;
       // Decrease sampleRate in stable to avoid sending too many events
       options.tracesSampleRate = 1.0;
-      options.environment = kReleaseMode ? 'production' : 'development';
+      options.environment = IS_PROD_ENV
+          ? 'production'
+          : IS_TEST_ENV
+          ? 'testing'
+          : 'development';
 
       // disabled because not supported by glitchtip
       options.enableAutoSessionTracking = false;
 
       options.beforeSend = (event, hint) {
         final skipSnackBar = hint.get('skipSnackBar') == true;
+
         if (!skipSnackBar &&
             (event.level == SentryLevel.error ||
                 event.level == SentryLevel.fatal)) {
@@ -101,6 +116,7 @@ void main() async {
             ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
             ChangeNotifierProvider(create: (context) => GameSearchProvider()),
             ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
+            ChangeNotifierProvider(create: (context) => RateDialogProvider()),
           ],
           child: DefaultAssetBundle(
             bundle: SentryAssetBundle(),
@@ -166,39 +182,7 @@ class _TalleeState extends State<Tallee> {
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
       themeMode: ThemeMode.dark,
       navigatorObservers: [SentryNavigatorObserver()],
-      theme: ThemeData(
-        // main colors
-        primaryColor: CustomTheme.primaryColor,
-        scaffoldBackgroundColor: CustomTheme.backgroundColor,
-        // themes
-        appBarTheme: CustomTheme.appBarTheme,
-        textTheme: CustomTheme.textTheme,
-        actionIconTheme: CustomTheme.actionIconTheme,
-        inputDecorationTheme: CustomTheme.inputDecorationTheme,
-        searchBarTheme: CustomTheme.searchBarTheme,
-        radioTheme: CustomTheme.radioTheme,
-        // deactivate splash effects
-        splashFactory: NoSplash.splashFactory,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        // color scheme
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: CustomTheme.textColor,
-          brightness: Brightness.dark,
-          primary: CustomTheme.primaryColor,
-          onPrimary: CustomTheme.textColor,
-          surface: CustomTheme.backgroundColor,
-          onSurface: CustomTheme.textColor,
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
-          },
-        ),
-      ),
+      theme: CustomTheme.themeData,
       home: SplashScreen(onFinished: handleSplashFinished),
     );
   }
