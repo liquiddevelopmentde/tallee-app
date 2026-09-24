@@ -11,9 +11,9 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class ChooseGameView extends StatefulWidget {
   /// A view that allows the user to choose a game from a list of available games
@@ -121,23 +121,26 @@ class _ChooseGameViewState extends State<ChooseGameView> {
             ),
 
             // Game list
-            Expanded(
-              child: Visibility(
-                visible: filteredGames.isNotEmpty,
-                replacement: Visibility(
-                  visible: games.isNotEmpty,
-                  replacement: TopCenteredMessage(
-                    icon: Icons.info,
-                    title: loc.info,
-                    message: loc.no_games_created_yet,
-                  ),
-                  child: TopCenteredMessage(
-                    icon: Icons.info,
-                    title: loc.info,
-                    message: AppLocalizations.of(context)
-                        .there_are_no_games_matching_your_search,
-                  ),
+            if (games.isEmpty)
+              // No games created
+              Expanded(
+                child: EmptyMessage(
+                  icon: GAME_ICON,
+                  title: loc.no_games,
+                  message: loc.no_games_created_yet,
                 ),
+              )
+            else if (filteredGames.isEmpty)
+              // No games matching search query
+              Expanded(
+                child: EmptyMessage(
+                  icon: GAME_ICON,
+                  title: loc.no_results,
+                  message: loc.there_are_no_games_matching_your_search,
+                ),
+              )
+            else
+              Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.only(bottom: 85, top: 10),
                   itemCount: filteredGames.length,
@@ -180,7 +183,6 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                   },
                 ),
               ),
-            ),
 
             // Create statistic button
             if (widget.statistic != null)

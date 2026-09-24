@@ -934,6 +934,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teams => 'Teams';
 
   @override
+  String get no_results => 'No Results';
+
+  @override
   String get thank_you_for_feedback => 'Thank you for your feedback!';
 
   @override
@@ -941,23 +944,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get there_are_no_games_matching_your_search =>
-      'There are no games matching your search';
+      'There are no games matching your search.';
 
   @override
   String get there_is_no_game_matching_your_search =>
-      'There is no game matching your search';
+      'There is no game matching your search.';
 
   @override
   String get there_is_no_group_matching_your_search =>
-      'There is no group matching your search';
+      'There is no group matching your search.';
 
   @override
   String get there_is_no_match_matching_your_filter =>
-      'There is no match matching your filter';
+      'There is no match matching your filter.';
 
   @override
   String get there_is_no_match_matching_your_search =>
-      'There is no match matching your search';
+      'There is no match matching your search.';
 
   @override
   String get this_cannot_be_undone => 'This can\'t be undone.';

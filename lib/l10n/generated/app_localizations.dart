@@ -1730,6 +1730,12 @@ abstract class AppLocalizations {
   /// **'Teams'**
   String get teams;
 
+  /// No description provided for @no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No Results'**
+  String get no_results;
+
   /// No description provided for @thank_you_for_feedback.
   ///
   /// In en, this message translates to:
@@ -1745,31 +1751,31 @@ abstract class AppLocalizations {
   /// No description provided for @there_are_no_games_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There are no games matching your search'**
+  /// **'There are no games matching your search.'**
   String get there_are_no_games_matching_your_search;
 
   /// No description provided for @there_is_no_game_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There is no game matching your search'**
+  /// **'There is no game matching your search.'**
   String get there_is_no_game_matching_your_search;
 
   /// No description provided for @there_is_no_group_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There is no group matching your search'**
+  /// **'There is no group matching your search.'**
   String get there_is_no_group_matching_your_search;
 
   /// No description provided for @there_is_no_match_matching_your_filter.
   ///
   /// In en, this message translates to:
-  /// **'There is no match matching your filter'**
+  /// **'There is no match matching your filter.'**
   String get there_is_no_match_matching_your_filter;
 
   /// No description provided for @there_is_no_match_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There is no match matching your search'**
+  /// **'There is no match matching your search.'**
   String get there_is_no_match_matching_your_search;
 
   /// No description provided for @this_cannot_be_undone.

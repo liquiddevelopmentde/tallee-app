@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants/value_constants.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -15,9 +15,9 @@ import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class ChooseGroupView extends StatefulWidget {
   /// A view that allows the user to choose a group from a list of groups.
@@ -98,23 +98,27 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                 },
               ),
             ),
-            Expanded(
-              child: Visibility(
-                visible: filteredGroups.isNotEmpty,
-                replacement: Visibility(
-                  visible: widget.groups.isNotEmpty,
-                  replacement: TopCenteredMessage(
-                    icon: Icons.info,
-                    title: loc.info,
-                    message: loc.no_groups_created_yet,
-                  ),
-                  child: TopCenteredMessage(
-                    icon: Icons.info,
-                    title: loc.info,
-                    message: AppLocalizations.of(context)
-                        .there_is_no_group_matching_your_search,
-                  ),
+
+            if (widget.groups.isEmpty)
+              // No groups created
+              Expanded(
+                child: EmptyMessage(
+                  icon: GROUP_ICON,
+                  title: loc.no_groups,
+                  message: loc.no_groups_created_yet,
                 ),
+              )
+            else if (filteredGroups.isEmpty)
+              // No groups matching search query
+              Expanded(
+                child: EmptyMessage(
+                  icon: GROUP_ICON,
+                  title: loc.no_results,
+                  message: loc.there_is_no_group_matching_your_search,
+                ),
+              )
+            else
+              Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.only(bottom: 85, top: 10),
                   itemCount: filteredGroups.length,
@@ -156,7 +160,6 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                   },
                 ),
               ),
-            ),
 
             // Create statistic button
             if (widget.statistic != null)

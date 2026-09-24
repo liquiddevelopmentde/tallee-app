@@ -653,7 +653,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_players_found_with_that_name =>
-      'Keine Spieler:in mit diesem Namen gefunden';
+      'Keine:n Spieler:in mit diesem Namen gefunden';
 
   @override
   String get no_players_selected => 'Keine Spieler:innen ausgewählt';
@@ -942,6 +942,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get teams => 'Teams';
 
   @override
+  String get no_results => 'Keine Treffer';
+
+  @override
   String get thank_you_for_feedback => 'Vielen Dank für dein Feedback!';
 
   @override
@@ -949,23 +952,23 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get there_are_no_games_matching_your_search =>
-      'Es gibt keine Spielvorlagen, die deiner Suche entspricht';
+      'Es gibt keine Spielvorlagen, die deiner Suche entspricht.';
 
   @override
   String get there_is_no_game_matching_your_search =>
-      'Es gibt keine Spielvorlage, die deiner Suche entspricht';
+      'Es gibt keine Spielvorlage, die deiner Suche entspricht.';
 
   @override
   String get there_is_no_group_matching_your_search =>
-      'Es gibt keine Gruppe, die deiner Suche entspricht';
+      'Es gibt keine Gruppe, die deiner Suche entspricht.';
 
   @override
   String get there_is_no_match_matching_your_filter =>
-      'Es gibt kein Spiel, das deinem Filter entspricht';
+      'Es gibt kein Spiel, das deinem Filter entspricht.';
 
   @override
   String get there_is_no_match_matching_your_search =>
-      'Es gibt kein Spiel, das deiner Suche entspricht';
+      'Es gibt kein Spiel, das deiner Suche entspricht.';
 
   @override
   String get this_cannot_be_undone =>
