@@ -82,7 +82,7 @@ class _StatisticsViewState extends State<StatisticsView> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  if (statisticTiles.isNotEmpty)
+                  if (statistics.isNotEmpty)
                     ReorderableListView.builder(
                       padding: CustomTheme.listViewPadding(context),
                       header: SingleChildScrollView(
@@ -336,9 +336,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                       itemBuilder: (BuildContext context, int index) {
                         return statisticTiles[index];
                       },
-                    ),
-
-                  if (!isLoading && statistics.isEmpty)
+                    )
+                  else if (!isLoading)
                     EmptyMessage(
                       icon: STATISTIC_ICON,
                       title: loc.no_statistics,
