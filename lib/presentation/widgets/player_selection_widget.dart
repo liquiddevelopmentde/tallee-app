@@ -211,8 +211,8 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
               child: Visibility(
                 visible: suggestedPlayers.isNotEmpty,
                 replacement: TopCenteredMessage(
-                  icon: Icons.info,
-                  title: loc.info,
+                  icon: Icons.search,
+                  title: loc.no_results,
                   message: getInfoText(context),
                   fullscreen: false,
                 ),
