@@ -64,9 +64,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
-    final matchSearchProvider = context.read<MatchSearchProvider>();
-    final groupSearchProvider = context.read<GroupSearchProvider>();
-    final gameSearchProvider = context.read<GameSearchProvider>();
+    final matchSearchProvider = context.watch<MatchSearchProvider>();
+    final groupSearchProvider = context.watch<GroupSearchProvider>();
+    final gameSearchProvider = context.watch<GameSearchProvider>();
 
     final refreshRevision = context.watch<DataRefreshProvider>().revision;
 
