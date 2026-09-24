@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -22,7 +24,7 @@ class Match {
   final bool isTeamMatch;
   final List<Team>? teams;
   final String notes;
-  final Map<String, ScoreEntry?> scores;
+  final Map<String, List<ScoreEntry>> scoresByRound;
 
   Match({
     required this.name,
@@ -35,14 +37,55 @@ class Match {
     this.notes = '',
     String? id,
     DateTime? createdAt,
-    Map<String, ScoreEntry?>? scores,
+    Map<String, List<ScoreEntry>>? scoresByRound,
+    @Deprecated('Use scoresByRound instead') Map<String, ScoreEntry?>? scores,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
-       scores = scores ?? {for (Player p in players) p.id: null};
+       scoresByRound =
+           scoresByRound ??
+           (scores?.map(
+                 (k, v) => MapEntry(k, v != null ? [v] : <ScoreEntry>[]),
+               ) ??
+               {});
+
+  @Deprecated('Use totalScore(playerId) instead')
+  Map<String, ScoreEntry?> get scores => {
+    for (final e in scoresByRound.entries) e.key: e.value.lastOrNull,
+  };
+
+  int totalScore(String playerId) {
+    final entries = scoresByRound[playerId];
+    if (entries == null || entries.isEmpty) return 0;
+    return entries.fold<int>(0, (sum, entry) => sum + entry.change);
+  }
+
+  int? _scoreForPlayer(String playerId) {
+    final entries = scoresByRound[playerId];
+    if (entries == null || entries.isEmpty) return null;
+    return entries.fold<int>(0, (sum, entry) => sum + entry.change);
+  }
+
+  int get roundCount {
+    if (scoresByRound.isEmpty) return 0;
+    final allRounds = scoresByRound.values
+        .expand((entries) => entries)
+        .map((e) => e.roundNumber);
+    if (allRounds.isEmpty) return 0;
+    return allRounds.toSet().length;
+  }
+
+  int get currentRound {
+    if (scoresByRound.isEmpty) return 0;
+    final allRounds = scoresByRound.values
+        .expand((entries) => entries)
+        .map((e) => e.roundNumber);
+    if (allRounds.isEmpty) return 0;
+    return allRounds.reduce(max) + 1;
+  }
 
   @override
   String toString() {
-    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scores: $scores, mvp: $mvp}';
+    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scoresByRound: $scoresByRound, mvp: $mvp}';
   }
 
   Match copyWith({
@@ -56,8 +99,14 @@ class Match {
     bool? isTeamMatch,
     List<Team>? teams,
     String? notes,
-    Map<String, ScoreEntry?>? scores,
+    Map<String, List<ScoreEntry>>? scoresByRound,
+    @Deprecated('Use scoresByRound instead') Map<String, ScoreEntry?>? scores,
   }) {
+    final resolvedScoresByRound =
+        scoresByRound ??
+        (scores?.map((k, v) => MapEntry(k, v != null ? [v] : <ScoreEntry>[])) ??
+            this.scoresByRound);
+
     return Match(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
@@ -69,7 +118,7 @@ class Match {
       isTeamMatch: isTeamMatch ?? this.isTeamMatch,
       teams: teams ?? this.teams,
       notes: notes ?? this.notes,
-      scores: scores ?? this.scores,
+      scoresByRound: resolvedScoresByRound,
     );
   }
 
@@ -88,7 +137,10 @@ class Match {
           isTeamMatch == other.isTeamMatch &&
           const DeepCollectionEquality().equals(teams, other.teams) &&
           notes == other.notes &&
-          const DeepCollectionEquality().equals(scores, other.scores);
+          const DeepCollectionEquality().equals(
+            scoresByRound,
+            other.scoresByRound,
+          );
 
   @override
   int get hashCode => Object.hash(
@@ -102,7 +154,7 @@ class Match {
     isTeamMatch,
     const DeepCollectionEquality().hash(teams),
     notes,
-    const DeepCollectionEquality().hash(scores),
+    const DeepCollectionEquality().hash(scoresByRound),
   );
 
   Match.fromJson(Map<String, dynamic> json)
@@ -125,15 +177,25 @@ class Match {
                 .map((e) => Team.fromJson(e as Map<String, dynamic>))
                 .toList()
           : [],
-      scores = json['scores'] != null
-          ? (json['scores'] as Map<String, dynamic>).map(
-              (key, value) => MapEntry(
-                key,
-                value != null
-                    ? ScoreEntry.fromJson(value as Map<String, dynamic>)
-                    : null,
-              ),
-            )
+      scoresByRound = json['scores'] != null
+          ? (json['scores'] as Map<String, dynamic>).map((key, value) {
+              if (value == null) {
+                return MapEntry(key, <ScoreEntry>[]);
+              }
+              if (value is List) {
+                return MapEntry(
+                  key,
+                  value
+                      .map(
+                        (e) => ScoreEntry.fromJson(e as Map<String, dynamic>),
+                      )
+                      .toList(),
+                );
+              }
+              return MapEntry(key, [
+                ScoreEntry.fromJson(value as Map<String, dynamic>),
+              ]);
+            })
           : {},
       notes = json['notes'] ?? '';
 
@@ -183,15 +245,25 @@ class Match {
       players: players,
       isTeamMatch: json['isTeamMatch'],
       teams: teams,
-      scores: json['scores'] != null
-          ? (json['scores'] as Map<String, dynamic>).map(
-              (key, value) => MapEntry(
-                key,
-                value != null
-                    ? ScoreEntry.fromJson(value as Map<String, dynamic>)
-                    : null,
-              ),
-            )
+      scoresByRound: json['scores'] != null
+          ? (json['scores'] as Map<String, dynamic>).map((key, value) {
+              if (value == null) {
+                return MapEntry(key, <ScoreEntry>[]);
+              }
+              if (value is List) {
+                return MapEntry(
+                  key,
+                  value
+                      .map(
+                        (e) => ScoreEntry.fromJson(e as Map<String, dynamic>),
+                      )
+                      .toList(),
+                );
+              }
+              return MapEntry(key, [
+                ScoreEntry.fromJson(value as Map<String, dynamic>),
+              ]);
+            })
           : {},
       notes: json['notes'] ?? '',
     );
@@ -201,7 +273,10 @@ class Match {
 
   // Most Valuable Player(s) based on the match's ruleset
   List<Player> get mvp {
-    if (players.isEmpty || scores.isEmpty) return [];
+    if (players.isEmpty ||
+        scoresByRound.values.every((entries) => entries.isEmpty)) {
+      return [];
+    }
 
     switch (game.ruleset) {
       case Ruleset.highestScore:
@@ -225,48 +300,63 @@ class Match {
   }
 
   List<Player> _getPlayersWithHighestScore() {
-    if (players.isEmpty || scores.values.every((score) => score == null)) {
+    if (players.isEmpty ||
+        scoresByRound.values.every((entries) => entries.isEmpty)) {
       return [];
     }
 
-    final int highestScore = players
-        .map((player) => scores[player.id]?.score)
+    final scoresList = players
+        .map((player) => _scoreForPlayer(player.id))
         .whereType<int>()
-        .reduce((max, score) => score > max ? score : max);
+        .toList();
+
+    if (scoresList.isEmpty) return [];
+
+    final int highestScore = scoresList.reduce(
+      (max, score) => score > max ? score : max,
+    );
 
     return players.where((player) {
-      final playerScores = scores[player.id];
-      if (playerScores == null) return false;
-      return playerScores.score == highestScore;
+      final s = _scoreForPlayer(player.id);
+      if (s == null) return false;
+      return s == highestScore;
     }).toList();
   }
 
   List<Player> _getPlayersWithLowestScore() {
-    if (players.isEmpty || scores.values.every((score) => score == null)) {
+    if (players.isEmpty ||
+        scoresByRound.values.every((entries) => entries.isEmpty)) {
       return [];
     }
 
-    final int lowestScore = players
-        .map((player) => scores[player.id]?.score)
+    final scoresList = players
+        .map((player) => _scoreForPlayer(player.id))
         .whereType<int>()
-        .reduce((min, score) => score < min ? score : min);
+        .toList();
+
+    if (scoresList.isEmpty) return [];
+
+    final int lowestScore = scoresList.reduce(
+      (min, score) => score < min ? score : min,
+    );
 
     return players.where((player) {
-      final playerScore = scores[player.id];
-      if (playerScore == null) return false;
-      return playerScore.score == lowestScore;
+      final s = _scoreForPlayer(player.id);
+      if (s == null) return false;
+      return s == lowestScore;
     }).toList();
   }
 
   List<Player> _getPlayersWithLivesRemaining() {
-    if (players.isEmpty || scores.values.every((score) => score == null)) {
+    if (players.isEmpty ||
+        scoresByRound.values.every((entries) => entries.isEmpty)) {
       return [];
     }
 
     return players.where((player) {
-      final playerScore = scores[player.id];
-      if (playerScore == null) return false;
-      return playerScore.score > 0;
+      final s = _scoreForPlayer(player.id);
+      if (s == null) return false;
+      return s > 0;
     }).toList();
   }
 

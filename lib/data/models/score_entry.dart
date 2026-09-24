@@ -3,7 +3,8 @@ class ScoreEntry {
   final int score;
   final int change;
 
-  ScoreEntry({required this.score, this.roundNumber = 0, this.change = 0});
+  ScoreEntry({required this.score, this.roundNumber = 0, int? change})
+    : change = change ?? score;
 
   @override
   String toString() {

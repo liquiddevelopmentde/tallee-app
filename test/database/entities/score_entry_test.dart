@@ -276,8 +276,8 @@ void main() {
         );
 
         expect(result.length, 2);
-        expect(result[testMatch1.id]![testPlayer1.id]!.score, 10);
-        expect(result[testMatch2.id]![testPlayer2.id]!.score, 20);
+        expect(result[testMatch1.id]![testPlayer1.id]!.first.score, 10);
+        expect(result[testMatch2.id]![testPlayer2.id]!.first.score, 20);
       });
 
       test('getScoresForMatches() returns empty map for empty input', () async {

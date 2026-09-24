@@ -15,6 +15,45 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   /* Create */
 
+  Future<void> addRound({
+    required String matchId,
+    required Map<String, int> roundScores,
+    required int roundNumber,
+  }) async {
+    await db.transaction(() async {
+      for (final entry in roundScores.entries) {
+        final playerId = entry.key;
+        final roundChange = entry.value;
+
+        final existingScores = await getAllPlayerScoresInMatch(
+          playerId: playerId,
+          matchId: matchId,
+        );
+
+        // Exclude any existing score for this roundNumber if replacing/updating
+        final filteredScores = existingScores
+            .where((s) => s.roundNumber != roundNumber)
+            .toList();
+        final previousTotalScore = filteredScores.isEmpty
+            ? 0
+            : filteredScores.fold<int>(0, (sum, s) => sum + s.change);
+
+        final newScore = previousTotalScore + roundChange;
+
+        await into(scoreEntryTable).insert(
+          ScoreEntryTableCompanion.insert(
+            playerId: playerId,
+            matchId: matchId,
+            roundNumber: roundNumber,
+            score: newScore,
+            change: roundChange,
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
+      }
+    });
+  }
+
   /// Adds a score entry to the database.
   Future<bool> addScore({
     required String playerId,
@@ -111,7 +150,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   /// Retrieves scores for multiple matches in a single operation.
   /// Returns a map where the key is the matchId and the value is a map of playerId -> ScoreEntry.
-  Future<Map<String, Map<String, ScoreEntry?>>> getScoresForMatches({
+  Future<Map<String, Map<String, List<ScoreEntry>>>> getScoresForMatches({
     required List<String> matchIds,
   }) async {
     if (matchIds.isEmpty) return {};
@@ -120,7 +159,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       ..where((tbl) => tbl.matchId.isIn(matchIds));
     final rows = await query.get();
 
-    final Map<String, Map<String, ScoreEntry?>> resultMap = {};
+    final Map<String, Map<String, List<ScoreEntry>>> resultMap = {};
     for (final id in matchIds) {
       resultMap[id] = {};
     }
@@ -131,7 +170,10 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         score: row.score,
         change: row.change,
       );
-      resultMap.putIfAbsent(row.matchId, () => {})[row.playerId] = score;
+      resultMap
+          .putIfAbsent(row.matchId, () => {})
+          .putIfAbsent(row.playerId, () => [])
+          .add(score);
     }
 
     return resultMap;

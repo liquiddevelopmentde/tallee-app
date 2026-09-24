@@ -59,14 +59,16 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         }
       }
 
-      for (final pid in match.scores.keys) {
-        final playerScores = match.scores[pid];
+      for (final pid in match.scoresByRound.keys) {
+        final playerScores = match.scoresByRound[pid];
         if (playerScores != null) {
-          await db.scoreEntryDao.addScore(
-            entry: playerScores,
-            playerId: pid,
-            matchId: match.id,
-          );
+          for (final entry in playerScores) {
+            await db.scoreEntryDao.addScore(
+              entry: entry,
+              playerId: pid,
+              matchId: match.id,
+            );
+          }
         }
       }
     });
@@ -184,16 +186,16 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       await db.batch((b) {
         for (final match in matches) {
-          for (final entry in match.scores.entries) {
-            if (entry.value != null) {
+          for (final entry in match.scoresByRound.entries) {
+            for (final scoreEntry in entry.value) {
               b.insert(
                 db.scoreEntryTable,
                 ScoreEntryTableCompanion.insert(
                   matchId: match.id,
                   playerId: entry.key,
-                  score: entry.value!.score,
-                  roundNumber: entry.value!.roundNumber,
-                  change: entry.value!.change,
+                  score: scoreEntry.score,
+                  roundNumber: scoreEntry.roundNumber,
+                  change: scoreEntry.change,
                 ),
                 mode: InsertMode.insertOrReplace,
               );
@@ -377,7 +379,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         game: game!,
         players: playersMap[row.id] ?? [],
         group: row.groupId != null ? groupsMap[row.groupId] : null,
-        scores: scoresMap[row.id] ?? {},
+        scoresByRound: scoresMap[row.id] ?? {},
         teams: teamsMap[row.id],
       );
     }).toList();
@@ -516,7 +518,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     required Game game,
     required List<Player> players,
     Group? group,
-    Map<String, ScoreEntry?>? scores,
+    Map<String, List<ScoreEntry>>? scoresByRound,
     List<Team>? teams,
   }) {
     return Match(
@@ -525,7 +527,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       game: game,
       group: group,
       players: players,
-      scores: scores,
+      scoresByRound: scoresByRound,
       teams: teams,
       isTeamMatch: row.isTeamMatch,
       notes: row.notes,
