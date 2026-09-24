@@ -37,7 +37,7 @@ class _GameViewState extends State<GameView> {
   TextEditingController searchBarController = TextEditingController();
 
   /// Loaded games from the database, initially filled with skeleton games
-  List<Game> games = List.filled(
+  List<Game> allGames = List.filled(
     4,
     Game(
       name: 'Skeleton game name',
@@ -47,7 +47,7 @@ class _GameViewState extends State<GameView> {
     ),
   );
 
-  late List<Game> filteredGames = [...games];
+  late List<Game> displayedGames = [...allGames];
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class _GameViewState extends State<GameView> {
 
     // Reset filtered matches when search is disabled
     if (!searchProvider.isSearching) {
-      filteredGames = [...games];
+      displayedGames = [...allGames];
     }
 
     return Scaffold(
@@ -120,7 +120,7 @@ class _GameViewState extends State<GameView> {
                           hintText: '',
                           onChanged: (value) {
                             setState(() {
-                              filterGames(value);
+                              applySearch(value);
                             });
                           },
                         ),
@@ -137,8 +137,8 @@ class _GameViewState extends State<GameView> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      if (games.isNotEmpty)
-                        if (filteredGames.isEmpty)
+                      if (allGames.isNotEmpty)
+                        if (displayedGames.isEmpty)
                           // No filtered games
                           Expanded(
                             child: Center(
@@ -154,26 +154,28 @@ class _GameViewState extends State<GameView> {
                           Expanded(
                             child: ListView.builder(
                               padding: CustomTheme.listViewPadding(context),
-                              itemCount: filteredGames.length,
+                              itemCount: displayedGames.length,
 
                               itemBuilder: (BuildContext context, int index) {
                                 return GameTile(
-                                  gameCount: getGameCount(filteredGames[index]),
+                                  gameCount: getGameCount(
+                                    displayedGames[index],
+                                  ),
                                   onTap: () async {
                                     Navigator.push(
                                       context,
                                       adaptivePageRoute(
                                         builder: (context) => CreateGameView(
-                                          gameToEdit: filteredGames[index],
+                                          gameToEdit: displayedGames[index],
                                           onGameChanged: loadGames,
                                           gameCount: getGameCount(
-                                            filteredGames[index],
+                                            displayedGames[index],
                                           ),
                                         ),
                                       ),
                                     );
                                   },
-                                  game: filteredGames[index],
+                                  game: displayedGames[index],
                                 );
                               },
                             ),
@@ -213,14 +215,14 @@ class _GameViewState extends State<GameView> {
     );
   }
 
-  void filterGames(String query) {
+  void applySearch(String query) {
     setState(() {
       if (query.isEmpty) {
-        filteredGames = [...games];
+        displayedGames = [...allGames];
       } else {
         final List<({Game game, int score})> scoredGames = [];
 
-        for (final game in games) {
+        for (final game in allGames) {
           int maxScore = 0;
 
           // Check game name
@@ -245,7 +247,7 @@ class _GameViewState extends State<GameView> {
 
         // Sort by score descending
         scoredGames.sort((a, b) => b.score.compareTo(a.score));
-        filteredGames = scoredGames.map((e) => e.game).toList();
+        displayedGames = scoredGames.map((e) => e.game).toList();
       }
     });
   }
@@ -275,12 +277,12 @@ class _GameViewState extends State<GameView> {
       gameCounts = results[1] as List<(Game, int)>;
 
       setState(() {
-        games = [...loadedGames]
+        allGames = [...loadedGames]
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
         searchBarController.text.isEmpty
-            ? filteredGames = [...games]
-            : filterGames(searchBarController.text);
+            ? displayedGames = [...allGames]
+            : applySearch(searchBarController.text);
         isLoading = false;
       });
     });

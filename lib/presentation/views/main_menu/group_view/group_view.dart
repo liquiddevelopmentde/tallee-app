@@ -41,7 +41,7 @@ class _GroupViewState extends State<GroupView> {
 
   TextEditingController searchBarController = TextEditingController();
 
-  List<Group> groups = List.filled(
+  List<Group> allGroups = List.filled(
     7,
     Group(
       name: 'Skeleton Group',
@@ -50,7 +50,7 @@ class _GroupViewState extends State<GroupView> {
     ),
   );
 
-  late List<Group> filteredGroups = [...groups];
+  late List<Group> displayedGroups = [...allGroups];
 
   @override
   void initState() {
@@ -75,7 +75,7 @@ class _GroupViewState extends State<GroupView> {
 
     // Reset filtered groups when search is disabled
     if (!searchProvider.isSearching) {
-      filteredGroups = [...groups];
+      displayedGroups = [...allGroups];
     }
 
     return Scaffold(
@@ -122,7 +122,7 @@ class _GroupViewState extends State<GroupView> {
                           hintText: '',
                           onChanged: (value) {
                             setState(() {
-                              filterGroups(value);
+                              applySearch(value);
                             });
                           },
                         ),
@@ -140,8 +140,8 @@ class _GroupViewState extends State<GroupView> {
                     alignment: Alignment.center,
                     children: [
                       // Groups
-                      if (groups.isNotEmpty)
-                        if (filteredGroups.isEmpty)
+                      if (allGroups.isNotEmpty)
+                        if (displayedGroups.isEmpty)
                           // No filtered groups
                           Expanded(
                             child: Center(
@@ -157,11 +157,11 @@ class _GroupViewState extends State<GroupView> {
                           Expanded(
                             child: ListView.builder(
                               padding: CustomTheme.listViewPadding(context),
-                              itemCount: filteredGroups.length,
+                              itemCount: displayedGroups.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return GroupTile(
                                   onPlayerChanged: loadGroups,
-                                  group: filteredGroups[index],
+                                  group: displayedGroups[index],
                                   onTap: () async {
                                     await Navigator.push(
                                       context,
@@ -171,7 +171,7 @@ class _GroupViewState extends State<GroupView> {
                                         ),
                                         builder: (context) {
                                           return GroupDetailView(
-                                            group: filteredGroups[index],
+                                            group: displayedGroups[index],
                                             callback: loadGroups,
                                           );
                                         },
@@ -222,14 +222,14 @@ class _GroupViewState extends State<GroupView> {
   }
 
   /// Filters the groups based on the search [query].
-  void filterGroups(String query) {
+  void applySearch(String query) {
     setState(() {
       if (query.isEmpty) {
-        filteredGroups = [...groups];
+        displayedGroups = [...allGroups];
       } else {
         final List<({Group group, int score})> scoredGroups = [];
 
-        for (final group in groups) {
+        for (final group in allGroups) {
           int maxScore = 0;
 
           // Check group name
@@ -247,7 +247,7 @@ class _GroupViewState extends State<GroupView> {
 
         // Sort by score descending
         scoredGroups.sort((a, b) => b.score.compareTo(a.score));
-        filteredGroups = scoredGroups.map((e) => e.group).toList();
+        displayedGroups = scoredGroups.map((e) => e.group).toList();
       }
     });
   }
@@ -272,9 +272,9 @@ class _GroupViewState extends State<GroupView> {
 
       loadedGroups = results[0] as List<Group>;
       setState(() {
-        groups = loadedGroups
+        allGroups = loadedGroups
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        filteredGroups = [...loadedGroups];
+        displayedGroups = [...loadedGroups];
         isLoading = false;
       });
     });
