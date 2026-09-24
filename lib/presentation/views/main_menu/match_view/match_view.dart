@@ -329,7 +329,7 @@ class _MatchViewState extends State<MatchView> {
                             icon: MATCH_ICON,
                             spacing: 15,
                             title: loc.no_matches,
-                            description: loc.no_matches_created_yet,
+                            message: loc.no_matches_created_yet,
                           ),
                       ],
                     ),

@@ -341,7 +341,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                     EmptyMessage(
                       icon: STATISTIC_ICON,
                       title: loc.no_statistics,
-                      description: loc.no_statistics_created_yet,
+                      message: loc.no_statistics_created_yet,
                     ),
                 ],
               ),

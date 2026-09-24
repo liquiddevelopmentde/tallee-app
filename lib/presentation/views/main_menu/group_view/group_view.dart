@@ -215,7 +215,7 @@ class _GroupViewState extends State<GroupView> {
                         EmptyMessage(
                           icon: GROUP_ICON,
                           title: loc.no_groups,
-                          description: loc.no_groups_created_yet,
+                          message: loc.no_groups_created_yet,
                         ),
                     ],
                   ),

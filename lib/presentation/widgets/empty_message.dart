@@ -7,13 +7,13 @@ class EmptyMessage extends StatelessWidget {
     super.key,
     required this.icon,
     required this.title,
-    required this.description,
+    required this.message,
     this.spacing = 0.0,
   });
 
   final IconData icon;
   final String title;
-  final String description;
+  final String message;
   final double spacing;
 
   @override
@@ -46,7 +46,7 @@ class EmptyMessage extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  description,
+                  message,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,

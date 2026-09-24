@@ -213,7 +213,7 @@ class _GameViewState extends State<GameView> {
                         EmptyMessage(
                           icon: GAME_ICON,
                           title: loc.no_games,
-                          description: loc.no_games_created_yet,
+                          message: loc.no_games_created_yet,
                         ),
                     ],
                   ),
