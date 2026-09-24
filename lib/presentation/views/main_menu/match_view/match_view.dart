@@ -198,7 +198,7 @@ class _MatchViewState extends State<MatchView> {
                                     // All matches
                                     TextChip(
                                       text: loc.all,
-                                      onTap: () => setFilter(MatchFilter.all),
+                                      onTap: () => applyFilter(MatchFilter.all),
                                       activated:
                                           selectedFilter == MatchFilter.all,
                                     ),
@@ -207,7 +207,7 @@ class _MatchViewState extends State<MatchView> {
                                     TextChip(
                                       text: loc.active_matches,
                                       onTap: () =>
-                                          setFilter(MatchFilter.active),
+                                          applyFilter(MatchFilter.active),
                                       activated:
                                           selectedFilter == MatchFilter.active,
                                     ),
@@ -216,7 +216,7 @@ class _MatchViewState extends State<MatchView> {
                                     TextChip(
                                       text: loc.finished_matches,
                                       onTap: () =>
-                                          setFilter(MatchFilter.finished),
+                                          applyFilter(MatchFilter.finished),
                                       activated:
                                           selectedFilter ==
                                           MatchFilter.finished,
@@ -225,7 +225,8 @@ class _MatchViewState extends State<MatchView> {
                                     // Team matches
                                     TextChip(
                                       text: loc.team_matches,
-                                      onTap: () => setFilter(MatchFilter.team),
+                                      onTap: () =>
+                                          applyFilter(MatchFilter.team),
                                       activated:
                                           selectedFilter == MatchFilter.team,
                                     ),
@@ -364,15 +365,8 @@ class _MatchViewState extends State<MatchView> {
     );
   }
 
-  void setFilter(MatchFilter filter) {
-    setState(() {
-      selectedFilter = filter;
-      applyFilter(filter);
-      applySearch(searchBarController.text);
-    });
-    SharedPreferencesService.setMatchFilter(filter);
-  }
-
+  /// Applies the passed [filter] and also applies the search query
+  /// to the filteredMatches
   void applyFilter(MatchFilter filter) {
     switch (filter) {
       case MatchFilter.all:
@@ -390,7 +384,14 @@ class _MatchViewState extends State<MatchView> {
             .where((match) => match.isTeamMatch)
             .toList();
     }
-    displayedMatches = [...filteredMatches];
+
+    setState(() {
+      selectedFilter = filter;
+      displayedMatches = [...filteredMatches];
+      applySearch(searchBarController.text);
+    });
+
+    SharedPreferencesService.setMatchFilter(filter);
   }
 
   void applySearch(String query) {
@@ -562,9 +563,9 @@ class _MatchViewState extends State<MatchView> {
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
         filteredMatches = [...allMatches];
 
-        searchBarController.text.isEmpty
-            ? displayedMatches = [...allMatches]
-            : applySearch(searchBarController.text);
+        searchBarController.text.isNotEmpty || selectedFilter != MatchFilter.all
+            ? applyFilter(selectedFilter)
+            : displayedMatches = [...allMatches];
 
         isLoading = false;
       });

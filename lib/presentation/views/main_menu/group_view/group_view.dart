@@ -313,7 +313,11 @@ class _GroupViewState extends State<GroupView> {
       setState(() {
         allGroups = loadedGroups
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        displayedGroups = [...loadedGroups];
+
+        searchBarController.text.isNotEmpty
+            ? applySearch(searchBarController.text)
+            : displayedGroups = [...allGroups];
+
         isLoading = false;
       });
     });
