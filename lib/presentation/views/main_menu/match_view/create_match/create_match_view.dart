@@ -111,7 +111,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     showcaseProvider = context.read<ShowcaseProvider>();
 
     if (!widget.editMode &&
-        !showcaseProvider.shouldShowShowcase(matchViewCreateButtonIdentifier)) {
+        showcaseProvider.hasSeen(matchViewCreateButtonIdentifier)) {
       handleShowcase(
         widgetKeys: [
           createMatchViewMatchNameKey,

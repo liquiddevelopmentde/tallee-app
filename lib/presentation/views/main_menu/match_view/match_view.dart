@@ -93,7 +93,7 @@ class _MatchViewState extends State<MatchView> {
 
     loadMatches();
 
-    if (!showcaseProvider.shouldShowShowcase(navbarMatchViewIdentifier)) {
+    if (showcaseProvider.hasSeen(navbarMatchViewIdentifier)) {
       handleShowcase(
         widgetKeys: [matchViewCreateButtonKey],
         identifiers: [matchViewCreateButtonIdentifier],

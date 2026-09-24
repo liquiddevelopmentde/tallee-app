@@ -39,13 +39,16 @@ class ShowcaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool shouldShowShowcase(String screenKey) {
-    if (isTourSkipped || !_isTourActive) return false;
-
+  bool hasSeen(String screenKey) {
     if (_shownInCurrentTour.isEmpty) {
       _shownInCurrentTour.addAll(SharedPreferencesService.getShowcaseSeen());
     }
-    return !_shownInCurrentTour.contains(screenKey);
+    return _shownInCurrentTour.contains(screenKey);
+  }
+
+  bool shouldShowShowcase(String screenKey) {
+    if (isTourSkipped || !_isTourActive) return false;
+    return !hasSeen(screenKey);
   }
 
   void markAsSeen(String screenKey) {

@@ -75,7 +75,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     });
 
     showcaseProvider = context.read<ShowcaseProvider>();
-    showTabShowcase();
   }
 
   @override
@@ -298,11 +297,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       if (!showcaseProvider.isTourCompleted) {
         showcaseProvider.startTour();
       }
-      bool createGameShowcaseDone = !showcaseProvider.shouldShowShowcase(
+      bool createGameShowcaseDone = showcaseProvider.hasSeen(
         createGameViewGameNameIdentifier,
       );
 
-      bool matchTabShowcaseDone = !showcaseProvider.shouldShowShowcase(
+      bool matchTabShowcaseDone = showcaseProvider.hasSeen(
         navbarMatchViewIdentifier,
       );
 

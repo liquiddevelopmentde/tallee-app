@@ -116,7 +116,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                             size: 100,
                             color: CustomTheme.primaryColor,
                           ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Text(
                           page.title,
                           textAlign: TextAlign.center,

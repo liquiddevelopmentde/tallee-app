@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -203,6 +204,7 @@ class _GameViewState extends State<GameView> with RouteAware {
               showcaseKey: gameViewCreateButtonKey,
               identifier: gameViewCreateButtonIdentifier,
               description: loc.showcase_game_view_create,
+              tooltipPosition: TooltipPosition.top,
               disableBarrierInteraction: true,
               disposeOnTap: true,
               onTargetClick: () {
