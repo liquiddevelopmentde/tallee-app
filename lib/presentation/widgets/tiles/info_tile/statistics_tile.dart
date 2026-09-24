@@ -299,7 +299,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
 
   Future<void> toggleFavourite() async {
     final updatedIsFavourite = !isFavourite;
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     await db.statisticDao.updateIsFavourite(
       widget.statistic.id,
       updatedIsFavourite,

@@ -40,6 +40,7 @@
   "color_teal": "Türkis",
   "color_yellow": "Gelb",
   "confirm": "Bestätigen",
+  "contact_us_through_mail": "Kontaktiere uns gerne direkt per E-Mail, damit wir dein Problem lösen können!",
   "continue_": "Weiter",
   "copy_code": "Code kopieren",
   "could_not_add_player": "Spieler:in {playerName} konnte nicht hinzugefügt werden",
@@ -98,6 +99,7 @@
   "deleted": "Gelöscht",
   "description": "Beschreibung",
   "displayed_entries": "Angezeigte Einträge",
+  "do_you_like_the_app": "Gefällt dir die App?",
   "dont_update": "Nicht aktualisieren",
   "drag_to_set_placement": "Ziehen um Platzierung zu setzen",
   "duplicate": "Duplizieren",
@@ -228,6 +230,7 @@
     }
   },
   "next": "Weiter",
+  "no": "Nein",
   "no_data_available": "Keine Daten verfügbar",
   "no_data_to_export": "Keine Daten zum exportieren",
   "no_games_created_yet": "Noch keine Spielvorlagen erstellt",
@@ -380,7 +383,7 @@
   "timeframe": "Zeitraum",
   "today": "Heute",
   "today_at": "Heute um",
-  "token_expired": "Token expired",
+  "token_expired": "Token abgelaufen",
   "total_losses": "Niederlagen insgesamt",
   "total_matches": "Spiele insgesamt",
   "total_score": "Punktzahl insgesamt",
@@ -388,6 +391,7 @@
   "type": "Typ",
   "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten.",
   "unknown_exception": "Unbekannter Fehler (siehe Konsole)",
+  "unsatisfied": "Unzufrieden?",
   "update_app_export_desc": "Du hast nicht die neueste App-Version, was zu Problemen beim Datenimport in eine andere Tallee-App führen kann.",
   "update_app_import_desc": "Du hast nicht die neueste App-Version, was zu Problemen beim Importieren deiner Daten führen kann.",
   "update_app_version": "Bitte aktualisiert eure Apps auf die neueste Version und versucht es erneut.",
@@ -400,5 +404,7 @@
   "winner": "Gewinner:in",
   "winrate": "Siegquote",
   "worst_score": "Schlechteste Punktzahl",
+  "write_email": "Eine E-Mail schreiben",
+  "yes": "Ja",
   "yesterday_at": "Gestern um"
 }

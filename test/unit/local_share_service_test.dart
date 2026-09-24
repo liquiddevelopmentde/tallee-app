@@ -1177,7 +1177,7 @@ void main() {
 
         final isValidRoot = await validateJsonSchema(
           jsonString: validJson,
-          schemaAssetPath: 'assets/app_schema.json',
+          schemaAssetPath: 'assets/schemas/app_schema.json',
         );
         expect(isValidRoot, true);
       });
@@ -1284,7 +1284,7 @@ void main() {
 
           final isValid = await validateJsonSchema(
             jsonString: validJson,
-            schemaAssetPath: 'assets/app_schema.json',
+            schemaAssetPath: 'assets/schemas/app_schema.json',
           );
           expect(isValid, true);
         });
@@ -1329,7 +1329,7 @@ void main() {
 
             final isValid = await validateJsonSchema(
               jsonString: invalidJson,
-              schemaAssetPath: 'assets/app_schema.json',
+              schemaAssetPath: 'assets/schemas/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1373,7 +1373,7 @@ void main() {
 
             final isValid = await validateJsonSchema(
               jsonString: invalidJson,
-              schemaAssetPath: 'assets/app_schema.json',
+              schemaAssetPath: 'assets/schemas/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1438,7 +1438,7 @@ void main() {
 
             final isValid = await validateJsonSchema(
               jsonString: invalidJson,
-              schemaAssetPath: 'assets/app_schema.json',
+              schemaAssetPath: 'assets/schemas/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1495,7 +1495,7 @@ void main() {
 
             final isValid = await validateJsonSchema(
               jsonString: invalidJson,
-              schemaAssetPath: 'assets/app_schema.json',
+              schemaAssetPath: 'assets/schemas/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1519,7 +1519,7 @@ void main() {
         final isValid = await tester.runAsync(
           () => validateJsonSchema(
             jsonString: jsonString,
-            schemaAssetPath: 'assets/app_schema.json',
+            schemaAssetPath: 'assets/schemas/app_schema.json',
           ),
         );
         expect(isValid, true);

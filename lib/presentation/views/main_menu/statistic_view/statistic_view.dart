@@ -326,10 +326,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                               )
                               .toList();
                         });
-                        final db = Provider.of<AppDatabase>(
-                          context,
-                          listen: false,
-                        );
+                        final db = context.read<AppDatabase>();
                         db.statisticDao.updatePosition(statistics: statistics);
                       },
                       onReorderStart: (_) => HapticFeedback.heavyImpact(),
@@ -404,7 +401,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   Future<void> loadStatistics() async {
     setState(() => isLoading = true);
 
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
     final results = await Future.wait([
       db.statisticDao.getAllStatistics(),
@@ -504,7 +501,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     statistics = statistics
         .map((stat) => stat.copyWith(position: statistics.indexOf(stat)))
         .toList();
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     db.statisticDao.updatePosition(statistics: statistics);
     createFilteredStatisticTiles();
   }
@@ -512,7 +509,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   /// Refreshes a statistic by the [statisticId], either updating it or removing it if
   /// it was deleted
   Future<void> refreshStatistic(String statisticId) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final newStat = await db.statisticDao.getStatisticById(
       statisticId: statisticId,
     );

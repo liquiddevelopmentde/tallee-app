@@ -16,7 +16,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_teams/create_teams_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/custom_stepper.dart';
@@ -28,28 +28,23 @@ import 'package:tallee/state/showcase_provider.dart';
 class CreateMatchView extends StatefulWidget {
   /// A view that allows creating a new match
   /// - [onWinnerChanged]: Optional callback invoked when the winner is changed
+  /// - [onMatchUpdated]: Optional callback invoked when the match is updated
+  /// - [onMatchesUpdated]: Optional callback invoked when a new match is created
   /// - [editMode]: a bool which sets the view to edit mode
   /// - [matchToPrefill]: An optional match to prefill the fields
-  /// - [onMatchUpdated]: Optional callback invoked when the match is updated
   const CreateMatchView({
     super.key,
     this.onWinnerChanged,
-    this.editMode = false,
-    this.matchToPrefill,
     this.onMatchUpdated,
     this.onMatchesUpdated,
+    this.editMode = false,
+    this.matchToPrefill,
   });
 
   final VoidCallback? onWinnerChanged;
-
-  final VoidCallback? onMatchesUpdated;
-
   final void Function(Match)? onMatchUpdated;
-
-  /// An optional match to prefill the fields for editing.
+  final VoidCallback? onMatchesUpdated;
   final bool editMode;
-
-  /// An optional match to prefill the fields for creating a match with the same settings
   final Match? matchToPrefill;
 
   @override
@@ -301,7 +296,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   }
 
   void loadData() {
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
 
     Future.wait([
       db.groupDao.getAllGroups(),

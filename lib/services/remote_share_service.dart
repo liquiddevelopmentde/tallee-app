@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/db/database.dart';
@@ -81,7 +82,7 @@ class RemoteShareService {
   }
 
   String getApiBaseUrl() {
-    if (kDebugMode) {
+    if (IS_DEV_ENV) {
       return Platform.isAndroid
           ? dotenv.get('API_URL_DEV_ANDROID')
           : dotenv.get('API_URL_DEV_IOS');
@@ -130,7 +131,7 @@ class RemoteShareService {
 
       final isValidSchema = await validateJsonSchema(
         jsonString: jsonString,
-        schemaAssetPath: 'assets/match_schema.json',
+        schemaAssetPath: 'assets/schemas/match_schema.json',
       );
 
       if (!isValidSchema) {

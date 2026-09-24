@@ -192,7 +192,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
     final statistic = widget.statistic!.copyWith(
       selectedGroups: selectedGroups,
     );
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
     if (widget.statistic!.scopes.contains(StatisticScope.selectedGames)) {
       // Choose a game

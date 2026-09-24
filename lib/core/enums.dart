@@ -1,5 +1,11 @@
 import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
 
+/// The current app environment
+/// - [AppEnvironment.development]: Development only
+/// - [AppEnvironment.testing]: Public testing
+/// - [AppEnvironment.production]: Delivered to stores
+enum AppEnvironment { development, testing, production }
+
 /// Button types used for styling the [CustomWidthButton]
 /// - [ButtonType.primary]: Primary button style.
 /// - [ButtonType.secondary]: Secondary button style.
