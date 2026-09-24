@@ -354,9 +354,9 @@ class Match {
     }
 
     return players.where((player) {
-      final s = _scoreForPlayer(player.id);
-      if (s == null) return false;
-      return s > 0;
+      final entries = scoresByRound[player.id];
+      if (entries == null || entries.isEmpty) return false;
+      return entries.last.score > 0;
     }).toList();
   }
 
