@@ -159,7 +159,7 @@ class _GroupViewState extends State<GroupView> {
                           Expanded(
                             child: Center(
                               child: TopCenteredMessage(
-                                icon: Icons.info,
+                                icon: Icons.search,
                                 title: loc.info,
                                 message:
                                     loc.there_is_no_group_matching_your_search,

@@ -157,7 +157,7 @@ class _GameViewState extends State<GameView> {
                           Expanded(
                             child: Center(
                               child: TopCenteredMessage(
-                                icon: Icons.info,
+                                icon: Icons.search,
                                 title: loc.info,
                                 message:
                                     loc.there_is_no_game_matching_your_search,

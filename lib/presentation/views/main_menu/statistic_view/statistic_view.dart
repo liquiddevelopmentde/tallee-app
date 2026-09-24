@@ -264,7 +264,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                           ? Padding(
                               padding: const EdgeInsets.only(top: 20),
                               child: TopCenteredMessage(
-                                icon: Icons.info,
+                                icon: Icons.filter_alt,
                                 title: loc.info,
                                 message: loc.no_statistics_with_filter,
                               ),
@@ -353,8 +353,7 @@ class _StatisticsViewState extends State<StatisticsView> {
               bottom: MediaQuery.paddingOf(context).bottom + 20,
               child: FloatingAnimatedButton(
                 text: loc.create_statistic(1),
-                icon: STATISTIC_ICON,
-                showAddBadge: true,
+                icon: Icons.add,
                 onPressed: () async {
                   if (!mounted) return;
                   final navigator = Navigator.of(this.context);

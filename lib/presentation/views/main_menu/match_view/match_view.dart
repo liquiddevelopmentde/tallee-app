@@ -241,7 +241,7 @@ class _MatchViewState extends State<MatchView> {
                                 Expanded(
                                   child: Center(
                                     child: TopCenteredMessage(
-                                      icon: Icons.info,
+                                      icon: Icons.filter_alt,
                                       title: loc.info,
                                       message: loc
                                           .there_is_no_match_matching_your_filter,
@@ -253,7 +253,7 @@ class _MatchViewState extends State<MatchView> {
                                 Expanded(
                                   child: Center(
                                     child: TopCenteredMessage(
-                                      icon: Icons.info,
+                                      icon: Icons.search,
                                       title: loc.info,
                                       message: loc
                                           .there_is_no_match_matching_your_search,
