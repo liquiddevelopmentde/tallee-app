@@ -666,11 +666,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get not_part_of_any_group => 'Not part of any group yet';
 
   @override
-  String get onboarding_players_teams_desc =>
+  String get onboarding_groups_teams_desc =>
       'Organize your gaming circle into groups and split players into teams for any match.';
 
   @override
-  String get onboarding_players_teams_title => 'Players & Teams';
+  String get onboarding_groups_teams_title => 'Groups & Teams';
 
   @override
   String get onboarding_privacy_desc =>
@@ -688,7 +688,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboarding_statistics_desc =>
-      'Get meaningful insights into your games with custom statistics scoped to your needs.';
+      'Get insights into your games with custom statistics scoped to your needs.';
 
   @override
   String get onboarding_statistics_title => 'Game Statistics';

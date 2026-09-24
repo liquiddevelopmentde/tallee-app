@@ -54,8 +54,8 @@ class _OnboardingViewState extends State<OnboardingView> {
         icon: Icons.rule_rounded,
       ),
       OnboardingPageData(
-        title: loc.onboarding_players_teams_title,
-        description: loc.onboarding_players_teams_desc,
+        title: loc.onboarding_groups_teams_title,
+        description: loc.onboarding_groups_teams_desc,
         icon: Icons.groups_rounded,
       ),
       OnboardingPageData(

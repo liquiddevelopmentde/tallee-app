@@ -1268,17 +1268,17 @@ abstract class AppLocalizations {
   /// **'Not part of any group yet'**
   String get not_part_of_any_group;
 
-  /// No description provided for @onboarding_players_teams_desc.
+  /// No description provided for @onboarding_groups_teams_desc.
   ///
   /// In en, this message translates to:
   /// **'Organize your gaming circle into groups and split players into teams for any match.'**
-  String get onboarding_players_teams_desc;
+  String get onboarding_groups_teams_desc;
 
-  /// No description provided for @onboarding_players_teams_title.
+  /// No description provided for @onboarding_groups_teams_title.
   ///
   /// In en, this message translates to:
-  /// **'Players & Teams'**
-  String get onboarding_players_teams_title;
+  /// **'Groups & Teams'**
+  String get onboarding_groups_teams_title;
 
   /// No description provided for @onboarding_privacy_desc.
   ///
@@ -1307,7 +1307,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding_statistics_desc.
   ///
   /// In en, this message translates to:
-  /// **'Get meaningful insights into your games with custom statistics scoped to your needs.'**
+  /// **'Get insights into your games with custom statistics scoped to your needs.'**
   String get onboarding_statistics_desc;
 
   /// No description provided for @onboarding_statistics_title.
