@@ -40,10 +40,12 @@ class _MatchViewState extends State<MatchView> {
   late RateDialogProvider rateProvider;
 
   bool isLoading = true;
+  bool isSearchBarVisible = true;
   MatchFilter selectedFilter =
       SharedPreferencesService.getMatchFilter() ?? MatchFilter.all;
-  TextEditingController searchBarController = TextEditingController();
-  bool isSearchBarVisible = true;
+
+  final TextEditingController searchBarController = TextEditingController();
+
   final ScrollController scrollController = ScrollController();
 
   /// Loaded matches from the database, initially filled with skeleton matches

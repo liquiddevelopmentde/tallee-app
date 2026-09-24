@@ -17,16 +17,16 @@ class MatchReceiveView extends StatefulWidget {
 
 class _MatchReceiveViewViewState extends State<MatchReceiveView>
     with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
+  late final TabController tabController;
 
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     if (widget.initialFilePath != null) {
-      _tabController.index = 2;
+      tabController.index = 2;
     }
     super.initState();
   }
@@ -54,7 +54,7 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
                   ),
                 ),
                 child: TabBar(
-                  controller: _tabController,
+                  controller: tabController,
                   splashFactory: NoSplash.splashFactory,
                   dividerColor: Colors.transparent,
                   indicatorSize: TabBarIndicatorSize.tab,
@@ -83,7 +83,7 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
               child: SafeArea(
                 maintainBottomViewPadding: true,
                 child: TabBarView(
-                  controller: _tabController,
+                  controller: tabController,
                   children: [
                     const QrScanComponent(),
                     const EnterTokenComponent(),
