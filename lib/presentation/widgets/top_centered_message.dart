@@ -52,7 +52,7 @@ class TopCenteredMessage extends StatelessWidget {
               child: Text(
                 message!,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   overflow: TextOverflow.visible,
                 ),
                 textAlign: TextAlign.center,
