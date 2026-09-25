@@ -49,9 +49,8 @@ dependencies:
   syncfusion_flutter_datepicker: ^34.2.9
   url_launcher: ^6.3.2
   uuid: ^4.6.0
-
-  material_ui: any
-  cupertino_ui: any
+  material_ui: ^1.4.0
+  cupertino_ui: ^1.1.1
 dev_dependencies:
   arb_utils: ^0.11.1
   build_runner: ^2.16.1
