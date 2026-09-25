@@ -269,9 +269,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get description => 'Description';
 
   @override
-  String get displayed_entries => 'Displayed entries';
-
-  @override
   String get do_you_like_the_app => 'Do you like the app?';
 
   @override
@@ -327,18 +324,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String error_loading_match(String error) {
     return 'Error loading match: $error';
   }
-
-  @override
-  String get no_statistics => 'No Statistics';
-
-  @override
-  String get no_games => 'No Games';
-
-  @override
-  String get no_matches => 'No Matches';
-
-  @override
-  String get no_groups => 'No Groups';
 
   @override
   String get error_loading_privacy_policy => 'Error loading privacy policy';
@@ -614,14 +599,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no => 'No';
 
   @override
-  String get no_results_yet => 'No results yet';
+  String get no_data_to_export => 'No data to export';
 
   @override
-  String get no_data_to_export => 'No data to export';
+  String get no_games => 'No Games';
 
   @override
   String get no_games_created_yet =>
       'You haven\'t created any games yet. Create a new game so it will appear here.';
+
+  @override
+  String get no_groups => 'No Groups';
 
   @override
   String get no_groups_created_yet =>
@@ -629,6 +617,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_license_text_available => 'No license text available';
+
+  @override
+  String get no_matches => 'No Matches';
 
   @override
   String get no_matches_created_yet =>
@@ -659,7 +650,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_players_selected => 'No players selected';
 
   @override
+  String get no_results => 'No Results';
+
+  @override
   String get no_results_entered_yet => 'No results entered yet';
+
+  @override
+  String get no_results_yet => 'No results yet';
+
+  @override
+  String get no_statistics => 'No Statistics';
 
   @override
   String get no_statistics_created_yet =>
@@ -1025,9 +1025,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get teams => 'Teams';
-
-  @override
-  String get no_results => 'No Results';
 
   @override
   String get thank_you_for_feedback => 'Thank you for your feedback!';
