@@ -26,6 +26,10 @@ class SharedPreferencesService {
   static const String filteredStatisticTypesKey = 'filtered_statistic_types';
   static const String showFavouritesKey = 'show_favourites';
   static const String sharingConsentKey = 'share_consent';
+  static const String showcaseTourSkippedKey = 'showcase_tour_skipped';
+  static const String showcaseTourCompletedKey = 'showcase_tour_completed';
+  static const String showcaseSeenKey = 'showcase_seen';
+  static const String onboardingCompletedKey = 'onboarding_completed';
   static const String matchFilterKey = 'match_filter';
 
   static void deleteAllPreferences() {
@@ -44,6 +48,17 @@ class SharedPreferencesService {
     setFilteredTimeframes([]);
     setFilteredStatisticTypes([]);
     if (includeFavourites) setShowFavourites(false);
+  }
+
+  static void deleteAllFilters({required bool includeFavourites}) {
+    final SharedPreferences prefs = _instance;
+    prefs.remove(filteredGroupsKey);
+    prefs.remove(filteredGamesKey);
+    prefs.remove(filteredTimeframesKey);
+    prefs.remove(filteredStatisticTypesKey);
+    if (includeFavourites) {
+      prefs.remove(showFavouritesKey);
+    }
   }
 
   static void setMatchFilter(MatchFilter filter) {
@@ -131,5 +146,48 @@ class SharedPreferencesService {
           ),
         )
         .toList();
+  }
+
+  static bool isOnboardingCompleted() {
+    return _instance.getBool(onboardingCompletedKey) ?? false;
+  }
+
+  static void setOnboardingCompleted(bool completed) {
+    _instance.setBool(onboardingCompletedKey, completed);
+  }
+
+  static void setTourSkipped(bool skipped) {
+    _instance.setBool(showcaseTourSkippedKey, skipped);
+  }
+
+  static bool isTourSkipped() {
+    return _instance.getBool(showcaseTourSkippedKey) ?? false;
+  }
+
+  static void setTourCompleted(bool completed) {
+    _instance.setBool(showcaseTourCompletedKey, completed);
+  }
+
+  static bool isTourCompleted() {
+    return _instance.getBool(showcaseTourCompletedKey) ?? false;
+  }
+
+  static void setShowcaseSeen(List<String> screenKeys) {
+    final currentKeys = getShowcaseSeen();
+    final updatedKeys = {...currentKeys, ...screenKeys}.toList();
+    _instance.setStringList(showcaseSeenKey, updatedKeys);
+  }
+
+  static List<String> getShowcaseSeen() {
+    return _instance.getStringList(showcaseSeenKey) ?? [];
+  }
+
+  static bool hasSeenShowcase(String screenKey) {
+    return _instance.getStringList(showcaseSeenKey)?.contains(screenKey) ??
+        false;
+  }
+
+  static void resetSeenShowcase() {
+    _instance.setStringList(showcaseSeenKey, []);
   }
 }
