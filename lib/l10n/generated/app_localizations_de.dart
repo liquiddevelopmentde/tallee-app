@@ -680,10 +680,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get onboarding_privacy_desc =>
-      'Teile Spiele ganz einfach per QR-Code oder exportiere bestimmte Spiele und vollständige Backups als lokale Dateien. Deine Daten bleiben standardmäßig privat.';
+      'Teile Spiele ganz einfach per QR-Code oder exportiere bestimmte Spiele und vollständige Backups als lokale Dateien.';
 
   @override
-  String get onboarding_privacy_title => 'Teilen & Datenschutz';
+  String get onboarding_privacy_title => 'Teilen & Backup';
 
   @override
   String get onboarding_rulesets_desc =>
