@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/player_table.dart';
 import 'package:tallee/data/models/player.dart';
