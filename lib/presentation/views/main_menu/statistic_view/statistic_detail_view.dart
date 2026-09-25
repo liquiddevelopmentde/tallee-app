@@ -109,7 +109,9 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(12.0),
           child: Column(
+            spacing: 12,
             children: [
+              // Statistic
               StatisticsTile(
                 statistic: widget.statistic,
                 margin: EdgeInsets.zero,
@@ -119,8 +121,8 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                 showAllValues: true,
                 showDisplayCountHighlighting: showHighlighting,
               ),
-              const SizedBox(height: 12),
 
+              // Details
               InfoTile(
                 leadingWidget: const Icon(Icons.filter_alt),
                 width: MediaQuery.sizeOf(context).width * 0.95,
@@ -172,10 +174,10 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                         ],
                       ),
                     ),
-                    divider,
 
                     // Groups
                     if (widget.statistic.selectedGroups != null) ...[
+                      divider,
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Row(
@@ -193,11 +195,11 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                           ],
                         ),
                       ),
-                      divider,
                     ],
 
                     // Games
                     if (widget.statistic.selectedGames != null) ...[
+                      divider,
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Row(
@@ -215,10 +217,10 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                           ],
                         ),
                       ),
-                      divider,
                     ],
 
                     if (widget.values.isNotEmpty) ...[
+                      divider,
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Row(
@@ -310,8 +312,15 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
 
   // Handles saving the display count and giving it to statistics view
   Future<void> updateCount() async {
-    final db = context.read<AppDatabase>();
-    await db.statisticDao.updateDisplayCount(widget.statistic.id, displayCount);
+    // Only save a changed and valid count, otherwise a statistic without
+    // values would persist a display count of 0
+    if (displayCount > 0 && displayCount != widget.statistic.displayCount) {
+      final db = context.read<AppDatabase>();
+      await db.statisticDao.updateDisplayCount(
+        widget.statistic.id,
+        displayCount,
+      );
+    }
     await widget.refreshStatistic(widget.statistic.id);
     if (mounted) Navigator.of(context).pop(displayCount);
   }
