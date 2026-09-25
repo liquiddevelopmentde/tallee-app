@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/share_exceptions.dart';
@@ -228,6 +229,14 @@ class _MatchShareViewState extends State<MatchShareView>
               errorMessage = loc.parsing_error;
             } else {
               errorMessage = loc.unexpected_error;
+              Sentry.captureException(
+                error,
+                stackTrace: stacktrace,
+                hint: Hint.withMap({'skipSnackBar': true}),
+                withScope: (scope) {
+                  scope.level = SentryLevel.error;
+                },
+              );
             }
             scaffoldMessengerKey.currentState?.showSnackBar(
               CustomSnackBar(

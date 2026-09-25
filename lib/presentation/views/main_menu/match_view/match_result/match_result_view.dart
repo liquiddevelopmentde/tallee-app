@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -76,126 +77,138 @@ class _MatchResultViewState extends State<MatchResultView> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
-    return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        leading: HapticIconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => {
-            widget.onWinnerChanged?.call(),
-            Navigator.pop(context),
-          },
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (bool didPop, dynamic result) {
+        if (didPop) {
+          try {
+            ShowcaseView.get().dismiss();
+          } catch (_) {}
+        }
+      },
+      child: Scaffold(
+        backgroundColor: CustomTheme.backgroundColor,
+        appBar: AppBar(
+          automaticallyImplyLeading: true,
+          leading: HapticIconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => {
+              widget.onWinnerChanged?.call(),
+              Navigator.pop(context),
+            },
+          ),
+          title: Text(widget.match.name),
         ),
-        title: Text(widget.match.name),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: rulesetSupportsScoreEntry()
-                ? ruleset == Ruleset.lives
-                      ? LiveEditView.lives(
-                          match: widget.match,
-                          initialScores: scores,
-                          onScoresChanged: onScoresChanged,
-                        )
-                      : LiveEditView.score(
-                          match: widget.match,
-                          initialScores: scores,
-                          onScoresChanged: onScoresChanged,
-                        )
-                : Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: CustomTheme.boxColor,
-                      border: Border.all(color: CustomTheme.boxBorderColor),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          getTitleForRuleset(loc),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-
-                        // Show player selection
-                        if (rulesetSupportsPlayerSelection())
-                          if (ruleset == Ruleset.winner)
-                            SelectWinnerWidget(
-                              match: widget.match,
-                              onPlayersSelected: (List<Player> players) {
-                                selectedPlayers = players;
-                                setState(() {
-                                  canSave = players.isNotEmpty;
-                                });
-                              },
-                              onTeamsSelected: (List<Team> teams) {
-                                selectedTeams = teams;
-                                setState(() {
-                                  canSave = teams.isNotEmpty;
-                                });
-                              },
-                            )
-                          else
-                            SelectLooserWidget(
-                              match: widget.match,
-                              onPlayerSelected: (Player? player) {
-                                selectedPlayer = player;
-                                setState(() {
-                                  canSave = player != null;
-                                });
-                              },
-                              onTeamSelected: (Team? team) {
-                                selectedTeam = team;
-                                setState(() {
-                                  canSave = team != null;
-                                });
-                              },
-                            ),
-
-                        // Show draggable placement list
-                        if (ruleset == Ruleset.placement)
-                          PlacementDragList(
+        body: Column(
+          children: [
+            Expanded(
+              child: rulesetSupportsScoreEntry()
+                  ? ruleset == Ruleset.lives
+                        ? LiveEditView.lives(
                             match: widget.match,
-                            onPlayerOrderChanged: (List<Player> players) =>
-                                allPlayers = players,
-                            onTeamOrderChanged: (List<Team> teams) =>
-                                allTeams = teams,
+                            initialScores: scores,
+                            onScoresChanged: onScoresChanged,
+                          )
+                        : LiveEditView.score(
+                            match: widget.match,
+                            initialScores: scores,
+                            onScoresChanged: onScoresChanged,
+                          )
+                  : Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: CustomTheme.boxColor,
+                        border: Border.all(color: CustomTheme.boxBorderColor),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            getTitleForRuleset(loc),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                      ],
-                    ),
-                  ),
-          ),
+                          const SizedBox(height: 10),
 
-          // Saving button
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Save Changes Button
-                BottomAnimatedButton(
-                  sizeRelativeToWidth: 0.95,
-                  buttonText: loc.save_changes,
-                  onPressed: canSave ? () async => await handleSaving() : null,
-                ),
-              ],
+                          // Show player selection
+                          if (rulesetSupportsPlayerSelection())
+                            if (ruleset == Ruleset.winner)
+                              SelectWinnerWidget(
+                                match: widget.match,
+                                onPlayersSelected: (List<Player> players) {
+                                  selectedPlayers = players;
+                                  setState(() {
+                                    canSave = players.isNotEmpty;
+                                  });
+                                },
+                                onTeamsSelected: (List<Team> teams) {
+                                  selectedTeams = teams;
+                                  setState(() {
+                                    canSave = teams.isNotEmpty;
+                                  });
+                                },
+                              )
+                            else
+                              SelectLooserWidget(
+                                match: widget.match,
+                                onPlayerSelected: (Player? player) {
+                                  selectedPlayer = player;
+                                  setState(() {
+                                    canSave = player != null;
+                                  });
+                                },
+                                onTeamSelected: (Team? team) {
+                                  selectedTeam = team;
+                                  setState(() {
+                                    canSave = team != null;
+                                  });
+                                },
+                              ),
+
+                          // Show draggable placement list
+                          if (ruleset == Ruleset.placement)
+                            PlacementDragList(
+                              match: widget.match,
+                              onPlayerOrderChanged: (List<Player> players) =>
+                                  allPlayers = players,
+                              onTeamOrderChanged: (List<Team> teams) =>
+                                  allTeams = teams,
+                            ),
+                        ],
+                      ),
+                    ),
             ),
-          ),
-        ],
+
+            // Saving button
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Save Changes Button
+                  BottomAnimatedButton(
+                    sizeRelativeToWidth: 0.95,
+                    buttonText: loc.save_changes,
+                    onPressed: canSave
+                        ? () async => await handleSaving()
+                        : null,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

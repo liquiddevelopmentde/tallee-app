@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -18,6 +19,7 @@ import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_view.dart';
+import 'package:tallee/presentation/views/onboarding_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
@@ -29,6 +31,7 @@ import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
+import 'package:tallee/state/showcase_provider.dart';
 
 void main() async {
   ENVIRONMENT = kDebugMode
@@ -46,6 +49,7 @@ void main() async {
   if (IS_DEV_ENV) HttpOverrides.global = SelfSignedCertHttpOverrides();
   await SharedPreferencesService.init();
   await PackageInfoService.init();
+  ShowcaseView.register(blurValue: 0.4);
   await SentryFlutter.init(
     (options) {
       // error reporting & feedback is disabled in development
@@ -116,6 +120,7 @@ void main() async {
             ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
             ChangeNotifierProvider(create: (context) => GameSearchProvider()),
             ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
+            ChangeNotifierProvider(create: (context) => ShowcaseProvider()),
             ChangeNotifierProvider(create: (context) => RateDialogProvider()),
           ],
           child: DefaultAssetBundle(
@@ -194,15 +199,39 @@ class _TalleeState extends State<Tallee> {
     final path = pendingImportPath;
     pendingImportPath = null;
 
+    bool isOnboardingCompleted =
+        SharedPreferencesService.isOnboardingCompleted();
+
+    final targetWidget = !isOnboardingCompleted
+        ? OnboardingView(onCompleted: () => navigateToHomeAndHandleImport(path))
+        : const CustomNavigationBar();
+
     navigator.pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const CustomNavigationBar(),
+        settings: RouteSettings(
+          name: !isOnboardingCompleted
+              ? RouteNames.onboarding
+              : RouteNames.groupView,
+        ),
+        pageBuilder: (context, animation, secondaryAnimation) => targetWidget,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
         transitionDuration: const Duration(milliseconds: 300),
       ),
+    );
+
+    if (isOnboardingCompleted && path != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => openImport(path));
+    }
+  }
+
+  void navigateToHomeAndHandleImport(String? path) {
+    final navigator = Tallee.navigatorKey.currentState;
+    if (navigator == null) return;
+
+    navigator.pushReplacement(
+      adaptivePageRoute(builder: (_) => const CustomNavigationBar()),
     );
 
     if (path != null) {

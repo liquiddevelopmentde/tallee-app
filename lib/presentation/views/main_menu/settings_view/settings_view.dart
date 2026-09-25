@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -23,6 +24,7 @@ import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
+import 'package:tallee/state/showcase_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -109,6 +111,15 @@ class _SettingsViewState extends State<SettingsView> {
                       },
                     ),
                     onPressed: null,
+                  ),
+                  SettingsListTile(
+                    title: loc.show_app_walkthrough,
+                    icon: Icons.explore,
+                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onPressed: () {
+                      context.read<ShowcaseProvider>().restartTour();
+                      Navigator.of(context).pop(0);
+                    },
                   ),
                   SettingsListTile(
                     title: loc.data_backup,
