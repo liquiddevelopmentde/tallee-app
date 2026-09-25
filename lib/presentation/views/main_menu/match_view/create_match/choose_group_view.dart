@@ -164,7 +164,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
             // Create statistic button
             if (widget.statistic != null)
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 28),
                 child: BottomAnimatedButton(
                   buttonConstraints: const BoxConstraints(minWidth: 390),
                   buttonText: buttonText,

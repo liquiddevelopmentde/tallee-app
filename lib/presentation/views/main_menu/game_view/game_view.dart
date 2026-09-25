@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -12,13 +13,15 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_game_view.dart';
+import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
 import 'package:tallee/state/game_search_provider.dart';
+import 'package:tallee/state/showcase_provider.dart';
 
 class GameView extends StatefulWidget {
   const GameView({super.key});
@@ -27,9 +30,16 @@ class GameView extends StatefulWidget {
   State<GameView> createState() => _GameViewState();
 }
 
-class _GameViewState extends State<GameView> {
+class _GameViewState extends State<GameView> with RouteAware {
   late final AppDatabase db;
   late final GameSearchProvider searchProvider;
+
+  final GlobalKey gameViewCreateButtonKey = GlobalKey();
+  final String gameViewCreateButtonIdentifier = 'game_view_create_game_button';
+
+  final String navbarGameViewIdentifier = 'navbar_game_view';
+
+  late final ShowcaseProvider showcaseProvider;
 
   bool isLoading = true;
   late List<(Game, int)> gameCounts = [];
@@ -58,7 +68,16 @@ class _GameViewState extends State<GameView> {
     searchProvider = context.read<GameSearchProvider>();
     searchProvider.addListener(handleSearchToggle);
 
+    showcaseProvider = context.read<ShowcaseProvider>();
+
     loadGames();
+
+    handleShowcase(
+      widgetKeys: [gameViewCreateButtonKey],
+      identifiers: [gameViewCreateButtonIdentifier],
+      showcaseProvider: showcaseProvider,
+      context: context,
+    );
   }
 
   @override
@@ -221,21 +240,38 @@ class _GameViewState extends State<GameView> {
           // Outside the skeleton so it is not cross-faded on loading changes
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
-            child: FloatingAnimatedButton(
-              text: loc.create_game,
-              icon: Icons.add,
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  adaptivePageRoute(
-                    builder: (context) =>
-                        CreateGameView(onGameChanged: loadGames),
-                  ),
-                );
+            child: CustomShowcaseWidget(
+              showcaseKey: gameViewCreateButtonKey,
+              identifier: gameViewCreateButtonIdentifier,
+              description: loc.showcase_game_view_create,
+              tooltipPosition: TooltipPosition.top,
+              disableBarrierInteraction: true,
+              disposeOnTap: true,
+              onTargetClick: () {
+                showcaseProvider.markAsSeen(navbarGameViewIdentifier);
+                showcaseProvider.markAsSeen(gameViewCreateButtonIdentifier);
+                navigateToCreateGameView();
               },
+              targetBorderRadius: BorderRadius.circular(30),
+              child: FloatingAnimatedButton(
+                text: loc.create_game,
+                icon: Icons.add,
+                onPressed: () {
+                  navigateToCreateGameView();
+                },
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void navigateToCreateGameView() {
+    Navigator.push(
+      context,
+      adaptivePageRoute(
+        builder: (context) => CreateGameView(onGameChanged: loadGames),
       ),
     );
   }

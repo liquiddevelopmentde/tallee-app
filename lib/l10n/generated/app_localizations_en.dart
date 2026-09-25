@@ -415,6 +415,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get general => 'General';
 
   @override
+  String get get_started => 'Get started';
+
+  @override
   String get group => 'Group';
 
   @override
@@ -605,6 +608,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get next => 'Next';
+
+  @override
   String get no => 'No';
 
   @override
@@ -674,6 +680,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get not_part_of_any_group => 'Not part of any group yet';
+
+  @override
+  String get onboarding_groups_teams_desc =>
+      'Organize your gaming circle into groups and split players into teams for any match.';
+
+  @override
+  String get onboarding_groups_teams_title => 'Groups & Teams';
+
+  @override
+  String get onboarding_privacy_desc =>
+      'Share matches easily via QR-codes or export specific matches and full backups as local files.';
+
+  @override
+  String get onboarding_privacy_title => 'Sharing & Backup';
+
+  @override
+  String get onboarding_rulesets_desc =>
+      'Create custom games and pick the ruleset that fits: highest score, lives, placement, and more.';
+
+  @override
+  String get onboarding_rulesets_title => 'Flexible Rulesets';
+
+  @override
+  String get onboarding_statistics_desc =>
+      'Get insights into your games with custom statistics scoped to your needs.';
+
+  @override
+  String get onboarding_statistics_title => 'Game Statistics';
+
+  @override
+  String get onboarding_welcome_desc =>
+      'Your companion for game nights. Record matches, track winners, and manage your play history.';
+
+  @override
+  String get onboarding_welcome_title => 'Welcome to Tallee';
 
   @override
   String get online_sharing_consent_text =>
@@ -853,7 +894,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Send this code to a person who also has Tallee to share the current match.';
 
   @override
-  String get send_feedback => 'Send feedback';
+  String get send_feedback => 'Send Feedback';
 
   @override
   String get sending => 'Sending...';
@@ -889,6 +930,58 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get share_token_format_info =>
       'Share tokens consist of 6 alphanumeric characters.';
+
+  @override
+  String get show_app_walkthrough => 'App Walkthrough';
+
+  @override
+  String get showcase_create_game_button =>
+      'Tap \"Create Game\" once you\'re ready.';
+
+  @override
+  String get showcase_create_game_name => 'Set a name for the game here.';
+
+  @override
+  String get showcase_create_game_ruleset =>
+      'By default, the \"Winner\" ruleset is selected, which we\'ll use for this example. For other rulesets, tap the tile.';
+
+  @override
+  String get showcase_create_match_button =>
+      'Once you\'ve configured all the settings, tap here to create the match.';
+
+  @override
+  String get showcase_create_match_game =>
+      'Select the game you created earlier by tapping here.';
+
+  @override
+  String get showcase_create_match_name => 'Give your match a name.';
+
+  @override
+  String get showcase_create_match_players =>
+      'Select the participating players here. To create new ones, tap the plus icon next to the search bar after entering a name.';
+
+  @override
+  String get showcase_game_view_create =>
+      'Tap the button below to create a new game template.';
+
+  @override
+  String get showcase_match_view_create =>
+      'Let\'s track your first match. Tap the \"Create Match\" button to get started.';
+
+  @override
+  String get showcase_nav_game =>
+      'To create a match, you first need to create a game. Let\'s start by switching to the Games tab.';
+
+  @override
+  String get showcase_nav_match =>
+      'Now that we\'ve created a game, we can switch to the Matches tab.';
+
+  @override
+  String get showcase_select_winner =>
+      'To set your winners, simply select them here and tap the Save button below.';
+
+  @override
+  String get skip => 'Skip';
 
   @override
   String get statistic => 'Statistic';

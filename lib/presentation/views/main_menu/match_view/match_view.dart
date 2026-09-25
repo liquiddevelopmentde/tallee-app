@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -17,6 +19,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/text_chip.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
@@ -24,6 +27,7 @@ import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
+import 'package:tallee/state/showcase_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MatchView extends StatefulWidget {
@@ -44,7 +48,15 @@ class _MatchViewState extends State<MatchView> {
   MatchFilter selectedFilter =
       SharedPreferencesService.getMatchFilter() ?? MatchFilter.all;
 
-  final TextEditingController searchBarController = TextEditingController();
+  final GlobalKey matchViewCreateButtonKey = GlobalKey();
+  final String matchViewCreateButtonIdentifier =
+      'match_view_create_match_button';
+
+  final String navbarMatchViewIdentifier = 'navbar_match_view';
+
+  late final ShowcaseProvider showcaseProvider;
+
+  TextEditingController searchBarController = TextEditingController();
 
   final ScrollController scrollController = ScrollController();
 
@@ -91,7 +103,18 @@ class _MatchViewState extends State<MatchView> {
     rateProvider = context.read<RateDialogProvider>();
     rateProvider.addListener(handleRatingDialog);
 
+    showcaseProvider = context.read<ShowcaseProvider>();
+
     loadMatches();
+
+    if (showcaseProvider.hasSeen(navbarMatchViewIdentifier)) {
+      handleShowcase(
+        widgetKeys: [matchViewCreateButtonKey],
+        identifiers: [matchViewCreateButtonIdentifier],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
+    }
   }
 
   @override
@@ -337,26 +360,52 @@ class _MatchViewState extends State<MatchView> {
           // Create match button
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
-            child: FloatingAnimatedButton(
-              text: loc.create_match,
-              icon: Icons.add,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  adaptivePageRoute(
-                    settings: const RouteSettings(
-                      name: RouteNames.createMatchView,
-                    ),
-                    builder: (context) => CreateMatchView(
-                      onWinnerChanged: loadMatches,
-                      onMatchesUpdated: loadMatches,
-                    ),
-                  ),
-                );
+            child: CustomShowcaseWidget(
+              showcaseKey: matchViewCreateButtonKey,
+              identifier: matchViewCreateButtonIdentifier,
+              description: loc.showcase_match_view_create,
+              disableBarrierInteraction: true,
+              disposeOnTap: true,
+              onTargetClick: () {
+                navigateToCreateMatchView();
+                showcaseProvider.markAsSeen('match_view_create_match_button');
               },
+              tooltipPosition: TooltipPosition.top,
+              targetBorderRadius: BorderRadius.circular(30),
+              child: FloatingAnimatedButton(
+                text: loc.create_match,
+                icon: Icons.add,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    adaptivePageRoute(
+                      settings: const RouteSettings(
+                        name: RouteNames.createMatchView,
+                      ),
+                      builder: (context) => CreateMatchView(
+                        onWinnerChanged: loadMatches,
+                        onMatchesUpdated: loadMatches,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void navigateToCreateMatchView() {
+    Navigator.push(
+      context,
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.createMatchView),
+        builder: (context) => CreateMatchView(
+          onWinnerChanged: loadMatches,
+          onMatchesUpdated: loadMatches,
+        ),
       ),
     );
   }

@@ -420,6 +420,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get general => 'Allgemein';
 
   @override
+  String get get_started => 'Los geht\'s!';
+
+  @override
   String get group => 'Gruppe';
 
   @override
@@ -611,6 +614,9 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get next => 'Weiter';
+
+  @override
   String get no => 'Nein';
 
   @override
@@ -680,6 +686,41 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get not_part_of_any_group => 'Noch keiner Gruppe hinzugefügt';
+
+  @override
+  String get onboarding_groups_teams_desc =>
+      'Organisiere deine Spielrunde in Gruppen und teile Spieler:innen in Teams ein.';
+
+  @override
+  String get onboarding_groups_teams_title => 'Gruppen & Teams';
+
+  @override
+  String get onboarding_privacy_desc =>
+      'Teile Spiele ganz einfach per QR-Code oder exportiere bestimmte Spiele und vollständige Backups als lokale Dateien.';
+
+  @override
+  String get onboarding_privacy_title => 'Teilen & Backup';
+
+  @override
+  String get onboarding_rulesets_desc =>
+      'Erstelle eigene Spielvorlagen und wähle den passenden Regelsatz: Höchste Punktzahl, Leben, Platzierung und mehr.';
+
+  @override
+  String get onboarding_rulesets_title => 'Flexible Regelsätze';
+
+  @override
+  String get onboarding_statistics_desc =>
+      'Erhalte Einblicke in deine Spiele mit Statistiken, die individuell auf deine Bedürfnisse zugeschnitten sind.';
+
+  @override
+  String get onboarding_statistics_title => 'Spielstatistiken';
+
+  @override
+  String get onboarding_welcome_desc =>
+      'Dein Begleiter für Spieleabende. Erfasse Spiele, verfolge Ergebnisse und verwalte deine Spielhistorie.';
+
+  @override
+  String get onboarding_welcome_title => 'Willkommen bei Tallee';
 
   @override
   String get online_sharing_consent_text =>
@@ -896,6 +937,59 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get share_token_format_info =>
       'Share-Token bestehen aus 6 alphanumerischen Zeichen.';
+
+  @override
+  String get show_app_walkthrough => 'App-Führung';
+
+  @override
+  String get showcase_create_game_button =>
+      'Tippe auf „Spielvorlage erstellen“, sobald du bereit bist.';
+
+  @override
+  String get showcase_create_game_name =>
+      'Gib der Spielvorlage hier einen Namen.';
+
+  @override
+  String get showcase_create_game_ruleset =>
+      'Standardmäßig ist der Regelsatz „Gewinner“ ausgewählt, den wir für dieses Beispiel verwenden. Für andere Regelsätze tippe auf die Kachel..';
+
+  @override
+  String get showcase_create_match_button =>
+      'Sobald du alle Einstellungen vorgenommen hast, tippe hier, um das Spiel zu erstellen.';
+
+  @override
+  String get showcase_create_match_game =>
+      'Wähle die zuvor erstellte Spielvorlage aus, indem du hier tippst.';
+
+  @override
+  String get showcase_create_match_name => 'Gib deinem Spiel einen Namen.';
+
+  @override
+  String get showcase_create_match_players =>
+      'Wähle hier die teilnehmenden Spieler:innen aus. Um neue zu erstellen, tippe nach der Namenseingabe auf das Plus-Symbol neben der Suchleiste.';
+
+  @override
+  String get showcase_game_view_create =>
+      'Tippe auf die Schaltfläche unten, um eine neue Spielvorlage zu erstellen.';
+
+  @override
+  String get showcase_match_view_create =>
+      'Lass uns dein erstes Spiel erfassen. Tippe dazu auf die Schaltfläche \"Spiel erstellen\".';
+
+  @override
+  String get showcase_nav_game =>
+      'Um ein Spiel zu erstellen zu können, musst du zuerst eine Spielvorlage erstellen. Lass uns damit anfangen, zum Spielvorlagen-Reiter zu wechseln.';
+
+  @override
+  String get showcase_nav_match =>
+      'Da wir nun eine Spielvorlage erstellt haben, können wir zum Spiele-Reiter wechseln.';
+
+  @override
+  String get showcase_select_winner =>
+      'Um deine Gewinner:innen festzulegen, wähle sie einfach hier aus und tippe unten auf die Speichern-Schaltfläche.';
+
+  @override
+  String get skip => 'Überspringen';
 
   @override
   String get statistic => 'Statistik';

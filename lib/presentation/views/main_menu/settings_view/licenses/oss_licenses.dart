@@ -170,6 +170,7 @@ const allDependencies = <Package>[
   _shelf_packages_handler,
   _shelf_static,
   _shelf_web_socket,
+  _showcaseview,
   _simple_sparse_list,
   _skeletonizer,
   _sky_engine,
@@ -262,6 +263,7 @@ const dependencies = <Package>[
   _share_plus,
   _shared_preferences,
   _skeletonizer,
+  _showcaseview,
   _syncfusion_flutter_datepicker,
   _url_launcher,
   _uuid
@@ -8839,6 +8841,41 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// showcaseview 5.1.0
+const _showcaseview = Package(
+    name: 'showcaseview',
+    description: 'A Flutter package to Showcase/Highlight widgets step by step.',
+    repository: 'https://github.com/SimformSolutionsPvtLtd/showcaseview',
+    authors: [],
+    version: '5.1.0',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2021 Simform Solutions
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
   );
 
 /// simple_sparse_list 0.1.4
@@ -40855,16 +40892,16 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// tallee 0.1.28+671
+/// tallee 0.1.30+673
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.1.28+671',
+    version: '0.1.30+673',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('dotted_border'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_dotenv'), PackageRef('flutter_localizations'), PackageRef('flutter_markdown_plus'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('http'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('mobile_scanner'), PackageRef('new_version_plus'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('pinput'), PackageRef('pretty_qr_code'), PackageRef('provider'), PackageRef('rate_my_app'), PackageRef('remove_unused_localizations'), PackageRef('sentry_flutter'), PackageRef('share_plus'), PackageRef('shared_preferences'), PackageRef('skeletonizer'), PackageRef('syncfusion_flutter_datepicker'), PackageRef('url_launcher'), PackageRef('uuid')],
+    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('dotted_border'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_dotenv'), PackageRef('flutter_localizations'), PackageRef('flutter_markdown_plus'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('http'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('mobile_scanner'), PackageRef('new_version_plus'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('pinput'), PackageRef('pretty_qr_code'), PackageRef('provider'), PackageRef('rate_my_app'), PackageRef('remove_unused_localizations'), PackageRef('sentry_flutter'), PackageRef('share_plus'), PackageRef('shared_preferences'), PackageRef('skeletonizer'), PackageRef('showcaseview'), PackageRef('syncfusion_flutter_datepicker'), PackageRef('url_launcher'), PackageRef('uuid')],
     devDependencies: [PackageRef('arb_utils'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('sentry_dart_plugin'), PackageRef('sort_pubspec_dependencies')],
     license: '''GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

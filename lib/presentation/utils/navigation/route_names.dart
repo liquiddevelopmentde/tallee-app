@@ -3,6 +3,7 @@ class RouteNames {
   RouteNames._();
 
   static const String splash = '/';
+  static const String onboarding = '/onboarding';
   static const String importFile = '/import';
 
   static const String groupView = '/home/groups';

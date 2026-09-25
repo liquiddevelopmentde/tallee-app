@@ -6,6 +6,7 @@ import 'package:new_version_plus/model/version_status.dart';
 import 'package:once/once.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -23,12 +24,14 @@ import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
 import 'package:tallee/presentation/views/news/news_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
 import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/state/showcase_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomNavigationBar extends StatefulWidget {
@@ -41,12 +44,24 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAware {
   /// Currently selected tab index
   int currentIndex = 0;
 
   /// Key count to force rebuild of tab views
   int tabKeyCount = 0;
+
+  final GlobalKey navbarGameViewKey = GlobalKey();
+  final String navbarGameViewIdentifier = 'navbar_game_view';
+
+  final GlobalKey navbarMatchViewKey = GlobalKey();
+  final String navbarMatchViewIdentifier = 'navbar_match_view';
+
+  final String createGameViewGameNameIdentifier = 'create_game_view_game_name';
+
+  late final ShowcaseProvider showcaseProvider;
+
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
   @override
   void initState() {
@@ -58,6 +73,19 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       await checkVersionAndUpdate(context);
       openNewsDialog();
     });
+
+    showcaseProvider = context.read<ShowcaseProvider>();
+  }
+
+  @override
+  void didChangeDependencies() {
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+
+    showTabShowcase();
+    super.didChangeDependencies();
   }
 
   @override
@@ -159,13 +187,14 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           HapticIconButton(
             onPressed: () async {
               final navigator = Navigator.of(context);
-              await navigator.push(
+              final tab = await navigator.push(
                 adaptivePageRoute(
                   settings: const RouteSettings(name: RouteNames.settingsView),
                   builder: (_) => const SettingsView(),
                 ),
               );
               setState(() {
+                if (tab is int) currentIndex = tab;
                 tabKeyCount++;
               });
             },
@@ -202,12 +231,24 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              NavbarItem(
-                index: 0,
-                isSelected: currentIndex == 0,
-                icon: MATCH_ICON,
-                label: loc.matches,
-                onTabTapped: onTabTapped,
+              CustomShowcaseWidget(
+                showcaseKey: navbarMatchViewKey,
+                identifier: navbarMatchViewIdentifier,
+                description: loc.showcase_nav_match,
+                disableBarrierInteraction: true,
+                disposeOnTap: true,
+                onTargetClick: () {
+                  onTabTapped(0);
+                  showcaseProvider.markAsSeen(navbarMatchViewIdentifier);
+                },
+                tooltipPosition: TooltipPosition.top,
+                child: NavbarItem(
+                  index: 0,
+                  isSelected: currentIndex == 0,
+                  icon: MATCH_ICON,
+                  label: loc.matches,
+                  onTabTapped: onTabTapped,
+                ),
               ),
               NavbarItem(
                 index: 1,
@@ -216,12 +257,23 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 label: loc.groups,
                 onTabTapped: onTabTapped,
               ),
-              NavbarItem(
-                index: 2,
-                isSelected: currentIndex == 2,
-                icon: GAME_ICON,
-                label: loc.games,
-                onTabTapped: onTabTapped,
+              CustomShowcaseWidget(
+                showcaseKey: navbarGameViewKey,
+                identifier: navbarGameViewIdentifier,
+                description: loc.showcase_nav_game,
+                disableBarrierInteraction: true,
+                disposeOnTap: true,
+                onTargetClick: () {
+                  onTabTapped(2);
+                },
+                tooltipPosition: TooltipPosition.top,
+                child: NavbarItem(
+                  index: 2,
+                  isSelected: currentIndex == 2,
+                  icon: GAME_ICON,
+                  label: loc.games,
+                  onTabTapped: onTabTapped,
+                ),
               ),
               NavbarItem(
                 index: 3,
@@ -235,6 +287,36 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         ),
       ),
     );
+  }
+
+  void showTabShowcase() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!showcaseProvider.isTourCompleted) {
+        showcaseProvider.startTour();
+      }
+      bool createGameShowcaseDone = showcaseProvider.hasSeen(
+        createGameViewGameNameIdentifier,
+      );
+
+      bool matchTabShowcaseDone = showcaseProvider.hasSeen(
+        navbarMatchViewIdentifier,
+      );
+
+      if (matchTabShowcaseDone) return;
+
+      handleShowcase(
+        widgetKeys: [
+          createGameShowcaseDone ? navbarMatchViewKey : navbarGameViewKey,
+        ],
+        identifiers: [
+          createGameShowcaseDone
+              ? navbarMatchViewIdentifier
+              : navbarGameViewIdentifier,
+        ],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
+    });
   }
 
   /// Handles tab tap events. Updates the current [index] state.
@@ -367,21 +449,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
             scopes: [StatisticScope.allPlayers],
           );
           final stat2 = Statistic(
-            type: StatisticType.averageScore,
-            color: AppColor.pink,
-            displayCount: 5,
-            scopes: [StatisticScope.allPlayers],
-          );
-          final stat3 = Statistic(
-            type: StatisticType.averageScore,
-            color: AppColor.green,
-            displayCount: 8,
+            type: StatisticType.totalMatches,
+            color: AppColor.orange,
+            displayCount: 3,
             scopes: [StatisticScope.allPlayers],
           );
 
-          await db.statisticDao.addStatisticsAsList(
-            statistics: [stat1, stat2, stat3],
-          );
+          await db.statisticDao.addStatisticsAsList(statistics: [stat1, stat2]);
         },
       );
     });
