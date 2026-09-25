@@ -40,7 +40,6 @@ class _ChooseTileState extends State<ChooseTile> {
             }
           : null,
       child: Container(
-        margin: CustomTheme.tileMargin,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: CustomTheme.standardBoxDecoration,
         child: Row(

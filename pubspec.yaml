@@ -46,6 +46,7 @@ dependencies:
   share_plus: ^12.0.2
   shared_preferences: ^2.5.5
   skeletonizer: ^3.0.0
+  showcaseview: ^5.1.0
   syncfusion_flutter_datepicker: ^34.2.9
   url_launcher: ^6.3.2
   uuid: ^4.6.0
@@ -68,6 +69,7 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
+    - assets/App-Icon-Rounded.png
     - assets/schemas/app_schema.json
     - assets/schemas/match_schema.json
     - .env

@@ -134,6 +134,7 @@ class CustomTheme {
   static const SearchBarThemeData searchBarTheme = SearchBarThemeData(
     textStyle: WidgetStatePropertyAll(TextStyle(color: textColor)),
     hintStyle: WidgetStatePropertyAll(TextStyle(color: hintColor)),
+    overlayColor: WidgetStatePropertyAll(Colors.transparent),
   );
 
   static final RadioThemeData radioTheme = RadioThemeData(
