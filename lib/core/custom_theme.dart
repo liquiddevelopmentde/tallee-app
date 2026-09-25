@@ -97,6 +97,7 @@ class CustomTheme {
   // ==================== Component Themes ====================
   static const AppBarTheme appBarTheme = AppBarTheme(
     backgroundColor: backgroundColor,
+    actionsIconTheme: IconThemeData(color: textColor),
     elevation: 0,
     scrolledUnderElevation: 0,
     centerTitle: true,
