@@ -441,7 +441,6 @@ class _StatisticsViewState extends State<StatisticsView> {
     groups = results[3] as List<Group>;
     games = results[4] as List<Game>;
 
-    print(statistics);
     loadFilterData();
 
     setState(() {

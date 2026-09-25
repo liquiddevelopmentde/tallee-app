@@ -153,7 +153,7 @@ class _GameViewState extends State<GameView> {
                       if (allGames.isNotEmpty)
                         if (displayedGames.isEmpty)
                           // No filtered games
-                          Expanded(
+                          Positioned.fill(
                             child: EmptyViewMessage(
                               icon: Icons.search,
                               title: loc.no_results,
@@ -162,7 +162,7 @@ class _GameViewState extends State<GameView> {
                             ),
                           )
                         else
-                          Expanded(
+                          Positioned.fill(
                             child: NotificationListener<UserScrollNotification>(
                               onNotification: (notification) {
                                 if (notification.direction ==
