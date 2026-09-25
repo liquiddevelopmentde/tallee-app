@@ -614,7 +614,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no => 'Nein';
 
   @override
-  String get no_data_available => 'Keine Daten verfügbar';
+  String get no_results_yet => 'Noch keine Ergebnisse';
 
   @override
   String get no_data_to_export => 'Keine Daten zum exportieren';

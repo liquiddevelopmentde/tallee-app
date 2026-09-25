@@ -233,7 +233,7 @@
     }
   },
   "no": "No",
-  "no_data_available": "No data available",
+  "no_results_yet": "No results yet",
   "no_data_to_export": "No data to export",
   "no_games_created_yet": "You haven't created any games yet. Create a new game so it will appear here.",
   "no_groups_created_yet": "You haven't created any groups yet. Create a new group so it will appear here.",

@@ -608,7 +608,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no => 'No';
 
   @override
-  String get no_data_available => 'No data available';
+  String get no_results_yet => 'No results yet';
 
   @override
   String get no_data_to_export => 'No data to export';

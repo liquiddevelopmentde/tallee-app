@@ -1160,11 +1160,11 @@ abstract class AppLocalizations {
   /// **'No'**
   String get no;
 
-  /// No description provided for @no_data_available.
+  /// No description provided for @no_results_yet.
   ///
   /// In en, this message translates to:
-  /// **'No data available'**
-  String get no_data_available;
+  /// **'No results yet'**
+  String get no_results_yet;
 
   /// No description provided for @no_data_to_export.
   ///
