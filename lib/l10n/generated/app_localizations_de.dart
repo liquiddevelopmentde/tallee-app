@@ -701,7 +701,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get onboarding_welcome_desc =>
-      'Dein Begleiter für Spieleabende. Erfasse Spiele, verfolge Sieger und verwalte deine Spielhistorie.';
+      'Dein Begleiter für Spieleabende. Erfasse Spiele, verfolge Ergebnisse und verwalte deine Spielhistorie.';
 
   @override
   String get onboarding_welcome_title => 'Willkommen bei Tallee';

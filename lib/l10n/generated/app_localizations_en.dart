@@ -674,10 +674,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboarding_privacy_desc =>
-      'Share matches easily via QR-codes or export specific matches and full backups as local files. Your data stays private by default.';
+      'Share matches easily via QR-codes or export specific matches and full backups as local files.';
 
   @override
-  String get onboarding_privacy_title => 'Sharing & Privacy';
+  String get onboarding_privacy_title => 'Sharing & Backup';
 
   @override
   String get onboarding_rulesets_desc =>

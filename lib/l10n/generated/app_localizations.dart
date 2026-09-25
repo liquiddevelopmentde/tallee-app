@@ -1283,13 +1283,13 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding_privacy_desc.
   ///
   /// In en, this message translates to:
-  /// **'Share matches easily via QR-codes or export specific matches and full backups as local files. Your data stays private by default.'**
+  /// **'Share matches easily via QR-codes or export specific matches and full backups as local files.'**
   String get onboarding_privacy_desc;
 
   /// No description provided for @onboarding_privacy_title.
   ///
   /// In en, this message translates to:
-  /// **'Sharing & Privacy'**
+  /// **'Sharing & Backup'**
   String get onboarding_privacy_title;
 
   /// No description provided for @onboarding_rulesets_desc.
