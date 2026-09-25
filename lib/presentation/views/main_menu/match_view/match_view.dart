@@ -333,7 +333,8 @@ class _MatchViewState extends State<MatchView> {
               ],
             ),
           ),
-          // Outside the skeleton so it is not cross-faded on loading changes
+
+          // Create match button
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: FloatingAnimatedButton(

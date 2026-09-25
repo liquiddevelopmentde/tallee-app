@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
@@ -106,160 +107,197 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
           if (didPop) return;
           await updateCount();
         },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            spacing: 12,
-            children: [
-              // Statistic
-              StatisticsTile(
-                statistic: widget.statistic,
-                margin: EdgeInsets.zero,
-                width: MediaQuery.sizeOf(context).width * 0.95,
-                values: widget.values,
-                displayCount: displayCount,
-                showAllValues: true,
-                showDisplayCountHighlighting: showHighlighting,
-              ),
-
-              // Details
-              InfoTile(
-                leadingWidget: const Icon(Icons.filter_alt),
-                width: MediaQuery.sizeOf(context).width * 0.95,
-                title: loc.filter,
-                content: Column(
-                  spacing: 8,
-                  children: [
-                    // Scopes
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(loc.scope, style: style),
-                          Text(
-                            widget.statistic.scopes
-                                .map(
-                                  (scope) =>
-                                      translateScopeToString(scope, context),
-                                )
-                                .join('\n'),
-                            textAlign: TextAlign.end,
-                          ),
-                        ],
+        child: Stack(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 120),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    spacing: 12,
+                    children: [
+                      // Statistic
+                      StatisticsTile(
+                        statistic: widget.statistic,
+                        margin: EdgeInsets.zero,
+                        width: MediaQuery.sizeOf(context).width * 0.95,
+                        values: widget.values,
+                        displayCount: displayCount,
+                        showAllValues: true,
+                        showDisplayCountHighlighting: showHighlighting,
                       ),
-                    ),
-                    divider,
 
-                    // Timeframe
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(loc.timeframe, style: style),
-                          Text(
-                            widget.statistic.timeframe == Timeframe.custom &&
-                                    widget.statistic.startDate != null &&
-                                    widget.statistic.endDate != null
-                                ? '${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.startDate!)} - ${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.endDate!)}'
-                                : translateTimeframeToString(
-                                    widget.statistic.timeframe,
-                                    context,
-                                  ),
-                            textAlign: TextAlign.end,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Groups
-                    if (widget.statistic.selectedGroups != null) ...[
-                      divider,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // Details
+                      InfoTile(
+                        leadingWidget: const Icon(Icons.filter_alt),
+                        width: MediaQuery.sizeOf(context).width * 0.95,
+                        title: loc.filter,
+                        content: Column(
+                          spacing: 8,
                           children: [
-                            Text(loc.groups, style: style),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              child: Wrap(
-                                alignment: WrapAlignment.end,
-                                children: groupTextList,
+                            // Scopes
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(loc.scope, style: style),
+                                  Text(
+                                    widget.statistic.scopes
+                                        .map(
+                                          (scope) => translateScopeToString(
+                                            scope,
+                                            context,
+                                          ),
+                                        )
+                                        .join('\n'),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
+                            divider,
 
-                    // Games
-                    if (widget.statistic.selectedGames != null) ...[
-                      divider,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(loc.games, style: style),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.5,
-                              child: Wrap(
-                                alignment: WrapAlignment.end,
-                                children: gameTextList,
+                            // Timeframe
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(loc.timeframe, style: style),
+                                  Text(
+                                    widget.statistic.timeframe ==
+                                                Timeframe.custom &&
+                                            widget.statistic.startDate !=
+                                                null &&
+                                            widget.statistic.endDate != null
+                                        ? '${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.startDate!)} - ${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.endDate!)}'
+                                        : translateTimeframeToString(
+                                            widget.statistic.timeframe,
+                                            context,
+                                          ),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
 
-                    if (widget.values.isNotEmpty) ...[
-                      divider,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(loc.displayed_entries, style: style),
-                            Row(
-                              children: [
-                                HapticIconButton(
-                                  icon: const Icon(Icons.remove),
-                                  onPressed: displayCount <= 1
-                                      ? null
-                                      : () => updateDisplayCount(-1),
+                            // Groups
+                            if (widget.statistic.selectedGroups != null) ...[
+                              divider,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
                                 ),
-                                SizedBox(
-                                  width: 30,
-                                  child: Text(
-                                    '$displayCount',
-                                    textAlign: TextAlign.center,
-                                  ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(loc.groups, style: style),
+                                    SizedBox(
+                                      width:
+                                          MediaQuery.of(context).size.width *
+                                          0.6,
+                                      child: Wrap(
+                                        alignment: WrapAlignment.end,
+                                        children: groupTextList,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                HapticIconButton(
-                                  icon: const Icon(Icons.add),
-                                  onPressed:
-                                      displayCount >= widget.values.length
-                                      ? null
-                                      : () => updateDisplayCount(1),
+                              ),
+                            ],
+
+                            // Games
+                            if (widget.statistic.selectedGames != null) ...[
+                              divider,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
                                 ),
-                              ],
-                            ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(loc.games, style: style),
+                                    SizedBox(
+                                      width:
+                                          MediaQuery.of(context).size.width *
+                                          0.5,
+                                      child: Wrap(
+                                        alignment: WrapAlignment.end,
+                                        children: gameTextList,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ),
                     ],
-                  ],
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+            Positioned(
+              bottom: MediaQuery.paddingOf(context).bottom + 20,
+              child: Row(
+                spacing: 10,
+                children: [
+                  FloatingAnimatedButton(
+                    icon: Icons.remove,
+                    onPressed: displayCount <= 1
+                        ? null
+                        : () => updateDisplayCount(-1),
+                  ),
+
+                  // Current display count
+                  Container(
+                    constraints: const BoxConstraints(minWidth: 90),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      color: CustomTheme.boxColor,
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: CustomTheme.boxBorderColor),
+                    ),
+                    child: Text(
+                      loc.top_n(displayCount),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  FloatingAnimatedButton(
+                    icon: Icons.add,
+                    onPressed: displayCount >= widget.values.length
+                        ? null
+                        : () => updateDisplayCount(1),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

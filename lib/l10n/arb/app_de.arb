@@ -363,6 +363,14 @@
   "today": "Heute",
   "today_at": "Heute um",
   "token_expired": "Token abgelaufen",
+  "top_n": "Top {count}",
+  "@top_n": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "total_losses": "Niederlagen insgesamt",
   "total_matches": "Spiele insgesamt",
   "total_score": "Punktzahl insgesamt",

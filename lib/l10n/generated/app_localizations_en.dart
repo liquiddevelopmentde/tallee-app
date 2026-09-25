@@ -981,6 +981,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get token_expired => 'Token expired';
 
   @override
+  String top_n(int count) {
+    return 'Top $count';
+  }
+
+  @override
   String get total_losses => 'Total losses';
 
   @override

@@ -1814,6 +1814,12 @@ abstract class AppLocalizations {
   /// **'Token expired'**
   String get token_expired;
 
+  /// No description provided for @top_n.
+  ///
+  /// In en, this message translates to:
+  /// **'Top {count}'**
+  String top_n(int count);
+
   /// No description provided for @total_losses.
   ///
   /// In en, this message translates to:

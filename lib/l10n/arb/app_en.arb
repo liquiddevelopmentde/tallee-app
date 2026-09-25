@@ -374,6 +374,14 @@
   "today": "Today",
   "today_at": "Today at",
   "token_expired": "Token expired",
+  "top_n": "Top {count}",
+  "@top_n": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "total_losses": "Total losses",
   "total_matches": "Total matches",
   "total_score": "Total score",
