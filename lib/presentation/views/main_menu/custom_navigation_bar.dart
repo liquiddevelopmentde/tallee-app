@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:new_version_plus/model/version_status.dart';
 import 'package:once/once.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +71,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await checkVersionAndUpdate(context);
-      openNewsDialog();
+      await openNewsDialog();
+      if (!mounted) return;
+      showTabShowcase();
     });
 
     showcaseProvider = context.read<ShowcaseProvider>();
@@ -84,7 +86,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       routeObserver.subscribe(this, route);
     }
 
-    showTabShowcase();
     super.didChangeDependencies();
   }
 
@@ -344,20 +345,21 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     }
   }
 
-  /// Opens the [NewsView] when the user installs a new version
-  void openNewsDialog() {
-    Once.runOnEveryNewVersion(
+  /// Opens the [NewsView] when the user installs a new version.
+  /// Completes once the dialog has been closed (or immediately if it is not shown).
+  Future<void> openNewsDialog() async {
+    final dialogFinished = await Once.runOnEveryNewVersion<Future<void>>(
       key: 'whats-new-screen',
-      callback: () {
-        Future.delayed(OPEN_WITH_NAVIGATION_DELAY, () {
-          if (!mounted) return;
-          Navigator.of(
-            context,
-            rootNavigator: true,
-          ).push(adaptiveSheetRoute(builder: (context) => const NewsView()));
-        });
+      callback: () async {
+        await Future.delayed(OPEN_WITH_NAVIGATION_DELAY);
+        if (!mounted) return;
+        await Navigator.of(
+          context,
+          rootNavigator: true,
+        ).push(adaptiveSheetRoute(builder: (context) => const NewsView()));
       },
     );
+    await dialogFinished;
   }
 
   /// Checks for a new version and shows an update dialog if available.
