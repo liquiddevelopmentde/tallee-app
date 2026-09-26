@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -171,7 +171,10 @@ class _TalleeState extends State<Tallee> {
     return MaterialApp(
       navigatorKey: Tallee.navigatorKey,
       scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        ...AppLocalizations.localizationsDelegates,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       localeResolutionCallback: (locale, supportedLocales) {
         for (final supportedLocale in supportedLocales) {
