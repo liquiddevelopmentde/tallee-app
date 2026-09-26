@@ -1,7 +1,38 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter/material.dart' as flutter_material;
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_back_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_close_button.dart';
+
+extension ThemeDataToFlutter on ThemeData {
+  flutter_material.ThemeData toFlutterThemeData() {
+    return flutter_material.ThemeData(
+      brightness: brightness,
+      primaryColor: primaryColor,
+      dividerColor: dividerColor,
+      cardColor: cardColor,
+      colorScheme: flutter_material.ColorScheme(
+        brightness: colorScheme.brightness,
+        primary: colorScheme.primary,
+        onPrimary: colorScheme.onPrimary,
+        secondary: colorScheme.secondary,
+        onSecondary: colorScheme.onSecondary,
+        error: colorScheme.error,
+        onError: colorScheme.onError,
+        surface: colorScheme.surface,
+        onSurface: colorScheme.onSurface,
+        surfaceContainerHighest: colorScheme.surfaceContainerHighest,
+      ),
+      textTheme: flutter_material.TextTheme(
+        bodyMedium: textTheme.bodyMedium,
+        headlineSmall: textTheme.headlineSmall,
+        titleLarge: textTheme.titleLarge,
+        titleMedium: textTheme.titleMedium,
+        bodyLarge: textTheme.bodyLarge,
+      ),
+    );
+  }
+}
 
 /// Theme class that defines colors, border radius, padding, decorations, and ThemeData
 class CustomTheme {
