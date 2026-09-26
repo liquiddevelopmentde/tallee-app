@@ -231,6 +231,7 @@ const dependencies = <Package>[
   _clock,
   _collection,
   _cupertino_icons,
+  _cupertino_ui,
   _dotted_border,
   _drift,
   _drift_flutter,
@@ -250,6 +251,7 @@ const dependencies = <Package>[
   _intl,
   _json_schema,
   _lottie,
+  _material_ui,
   _mobile_scanner,
   _new_version_plus,
   _once,
@@ -268,9 +270,7 @@ const dependencies = <Package>[
   _skeletonizer,
   _syncfusion_flutter_datepicker,
   _url_launcher,
-  _uuid,
-  _material_ui,
-  _cupertino_ui
+  _uuid
 ];
 
 /// Direct `dev_dependencies`.
@@ -40974,16 +40974,16 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// tallee 0.1.30+673
+/// tallee 0.1.31+674
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.1.30+673',
+    version: '0.1.31+674',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('dotted_border'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_dotenv'), PackageRef('flutter_localizations'), PackageRef('flutter_markdown_plus'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('http'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('mobile_scanner'), PackageRef('new_version_plus'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('pinput'), PackageRef('pretty_qr_code'), PackageRef('provider'), PackageRef('rate_my_app'), PackageRef('remove_unused_localizations'), PackageRef('sentry_flutter'), PackageRef('share_plus'), PackageRef('shared_preferences'), PackageRef('showcaseview'), PackageRef('skeletonizer'), PackageRef('syncfusion_flutter_datepicker'), PackageRef('url_launcher'), PackageRef('uuid'), PackageRef('material_ui'), PackageRef('cupertino_ui')],
+    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('cupertino_ui'), PackageRef('dotted_border'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_dotenv'), PackageRef('flutter_localizations'), PackageRef('flutter_markdown_plus'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('http'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('material_ui'), PackageRef('mobile_scanner'), PackageRef('new_version_plus'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('pinput'), PackageRef('pretty_qr_code'), PackageRef('provider'), PackageRef('rate_my_app'), PackageRef('remove_unused_localizations'), PackageRef('sentry_flutter'), PackageRef('share_plus'), PackageRef('shared_preferences'), PackageRef('showcaseview'), PackageRef('skeletonizer'), PackageRef('syncfusion_flutter_datepicker'), PackageRef('url_launcher'), PackageRef('uuid')],
     devDependencies: [PackageRef('arb_utils'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('sentry_dart_plugin'), PackageRef('sort_pubspec_dependencies')],
     license: '''GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
