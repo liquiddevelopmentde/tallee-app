@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/dto/news_item.dart';
@@ -61,16 +61,17 @@ class NewsCard extends StatelessWidget {
   }
 
   MarkdownStyleSheet buildMarkdownSheet(BuildContext context) {
-    return MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-      p: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: CustomTheme.textColor,
-        overflow: TextOverflow.visible,
-      ),
-      strong: const TextStyle(
-        color: CustomTheme.textColor,
-        fontWeight: FontWeight.bold,
-        overflow: TextOverflow.visible,
-      ),
-    );
+    return MarkdownStyleSheet.fromTheme(Theme.of(context).toFlutterThemeData())
+        .copyWith(
+          p: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: CustomTheme.textColor,
+            overflow: TextOverflow.visible,
+          ),
+          strong: const TextStyle(
+            color: CustomTheme.textColor,
+            fontWeight: FontWeight.bold,
+            overflow: TextOverflow.visible,
+          ),
+        );
   }
 }

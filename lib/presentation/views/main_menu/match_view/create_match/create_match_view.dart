@@ -1,7 +1,8 @@
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -17,10 +18,12 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/crea
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/custom_stepper.dart';
 import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
+import 'package:tallee/state/showcase_provider.dart';
 
 class CreateMatchView extends StatefulWidget {
   /// A view that allows creating a new match
@@ -69,6 +72,27 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   List<Player> selectedPlayers = [];
   List<Team> selectedUnits = [];
 
+  final GlobalKey createMatchViewMatchNameKey = GlobalKey();
+  final String createMatchViewMatchNameIdentifier =
+      'create_match_view_game_name';
+
+  final GlobalKey createMatchViewMatchGameKey = GlobalKey();
+  final String createMatchViewMatchGameIdentifier =
+      'create_match_view_match_game';
+
+  final GlobalKey createMatchViewSelectPlayersKey = GlobalKey();
+  final String createMatchViewSelectPlayersIdentifier =
+      'create_match_view_select_players';
+
+  final GlobalKey createMatchViewCreateMatchKey = GlobalKey();
+  final String createMatchViewCreateMatchIdentifier =
+      'create_match_view_create_match';
+
+  final String matchViewCreateButtonIdentifier =
+      'match_view_create_match_button';
+
+  late final ShowcaseProvider showcaseProvider;
+
   /// GlobalKey for ScaffoldMessenger to show snackbars
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -78,8 +102,29 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     matchNameController.addListener(() {
       setState(() {});
     });
-
     loadData();
+
+    showcaseProvider = context.read<ShowcaseProvider>();
+
+    if (!widget.editMode &&
+        showcaseProvider.hasSeen(matchViewCreateButtonIdentifier)) {
+      handleShowcase(
+        widgetKeys: [
+          createMatchViewMatchNameKey,
+          createMatchViewMatchGameKey,
+          createMatchViewSelectPlayersKey,
+          createMatchViewCreateMatchKey,
+        ],
+        identifiers: [
+          createMatchViewMatchNameIdentifier,
+          createMatchViewMatchGameIdentifier,
+          createMatchViewSelectPlayersIdentifier,
+          createMatchViewCreateMatchIdentifier,
+        ],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
+    }
   }
 
   @override
@@ -101,123 +146,149 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     final buttonText = widget.editMode ? loc.save_changes : loc.create_match;
     final viewTitle = widget.editMode ? loc.edit_match : loc.create_new_match;
 
-    return ScaffoldMessenger(
-      key: _scaffoldMessengerKey,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: CustomTheme.backgroundColor,
-        appBar: AppBar(title: Text(viewTitle)),
-        body: SafeArea(
-          maintainBottomViewPadding: true,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              // Match name input field.
-              Container(
-                margin: CustomTheme.tileMargin,
-                child: TextInputField(
-                  controller: matchNameController,
-                  hintText: hintText ?? '',
-                  maxLength: MAX_MATCH_NAME_LENGTH,
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (bool didPop, dynamic result) {
+        if (didPop) {
+          try {
+            ShowcaseView.get().dismiss();
+          } catch (_) {}
+        }
+      },
+      child: ScaffoldMessenger(
+        key: _scaffoldMessengerKey,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: CustomTheme.backgroundColor,
+          appBar: AppBar(title: Text(viewTitle)),
+          body: SafeArea(
+            maintainBottomViewPadding: true,
+            minimum: const EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              spacing: 10,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // Match name input field.
+                CustomShowcaseWidget(
+                  showcaseKey: createMatchViewMatchNameKey,
+                  identifier: createMatchViewMatchNameIdentifier,
+                  description: loc.showcase_create_match_name,
+                  child: TextInputField(
+                    controller: matchNameController,
+                    hintText: hintText ?? '',
+                    maxLength: MAX_MATCH_NAME_LENGTH,
+                  ),
                 ),
-              ),
 
-              // Game selection tile.
-              if (!widget.editMode)
+                if (!widget.editMode)
+                  CustomShowcaseWidget(
+                    showcaseKey: createMatchViewMatchGameKey,
+                    identifier: createMatchViewMatchGameIdentifier,
+                    description: loc.showcase_create_match_game,
+                    child: ChooseTile(
+                      title: loc.game,
+                      trailing: selectedGame == null
+                          ? Text(loc.none_group)
+                          : Text(selectedGame!.name),
+                      onPressed: () async => await onChoosingGame(),
+                    ),
+                  ),
+
+                // Choose the default lives
+                if (selectedGame?.ruleset == Ruleset.lives && !widget.editMode)
+                  ChooseTile(
+                    title: getLifeLabel(loc, selectedLives),
+                    trailing: CustomStepper(
+                      value: selectedLives,
+                      onChanged: (int newValue) =>
+                          setState(() => selectedLives = newValue),
+                      minValue: 1,
+                      maxValue: 99,
+                    ),
+                  ),
+
+                // Group selection tile.
                 ChooseTile(
-                  title: loc.game,
-                  trailing: selectedGame == null
+                  title: loc.group,
+                  trailing: selectedGroup == null
                       ? Text(loc.none_group)
-                      : Text(selectedGame!.name),
-                  onPressed: () async => await onChoosingGame(),
+                      : Text(selectedGroup!.name),
+                  onPressed: () async => onChoosingGroup(),
                 ),
 
-              // Choose the default lives
-              if (selectedGame?.ruleset == Ruleset.lives && !widget.editMode)
-                ChooseTile(
-                  title: getLifeLabel(loc, selectedLives),
-                  trailing: CustomStepper(
-                    value: selectedLives,
-                    onChanged: (int newValue) =>
-                        setState(() => selectedLives = newValue),
-                    minValue: 1,
-                    maxValue: 99,
+                // Creation date selection tile.
+                if (widget.editMode)
+                  ChooseTile(
+                    title: loc.creation_date,
+                    trailing: selectedCreationDate == null
+                        ? Text(loc.today)
+                        : Text(
+                            DateFormat.yMMMd(
+                              Localizations.localeOf(context).toString(),
+                            ).format(selectedCreationDate!),
+                          ),
+                    onPressed: () async => onCreationDateSelection(),
+                  ),
+
+                // Team match switch
+                if (!widget.editMode)
+                  ChooseTile(
+                    title: loc.team_match,
+                    trailing: CustomAdaptiveSwitch(
+                      padding: const EdgeInsets.symmetric(vertical: -15),
+                      value: isTeamMatch,
+                      onChanged: (value) => setState(() {
+                        isTeamMatch = value;
+                        // Always reset pairs to individual units when team match is active
+                        // or when explicitly disabled, to ensure a clean state.
+                        selectedUnits = selectedPlayers
+                            .map((p) => Team(name: '', members: [p]))
+                            .toList();
+                      }),
+                    ),
+                  ),
+
+                // Player selection widget.
+                CustomShowcaseWidget(
+                  showcaseKey: createMatchViewSelectPlayersKey,
+                  identifier: createMatchViewSelectPlayersIdentifier,
+                  description: loc.showcase_create_match_players,
+                  targetPadding: const .only(top: 10),
+                  child: Expanded(
+                    child: PlayerSelectionWidget.multiple(
+                      key: ValueKey(selectedGroup?.id ?? 'no_group'),
+                      initialSelectedUnits: selectedUnits,
+                      pairingEnabled: !isTeamMatch,
+                      onPlayerCreated: () => widget.onMatchesUpdated?.call(),
+                      onMultipleChanged: (players, units) {
+                        setState(() {
+                          selectedPlayers = players;
+                          selectedUnits = units;
+                          // Do not auto-enable team match.
+                          // Pairs are handled internally via selectedUnits.
+                          removeGroupWhenNoMemberLeft();
+                        });
+                      },
+                    ),
                   ),
                 ),
 
-              // Group selection tile.
-              ChooseTile(
-                title: loc.group,
-                trailing: selectedGroup == null
-                    ? Text(loc.none_group)
-                    : Text(selectedGroup!.name),
-                onPressed: () async => onChoosingGroup(),
-              ),
-
-              // Creation date selection tile.
-              if (widget.editMode)
-                ChooseTile(
-                  title: loc.creation_date,
-                  trailing: selectedCreationDate == null
-                      ? Text(loc.today)
-                      : Text(
-                          DateFormat.yMMMd(
-                            Localizations.localeOf(context).toString(),
-                          ).format(selectedCreationDate!),
-                        ),
-                  onPressed: () async => onCreationDateSelection(),
-                ),
-
-              // Team match switch
-              if (!widget.editMode)
-                ChooseTile(
-                  title: loc.team_match,
-                  trailing: CustomAdaptiveSwitch(
-                    padding: const EdgeInsets.symmetric(vertical: -15),
-                    value: isTeamMatch,
-                    onChanged: (value) => setState(() {
-                      isTeamMatch = value;
-                      // Always reset pairs to individual units when team match is active
-                      // or when explicitly disabled, to ensure a clean state.
-                      selectedUnits = selectedPlayers
-                          .map((p) => Team(name: '', members: [p]))
-                          .toList();
-                    }),
+                // Create or save button.
+                CustomShowcaseWidget(
+                  showcaseKey: createMatchViewCreateMatchKey,
+                  identifier: createMatchViewCreateMatchIdentifier,
+                  description: loc.showcase_create_match_button,
+                  child: BottomAnimatedButton(
+                    sizeRelativeToWidth: 0.95,
+                    buttonType: ButtonType.primary,
+                    onPressed: isSubmitButtonEnabled()
+                        ? () => submitButtonNavigation(context)
+                        : null,
+                    buttonText: buttonText,
                   ),
                 ),
-
-              // Player selection widget.
-              Expanded(
-                child: PlayerSelectionWidget.multiple(
-                  key: ValueKey(selectedGroup?.id ?? 'no_group'),
-                  initialSelectedUnits: selectedUnits,
-                  pairingEnabled: !isTeamMatch,
-                  onPlayerCreated: () => widget.onMatchesUpdated?.call(),
-                  onMultipleChanged: (players, units) {
-                    setState(() {
-                      selectedPlayers = players;
-                      selectedUnits = units;
-                      // Do not auto-enable team match.
-                      // Pairs are handled internally via selectedUnits.
-                      removeGroupWhenNoMemberLeft();
-                    });
-                  },
-                ),
-              ),
-
-              // Create or save button.
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: BottomAnimatedButton(
-                  sizeRelativeToWidth: 0.95,
-                  buttonType: ButtonType.primary,
-                  onPressed: isSubmitButtonEnabled()
-                      ? () => submitButtonNavigation(context)
-                      : null,
-                  buttonText: buttonText,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -359,11 +430,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         return Theme(
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
-            textButtonTheme: TextButtonThemeData(
-              style: ButtonStyle(
-                overlayColor: WidgetStateProperty.all(Colors.transparent),
-              ),
-            ),
             colorScheme: const ColorScheme.dark(
               primary: CustomTheme.primaryColor,
               onPrimary: CustomTheme.textColor,
@@ -495,6 +561,16 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// If a match is being edited, updates the match in the database.
   /// Otherwise, creates a new match and navigates to the MatchResultView.
   void submitButtonNavigation(BuildContext context) async {
+    // mark showcase as seen
+    if (showcaseProvider.shouldShowShowcase(
+      createMatchViewMatchNameIdentifier,
+    )) {
+      showcaseProvider.markAsSeen(createMatchViewMatchNameIdentifier);
+      showcaseProvider.markAsSeen(createMatchViewMatchGameIdentifier);
+      showcaseProvider.markAsSeen(createMatchViewSelectPlayersIdentifier);
+      showcaseProvider.markAsSeen(createMatchViewCreateMatchIdentifier);
+    }
+
     if (widget.editMode) {
       await updateMatch();
       if (context.mounted) {

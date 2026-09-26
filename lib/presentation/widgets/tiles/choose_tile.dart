@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 
@@ -40,7 +40,6 @@ class _ChooseTileState extends State<ChooseTile> {
             }
           : null,
       child: Container(
-        margin: CustomTheme.tileMargin,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: CustomTheme.standardBoxDecoration,
         child: Row(

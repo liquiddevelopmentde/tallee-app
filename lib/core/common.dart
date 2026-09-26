@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:material_ui/material_ui.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/state/showcase_provider.dart';
 
 export 'app_color_utils.dart';
 export 'icon_utils.dart';
@@ -89,4 +92,29 @@ bool isNetworkError(Object error) {
       error is http.ClientException ||
       error.toString().contains('SocketException') ||
       error.toString().contains('Failed host lookup');
+}
+
+void handleShowcase({
+  required List<GlobalKey> widgetKeys,
+  required List<String> identifiers,
+  required BuildContext context,
+  required ShowcaseProvider showcaseProvider,
+  bool isStart = false,
+}) {
+  assert(
+    widgetKeys.length == identifiers.length,
+    'widgetKeys and identifiers have to have the same length',
+  );
+  if (identifiers.isEmpty) return;
+
+  final String firstIdentifier = identifiers.first;
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (showcaseProvider.shouldShowShowcase(firstIdentifier)) {
+      ShowcaseView.get().startShowCase(
+        widgetKeys,
+        delay: const Duration(milliseconds: 400),
+      );
+    }
+  });
 }

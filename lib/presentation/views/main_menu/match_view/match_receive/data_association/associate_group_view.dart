@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -149,10 +149,13 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                 softWrap: true,
               ),
             const Spacer(),
-            BottomAnimatedButton(
-              buttonText: loc.save_match,
-              sizeRelativeToWidth: 0.95,
-              onPressed: saveMatch,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: BottomAnimatedButton(
+                buttonText: loc.save_match,
+                sizeRelativeToWidth: 0.95,
+                onPressed: saveMatch,
+              ),
             ),
           ],
         ),
