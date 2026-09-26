@@ -62,7 +62,8 @@ dev_dependencies:
   sort_pubspec_dependencies: 0.0.2
 
 dependency_overrides:
-  device_info_plus: ^12.1.0
+  device_info_plus: ^13.2.0
+  package_info_plus: ^10.2.1
 
 flutter:
   uses-material-design: true

@@ -296,17 +296,15 @@ class RemoteShareService {
 
   Future<({ImportResult result, Match? match, String filePath})>
   chooseFileToImport() async {
-    final path = await FilePicker.pickFiles(
-      allowMultiple: false,
+    final file = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: [MATCH_FILE_EXTENSION],
     );
 
-    if (path == null || path.files.isEmpty) {
+    if (file == null) {
       return (result: ImportResult.canceled, match: null, filePath: '');
     }
 
-    final file = path.files.single;
     final filePath = file.path ?? file.name;
 
     if (!filePath.toLowerCase().endsWith('.$MATCH_FILE_EXTENSION')) {

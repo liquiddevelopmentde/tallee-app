@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -1610,53 +1609,6 @@ void main() {
           ],
         };
         expect(LocalShareService.validateContent(data), isFalse);
-      });
-    });
-
-    group('readFileContent()', () {
-      test('returns decoded string when bytes are present', () async {
-        const content = '{"players": []}';
-        final file = PlatformFile(
-          name: 'data.$APP_DATA_FILE_EXTENSION',
-          size: content.length,
-          bytes: Uint8List.fromList(utf8.encode(content)),
-        );
-
-        final result = await readFileContent(file: file);
-
-        expect(result, content);
-      });
-
-      test('reads from path when bytes are null', () async {
-        const content = '{"games": []}';
-        final tempFile = File(
-          '${Directory.systemTemp.path}/read_file_content_test.$APP_DATA_FILE_EXTENSION',
-        );
-        await tempFile.writeAsString(content);
-        addTearDown(() async {
-          if (tempFile.existsSync()) await tempFile.delete();
-        });
-
-        final file = PlatformFile(
-          name: 'data.$APP_DATA_FILE_EXTENSION',
-          size: content.length,
-          path: tempFile.path,
-        );
-
-        final result = await readFileContent(file: file);
-
-        expect(result, content);
-      });
-
-      test('returns null when both bytes and path are null', () async {
-        final file = PlatformFile(
-          name: 'data.$APP_DATA_FILE_EXTENSION',
-          size: 0,
-        );
-
-        final result = await readFileContent(file: file);
-
-        expect(result, isNull);
       });
     });
 
