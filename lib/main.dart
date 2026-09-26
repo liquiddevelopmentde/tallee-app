@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:material_ui/material_ui.dart';
@@ -174,6 +175,7 @@ class _TalleeState extends State<Tallee> {
       localizationsDelegates: const [
         ...AppLocalizations.localizationsDelegates,
         ...GlobalMaterialLocalizations.delegates,
+        ...GlobalCupertinoLocalizations.delegates,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       localeResolutionCallback: (locale, supportedLocales) {
