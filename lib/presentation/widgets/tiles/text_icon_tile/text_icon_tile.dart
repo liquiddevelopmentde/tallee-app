@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 
 export 'pair_tile.dart';
@@ -18,7 +17,6 @@ class TextIconTile extends StatelessWidget {
     required this.content,
     this.backgroundColor,
     this.icon = Icons.close,
-    this.onIconTap,
     this.onTileTap,
     this.highlighted = false,
     this.showIcon = false,
@@ -28,7 +26,6 @@ class TextIconTile extends StatelessWidget {
   final Color? backgroundColor;
   final bool showIcon;
   final IconData? icon;
-  final VoidCallback? onIconTap;
   final VoidCallback? onTileTap;
   final bool highlighted;
 
@@ -59,13 +56,7 @@ class TextIconTile extends StatelessWidget {
             Flexible(child: content),
             if (showIcon) ...<Widget>[
               const SizedBox(width: 3),
-              GestureDetector(
-                onTap: () {
-                  HapticFeedback.selectionClick();
-                  onIconTap?.call();
-                },
-                child: Icon(icon!, size: 20),
-              ),
+              Icon(icon!, size: 20),
             ],
           ],
         ),

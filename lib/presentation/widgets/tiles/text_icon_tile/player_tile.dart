@@ -8,14 +8,12 @@ class PlayerTile extends StatelessWidget {
   const PlayerTile({
     super.key,
     required this.player,
-    this.onIconTap,
     this.onTileTap,
     this.backgroundColor,
     this.showIcon = false,
   });
 
   final Player player;
-  final VoidCallback? onIconTap;
   final VoidCallback? onTileTap;
   final Color? backgroundColor;
   final bool showIcon;
@@ -25,7 +23,6 @@ class PlayerTile extends StatelessWidget {
     return TextIconTile(
       showIcon: showIcon,
       highlighted: player.deleted,
-      onIconTap: onIconTap,
       onTileTap: onTileTap,
       backgroundColor: backgroundColor,
       content: buildUnitNameWidget(
