@@ -1,6 +1,6 @@
 import 'dart:core' hide Match;
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/data/models/models.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -143,19 +143,22 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                 softWrap: true,
               ),
             const Spacer(),
-            BottomAnimatedButton(
-              buttonText: loc.confirm,
-              sizeRelativeToWidth: 0.95,
-              onPressed: () {
-                Navigator.of(context).push(
-                  adaptivePageRoute(
-                    builder: (context) => AssociatePlayersView(
-                      match: widget.match,
-                      associatedGame: associatedGame,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: BottomAnimatedButton(
+                buttonText: loc.confirm,
+                sizeRelativeToWidth: 0.95,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    adaptivePageRoute(
+                      builder: (context) => AssociatePlayersView(
+                        match: widget.match,
+                        associatedGame: associatedGame,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ],
         ),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -134,7 +134,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
                     horizontal: 16,
                     vertical: 12,
                   ),
-                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  margin: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
                     widget.buttonText,
                     style: textStyle,

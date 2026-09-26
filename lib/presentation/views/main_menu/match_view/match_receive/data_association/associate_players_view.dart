@@ -1,6 +1,6 @@
 import 'dart:core' hide Match;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -123,28 +123,31 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                 },
               ),
             ),
-            BottomAnimatedButton(
-              buttonText: widget.match.group == null
-                  ? loc.save_match
-                  : loc.confirm,
-              sizeRelativeToWidth: 0.95,
-              onPressed: unassignedCount == 0
-                  ? () async {
-                      if (widget.match.group == null) {
-                        await saveMatch();
-                      } else {
-                        await Navigator.of(context).push(
-                          adaptivePageRoute(
-                            builder: (context) => AssociateGroupView(
-                              match: widget.match,
-                              associations: associations,
-                              associatedGame: widget.associatedGame,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: BottomAnimatedButton(
+                buttonText: widget.match.group == null
+                    ? loc.save_match
+                    : loc.confirm,
+                sizeRelativeToWidth: 0.95,
+                onPressed: unassignedCount == 0
+                    ? () async {
+                        if (widget.match.group == null) {
+                          await saveMatch();
+                        } else {
+                          await Navigator.of(context).push(
+                            adaptivePageRoute(
+                              builder: (context) => AssociateGroupView(
+                                match: widget.match,
+                                associations: associations,
+                                associatedGame: widget.associatedGame,
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       }
-                    }
-                  : null,
+                    : null,
+              ),
             ),
           ],
         ),

@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -450,11 +450,6 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         return Theme(
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
-            textButtonTheme: TextButtonThemeData(
-              style: ButtonStyle(
-                overlayColor: WidgetStateProperty.all(Colors.transparent),
-              ),
-            ),
             colorScheme: const ColorScheme.dark(
               primary: CustomTheme.primaryColor,
               onPrimary: CustomTheme.textColor,
