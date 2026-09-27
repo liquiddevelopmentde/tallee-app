@@ -131,12 +131,13 @@ class LabeledDropdown<T> extends StatelessWidget {
             right: 16,
             bottom: bottomPadding ?? 8,
           ),
-          child: DropdownButtonHideUnderline(
-            child: Material(
-              //TODO: remove when decoupled material is supported in dropdown
-              color: Colors.transparent,
+          child: Material(
+            //TODO: remove when decoupled material is supported in dropdown
+            color: Colors.transparent,
+            child: DropdownButtonHideUnderline(
               child: isMultiSelect
                   ? DropdownButton2<T>(
+                      underline: const SizedBox.shrink(),
                       isExpanded: true,
                       hint: Text(hintText, style: hintStyle),
                       multiValueListenable: listenable,
@@ -203,6 +204,7 @@ class LabeledDropdown<T> extends StatelessWidget {
                       menuItemStyleData: menuStyle,
                     )
                   : DropdownButton2<T>(
+                      underline: const SizedBox.shrink(),
                       isExpanded: true,
                       hint: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
