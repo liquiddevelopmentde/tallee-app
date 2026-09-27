@@ -1,5 +1,6 @@
+import 'package:flutter/material.dart' show Material;
 import 'package:flutter/services.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:material_ui/material_ui.dart' hide Material;
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';

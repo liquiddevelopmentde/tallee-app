@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart' show Material;
+import 'package:material_ui/material_ui.dart' hide Material;
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/widgets/dropdown/dropdown_option.dart';
 
@@ -131,96 +132,100 @@ class LabeledDropdown<T> extends StatelessWidget {
             bottom: bottomPadding ?? 8,
           ),
           child: DropdownButtonHideUnderline(
-            child: isMultiSelect
-                ? DropdownButton2<T>(
-                    isExpanded: true,
-                    hint: Text(hintText, style: hintStyle),
-                    multiValueListenable: listenable,
-                    items: options
-                        .map(
-                          (option) => DropdownItem<T>(
-                            value: option.value,
-                            height: 44,
-                            closeOnTap: false,
-                            child: ValueListenableBuilder<List<T>>(
-                              valueListenable: listenable!,
-                              builder: (context, values, _) {
-                                final isSelected = values.contains(
-                                  option.value,
-                                );
-                                return Row(
-                                  children: [
-                                    Icon(
-                                      isSelected
-                                          ? Icons.check_box_outlined
-                                          : Icons.check_box_outline_blank,
-                                      color: CustomTheme.textColor,
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(child: optionRow(option)),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: enabled
-                        ? (value) {
-                            if (value != null) onItemTap!(value);
-                          }
-                        : null,
-                    selectedItemBuilder: (context) {
-                      return options
+            child: Material(
+              //TODO: remove when decoupled material is supported in dropdown
+              color: Colors.transparent,
+              child: isMultiSelect
+                  ? DropdownButton2<T>(
+                      isExpanded: true,
+                      hint: Text(hintText, style: hintStyle),
+                      multiValueListenable: listenable,
+                      items: options
                           .map(
-                            (_) => ValueListenableBuilder<List<T>>(
-                              valueListenable: listenable!,
-                              builder: (context, values, _) {
-                                final selectedLabels = options
-                                    .where((o) => values.contains(o.value))
-                                    .map((o) => o.label)
-                                    .join(', ');
-                                return Text(
-                                  selectedLabels,
-                                  style: values.isEmpty
-                                      ? hintStyle
-                                      : headerStyle,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                );
-                              },
+                            (option) => DropdownItem<T>(
+                              value: option.value,
+                              height: 44,
+                              closeOnTap: false,
+                              child: ValueListenableBuilder<List<T>>(
+                                valueListenable: listenable!,
+                                builder: (context, values, _) {
+                                  final isSelected = values.contains(
+                                    option.value,
+                                  );
+                                  return Row(
+                                    children: [
+                                      Icon(
+                                        isSelected
+                                            ? Icons.check_box_outlined
+                                            : Icons.check_box_outline_blank,
+                                        color: CustomTheme.textColor,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(child: optionRow(option)),
+                                    ],
+                                  );
+                                },
+                              ),
                             ),
                           )
-                          .toList();
-                    },
-                    buttonStyleData: buttonStyle,
-                    iconStyleData: iconStyle,
-                    dropdownStyleData: dropdownStyle,
-                    menuItemStyleData: menuStyle,
-                  )
-                : DropdownButton2<T>(
-                    isExpanded: true,
-                    hint: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(hintText, style: hintStyle),
+                          .toList(),
+                      onChanged: enabled
+                          ? (value) {
+                              if (value != null) onItemTap!(value);
+                            }
+                          : null,
+                      selectedItemBuilder: (context) {
+                        return options
+                            .map(
+                              (_) => ValueListenableBuilder<List<T>>(
+                                valueListenable: listenable!,
+                                builder: (context, values, _) {
+                                  final selectedLabels = options
+                                      .where((o) => values.contains(o.value))
+                                      .map((o) => o.label)
+                                      .join(', ');
+                                  return Text(
+                                    selectedLabels,
+                                    style: values.isEmpty
+                                        ? hintStyle
+                                        : headerStyle,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  );
+                                },
+                              ),
+                            )
+                            .toList();
+                      },
+                      buttonStyleData: buttonStyle,
+                      iconStyleData: iconStyle,
+                      dropdownStyleData: dropdownStyle,
+                      menuItemStyleData: menuStyle,
+                    )
+                  : DropdownButton2<T>(
+                      isExpanded: true,
+                      hint: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(hintText, style: hintStyle),
+                      ),
+                      valueListenable: valueListenable,
+                      items: options
+                          .map(
+                            (option) => DropdownItem<T>(
+                              value: option.value,
+                              height: 44,
+                              child: optionRow(option),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: enabled ? onChanged : null,
+                      buttonStyleData: buttonStyle,
+                      iconStyleData: iconStyle,
+                      dropdownStyleData: dropdownStyle,
+                      menuItemStyleData: menuStyle,
+                      selectedItemBuilder: selectedItemBuilder,
                     ),
-                    valueListenable: valueListenable,
-                    items: options
-                        .map(
-                          (option) => DropdownItem<T>(
-                            value: option.value,
-                            height: 44,
-                            child: optionRow(option),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: enabled ? onChanged : null,
-                    buttonStyleData: buttonStyle,
-                    iconStyleData: iconStyle,
-                    dropdownStyleData: dropdownStyle,
-                    menuItemStyleData: menuStyle,
-                    selectedItemBuilder: selectedItemBuilder,
-                  ),
+            ),
           ),
         ),
       ],
