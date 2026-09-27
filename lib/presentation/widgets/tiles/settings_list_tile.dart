@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
@@ -132,7 +132,9 @@ class _SettingsListTileState extends State<SettingsListTile> {
   }
 
   void handleTap() {
-    HapticFeedback.selectionClick();
+    if (widget.onPressed != null) {
+      HapticFeedback.selectionClick();
+    }
     if (canExpand) {
       setState(() => isExpanded = !isExpanded);
       return;
