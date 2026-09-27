@@ -1691,7 +1691,7 @@ abstract class AppLocalizations {
   /// No description provided for @share_match_title.
   ///
   /// In en, this message translates to:
-  /// **'Tallee Match Share'**
+  /// **'Match Share'**
   String get share_match_title;
 
   /// No description provided for @share_token_format_info.

@@ -381,7 +381,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get file_share_instruction =>
-      'Spiel-Daten manuell in einer Datei teilen für eine vollständige lokale Übertragung.';
+      'Teile Spiel-Daten manuell in einer Datei für eine vollständig lokale Übertragung.';
 
   @override
   String get filter => 'Filter';
@@ -708,7 +708,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get online_sharing_consent_text =>
-      'Damit andere dein Spiel laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Share-Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du Online-Teilen aktivieren?';
+      'Damit andere dein Spiel laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du das Online-Teilen aktivieren?';
 
   @override
   String get online_sharing_disabled => 'Online-Teilen ist deaktiviert';
@@ -882,7 +882,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get send_code_instruction =>
-      'Sende diesen Code an eine Person, die ebenfalls Tallee hat, um das aktuelle Match zu teilen.';
+      'Sende diesen Token an eine Person, die ebenfalls Tallee hat, um das aktuelle Match zu teilen.';
 
   @override
   String get send_feedback => 'Feedback senden';
@@ -916,11 +916,11 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get share_match_title => 'Tallee Spiel teilen';
+  String get share_match_title => 'Spiel teilen';
 
   @override
   String get share_token_format_info =>
-      'Share-Token bestehen aus 6 alphanumerischen Zeichen.';
+      'Token bestehen aus 6 alphanumerischen Zeichen.';
 
   @override
   String get show_app_walkthrough => 'App-Führung';
