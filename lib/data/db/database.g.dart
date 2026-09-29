@@ -1949,8 +1949,27 @@ class $TeamTableTable extends TeamTable
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _timerStartedAtMeta = const VerificationMeta(
+    'timerStartedAt',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, createdAt, name, color, score];
+  late final GeneratedColumn<DateTime> timerStartedAt =
+      GeneratedColumn<DateTime>(
+        'timer_started_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    name,
+    color,
+    score,
+    timerStartedAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1990,6 +2009,15 @@ class $TeamTableTable extends TeamTable
         score.isAcceptableOrUnknown(data['score']!, _scoreMeta),
       );
     }
+    if (data.containsKey('timer_started_at')) {
+      context.handle(
+        _timerStartedAtMeta,
+        timerStartedAt.isAcceptableOrUnknown(
+          data['timer_started_at']!,
+          _timerStartedAtMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2021,6 +2049,10 @@ class $TeamTableTable extends TeamTable
         DriftSqlType.int,
         data['${effectivePrefix}score'],
       ),
+      timerStartedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}timer_started_at'],
+      ),
     );
   }
 
@@ -2039,12 +2071,16 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
   final String name;
   final AppColor color;
   final int? score;
+
+  /// Wall-clock instant the team timer was started. Null = stopped.
+  final DateTime? timerStartedAt;
   const TeamTableData({
     required this.id,
     required this.createdAt,
     required this.name,
     required this.color,
     this.score,
+    this.timerStartedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2060,6 +2096,9 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
     if (!nullToAbsent || score != null) {
       map['score'] = Variable<int>(score);
     }
+    if (!nullToAbsent || timerStartedAt != null) {
+      map['timer_started_at'] = Variable<DateTime>(timerStartedAt);
+    }
     return map;
   }
 
@@ -2072,6 +2111,9 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       score: score == null && nullToAbsent
           ? const Value.absent()
           : Value(score),
+      timerStartedAt: timerStartedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(timerStartedAt),
     );
   }
 
@@ -2088,6 +2130,7 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
         serializer.fromJson<String>(json['color']),
       ),
       score: serializer.fromJson<int?>(json['score']),
+      timerStartedAt: serializer.fromJson<DateTime?>(json['timerStartedAt']),
     );
   }
   @override
@@ -2101,6 +2144,7 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
         $TeamTableTable.$convertercolor.toJson(color),
       ),
       'score': serializer.toJson<int?>(score),
+      'timerStartedAt': serializer.toJson<DateTime?>(timerStartedAt),
     };
   }
 
@@ -2110,12 +2154,16 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
     String? name,
     AppColor? color,
     Value<int?> score = const Value.absent(),
+    Value<DateTime?> timerStartedAt = const Value.absent(),
   }) => TeamTableData(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
     name: name ?? this.name,
     color: color ?? this.color,
     score: score.present ? score.value : this.score,
+    timerStartedAt: timerStartedAt.present
+        ? timerStartedAt.value
+        : this.timerStartedAt,
   );
   TeamTableData copyWithCompanion(TeamTableCompanion data) {
     return TeamTableData(
@@ -2124,6 +2172,9 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
       name: data.name.present ? data.name.value : this.name,
       color: data.color.present ? data.color.value : this.color,
       score: data.score.present ? data.score.value : this.score,
+      timerStartedAt: data.timerStartedAt.present
+          ? data.timerStartedAt.value
+          : this.timerStartedAt,
     );
   }
 
@@ -2134,13 +2185,15 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
           ..write('color: $color, ')
-          ..write('score: $score')
+          ..write('score: $score, ')
+          ..write('timerStartedAt: $timerStartedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, createdAt, name, color, score);
+  int get hashCode =>
+      Object.hash(id, createdAt, name, color, score, timerStartedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2149,7 +2202,8 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
           other.createdAt == this.createdAt &&
           other.name == this.name &&
           other.color == this.color &&
-          other.score == this.score);
+          other.score == this.score &&
+          other.timerStartedAt == this.timerStartedAt);
 }
 
 class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
@@ -2158,6 +2212,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
   final Value<String> name;
   final Value<AppColor> color;
   final Value<int?> score;
+  final Value<DateTime?> timerStartedAt;
   final Value<int> rowid;
   const TeamTableCompanion({
     this.id = const Value.absent(),
@@ -2165,6 +2220,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     this.name = const Value.absent(),
     this.color = const Value.absent(),
     this.score = const Value.absent(),
+    this.timerStartedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TeamTableCompanion.insert({
@@ -2173,6 +2229,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     required String name,
     this.color = const Value.absent(),
     this.score = const Value.absent(),
+    this.timerStartedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
@@ -2183,6 +2240,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     Expression<String>? name,
     Expression<String>? color,
     Expression<int>? score,
+    Expression<DateTime>? timerStartedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2191,6 +2249,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
       if (name != null) 'name': name,
       if (color != null) 'color': color,
       if (score != null) 'score': score,
+      if (timerStartedAt != null) 'timer_started_at': timerStartedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2201,6 +2260,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     Value<String>? name,
     Value<AppColor>? color,
     Value<int?>? score,
+    Value<DateTime?>? timerStartedAt,
     Value<int>? rowid,
   }) {
     return TeamTableCompanion(
@@ -2209,6 +2269,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
       name: name ?? this.name,
       color: color ?? this.color,
       score: score ?? this.score,
+      timerStartedAt: timerStartedAt ?? this.timerStartedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2233,6 +2294,9 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
     if (score.present) {
       map['score'] = Variable<int>(score.value);
     }
+    if (timerStartedAt.present) {
+      map['timer_started_at'] = Variable<DateTime>(timerStartedAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2247,6 +2311,7 @@ class TeamTableCompanion extends UpdateCompanion<TeamTableData> {
           ..write('name: $name, ')
           ..write('color: $color, ')
           ..write('score: $score, ')
+          ..write('timerStartedAt: $timerStartedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2594,6 +2659,18 @@ class $ScoreEntryTableTable extends ScoreEntryTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _timerStartedAtMeta = const VerificationMeta(
+    'timerStartedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> timerStartedAt =
+      GeneratedColumn<DateTime>(
+        'timer_started_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     playerId,
@@ -2601,6 +2678,7 @@ class $ScoreEntryTableTable extends ScoreEntryTable
     roundNumber,
     score,
     change,
+    timerStartedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2657,6 +2735,15 @@ class $ScoreEntryTableTable extends ScoreEntryTable
     } else if (isInserting) {
       context.missing(_changeMeta);
     }
+    if (data.containsKey('timer_started_at')) {
+      context.handle(
+        _timerStartedAtMeta,
+        timerStartedAt.isAcceptableOrUnknown(
+          data['timer_started_at']!,
+          _timerStartedAtMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2686,6 +2773,10 @@ class $ScoreEntryTableTable extends ScoreEntryTable
         DriftSqlType.int,
         data['${effectivePrefix}change'],
       )!,
+      timerStartedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}timer_started_at'],
+      ),
     );
   }
 
@@ -2702,12 +2793,17 @@ class ScoreEntryTableData extends DataClass
   final int roundNumber;
   final int score;
   final int change;
+
+  /// Wall-clock instant the timer was started. Null = timer is stopped.
+  /// While running, the total time is score + (now - timerStartedAt) in ms.
+  final DateTime? timerStartedAt;
   const ScoreEntryTableData({
     required this.playerId,
     required this.matchId,
     required this.roundNumber,
     required this.score,
     required this.change,
+    this.timerStartedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2717,6 +2813,9 @@ class ScoreEntryTableData extends DataClass
     map['round_number'] = Variable<int>(roundNumber);
     map['score'] = Variable<int>(score);
     map['change'] = Variable<int>(change);
+    if (!nullToAbsent || timerStartedAt != null) {
+      map['timer_started_at'] = Variable<DateTime>(timerStartedAt);
+    }
     return map;
   }
 
@@ -2727,6 +2826,9 @@ class ScoreEntryTableData extends DataClass
       roundNumber: Value(roundNumber),
       score: Value(score),
       change: Value(change),
+      timerStartedAt: timerStartedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(timerStartedAt),
     );
   }
 
@@ -2741,6 +2843,7 @@ class ScoreEntryTableData extends DataClass
       roundNumber: serializer.fromJson<int>(json['roundNumber']),
       score: serializer.fromJson<int>(json['score']),
       change: serializer.fromJson<int>(json['change']),
+      timerStartedAt: serializer.fromJson<DateTime?>(json['timerStartedAt']),
     );
   }
   @override
@@ -2752,6 +2855,7 @@ class ScoreEntryTableData extends DataClass
       'roundNumber': serializer.toJson<int>(roundNumber),
       'score': serializer.toJson<int>(score),
       'change': serializer.toJson<int>(change),
+      'timerStartedAt': serializer.toJson<DateTime?>(timerStartedAt),
     };
   }
 
@@ -2761,12 +2865,16 @@ class ScoreEntryTableData extends DataClass
     int? roundNumber,
     int? score,
     int? change,
+    Value<DateTime?> timerStartedAt = const Value.absent(),
   }) => ScoreEntryTableData(
     playerId: playerId ?? this.playerId,
     matchId: matchId ?? this.matchId,
     roundNumber: roundNumber ?? this.roundNumber,
     score: score ?? this.score,
     change: change ?? this.change,
+    timerStartedAt: timerStartedAt.present
+        ? timerStartedAt.value
+        : this.timerStartedAt,
   );
   ScoreEntryTableData copyWithCompanion(ScoreEntryTableCompanion data) {
     return ScoreEntryTableData(
@@ -2777,6 +2885,9 @@ class ScoreEntryTableData extends DataClass
           : this.roundNumber,
       score: data.score.present ? data.score.value : this.score,
       change: data.change.present ? data.change.value : this.change,
+      timerStartedAt: data.timerStartedAt.present
+          ? data.timerStartedAt.value
+          : this.timerStartedAt,
     );
   }
 
@@ -2787,14 +2898,21 @@ class ScoreEntryTableData extends DataClass
           ..write('matchId: $matchId, ')
           ..write('roundNumber: $roundNumber, ')
           ..write('score: $score, ')
-          ..write('change: $change')
+          ..write('change: $change, ')
+          ..write('timerStartedAt: $timerStartedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(playerId, matchId, roundNumber, score, change);
+  int get hashCode => Object.hash(
+    playerId,
+    matchId,
+    roundNumber,
+    score,
+    change,
+    timerStartedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2803,7 +2921,8 @@ class ScoreEntryTableData extends DataClass
           other.matchId == this.matchId &&
           other.roundNumber == this.roundNumber &&
           other.score == this.score &&
-          other.change == this.change);
+          other.change == this.change &&
+          other.timerStartedAt == this.timerStartedAt);
 }
 
 class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
@@ -2812,6 +2931,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
   final Value<int> roundNumber;
   final Value<int> score;
   final Value<int> change;
+  final Value<DateTime?> timerStartedAt;
   final Value<int> rowid;
   const ScoreEntryTableCompanion({
     this.playerId = const Value.absent(),
@@ -2819,6 +2939,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
     this.roundNumber = const Value.absent(),
     this.score = const Value.absent(),
     this.change = const Value.absent(),
+    this.timerStartedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ScoreEntryTableCompanion.insert({
@@ -2827,6 +2948,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
     required int roundNumber,
     required int score,
     required int change,
+    this.timerStartedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : playerId = Value(playerId),
        matchId = Value(matchId),
@@ -2839,6 +2961,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
     Expression<int>? roundNumber,
     Expression<int>? score,
     Expression<int>? change,
+    Expression<DateTime>? timerStartedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2847,6 +2970,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
       if (roundNumber != null) 'round_number': roundNumber,
       if (score != null) 'score': score,
       if (change != null) 'change': change,
+      if (timerStartedAt != null) 'timer_started_at': timerStartedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2857,6 +2981,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
     Value<int>? roundNumber,
     Value<int>? score,
     Value<int>? change,
+    Value<DateTime?>? timerStartedAt,
     Value<int>? rowid,
   }) {
     return ScoreEntryTableCompanion(
@@ -2865,6 +2990,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
       roundNumber: roundNumber ?? this.roundNumber,
       score: score ?? this.score,
       change: change ?? this.change,
+      timerStartedAt: timerStartedAt ?? this.timerStartedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2887,6 +3013,9 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
     if (change.present) {
       map['change'] = Variable<int>(change.value);
     }
+    if (timerStartedAt.present) {
+      map['timer_started_at'] = Variable<DateTime>(timerStartedAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2901,6 +3030,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
           ..write('roundNumber: $roundNumber, ')
           ..write('score: $score, ')
           ..write('change: $change, ')
+          ..write('timerStartedAt: $timerStartedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6876,6 +7006,7 @@ typedef $$TeamTableTableCreateCompanionBuilder = TeamTableCompanion Function({
   required String name,
   Value<AppColor> color,
   Value<int?> score,
+  Value<DateTime?> timerStartedAt,
   Value<int> rowid,
 });
 typedef $$TeamTableTableUpdateCompanionBuilder = TeamTableCompanion Function({
@@ -6884,6 +7015,7 @@ typedef $$TeamTableTableUpdateCompanionBuilder = TeamTableCompanion Function({
   Value<String> name,
   Value<AppColor> color,
   Value<int?> score,
+  Value<DateTime?> timerStartedAt,
   Value<int> rowid,
 });
 
@@ -6947,6 +7079,11 @@ class $$TeamTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get timerStartedAt => $composableBuilder(
+    column: $table.timerStartedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> playerMatchTableRefs(
     Expression<bool> Function($$PlayerMatchTableTableFilterComposer f) f,
   ) {
@@ -7006,6 +7143,11 @@ class $$TeamTableTableOrderingComposer
     column: $table.score,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<DateTime> get timerStartedAt => $composableBuilder(
+    column: $table.timerStartedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TeamTableTableAnnotationComposer
@@ -7031,6 +7173,11 @@ class $$TeamTableTableAnnotationComposer
 
   GeneratedColumn<int> get score =>
       $composableBuilder(column: $table.score, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get timerStartedAt => $composableBuilder(
+    column: $table.timerStartedAt,
+    builder: (column) => column,
+  );
 
   Expression<T> playerMatchTableRefs<T extends Object>(
     Expression<T> Function($$PlayerMatchTableTableAnnotationComposer a) f,
@@ -7091,6 +7238,7 @@ class $$TeamTableTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<AppColor> color = const Value.absent(),
                 Value<int?> score = const Value.absent(),
+                Value<DateTime?> timerStartedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TeamTableCompanion(
                 id: id,
@@ -7098,6 +7246,7 @@ class $$TeamTableTableTableManager
                 name: name,
                 color: color,
                 score: score,
+                timerStartedAt: timerStartedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -7107,6 +7256,7 @@ class $$TeamTableTableTableManager
                 required String name,
                 Value<AppColor> color = const Value.absent(),
                 Value<int?> score = const Value.absent(),
+                Value<DateTime?> timerStartedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TeamTableCompanion.insert(
                 id: id,
@@ -7114,6 +7264,7 @@ class $$TeamTableTableTableManager
                 name: name,
                 color: color,
                 score: score,
+                timerStartedAt: timerStartedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -7640,6 +7791,7 @@ typedef $$ScoreEntryTableTableCreateCompanionBuilder =
       required int roundNumber,
       required int score,
       required int change,
+      Value<DateTime?> timerStartedAt,
       Value<int> rowid,
     });
 typedef $$ScoreEntryTableTableUpdateCompanionBuilder =
@@ -7649,6 +7801,7 @@ typedef $$ScoreEntryTableTableUpdateCompanionBuilder =
       Value<int> roundNumber,
       Value<int> score,
       Value<int> change,
+      Value<DateTime?> timerStartedAt,
       Value<int> rowid,
     });
 
@@ -7724,6 +7877,11 @@ class $$ScoreEntryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get timerStartedAt => $composableBuilder(
+    column: $table.timerStartedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$PlayerTableTableFilterComposer get playerId {
     final $$PlayerTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -7795,6 +7953,11 @@ class $$ScoreEntryTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get timerStartedAt => $composableBuilder(
+    column: $table.timerStartedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$PlayerTableTableOrderingComposer get playerId {
     final $$PlayerTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -7861,6 +8024,11 @@ class $$ScoreEntryTableTableAnnotationComposer
 
   GeneratedColumn<int> get change =>
       $composableBuilder(column: $table.change, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get timerStartedAt => $composableBuilder(
+    column: $table.timerStartedAt,
+    builder: (column) => column,
+  );
 
   $$PlayerTableTableAnnotationComposer get playerId {
     final $$PlayerTableTableAnnotationComposer composer = $composerBuilder(
@@ -7944,6 +8112,7 @@ class $$ScoreEntryTableTableTableManager
                 Value<int> roundNumber = const Value.absent(),
                 Value<int> score = const Value.absent(),
                 Value<int> change = const Value.absent(),
+                Value<DateTime?> timerStartedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ScoreEntryTableCompanion(
                 playerId: playerId,
@@ -7951,6 +8120,7 @@ class $$ScoreEntryTableTableTableManager
                 roundNumber: roundNumber,
                 score: score,
                 change: change,
+                timerStartedAt: timerStartedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -7960,6 +8130,7 @@ class $$ScoreEntryTableTableTableManager
                 required int roundNumber,
                 required int score,
                 required int change,
+                Value<DateTime?> timerStartedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ScoreEntryTableCompanion.insert(
                 playerId: playerId,
@@ -7967,6 +8138,7 @@ class $$ScoreEntryTableTableTableManager
                 roundNumber: roundNumber,
                 score: score,
                 change: change,
+                timerStartedAt: timerStartedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

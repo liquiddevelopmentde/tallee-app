@@ -11,6 +11,8 @@ class ScoreEntryTable extends Table {
   IntColumn get score => integer()();
   IntColumn get change => integer()();
 
+  DateTimeColumn get timerStartedAt => dateTime().nullable()();
+
   @override
   Set<Column<Object>> get primaryKey => {playerId, matchId, roundNumber};
 }

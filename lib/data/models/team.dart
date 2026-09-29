@@ -10,6 +10,7 @@ class Team {
   final DateTime createdAt;
   final AppColor color;
   final int? score;
+  final DateTime? timerStartedAt;
   final List<Player> members;
 
   Team({
@@ -18,13 +19,14 @@ class Team {
     DateTime? createdAt,
     this.color = AppColor.blue,
     this.score,
+    this.timerStartedAt,
     required this.members,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now();
 
   @override
   String toString() {
-    return 'Team{id: $id, name: $name, color: $color, score: $score, members: $members}';
+    return 'Team{id: $id, name: $name, color: $color, score: $score, timerStartedAt: $timerStartedAt, members: $members}';
   }
 
   Team copyWith({
@@ -33,6 +35,7 @@ class Team {
     DateTime? createdAt,
     AppColor? color,
     int? score,
+    DateTime? timerStartedAt,
     List<Player>? members,
   }) {
     return Team(
@@ -41,6 +44,7 @@ class Team {
       createdAt: createdAt ?? this.createdAt,
       color: color ?? this.color,
       score: score ?? this.score,
+      timerStartedAt: timerStartedAt ?? this.timerStartedAt,
       members: members ?? this.members,
     );
   }
@@ -55,6 +59,7 @@ class Team {
           createdAt == other.createdAt &&
           color == other.color &&
           score == other.score &&
+          timerStartedAt == other.timerStartedAt &&
           const DeepCollectionEquality().equals(members, other.members);
 
   @override
@@ -64,6 +69,7 @@ class Team {
     createdAt,
     color,
     score,
+    timerStartedAt,
     const DeepCollectionEquality().hash(members),
   );
 
@@ -76,6 +82,9 @@ class Team {
         orElse: () => AppColor.orange,
       ),
       score = json['score'],
+      timerStartedAt = json['timerStartedAt'] != null
+          ? DateTime.parse(json['timerStartedAt'] as String)
+          : null,
       members =
           (json['members'] as List<dynamic>?)
               ?.map((e) => Player.fromJson(e as Map<String, dynamic>))
@@ -88,6 +97,7 @@ class Team {
     'createdAt': createdAt.toIso8601String(),
     'color': color.name,
     'score': score,
+    'timerStartedAt': timerStartedAt?.toIso8601String(),
     'members': members.map((member) => member.toJson()).toList(),
   };
 
@@ -97,6 +107,7 @@ class Team {
     'createdAt': createdAt.toIso8601String(),
     'color': color.name,
     'score': score,
+    'timerStartedAt': timerStartedAt?.toIso8601String(),
     'memberIds': members.map((member) => member.id).toList(),
   };
 
@@ -113,6 +124,9 @@ class Team {
         orElse: () => AppColor.orange,
       ),
       score: json['score'],
+      timerStartedAt: json['timerStartedAt'] != null
+          ? DateTime.parse(json['timerStartedAt'] as String)
+          : null,
       members: members,
     );
   }

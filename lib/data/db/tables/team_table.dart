@@ -9,6 +9,8 @@ class TeamTable extends Table {
       textEnum<AppColor>().withDefault(Constant(AppColor.blue.name))();
   IntColumn get score => integer().nullable()();
 
+  DateTimeColumn get timerStartedAt => dateTime().nullable()();
+
   @override
   Set<Column<Object>> get primaryKey => {id};
 }
