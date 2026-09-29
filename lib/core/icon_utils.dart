@@ -17,6 +17,10 @@ IconData getRulesetIcon(Ruleset ruleset) {
       return RpgAwesome.podium;
     case Ruleset.lives:
       return Icons.favorite;
+    case Ruleset.longestTime:
+      return Icons.hourglass_bottom;
+    case Ruleset.shortestTime:
+      return Icons.hourglass_top;
   }
 }
 

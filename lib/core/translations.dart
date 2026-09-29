@@ -107,6 +107,10 @@ String translateRulesetToString(Ruleset ruleset, BuildContext context) {
       return loc.placement;
     case Ruleset.lives:
       return loc.lives(0);
+    case Ruleset.longestTime:
+      return loc.longest_time;
+    case Ruleset.shortestTime:
+      return loc.shortest_time;
   }
 }
 

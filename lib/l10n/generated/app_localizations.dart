@@ -1016,6 +1016,12 @@ abstract class AppLocalizations {
   /// **'Loading match...'**
   String get loading_match;
 
+  /// No description provided for @longest_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest Time'**
+  String get longest_time;
+
   /// No description provided for @loser.
   ///
   /// In en, this message translates to:
@@ -1699,6 +1705,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share tokens consist of 6 alphanumeric characters.'**
   String get share_token_format_info;
+
+  /// No description provided for @shortest_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortest Time'**
+  String get shortest_time;
 
   /// No description provided for @show_app_walkthrough.
   ///

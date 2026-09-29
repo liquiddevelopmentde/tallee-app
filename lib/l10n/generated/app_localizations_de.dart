@@ -531,6 +531,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loading_match => 'Lade Match...';
 
   @override
+  String get longest_time => 'Längste Zeit';
+
+  @override
   String get loser => 'Verlierer:in';
 
   @override
@@ -921,6 +924,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get share_token_format_info =>
       'Share-Token bestehen aus 6 alphanumerischen Zeichen.';
+
+  @override
+  String get shortest_time => 'Kürzeste Zeit';
 
   @override
   String get show_app_walkthrough => 'App-Führung';

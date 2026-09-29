@@ -221,6 +221,12 @@ class Match {
 
       case Ruleset.lives:
         return _getPlayersWithLivesRemaining();
+
+      case Ruleset.longestTime:
+        return _getPlayersWithHighestScore();
+
+      case Ruleset.shortestTime:
+        return _getPlayersWithLowestScore();
     }
   }
 
@@ -292,6 +298,12 @@ class Match {
 
       case Ruleset.lives:
         return _getTeamsWithLivesRemaining();
+
+      case Ruleset.longestTime:
+        return _getHighestScoreTeam();
+
+      case Ruleset.shortestTime:
+        return _getLowestScoreTeam();
     }
   }
 

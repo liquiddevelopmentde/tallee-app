@@ -69,7 +69,18 @@ enum ExportResult { success, canceled, unknownException, noData }
 /// - [Ruleset.loser]: The match has one loser.
 /// - [Ruleset.placement]: The player with the highest placement wins.
 /// - [Ruleset.lives]: Every player with lives > 0 wins
-enum Ruleset { winner, loser, highestScore, lowestScore, lives, placement }
+/// - [Ruleset.longestTime]: The player/team with the longest total time wins.
+/// - [Ruleset.shortestTime]: The player/team with the shortest total time wins.
+enum Ruleset {
+  winner,
+  loser,
+  highestScore,
+  lowestScore,
+  lives,
+  placement,
+  longestTime,
+  shortestTime,
+}
 
 /// Different colors for highlighting content
 enum AppColor { red, orange, yellow, green, teal, blue, purple, pink }

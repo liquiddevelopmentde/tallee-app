@@ -489,6 +489,10 @@ class _MatchTileState extends State<MatchTile> {
         return Icon(icon, size: 20, color: Colors.deepOrangeAccent);
       case Ruleset.lives:
         return Icon(icon, size: 20, color: Colors.red);
+      case Ruleset.longestTime:
+        return Icon(icon, size: 20, color: Colors.indigo);
+      case Ruleset.shortestTime:
+        return Icon(icon, size: 20, color: Colors.teal);
     }
   }
 }

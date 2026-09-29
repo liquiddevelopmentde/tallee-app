@@ -160,6 +160,12 @@
                     },
                     "change": {
                       "type": "number"
+                    },
+                    "timerStartedAt": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -202,6 +208,12 @@
                 "score": {
                   "type": [
                     "number",
+                    "null"
+                  ]
+                },
+                "timerStartedAt": {
+                  "type": [
+                    "string",
                     "null"
                   ]
                 },

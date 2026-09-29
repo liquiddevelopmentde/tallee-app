@@ -182,6 +182,9 @@ class StatisticCalculator {
       case Ruleset.loser:
       case Ruleset.lives:
         return false;
+      case Ruleset.longestTime:
+      case Ruleset.shortestTime:
+        return true;
     }
   }
 
