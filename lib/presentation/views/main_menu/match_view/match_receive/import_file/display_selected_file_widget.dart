@@ -19,7 +19,6 @@ class DisplaySelectedFileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    print('DisplaySelectedFile: match=${match.name}, fileName=$fileName');
 
     return Column(
       key: const ValueKey('display_selected_file'),
