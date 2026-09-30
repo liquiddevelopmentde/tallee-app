@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
@@ -166,72 +166,81 @@ class _GameViewState extends State<GameView> with RouteAware {
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      if (allGames.isNotEmpty)
-                        if (displayedGames.isEmpty)
-                          // No filtered games
-                          Positioned.fill(
-                            child: EmptyViewMessage(
-                              icon: Icons.search,
-                              title: loc.no_results,
-                              message:
-                                  loc.there_is_no_game_matching_your_search,
-                            ),
-                          )
-                        else
-                          Positioned.fill(
-                            child: NotificationListener<UserScrollNotification>(
-                              onNotification: (notification) {
-                                if (notification.direction ==
-                                        ScrollDirection.reverse &&
-                                    isSearchBarVisible) {
-                                  setState(() => isSearchBarVisible = false);
-                                } else if (notification.direction ==
-                                        ScrollDirection.forward &&
-                                    !isSearchBarVisible) {
-                                  setState(() => isSearchBarVisible = true);
-                                }
-                                return true;
-                              },
-                              child: ListView.builder(
-                                padding: CustomTheme.listViewPadding(context),
-                                itemCount: displayedGames.length,
-
-                                itemBuilder: (BuildContext context, int index) {
-                                  return GameTile(
-                                    gameCount: getGameCount(
-                                      displayedGames[index],
-                                    ),
-                                    onTap: () async {
-                                      Navigator.push(
-                                        context,
-                                        adaptivePageRoute(
-                                          builder: (context) => CreateGameView(
-                                            gameToEdit: displayedGames[index],
-                                            onGameChanged: loadGames,
-                                            gameCount: getGameCount(
-                                              displayedGames[index],
-                                            ),
-                                          ),
-                                        ),
-                                      );
+                  child: Center(
+                    child:
+                        // Games
+                        allGames.isNotEmpty
+                        ? displayedGames.isEmpty
+                              ?
+                                // No filtered games
+                                Positioned.fill(
+                                  child: EmptyViewMessage(
+                                    icon: Icons.search,
+                                    title: loc.no_results,
+                                    message: loc
+                                        .there_is_no_game_matching_your_search,
+                                  ),
+                                )
+                              // Games list
+                              : Positioned.fill(
+                                  child: NotificationListener<UserScrollNotification>(
+                                    onNotification: (notification) {
+                                      if (notification.direction ==
+                                              ScrollDirection.reverse &&
+                                          isSearchBarVisible) {
+                                        setState(
+                                          () => isSearchBarVisible = false,
+                                        );
+                                      } else if (notification.direction ==
+                                              ScrollDirection.forward &&
+                                          !isSearchBarVisible) {
+                                        setState(
+                                          () => isSearchBarVisible = true,
+                                        );
+                                      }
+                                      return true;
                                     },
-                                    game: displayedGames[index],
-                                  );
-                                },
-                              ),
-                            ),
+                                    child: ListView.builder(
+                                      padding: CustomTheme.listViewPadding(
+                                        context,
+                                      ),
+                                      itemCount: displayedGames.length,
+
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return GameTile(
+                                          gameCount: getGameCount(
+                                            displayedGames[index],
+                                          ),
+                                          onTap: () async {
+                                            Navigator.push(
+                                              context,
+                                              adaptivePageRoute(
+                                                builder: (context) =>
+                                                    CreateGameView(
+                                                      gameToEdit:
+                                                          displayedGames[index],
+                                                      onGameChanged: loadGames,
+                                                      gameCount: getGameCount(
+                                                        displayedGames[index],
+                                                      ),
+                                                    ),
+                                              ),
+                                            );
+                                          },
+                                          game: displayedGames[index],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                )
+                        // No games in db
+                        : !isLoading
+                        ? EmptyViewMessage(
+                            icon: GAME_ICON,
+                            title: loc.no_games,
+                            message: loc.no_games_created_yet,
                           )
-                      // No games
-                      else if (!isLoading)
-                        EmptyViewMessage(
-                          icon: GAME_ICON,
-                          title: loc.no_games,
-                          message: loc.no_games_created_yet,
-                        ),
-                    ],
+                        : null,
                   ),
                 ),
               ),

@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -148,73 +148,84 @@ class _GroupViewState extends State<GroupView> {
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Groups
-                      if (allGroups.isNotEmpty)
-                        if (displayedGroups.isEmpty)
-                          // No filtered groups
-                          Positioned.fill(
-                            child: EmptyViewMessage(
-                              icon: Icons.search,
-                              title: loc.no_results,
-                              message:
-                                  loc.there_is_no_group_matching_your_search,
-                            ),
-                          )
-                        else
-                          Positioned.fill(
-                            child: NotificationListener<UserScrollNotification>(
-                              onNotification: (notification) {
-                                if (notification.direction ==
-                                        ScrollDirection.reverse &&
-                                    isSearchBarVisible) {
-                                  setState(() => isSearchBarVisible = false);
-                                } else if (notification.direction ==
-                                        ScrollDirection.forward &&
-                                    !isSearchBarVisible) {
-                                  setState(() => isSearchBarVisible = true);
-                                }
-                                return true;
-                              },
+                  child: Center(
+                    child:
+                        // Groups
+                        allGroups.isNotEmpty
+                        ? displayedGroups.isEmpty
+                              ?
+                                // No filtered groups
+                                Positioned.fill(
+                                  child: EmptyViewMessage(
+                                    icon: Icons.search,
+                                    title: loc.no_results,
+                                    message: loc
+                                        .there_is_no_group_matching_your_search,
+                                  ),
+                                )
+                              // Groups list
+                              : Positioned.fill(
+                                  child: NotificationListener<UserScrollNotification>(
+                                    onNotification: (notification) {
+                                      if (notification.direction ==
+                                              ScrollDirection.reverse &&
+                                          isSearchBarVisible) {
+                                        setState(
+                                          () => isSearchBarVisible = false,
+                                        );
+                                      } else if (notification.direction ==
+                                              ScrollDirection.forward &&
+                                          !isSearchBarVisible) {
+                                        setState(
+                                          () => isSearchBarVisible = true,
+                                        );
+                                      }
+                                      return true;
+                                    },
 
-                              child: ListView.builder(
-                                padding: CustomTheme.listViewPadding(context),
-                                itemCount: displayedGroups.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return GroupTile(
-                                    onPlayerChanged: loadGroups,
-                                    group: displayedGroups[index],
-                                    onTap: () async {
-                                      await Navigator.push(
+                                    child: ListView.builder(
+                                      padding: CustomTheme.listViewPadding(
                                         context,
-                                        adaptivePageRoute(
-                                          settings: const RouteSettings(
-                                            name: RouteNames.groupDetailView,
-                                          ),
-                                          builder: (context) {
-                                            return GroupDetailView(
+                                      ),
+                                      itemCount: displayedGroups.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                            return GroupTile(
+                                              onPlayerChanged: loadGroups,
                                               group: displayedGroups[index],
-                                              callback: loadGroups,
+                                              onTap: () async {
+                                                await Navigator.push(
+                                                  context,
+                                                  adaptivePageRoute(
+                                                    settings:
+                                                        const RouteSettings(
+                                                          name: RouteNames
+                                                              .groupDetailView,
+                                                        ),
+                                                    builder: (context) {
+                                                      return GroupDetailView(
+                                                        group:
+                                                            displayedGroups[index],
+                                                        callback: loadGroups,
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              },
                                             );
                                           },
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
+                                    ),
+                                  ),
+                                )
+                        : !isLoading
+                        ?
+                          // No groups in db
+                          EmptyViewMessage(
+                            icon: GROUP_ICON,
+                            title: loc.no_groups,
+                            message: loc.no_groups_created_yet,
                           )
-                      else if (!isLoading)
-                        // No groups
-                        EmptyViewMessage(
-                          icon: GROUP_ICON,
-                          title: loc.no_groups,
-                          message: loc.no_groups_created_yet,
-                        ),
-                    ],
+                        : null,
                   ),
                 ),
               ),
