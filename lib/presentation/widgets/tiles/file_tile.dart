@@ -62,7 +62,8 @@ class MatchFileTile extends StatelessWidget {
                           fit: BoxFit.scaleDown,
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            '${fileName ?? match.name.toSafeFilename()}.$MATCH_FILE_EXTENSION',
+                            fileName ??
+                                '${match.name.toSafeFilename()}.$MATCH_FILE_EXTENSION',
                             maxLines: 1,
                             style: const TextStyle(
                               fontSize: 18,
