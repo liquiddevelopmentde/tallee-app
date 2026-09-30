@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/custom_theme.dart';
 
 export 'pair_tile.dart';
@@ -21,22 +21,23 @@ class TextIconTile extends StatelessWidget {
     this.onIconTap,
     this.onTileTap,
     this.highlighted = false,
+    this.borderColor = Colors.transparent,
+    this.leadingIcon,
   });
 
   final Widget content;
-  final Color? backgroundColor;
   final IconData? icon;
+  final Icon? leadingIcon;
   final VoidCallback? onIconTap;
   final VoidCallback? onTileTap;
   final bool highlighted;
+  final Color? backgroundColor;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
     final iconEnabled = onIconTap != null && icon != null;
-    final effectiveBgColor = backgroundColor ?? CustomTheme.onBoxColor;
-    final tileBgColor = highlighted
-        ? effectiveBgColor.withAlpha((140).round())
-        : effectiveBgColor;
+    final bgColor = backgroundColor ?? CustomTheme.onBoxColor;
 
     return GestureDetector(
       onTap: onTileTap,
@@ -44,20 +45,23 @@ class TextIconTile extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: tileBgColor,
+          color: highlighted ? bgColor.withAlpha((140).round()) : bgColor,
           borderRadius: BorderRadius.circular(12),
-          border: effectiveBgColor == Colors.transparent
-              ? Border.all(color: CustomTheme.boxBorderColor)
+          border: borderColor != null
+              ? Border.all(
+                  color: borderColor!,
+                  strokeAlign: BorderSide.strokeAlignOutside,
+                )
               : null,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
+          spacing: 5,
           children: [
-            if (iconEnabled) const SizedBox(width: 3),
+            ?leadingIcon,
             Flexible(child: content),
-            if (iconEnabled) ...<Widget>[
-              const SizedBox(width: 3),
+            if (iconEnabled)
               GestureDetector(
                 onTap: () {
                   HapticFeedback.selectionClick();
@@ -65,7 +69,6 @@ class TextIconTile extends StatelessWidget {
                 },
                 child: Icon(icon!, size: 20),
               ),
-            ],
           ],
         ),
       ),
