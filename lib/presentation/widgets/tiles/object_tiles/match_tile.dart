@@ -1,8 +1,8 @@
 import 'dart:core' hide Match;
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -13,7 +13,7 @@ import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
-import 'package:tallee/presentation/widgets/game_label.dart';
+import 'package:tallee/presentation/widgets/icon_label.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
@@ -84,130 +84,127 @@ class _MatchTileState extends State<MatchTile> {
               ],
             ),
 
-            // Group Info
-            if (group != null) ...[
-              Row(
-                children: [
-                  const Icon(GROUP_ICON, size: 16, color: Colors.grey),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      '${match.group!.name}${getExtraPlayerCount(match)}',
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-            ] else ...[
-              const SizedBox(height: 8),
-            ],
+            const SizedBox(height: 4),
 
-            // Game + Ruleset Badge
-            GameLabel(
-              title: match.game.name,
-              description: translateRulesetToString(
-                match.game.ruleset,
-                context,
-              ),
-              color: match.game.color,
+            // Game + Group Label
+            Wrap(
+              spacing: 5,
+              runSpacing: 4,
+              children: [
+                IconLabel(
+                  text: match.game.name,
+                  icon: GAME_ICON,
+                  color: getColorFromAppColor(match.game.color),
+                ),
+                if (group != null)
+                  IconLabel(text: group.name, icon: GROUP_ICON),
+              ],
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
-            Visibility(
-              visible: match.endedAt != null,
+            if (false) ...[
+              Visibility(
+                visible: match.endedAt != null,
 
-              // Match in progress display
-              replacement: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Colors.amber.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.watch_later,
-                      size: 20,
-                      color: Colors.amber,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        loc.match_in_progress,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              child: Visibility(
-                visible: match.useTeamLogic,
-
-                // MVP Display for player matches
+                // Match in progress display
                 replacement: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
                     horizontal: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
+                    color: Colors.amber.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: Colors.green.withValues(alpha: 0.3),
+                      color: Colors.amber.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
                   child: Row(
                     children: [
-                      getMvpIcon(),
+                      const Icon(
+                        Icons.watch_later,
+                        size: 20,
+                        color: Colors.amber,
+                      ),
                       const SizedBox(width: 8),
-                      Expanded(child: getMvpTextWidget(loc)),
+                      Expanded(
+                        child: Text(
+                          loc.match_in_progress,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: CustomTheme.textColor,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ],
                   ),
                 ),
 
-                // MVT Display for team matches
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.green.withValues(alpha: 0.3),
-                      width: 1,
+                child: Visibility(
+                  visible: match.useTeamLogic,
+
+                  // MVP Display for player matches
+                  replacement: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.green.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        const Icon(
+                          Icons.emoji_events,
+                          size: 20,
+                          color: Colors.amber,
+                        ),
+                        Expanded(child: getMvpTextWidget(loc)),
+                      ],
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      getMvpIcon(),
-                      const SizedBox(width: 8),
-                      Expanded(child: getMvtTextWidget(loc)),
-                    ],
+
+                  // MVT Display for team matches
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.green.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        const Icon(
+                          Icons.emoji_events,
+                          size: 20,
+                          color: Colors.amber,
+                        ),
+                        Expanded(child: getMvtTextWidget(loc)),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
+            ],
 
             if (match.teams != null &&
                 match.teams!.isNotEmpty &&
@@ -262,12 +259,13 @@ class _MatchTileState extends State<MatchTile> {
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: match.teams!.map((pair) {
-                  if (pair.members.length > 1) {
-                    return PairTile(pair: pair);
+                children: match.teamPlacements.map((tp) {
+                  if (tp.unit.members.length > 1) {
+                    return PairTile(pair: tp.unit, placement: tp.placement);
                   } else {
                     return PlayerTile(
-                      player: pair.members.first,
+                      player: tp.unit.members.first,
+                      placement: tp.placement,
                       onTileTap: () {
                         Navigator.push(
                           context,
@@ -276,7 +274,7 @@ class _MatchTileState extends State<MatchTile> {
                               name: RouteNames.playerDetailView,
                             ),
                             builder: (context) => PlayerDetailView(
-                              player: pair.members.first,
+                              player: tp.unit.members.first,
                               onPlayerUpdated: () {
                                 widget.onPlayerEdited?.call();
                               },
@@ -302,9 +300,10 @@ class _MatchTileState extends State<MatchTile> {
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: players.map((player) {
+                children: match.playerPlacements.map((pp) {
                   return PlayerTile(
-                    player: player,
+                    player: pp.unit,
+                    placement: pp.placement,
                     onTileTap: () {
                       Navigator.push(
                         context,
@@ -313,7 +312,7 @@ class _MatchTileState extends State<MatchTile> {
                             name: RouteNames.playerDetailView,
                           ),
                           builder: (context) => PlayerDetailView(
-                            player: player,
+                            player: pp.unit,
                             onPlayerUpdated: () {
                               widget.onPlayerEdited?.call();
                             },
