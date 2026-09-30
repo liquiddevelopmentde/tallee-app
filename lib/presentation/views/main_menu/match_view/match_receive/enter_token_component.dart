@@ -1,5 +1,6 @@
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart' show Material;
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart' hide Material;
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -117,52 +118,56 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          child: Pinput(
-            controller: tokenInputFieldController,
-            length: 6,
-            keyboardType: TextInputType.text,
-            textCapitalization: TextCapitalization.characters,
-            hapticFeedbackType: HapticFeedbackType.selectionClick,
-            defaultPinTheme: defaultPinTheme,
-            focusedPinTheme: focusedPinTheme,
-            errorPinTheme: errorPinTheme,
-            disabledPinTheme: disabledPinTheme,
-            pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-            showCursor: false,
-            animationCurve: Curves.easeInOutCubic,
-            animationDuration: const Duration(milliseconds: 100),
-            onClipboardFound: (value) {
-              HapticFeedback.lightImpact();
-              tokenInputFieldController.text = value;
-              ScaffoldMessenger.of(context).showSnackBar(
-                CustomSnackBar(message: loc.code_pasted_from_clipboard),
-              );
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
-              TextInputFormatter.withFunction(
-                (oldValue, newValue) => TextEditingValue(
-                  text: newValue.text.toUpperCase(),
-                  selection: newValue.selection,
-                ),
-              ),
-            ],
-            forceErrorState: isTokenValid == false || isMatchValid == false,
-            errorText: getErrorText(loc),
-            errorTextStyle: errorTextStyle,
-            errorBuilder: (errorText, pin) {
-              return SizedBox(
-                width: 300,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    errorText ?? '',
-                    style: errorTextStyle,
-                    textAlign: TextAlign.center,
+          child: Material(
+            //TODO: remove when decoupled material is supported in pinput
+            color: Colors.transparent,
+            child: Pinput(
+              controller: tokenInputFieldController,
+              length: 6,
+              keyboardType: TextInputType.text,
+              textCapitalization: TextCapitalization.characters,
+              hapticFeedbackType: HapticFeedbackType.selectionClick,
+              defaultPinTheme: defaultPinTheme,
+              focusedPinTheme: focusedPinTheme,
+              errorPinTheme: errorPinTheme,
+              disabledPinTheme: disabledPinTheme,
+              pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+              showCursor: false,
+              animationCurve: Curves.easeInOutCubic,
+              animationDuration: const Duration(milliseconds: 100),
+              onClipboardFound: (value) {
+                HapticFeedback.lightImpact();
+                tokenInputFieldController.text = value;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  CustomSnackBar(message: loc.code_pasted_from_clipboard),
+                );
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                TextInputFormatter.withFunction(
+                  (oldValue, newValue) => TextEditingValue(
+                    text: newValue.text.toUpperCase(),
+                    selection: newValue.selection,
                   ),
                 ),
-              );
-            },
+              ],
+              forceErrorState: isTokenValid == false || isMatchValid == false,
+              errorText: getErrorText(loc),
+              errorTextStyle: errorTextStyle,
+              errorBuilder: (errorText, pin) {
+                return SizedBox(
+                  width: 300,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      errorText ?? '',
+                      style: errorTextStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
         Container(
