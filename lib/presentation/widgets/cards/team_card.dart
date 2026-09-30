@@ -163,7 +163,7 @@ class TeamCard extends StatelessWidget {
                         ...team.members.map((player) {
                           return PlayerTile(
                             player: player,
-                            backgroundColor: Colors.transparent,
+                            enabledTransparentBg: true,
                           );
                         }),
                       ],
