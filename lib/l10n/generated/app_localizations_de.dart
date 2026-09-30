@@ -448,7 +448,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get import_file_instruction =>
-      'Wähle eine Spiel-Datei (.tallee), die aus einer anderen Talle App exportiert wurde, um die Daten zu importieren.';
+      'Wähle eine Spiel-Datei (.tallee), die aus einer anderen Tallee-App exportiert wurde, um die Daten zu importieren.';
 
   @override
   String get import_match => 'Spiel importieren';
@@ -708,7 +708,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get online_sharing_consent_text =>
-      'Damit andere dein Spiel laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du das Online-Teilen aktivieren?';
+      'Damit andere dein Spiel laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du das Teilen über unsere Server aktivieren?';
 
   @override
   String get online_sharing_disabled => 'Online-Teilen ist deaktiviert';
