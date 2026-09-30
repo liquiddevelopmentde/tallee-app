@@ -1,15 +1,19 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:json_schema/json_schema.dart';
 
-/// Helper method to read file content from either bytes or path
+/// Helper method to read the content of [file] as a UTF-8 string.
+/// Returns `null` if the file could not be read.
 Future<String?> readFileContent({required PlatformFile file}) async {
-  if (file.bytes != null) return utf8.decode(file.bytes!);
-  if (file.path != null) return await File(file.path!).readAsString();
-  return null;
+  final Uint8List bytes;
+  try {
+    bytes = await file.readAsBytes();
+  } catch (_) {
+    return null;
+  }
+  return utf8.decode(bytes);
 }
 
 /// Validates the given JSON string against the schema.
