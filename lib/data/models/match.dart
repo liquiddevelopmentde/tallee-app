@@ -332,4 +332,78 @@ class Match {
 
     return teams!.where((team) => (team.score ?? 0) > 0).toList();
   }
+
+  /// Returns the placement of every team in the match, based on the
+  /// match's ruleset. Placements start at 0, null means no placement.
+  List<({Team unit, int? placement})> get teamPlacements {
+    return _calculatePlacements(teams ?? [], (team) => team.score);
+  }
+
+  /// Returns the placement of every player in the match, based on the
+  /// match's ruleset. Placements start at 0, null means no placement.
+  /// In pair matches every member gets the placement of their team.
+  List<({Player unit, int? placement})> get playerPlacements {
+    if (useTeamLogic) {
+      return [
+        for (final (unit: team, placement: placement) in teamPlacements)
+          for (final member in team.members)
+            (unit: member, placement: placement),
+      ];
+    }
+    return _calculatePlacements(players, (player) => scores[player.id]?.score);
+  }
+
+  /// Calculates the placements of the matches [units] (players / teams based on
+  /// the ruleset. Returns a Tuple of (unit, placement) where placement
+  /// represents the the rank (starting at 0) and placement == null means no rank
+  List<({T unit, int? placement})> _calculatePlacements<T>(
+    List<T> units,
+    int? Function(T unit) getScore,
+  ) {
+    if (endedAt == null) {
+      return [for (final u in units) (unit: u, placement: null)];
+    }
+
+    List<({T unit, int? placement})> placements = [];
+
+    switch (game.ruleset) {
+      case Ruleset.winner:
+        placements = [
+          for (final u in units)
+            (unit: u, placement: getScore(u) == 1 ? 0 : null),
+        ];
+      case Ruleset.lives:
+        placements = [
+          for (final u in units)
+            (unit: u, placement: (getScore(u) ?? 0) > 0 ? 0 : null),
+        ];
+      case Ruleset.loser:
+        placements = [
+          for (final u in units)
+            (unit: u, placement: getScore(u) == 0 ? 0 : null),
+        ];
+      case Ruleset.placement:
+      case Ruleset.highestScore:
+      case Ruleset.lowestScore:
+        final ascending = game.ruleset == Ruleset.lowestScore;
+        final sortedScores = units.map(getScore).whereType<int>().toList()
+          ..sort((a, b) => ascending ? a.compareTo(b) : b.compareTo(a));
+
+        placements = [
+          for (final u in units)
+            (
+              unit: u,
+              placement: getScore(u) == null
+                  ? null
+                  : sortedScores.indexOf(getScore(u)!),
+            ),
+        ];
+    }
+
+    return placements..sort((a, b) {
+      final placementA = a.placement ?? double.infinity;
+      final placementB = b.placement ?? double.infinity;
+      return placementA.compareTo(placementB);
+    });
+  }
 }
