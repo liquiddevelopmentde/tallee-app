@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
@@ -99,16 +99,15 @@ class _GroupTileState extends State<GroupTile> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
-                            spacing: 6,
+                            spacing: 8,
                             children: [
+                              const Icon(Icons.group, size: 22),
                               Text(
                                 '${widget.group.members.length}',
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const Icon(Icons.group, size: 22),
                             ],
                           ),
                         ],
