@@ -1,6 +1,6 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -419,9 +419,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
                 )
               : PlayerTile(
                   player: unit.members.first,
-                  backgroundColor: pressingId == unit.id
-                      ? Colors.grey.shade800
-                      : null,
+                  isPressed: pressingId == unit.id,
                   onTileTap:
                       !isPaired &&
                           widget.pairingEnabled &&
