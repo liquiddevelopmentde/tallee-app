@@ -14,6 +14,7 @@ const thisPackage = _tallee;
 const allDependencies = <Package>[
   __fe_analyzer_shared,
   _analyzer,
+  _android_file_picker,
   _ansicolor,
   _arb_utils,
   _archive,
@@ -62,8 +63,13 @@ const allDependencies = <Package>[
   _equatable,
   _fake_async,
   _ffi,
+  _ffi_leak_tracker,
   _file,
   _file_picker,
+  _file_picker_darwin,
+  _file_picker_linux,
+  _file_picker_platform_interface,
+  _file_picker_web,
   _file_saver,
   _fixnum,
   _flutter,
@@ -72,7 +78,6 @@ const allDependencies = <Package>[
   _flutter_localizations,
   _flutter_markdown_plus,
   _flutter_numeric_text,
-  _flutter_plugin_android_lifecycle,
   _flutter_popup,
   _flutter_rating_bar,
   _flutter_test,
@@ -220,6 +225,7 @@ const allDependencies = <Package>[
   _webkit_inspection_protocol,
   _win32,
   _win32_registry,
+  _windows_file_picker,
   _xdg_directories,
   _xml,
   _yaml,
@@ -416,6 +422,42 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// android_file_picker 2.0.0
+const _android_file_picker = Package(
+    name: 'android_file_picker',
+    description: 'Android implementation of the file_picker plugin, supporting file picking, saving, and Storage Access Framework (SAF) URI grants.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_android',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_android',
+    authors: [],
+    version: '2.0.0',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('file_picker_platform_interface'), PackageRef('cross_file'), PackageRef('path')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
   );
 
 /// ansicolor 2.0.3
@@ -1407,14 +1449,14 @@ often given as a stream of byte chunks with type `Stream<List<int>>`.
    limitations under the License.''',
   );
 
-/// circular_buffer 0.12.0
+/// circular_buffer 0.13.0
 const _circular_buffer = Package(
     name: 'circular_buffer',
     description: '''A Dart Circular Buffer container based on List with a fixed capacity.
 ''',
     homepage: 'https://www.github.com/kranfix/dart-circularbuffer',
     authors: [],
-    version: '0.12.0',
+    version: '0.13.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2025,20 +2067,21 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// csv 6.0.0
+/// csv 8.0.0
 const _csv = Package(
     name: 'csv',
-    description: '''A codec to transform between a string and a list of values.
+    description: '''A high-quality CSV library. Encode and decode CSV strings, with
+stream support (one row per event), auto-detection, and Excel compatibility.
 
 The string must be comma (configurable) separated values.''',
     homepage: 'https://github.com/close2/csv',
     authors: [],
-    version: '6.0.0',
+    version: '8.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [],
-    devDependencies: [PackageRef('test')],
+    devDependencies: [PackageRef('lints'), PackageRef('test')],
     license: '''The MIT License (MIT)
 
 Copyright (c) 2014 Christian Loitsch
@@ -2135,13 +2178,13 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// dart_console 4.1.4
+/// dart_console 5.1.0
 const _dart_console = Package(
     name: 'dart_console',
     description: 'A helper library for command-line applications that need more control over input/output than the standard library provides.',
     homepage: 'https://github.com/onepub-dev/dart_console',
     authors: [],
-    version: '4.1.4',
+    version: '5.1.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -2252,13 +2295,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// dbus 0.7.15
+/// dbus 0.8.0
 const _dbus = Package(
     name: 'dbus',
     description: 'A native Dart implementation of the D-Bus message bus client. This package allows Dart applications to directly access services on the Linux desktop.',
     homepage: 'https://github.com/canonical/dbus.dart',
     authors: [],
-    version: '0.7.15',
+    version: '0.8.0',
     spdxIdentifiers: ['MPL-2.0'],
     isMarkdown: false,
     isSdk: false,
@@ -2639,14 +2682,14 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
   defined by the Mozilla Public License, v. 2.0.''',
   );
 
-/// dcli 8.4.2
+/// dcli 10.0.0
 const _dcli = Package(
     name: 'dcli',
     description: 'Dart console SDK - write console (cli) apps/scripts using dart.',
     homepage: 'https://dcli.onepub.dev',
     repository: 'https://github.com/onepub-dev/dcli',
     authors: [],
-    version: '8.4.2',
+    version: '10.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2670,13 +2713,13 @@ ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''',
   );
 
-/// dcli_common 8.4.2
+/// dcli_common 10.2.0
 const _dcli_common = Package(
     name: 'dcli_common',
     description: 'Common code used by multiple dcli packages.',
     repository: 'https://github.com/onepub-dev/dcli',
     authors: [],
-    version: '8.4.2',
+    version: '10.2.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2705,14 +2748,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// dcli_core 8.4.2
+/// dcli_core 10.2.0
 const _dcli_core = Package(
     name: 'dcli_core',
     description: 'A collection of functions that allow you to interact with the file system and OS environment from any platform that supports dart:io.  Copy, move, delete files and directory trees, search for files, create temp files and directories.',
     homepage: 'https://dcli.onepub.dev',
     repository: 'https://github.com/onepub-dev/dcli',
     authors: [],
-    version: '8.4.2',
+    version: '10.2.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2741,14 +2784,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// dcli_terminal 8.4.2
+/// dcli_terminal 10.2.0
 const _dcli_terminal = Package(
     name: 'dcli_terminal',
     description: 'Provides Terminal/Ansi functions used by DCli the Dart Console SDK but is also intended to be used directly.',
     homepage: 'https://dcli.onepub.dev',
     repository: 'https://github.com/onepub-dev/dcli',
     authors: [],
-    version: '8.4.2',
+    version: '10.2.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2772,19 +2815,19 @@ ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''',
   );
 
-/// device_info_plus 12.4.0
+/// device_info_plus 13.2.0
 const _device_info_plus = Package(
     name: 'device_info_plus',
     description: 'Flutter plugin providing detailed information about the device (make, model, etc.), and Android or iOS version the app is running on.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/device_info_plus/device_info_plus',
     authors: [],
-    version: '12.4.0',
+    version: '13.2.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('device_info_plus_platform_interface'), PackageRef('ffi'), PackageRef('file'), PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('meta'), PackageRef('web'), PackageRef('win32'), PackageRef('win32_registry')],
-    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('test')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
     license: '''Copyright 2017 The Chromium Authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -2814,14 +2857,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// device_info_plus_platform_interface 7.0.3
+/// device_info_plus_platform_interface 8.1.0
 const _device_info_plus_platform_interface = Package(
     name: 'device_info_plus_platform_interface',
     description: 'A common platform interface for the device_info_plus plugin.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/',
     authors: [],
-    version: '7.0.3',
+    version: '8.1.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -3353,6 +3396,48 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
+/// ffi_leak_tracker 0.1.2
+const _ffi_leak_tracker = Package(
+    name: 'ffi_leak_tracker',
+    description: 'Allocation tracking and leak detection for Dart FFI code.',
+    repository: 'https://github.com/halildurmus/win32/tree/main/packages/ffi_leak_tracker',
+    authors: [],
+    version: '0.1.2',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('ffi')],
+    devDependencies: [PackageRef('test')],
+    license: '''BSD 3-Clause License
+
+Copyright (c) 2026, Halil Durmus
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
 /// file 7.0.1
 const _file = Package(
     name: 'file',
@@ -3393,19 +3478,163 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// file_picker 11.0.3
+/// file_picker 13.1.0
 const _file_picker = Package(
     name: 'file_picker',
     description: 'A package that allows you to use a native file explorer to pick single or multiple absolute file paths, with extension filtering support.',
-    homepage: 'https://github.com/miguelpruivo/plugins_flutter_file_picker',
-    repository: 'https://github.com/miguelpruivo/flutter_file_picker',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker',
     authors: [],
-    version: '11.0.3',
+    version: '13.1.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('flutter_plugin_android_lifecycle'), PackageRef('plugin_platform_interface'), PackageRef('ffi'), PackageRef('path'), PackageRef('win32'), PackageRef('cross_file'), PackageRef('web'), PackageRef('dbus')],
-    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
+    dependencies: [PackageRef('flutter'), PackageRef('file_picker_platform_interface'), PackageRef('android_file_picker'), PackageRef('file_picker_darwin'), PackageRef('file_picker_linux'), PackageRef('windows_file_picker'), PackageRef('file_picker_web'), PackageRef('cross_file')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints'), PackageRef('plugin_platform_interface')],
+    license: '''MIT License
+
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// file_picker_darwin 2.1.2
+const _file_picker_darwin = Package(
+    name: 'file_picker_darwin',
+    description: 'Darwin (iOS and macOS) implementation of the file_picker plugin, supporting native file picking, saving, and directory selection.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_darwin',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_darwin',
+    authors: [],
+    version: '2.1.2',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('file_picker_platform_interface'), PackageRef('cross_file'), PackageRef('path')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// file_picker_linux 2.0.1
+const _file_picker_linux = Package(
+    name: 'file_picker_linux',
+    description: 'Linux implementation of the file_picker plugin using GTK3 and XDG Desktop Portals for native file and directory picking.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_linux',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_linux',
+    authors: [],
+    version: '2.0.1',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('file_picker_platform_interface'), PackageRef('cross_file'), PackageRef('dbus'), PackageRef('path')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// file_picker_platform_interface 4.0.0
+const _file_picker_platform_interface = Package(
+    name: 'file_picker_platform_interface',
+    description: 'A common platform interface for the file_picker plugin, defining the shared API surface and data contracts across platforms.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_platform_interface',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_platform_interface',
+    authors: [],
+    version: '4.0.0',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('plugin_platform_interface'), PackageRef('cross_file'), PackageRef('path')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// file_picker_web 4.0.0
+const _file_picker_web = Package(
+    name: 'file_picker_web',
+    description: 'Web platform implementation of the file_picker plugin, providing browser file selection, file streaming, and file loading.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_web',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_web',
+    authors: [],
+    version: '4.0.0',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('file_picker_platform_interface'), PackageRef('cross_file'), PackageRef('meta'), PackageRef('path'), PackageRef('web')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
     license: '''MIT License
 
 Copyright (c) 2018 Miguel Ruivo
@@ -3712,45 +3941,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
-  );
-
-/// flutter_plugin_android_lifecycle 2.0.35
-const _flutter_plugin_android_lifecycle = Package(
-    name: 'flutter_plugin_android_lifecycle',
-    description: 'Flutter plugin for accessing an Android Lifecycle within other plugins.',
-    repository: 'https://github.com/flutter/packages/tree/main/packages/flutter_plugin_android_lifecycle',
-    authors: [],
-    version: '2.0.35',
-    spdxIdentifiers: ['BSD-3-Clause'],
-    isMarkdown: false,
-    isSdk: false,
-    dependencies: [PackageRef('flutter')],
-    devDependencies: [PackageRef('flutter_test')],
-    license: '''Copyright 2013 The Flutter Authors
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following
-      disclaimer in the documentation and/or other materials provided
-      with the distribution.
-    * Neither the name of Google Inc. nor the names of its
-      contributors may be used to endorse or promote products derived
-      from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
 /// flutter_popup 3.3.9
@@ -6426,19 +6616,19 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// package_info_plus 9.0.1
+/// package_info_plus 10.2.1
 const _package_info_plus = Package(
     name: 'package_info_plus',
     description: 'Flutter plugin for querying information about the application package, such as CFBundleVersion on iOS or versionCode on Android.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/package_info_plus/package_info_plus',
     authors: [],
-    version: '9.0.1',
+    version: '10.2.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('ffi'), PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('http'), PackageRef('meta'), PackageRef('path'), PackageRef('package_info_plus_platform_interface'), PackageRef('web'), PackageRef('win32'), PackageRef('clock')],
-    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('test')],
+    dependencies: [PackageRef('clock'), PackageRef('ffi'), PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('http'), PackageRef('meta'), PackageRef('package_info_plus_platform_interface'), PackageRef('path'), PackageRef('web'), PackageRef('win32')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
     license: '''Copyright 2017 The Chromium Authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -6468,14 +6658,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// package_info_plus_platform_interface 3.2.1
+/// package_info_plus_platform_interface 4.1.0
 const _package_info_plus_platform_interface = Package(
     name: 'package_info_plus_platform_interface',
     description: 'A common platform interface for the package_info_plus plugin.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/',
     authors: [],
-    version: '3.2.1',
+    version: '4.1.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -8403,14 +8593,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// share_plus 12.0.2
+/// share_plus 13.3.0
 const _share_plus = Package(
     name: 'share_plus',
     description: 'Flutter plugin for sharing content via the platform share UI, using the ACTION_SEND intent on Android and UIActivityViewController on iOS.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/share_plus/share_plus',
     authors: [],
-    version: '12.0.2',
+    version: '13.3.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -8445,19 +8635,19 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// share_plus_platform_interface 6.1.0
+/// share_plus_platform_interface 7.2.0
 const _share_plus_platform_interface = Package(
     name: 'share_plus_platform_interface',
     description: 'A common platform interface for the share_plus plugin.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/',
     authors: [],
-    version: '6.1.0',
+    version: '7.2.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('cross_file'), PackageRef('flutter'), PackageRef('meta'), PackageRef('mime'), PackageRef('plugin_platform_interface'), PackageRef('path_provider'), PackageRef('uuid')],
-    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints'), PackageRef('test')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
     license: '''Copyright 2017 The Chromium Authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40739,20 +40929,19 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// win32 5.15.0
+/// win32 6.4.0
 const _win32 = Package(
     name: 'win32',
-    description: '''Access common Win32 APIs directly from Dart using FFI — no C required!
-''',
+    description: 'Call common Windows APIs directly from Dart using FFI.',
     homepage: 'https://win32.pub',
     repository: 'https://github.com/halildurmus/win32',
     authors: [],
-    version: '5.15.0',
+    version: '6.4.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('ffi')],
-    devDependencies: [PackageRef('args'), PackageRef('hooks'), PackageRef('path'), PackageRef('test')],
+    dependencies: [PackageRef('ffi'), PackageRef('ffi_leak_tracker'), PackageRef('meta')],
+    devDependencies: [PackageRef('args'), PackageRef('path'), PackageRef('test')],
     license: '''BSD 3-Clause License
 
 Copyright (c) 2024, Halil Durmus
@@ -40783,18 +40972,19 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// win32_registry 2.1.0
+/// win32_registry 3.0.3
 const _win32_registry = Package(
     name: 'win32_registry',
-    description: 'A package that provides a friendly Dart API for accessing the Windows Registry.',
-    repository: 'https://github.com/halildurmus/win32_registry',
+    description: '''A modern, type-safe Dart API for accessing and managing the Windows Registry.
+''',
+    repository: 'https://github.com/halildurmus/win32/tree/main/packages/win32_registry',
     authors: [],
-    version: '2.1.0',
+    version: '3.0.3',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('ffi'), PackageRef('meta'), PackageRef('win32')],
-    devDependencies: [PackageRef('hooks'), PackageRef('lints'), PackageRef('test')],
+    dependencies: [PackageRef('collection'), PackageRef('ffi'), PackageRef('ffi_leak_tracker'), PackageRef('meta'), PackageRef('win32')],
+    devDependencies: [PackageRef('test')],
     license: '''BSD 3-Clause License
 
 Copyright (c) 2023, Halil Durmus
@@ -40823,6 +41013,42 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// windows_file_picker 2.0.0
+const _windows_file_picker = Package(
+    name: 'windows_file_picker',
+    description: 'Windows implementation of the file_picker plugin using Win32 COM APIs for native file and directory picking.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_windows',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_windows',
+    authors: [],
+    version: '2.0.0',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('file_picker_platform_interface'), PackageRef('cross_file'), PackageRef('ffi'), PackageRef('meta'), PackageRef('path'), PackageRef('win32')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
   );
 
 /// xdg_directories 1.1.0
