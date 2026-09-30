@@ -174,7 +174,9 @@ class BarChart extends StatelessWidget {
         if (!hasData)
           // Text overlay
           Text(
-            loc.no_results_yet,
+            loc.no_suitable_matches_yet,
+            overflow: TextOverflow.visible,
+            textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
       ],

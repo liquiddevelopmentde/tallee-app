@@ -656,7 +656,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_results_entered_yet => 'No results entered yet';
 
   @override
-  String get no_results_yet => 'No results yet';
+  String get no_suitable_matches_yet => 'No suitable matches yet';
 
   @override
   String get no_statistics => 'No Statistics';

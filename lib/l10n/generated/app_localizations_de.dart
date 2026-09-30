@@ -662,7 +662,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_results_entered_yet => 'Noch keine Ergebnisse eingetragen';
 
   @override
-  String get no_results_yet => 'Noch keine Ergebnisse';
+  String get no_suitable_matches_yet => 'Noch keine passenden Spiele';
 
   @override
   String get no_statistics => 'Keine Statistiken';

@@ -1244,11 +1244,11 @@ abstract class AppLocalizations {
   /// **'No results entered yet'**
   String get no_results_entered_yet;
 
-  /// No description provided for @no_results_yet.
+  /// No description provided for @no_suitable_matches_yet.
   ///
   /// In en, this message translates to:
-  /// **'No results yet'**
-  String get no_results_yet;
+  /// **'No suitable matches yet'**
+  String get no_suitable_matches_yet;
 
   /// No description provided for @no_statistics.
   ///
