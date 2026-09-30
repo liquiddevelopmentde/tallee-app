@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -69,6 +69,8 @@ class _StatisticsViewState extends State<StatisticsView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final tiles = statisticTiles;
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Stack(
@@ -331,9 +333,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                       },
                       onReorderStart: (_) => HapticFeedback.heavyImpact(),
                       onReorderEnd: (_) => HapticFeedback.selectionClick(),
-                      itemCount: statisticTiles.length,
+                      itemCount: tiles.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return statisticTiles[index];
+                        return tiles[index];
                       },
                     )
                   else if (!isLoading)
