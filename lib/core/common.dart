@@ -8,6 +8,7 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
 export 'app_color_utils.dart';
+export 'duration_utils.dart';
 export 'icon_utils.dart';
 export 'translations.dart';
 
