@@ -26,6 +26,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
         createdAt: team.createdAt,
         color: Value(team.color),
         score: Value(team.score),
+        timerStartedAt: Value(team.timerStartedAt),
       ),
       mode: InsertMode.insertOrReplace,
     );
@@ -118,6 +119,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
           createdAt: row.createdAt,
           color: row.color,
           score: row.score,
+          timerStartedAt: row.timerStartedAt,
           members: members,
         );
       }),
@@ -209,6 +211,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
         createdAt: row.createdAt,
         color: row.color,
         score: row.score,
+        timerStartedAt: row.timerStartedAt,
         members: teamIdToMembers[row.id] ?? [],
       );
     }
@@ -232,8 +235,15 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
       createdAt: row.createdAt,
       color: row.color,
       score: row.score,
+      timerStartedAt: row.timerStartedAt,
       members: members,
     );
+  }
+
+  /// Retrieves the raw team row by [teamId], or null if it does not exist.
+  Future<TeamTableData?> getTeamDataById({required String teamId}) async {
+    final query = select(teamTable)..where((t) => t.id.equals(teamId));
+    return query.getSingleOrNull();
   }
 
   /// Helper method to get team members from PlayerMatchTable.
@@ -433,6 +443,92 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
       );
     }
     return success.every((result) => result == true);
+  }
+
+  /* Timer handling */
+
+  /// Starts the timer for one team. No-op if already running.
+  /// The accumulated [TeamTable.score] (ms) is kept; only [timerStartedAt] is
+  /// set. Does NOT touch the match's endedAt.
+  Future<void> startTeamTimer({
+    required String teamId,
+    required DateTime at,
+  }) async {
+    final team = await getTeamDataById(teamId: teamId);
+    if (team == null || team.timerStartedAt != null) return;
+
+    await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
+      TeamTableCompanion(timerStartedAt: Value(at)),
+    );
+  }
+
+  /// Stops one team timer, folding the elapsed wall-clock time into its score.
+  Future<void> stopTeamTimer({
+    required String teamId,
+    required DateTime at,
+  }) async {
+    final team = await getTeamDataById(teamId: teamId);
+    if (team == null || team.timerStartedAt == null) return;
+
+    final folded =
+        (team.score ?? 0) + at.difference(team.timerStartedAt!).inMilliseconds;
+
+    await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
+      TeamTableCompanion(
+        score: Value(folded),
+        timerStartedAt: const Value(null),
+      ),
+    );
+  }
+
+  /// Starts all given teams' timers using one shared timestamp.
+  Future<void> startAllTeamTimers({
+    required List<String> teamIds,
+    required DateTime at,
+  }) async {
+    for (final id in teamIds) {
+      await startTeamTimer(teamId: id, at: at);
+    }
+  }
+
+  /// Stops every running team timer in [teamIds] using one shared timestamp.
+  Future<void> stopAllTeamTimers({
+    required List<String> teamIds,
+    required DateTime at,
+  }) async {
+    for (final id in teamIds) {
+      await stopTeamTimer(teamId: id, at: at);
+    }
+  }
+
+  /// Returns the stored accumulated ms and running state per team.
+  Future<Map<String, ({int elapsedMs, DateTime? timerStartedAt})>>
+  getTeamTimers({required List<String> teamIds}) async {
+    if (teamIds.isEmpty) return {};
+    final rows = await (select(teamTable)..where((t) => t.id.isIn(teamIds)))
+        .get();
+    return {
+      for (final row in rows)
+        row.id: (elapsedMs: row.score ?? 0, timerStartedAt: row.timerStartedAt),
+    };
+  }
+
+  /// Folds all running team timers and persists the final totals, mirroring
+  /// each team total into its members' score entries. Call once on save.
+  Future<void> finalizeTeamTimers({
+    required String matchId,
+    required List<String> teamIds,
+  }) async {
+    final at = DateTime.now();
+    await stopAllTeamTimers(teamIds: teamIds, at: at);
+    for (final id in teamIds) {
+      final team = await getTeamDataById(teamId: id);
+      await updateTeamScore(
+        teamId: id,
+        matchId: matchId,
+        score: team?.score ?? 0,
+      );
+    }
   }
 
   /// Helper method to delete all scores for members of a team in a specific match.
