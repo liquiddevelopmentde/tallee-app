@@ -32,7 +32,8 @@ void main() {
       players: players,
       group: group,
       createdAt: createdAt,
-      endedAt: endedAt,
+      // Statistics ignore unfinished matches, so default to a finished one.
+      endedAt: endedAt ?? createdAt ?? DateTime(2026, 1, 1),
       scores: {
         for (final entry in scores.entries)
           entry.key.id: ScoreEntry(score: entry.value),
@@ -207,6 +208,7 @@ void main() {
           name: 'm1',
           game: highestScoreGame,
           players: [testPlayer1, testPlayer2],
+          endedAt: DateTime(2026, 1, 1),
           scores: {testPlayer1.id: ScoreEntry(score: 10), testPlayer2.id: null},
         ),
       ];
@@ -224,6 +226,35 @@ void main() {
 
       expect(values.length, 1);
       expect(values.single.$1.id, testPlayer1.id);
+      expect(values.single.$2, 10);
+    });
+
+    test('Ignores unfinished matches', () {
+      final finished = buildMatch(
+        name: 'finished',
+        game: highestScoreGame,
+        players: [testPlayer1],
+        scores: {testPlayer1: 10},
+        endedAt: DateTime(2026, 1, 2),
+      );
+      final unfinished = Match(
+        name: 'unfinished',
+        game: highestScoreGame,
+        players: [testPlayer1],
+        scores: {testPlayer1.id: ScoreEntry(score: 50)},
+      );
+
+      final statistic = Statistic(
+        type: StatisticType.totalScore,
+        scopes: [StatisticScope.allPlayers],
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: [finished, unfinished],
+        players: [testPlayer1],
+      );
+
       expect(values.single.$2, 10);
     });
 

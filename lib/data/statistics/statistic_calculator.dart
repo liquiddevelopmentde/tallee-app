@@ -29,7 +29,13 @@ class StatisticCalculator {
     Statistic statistic,
     List<Match> matches,
   ) {
-    List<Match> filteredMatches = matches;
+    // Unfinished matches are not results yet, so they are ignored entirely.
+    // This also prevents a running timer match (whose score entries are still
+    // 0 and whose mvp would otherwise include every player) from polluting
+    // time and win/loss statistics.
+    List<Match> filteredMatches = matches
+        .where((m) => m.endedAt != null)
+        .toList();
 
     // Filter timeframe
     if (statistic.timeframe == Timeframe.custom) {
