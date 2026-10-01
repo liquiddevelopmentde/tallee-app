@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 
 /// Returns a platform-adaptive sheet route

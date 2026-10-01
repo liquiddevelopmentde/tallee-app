@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -88,17 +88,12 @@ class LocalShareService {
   /// Opens the file picker and returns the path of the selected `.tallee`
   /// file, or `null` if the picker was cancelled or no path is available.
   static Future<String?> pickImportFilePath() async {
-    final result = await FilePicker.pickFiles(
-      allowMultiple: false,
+    final file = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: [APP_DATA_FILE_EXTENSION],
     );
 
-    if (result == null || result.files.isEmpty) {
-      return null;
-    }
-
-    return result.files.single.path;
+    return file?.path;
   }
 
   /// Reads and validates a .tallee file at [filePath].
