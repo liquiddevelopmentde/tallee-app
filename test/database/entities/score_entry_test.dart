@@ -747,5 +747,153 @@ void main() {
         expect(match.endedAt, isNull);
       });
     });
+
+    group('TIMER', () {
+      test('startTimer keeps the score and sets timerStartedAt', () async {
+        await database.scoreEntryDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          entry: ScoreEntry(roundNumber: 0, score: 5000, change: 0),
+        );
+        final at = DateTime(2026, 1, 1, 12, 0, 0);
+
+        await database.scoreEntryDao.startTimer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          at: at,
+        );
+
+        final timers = await database.scoreEntryDao.getTimers(
+          matchId: testMatch1.id,
+        );
+        expect(timers[testPlayer1.id]!.elapsedMs, 5000);
+        expect(timers[testPlayer1.id]!.timerStartedAt, at);
+      });
+
+      test('startTimer is a no-op when already running', () async {
+        final first = DateTime(2026, 1, 1, 12, 0, 0);
+        final second = DateTime(2026, 1, 1, 12, 5, 0);
+
+        await database.scoreEntryDao.startTimer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          at: first,
+        );
+        await database.scoreEntryDao.startTimer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          at: second,
+        );
+
+        final timers = await database.scoreEntryDao.getTimers(
+          matchId: testMatch1.id,
+        );
+        expect(timers[testPlayer1.id]!.timerStartedAt, first);
+      });
+
+      test('stopTimer folds elapsed ms into score and clears the start', () async {
+        final start = DateTime(2026, 1, 1, 12, 0, 0);
+        await database.scoreEntryDao.startTimer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          at: start,
+        );
+
+        await database.scoreEntryDao.stopTimer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          at: start.add(const Duration(seconds: 90)),
+        );
+
+        final timers = await database.scoreEntryDao.getTimers(
+          matchId: testMatch1.id,
+        );
+        expect(timers[testPlayer1.id]!.elapsedMs, 90000);
+        expect(timers[testPlayer1.id]!.timerStartedAt, isNull);
+      });
+
+      test('stopTimer accumulates onto the existing score', () async {
+        await database.scoreEntryDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          entry: ScoreEntry(score: 15000),
+        );
+        final start = DateTime(2026, 1, 1, 12, 0, 0);
+
+        await database.scoreEntryDao.startTimer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          at: start,
+        );
+        await database.scoreEntryDao.stopTimer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          at: start.add(const Duration(seconds: 45)),
+        );
+
+        final timers = await database.scoreEntryDao.getTimers(
+          matchId: testMatch1.id,
+        );
+        expect(timers[testPlayer1.id]!.elapsedMs, 60000);
+      });
+
+      test('stopTimer is a no-op when not running', () async {
+        await database.scoreEntryDao.stopTimer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          at: DateTime(2026, 1, 1),
+        );
+
+        final timers = await database.scoreEntryDao.getTimers(
+          matchId: testMatch1.id,
+        );
+        expect(timers, isEmpty);
+      });
+
+      test('startAllTimers / stopAllTimers use one shared timestamp', () async {
+        final at = DateTime(2026, 1, 1, 12, 0, 0);
+        await database.scoreEntryDao.startAllTimers(
+          matchId: testMatch1.id,
+          playerIds: [testPlayer1.id, testPlayer2.id],
+          at: at,
+        );
+
+        final running = await database.scoreEntryDao.getTimers(
+          matchId: testMatch1.id,
+        );
+        expect(running[testPlayer1.id]!.timerStartedAt, at);
+        expect(running[testPlayer2.id]!.timerStartedAt, at);
+
+        await database.scoreEntryDao.stopAllTimers(
+          matchId: testMatch1.id,
+          at: at.add(const Duration(seconds: 30)),
+        );
+
+        final stopped = await database.scoreEntryDao.getTimers(
+          matchId: testMatch1.id,
+        );
+        expect(stopped[testPlayer1.id]!.elapsedMs, 30000);
+        expect(stopped[testPlayer2.id]!.elapsedMs, 30000);
+        expect(stopped[testPlayer1.id]!.timerStartedAt, isNull);
+      });
+
+      test('starting and stopping timers does not end the match', () async {
+        final at = DateTime(2026, 1, 1, 12, 0, 0);
+        await database.scoreEntryDao.startAllTimers(
+          matchId: testMatch1.id,
+          playerIds: [testPlayer1.id],
+          at: at,
+        );
+        await database.scoreEntryDao.stopAllTimers(
+          matchId: testMatch1.id,
+          at: at.add(const Duration(seconds: 5)),
+        );
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNull);
+      });
+    });
   });
 }

@@ -2071,8 +2071,6 @@ class TeamTableData extends DataClass implements Insertable<TeamTableData> {
   final String name;
   final AppColor color;
   final int? score;
-
-  /// Wall-clock instant the team timer was started. Null = stopped.
   final DateTime? timerStartedAt;
   const TeamTableData({
     required this.id,
@@ -2793,9 +2791,6 @@ class ScoreEntryTableData extends DataClass
   final int roundNumber;
   final int score;
   final int change;
-
-  /// Wall-clock instant the timer was started. Null = timer is stopped.
-  /// While running, the total time is score + (now - timerStartedAt) in ms.
   final DateTime? timerStartedAt;
   const ScoreEntryTableData({
     required this.playerId,

@@ -85,6 +85,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       roundNumber: result.roundNumber,
       score: result.score,
       change: result.change,
+      timerStartedAt: result.timerStartedAt,
     );
   }
 
@@ -102,6 +103,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         roundNumber: row.roundNumber,
         score: row.score,
         change: row.change,
+        timerStartedAt: row.timerStartedAt,
       );
       scoresByPlayer[row.playerId] = score;
     }
@@ -130,6 +132,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         roundNumber: row.roundNumber,
         score: row.score,
         change: row.change,
+        timerStartedAt: row.timerStartedAt,
       );
       resultMap.putIfAbsent(row.matchId, () => {})[row.playerId] = score;
     }
@@ -154,6 +157,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
             roundNumber: row.roundNumber,
             score: row.score,
             change: row.change,
+            timerStartedAt: row.timerStartedAt,
           ),
         )
         .toList()
@@ -453,5 +457,115 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         entry: ScoreEntry(roundNumber: 0, score: players.length - i, change: 0),
       );
     }
+  }
+
+  /* Timer handling */
+
+  /// Starts the timer for a single player. No-op if already running.
+  /// The accumulated [ScoreEntry.score] (ms) is kept; only [timerStartedAt] is
+  /// set. Does NOT touch the match's endedAt.
+  Future<void> startTimer({
+    required String playerId,
+    required String matchId,
+    required DateTime at,
+  }) async {
+    final existing = await getScore(playerId: playerId, matchId: matchId);
+    if (existing?.timerStartedAt != null) return;
+
+    await into(scoreEntryTable).insert(
+      ScoreEntryTableCompanion.insert(
+        playerId: playerId,
+        matchId: matchId,
+        roundNumber: 0,
+        score: existing?.score ?? 0,
+        change: existing?.change ?? 0,
+        timerStartedAt: Value(at),
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
+  }
+
+  /// Stops the timer for a single player, folding the elapsed wall-clock time
+  /// into the accumulated score. No-op if not running.
+  Future<void> stopTimer({
+    required String playerId,
+    required String matchId,
+    required DateTime at,
+  }) async {
+    final existing = await getScore(playerId: playerId, matchId: matchId);
+    if (existing == null || existing.timerStartedAt == null) return;
+
+    final folded =
+        existing.score + at.difference(existing.timerStartedAt!).inMilliseconds;
+
+    await (update(scoreEntryTable)..where(
+          (tbl) =>
+              tbl.playerId.equals(playerId) &
+              tbl.matchId.equals(matchId) &
+              tbl.roundNumber.equals(0),
+        ))
+        .write(
+          ScoreEntryTableCompanion(
+            score: Value(folded),
+            timerStartedAt: const Value(null),
+          ),
+        );
+  }
+
+  /// Starts all given players' timers using one shared timestamp so they stay
+  /// in sync.
+  Future<void> startAllTimers({
+    required String matchId,
+    required List<String> playerIds,
+    required DateTime at,
+  }) async {
+    for (final id in playerIds) {
+      await startTimer(playerId: id, matchId: matchId, at: at);
+    }
+  }
+
+  /// Stops every running timer in the match using one shared timestamp.
+  Future<void> stopAllTimers({
+    required String matchId,
+    required DateTime at,
+  }) async {
+    final rows = await (select(scoreEntryTable)..where(
+          (tbl) => tbl.matchId.equals(matchId) & tbl.timerStartedAt.isNotNull(),
+        ))
+        .get();
+
+    await batch((b) {
+      for (final row in rows) {
+        b.update(
+          scoreEntryTable,
+          ScoreEntryTableCompanion(
+            score: Value(
+              row.score + at.difference(row.timerStartedAt!).inMilliseconds,
+            ),
+            timerStartedAt: const Value(null),
+          ),
+          where: (tbl) =>
+              tbl.playerId.equals(row.playerId) &
+              tbl.matchId.equals(matchId) &
+              tbl.roundNumber.equals(row.roundNumber),
+        );
+      }
+    });
+  }
+
+  /// Returns the stored accumulated ms and running state per player.
+  Future<Map<String, ({int elapsedMs, DateTime? timerStartedAt})>> getTimers({
+    required String matchId,
+  }) async {
+    final rows = await (select(scoreEntryTable)
+          ..where((tbl) => tbl.matchId.equals(matchId)))
+        .get();
+    return {
+      for (final row in rows)
+        row.playerId: (
+          elapsedMs: row.score,
+          timerStartedAt: row.timerStartedAt,
+        ),
+    };
   }
 }
