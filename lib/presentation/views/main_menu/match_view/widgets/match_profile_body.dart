@@ -403,9 +403,11 @@ class MatchProfileBody extends StatelessWidget {
     final ruleset = match.game.ruleset;
     if (ruleset == Ruleset.highestScore ||
         ruleset == Ruleset.placement ||
-        ruleset == Ruleset.lives) {
+        ruleset == Ruleset.lives ||
+        ruleset == Ruleset.longestTime) {
       namedScores.sort((a, b) => b.$2.compareTo(a.$2));
-    } else if (ruleset == Ruleset.lowestScore) {
+    } else if (ruleset == Ruleset.lowestScore ||
+        ruleset == Ruleset.shortestTime) {
       namedScores.sort((a, b) => a.$2.compareTo(b.$2));
     }
     return namedScores;
@@ -434,6 +436,16 @@ class MatchProfileBody extends StatelessWidget {
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: score > 0 ? CustomTheme.primaryColor : CustomTheme.hintColor,
+        ),
+      );
+    } else if (ruleset == Ruleset.longestTime ||
+        ruleset == Ruleset.shortestTime) {
+      return Text(
+        formatTimer(score),
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: CustomTheme.primaryColor,
         ),
       );
     } else {

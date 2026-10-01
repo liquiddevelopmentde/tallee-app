@@ -385,7 +385,9 @@ class _MatchTileState extends State<MatchTile> {
         ruleset == Ruleset.winner ||
             ruleset == Ruleset.highestScore ||
             ruleset == Ruleset.lowestScore ||
-            ruleset == Ruleset.lives
+            ruleset == Ruleset.lives ||
+            ruleset == Ruleset.longestTime ||
+            ruleset == Ruleset.shortestTime
         ? players
         : [players.first];
 
@@ -409,6 +411,12 @@ class _MatchTileState extends State<MatchTile> {
       final mvpScore = widget.match.scores[players.first.id]?.score ?? 0;
       children.add(
         TextSpan(text: ' (${getPointLabel(loc, mvpScore)})', style: labelStyle),
+      );
+    } else if (ruleset == Ruleset.longestTime ||
+        ruleset == Ruleset.shortestTime) {
+      final mvpMs = widget.match.scores[players.first.id]?.score ?? 0;
+      children.add(
+        TextSpan(text: ' (${formatTimer(mvpMs)})', style: labelStyle),
       );
     }
 
@@ -439,8 +447,13 @@ class _MatchTileState extends State<MatchTile> {
       color: CustomTheme.textColor.withAlpha(100),
     );
 
+    final isTimer =
+        ruleset == Ruleset.longestTime || ruleset == Ruleset.shortestTime;
+
     final score =
-        (ruleset == Ruleset.highestScore || ruleset == Ruleset.lowestScore)
+        (ruleset == Ruleset.highestScore ||
+            ruleset == Ruleset.lowestScore ||
+            isTimer)
         ? widget.match.teams!
                   .firstWhere((team) => team.id == mvt.first.id)
                   .score ??
@@ -464,7 +477,11 @@ class _MatchTileState extends State<MatchTile> {
             ),
           ],
           if (score != null)
-            TextSpan(text: ' (${getPointLabel(loc, score)})', style: mainStyle),
+            TextSpan(
+              text:
+                  ' (${isTimer ? formatTimer(score) : getPointLabel(loc, score)})',
+              style: mainStyle,
+            ),
         ],
       ),
       maxLines: 1,
