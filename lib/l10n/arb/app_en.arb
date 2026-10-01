@@ -360,8 +360,12 @@
   "showcase_nav_match": "Now that we've created a game, we can switch to the Matches tab.",
   "showcase_select_winner": "To set your winners, simply select them here and tap the Save button below.",
   "skip": "Skip",
+  "start_all": "Start all",
+  "start_timer": "Start timer",
   "statistic": "Statistic",
   "statistics": "Statistics",
+  "stop_all": "Stop all",
+  "stop_timer": "Stop timer",
   "successfully_added_player": "Successfully added player {playerName}",
   "@successfully_added_player": {
     "description": "Success message when adding a player",

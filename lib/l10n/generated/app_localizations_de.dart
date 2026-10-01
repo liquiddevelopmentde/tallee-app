@@ -982,10 +982,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get skip => 'Überspringen';
 
   @override
+  String get start_all => 'Alle starten';
+
+  @override
+  String get start_timer => 'Timer starten';
+
+  @override
   String get statistic => 'Statistik';
 
   @override
   String get statistics => 'Statistiken';
+
+  @override
+  String get stop_all => 'Alle stoppen';
+
+  @override
+  String get stop_timer => 'Timer stoppen';
 
   @override
   String successfully_added_player(String playerName) {

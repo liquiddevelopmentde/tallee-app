@@ -9,6 +9,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_result/live
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/placement_drag_list.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/select_looser_widget.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/select_winner_widget.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/timer_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
 
@@ -63,11 +64,17 @@ class _MatchResultViewState extends State<MatchResultView> {
       ruleset == Ruleset.highestScore ||
       ruleset == Ruleset.lives;
 
+  bool rulesetSupportsTimer() =>
+      ruleset == Ruleset.longestTime || ruleset == Ruleset.shortestTime;
+
   @override
   void initState() {
     db = context.read<AppDatabase>();
     ruleset = widget.match.game.ruleset;
-    canSave = ruleset == Ruleset.placement || ruleset == Ruleset.lives;
+    canSave =
+        ruleset == Ruleset.placement ||
+        ruleset == Ruleset.lives ||
+        rulesetSupportsTimer();
 
     initData();
     super.initState();
@@ -102,7 +109,12 @@ class _MatchResultViewState extends State<MatchResultView> {
         body: Column(
           children: [
             Expanded(
-              child: rulesetSupportsScoreEntry()
+              child: rulesetSupportsTimer()
+                  ? TimerView(
+                      match: widget.match,
+                      onTimersChanged: () => setState(() {}),
+                    )
+                  : rulesetSupportsScoreEntry()
                   ? ruleset == Ruleset.lives
                         ? LiveEditView.lives(
                             match: widget.match,
@@ -263,6 +275,12 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// based on the current selection.
   Future<void> handleSaving() async {
     final ending = DateTime.now();
+
+    // Freeze and persist all running timers before ending the match.
+    if (rulesetSupportsTimer()) {
+      await _finalizeTimers(ending);
+    }
+
     await db.matchDao.updateMatchEndedAt(
       matchId: widget.match.id,
       endedAt: ending,
@@ -419,6 +437,20 @@ class _MatchResultViewState extends State<MatchResultView> {
           entry: ScoreEntry(roundNumber: 0, score: lives, change: 0),
         );
       }
+    }
+  }
+
+  /// Stops all running timers and persists their final totals. For team
+  /// matches this also mirrors each team total into its members' score entries
+  /// and stamps the match as ended.
+  Future<void> _finalizeTimers(DateTime at) async {
+    if (useTeamLogic) {
+      await db.teamDao.finalizeTeamTimers(
+        matchId: widget.match.id,
+        teamIds: allTeams.map((team) => team.id).toList(),
+      );
+    } else {
+      await db.scoreEntryDao.stopAllTimers(matchId: widget.match.id, at: at);
     }
   }
 

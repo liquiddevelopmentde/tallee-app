@@ -1796,6 +1796,18 @@ abstract class AppLocalizations {
   /// **'Skip'**
   String get skip;
 
+  /// No description provided for @start_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Start all'**
+  String get start_all;
+
+  /// No description provided for @start_timer.
+  ///
+  /// In en, this message translates to:
+  /// **'Start timer'**
+  String get start_timer;
+
   /// No description provided for @statistic.
   ///
   /// In en, this message translates to:
@@ -1807,6 +1819,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Statistics'**
   String get statistics;
+
+  /// No description provided for @stop_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop all'**
+  String get stop_all;
+
+  /// No description provided for @stop_timer.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop timer'**
+  String get stop_timer;
 
   /// Success message when adding a player
   ///

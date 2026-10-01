@@ -974,10 +974,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get skip => 'Skip';
 
   @override
+  String get start_all => 'Start all';
+
+  @override
+  String get start_timer => 'Start timer';
+
+  @override
   String get statistic => 'Statistic';
 
   @override
   String get statistics => 'Statistics';
+
+  @override
+  String get stop_all => 'Stop all';
+
+  @override
+  String get stop_timer => 'Stop timer';
 
   @override
   String successfully_added_player(String playerName) {
