@@ -923,7 +923,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Token bestehen aus 6 alphanumerischen Zeichen.';
 
   @override
-  String get show_app_walkthrough => 'App-Führung';
+  String get show_app_walkthrough => 'Onboarding';
 
   @override
   String get showcase_create_game_button =>
