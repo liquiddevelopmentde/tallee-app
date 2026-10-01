@@ -21,12 +21,21 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 /// from the DB (never taken from the [match] snapshot) and refreshed once per
 /// second and on app resume.
 class TimerView extends StatefulWidget {
-  const TimerView({super.key, required this.match, this.onTimersChanged});
+  const TimerView({
+    super.key,
+    required this.match,
+    this.onTimersChanged,
+    this.onMatchReopened,
+  });
 
   final Match match;
 
   /// Called after any start/stop so the parent can refresh its own state.
   final VoidCallback? onTimersChanged;
+
+  /// Called when starting a timer re-opened a previously finished match so the
+  /// parent can refresh the match list/detail.
+  final VoidCallback? onMatchReopened;
 
   @override
   State<TimerView> createState() => _TimerViewState();
@@ -36,6 +45,10 @@ class _TimerViewState extends State<TimerView> {
   late final AppDatabase db;
   late final AppLifecycleListener lifecycleListener;
   Timer? ticker;
+
+  /// Whether the match was finished when this view opened. Cleared once a timer
+  /// start re-opens the match.
+  late bool _matchEnded;
 
   /// Accumulated ms per unit while stopped (the persisted [ScoreEntry.score] /
   /// [Team.score] value).
@@ -66,6 +79,7 @@ class _TimerViewState extends State<TimerView> {
   void initState() {
     super.initState();
     db = context.read<AppDatabase>();
+    _matchEnded = widget.match.endedAt != null;
     lifecycleListener = AppLifecycleListener(onResume: _reload);
     _reload();
     ticker = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -103,16 +117,25 @@ class _TimerViewState extends State<TimerView> {
     return base + DateTime.now().difference(start).inMilliseconds;
   }
 
+  /// Re-opens the match if it was already finished and a timer just started.
+  Future<void> _reopenIfNeeded() async {
+    if (!_matchEnded) return;
+    await db.matchDao.removeMatchEndedAt(matchId: widget.match.id);
+    _matchEnded = false;
+    widget.onMatchReopened?.call();
+  }
+
   Future<void> _toggle(String id) async {
     final at = DateTime.now();
+    final starting = timerStartedAt[id] == null;
     if (useTeams) {
-      if (timerStartedAt[id] == null) {
+      if (starting) {
         await db.teamDao.startTeamTimer(teamId: id, at: at);
       } else {
         await db.teamDao.stopTeamTimer(teamId: id, at: at);
       }
     } else {
-      if (timerStartedAt[id] == null) {
+      if (starting) {
         await db.scoreEntryDao.startTimer(
           playerId: id,
           matchId: widget.match.id,
@@ -126,6 +149,7 @@ class _TimerViewState extends State<TimerView> {
         );
       }
     }
+    if (starting) await _reopenIfNeeded();
     await _reload();
     widget.onTimersChanged?.call();
   }
@@ -141,6 +165,7 @@ class _TimerViewState extends State<TimerView> {
         at: at,
       );
     }
+    await _reopenIfNeeded();
     await _reload();
     widget.onTimersChanged?.call();
   }

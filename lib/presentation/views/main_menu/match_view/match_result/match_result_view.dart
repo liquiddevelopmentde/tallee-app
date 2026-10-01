@@ -113,6 +113,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                   ? TimerView(
                       match: widget.match,
                       onTimersChanged: () => setState(() {}),
+                      onMatchReopened: widget.onWinnerChanged,
                     )
                   : rulesetSupportsScoreEntry()
                   ? ruleset == Ruleset.lives
