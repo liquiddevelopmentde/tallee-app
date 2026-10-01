@@ -159,6 +159,12 @@ void main() {
         return {a: 10, b: 9, c: 9};
       case StatisticType.worstScore:
         return {a: 4, b: 3, c: 6};
+      // No time-based matches in the shared fixture.
+      case StatisticType.totalTime:
+      case StatisticType.averageTime:
+      case StatisticType.longestTime:
+      case StatisticType.shortestTime:
+        return {};
     }
   }
 
@@ -448,6 +454,180 @@ void main() {
         (entry) => entry.$1.id == testPlayer4.id,
       );
       expect(dianaValue.$2, 0.0);
+    });
+  });
+
+  group('StatisticCalculator time-based rulesets', () {
+    late Game longestTimeGame;
+    late Game shortestTimeGame;
+
+    setUp(() {
+      longestTimeGame = Game(
+        name: 'Longest Time Game',
+        ruleset: Ruleset.longestTime,
+      );
+      shortestTimeGame = Game(
+        name: 'Shortest Time Game',
+        ruleset: Ruleset.shortestTime,
+      );
+    });
+
+    test('longestTime picks the highest ms as mvp', () {
+      final match = buildMatch(
+        name: 'longest',
+        game: longestTimeGame,
+        players: [testPlayer1, testPlayer2],
+        scores: {testPlayer1: 62000, testPlayer2: 90000},
+      );
+
+      expect(match.mvp.single.id, testPlayer2.id);
+    });
+
+    test('shortestTime picks the lowest ms as mvp', () {
+      final match = buildMatch(
+        name: 'shortest',
+        game: shortestTimeGame,
+        players: [testPlayer1, testPlayer2],
+        scores: {testPlayer1: 62000, testPlayer2: 90000},
+      );
+
+      expect(match.mvp.single.id, testPlayer1.id);
+    });
+
+    test('timer games are excluded from score statistics', () {
+      final timerMatches = [
+        buildMatch(
+          name: 't1',
+          game: longestTimeGame,
+          players: [testPlayer1],
+          scores: {testPlayer1: 62000},
+        ),
+      ];
+
+      final statistic = Statistic(
+        type: StatisticType.totalScore,
+        scopes: [StatisticScope.allPlayers],
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: timerMatches,
+        players: [testPlayer1],
+      );
+
+      expect(values, isEmpty);
+    });
+
+    test('totalTime sums the time of timer games', () {
+      final timerMatches = [
+        buildMatch(
+          name: 't1',
+          game: longestTimeGame,
+          players: [testPlayer1],
+          scores: {testPlayer1: 62000},
+        ),
+        buildMatch(
+          name: 't2',
+          game: shortestTimeGame,
+          players: [testPlayer1],
+          scores: {testPlayer1: 90000},
+        ),
+      ];
+
+      final statistic = Statistic(
+        type: StatisticType.totalTime,
+        scopes: [StatisticScope.allPlayers],
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: timerMatches,
+        players: [testPlayer1],
+      );
+
+      expect(values.single.$2, 152000);
+    });
+
+    test('longestTime returns the player\'s longest time', () {
+      final timerMatches = [
+        buildMatch(
+          name: 't1',
+          game: longestTimeGame,
+          players: [testPlayer1],
+          scores: {testPlayer1: 62000},
+        ),
+        buildMatch(
+          name: 't2',
+          game: shortestTimeGame,
+          players: [testPlayer1],
+          scores: {testPlayer1: 90000},
+        ),
+      ];
+
+      final statistic = Statistic(
+        type: StatisticType.longestTime,
+        scopes: [StatisticScope.allPlayers],
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: timerMatches,
+        players: [testPlayer1],
+      );
+
+      expect(values.single.$2, 90000);
+    });
+
+    test('shortestTime returns the player\'s shortest time', () {
+      final timerMatches = [
+        buildMatch(
+          name: 't1',
+          game: longestTimeGame,
+          players: [testPlayer1],
+          scores: {testPlayer1: 62000},
+        ),
+        buildMatch(
+          name: 't2',
+          game: shortestTimeGame,
+          players: [testPlayer1],
+          scores: {testPlayer1: 90000},
+        ),
+      ];
+
+      final statistic = Statistic(
+        type: StatisticType.shortestTime,
+        scopes: [StatisticScope.allPlayers],
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: timerMatches,
+        players: [testPlayer1],
+      );
+
+      expect(values.single.$2, 62000);
+    });
+
+    test('score games are excluded from time statistics', () {
+      final scoreMatch = buildMatch(
+        name: 's1',
+        game: Game(name: 'Score Game', ruleset: Ruleset.highestScore),
+        players: [testPlayer1],
+        scores: {testPlayer1: 10},
+      );
+
+      final statistic = Statistic(
+        type: StatisticType.totalTime,
+        scopes: [StatisticScope.allPlayers],
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: [scoreMatch],
+        players: [testPlayer1],
+      );
+
+      expect(values, isEmpty);
     });
   });
 }

@@ -67,12 +67,8 @@ extension FilenameSanitization on String {
 
 /// Returns the rulesets which make sense for a given [StatisticType]
 List<Ruleset> getRulesetForTypes(StatisticType type) {
-  final scoreBaseRulesets = [
-    Ruleset.lowestScore,
-    Ruleset.highestScore,
-    Ruleset.longestTime,
-    Ruleset.shortestTime,
-  ];
+  final scoreBaseRulesets = [Ruleset.lowestScore, Ruleset.highestScore];
+  final timeBaseRulesets = [Ruleset.longestTime, Ruleset.shortestTime];
   const allRulesets = Ruleset.values;
 
   switch (type) {
@@ -81,6 +77,12 @@ List<Ruleset> getRulesetForTypes(StatisticType type) {
     case StatisticType.worstScore:
     case StatisticType.totalScore:
       return scoreBaseRulesets;
+
+    case StatisticType.totalTime:
+    case StatisticType.averageTime:
+    case StatisticType.longestTime:
+    case StatisticType.shortestTime:
+      return timeBaseRulesets;
 
     case StatisticType.totalMatches:
     case StatisticType.totalLosses:

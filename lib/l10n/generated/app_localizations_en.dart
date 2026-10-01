@@ -46,6 +46,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get average_score => 'Average score';
 
   @override
+  String get average_time => 'Average time';
+
+  @override
   String get best_player => 'Best Player';
 
   @override
@@ -529,6 +532,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get longest_time => 'Longest Time';
 
   @override
+  String get longest_time_statistic => 'Longest time';
+
+  @override
   String get loser => 'Loser';
 
   @override
@@ -922,6 +928,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shortest_time => 'Shortest Time';
 
   @override
+  String get shortest_time_statistic => 'Shortest time';
+
+  @override
   String get show_app_walkthrough => 'App Walkthrough';
 
   @override
@@ -1080,6 +1089,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get total_score => 'Total score';
+
+  @override
+  String get total_time => 'Total time';
 
   @override
   String get total_wins => 'Total wins';

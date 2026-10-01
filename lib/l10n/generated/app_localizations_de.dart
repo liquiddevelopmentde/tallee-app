@@ -47,6 +47,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get average_score => 'Durchschnittliche Punktzahl';
 
   @override
+  String get average_time => 'Durchschnittliche Zeit';
+
+  @override
   String get best_player => 'Beste:r Spieler:in';
 
   @override
@@ -534,6 +537,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get longest_time => 'Längste Zeit';
 
   @override
+  String get longest_time_statistic => 'Längste Zeit';
+
+  @override
   String get loser => 'Verlierer:in';
 
   @override
@@ -929,6 +935,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shortest_time => 'Kürzeste Zeit';
 
   @override
+  String get shortest_time_statistic => 'Kürzeste Zeit';
+
+  @override
   String get show_app_walkthrough => 'App-Führung';
 
   @override
@@ -1090,6 +1099,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get total_score => 'Punktzahl insgesamt';
+
+  @override
+  String get total_time => 'Zeit insgesamt';
 
   @override
   String get total_wins => 'Siege insgesamt';

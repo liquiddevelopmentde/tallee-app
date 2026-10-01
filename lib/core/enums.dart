@@ -94,6 +94,29 @@ enum StatisticType {
   bestScore,
   worstScore,
   winrate,
+  totalTime,
+  averageTime,
+  longestTime,
+  shortestTime,
+}
+
+/// Classifies [StatisticType]s by the kind of value they measure, which
+/// determines both the rulesets they apply to and how their values are shown.
+extension StatisticTypeClassification on StatisticType {
+  /// Values are numeric points and come from score-based rulesets only.
+  bool get isScoreBased =>
+      this == StatisticType.totalScore ||
+      this == StatisticType.averageScore ||
+      this == StatisticType.bestScore ||
+      this == StatisticType.worstScore;
+
+  /// Values are durations in milliseconds and come from time-based rulesets
+  /// only.
+  bool get isTimeBased =>
+      this == StatisticType.totalTime ||
+      this == StatisticType.averageTime ||
+      this == StatisticType.longestTime ||
+      this == StatisticType.shortestTime;
 }
 
 enum StatisticScope { allPlayers, selectedGroups, selectedGames }

@@ -43,5 +43,13 @@ IconData getStatisticIcon({required StatisticType type}) {
       return Icons.trending_down;
     case StatisticType.winrate:
       return Icons.percent;
+    case StatisticType.totalTime:
+      return Icons.timer;
+    case StatisticType.averageTime:
+      return Icons.av_timer;
+    case StatisticType.longestTime:
+      return Icons.hourglass_bottom;
+    case StatisticType.shortestTime:
+      return Icons.hourglass_top;
   }
 }

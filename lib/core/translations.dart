@@ -194,5 +194,13 @@ String translateStatisticTypeToString(
       return loc.worst_score;
     case StatisticType.winrate:
       return loc.winrate;
+    case StatisticType.totalTime:
+      return loc.total_time;
+    case StatisticType.averageTime:
+      return loc.average_time;
+    case StatisticType.longestTime:
+      return loc.longest_time_statistic;
+    case StatisticType.shortestTime:
+      return loc.shortest_time_statistic;
   }
 }

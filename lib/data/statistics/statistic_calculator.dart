@@ -85,10 +85,15 @@ class StatisticCalculator {
           .toList();
     }
 
-    // Score-based stats only make sense for rulesets with numeric points.
-    if (_isScoreBasedStatistic(statistic.type)) {
+    // Score-based stats only make sense for rulesets with numeric points and
+    // time-based stats only for duration rulesets.
+    if (statistic.type.isScoreBased) {
       filteredMatches = filteredMatches
           .where((m) => _isScoreBasedRuleset(m.game.ruleset))
+          .toList();
+    } else if (statistic.type.isTimeBased) {
+      filteredMatches = filteredMatches
+          .where((m) => _isTimeBasedRuleset(m.game.ruleset))
           .toList();
     }
 
@@ -124,7 +129,7 @@ class StatisticCalculator {
       scopedPlayers = allPlayers.where((p) => ids.contains(p.id)).toList();
     }
 
-    if (_isScoreBasedStatistic(statistic.type)) {
+    if (statistic.type.isScoreBased || statistic.type.isTimeBased) {
       return scopedPlayers
           .where((p) => _hasAnyScore(p, filteredMatches))
           .toList();
@@ -155,23 +160,7 @@ class StatisticCalculator {
     }
   }
 
-  /// Determines if the statistic type is based on scores.
-  static bool _isScoreBasedStatistic(StatisticType type) {
-    switch (type) {
-      case StatisticType.totalScore:
-      case StatisticType.averageScore:
-      case StatisticType.bestScore:
-      case StatisticType.worstScore:
-        return true;
-      case StatisticType.totalMatches:
-      case StatisticType.totalWins:
-      case StatisticType.totalLosses:
-      case StatisticType.winrate:
-        return false;
-    }
-  }
-
-  /// Determines if the ruleset is based on scores.
+  /// Determines if the ruleset is based on scores (numeric points).
   static bool _isScoreBasedRuleset(Ruleset ruleset) {
     switch (ruleset) {
       case Ruleset.highestScore:
@@ -181,10 +170,25 @@ class StatisticCalculator {
       case Ruleset.placement:
       case Ruleset.loser:
       case Ruleset.lives:
+      case Ruleset.longestTime:
+      case Ruleset.shortestTime:
         return false;
+    }
+  }
+
+  /// Determines if the ruleset is based on time (durations in milliseconds).
+  static bool _isTimeBasedRuleset(Ruleset ruleset) {
+    switch (ruleset) {
       case Ruleset.longestTime:
       case Ruleset.shortestTime:
         return true;
+      case Ruleset.winner:
+      case Ruleset.loser:
+      case Ruleset.highestScore:
+      case Ruleset.lowestScore:
+      case Ruleset.lives:
+      case Ruleset.placement:
+        return false;
     }
   }
 
@@ -262,6 +266,44 @@ class StatisticCalculator {
             return (p, rate as num);
           }).toList(),
         );
+
+      case StatisticType.totalTime:
+        return _sortDesc(
+          players.map((p) => (p, _totalScore(p, matches) as num)).toList(),
+        );
+
+      case StatisticType.averageTime:
+        return _sortDesc(
+          players.map((p) {
+            final scores = _scoresOf(p, matches);
+            final avg = scores.isEmpty
+                ? 0
+                : double.parse(
+                    (scores.reduce((a, b) => a + b) / scores.length)
+                        .toStringAsFixed(2),
+                  );
+            return (p, avg);
+          }).toList(),
+        );
+
+      case StatisticType.longestTime:
+        return _sortDesc(
+          players.map((p) {
+            final scores = _scoresOf(p, matches);
+            final longest = scores.isEmpty ? 0 : scores.reduce(max);
+            return (p, longest as num);
+          }).toList(),
+        );
+
+      case StatisticType.shortestTime:
+        // Shortest first, so the fastest player appears on top.
+        final entries = players.map((p) {
+          final scores = _scoresOf(p, matches);
+          final shortest = scores.isEmpty ? 0 : scores.reduce(min);
+          return (p, shortest as num);
+        }).toList();
+        entries.sort((a, b) => a.$2.compareTo(b.$2));
+        return entries;
     }
   }
 

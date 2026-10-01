@@ -311,6 +311,9 @@ class _StatisticsTileState extends State<StatisticsTile> {
   }
 
   String formatValue(num value) {
+    if (widget.statistic.type.isTimeBased) {
+      return formatTimer(value.round());
+    }
     if (value is double) {
       return value.toStringAsFixed(1);
     } else {

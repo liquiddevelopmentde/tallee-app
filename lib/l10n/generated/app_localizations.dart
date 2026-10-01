@@ -170,6 +170,12 @@ abstract class AppLocalizations {
   /// **'Average score'**
   String get average_score;
 
+  /// No description provided for @average_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Average time'**
+  String get average_time;
+
   /// No description provided for @best_player.
   ///
   /// In en, this message translates to:
@@ -1022,6 +1028,12 @@ abstract class AppLocalizations {
   /// **'Longest Time'**
   String get longest_time;
 
+  /// No description provided for @longest_time_statistic.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest time'**
+  String get longest_time_statistic;
+
   /// No description provided for @loser.
   ///
   /// In en, this message translates to:
@@ -1712,6 +1724,12 @@ abstract class AppLocalizations {
   /// **'Shortest Time'**
   String get shortest_time;
 
+  /// No description provided for @shortest_time_statistic.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortest time'**
+  String get shortest_time_statistic;
+
   /// No description provided for @show_app_walkthrough.
   ///
   /// In en, this message translates to:
@@ -1993,6 +2011,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total score'**
   String get total_score;
+
+  /// No description provided for @total_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Total time'**
+  String get total_time;
 
   /// No description provided for @total_wins.
   ///
