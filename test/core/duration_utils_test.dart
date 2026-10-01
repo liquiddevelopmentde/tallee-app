@@ -24,4 +24,33 @@ void main() {
       expect(formatTimer(-5_000), '0s');
     });
   });
+
+  group('effectiveTimerMs', () {
+    final now = DateTime(2026, 1, 1, 12, 0, 0);
+
+    test('returns only the base value when stopped', () {
+      expect(
+        effectiveTimerMs(baseMs: 12_000, timerStartedAt: null, now: now),
+        12_000,
+      );
+    });
+
+    test('adds the elapsed time when running', () {
+      expect(
+        effectiveTimerMs(
+          baseMs: 5_000,
+          timerStartedAt: now.subtract(const Duration(seconds: 90)),
+          now: now,
+        ),
+        95_000,
+      );
+    });
+
+    test('returns the base value when the timer just started', () {
+      expect(
+        effectiveTimerMs(baseMs: 5_000, timerStartedAt: now, now: now),
+        5_000,
+      );
+    });
+  });
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
@@ -110,12 +111,11 @@ class _TimerViewState extends State<TimerView> {
   }
 
   /// Returns the effective elapsed ms for [id] at the current instant.
-  int effectiveMs(String id) {
-    final base = baseMs[id] ?? 0;
-    final start = timerStartedAt[id];
-    if (start == null) return base;
-    return base + DateTime.now().difference(start).inMilliseconds;
-  }
+  int effectiveMs(String id) => effectiveTimerMs(
+    baseMs: baseMs[id] ?? 0,
+    timerStartedAt: timerStartedAt[id],
+    now: clock.now(),
+  );
 
   /// Re-opens the match if it was already finished and a timer just started.
   Future<void> _reopenIfNeeded() async {
@@ -126,7 +126,7 @@ class _TimerViewState extends State<TimerView> {
   }
 
   Future<void> _toggle(String id) async {
-    final at = DateTime.now();
+    final at = clock.now();
     final starting = timerStartedAt[id] == null;
     if (useTeams) {
       if (starting) {
@@ -155,7 +155,7 @@ class _TimerViewState extends State<TimerView> {
   }
 
   Future<void> _startAll() async {
-    final at = DateTime.now();
+    final at = clock.now();
     if (useTeams) {
       await db.teamDao.startAllTeamTimers(teamIds: unitIds, at: at);
     } else {
@@ -171,7 +171,7 @@ class _TimerViewState extends State<TimerView> {
   }
 
   Future<void> _stopAll() async {
-    final at = DateTime.now();
+    final at = clock.now();
     if (useTeams) {
       await db.teamDao.stopAllTeamTimers(teamIds: unitIds, at: at);
     } else {
