@@ -912,6 +912,28 @@ void main() {
         );
         expect(score!.timerStartedAt, at);
       });
+
+      test('stopAllTimers leaves never-started players unscored', () async {
+        final start = DateTime(2026, 1, 1, 12, 0, 0);
+
+        // Only player 1 ever starts a timer.
+        await database.scoreEntryDao.startTimer(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          at: start,
+        );
+        await database.scoreEntryDao.stopAllTimers(
+          matchId: testMatch1.id,
+          at: start.add(const Duration(seconds: 30)),
+        );
+
+        final timers = await database.scoreEntryDao.getTimers(
+          matchId: testMatch1.id,
+        );
+        expect(timers[testPlayer1.id]!.elapsedMs, 30000);
+        // player 2 never started, so no score row exists for them.
+        expect(timers.containsKey(testPlayer2.id), isFalse);
+      });
     });
   });
 }
