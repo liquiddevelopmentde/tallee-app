@@ -3,13 +3,17 @@
   "extends": ["config:recommended"],
   "onboarding": false,
   "requireConfig": "optional",
-  "baseBranches": ["development"],
+  "baseBranchPatterns": [
+    "development"
+  ],
   "prHourlyLimit": 2,
   "prConcurrentLimit": 3,
   "enabledManagers": ["pub"],
   "pub": {
     "enabled": true,
-    "fileMatch": ["(^|/)pubspec\\.yaml$"]
+    "managerFilePatterns": [
+      "/(^|/)pubspec\\.yaml$/"
+    ]
   },
   "packageRules": [
     {
