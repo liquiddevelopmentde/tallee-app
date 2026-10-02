@@ -2105,18 +2105,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// cupertino_icons 1.0.9
+/// cupertino_icons 2.0.0
 const _cupertino_icons = Package(
     name: 'cupertino_icons',
     description: 'Default icons asset for Cupertino widgets based on Apple styled icons',
     repository: 'https://github.com/flutter/packages/tree/main/third_party/packages/cupertino_icons',
     authors: [],
-    version: '1.0.9',
+    version: '2.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [],
-    devDependencies: [PackageRef('collection'), PackageRef('flutter'), PackageRef('flutter_test'), PackageRef('path')],
+    devDependencies: [PackageRef('collection'), PackageRef('cupertino_ui'), PackageRef('flutter'), PackageRef('flutter_test'), PackageRef('path')],
     license: '''The MIT License (MIT)
 
 Copyright (c) 2016 Vladimir Kharlampidi
@@ -7053,18 +7053,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.''',
   );
 
-/// pinput 6.0.2
+/// pinput 7.0.0
 const _pinput = Package(
     name: 'pinput',
     description: 'Pin code input (OTP) text field, iOS SMS autofill, Android SMS autofill One Time Code, Password, Passcode, Captcha, Security, Coupon, Wowcher, 2FA, Two step verification',
     homepage: 'https://github.com/Tkko/Flutter_PinPut',
     repository: 'https://github.com/Tkko/Flutter_PinPut',
     authors: [],
-    version: '6.0.2',
+    version: '7.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter')],
+    dependencies: [PackageRef('flutter'), PackageRef('cupertino_ui'), PackageRef('material_ui')],
     devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
     license: '''The MIT License (MIT)
 Copyright (c) 2022 Tornike Kurdadze
@@ -39895,13 +39895,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// syncfusion_flutter_core 34.2.9
+/// syncfusion_flutter_core 35.1.37
 const _syncfusion_flutter_core = Package(
     name: 'syncfusion_flutter_core',
     description: 'Syncfusion Flutter Core is a dependent package for all the Syncfusion Flutter widgets.',
     homepage: 'https://github.com/syncfusion/flutter-widgets/tree/master/packages/syncfusion_flutter_core',
     authors: [],
-    version: '34.2.9',
+    version: '35.1.37',
     spdxIdentifiers: [],
     isMarkdown: false,
     isSdk: false,
@@ -39921,13 +39921,13 @@ The Syncfusion<sup>&reg;</sup> license that contains the terms and conditions ca
 https://www.syncfusion.com/content/downloads/syncfusion_license.pdf''',
   );
 
-/// syncfusion_flutter_datepicker 34.2.9
+/// syncfusion_flutter_datepicker 35.1.37
 const _syncfusion_flutter_datepicker = Package(
     name: 'syncfusion_flutter_datepicker',
     description: 'The Flutter Date Range Picker widget allows users to easily select dates or a range of dates. It has four built-in views that allow quick navigation to the desired date.',
     homepage: 'https://github.com/syncfusion/flutter-widgets/tree/master/packages/syncfusion_flutter_datepicker',
     authors: [],
-    version: '34.2.9',
+    version: '35.1.37',
     spdxIdentifiers: [],
     isMarkdown: false,
     isSdk: false,
@@ -41200,12 +41200,12 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// tallee 0.1.35+678
+/// tallee 0.1.37+680
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.1.35+678',
+    version: '0.1.37+680',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
