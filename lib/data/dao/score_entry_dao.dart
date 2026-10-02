@@ -28,6 +28,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         roundNumber: entry.roundNumber,
         score: entry.score,
         change: entry.change,
+        timerStartedAt: Value(entry.timerStartedAt),
       ),
       mode: InsertMode.insertOrReplace,
     );
@@ -49,6 +50,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
             roundNumber: score.roundNumber,
             score: score.score,
             change: score.change,
+            timerStartedAt: Value(score.timerStartedAt),
           ),
         )
         .toList();
@@ -529,10 +531,12 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String matchId,
     required DateTime at,
   }) async {
-    final rows = await (select(scoreEntryTable)..where(
-          (tbl) => tbl.matchId.equals(matchId) & tbl.timerStartedAt.isNotNull(),
-        ))
-        .get();
+    final rows =
+        await (select(scoreEntryTable)..where(
+              (tbl) =>
+                  tbl.matchId.equals(matchId) & tbl.timerStartedAt.isNotNull(),
+            ))
+            .get();
 
     await batch((b) {
       for (final row in rows) {
@@ -557,9 +561,9 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   Future<Map<String, ({int elapsedMs, DateTime? timerStartedAt})>> getTimers({
     required String matchId,
   }) async {
-    final rows = await (select(scoreEntryTable)
-          ..where((tbl) => tbl.matchId.equals(matchId)))
-        .get();
+    final rows = await (select(
+      scoreEntryTable,
+    )..where((tbl) => tbl.matchId.equals(matchId))).get();
     return {
       for (final row in rows)
         row.playerId: (

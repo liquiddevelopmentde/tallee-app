@@ -194,6 +194,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                   score: entry.value!.score,
                   roundNumber: entry.value!.roundNumber,
                   change: entry.value!.change,
+                  timerStartedAt: Value(entry.value!.timerStartedAt),
                 ),
                 mode: InsertMode.insertOrReplace,
               );

@@ -791,26 +791,29 @@ void main() {
         expect(timers[testPlayer1.id]!.timerStartedAt, first);
       });
 
-      test('stopTimer folds elapsed ms into score and clears the start', () async {
-        final start = DateTime(2026, 1, 1, 12, 0, 0);
-        await database.scoreEntryDao.startTimer(
-          playerId: testPlayer1.id,
-          matchId: testMatch1.id,
-          at: start,
-        );
+      test(
+        'stopTimer folds elapsed ms into score and clears the start',
+        () async {
+          final start = DateTime(2026, 1, 1, 12, 0, 0);
+          await database.scoreEntryDao.startTimer(
+            playerId: testPlayer1.id,
+            matchId: testMatch1.id,
+            at: start,
+          );
 
-        await database.scoreEntryDao.stopTimer(
-          playerId: testPlayer1.id,
-          matchId: testMatch1.id,
-          at: start.add(const Duration(seconds: 90)),
-        );
+          await database.scoreEntryDao.stopTimer(
+            playerId: testPlayer1.id,
+            matchId: testMatch1.id,
+            at: start.add(const Duration(seconds: 90)),
+          );
 
-        final timers = await database.scoreEntryDao.getTimers(
-          matchId: testMatch1.id,
-        );
-        expect(timers[testPlayer1.id]!.elapsedMs, 90000);
-        expect(timers[testPlayer1.id]!.timerStartedAt, isNull);
-      });
+          final timers = await database.scoreEntryDao.getTimers(
+            matchId: testMatch1.id,
+          );
+          expect(timers[testPlayer1.id]!.elapsedMs, 90000);
+          expect(timers[testPlayer1.id]!.timerStartedAt, isNull);
+        },
+      );
 
       test('stopTimer accumulates onto the existing score', () async {
         await database.scoreEntryDao.addScore(
@@ -893,6 +896,21 @@ void main() {
           matchId: testMatch1.id,
         );
         expect(match.endedAt, isNull);
+      });
+
+      test('addScore preserves timerStartedAt', () async {
+        final at = DateTime(2026, 1, 1, 12, 0, 0);
+        await database.scoreEntryDao.addScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          entry: ScoreEntry(score: 0, timerStartedAt: at),
+        );
+
+        final score = await database.scoreEntryDao.getScore(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+        expect(score!.timerStartedAt, at);
       });
     });
   });
