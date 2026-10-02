@@ -505,8 +505,9 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<Map<String, ({int elapsedMs, DateTime? timerStartedAt})>>
   getTeamTimers({required List<String> teamIds}) async {
     if (teamIds.isEmpty) return {};
-    final rows = await (select(teamTable)..where((t) => t.id.isIn(teamIds)))
-        .get();
+    final rows = await (select(
+      teamTable,
+    )..where((t) => t.id.isIn(teamIds))).get();
     return {
       for (final row in rows)
         row.id: (elapsedMs: row.score ?? 0, timerStartedAt: row.timerStartedAt),
@@ -523,11 +524,10 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     await stopAllTeamTimers(teamIds: teamIds, at: at);
     for (final id in teamIds) {
       final team = await getTeamDataById(teamId: id);
-      await updateTeamScore(
-        teamId: id,
-        matchId: matchId,
-        score: team?.score ?? 0,
-      );
+      // Teams that never started have no score and must stay unscored; writing
+      // 0 would make them count as a 0 ms result and win shortest-time matches.
+      if (team?.score == null) continue;
+      await updateTeamScore(teamId: id, matchId: matchId, score: team!.score!);
     }
   }
 
