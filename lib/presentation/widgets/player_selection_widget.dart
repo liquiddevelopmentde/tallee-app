@@ -1,6 +1,6 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -208,9 +208,11 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
               child: Visibility(
                 visible: suggestedPlayers.isNotEmpty,
                 replacement: TopCenteredMessage(
-                  icon: Icons.search,
-                  title: loc.no_results,
-                  message: getInfoText(context),
+                  icon: allPlayers.isEmpty
+                      ? Icons.person_outline
+                      : Icons.search,
+                  title: allPlayers.isEmpty ? loc.no_players : loc.no_results,
+                  message: getInfoText(loc),
                   fullscreen: false,
                 ),
                 child: widget.mode == SelectionMode.single
@@ -646,18 +648,21 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         .showSnackBar(CustomSnackBar(message: message));
   }
 
-  String getInfoText(BuildContext context) {
-    final loc = AppLocalizations.of(context);
+  String getInfoText(AppLocalizations loc) {
     if (allPlayers.isEmpty) {
+      // No players in db
       return loc.no_players_created_yet;
     } else if (widget.mode == SelectionMode.multiple &&
         (selectedPlayers.length == allPlayers.length ||
             widget.availablePlayers?.isEmpty == true)) {
+      // All players selected (multi)
       return loc.all_players_selected;
     } else if (widget.mode == SelectionMode.single &&
         widget.availablePlayers?.isEmpty == true) {
+      // All players selected (single)
       return loc.all_players_selected;
     } else {
+      // Not found
       return loc.no_players_found_with_that_name;
     }
   }
