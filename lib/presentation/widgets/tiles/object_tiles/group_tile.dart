@@ -1,8 +1,10 @@
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/group.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
@@ -38,6 +40,12 @@ class GroupTile extends StatefulWidget {
 class _GroupTileState extends State<GroupTile> {
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final description = widget.group.description;
+    final formattedDate = DateFormat.yMMMd(
+      Localizations.localeOf(context).toString(),
+    ).format(widget.group.createdAt);
+
     return GestureDetector(
       onTap: () {
         HapticFeedback.selectionClick();
@@ -113,9 +121,11 @@ class _GroupTileState extends State<GroupTile> {
                         ],
                       ),
 
-                      // Description
+                      // Description or creation date
                       Text(
-                        widget.group.description,
+                        description.isNotEmpty
+                            ? description
+                            : '${loc.created_on} $formattedDate',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
