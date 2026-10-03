@@ -276,6 +276,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                                       createStatisticTiles();
                                     },
                                   ),
+
+                                  // To keep padding on the right side
+                                  const SizedBox(width: 5),
                                 ],
                               ),
                         ),

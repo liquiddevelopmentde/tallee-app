@@ -246,7 +246,7 @@ class _MatchViewState extends State<MatchView> {
                                 ),
 
                                 // To keep padding on the right side
-                                const SizedBox.shrink(),
+                                const SizedBox(width: 5),
                               ],
                             ),
                           ),
