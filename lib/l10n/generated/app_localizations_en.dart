@@ -925,7 +925,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get share_match_title => 'Tallee Match Share';
+  String get share_match_title => 'Match Share';
 
   @override
   String get share_token_format_info =>

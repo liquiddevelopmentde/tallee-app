@@ -2105,18 +2105,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// cupertino_icons 1.0.9
+/// cupertino_icons 2.0.0
 const _cupertino_icons = Package(
     name: 'cupertino_icons',
     description: 'Default icons asset for Cupertino widgets based on Apple styled icons',
     repository: 'https://github.com/flutter/packages/tree/main/third_party/packages/cupertino_icons',
     authors: [],
-    version: '1.0.9',
+    version: '2.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [],
-    devDependencies: [PackageRef('collection'), PackageRef('flutter'), PackageRef('flutter_test'), PackageRef('path')],
+    devDependencies: [PackageRef('collection'), PackageRef('cupertino_ui'), PackageRef('flutter'), PackageRef('flutter_test'), PackageRef('path')],
     license: '''The MIT License (MIT)
 
 Copyright (c) 2016 Vladimir Kharlampidi
@@ -2961,14 +2961,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// drift 2.35.0
+/// drift 2.35.1
 const _drift = Package(
     name: 'drift',
     description: 'Drift is a reactive library to store relational data in Dart and Flutter applications.',
     homepage: 'https://drift.simonbinder.eu/',
     repository: 'https://github.com/simolus3/drift',
     authors: [],
-    version: '2.35.0',
+    version: '2.35.1',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2997,14 +2997,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// drift_dev 2.35.0
+/// drift_dev 2.35.1
 const _drift_dev = Package(
     name: 'drift_dev',
     description: 'Dev-dependency for users of drift. Contains the generator and development tools.',
     homepage: 'https://drift.simonbinder.eu/',
     repository: 'https://github.com/simolus3/drift',
     authors: [],
-    version: '2.35.0',
+    version: '2.35.1',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -3658,19 +3658,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// file_saver 0.5.0
+/// file_saver 0.6.0
 const _file_saver = Package(
     name: 'file_saver',
     description: 'Save files from bytes, paths, streams, and URLs across Android, iOS, Web, Windows, macOS, and Linux.',
     homepage: 'https://hassanansari.dev',
     repository: 'https://github.com/incrediblezayed/file_saver',
     authors: [],
-    version: '0.5.0',
+    version: '0.6.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('collection'), PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('http'), PackageRef('meta'), PackageRef('path_provider'), PackageRef('web')],
-    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('path_provider_platform_interface'), PackageRef('plugin_platform_interface')],
     license: '''BSD 3-Clause License
 
 Copyright (c) 2021, Hassan Ansari
@@ -3743,13 +3743,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// flutter 3.47.5
+/// flutter 3.47.6
 const _flutter = Package(
     name: 'flutter',
     description: 'A framework for writing Flutter applications',
     homepage: 'https://flutter.dev',
     authors: [],
-    version: '3.47.5',
+    version: '3.47.6',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: true,
@@ -6090,13 +6090,13 @@ const _material_color_utilities = Package(
    limitations under the License.''',
   );
 
-/// material_ui 1.4.0
+/// material_ui 1.5.0
 const _material_ui = Package(
     name: 'material_ui',
     description: "The official Flutter Material UI Library, implementing Google's Material Design design system.",
     repository: 'https://github.com/flutter/packages/tree/main/packages/material_ui',
     authors: [],
-    version: '1.4.0',
+    version: '1.5.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -6616,14 +6616,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// package_info_plus 10.2.1
+/// package_info_plus 10.2.2
 const _package_info_plus = Package(
     name: 'package_info_plus',
     description: 'Flutter plugin for querying information about the application package, such as CFBundleVersion on iOS or versionCode on Android.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/package_info_plus/package_info_plus',
     authors: [],
-    version: '10.2.1',
+    version: '10.2.2',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -7053,18 +7053,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.''',
   );
 
-/// pinput 6.0.2
+/// pinput 7.0.0
 const _pinput = Package(
     name: 'pinput',
     description: 'Pin code input (OTP) text field, iOS SMS autofill, Android SMS autofill One Time Code, Password, Passcode, Captcha, Security, Coupon, Wowcher, 2FA, Two step verification',
     homepage: 'https://github.com/Tkko/Flutter_PinPut',
     repository: 'https://github.com/Tkko/Flutter_PinPut',
     authors: [],
-    version: '6.0.2',
+    version: '7.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter')],
+    dependencies: [PackageRef('flutter'), PackageRef('cupertino_ui'), PackageRef('material_ui')],
     devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
     license: '''The MIT License (MIT)
 Copyright (c) 2022 Tornike Kurdadze
@@ -8593,14 +8593,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// share_plus 13.3.0
+/// share_plus 13.3.1
 const _share_plus = Package(
     name: 'share_plus',
     description: 'Flutter plugin for sharing content via the platform share UI, using the ACTION_SEND intent on Android and UIActivityViewController on iOS.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/share_plus/share_plus',
     authors: [],
-    version: '13.3.0',
+    version: '13.3.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -39895,13 +39895,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// syncfusion_flutter_core 34.2.9
+/// syncfusion_flutter_core 35.1.37
 const _syncfusion_flutter_core = Package(
     name: 'syncfusion_flutter_core',
     description: 'Syncfusion Flutter Core is a dependent package for all the Syncfusion Flutter widgets.',
     homepage: 'https://github.com/syncfusion/flutter-widgets/tree/master/packages/syncfusion_flutter_core',
     authors: [],
-    version: '34.2.9',
+    version: '35.1.37',
     spdxIdentifiers: [],
     isMarkdown: false,
     isSdk: false,
@@ -39921,13 +39921,13 @@ The Syncfusion<sup>&reg;</sup> license that contains the terms and conditions ca
 https://www.syncfusion.com/content/downloads/syncfusion_license.pdf''',
   );
 
-/// syncfusion_flutter_datepicker 34.2.9
+/// syncfusion_flutter_datepicker 35.1.37
 const _syncfusion_flutter_datepicker = Package(
     name: 'syncfusion_flutter_datepicker',
     description: 'The Flutter Date Range Picker widget allows users to easily select dates or a range of dates. It has four built-in views that allow quick navigation to the desired date.',
     homepage: 'https://github.com/syncfusion/flutter-widgets/tree/master/packages/syncfusion_flutter_datepicker',
     authors: [],
-    version: '34.2.9',
+    version: '35.1.37',
     spdxIdentifiers: [],
     isMarkdown: false,
     isSdk: false,
@@ -41200,12 +41200,12 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// tallee 0.1.34+677
+/// tallee 0.1.37+680
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.1.34+677',
+    version: '0.1.37+680',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,

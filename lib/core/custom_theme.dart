@@ -132,6 +132,8 @@ class CustomTheme {
     elevation: 0,
     scrolledUnderElevation: 0,
     centerTitle: true,
+    iconTheme: IconThemeData(color: textColor),
+    actionsIconTheme: IconThemeData(color: textColor),
     titleTextStyle: TextStyle(
       color: textColor,
       fontSize: 20,
