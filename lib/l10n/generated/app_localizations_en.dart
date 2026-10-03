@@ -612,6 +612,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_groups => 'No Groups';
 
   @override
+  String get no_players => 'No Players';
+
+  @override
   String get no_groups_created_yet =>
       'You haven\'t created any groups yet. Create a new group so it will appear here.';
 
@@ -640,7 +643,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_players_available => 'No players available';
 
   @override
-  String get no_players_created_yet => 'No players created yet';
+  String get no_players_created_yet => 'You haven\'t created any players yet';
 
   @override
   String get no_players_found_with_that_name =>
@@ -656,9 +659,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_results_entered_yet => 'No results entered yet';
 
   @override
-  String get no_suitable_matches_yet => 'No suitable matches yet';
-
-  @override
   String get no_statistics => 'No Statistics';
 
   @override
@@ -668,6 +668,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get no_statistics_with_filter =>
       'No statistics with the selected filter';
+
+  @override
+  String get no_suitable_matches_yet => 'No suitable matches yet';
 
   @override
   String get no_teams_available => 'No teams available';

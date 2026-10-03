@@ -1166,6 +1166,12 @@ abstract class AppLocalizations {
   /// **'No Groups'**
   String get no_groups;
 
+  /// No description provided for @no_players.
+  ///
+  /// In en, this message translates to:
+  /// **'No Players'**
+  String get no_players;
+
   /// No description provided for @no_groups_created_yet.
   ///
   /// In en, this message translates to:
@@ -1217,7 +1223,7 @@ abstract class AppLocalizations {
   /// No description provided for @no_players_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No players created yet'**
+  /// **'You haven\'t created any players yet'**
   String get no_players_created_yet;
 
   /// No description provided for @no_players_found_with_that_name.
@@ -1244,12 +1250,6 @@ abstract class AppLocalizations {
   /// **'No results entered yet'**
   String get no_results_entered_yet;
 
-  /// No description provided for @no_suitable_matches_yet.
-  ///
-  /// In en, this message translates to:
-  /// **'No suitable matches yet'**
-  String get no_suitable_matches_yet;
-
   /// No description provided for @no_statistics.
   ///
   /// In en, this message translates to:
@@ -1267,6 +1267,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No statistics with the selected filter'**
   String get no_statistics_with_filter;
+
+  /// No description provided for @no_suitable_matches_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No suitable matches yet'**
+  String get no_suitable_matches_yet;
 
   /// No description provided for @no_teams_available.
   ///
