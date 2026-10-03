@@ -274,49 +274,55 @@ class _MatchViewState extends State<MatchView> {
                           // Normal matches
                           else
                             Expanded(
-                              child: NotificationListener<UserScrollNotification>(
-                                onNotification: (notification) {
-                                  if (notification.direction ==
-                                          ScrollDirection.reverse &&
-                                      isSearchBarVisible) {
-                                    setState(() => isSearchBarVisible = false);
-                                  } else if (notification.direction ==
-                                          ScrollDirection.forward &&
-                                      !isSearchBarVisible) {
-                                    setState(() => isSearchBarVisible = true);
-                                  }
-                                  return true;
-                                },
-                                child: ListView.builder(
-                                  controller: scrollController,
-                                  padding: CustomTheme.listViewPadding(context),
-                                  itemCount: displayedMatches.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return MatchTile(
-                                      width:
-                                          MediaQuery.sizeOf(context).width *
-                                          0.95,
-                                      onTap: () async {
-                                        Navigator.push(
-                                          context,
-                                          adaptivePageRoute(
-                                            settings: const RouteSettings(
-                                              name: RouteNames.matchDetailView,
-                                            ),
-                                            builder: (context) =>
-                                                MatchDetailView(
-                                                  match:
-                                                      displayedMatches[index],
-                                                  onMatchUpdate: loadMatches,
-                                                ),
-                                          ),
+                              child:
+                                  NotificationListener<UserScrollNotification>(
+                                    onNotification: (notification) {
+                                      if (notification.direction ==
+                                              ScrollDirection.reverse &&
+                                          isSearchBarVisible) {
+                                        setState(
+                                          () => isSearchBarVisible = false,
                                         );
-                                      },
-                                      match: displayedMatches[index],
-                                    );
-                                  },
-                                ),
-                              ),
+                                      } else if (notification.direction ==
+                                              ScrollDirection.forward &&
+                                          !isSearchBarVisible) {
+                                        setState(
+                                          () => isSearchBarVisible = true,
+                                        );
+                                      }
+                                      return true;
+                                    },
+                                    child: ListView.builder(
+                                      controller: scrollController,
+                                      padding: CustomTheme.listViewPadding(
+                                        context,
+                                      ),
+                                      itemCount: displayedMatches.length,
+                                      itemBuilder: (context, index) => MatchTile(
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                            0.95,
+                                        onTap: () async {
+                                          Navigator.push(
+                                            context,
+                                            adaptivePageRoute(
+                                              settings: const RouteSettings(
+                                                name:
+                                                    RouteNames.matchDetailView,
+                                              ),
+                                              builder: (context) =>
+                                                  MatchDetailView(
+                                                    match:
+                                                        displayedMatches[index],
+                                                    onMatchUpdate: loadMatches,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                        match: displayedMatches[index],
+                                      ),
+                                    ),
+                                  ),
                             ),
                         ]
                         // No matches in db

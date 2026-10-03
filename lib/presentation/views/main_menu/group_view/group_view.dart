@@ -206,7 +206,8 @@ class _GroupViewState extends State<GroupView> {
                                                       return GroupDetailView(
                                                         group:
                                                             displayedGroups[index],
-                                                        callback: loadGroups,
+                                                        onGroupUpdated:
+                                                            loadGroups,
                                                       );
                                                     },
                                                   ),
@@ -244,9 +245,8 @@ class _GroupViewState extends State<GroupView> {
                     settings: const RouteSettings(
                       name: RouteNames.createGroupView,
                     ),
-                    builder: (context) {
-                      return CreateGroupView(onMembersChanged: loadGroups);
-                    },
+                    builder: (context) =>
+                        CreateGroupView(onMembersChanged: loadGroups),
                   ),
                 );
               },
