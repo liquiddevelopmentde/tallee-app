@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
@@ -176,7 +175,6 @@ class _OnboardingViewState extends State<OnboardingView> {
                     buttonText: isLastPage ? loc.get_started : loc.next,
                     sizeRelativeToWidth: 0.6,
                     onPressed: () {
-                      HapticFeedback.lightImpact();
                       if (isLastPage) {
                         SharedPreferencesService.setOnboardingCompleted(true);
                         widget.onCompleted();
