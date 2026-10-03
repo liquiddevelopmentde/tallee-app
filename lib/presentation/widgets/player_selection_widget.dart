@@ -181,27 +181,36 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final crossAxisAlignment = widget.mode == SelectionMode.single
+        ? CrossAxisAlignment.center
+        : CrossAxisAlignment.start;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: CustomTheme.standardBoxDecoration,
       child: Column(
-        crossAxisAlignment: widget.mode == SelectionMode.single
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.start,
+        spacing: 10,
+        crossAxisAlignment: crossAxisAlignment,
         children: [
           buildSearchBar(loc),
-          const SizedBox(height: 10),
-          if (widget.mode == SelectionMode.multiple) ...[
-            buildSelectedPlayersHeader(loc),
-            const SizedBox(height: 10),
-            buildSelectedPlayersBar(),
-            const SizedBox(height: 10),
-            Text(
-              loc.all_players,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+
+          if (widget.mode == SelectionMode.multiple)
+            Column(
+              crossAxisAlignment: crossAxisAlignment,
+              spacing: 10,
+              children: [
+                buildSelectedPlayersHeader(loc),
+                buildSelectedPlayersBar(),
+                Text(
+                  loc.all_players,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-          ],
+
           Expanded(
             child: AppSkeleton(
               enabled: isLoading,
