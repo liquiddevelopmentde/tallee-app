@@ -69,14 +69,15 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
 
     addExampleStats();
 
+    showcaseProvider = context.read<ShowcaseProvider>();
+    showcaseProvider.addListener(onShowcaseChanged);
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await checkVersionAndUpdate(context);
       await openNewsDialog();
       if (!mounted) return;
       showTabShowcase();
     });
-
-    showcaseProvider = context.read<ShowcaseProvider>();
   }
 
   @override
@@ -87,6 +88,33 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     }
 
     super.didChangeDependencies();
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    if (showcaseProvider.isTourActive) {
+      setState(() {
+        currentIndex = 0;
+      });
+      showTabShowcase();
+    }
+  }
+
+  @override
+  void dispose() {
+    showcaseProvider.removeListener(onShowcaseChanged);
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  void onShowcaseChanged() {
+    if (showcaseProvider.isTourActive) {
+      setState(() {
+        currentIndex = 0;
+      });
+      showTabShowcase();
+    }
   }
 
   @override
