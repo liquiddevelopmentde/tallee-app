@@ -60,7 +60,7 @@ class _TextChipState extends State<TextChip> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: CustomTheme.onBoxColor,
+            color: CustomTheme.backgroundColor,
             border: Border.all(
               color: widget.activated
                   ? CustomTheme.textColor.withAlpha(150)
@@ -75,7 +75,7 @@ class _TextChipState extends State<TextChip> {
             duration: Duration(milliseconds: delay),
             style: TextStyle(
               color: isPressed
-                  ? CustomTheme.textColor.withAlpha(150)
+                  ? CustomTheme.textColor.withAlpha(75)
                   : CustomTheme.textColor.withAlpha(255),
             ),
             child: Text(text),
