@@ -384,7 +384,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get file_share_instruction =>
-      'Spiel-Daten manuell in einer Datei teilen für eine vollständige lokale Übertragung.';
+      'Teile Spiel-Daten manuell in einer Datei für eine vollständig lokale Übertragung.';
 
   @override
   String get filter => 'Filter';
@@ -451,7 +451,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get import_file_instruction =>
-      'Wähle eine Spiel-Datei (.tallee), die aus einem Tallee-Spiel-Share exportiert wurde, um die Daten zu importieren.';
+      'Wähle eine Spiel-Datei (.tallee), die aus einer anderen Tallee-App exportiert wurde, um die Daten zu importieren.';
 
   @override
   String get import_match => 'Spiel importieren';
@@ -469,7 +469,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get input_token_instruction =>
-      'Gib einen Match-Share-Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.';
+      'Gib einen Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.';
 
   @override
   String get invalid_email => 'Bitte gib eine gültige E-Mail-Adresse ein.';
@@ -531,7 +531,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loading => 'Lädt...';
 
   @override
-  String get loading_match => 'Lade Match...';
+  String get loading_match => 'Lade Spiel...';
 
   @override
   String get longest_time => 'Längste Zeit';
@@ -717,7 +717,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get online_sharing_consent_text =>
-      'Damit andere dein Match laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Share-Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du Online-Teilen aktivieren?';
+      'Damit andere dein Spiel laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du das Teilen über unsere Server aktivieren?';
 
   @override
   String get online_sharing_disabled => 'Online-Teilen ist deaktiviert';
@@ -796,7 +796,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get qr_code_parsing_error =>
-      'Der gescannte Code enthält keine gültigen Match-Daten.';
+      'Der gescannte Code enthält keine gültigen Spiel-Daten.';
 
   @override
   String get random_color => 'Zufällige Farbe';
@@ -827,11 +827,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get scan_qr_code_instruction =>
-      'Scanne den QR-Code mit einer anderen Tallee-App, um das Match zu teilen.';
+      'Scanne den QR-Code mit einer anderen Tallee-App, um das Spiel zu teilen.';
 
   @override
   String get scan_qr_receive_instruction =>
-      'Scanne den QR-Code einer anderen Tallee-App, um das Match zu empfangen.';
+      'Scanne den QR-Code einer anderen Tallee-App, um das Spiel zu empfangen.';
 
   @override
   String get scope => 'Bereich';
@@ -891,7 +891,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get send_code_instruction =>
-      'Sende diesen Code an eine Person, die ebenfalls Tallee hat, um das aktuelle Match zu teilen.';
+      'Sende diesen Token an eine Person, die ebenfalls Tallee hat, um das aktuelle Match zu teilen.';
 
   @override
   String get send_feedback => 'Feedback senden';
@@ -921,15 +921,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String share_match_text(String code) {
-    return 'Hier sind die Match-Daten für unser Spiel! Gib den Code $code in Tallee ein.';
+    return 'Hier sind die Spiel-Daten für unser Spiel! Gib den Code $code in Tallee ein.';
   }
 
   @override
-  String get share_match_title => 'Tallee Match teilen';
+  String get share_match_title => 'Spiel teilen';
 
   @override
   String get share_token_format_info =>
-      'Share-Token bestehen aus 6 alphanumerischen Zeichen.';
+      'Token bestehen aus 6 alphanumerischen Zeichen.';
 
   @override
   String get shortest_time => 'Kürzeste Zeit';
@@ -938,7 +938,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shortest_time_statistic => 'Kürzeste Zeit';
 
   @override
-  String get show_app_walkthrough => 'App-Führung';
+  String get show_app_walkthrough => 'Onboarding';
 
   @override
   String get showcase_create_game_button =>
@@ -985,7 +985,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get showcase_select_winner =>
-      'Um deine Gewinner:innen festzulegen, wähle sie einfach hier aus und tippe unten auf die Speichern-Schaltfläche.';
+      'Um die Gewinner:innen festzulegen, wähle sie einfach hier aus und tippe unten auf die Speichern-Schaltfläche.';
 
   @override
   String get skip => 'Überspringen';
@@ -1018,7 +1018,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tap_import_to_continue =>
-      'Tippe auf Match importieren, um fortzufahren';
+      'Tippe auf Spiel importieren, um fortzufahren';
 
   @override
   String get tap_to_browse => 'Tippen zum Durchsuchen';
