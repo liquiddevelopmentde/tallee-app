@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -77,6 +77,8 @@ class _SettingsViewState extends State<SettingsView> {
                       ),
                     ),
                   ),
+
+                  // Send feedback tile
                   SettingsListTile(
                     title: loc.send_feedback,
                     icon: Icons.chat_bubble_outline_rounded,
@@ -97,6 +99,8 @@ class _SettingsViewState extends State<SettingsView> {
                       }
                     },
                   ),
+
+                  // Online sharing tile
                   SettingsListTile(
                     title: loc.online_sharing_title,
                     icon: Icons.cloud,
@@ -112,6 +116,8 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                     onPressed: null,
                   ),
+
+                  // Show app walkthrough tile
                   SettingsListTile(
                     title: loc.show_app_walkthrough,
                     icon: Icons.explore,
@@ -121,6 +127,8 @@ class _SettingsViewState extends State<SettingsView> {
                       Navigator.of(context).pop(0);
                     },
                   ),
+
+                  // Data & backup tile
                   SettingsListTile(
                     title: loc.data_backup,
                     icon: Icons.storage_rounded,
@@ -136,6 +144,8 @@ class _SettingsViewState extends State<SettingsView> {
                       );
                     },
                   ),
+
+                  // Legal heading
                   Padding(
                     padding: const EdgeInsets.only(
                       left: 16,
@@ -151,6 +161,8 @@ class _SettingsViewState extends State<SettingsView> {
                       ),
                     ),
                   ),
+
+                  // Licenses tile
                   SettingsListTile(
                     title: loc.licenses,
                     icon: Icons.insert_drive_file,
@@ -166,6 +178,8 @@ class _SettingsViewState extends State<SettingsView> {
                       );
                     },
                   ),
+
+                  // Legal notice tile
                   SettingsListTile(
                     title: loc.legal_notice,
                     icon: Icons.account_balance_sharp,
@@ -174,6 +188,8 @@ class _SettingsViewState extends State<SettingsView> {
                       await launchUrl(Uri.parse(LIQUID_WEBSITE_LEGAL_URL));
                     },
                   ),
+
+                  // Privacy policy tile
                   SettingsListTile(
                     title: loc.privacy_policy,
                     icon: Icons.gpp_good_rounded,
@@ -186,18 +202,22 @@ class _SettingsViewState extends State<SettingsView> {
                       );
                     },
                   ),
+
+                  // Socials & copyright
                   Padding(
                     padding: const EdgeInsets.only(top: 30, bottom: 20),
                     child: Center(
                       child: Column(
                         spacing: 4,
                         children: [
+                          // Scoial icons
                           Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               spacing: 10,
                               children: [
+                                // Website
                                 HapticIconButton(
                                   icon: const Icon(Icons.language),
                                   onPressed: () => {
@@ -205,6 +225,8 @@ class _SettingsViewState extends State<SettingsView> {
                                     launchUrl(Uri.parse(LIQUID_WEBSITE_URL)),
                                   },
                                 ),
+
+                                // Github
                                 HapticIconButton(
                                   icon: const FaIcon(FontAwesomeIcons.github),
                                   onPressed: () => {
@@ -212,6 +234,8 @@ class _SettingsViewState extends State<SettingsView> {
                                     launchUrl(Uri.parse(LIQUID_GITHUB_URL)),
                                   },
                                 ),
+
+                                // Mail
                                 HapticIconButton(
                                   icon: Icon(
                                     Platform.isIOS
@@ -228,6 +252,8 @@ class _SettingsViewState extends State<SettingsView> {
                               ],
                             ),
                           ),
+
+                          // Copyright
                           Text(
                             '© ${DateFormat('yyyy').format(DateTime.now())} Liquid Development',
                             style: TextStyle(
@@ -236,6 +262,8 @@ class _SettingsViewState extends State<SettingsView> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
+
+                          // App version
                           Text(
                             '${loc.version} ${packageInfo.version} (${packageInfo.buildNumber})',
                             style: TextStyle(
