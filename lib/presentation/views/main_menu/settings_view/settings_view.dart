@@ -119,7 +119,7 @@ class _SettingsViewState extends State<SettingsView> {
 
                   // Show app walkthrough tile
                   SettingsListTile(
-                    title: loc.show_app_walkthrough,
+                    title: loc.start_onboarding,
                     icon: Icons.explore,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
                     onPressed: () {
