@@ -672,5 +672,34 @@ void main() {
         expect(deletedCount, 0);
       });
     });
+
+    group('roundCount and currentRound', () {
+      test('roundCount and currentRound return 0 for empty scoresByRound', () {
+        final match = Match(
+          name: 'Empty Match',
+          game: testGame,
+          players: [testPlayer1],
+          scoresByRound: {},
+        );
+        expect(match.roundCount, 0);
+        expect(match.currentRound, 0);
+      });
+
+      test('roundCount and currentRound calculate correctly with scoresByRound', () {
+        final match = Match(
+          name: 'Scored Match',
+          game: testGame,
+          players: [testPlayer1],
+          scoresByRound: {
+            testPlayer1.id: [
+              ScoreEntry(roundNumber: 1, score: 10, change: 10),
+              ScoreEntry(roundNumber: 2, score: 20, change: 10),
+            ],
+          },
+        );
+        expect(match.roundCount, 2);
+        expect(match.currentRound, 3);
+      });
+    });
   });
 }

@@ -65,22 +65,20 @@ class Match {
     return entries.fold<int>(0, (sum, entry) => sum + entry.change);
   }
 
+  Iterable<int> get _allRounds => scoresByRound.values
+      .expand((entries) => entries)
+      .map((e) => e.roundNumber);
+
   int get roundCount {
-    if (scoresByRound.isEmpty) return 0;
-    final allRounds = scoresByRound.values
-        .expand((entries) => entries)
-        .map((e) => e.roundNumber);
-    if (allRounds.isEmpty) return 0;
-    return allRounds.toSet().length;
+    final rounds = _allRounds;
+    if (rounds.isEmpty) return 0;
+    return rounds.toSet().length;
   }
 
   int get currentRound {
-    if (scoresByRound.isEmpty) return 0;
-    final allRounds = scoresByRound.values
-        .expand((entries) => entries)
-        .map((e) => e.roundNumber);
-    if (allRounds.isEmpty) return 0;
-    return allRounds.reduce(max) + 1;
+    final rounds = _allRounds;
+    if (rounds.isEmpty) return 0;
+    return rounds.reduce(max) + 1;
   }
 
   @override
@@ -318,9 +316,9 @@ class Match {
     );
 
     return players.where((player) {
-      final s = _getScoreForPlayer(player.id);
-      if (s == null) return false;
-      return s == highestScore;
+      final score = _getScoreForPlayer(player.id);
+      if (score == null) return false;
+      return score == highestScore;
     }).toList();
   }
 
@@ -342,9 +340,9 @@ class Match {
     );
 
     return players.where((player) {
-      final s = _getScoreForPlayer(player.id);
-      if (s == null) return false;
-      return s == lowestScore;
+      final score = _getScoreForPlayer(player.id);
+      if (score == null) return false;
+      return score == lowestScore;
     }).toList();
   }
 
