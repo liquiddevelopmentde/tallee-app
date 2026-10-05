@@ -1700,12 +1700,6 @@ abstract class AppLocalizations {
   /// **'Share tokens consist of 6 alphanumeric characters.'**
   String get share_token_format_info;
 
-  /// No description provided for @show_app_walkthrough.
-  ///
-  /// In en, this message translates to:
-  /// **'App Walkthrough'**
-  String get show_app_walkthrough;
-
   /// No description provided for @showcase_create_game_button.
   ///
   /// In en, this message translates to:
@@ -1783,6 +1777,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip'**
   String get skip;
+
+  /// No description provided for @start_onboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Onboarding'**
+  String get start_onboarding;
 
   /// No description provided for @statistic.
   ///
