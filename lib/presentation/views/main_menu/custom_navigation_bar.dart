@@ -94,9 +94,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   void didPopNext() {
     super.didPopNext();
     if (showcaseProvider.isTourActive) {
-      setState(() {
-        currentIndex = 0;
-      });
+      setState(() => currentIndex = 0);
       showTabShowcase();
     }
   }
@@ -110,9 +108,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
 
   void onShowcaseChanged() {
     if (showcaseProvider.isTourActive) {
-      setState(() {
-        currentIndex = 0;
-      });
+      setState(() => currentIndex = 0);
       showTabShowcase();
     }
   }
