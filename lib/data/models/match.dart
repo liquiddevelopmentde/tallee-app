@@ -59,7 +59,7 @@ class Match {
     return entries.fold<int>(0, (sum, entry) => sum + entry.change);
   }
 
-  int? _scoreForPlayer(String playerId) {
+  int? _getScoreForPlayer(String playerId) {
     final entries = scoresByRound[playerId];
     if (entries == null || entries.isEmpty) return null;
     return entries.fold<int>(0, (sum, entry) => sum + entry.change);
@@ -306,7 +306,7 @@ class Match {
     }
 
     final scoresList = players
-        .map((player) => _scoreForPlayer(player.id))
+        .map((player) => _getScoreForPlayer(player.id))
         .whereType<int>()
         .toList();
 
@@ -317,7 +317,7 @@ class Match {
     );
 
     return players.where((player) {
-      final s = _scoreForPlayer(player.id);
+      final s = _getScoreForPlayer(player.id);
       if (s == null) return false;
       return s == highestScore;
     }).toList();
@@ -330,7 +330,7 @@ class Match {
     }
 
     final scoresList = players
-        .map((player) => _scoreForPlayer(player.id))
+        .map((player) => _getScoreForPlayer(player.id))
         .whereType<int>()
         .toList();
 
@@ -341,7 +341,7 @@ class Match {
     );
 
     return players.where((player) {
-      final s = _scoreForPlayer(player.id);
+      final s = _getScoreForPlayer(player.id);
       if (s == null) return false;
       return s == lowestScore;
     }).toList();
