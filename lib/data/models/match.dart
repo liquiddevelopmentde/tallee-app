@@ -190,6 +190,7 @@ class Match {
                         .toList(),
                   );
                 default:
+                  //TODO: Backward compatibility for single ScoreEntry
                   return MapEntry(key, [
                     ScoreEntry.fromJson(value as Map<String, dynamic>),
                   ]);
@@ -259,6 +260,7 @@ class Match {
                       .toList(),
                 );
               }
+              //TODO: Backward compatibility for single ScoreEntry
               return MapEntry(key, [
                 ScoreEntry.fromJson(value as Map<String, dynamic>),
               ]);
