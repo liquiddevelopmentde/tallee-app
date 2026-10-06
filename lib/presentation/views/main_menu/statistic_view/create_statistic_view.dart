@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
@@ -469,6 +469,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               height: 450,
               child: SfDateRangePicker(
                 backgroundColor: CustomTheme.boxColor,
+                todayHighlightColor: CustomTheme.primaryColor,
                 showNavigationArrow: true,
                 initialSelectedRange:
                     initialStartDate != null && initialEndDate != null
