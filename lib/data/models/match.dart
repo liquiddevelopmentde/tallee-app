@@ -247,23 +247,24 @@ class Match {
       teams: teams,
       scoresByRound: json['scores'] != null
           ? (json['scores'] as Map<String, dynamic>).map((key, value) {
-              if (value == null) {
-                return MapEntry(key, <ScoreEntry>[]);
+              switch (value) {
+                case null:
+                  return MapEntry(key, <ScoreEntry>[]);
+                case List list:
+                  return MapEntry(
+                    key,
+                    list
+                        .map(
+                          (e) => ScoreEntry.fromJson(e as Map<String, dynamic>),
+                        )
+                        .toList(),
+                  );
+                default:
+                  //TODO: Backward compatibility for single ScoreEntry
+                  return MapEntry(key, [
+                    ScoreEntry.fromJson(value as Map<String, dynamic>),
+                  ]);
               }
-              if (value is List) {
-                return MapEntry(
-                  key,
-                  value
-                      .map(
-                        (e) => ScoreEntry.fromJson(e as Map<String, dynamic>),
-                      )
-                      .toList(),
-                );
-              }
-              //TODO: Backward compatibility for single ScoreEntry
-              return MapEntry(key, [
-                ScoreEntry.fromJson(value as Map<String, dynamic>),
-              ]);
             })
           : {},
       notes: json['notes'] ?? '',
