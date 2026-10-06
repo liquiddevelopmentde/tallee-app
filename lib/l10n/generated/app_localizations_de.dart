@@ -917,9 +917,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Token bestehen aus 6 alphanumerischen Zeichen.';
 
   @override
-  String get show_app_walkthrough => 'Onboarding';
-
-  @override
   String get showcase_create_game_button =>
       'Tippe auf „Spielvorlage erstellen“, sobald du bereit bist.';
 
@@ -968,6 +965,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get skip => 'Überspringen';
+
+  @override
+  String get start_onboarding => 'Onboarding starten';
 
   @override
   String get statistic => 'Statistik';

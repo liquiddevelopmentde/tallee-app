@@ -910,9 +910,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Share tokens consist of 6 alphanumeric characters.';
 
   @override
-  String get show_app_walkthrough => 'App Walkthrough';
-
-  @override
   String get showcase_create_game_button =>
       'Tap \"Create Game\" once you\'re ready.';
 
@@ -960,6 +957,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skip => 'Skip';
+
+  @override
+  String get start_onboarding => 'Start Onboarding';
 
   @override
   String get statistic => 'Statistic';
