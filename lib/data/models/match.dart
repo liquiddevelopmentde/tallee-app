@@ -53,7 +53,7 @@ class Match {
     for (final e in scoresByRound.entries) e.key: e.value.lastOrNull,
   };
 
-  int totalScore(String playerId) {
+  int getTotalScore(String playerId) {
     final entries = scoresByRound[playerId];
     if (entries == null || entries.isEmpty) return 0;
     return entries.fold<int>(0, (sum, entry) => sum + entry.change);
