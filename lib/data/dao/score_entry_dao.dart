@@ -45,7 +45,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
             playerId: playerId,
             matchId: matchId,
             roundNumber: roundNumber,
-            score: newScore,
+            score: Value(newScore),
             change: roundChange,
           ),
           mode: InsertMode.insertOrReplace,
@@ -65,7 +65,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         playerId: playerId,
         matchId: matchId,
         roundNumber: entry.roundNumber,
-        score: entry.score,
+        score: Value(entry.change),
         change: entry.change,
       ),
       mode: InsertMode.insertOrReplace,
@@ -86,7 +86,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
             playerId: playerId,
             matchId: matchId,
             roundNumber: score.roundNumber,
-            score: score.score,
+            score: Value(score.change),
             change: score.change,
           ),
         )
@@ -120,11 +120,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     final result = await query.getSingleOrNull();
     if (result == null) return null;
 
-    return ScoreEntry(
-      roundNumber: result.roundNumber,
-      score: result.score,
-      change: result.change,
-    );
+    return ScoreEntry(roundNumber: result.roundNumber, change: result.change);
   }
 
   /// Retrieves all scores for a specific match.
@@ -139,7 +135,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     for (final row in result) {
       final score = ScoreEntry(
         roundNumber: row.roundNumber,
-        score: row.score,
         change: row.change,
       );
       scoresByPlayer[row.playerId] = score;
@@ -167,7 +162,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     for (final row in rows) {
       final score = ScoreEntry(
         roundNumber: row.roundNumber,
-        score: row.score,
         change: row.change,
       );
       resultMap
@@ -192,11 +186,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     final result = await query.get();
     return result
         .map(
-          (row) => ScoreEntry(
-            roundNumber: row.roundNumber,
-            score: row.score,
-            change: row.change,
-          ),
+          (row) => ScoreEntry(roundNumber: row.roundNumber, change: row.change),
         )
         .toList()
       ..sort(
@@ -247,7 +237,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
             ))
             .write(
               ScoreEntryTableCompanion(
-                score: Value(entry.score),
+                score: Value(entry.change),
                 change: Value(entry.change),
               ),
             );
@@ -320,8 +310,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         playerId: playerId,
         matchId: matchId,
         roundNumber: 0,
-        score: 1,
-        change: 0,
+        score: const Value(1),
+        change: 1,
       ),
       mode: InsertMode.insertOrReplace,
     );
@@ -390,8 +380,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
                 playerId: player.id,
                 matchId: matchId,
                 roundNumber: 0,
-                score: 1,
-                change: 0,
+                score: const Value(1),
+                change: 1,
               ),
             )
             .toList(),
@@ -426,7 +416,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         playerId: playerId,
         matchId: matchId,
         roundNumber: 0,
-        score: 0,
+        score: const Value(0),
         change: 0,
       ),
       mode: InsertMode.insertOrReplace,
@@ -492,7 +482,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       await db.scoreEntryDao.addScore(
         matchId: matchId,
         playerId: players[i].id,
-        entry: ScoreEntry(roundNumber: 0, score: players.length - i, change: 0),
+        entry: ScoreEntry(roundNumber: 0, change: players.length - i),
       );
     }
   }
