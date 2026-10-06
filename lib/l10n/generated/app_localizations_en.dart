@@ -293,9 +293,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_match => 'Edit Match';
 
   @override
-  String get edit_name => 'Edit name';
-
-  @override
   String get edit_player => 'Edit player';
 
   @override
@@ -885,9 +882,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get server_error => 'Internal server error';
-
-  @override
-  String get set_name => 'Set name';
 
   @override
   String get settings => 'Settings';

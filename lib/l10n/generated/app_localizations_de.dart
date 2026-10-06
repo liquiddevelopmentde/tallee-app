@@ -296,9 +296,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get edit_match => 'Spiel bearbeiten';
 
   @override
-  String get edit_name => 'Name ändern';
-
-  @override
   String get edit_player => 'Spieler bearbeiten';
 
   @override
@@ -892,9 +889,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get server_error => 'Interner Server Fehler';
-
-  @override
-  String get set_name => 'Name setzen';
 
   @override
   String get settings => 'Einstellungen';
