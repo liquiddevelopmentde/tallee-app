@@ -2,8 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_detail/match_profile_body.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_game_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/widgets/match_profile_body.dart';
 
 class PreviewMatchView extends StatelessWidget {
   const PreviewMatchView({super.key, required this.match});
