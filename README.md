@@ -30,9 +30,9 @@ An open-source app to track card- and board games, manage players & groups and g
 
 <table align="center" cellspacing="8">
   <tr>
-    <td><img src="/artefacts/wireframe-1.png" alt="Screenshot of the match view" width="330" /></td>
-    <td><img src="/artefacts/wireframe-2.png" alt="Screenshot of the group view" width="330" /></td>
-    <td><img src="/artefacts/wireframe-3.png" alt="Screenshot of the statistics view" width="330" /></td>
+    <td><img src="/artefacts/screenshot-1.webp" alt="Screenshot of the match view" width="330" /></td>
+    <td><img src="/artefacts/screenshot-2.webp" alt="Screenshot of the group view" width="330" /></td>
+    <td><img src="/artefacts/screenshot-3.webp" alt="Screenshot of the statistics view" width="330" /></td>
   </tr>
 </table>
 
