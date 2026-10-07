@@ -194,7 +194,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         children: [
           buildSearchBar(loc),
 
-          if (widget.mode == SelectionMode.multiple)
+          if (widget.mode == SelectionMode.multiple && allPlayers.isNotEmpty)
             Column(
               crossAxisAlignment: crossAxisAlignment,
               spacing: 10,
@@ -216,14 +216,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
               enabled: isLoading,
               child: Visibility(
                 visible: suggestedPlayers.isNotEmpty,
-                replacement: TopCenteredMessage(
-                  icon: allPlayers.isEmpty
-                      ? Icons.person_outline
-                      : Icons.search,
-                  title: allPlayers.isEmpty ? loc.no_players : loc.no_results,
-                  message: getInfoText(loc),
-                  fullscreen: false,
-                ),
+                replacement: getMessageWidget(loc),
                 child: widget.mode == SelectionMode.single
                     ? buildSingleSelectionList()
                     : buildMultipleSelectionList(),
@@ -657,22 +650,52 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         .showSnackBar(CustomSnackBar(message: message));
   }
 
-  String getInfoText(AppLocalizations loc) {
+  Widget getMessageWidget(AppLocalizations loc) {
+    final content = getInfoContent(loc);
+
+    return TopCenteredMessage(
+      icon: content.icon,
+      title: content.title,
+      message: content.message,
+      fullscreen: false,
+    );
+  }
+
+  bool get allPlayerSelected =>
+      // Multi selection
+      (widget.mode == SelectionMode.multiple &&
+          (selectedPlayers.length == allPlayers.length ||
+              widget.availablePlayers?.isEmpty == true)) ||
+      // Single selection
+      (widget.mode == SelectionMode.single &&
+          widget.availablePlayers?.isEmpty == true);
+
+  ({IconData icon, String title, String message}) getInfoContent(
+    AppLocalizations loc,
+  ) {
+    // No players in db
     if (allPlayers.isEmpty) {
-      // No players in db
-      return loc.no_players_created_yet;
-    } else if (widget.mode == SelectionMode.multiple &&
-        (selectedPlayers.length == allPlayers.length ||
-            widget.availablePlayers?.isEmpty == true)) {
-      // All players selected (multi)
-      return loc.all_players_selected;
-    } else if (widget.mode == SelectionMode.single &&
-        widget.availablePlayers?.isEmpty == true) {
-      // All players selected (single)
-      return loc.all_players_selected;
-    } else {
-      // Not found
-      return loc.no_players_found_with_that_name;
+      return (
+        icon: Icons.person_outline,
+        title: loc.no_players,
+        message: loc.no_players_created_yet,
+      );
     }
+
+    // All players selected
+    if (allPlayerSelected) {
+      return (
+        icon: Icons.person_outline,
+        title: loc.no_players,
+        message: loc.all_players_selected,
+      );
+    }
+
+    // Not found
+    return (
+      icon: Icons.search,
+      title: loc.no_results,
+      message: loc.no_players_found_with_that_name,
+    );
   }
 }
