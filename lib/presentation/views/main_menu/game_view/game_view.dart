@@ -173,7 +173,7 @@ class _GameViewState extends State<GameView> with RouteAware {
                         ? displayedGames.isEmpty
                               ?
                                 // No filtered games
-                                Positioned.fill(
+                                SizedBox.expand(
                                   child: EmptyViewMessage(
                                     icon: Icons.search,
                                     title: loc.no_results,
@@ -182,7 +182,7 @@ class _GameViewState extends State<GameView> with RouteAware {
                                   ),
                                 )
                               // Games list
-                              : Positioned.fill(
+                              : SizedBox.expand(
                                   child: NotificationListener<UserScrollNotification>(
                                     onNotification: (notification) {
                                       if (notification.direction ==

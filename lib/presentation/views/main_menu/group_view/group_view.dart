@@ -155,7 +155,7 @@ class _GroupViewState extends State<GroupView> {
                         ? displayedGroups.isEmpty
                               ?
                                 // No filtered groups
-                                Positioned.fill(
+                                SizedBox.expand(
                                   child: EmptyViewMessage(
                                     icon: Icons.search,
                                     title: loc.no_results,
@@ -164,7 +164,7 @@ class _GroupViewState extends State<GroupView> {
                                   ),
                                 )
                               // Groups list
-                              : Positioned.fill(
+                              : SizedBox.expand(
                                   child: NotificationListener<UserScrollNotification>(
                                     onNotification: (notification) {
                                       if (notification.direction ==
