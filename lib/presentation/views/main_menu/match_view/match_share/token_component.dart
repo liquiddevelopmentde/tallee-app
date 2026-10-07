@@ -37,7 +37,7 @@ class TokenComponent extends StatelessWidget {
     final int minutes = secondsRemaining ~/ 60;
     final int seconds = secondsRemaining % 60;
 
-    final String displayCode = shareToken ?? 'XXXXXX';
+    final String displayCode = shareToken ?? 'ABC123';
     final List<String> chars = displayCode.split('');
 
     if (serverSharingEnabled) {
@@ -241,7 +241,12 @@ class TokenComponent extends StatelessWidget {
             children: [
               for (int i = 0; i < 6; i++) ...[
                 if (i > 0) const SizedBox(width: 8),
-                Expanded(child: charContainer(active: false)),
+                Expanded(
+                  child: charContainer(
+                    active: false,
+                    char: chars.length > i ? chars[i] : ' ',
+                  ),
+                ),
               ],
             ],
           ),
@@ -272,7 +277,7 @@ class TokenComponent extends StatelessWidget {
       decoration: BoxDecoration(
         color: active
             ? CustomTheme.boxColor
-            : CustomTheme.boxBorderColor.withAlpha(150),
+            : CustomTheme.boxBorderColor.withAlpha(100),
         border: Border.all(color: CustomTheme.boxBorderColor),
         borderRadius: CustomTheme.standardBorderRadiusAll,
       ),
@@ -282,9 +287,7 @@ class TokenComponent extends StatelessWidget {
         style: TextStyle(
           fontSize: 35,
           fontWeight: FontWeight.w400,
-          color: active
-              ? CustomTheme.textColor
-              : CustomTheme.textColor.withAlpha(100),
+          color: active ? CustomTheme.textColor : CustomTheme.boxBorderColor,
         ),
       ),
     );
