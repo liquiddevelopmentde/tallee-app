@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/countdown_painter.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
@@ -36,138 +36,132 @@ class QrCodeComponent extends StatelessWidget {
     final int minutes = secondsRemaining ~/ 60;
     final int seconds = secondsRemaining % 60;
 
-    return !serverSharingEnabled
-        ? Column(
-            children: [
-              TopCenteredMessage(
-                title: loc.online_sharing_disabled,
-                message: loc.share_as_qr_code_info,
-                icon: Icons.close,
+    if (serverSharingEnabled) {
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            child: CustomPaint(
+              foregroundPainter: CountdownPainter(
+                progress: progress,
+                color: secondsRemaining != 0
+                    ? CustomTheme.primaryColor
+                    : Colors.transparent,
               ),
-              const SizedBox(height: 20),
-              FloatingAnimatedButton(
-                text: loc.open_settings,
-                icon: Icons.settings,
-                onPressed: () async {
-                  await Navigator.push(
-                    context,
-                    adaptivePageRoute(
-                      builder: (context) => const SettingsView(),
-                    ),
-                  );
-                  onOnlineSharingPrefChanged.call();
-                },
-              ),
-            ],
-          )
-        : Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                  vertical: 10,
-                ),
-                child: CustomPaint(
-                  foregroundPainter: CountdownPainter(
-                    progress: progress,
-                    color: secondsRemaining != 0
-                        ? CustomTheme.primaryColor
-                        : Colors.transparent,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: CustomTheme.standardBorderRadiusAll,
-                    ),
-                    padding: const EdgeInsets.all(4),
-                    child: ClipRRect(
-                      borderRadius: CustomTheme.standardBorderRadiusAll,
-                      child: Container(
-                        color: Colors.white,
-                        padding: const EdgeInsets.all(10),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Opacity(
-                              opacity:
-                                  (isLoading ||
-                                      qrImage == null ||
-                                      secondsRemaining == 0)
-                                  ? 0.3
-                                  : 1.0,
-                              child: PrettyQrView(
-                                qrImage: qrImage ?? loadingStateQr(),
-                                decoration: const PrettyQrDecoration(
-                                  shape: PrettyQrSquaresSymbol(),
-                                  background: Colors.white,
-                                ),
-                              ),
-                            ),
-                            if (isLoading)
-                              const Center(
-                                child: CircularProgressIndicator(
-                                  color: CustomTheme.primaryColor,
-                                  strokeWidth: 5,
-                                ),
-                              ),
-                            if (secondsRemaining == 0)
-                              Center(
-                                child: HapticIconButton(
-                                  icon: const Icon(
-                                    Icons.refresh,
-                                    color: CustomTheme.primaryColor,
-                                    size: 70,
-                                  ),
-                                  onPressed: renewToken,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Text(
-                minutes == 0 && seconds == 0
-                    ? loc.qr_code_expired
-                    : loc.expires_in(
-                        '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
-                      ),
-                style: const TextStyle(
-                  color: CustomTheme.textColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  overflow: TextOverflow.visible,
-                ),
-                softWrap: true,
-              ),
-              const SizedBox(height: 10),
-              Container(
-                width: double.infinity,
+              child: Container(
                 decoration: BoxDecoration(
-                  color: CustomTheme.onBoxColor,
-                  border: Border.all(
-                    color: CustomTheme.boxBorderColor,
-                    width: 2,
-                  ),
+                  color: Colors.white,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
-                margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                child: Text(
-                  loc.scan_qr_code_instruction,
-                  style: const TextStyle(
-                    color: CustomTheme.textColor,
-                    fontSize: 14,
-                    overflow: TextOverflow.visible,
+                padding: const EdgeInsets.all(4),
+                child: ClipRRect(
+                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  child: Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.all(10),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Opacity(
+                          opacity:
+                              (isLoading ||
+                                  qrImage == null ||
+                                  secondsRemaining == 0)
+                              ? 0.3
+                              : 1.0,
+                          child: PrettyQrView(
+                            qrImage: qrImage ?? loadingStateQr(),
+                            decoration: const PrettyQrDecoration(
+                              shape: PrettyQrSquaresSymbol(),
+                              background: Colors.white,
+                            ),
+                          ),
+                        ),
+                        if (isLoading)
+                          const Center(
+                            child: CircularProgressIndicator(
+                              color: CustomTheme.primaryColor,
+                              strokeWidth: 5,
+                            ),
+                          ),
+                        if (secondsRemaining == 0)
+                          Center(
+                            child: HapticIconButton(
+                              icon: const Icon(
+                                Icons.refresh,
+                                color: CustomTheme.primaryColor,
+                                size: 70,
+                              ),
+                              onPressed: renewToken,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                  softWrap: true,
                 ),
               ),
-            ],
-          );
+            ),
+          ),
+          Text(
+            minutes == 0 && seconds == 0
+                ? loc.qr_code_expired
+                : loc.expires_in(
+                    '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                  ),
+            style: const TextStyle(
+              color: CustomTheme.textColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              overflow: TextOverflow.visible,
+            ),
+            softWrap: true,
+          ),
+          const SizedBox(height: 10),
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: CustomTheme.onBoxColor,
+              border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
+              borderRadius: CustomTheme.standardBorderRadiusAll,
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            child: Text(
+              loc.scan_qr_code_instruction,
+              style: const TextStyle(
+                color: CustomTheme.textColor,
+                fontSize: 14,
+                overflow: TextOverflow.visible,
+              ),
+              textAlign: TextAlign.center,
+              softWrap: true,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      children: [
+        TopCenteredMessage(
+          title: loc.online_sharing_disabled,
+          message: loc.share_as_qr_code_info,
+          icon: Icons.close,
+        ),
+        const SizedBox(height: 20),
+        FloatingAnimatedButton(
+          text: loc.open_settings,
+          icon: Icons.settings,
+          onPressed: () async {
+            await Navigator.push(
+              context,
+              adaptivePageRoute(builder: (context) => const SettingsView()),
+            );
+            onOnlineSharingPrefChanged.call();
+          },
+        ),
+      ],
+    );
   }
 
   QrImage loadingStateQr() {
