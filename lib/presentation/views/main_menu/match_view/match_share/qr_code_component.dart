@@ -7,7 +7,6 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_share/count
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class QrCodeComponent extends StatelessWidget {
   const QrCodeComponent({
@@ -38,9 +37,11 @@ class QrCodeComponent extends StatelessWidget {
 
     if (serverSharingEnabled) {
       return Column(
+        spacing: 10,
         children: [
+          // QR Code
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: CustomPaint(
               foregroundPainter: CountdownPainter(
                 progress: progress,
@@ -102,6 +103,8 @@ class QrCodeComponent extends StatelessWidget {
               ),
             ),
           ),
+
+          // TTL text
           Text(
             minutes == 0 && seconds == 0
                 ? loc.qr_code_expired
@@ -116,7 +119,8 @@ class QrCodeComponent extends StatelessWidget {
             ),
             softWrap: true,
           ),
-          const SizedBox(height: 10),
+
+          // Explanation container
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -141,14 +145,81 @@ class QrCodeComponent extends StatelessWidget {
       );
     }
 
+    // Online sharing deactivated
     return Column(
+      spacing: 10,
       children: [
-        TopCenteredMessage(
-          title: loc.online_sharing_disabled,
-          message: loc.share_as_qr_code_info,
-          icon: Icons.close,
+        // QR Code
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Container(
+            decoration: BoxDecoration(
+              color: CustomTheme.boxBorderColor.withAlpha(100),
+              border: Border.all(color: CustomTheme.boxBorderColor),
+              borderRadius: CustomTheme.standardBorderRadiusAll,
+            ),
+            padding: const EdgeInsets.all(10),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Opacity(
+                  opacity: 0.50,
+                  child: PrettyQrView(
+                    qrImage: qrImage ?? loadingStateQr(),
+                    decoration: const PrettyQrDecoration(
+                      shape: PrettyQrSquaresSymbol(
+                        color: CustomTheme.boxBorderColor,
+                      ),
+                      background: Colors.transparent,
+                    ),
+                  ),
+                ),
+
+                // Icon + Message
+                Column(
+                  spacing: 20,
+                  children: [
+                    // Icon
+                    const Icon(Icons.cloud_off, size: 50),
+
+                    // Message
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        children: [
+                          Text(
+                            loc.online_sharing_disabled,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                          Text(
+                            loc.share_as_qr_code_info,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              overflow: TextOverflow.visible,
+                              color: CustomTheme.hintColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
-        const SizedBox(height: 20),
+
+        const Spacer(),
+
+        // Open settings button
         FloatingAnimatedButton(
           text: loc.open_settings,
           icon: Icons.settings,
