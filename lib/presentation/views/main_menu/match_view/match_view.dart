@@ -16,6 +16,7 @@ import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/text_chip.dart';
@@ -274,55 +275,64 @@ class _MatchViewState extends State<MatchView> {
                           // Normal matches
                           else
                             Expanded(
-                              child:
-                                  NotificationListener<UserScrollNotification>(
-                                    onNotification: (notification) {
-                                      if (notification.direction ==
-                                              ScrollDirection.reverse &&
-                                          isSearchBarVisible) {
-                                        setState(
-                                          () => isSearchBarVisible = false,
+                              child: NotificationListener<UserScrollNotification>(
+                                onNotification: (notification) {
+                                  if (notification.direction ==
+                                          ScrollDirection.reverse &&
+                                      isSearchBarVisible) {
+                                    setState(() => isSearchBarVisible = false);
+                                  } else if (notification.direction ==
+                                          ScrollDirection.forward &&
+                                      !isSearchBarVisible) {
+                                    setState(() => isSearchBarVisible = true);
+                                  }
+                                  return true;
+                                },
+                                child: ListView.builder(
+                                  controller: scrollController,
+                                  padding: CustomTheme.listViewPadding(context),
+                                  itemCount: displayedMatches.length,
+                                  itemBuilder: (context, index) => MatchTile(
+                                    width:
+                                        MediaQuery.sizeOf(context).width * 0.95,
+                                    onTap: () async {
+                                      if (displayedMatches[index].endedAt !=
+                                          null) {
+                                        Navigator.push(
+                                          context,
+                                          adaptivePageRoute(
+                                            settings: const RouteSettings(
+                                              name: RouteNames.matchDetailView,
+                                            ),
+                                            builder: (context) =>
+                                                MatchDetailView(
+                                                  match:
+                                                      displayedMatches[index],
+                                                  onMatchUpdate: loadMatches,
+                                                ),
+                                          ),
                                         );
-                                      } else if (notification.direction ==
-                                              ScrollDirection.forward &&
-                                          !isSearchBarVisible) {
-                                        setState(
-                                          () => isSearchBarVisible = true,
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          adaptivePageRoute(
+                                            settings: const RouteSettings(
+                                              name: RouteNames.matchResultView,
+                                            ),
+                                            builder: (context) =>
+                                                MatchResultView(
+                                                  match:
+                                                      displayedMatches[index],
+                                                  onWinnerChanged: loadMatches,
+                                                ),
+                                          ),
                                         );
                                       }
-                                      return true;
                                     },
-                                    child: ListView.builder(
-                                      controller: scrollController,
-                                      padding: CustomTheme.listViewPadding(
-                                        context,
-                                      ),
-                                      itemCount: displayedMatches.length,
-                                      itemBuilder: (context, index) => MatchTile(
-                                        width:
-                                            MediaQuery.sizeOf(context).width *
-                                            0.95,
-                                        onTap: () async {
-                                          Navigator.push(
-                                            context,
-                                            adaptivePageRoute(
-                                              settings: const RouteSettings(
-                                                name:
-                                                    RouteNames.matchDetailView,
-                                              ),
-                                              builder: (context) =>
-                                                  MatchDetailView(
-                                                    match:
-                                                        displayedMatches[index],
-                                                    onMatchUpdate: loadMatches,
-                                                  ),
-                                            ),
-                                          );
-                                        },
-                                        match: displayedMatches[index],
-                                      ),
-                                    ),
+                                    match: displayedMatches[index],
                                   ),
+                                ),
+                              ),
                             ),
                         ]
                         // No matches in db

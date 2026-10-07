@@ -1166,12 +1166,6 @@ abstract class AppLocalizations {
   /// **'No Groups'**
   String get no_groups;
 
-  /// No description provided for @no_players.
-  ///
-  /// In en, this message translates to:
-  /// **'No Players'**
-  String get no_players;
-
   /// No description provided for @no_groups_created_yet.
   ///
   /// In en, this message translates to:
@@ -1213,6 +1207,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No matching local group found.\nA new group will be created.'**
   String get no_matching_local_group_found;
+
+  /// No description provided for @no_players.
+  ///
+  /// In en, this message translates to:
+  /// **'No Players'**
+  String get no_players;
 
   /// No description provided for @no_players_available.
   ///

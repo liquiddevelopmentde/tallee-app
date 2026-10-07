@@ -618,9 +618,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_groups => 'Keine Gruppen';
 
   @override
-  String get no_players => 'Keine Spieler:innen';
-
-  @override
   String get no_groups_created_yet =>
       'Du hast bisher noch keine Gruppen erstellt. Erstelle eine neue Gruppe, damit sie hier angezeigt wird.';
 
@@ -644,6 +641,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get no_matching_local_group_found =>
       'Keine passende lokale Gruppe gefunden. Eine neue Gruppe wird erstellt.';
+
+  @override
+  String get no_players => 'Keine Spieler:innen';
 
   @override
   String get no_players_available => 'Keine Spieler:innen verfügbar';
