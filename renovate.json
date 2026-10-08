@@ -19,6 +19,15 @@
     {
       "matchManagers": ["pub"],
       "rangeStrategy": "bump"
+    },
+    {
+      "matchManagers": [
+        "pub"
+      ],
+      "matchDepNames": [
+        "dart"
+      ],
+      "versioning": "npm"
     }
   ]
 }
