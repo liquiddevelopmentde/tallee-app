@@ -43,12 +43,10 @@ class ScoreEntry {
   ScoreEntry.fromJson(Map<String, dynamic> json)
     : roundNumber = json['roundNumber'] ?? 0,
       // Backwards compatibility for UI PR: fall back to score if change is missing
-      change = json['change'] ?? json['score'] ?? 0;
+      change = json['change'] != 0 ? json['score'] : json['change'] ?? 0;
 
   Map<String, dynamic> toJson() => {
     'roundNumber': roundNumber,
     'change': change,
-    // Backwards compatibility for UI PR
-    'score': change,
   };
 }

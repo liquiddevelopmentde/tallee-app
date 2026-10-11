@@ -159,8 +159,8 @@ void main() {
         'playerIds': [testPlayer1.id, testPlayer2.id],
         'notes': testMatch.notes,
         'scores': {
-          testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
-          testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
+          testPlayer1.id: {'roundNumber': 1, 'change': 10},
+          testPlayer2.id: {'roundNumber': 1, 'change': 15},
         },
         'createdAt': testMatch.createdAt.toIso8601String(),
         'endedAt': null,
@@ -1099,8 +1099,8 @@ void main() {
               'playerIds': [testPlayer1.id, testPlayer2.id],
               'notes': testMatch.notes,
               'scores': {
-                testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
-                testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
+                testPlayer1.id: {'roundNumber': 1, 'change': 10},
+                testPlayer2.id: {'roundNumber': 1, 'change': 15},
               },
               'createdAt': testMatch.createdAt.toIso8601String(),
               'endedAt': null,
@@ -1231,8 +1231,8 @@ void main() {
                 'isTeamMatch': false,
                 'teams': null,
                 'scores': {
-                  testPlayer1.id: {'roundNumber': 1, 'score': 10, 'change': 10},
-                  testPlayer2.id: {'roundNumber': 1, 'score': 15, 'change': 15},
+                  testPlayer1.id: {'roundNumber': 1, 'change': 10},
+                  testPlayer2.id: {'roundNumber': 1, 'change': 15},
                 },
                 'createdAt': testMatch.createdAt.toIso8601String(),
                 'endedAt': null,
@@ -1512,6 +1512,7 @@ void main() {
 
         final ctx = await getContext(tester);
         final jsonString = await LocalShareService.getAppDataAsJson(ctx);
+        print('jsonString:\n$jsonString');
 
         expect(jsonString, isNotEmpty);
 
