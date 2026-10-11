@@ -160,6 +160,9 @@
               "roundNumber": {
                 "type": "number"
               },
+              "score": {
+                "type": "number"
+              },
               "change": {
                 "type": "number"
               }
