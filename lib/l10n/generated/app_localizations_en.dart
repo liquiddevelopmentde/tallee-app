@@ -269,6 +269,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get description => 'Description';
 
   @override
+  String get dice => 'Dice';
+
+  @override
   String get displayed_entries => 'Displayed entries';
 
   @override
@@ -796,6 +799,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get results => 'Results';
+
+  @override
+  String get roll_dice => 'Roll dice';
 
   @override
   String get ruleset => 'Ruleset';

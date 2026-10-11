@@ -272,6 +272,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get description => 'Beschreibung';
 
   @override
+  String get dice => 'Würfel';
+
+  @override
   String get displayed_entries => 'Angezeigte Einträge';
 
   @override
@@ -803,6 +806,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get results => 'Ergebnisse';
+
+  @override
+  String get roll_dice => 'Würfel werfen';
 
   @override
   String get ruleset => 'Regelwerk';

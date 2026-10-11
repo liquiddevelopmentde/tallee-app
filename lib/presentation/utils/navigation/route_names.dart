@@ -22,6 +22,9 @@ class RouteNames {
 
   static const String playerDetailView = '/home/players/{id}';
 
+  static const String utilityView = '/home/tools';
+  static const String diceView = '/home/tools/dice';
+
   static const String statisticView = '/home/statistics';
   static const String createStatisticView = '/home/statistics/create';
   static const String chooseEnumView = '/home/statistics/create/scope';

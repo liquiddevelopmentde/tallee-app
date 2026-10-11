@@ -560,6 +560,12 @@ abstract class AppLocalizations {
   /// **'Description'**
   String get description;
 
+  /// No description provided for @dice.
+  ///
+  /// In en, this message translates to:
+  /// **'Dice'**
+  String get dice;
+
   /// No description provided for @displayed_entries.
   ///
   /// In en, this message translates to:
@@ -1483,6 +1489,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Results'**
   String get results;
+
+  /// No description provided for @roll_dice.
+  ///
+  /// In en, this message translates to:
+  /// **'Roll dice'**
+  String get roll_dice;
 
   /// No description provided for @ruleset.
   ///
