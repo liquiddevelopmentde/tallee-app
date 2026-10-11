@@ -465,7 +465,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   /// Starts the timer for a single player. No-op if already running.
   /// The accumulated [ScoreEntry.score] (ms) is kept; only [timerStartedAt] is
-  /// set. Does NOT touch the match's endedAt.
+  /// set.
   Future<void> startTimer({
     required String playerId,
     required String matchId,
@@ -487,8 +487,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
-  /// Stops the timer for a single player, folding the elapsed wall-clock time
-  /// into the accumulated score. No-op if not running.
+  /// Stops the timer for a single player and folds the elapsed time into the
+  /// accumulated score. No-op if not running.
   Future<void> stopTimer({
     required String playerId,
     required String matchId,

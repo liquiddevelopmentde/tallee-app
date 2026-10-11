@@ -85,6 +85,7 @@ enum Ruleset {
 /// Different colors for highlighting content
 enum AppColor { red, orange, yellow, green, teal, blue, purple, pink }
 
+/// Different statistic types that can be calculated for players
 enum StatisticType {
   totalMatches,
   totalWins,
@@ -100,18 +101,16 @@ enum StatisticType {
   shortestTime,
 }
 
-/// Classifies [StatisticType]s by the kind of value they measure, which
-/// determines both the rulesets they apply to and how their values are shown.
+/// Helpers to classify [StatisticType]s by the kind of value they measure.
 extension StatisticTypeClassification on StatisticType {
-  /// Values are numeric points and come from score-based rulesets only.
+  /// Values are numeric points and come from score-based rulesets.
   bool get isScoreBased =>
       this == StatisticType.totalScore ||
       this == StatisticType.averageScore ||
       this == StatisticType.bestScore ||
       this == StatisticType.worstScore;
 
-  /// Values are durations in milliseconds and come from time-based rulesets
-  /// only.
+  /// Values are durations in milliseconds and come from time-based rulesets.
   bool get isTimeBased =>
       this == StatisticType.totalTime ||
       this == StatisticType.averageTime ||

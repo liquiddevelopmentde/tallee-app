@@ -442,8 +442,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   /// Stops all running timers and persists their final totals. For team
-  /// matches this also mirrors each team total into its members' score entries
-  /// and stamps the match as ended.
+  /// matches this also mirrors each team total into its members' score entries.
   Future<void> _finalizeTimers(DateTime at) async {
     if (useTeamLogic) {
       await db.teamDao.finalizeTeamTimers(

@@ -1,7 +1,7 @@
 /// Returns the effective elapsed time of a timer in milliseconds.
 ///
-/// For a stopped timer ([timerStartedAt] is null) this is just the accumulated
-/// [baseMs]. For a running timer it is [baseMs] plus the wall-clock time since
+/// For a stopped timer ([timerStartedAt] is null) this is the accumulated
+/// [baseMs]. For a running timer it is [baseMs] plus the time elapsed since
 /// [timerStartedAt], evaluated at [now].
 int effectiveTimerMs({
   required int baseMs,
@@ -12,10 +12,10 @@ int effectiveTimerMs({
   return baseMs + now.difference(timerStartedAt).inMilliseconds;
 }
 
-/// Formats a duration given in milliseconds according to the app timer
-/// * under one minute -> "45s"
-/// * under one hour -> "1:05"
-/// * one hour or more -> "1:02:03"
+/// Formats a duration in milliseconds the way the app timer shows it.
+/// - under one minute: "45s"
+/// - under one hour: "1:05"
+/// - one hour or more: "1:02:03"
 String formatTimer(int milliseconds) {
   final totalSeconds = (milliseconds < 0 ? 0 : milliseconds) ~/ 1000;
   final hours = totalSeconds ~/ 3600;

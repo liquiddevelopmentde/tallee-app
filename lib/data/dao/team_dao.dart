@@ -240,7 +240,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     );
   }
 
-  /// Retrieves the raw team row by [teamId], or null if it does not exist.
+  /// Returns the raw team row for [teamId], or null if it does not exist.
   Future<TeamTableData?> getTeamDataById({required String teamId}) async {
     final query = select(teamTable)..where((t) => t.id.equals(teamId));
     return query.getSingleOrNull();
@@ -449,7 +449,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
 
   /// Starts the timer for one team. No-op if already running.
   /// The accumulated [TeamTable.score] (ms) is kept; only [timerStartedAt] is
-  /// set. Does NOT touch the match's endedAt.
+  /// set.
   Future<void> startTeamTimer({
     required String teamId,
     required DateTime at,
@@ -462,7 +462,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     );
   }
 
-  /// Stops one team timer, folding the elapsed wall-clock time into its score.
+  /// Stops one team timer, folding the elapsed time into its score.
   Future<void> stopTeamTimer({
     required String teamId,
     required DateTime at,
@@ -514,8 +514,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     };
   }
 
-  /// Folds all running team timers and persists the final totals, mirroring
-  /// each team total into its members' score entries. Call once on save.
+  /// Stops all running team timers, persists the final totals and mirrors each
+  /// team total into its members' score entries. Call once on save.
   Future<void> finalizeTeamTimers({
     required String matchId,
     required List<String> teamIds,
@@ -524,8 +524,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     await stopAllTeamTimers(teamIds: teamIds, at: at);
     for (final id in teamIds) {
       final team = await getTeamDataById(teamId: id);
-      // Teams that never started have no score and must stay unscored; writing
-      // 0 would make them count as a 0 ms result and win shortest-time matches.
+      // Teams that never started must stay unscored; 0 ms would win
+      // shortest-time matches.
       if (team?.score == null) continue;
       await updateTeamScore(teamId: id, matchId: matchId, score: team!.score!);
     }

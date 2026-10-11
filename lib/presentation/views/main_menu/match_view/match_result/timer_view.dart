@@ -13,14 +13,9 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 /// Live timer dashboard for the time-based rulesets.
 ///
-/// Shows one running clock per player (or team), with per-unit start/stop
-/// toggles and Start all / Stop all controls.
-///
-/// The current value is derived from the database:
-///   effective_ms = accumulated score + (now - timerStartedAt)
-/// so timers keep advancing while the app is closed. State is always re-read
-/// from the DB (never taken from the [match] snapshot) and refreshed once per
-/// second and on app resume.
+/// Shows one clock per player or team with per-unit start/stop toggles and
+/// Start all / Stop all controls. Values are derived from the database, so
+/// timers keep advancing while the app is closed.
 class TimerView extends StatefulWidget {
   const TimerView({
     super.key,
@@ -34,8 +29,7 @@ class TimerView extends StatefulWidget {
   /// Called after any start/stop so the parent can refresh its own state.
   final VoidCallback? onTimersChanged;
 
-  /// Called when starting a timer re-opened a previously finished match so the
-  /// parent can refresh the match list/detail.
+  /// Called when starting a timer reopens a previously finished match.
   final VoidCallback? onMatchReopened;
 
   @override
