@@ -45,7 +45,7 @@ class BarChart extends StatelessWidget {
       hasData ? values : placeholderValues;
 
   // If its the placeholder, the bar should take the whole space
-  double get maxBarWidthFactor => hasData ? 0.9 : 1.0;
+  double get maxBarWidthFactor => hasData ? 0.8 : 1.0;
 
   @override
   Widget build(BuildContext context) {
