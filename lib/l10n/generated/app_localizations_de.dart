@@ -272,9 +272,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get description => 'Beschreibung';
 
   @override
-  String get displayed_entries => 'Angezeigte Einträge';
-
-  @override
   String get do_you_like_the_app => 'Gefällt dir die App?';
 
   @override
@@ -605,22 +602,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no => 'Nein';
 
   @override
-  String get no_data_available => 'Keine Daten verfügbar';
-
-  @override
   String get no_data_to_export => 'Keine Daten zum exportieren';
 
   @override
-  String get no_games_created_yet => 'Noch keine Spielvorlagen erstellt';
+  String get no_games => 'Keine Spielvorlagen';
 
   @override
-  String get no_groups_created_yet => 'Noch keine Gruppen erstellt';
+  String get no_games_created_yet =>
+      'Du hast bisher noch keine Spielvorlagen erstellt. Erstelle eine neue Spielvoralge, damit sie hier angezeigt wird.';
+
+  @override
+  String get no_groups => 'Keine Gruppen';
+
+  @override
+  String get no_groups_created_yet =>
+      'Du hast bisher noch keine Gruppen erstellt. Erstelle eine neue Gruppe, damit sie hier angezeigt wird.';
 
   @override
   String get no_license_text_available => 'Kein Lizenztext verfügbar';
 
   @override
-  String get no_matches_created_yet => 'Noch keine Spiele erstellt';
+  String get no_matches => 'Keine Spiele';
+
+  @override
+  String get no_matches_created_yet =>
+      'Du hast bisher noch keine Spiele erstellt. Erstelle ein neues Spiel damit es hier angezeigt wird.';
 
   @override
   String get no_matches_played_yet => 'Noch kein Spiel gespielt';
@@ -634,27 +640,41 @@ class AppLocalizationsDe extends AppLocalizations {
       'Keine passende lokale Gruppe gefunden. Eine neue Gruppe wird erstellt.';
 
   @override
+  String get no_players => 'Keine Spieler:innen';
+
+  @override
   String get no_players_available => 'Keine Spieler:innen verfügbar';
 
   @override
-  String get no_players_created_yet => 'Noch keine Spieler:in erstellt';
+  String get no_players_created_yet =>
+      'Du hast bisher noch keine Spieler:innen erstellt';
 
   @override
   String get no_players_found_with_that_name =>
-      'Keine Spieler:in mit diesem Namen gefunden';
+      'Keine:n Spieler:in mit diesem Namen gefunden';
 
   @override
   String get no_players_selected => 'Keine Spieler:innen ausgewählt';
 
   @override
+  String get no_results => 'Keine Treffer';
+
+  @override
   String get no_results_entered_yet => 'Noch keine Ergebnisse eingetragen';
 
   @override
-  String get no_statistics_created_yet => 'Noch keine Statistiken erstellt';
+  String get no_statistics => 'Keine Statistiken';
+
+  @override
+  String get no_statistics_created_yet =>
+      'Du hast bisher noch keine Statistiken erstellt. Erstelle eine neue Statistik, damit sie hier angezeigt wird.';
 
   @override
   String get no_statistics_with_filter =>
       'Keine Statistiken mit den ausgewählten Filteroptionen';
+
+  @override
+  String get no_suitable_matches_yet => 'Noch keine passenden Spiele';
 
   @override
   String get no_teams_available => 'Keine Teams verfügbar';
@@ -1021,23 +1041,23 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get there_are_no_games_matching_your_search =>
-      'Es gibt keine Spielvorlagen, die deiner Suche entspricht';
+      'Es gibt keine Spielvorlagen, die deiner Suche entspricht.';
 
   @override
   String get there_is_no_game_matching_your_search =>
-      'Es gibt keine Spielvorlage, die deiner Suche entspricht';
+      'Es gibt keine Spielvorlage, die deiner Suche entspricht.';
 
   @override
   String get there_is_no_group_matching_your_search =>
-      'Es gibt keine Gruppe, die deiner Suche entspricht';
+      'Es gibt keine Gruppe, die deiner Suche entspricht.';
 
   @override
   String get there_is_no_match_matching_your_filter =>
-      'Es gibt kein Spiel, das deinem Filter entspricht';
+      'Es gibt kein Spiel, das deinem Filter entspricht.';
 
   @override
   String get there_is_no_match_matching_your_search =>
-      'Es gibt kein Spiel, das deiner Suche entspricht';
+      'Es gibt kein Spiel, das deiner Suche entspricht.';
 
   @override
   String get this_cannot_be_undone =>
@@ -1057,6 +1077,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get token_expired => 'Token abgelaufen';
+
+  @override
+  String top_n(int count) {
+    return 'Top $count';
+  }
 
   @override
   String get total_losses => 'Niederlagen insgesamt';
