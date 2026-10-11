@@ -1922,6 +1922,12 @@ abstract class AppLocalizations {
   /// **'This can\'t be undone.'**
   String get this_cannot_be_undone;
 
+  /// No description provided for @throw_dice.
+  ///
+  /// In en, this message translates to:
+  /// **'Throw'**
+  String get throw_dice;
+
   /// No description provided for @tie.
   ///
   /// In en, this message translates to:

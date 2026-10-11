@@ -1056,6 +1056,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dies kann nicht rückgängig gemacht werden.';
 
   @override
+  String get throw_dice => 'Werfen';
+
+  @override
   String get tie => 'Unentschieden';
 
   @override

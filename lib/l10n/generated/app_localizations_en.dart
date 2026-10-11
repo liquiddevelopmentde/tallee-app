@@ -1046,6 +1046,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get this_cannot_be_undone => 'This can\'t be undone.';
 
   @override
+  String get throw_dice => 'Throw';
+
+  @override
   String get tie => 'Tie';
 
   @override
