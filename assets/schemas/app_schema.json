@@ -155,16 +155,12 @@
                     "roundNumber": {
                       "type": "number"
                     },
-                    "score": {
-                      "type": "number"
-                    },
                     "change": {
                       "type": "number"
                     }
                   },
                   "required": [
                     "roundNumber",
-                    "score",
                     "change"
                   ],
                   "additionalProperties": false
