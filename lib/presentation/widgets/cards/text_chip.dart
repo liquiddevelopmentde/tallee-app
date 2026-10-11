@@ -28,39 +28,20 @@ class TextChip extends StatefulWidget {
 }
 
 class _TextChipState extends State<TextChip> {
-  bool isPressed = false;
-  final int delay = 200;
-
   @override
   Widget build(BuildContext context) {
     final text = widget.text + (widget.count > 0 ? ' (${widget.count})' : '');
     return Skeleton.unite(
       child: GestureDetector(
-        onTapDown: (_) {
-          setState(() {
-            isPressed = true;
-          });
-        },
-        onTapUp: (_) {
-          Future.delayed(Duration(milliseconds: delay), () {
-            setState(() {
-              isPressed = false;
-            });
-          });
-        },
-        onTapCancel: () {
-          setState(() {
-            isPressed = false;
-          });
-        },
         onTap: () {
           HapticFeedback.selectionClick();
           widget.onTap();
         },
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: CustomTheme.onBoxColor,
+            color: CustomTheme.backgroundColor,
             border: Border.all(
               color: widget.activated
                   ? CustomTheme.textColor.withAlpha(150)
@@ -70,15 +51,9 @@ class _TextChipState extends State<TextChip> {
             ),
             borderRadius: BorderRadius.circular(6),
           ),
-          child: AnimatedDefaultTextStyle(
-            curve: Curves.easeInOut,
-            duration: Duration(milliseconds: delay),
-            style: TextStyle(
-              color: isPressed
-                  ? CustomTheme.textColor.withAlpha(150)
-                  : CustomTheme.textColor.withAlpha(255),
-            ),
-            child: Text(text),
+          child: Text(
+            text,
+            style: TextStyle(color: CustomTheme.textColor.withAlpha(255)),
           ),
         ),
       ),

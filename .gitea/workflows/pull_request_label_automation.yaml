@@ -36,10 +36,20 @@ jobs:
               | python3 -c "import sys,json;d=json.load(sys.stdin);exit(0 if any(x['name']=='$IN_PROGRESS' for x in d) else 1)"
           }
 
+          # Returns 0 if the repo already has a label with the given name, else 1.
+          label_exists() {
+            local page=1 res
+            while :; do
+              res="$(curl -fsS -H "$AUTH" "$API/repos/$REPO/labels?page=$page&limit=50")"
+              printf '%s' "$res" | python3 -c "import sys,json;d=json.load(sys.stdin);exit(0 if any(x['name']=='$1' for x in d) else 1)" && return 0
+              printf '%s' "$res" | python3 -c "import sys,json;exit(0 if json.load(sys.stdin) else 1)" || return 1
+              page=$((page + 1))
+            done
+          }
+
           # Creates the given label in the repo if it does not exist yet (scoped/exclusive).
           ensure_label() {
-            curl -fsS -H "$AUTH" "$API/repos/$REPO/labels" \
-              | python3 -c "import sys,json;d=json.load(sys.stdin);exit(0 if any(x['name']=='$1' for x in d) else 1)" || \
+            label_exists "$1" || \
               curl -fsS -X POST -H "$AUTH" -H 'Content-Type: application/json' \
                 -d "{\"name\":\"$1\",\"color\":\"#0E8A16\",\"exclusive\":true}" "$API/repos/$REPO/labels"
           }
@@ -95,9 +105,7 @@ jobs:
           fi
 
           # Make sure the target label exists in the repo before assigning it.
-          curl -fsS -H "$AUTH" "$API/repos/$REPO/labels" | python3 -c "import sys,json;d=json.load(sys.stdin);exit(0 if any(x['name']=='$TARGET' for x in d) else 1)" || \
-            curl -fsS -X POST -H "$AUTH" -H 'Content-Type: application/json' \
-              -d "{\"name\":\"$TARGET\",\"color\":\"#0E8A16\",\"exclusive\":true}" "$API/repos/$REPO/labels"
+          ensure_label "$TARGET"
 
           labels=$(curl -fsS -H "$AUTH" "$API/repos/$REPO/issues/$PR/labels")
 

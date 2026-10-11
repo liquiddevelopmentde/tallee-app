@@ -26,6 +26,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
 
   bool isProcessing = false;
   String? errorMessage;
+  bool isStarting = false;
 
   @override
   void initState() {
@@ -137,8 +138,18 @@ class _QrScanComponentState extends State<QrScanComponent> {
   }
 
   Future<void> startScanner() async {
-    if (!controller.value.isRunning) {
-      await controller.start();
+    if (isStarting || controller.value.isRunning) return;
+    isStarting = true;
+    try {
+      if (!controller.value.isRunning) {
+        await controller.start();
+      }
+    } on MobileScannerException catch (e) {
+      if (e.errorCode != MobileScannerErrorCode.controllerInitializing) {
+        rethrow;
+      }
+    } finally {
+      isStarting = false;
     }
   }
 

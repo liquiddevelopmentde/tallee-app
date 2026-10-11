@@ -21,16 +21,13 @@
       "rangeStrategy": "bump"
     },
     {
-      "matchManagers": ["pub"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "dart dependencies (minor)",
-      "groupSlug": "dart-minor"
-    },
-    {
-      "matchManagers": ["pub"],
-      "matchUpdateTypes": ["major"],
-      "groupName": "dart dependencies",
-      "groupSlug": "dart-major"
+      "matchManagers": [
+        "pub"
+      ],
+      "matchDepNames": [
+        "dart"
+      ],
+      "versioning": "npm"
     }
   ]
 }

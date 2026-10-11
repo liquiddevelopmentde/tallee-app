@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -80,33 +80,34 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         backgroundColor: CustomTheme.backgroundColor,
         appBar: AppBar(title: Text(viewTitle)),
         body: SafeArea(
+          minimum: const EdgeInsets.symmetric(horizontal: 12),
           maintainBottomViewPadding: true,
           child: Column(
+            spacing: 10,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                margin: CustomTheme.standardMargin,
-                child: TextInputField(
-                  controller: groupNameController,
-                  hintText: loc.group_name,
-                  maxLength: MAX_GROUP_NAME_LENGTH,
-                ),
+              // Group name
+              TextInputField(
+                controller: groupNameController,
+                hintText: loc.group_name,
+                maxLength: MAX_GROUP_NAME_LENGTH,
               ),
-              Container(
-                margin: CustomTheme.standardMargin,
-                child: TextInputField(
-                  controller: groupDescriptionController,
-                  hintText: loc.description,
-                  maxLength: MAX_GROUP_DESCRIPTION_LENGTH,
-                  minLines: 3,
-                  maxLines: 3,
-                  showCounterText: true,
-                ),
+
+              // Group description
+              TextInputField(
+                controller: groupDescriptionController,
+                hintText: loc.description,
+                maxLength: MAX_GROUP_DESCRIPTION_LENGTH,
+                minLines: 3,
+                maxLines: 3,
+                showCounterText: true,
               ),
+
+              // Player selection
               Expanded(
                 child: PlayerSelectionWidget.multiple(
                   initialSelectedPlayers: initialSelectedPlayers,
@@ -118,18 +119,16 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                   },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: BottomAnimatedButton(
-                  sizeRelativeToWidth: 0.95,
-                  buttonText: buttonText,
-                  buttonType: ButtonType.primary,
-                  onPressed:
-                      (groupNameController.text.isEmpty ||
-                          (selectedPlayers.length < 2))
-                      ? null
-                      : saveGroup,
-                ),
+
+              BottomAnimatedButton(
+                sizeRelativeToWidth: 0.95,
+                buttonText: buttonText,
+                buttonType: ButtonType.primary,
+                onPressed:
+                    (groupNameController.text.isEmpty ||
+                        (selectedPlayers.length < 2))
+                    ? null
+                    : saveGroup,
               ),
             ],
           ),

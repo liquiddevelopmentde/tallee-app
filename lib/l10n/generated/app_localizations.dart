@@ -1730,12 +1730,6 @@ abstract class AppLocalizations {
   /// **'Shortest time'**
   String get shortest_time_statistic;
 
-  /// No description provided for @show_app_walkthrough.
-  ///
-  /// In en, this message translates to:
-  /// **'App Walkthrough'**
-  String get show_app_walkthrough;
-
   /// No description provided for @showcase_create_game_button.
   ///
   /// In en, this message translates to:
@@ -1819,6 +1813,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start all'**
   String get start_all;
+
+  /// No description provided for @start_onboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Onboarding'**
+  String get start_onboarding;
 
   /// No description provided for @start_timer.
   ///

@@ -5,11 +5,12 @@ class ScoreEntry {
   final DateTime? timerStartedAt;
 
   ScoreEntry({
-    required this.score,
+    int? score,
     this.roundNumber = 0,
-    this.change = 0,
+    int? change,
     this.timerStartedAt,
-  });
+  }) : score = score ?? change ?? 0,
+       change = change ?? score ?? 0;
 
   @override
   String toString() {
@@ -44,9 +45,9 @@ class ScoreEntry {
   int get hashCode => Object.hash(roundNumber, score, change, timerStartedAt);
 
   ScoreEntry.fromJson(Map<String, dynamic> json)
-    : roundNumber = json['roundNumber'],
-      score = json['score'],
-      change = json['change'],
+    : roundNumber = json['roundNumber'] ?? 0,
+      score = json['score'] ?? json['change'] ?? 0,
+      change = json['change'] ?? json['score'] ?? 0,
       timerStartedAt = json['timerStartedAt'] != null
           ? DateTime.parse(json['timerStartedAt'] as String)
           : null;

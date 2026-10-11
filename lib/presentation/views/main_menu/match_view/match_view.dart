@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
@@ -16,6 +16,7 @@ import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/text_chip.dart';
@@ -293,18 +294,33 @@ class _MatchViewState extends State<MatchView> {
                               return MatchTile(
                                 width: MediaQuery.sizeOf(context).width * 0.95,
                                 onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    adaptivePageRoute(
-                                      settings: const RouteSettings(
-                                        name: RouteNames.matchDetailView,
+                                  if (displayedMatches[index].endedAt != null) {
+                                    Navigator.push(
+                                      context,
+                                      adaptivePageRoute(
+                                        settings: const RouteSettings(
+                                          name: RouteNames.matchDetailView,
+                                        ),
+                                        builder: (context) => MatchDetailView(
+                                          match: displayedMatches[index],
+                                          onMatchUpdate: loadMatches,
+                                        ),
                                       ),
-                                      builder: (context) => MatchDetailView(
-                                        match: displayedMatches[index],
-                                        onMatchUpdate: loadMatches,
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      adaptivePageRoute(
+                                        settings: const RouteSettings(
+                                          name: RouteNames.matchResultView,
+                                        ),
+                                        builder: (context) => MatchResultView(
+                                          match: displayedMatches[index],
+                                          onWinnerChanged: loadMatches,
+                                        ),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  }
                                 },
                                 match: displayedMatches[index],
                               );

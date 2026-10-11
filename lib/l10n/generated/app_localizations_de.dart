@@ -938,9 +938,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shortest_time_statistic => 'Kürzeste Zeit';
 
   @override
-  String get show_app_walkthrough => 'Onboarding';
-
-  @override
   String get showcase_create_game_button =>
       'Tippe auf „Spielvorlage erstellen“, sobald du bereit bist.';
 
@@ -992,6 +989,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get start_all => 'Alle starten';
+
+  @override
+  String get start_onboarding => 'Onboarding starten';
 
   @override
   String get start_timer => 'Timer starten';

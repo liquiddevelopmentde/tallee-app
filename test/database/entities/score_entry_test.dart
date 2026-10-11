@@ -14,8 +14,8 @@ void main() {
   late Match testMatch1;
   late Match testMatch2;
   ScoreEntry entryRound1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
-  ScoreEntry entryRound2 = ScoreEntry(roundNumber: 2, score: 25, change: 15);
-  ScoreEntry entryRound3 = ScoreEntry(roundNumber: 3, score: 30, change: 5);
+  ScoreEntry entryRound2 = ScoreEntry(roundNumber: 2, score: 15, change: 15);
+  ScoreEntry entryRound3 = ScoreEntry(roundNumber: 3, score: 5, change: 5);
   final fixedDate = DateTime(2025, 11, 19, 00, 11, 23);
   final fakeClock = Clock(() => fixedDate);
 
@@ -223,7 +223,7 @@ void main() {
       test('getAllMatchScores() works correctly', () async {
         ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
         ScoreEntry entry2 = ScoreEntry(roundNumber: 1, score: 20, change: 20);
-        ScoreEntry entry3 = ScoreEntry(roundNumber: 2, score: 25, change: 15);
+        ScoreEntry entry3 = ScoreEntry(roundNumber: 2, score: 15, change: 15);
         await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
@@ -276,8 +276,8 @@ void main() {
         );
 
         expect(result.length, 2);
-        expect(result[testMatch1.id]![testPlayer1.id]!.score, 10);
-        expect(result[testMatch2.id]![testPlayer2.id]!.score, 20);
+        expect(result[testMatch1.id]![testPlayer1.id]!.first.score, 10);
+        expect(result[testMatch2.id]![testPlayer2.id]!.first.score, 20);
       });
 
       test('getScoresForMatches() returns empty map for empty input', () async {
@@ -297,7 +297,7 @@ void main() {
 
       test('getAllPlayerScoresInMatch() works correctly', () async {
         ScoreEntry entry1 = ScoreEntry(roundNumber: 1, score: 10, change: 10);
-        ScoreEntry entry2 = ScoreEntry(roundNumber: 2, score: 25, change: 15);
+        ScoreEntry entry2 = ScoreEntry(roundNumber: 2, score: 15, change: 15);
         ScoreEntry entry3 = ScoreEntry(roundNumber: 1, score: 30, change: 30);
         await database.scoreEntryDao.addScoresAsList(
           playerId: testPlayer1.id,
@@ -320,7 +320,7 @@ void main() {
         expect(playerScores[0].roundNumber, 1);
         expect(playerScores[1].roundNumber, 2);
         expect(playerScores[0].score, 10);
-        expect(playerScores[1].score, 25);
+        expect(playerScores[1].score, 15);
         expect(playerScores[0].change, 10);
         expect(playerScores[1].change, 15);
       });
