@@ -68,8 +68,8 @@ class BarChart extends StatelessWidget {
                   .take(displayedValuesCount)
                   .toList();
 
-              // Maximum to scale bars
-              final maximum = displayValues.isNotEmpty
+              // Maximum value to scale bars
+              final maxVal = displayValues.isNotEmpty
                   ? displayValues.fold<num>(
                       0,
                       (currentMax, entry) =>
@@ -82,8 +82,8 @@ class BarChart extends StatelessWidget {
                   // Bars
                   ...List.generate(displayedValuesCount, (index) {
                     /// Fraction of wins
-                    final double fraction = (maximum > 0)
-                        ? (displayValues[index].$2 / maximum)
+                    final double fraction = (maxVal > 0)
+                        ? (displayValues[index].$2 / maxVal)
                         : 0.0;
 
                     /// Calculated width for current the bar
