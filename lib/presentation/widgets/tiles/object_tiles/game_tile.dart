@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -134,7 +134,12 @@ class GameTile extends StatelessWidget {
                           spacing: 8,
                           children: [
                             const Icon(MATCH_ICON),
-                            Text(gameCount.toString()),
+                            Text(
+                              gameCount.toString(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                     ],
