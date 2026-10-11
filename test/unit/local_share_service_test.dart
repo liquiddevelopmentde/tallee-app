@@ -1512,7 +1512,6 @@ void main() {
 
         final ctx = await getContext(tester);
         final jsonString = await LocalShareService.getAppDataAsJson(ctx);
-        print('jsonString:\n$jsonString');
 
         expect(jsonString, isNotEmpty);
 
