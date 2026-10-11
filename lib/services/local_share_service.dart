@@ -88,17 +88,12 @@ class LocalShareService {
   /// Opens the file picker and returns the path of the selected `.tallee`
   /// file, or `null` if the picker was cancelled or no path is available.
   static Future<String?> pickImportFilePath() async {
-    final result = await FilePicker.pickFiles(
-      allowMultiple: false,
+    final file = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: [APP_DATA_FILE_EXTENSION],
     );
 
-    if (result == null || result.files.isEmpty) {
-      return null;
-    }
-
-    return result.files.single.path;
+    return file?.path;
   }
 
   /// Reads and validates a .tallee file at [filePath].

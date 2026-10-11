@@ -8,7 +8,8 @@ class ScoreEntryTable extends Table {
   TextColumn get matchId =>
       text().references(MatchTable, #id, onDelete: KeyAction.cascade)();
   IntColumn get roundNumber => integer()();
-  IntColumn get score => integer()();
+  // Backwards compatibility for UI PR
+  IntColumn get score => integer().nullable()();
   IntColumn get change => integer()();
 
   @override

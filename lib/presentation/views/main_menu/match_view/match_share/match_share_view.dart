@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -131,9 +131,7 @@ class _MatchShareViewState extends State<MatchShareView>
                       secondsRemaining: secondsRemaining,
                       totalSeconds: totalSeconds,
                       serverSharingEnabled: serverSharingEnabled,
-                      onOnlineSharingPrefChanged: () {
-                        initSharingView();
-                      },
+                      onOnlineSharingPrefChanged: () => initSharingView(),
                       renewToken: renewToken,
                     ),
                     TokenComponent(
@@ -142,9 +140,7 @@ class _MatchShareViewState extends State<MatchShareView>
                       shareToken: shareToken,
                       isLoading: isLoading,
                       serverSharingEnabled: serverSharingEnabled,
-                      onOnlineSharingPrefChanged: () {
-                        initSharingView();
-                      },
+                      onOnlineSharingPrefChanged: () => initSharingView(),
                       renewToken: renewToken,
                     ),
                     SaveFileComponent(match: widget.match),

@@ -1,19 +1,30 @@
 class ScoreEntry {
   final int roundNumber;
-  final int score;
   final int change;
 
-  ScoreEntry({required this.score, this.roundNumber = 0, this.change = 0});
+  // Backwards compatibility for UI PR
+  @Deprecated('Use change instead')
+  int get score => change;
+
+  ScoreEntry({
+    // Backwards compatibility for UI PR
+    @Deprecated('Use change instead') int? score,
+    this.roundNumber = 0,
+    int? change,
+  }) : change = change ?? score ?? 0;
 
   @override
   String toString() {
-    return 'ScoreEntry{roundNumber: $roundNumber, score: $score, change: $change}';
+    return 'ScoreEntry{roundNumber: $roundNumber, change: $change, score: $score}';
   }
 
-  ScoreEntry copyWith({int? roundNumber, int? score, int? change}) {
+  ScoreEntry copyWith({
+    int? roundNumber,
+    int? change,
+    @Deprecated('Use change instead') int? score,
+  }) {
     return ScoreEntry(
       roundNumber: roundNumber ?? this.roundNumber,
-      score: score ?? this.score,
       change: change ?? this.change,
     );
   }
@@ -24,20 +35,20 @@ class ScoreEntry {
       other is ScoreEntry &&
           runtimeType == other.runtimeType &&
           roundNumber == other.roundNumber &&
-          score == other.score &&
           change == other.change;
 
   @override
-  int get hashCode => Object.hash(roundNumber, score, change);
+  int get hashCode => Object.hash(roundNumber, change);
 
   ScoreEntry.fromJson(Map<String, dynamic> json)
-    : roundNumber = json['roundNumber'],
-      score = json['score'],
-      change = json['change'];
+    : roundNumber = json['roundNumber'] ?? 0,
+      // Backwards compatibility for UI PR: fall back to score if change is missing
+      change = json['change'] ?? json['score'] ?? 0;
 
   Map<String, dynamic> toJson() => {
     'roundNumber': roundNumber,
-    'score': score,
     'change': change,
+    // Backwards compatibility for UI PR
+    'score': change,
   };
 }
