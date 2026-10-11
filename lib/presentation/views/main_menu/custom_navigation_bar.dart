@@ -22,6 +22,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_receive/mat
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
+import 'package:tallee/presentation/views/main_menu/utility_view/utility_view.dart';
 import 'package:tallee/presentation/views/news/news_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
@@ -136,6 +137,10 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       KeyedSubtree(
         key: ValueKey('games_${tabKeyCount}_$refreshRevision'),
         child: const GameView(),
+      ),
+      KeyedSubtree(
+        key: ValueKey('tools_${tabKeyCount}_$refreshRevision'),
+        child: const UtilityView(),
       ),
       KeyedSubtree(
         key: ValueKey('stats_${tabKeyCount}_$refreshRevision'),
@@ -303,6 +308,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               NavbarItem(
                 index: 3,
                 isSelected: currentIndex == 3,
+                icon: UTILITY_ICON,
+                label: loc.tools,
+                onTabTapped: onTabTapped,
+              ),
+              NavbarItem(
+                index: 4,
+                isSelected: currentIndex == 4,
                 icon: Icons.bar_chart_rounded,
                 label: loc.statistics,
                 onTabTapped: onTabTapped,
@@ -363,6 +375,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       case 2:
         return loc.games;
       case 3:
+        return loc.tools;
+      case 4:
         return loc.statistics;
       default:
         return '';

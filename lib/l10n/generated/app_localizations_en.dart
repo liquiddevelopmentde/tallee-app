@@ -1055,6 +1055,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get token_expired => 'Token expired';
 
   @override
+  String get tools => 'Tools';
+
+  @override
   String get total_losses => 'Total losses';
 
   @override

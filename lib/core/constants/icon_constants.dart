@@ -16,3 +16,6 @@ const IconData GROUP_ICON = Icons.groups;
 
 /// The icon for the [Statistic] class
 const IconData STATISTIC_ICON = Icons.bar_chart_rounded;
+
+/// The icon for the utility tools tab
+const IconData UTILITY_ICON = Icons.extension_rounded;

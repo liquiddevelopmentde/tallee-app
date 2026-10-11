@@ -1940,6 +1940,12 @@ abstract class AppLocalizations {
   /// **'Token expired'**
   String get token_expired;
 
+  /// No description provided for @tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get tools;
+
   /// No description provided for @total_losses.
   ///
   /// In en, this message translates to:

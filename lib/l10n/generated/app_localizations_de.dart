@@ -1065,6 +1065,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get token_expired => 'Token abgelaufen';
 
   @override
+  String get tools => 'Werkzeuge';
+
+  @override
   String get total_losses => 'Niederlagen insgesamt';
 
   @override
