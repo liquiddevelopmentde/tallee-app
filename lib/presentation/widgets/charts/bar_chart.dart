@@ -45,7 +45,7 @@ class BarChart extends StatelessWidget {
       hasData ? values : placeholderValues;
 
   // If its the placeholder, the bar should take the whole space
-  double get maxBarWidthFactor => hasData ? 0.8 : 1.0;
+  double get maxBarWidthFactor => hasData ? 0.9 : 1.0;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +114,7 @@ class BarChart extends StatelessWidget {
                           SizedBox(
                             width: maxBarWidth,
                             child: Stack(
+                              alignment: Alignment.centerLeft,
                               clipBehavior: Clip.hardEdge,
                               children: [
                                 // Bar
@@ -215,12 +216,12 @@ class BarChart extends StatelessWidget {
           player,
           style: baseStyle,
           mainStyle: TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
             color: CustomTheme.textColor.withAlpha(textAlpha),
           ),
           countStyle: TextStyle(
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: FontWeight.bold,
             color: CustomTheme.textColor.withAlpha(
               isHighlightedOverflow ? 170 : 150,
