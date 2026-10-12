@@ -229,7 +229,7 @@ class _MatchTileState extends State<MatchTile> {
     }
   }
 
-  /// Builds the banner displaying the match status (in progress, tie, or winner).
+  /// Builds the banner displaying the match status
   Widget buildMatchResultBanner(AppLocalizations loc) {
     final match = widget.match;
 
@@ -265,6 +265,7 @@ class _MatchTileState extends State<MatchTile> {
       );
     }
 
+    // Tie display
     if (match.isTie) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -300,7 +301,7 @@ class _MatchTileState extends State<MatchTile> {
       );
     }
 
-    // Winner display (MVT for team matches, MVP for player matches)
+    // Winner display
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(

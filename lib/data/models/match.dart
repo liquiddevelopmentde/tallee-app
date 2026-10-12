@@ -426,6 +426,7 @@ class Match {
   }
 
   /// True when a lives match ended with all players/teams at 0 lives.
+  /// False when ruleset is not lives or match hasnt ended yet
   bool get isTie {
     if (game.ruleset != Ruleset.lives) return false;
     if (endedAt == null) return false;
