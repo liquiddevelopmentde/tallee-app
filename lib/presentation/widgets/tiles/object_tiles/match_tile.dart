@@ -325,7 +325,7 @@ class _MatchTileState extends State<MatchTile> {
   // Returns the appropiate winner text widget
   Widget get winnerTextWidget {
     if (widget.match.isTie) return tieTextWidget;
-    if (widget.match.mvt.isEmpty) return const SizedBox.shrink();
+    if (!widget.match.hasResult) return const SizedBox.shrink();
 
     final loc = AppLocalizations.of(context);
     return widget.match.useTeamLogic
