@@ -113,96 +113,7 @@ class _MatchTileState extends State<MatchTile> {
 
             const SizedBox(height: 12),
 
-            Visibility(
-              visible: match.endedAt != null,
-
-              // Match in progress display
-              replacement: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Colors.amber.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.watch_later,
-                      size: 20,
-                      color: Colors.amber,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        loc.match_in_progress,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              child: Visibility(
-                visible: match.useTeamLogic,
-
-                // MVP Display for player matches
-                replacement: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.green.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      getMvpIcon(),
-                      const SizedBox(width: 8),
-                      Expanded(child: getMvpTextWidget(loc)),
-                    ],
-                  ),
-                ),
-
-                // MVT Display for team matches
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.green.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      getMvpIcon(),
-                      const SizedBox(width: 8),
-                      Expanded(child: getMvtTextWidget(loc)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            buildMatchResultBanner(loc),
 
             const SizedBox(height: 12),
 
@@ -316,6 +227,103 @@ class _MatchTileState extends State<MatchTile> {
     } else {
       return '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(dateTime)}';
     }
+  }
+
+  /// Builds the banner displaying the match status (in progress, tie, or winner).
+  Widget buildMatchResultBanner(AppLocalizations loc) {
+    final match = widget.match;
+
+    // Match in progress display
+    if (match.endedAt == null) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.amber.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Colors.amber.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.watch_later, size: 20, color: Colors.amber),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                loc.match_in_progress,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: CustomTheme.textColor,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Tie display (Unentschieden)
+    if (match.isTie) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: CustomTheme.primaryColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: CustomTheme.primaryColor.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.handshake_outlined,
+              size: 20,
+              color: CustomTheme.primaryColor,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                loc.tie,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: CustomTheme.textColor,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Winner display (MVT for team matches, MVP for player matches)
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.green.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.green.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          getMvpIcon(),
+          const SizedBox(width: 8),
+          Expanded(
+            child: match.useTeamLogic
+                ? getMvtTextWidget(loc)
+                : getMvpTextWidget(loc),
+          ),
+        ],
+      ),
+    );
   }
 
   // Returns the appropriate text widget based on the match's ruleset and MVP.
