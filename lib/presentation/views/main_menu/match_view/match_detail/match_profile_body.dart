@@ -358,6 +358,22 @@ class MatchProfileBody extends StatelessWidget {
 
     return Column(
       children: [
+        if (match.isTie) ...[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                loc.tie,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: CustomTheme.textColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ],
         for (var i = 0; i < scores.length; i++)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

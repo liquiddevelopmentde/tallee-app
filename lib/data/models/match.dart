@@ -425,9 +425,7 @@ class Match {
     return teams!.where((team) => (team.score ?? 0) > 0).toList();
   }
 
-  /// A lives match is a tie when it has ended,
-  /// but no player/team has lives > 0 left (i.e. all are at 0).
-  /// (Currently only lives can end without a winner.)
+  /// True when a lives match ended with all players/teams at 0 lives.
   bool get isTie {
     if (game.ruleset != Ruleset.lives) return false;
     if (endedAt == null) return false;
