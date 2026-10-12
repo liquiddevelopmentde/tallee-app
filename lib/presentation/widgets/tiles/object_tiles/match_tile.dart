@@ -316,29 +316,35 @@ class _MatchTileState extends State<MatchTile> {
         children: [
           getMvpIcon(),
           const SizedBox(width: 8),
-          Expanded(
-            child: match.useTeamLogic
-                ? getMvtTextWidget(loc)
-                : getMvpTextWidget(loc),
-          ),
+          Expanded(child: winnerTextWidget),
         ],
       ),
     );
   }
 
+  // Returns the appropiate winner text widget
+  Widget get winnerTextWidget {
+    if (widget.match.isTie) return tieTextWidget;
+    if (widget.match.mvt.isEmpty) return const SizedBox.shrink();
+
+    final loc = AppLocalizations.of(context);
+    return widget.match.useTeamLogic
+        ? getMvtTextWidget(loc)
+        : getMvpTextWidget(loc);
+  }
+
+  // Returns the tie text
+  Widget get tieTextWidget => Text(
+    AppLocalizations.of(context).tie,
+    style: const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: CustomTheme.textColor,
+    ),
+  );
+
   // Returns the appropriate text widget based on the match's ruleset and MVP.
   Widget getMvpTextWidget(AppLocalizations loc) {
-    if (widget.match.isTie) {
-      return Text(
-        loc.tie,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: CustomTheme.textColor,
-        ),
-      );
-    }
-    if (widget.match.mvp.isEmpty) return const SizedBox.shrink();
     final ruleset = widget.match.game.ruleset;
     final players = widget.match.mvp;
 
@@ -402,17 +408,6 @@ class _MatchTileState extends State<MatchTile> {
 
   // Returns the appropriate text widget based on the match's ruleset and MVT.
   Widget getMvtTextWidget(AppLocalizations loc) {
-    if (widget.match.isTie) {
-      return Text(
-        loc.tie,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: CustomTheme.textColor,
-        ),
-      );
-    }
-    if (widget.match.mvt.isEmpty) return const SizedBox.shrink();
     final ruleset = widget.match.game.ruleset;
     final mvt = widget.match.mvt;
 
