@@ -68,8 +68,8 @@ class BarChart extends StatelessWidget {
                   .take(displayedValuesCount)
                   .toList();
 
-              // Maximum to scale bars
-              final maximum = displayValues.isNotEmpty
+              // Maximum value to scale bars
+              final maxVal = displayValues.isNotEmpty
                   ? displayValues.fold<num>(
                       0,
                       (currentMax, entry) =>
@@ -82,8 +82,8 @@ class BarChart extends StatelessWidget {
                   // Bars
                   ...List.generate(displayedValuesCount, (index) {
                     /// Fraction of wins
-                    final double fraction = (maximum > 0)
-                        ? (displayValues[index].$2 / maximum)
+                    final double fraction = (maxVal > 0)
+                        ? (displayValues[index].$2 / maxVal)
                         : 0.0;
 
                     /// Calculated width for current the bar
@@ -114,6 +114,7 @@ class BarChart extends StatelessWidget {
                           SizedBox(
                             width: maxBarWidth,
                             child: Stack(
+                              alignment: Alignment.centerLeft,
                               clipBehavior: Clip.hardEdge,
                               children: [
                                 // Bar
@@ -215,12 +216,12 @@ class BarChart extends StatelessWidget {
           player,
           style: baseStyle,
           mainStyle: TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
             color: CustomTheme.textColor.withAlpha(textAlpha),
           ),
           countStyle: TextStyle(
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: FontWeight.bold,
             color: CustomTheme.textColor.withAlpha(
               isHighlightedOverflow ? 170 : 150,

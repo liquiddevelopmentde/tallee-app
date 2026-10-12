@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/translations.dart';
@@ -37,6 +37,8 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   late bool isFavourite;
   Timer? timer;
   bool showHighlighting = false;
+
+  bool get hasData => widget.values.any((entry) => entry.$2 != 0);
 
   @override
   void initState() {
@@ -261,7 +263,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                 children: [
                   FloatingAnimatedButton(
                     icon: Icons.remove,
-                    onPressed: displayCount <= 1
+                    onPressed: displayCount <= 1 || !hasData
                         ? null
                         : () => updateDisplayCount(-1),
                   ),
@@ -290,7 +292,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
 
                   FloatingAnimatedButton(
                     icon: Icons.add,
-                    onPressed: displayCount >= widget.values.length
+                    onPressed: displayCount >= widget.values.length || !hasData
                         ? null
                         : () => updateDisplayCount(1),
                   ),
