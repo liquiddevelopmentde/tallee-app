@@ -10,6 +10,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
@@ -226,7 +227,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                       mainAxisSize: MainAxisSize.min,
                       spacing: 8,
                       children: [
-                        buildColorCircle(selectedColor!),
+                        ColoredCircle(color: selectedColor!),
                         Text(
                           translateAppColorToString(selectedColor!, context),
                           textAlign: TextAlign.right,
@@ -399,23 +400,13 @@ class _CreateGameViewState extends State<CreateGameView> {
         description: loc.choose_color_description,
         values: AppColor.values,
         selectedValue: selectedColor,
-        leadingBuilder: (AppColor color) => buildColorCircle(color),
+        leadingBuilder: (AppColor color) => ColoredCircle(color: color),
         labelBuilder: (BuildContext context, AppColor color) =>
             translateAppColorToString(color, context),
         onValueUpdated: (color) => setState(() => selectedColor = color),
       ),
     );
   }
-
-  /// Returns a colored circle
-  Widget buildColorCircle(AppColor color) => Container(
-    width: 16,
-    height: 16,
-    decoration: BoxDecoration(
-      color: getColorFromAppColor(color),
-      shape: BoxShape.circle,
-    ),
-  );
 
   /// Shows a delete popup with information about how many matches containing
   /// this game will also be deleted.
