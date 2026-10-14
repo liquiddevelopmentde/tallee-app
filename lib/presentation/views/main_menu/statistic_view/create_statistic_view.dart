@@ -1,7 +1,5 @@
-import 'dart:math' as math;
-
-import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
@@ -18,7 +16,9 @@ import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/dropdown/labeled_dropdown.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
+import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
+import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateStatisticView extends StatefulWidget {
@@ -50,6 +50,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   /* User selections */
   List<StatisticType> selectedTypes = [];
+
+  // TOOD: temp
+  StatisticType? selectedType;
   List<StatisticScope> selectedScopes = [];
   List<Game> selectedGames = [];
   List<Player> selectedPlayers = [];
@@ -57,6 +60,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   Timeframe selectedTimeframe = Timeframe.allTime;
   DateTime? selectedStartDate;
   DateTime? selectedEndDate;
+
   // null -> random color
   AppColor? selectedColor;
 
@@ -80,45 +84,147 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     return ScaffoldMessenger(
       child: Scaffold(
         appBar: AppBar(title: Text(loc.create_statistic(1))),
-        body: Column(
-          children: [
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: CustomTheme.boxColor,
-                  border: Border.all(color: CustomTheme.boxBorderColor),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
                 child: Column(
                   spacing: 15,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    buildClassifierSection(context, loc),
-                    buildScopeSection(context, loc),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        buildTimeframeSection(context, loc),
-                        if (selectedTimeframe == Timeframe.custom)
-                          buildDateRangeField(context),
-                      ],
+                    // Type selection
+                    ChooseTile(
+                      title: loc.type,
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: selectedTypes.isEmpty
+                            ? Text(
+                                loc.select_a_type,
+                                style: const TextStyle(
+                                  color: CustomTheme.hintColor,
+                                ),
+                              )
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 5,
+                                children: [
+                                  Text(
+                                    translateStatisticTypeToString(
+                                      selectedTypes.first,
+                                      context,
+                                    ),
+                                  ),
+                                  if (selectedTypes.length > 1)
+                                    Text(
+                                      '+ ${selectedTypes.length - 1}',
+                                      style: TextStyle(
+                                        color: CustomTheme.textColor.withAlpha(
+                                          200,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                      ),
+                      onPressed: () => showTypeSheet(loc),
                     ),
-                    buildColorSection(context, loc),
+
+                    // Scope selection
+                    ChooseTile(
+                      title: loc.scope,
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: selectedScopes.isEmpty
+                            ? Text(
+                                loc.select_a_scope,
+                                style: const TextStyle(
+                                  color: CustomTheme.hintColor,
+                                ),
+                              )
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 5,
+                                children: [
+                                  Text(
+                                    translateScopeToString(
+                                      selectedScopes.first,
+                                      context,
+                                    ),
+                                  ),
+                                  if (selectedScopes.length > 1)
+                                    Text(
+                                      '+ ${selectedScopes.length - 1}',
+                                      style: TextStyle(
+                                        color: CustomTheme.textColor.withAlpha(
+                                          200,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                      ),
+                      onPressed: () => showScopeSheet(loc),
+                    ),
+
+                    // Timeframe selection
+                    ChooseTile(
+                      title: loc.timeframe,
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Text(
+                          translateTimeframeToString(
+                            selectedTimeframe,
+                            context,
+                          ),
+                        ),
+                      ),
+                      onPressed: () => showTimeframeSheet(loc),
+                    ),
+
+                    // Date range selection
+                    if (selectedTimeframe == Timeframe.custom)
+                      buildDateRangeField(context),
+
+                    // Color selection
+                    ChooseTile(
+                      title: loc.color,
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Row(
+                          spacing: 10,
+                          children: [
+                            if (selectedColor == null) ...[
+                              ColoredCircle(hasRandomColors: true),
+                              Text(loc.random_color),
+                            ] else ...[
+                              ColoredCircle(color: selectedColor!),
+                              Text(
+                                translateAppColorToString(
+                                  selectedColor!,
+                                  context,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      onPressed: () => showColorSheet(loc),
+                    ),
                   ],
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-              child: BottomAnimatedButton(
-                buttonConstraints: const BoxConstraints(minWidth: 390),
-                buttonText: submitButtonText,
-                onPressed: enableSubmitButton ? () => submitStatistic() : null,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+                child: BottomAnimatedButton(
+                  buttonConstraints: const BoxConstraints(minWidth: 390),
+                  buttonText: submitButtonText,
+                  onPressed: enableSubmitButton
+                      ? () => submitStatistic()
+                      : null,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -127,61 +233,86 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   bool get enableSubmitButton =>
       (selectedTypes.isNotEmpty && selectedScopes.isNotEmpty) && !isLoading;
 
-  Widget buildClassifierSection(BuildContext context, AppLocalizations loc) {
-    return LabeledDropdown<StatisticType>.multi(
-      title: loc.classifier,
-      description: loc.classifier_description,
-      hintText: loc.select_a_classifier,
-      enabled: !isLoading,
-      multiValueListenable: selectedTypeNotifier,
-      options: [
-        for (final type in StatisticType.values)
-          DropdownOption(
-            value: type,
-            label: translateStatisticTypeToString(type, context),
-          ),
-      ],
-      onItemTap: onClassifierTapped,
+  /// Shows a bottom sheet to choose a color
+  void showTypeSheet(AppLocalizations loc) {
+    showModalBottomSheet(
+      showDragHandle: true,
+      context: context,
+      backgroundColor: CustomTheme.boxColor,
+      isScrollControlled: true,
+      builder: (BuildContext context) => SelectionSheet<StatisticType>.multiple(
+        title: loc.type,
+        description: loc.select_a_type_description,
+        values: StatisticType.values,
+        selectedValues: selectedTypes,
+        leadingBuilder: (StatisticType type) =>
+            Icon(getStatisticIcon(type: type)),
+        labelBuilder: (BuildContext context, StatisticType scope) =>
+            translateStatisticTypeToString(scope, context),
+        onValuesUpdated: (scopes) => setState(() => selectedTypes = scopes),
+      ),
     );
   }
 
-  Widget buildScopeSection(BuildContext context, AppLocalizations loc) {
-    return LabeledDropdown<StatisticScope>.multi(
-      title: loc.scope,
-      description: loc.scope_description,
-      hintText: loc.select_a_scope,
-      multiValueListenable: selectedScopeNotifier,
-      options: [
-        for (final scope in StatisticScope.values)
-          DropdownOption(
-            value: scope,
-            label: translateScopeToString(scope, context),
+  /// Shows a bottom sheet to choose a color
+  void showScopeSheet(AppLocalizations loc) {
+    showModalBottomSheet(
+      showDragHandle: true,
+      context: context,
+      backgroundColor: CustomTheme.boxColor,
+      isScrollControlled: true,
+      builder: (BuildContext context) =>
+          SelectionSheet<StatisticScope>.multiple(
+            title: loc.scope,
+            description: loc.select_a_scope_description,
+            values: StatisticScope.values,
+            selectedValues: selectedScopes,
+            leadingBuilder: (StatisticScope scope) =>
+                Icon(getScopeIcon(scope: scope)),
+            labelBuilder: (BuildContext context, StatisticScope scope) =>
+                translateScopeToString(scope, context),
+            onValuesUpdated: (scopes) =>
+                setState(() => selectedScopes = scopes),
           ),
-      ],
-      onItemTap: onScopeTapped,
     );
   }
 
-  Widget buildTimeframeSection(BuildContext context, AppLocalizations loc) {
-    return LabeledDropdown<Timeframe>(
-      title: loc.timeframe,
-      description: loc.select_the_filtered_timeframe,
-      hintText: isLoading ? loc.loading : loc.select_a_timeframe,
-      enabled: !isLoading,
-      valueListenable: selectedTimeframeNotifier,
-      bottomPadding: selectedTimeframe == Timeframe.custom ? 8 : null,
-      options: [
-        for (final timeframe in Timeframe.values)
-          DropdownOption(
-            value: timeframe,
-            label: translateTimeframeToString(timeframe, context),
-          ),
-      ],
-      onChanged: (timeframe) {
-        if (timeframe == null) return;
-        selectedTimeframeNotifier.value = timeframe;
-        setState(() => selectedTimeframe = timeframe);
-      },
+  /// Shows a bottom sheet to choose a color
+  void showTimeframeSheet(AppLocalizations loc) {
+    showModalBottomSheet(
+      showDragHandle: true,
+      context: context,
+      backgroundColor: CustomTheme.boxColor,
+      isScrollControlled: true,
+      builder: (BuildContext context) => SelectionSheet<Timeframe>(
+        title: loc.timeframe,
+        description: loc.select_a_timeframe_description,
+        values: Timeframe.values,
+        selectedValue: selectedTimeframe,
+        labelBuilder: (BuildContext context, Timeframe tf) =>
+            translateTimeframeToString(tf, context),
+        onValueUpdated: (timeframe) =>
+            setState(() => selectedTimeframe = timeframe!),
+      ),
+    );
+  }
+
+  void showColorSheet(AppLocalizations loc) {
+    showModalBottomSheet(
+      showDragHandle: true,
+      context: context,
+      backgroundColor: CustomTheme.boxColor,
+      isScrollControlled: true,
+      builder: (BuildContext context) => SelectionSheet<AppColor>(
+        title: loc.color,
+        description: loc.select_a_color_description,
+        values: AppColor.values,
+        selectedValue: selectedColor,
+        leadingBuilder: (AppColor color) => ColoredCircle(color: color),
+        labelBuilder: (BuildContext context, AppColor color) =>
+            translateAppColorToString(color, context),
+        onValueUpdated: (color) => setState(() => selectedColor = color!),
+      ),
     );
   }
 
@@ -236,79 +367,6 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         ),
       ),
     );
-  }
-
-  Widget buildColorSection(BuildContext context, AppLocalizations loc) {
-    return LabeledDropdown<AppColor?>(
-      title: loc.color,
-      description: loc.select_a_display_color,
-      hintText: isLoading ? loc.loading : loc.select_a_timeframe,
-      valueListenable: selectedColorNotifier,
-      options: [
-        DropdownOption<AppColor?>(
-          value: null,
-          label: loc.random_color,
-          leading: buildColorCircle(),
-        ),
-        for (final color in AppColor.values)
-          DropdownOption<AppColor?>(
-            value: color,
-            label: translateAppColorToString(color, context),
-            leading: Container(
-              width: 16,
-              height: 16,
-              decoration: BoxDecoration(
-                color: getColorFromAppColor(color),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-      ],
-      onChanged: (color) {
-        selectedColorNotifier.value = color;
-        setState(() => selectedColor = color);
-      },
-    );
-  }
-
-  /// Toggles a classifier (statistic type) selection.
-  void onClassifierTapped(StatisticType value) {
-    final current = [...selectedTypeNotifier.value];
-    if (current.contains(value)) {
-      current.remove(value);
-    } else {
-      current.add(value);
-    }
-    selectedTypeNotifier.value = current;
-    setState(() {
-      selectedTypes = current;
-    });
-  }
-
-  /// Toggles a scope selection, keeping `selectedGroups` and `allPlayers`
-  /// mutually exclusive.
-  void onScopeTapped(StatisticScope value) {
-    final current = [...selectedScopeNotifier.value];
-    if (current.contains(value)) {
-      current.remove(value);
-    } else {
-      current.add(value);
-    }
-
-    // Keep selectedGroups and allPlayers mutually exclusive.
-    if (current.contains(StatisticScope.selectedGroups) &&
-        current.contains(StatisticScope.allPlayers)) {
-      if (value == StatisticScope.selectedGroups) {
-        current.remove(StatisticScope.allPlayers);
-      } else if (value == StatisticScope.allPlayers) {
-        current.remove(StatisticScope.selectedGroups);
-      }
-    }
-
-    selectedScopeNotifier.value = current;
-    setState(() {
-      selectedScopes = current;
-    });
   }
 
   Future<void> loadAllData() async {
@@ -551,38 +609,6 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           ),
         );
       },
-    );
-  }
-
-  Widget buildColorCircle() {
-    final segmentColors = [
-      AppColor.red,
-      AppColor.purple,
-      AppColor.blue,
-      AppColor.green,
-      AppColor.yellow,
-      AppColor.orange,
-    ].map((c) => getColorFromAppColor(c)).toList();
-
-    // Repeat first color at the end so the seam does not swallow red.
-    final colors = [...segmentColors, segmentColors.first];
-    final stops = List<double>.generate(
-      colors.length,
-      (i) => i / (colors.length - 1),
-    );
-
-    return Container(
-      width: 16,
-      height: 16,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: SweepGradient(
-          startAngle: -math.pi / 2,
-          endAngle: 3 * math.pi / 2,
-          colors: colors,
-          stops: stops,
-        ),
-      ),
     );
   }
 

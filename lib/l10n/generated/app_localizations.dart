@@ -1610,17 +1610,11 @@ abstract class AppLocalizations {
   /// **'Search for types'**
   String get search_for_types;
 
-  /// No description provided for @select_a_classifier.
+  /// No description provided for @select_a_type.
   ///
   /// In en, this message translates to:
-  /// **'Select a classifier'**
-  String get select_a_classifier;
-
-  /// No description provided for @select_a_display_color.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a display color.'**
-  String get select_a_display_color;
+  /// **'Select a type'**
+  String get select_a_type;
 
   /// No description provided for @select_a_scope.
   ///
@@ -1628,11 +1622,29 @@ abstract class AppLocalizations {
   /// **'Select a scope'**
   String get select_a_scope;
 
-  /// No description provided for @select_a_timeframe.
+  /// No description provided for @select_a_type_description.
   ///
   /// In en, this message translates to:
-  /// **'Select a timeframe'**
-  String get select_a_timeframe;
+  /// **'Select a chart type for your chart. A separate chart will be created for each type you select.'**
+  String get select_a_type_description;
+
+  /// No description provided for @select_a_color_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the display color for your chart.'**
+  String get select_a_color_description;
+
+  /// No description provided for @select_a_scope_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Here you can filter your data by specific groups or games.'**
+  String get select_a_scope_description;
+
+  /// No description provided for @select_a_timeframe_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Here you can narrow down your data to a specific time period.'**
+  String get select_a_timeframe_description;
 
   /// No description provided for @select_loser.
   ///

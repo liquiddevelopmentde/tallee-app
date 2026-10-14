@@ -877,16 +877,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String get search_for_types => 'Nach Typen suchen';
 
   @override
-  String get select_a_classifier => 'Klassifikator auswählen';
+  String get select_a_type => 'Wähle einen Typ';
 
   @override
-  String get select_a_display_color => 'Wähle eine Anzeigefarbe aus.';
+  String get select_a_scope => 'Wähle einen Bereich';
 
   @override
-  String get select_a_scope => 'Bereich auswählen';
+  String get select_a_type_description =>
+      'Wähle einen oder mehrere Typen aus. Für jeden Typ wird eine eigene Statistik erstellt.';
 
   @override
-  String get select_a_timeframe => 'Zeitraum auswählen';
+  String get select_a_color_description =>
+      'Wähle die Anzeigefarbe für deine Statistik aus.';
+
+  @override
+  String get select_a_scope_description =>
+      'Hier kannst du deine Daten auf bestimmte Gruppen oder Spielvorlagen eingrenzen.';
+
+  @override
+  String get select_a_timeframe_description =>
+      'Hier kannst du deine Daten auf einen bestimmten Zeitraum eingrenzen.';
 
   @override
   String get select_loser => 'Verlierer:in wählen';

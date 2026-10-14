@@ -869,16 +869,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_for_types => 'Search for types';
 
   @override
-  String get select_a_classifier => 'Select a classifier';
-
-  @override
-  String get select_a_display_color => 'Select a display color.';
+  String get select_a_type => 'Select a type';
 
   @override
   String get select_a_scope => 'Select a scope';
 
   @override
-  String get select_a_timeframe => 'Select a timeframe';
+  String get select_a_type_description =>
+      'Select a chart type for your chart. A separate chart will be created for each type you select.';
+
+  @override
+  String get select_a_color_description =>
+      'Select the display color for your chart.';
+
+  @override
+  String get select_a_scope_description =>
+      'Here you can filter your data by specific groups or games.';
+
+  @override
+  String get select_a_timeframe_description =>
+      'Here you can narrow down your data to a specific time period.';
 
   @override
   String get select_loser => 'Select Loser';
