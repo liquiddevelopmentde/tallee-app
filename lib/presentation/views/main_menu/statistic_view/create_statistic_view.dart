@@ -50,12 +50,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   /* User selections */
   List<StatisticType> selectedTypes = [];
-
-  // TOOD: temp
-  StatisticType? selectedType;
   List<StatisticScope> selectedScopes = [];
   List<Game> selectedGames = [];
-  List<Player> selectedPlayers = [];
   List<Group> selectedGroups = [];
   Timeframe selectedTimeframe = Timeframe.allTime;
   DateTime? selectedStartDate;
@@ -91,7 +87,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
             children: [
               Expanded(
                 child: Column(
-                  spacing: 15,
+                  spacing: 10,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Type selection
