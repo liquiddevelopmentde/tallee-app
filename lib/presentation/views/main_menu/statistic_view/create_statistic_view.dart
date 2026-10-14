@@ -85,6 +85,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       child: Scaffold(
         appBar: AppBar(title: Text(loc.create_statistic(1))),
         body: SafeArea(
+          maintainBottomViewPadding: true,
+          minimum: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
             children: [
               Expanded(
@@ -194,7 +196,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                           spacing: 10,
                           children: [
                             if (selectedColor == null) ...[
-                              ColoredCircle(hasRandomColors: true),
+                              const ColoredCircle(hasRandomColors: true),
                               Text(loc.random_color),
                             ] else ...[
                               ColoredCircle(color: selectedColor!),
@@ -214,10 +216,14 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 20,
+                ),
                 child: BottomAnimatedButton(
                   buttonConstraints: const BoxConstraints(minWidth: 390),
                   buttonText: submitButtonText,
+                  sizeRelativeToWidth: 0.95,
                   onPressed: enableSubmitButton
                       ? () => submitStatistic()
                       : null,
@@ -317,53 +323,47 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   }
 
   Widget buildDateRangeField(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: isLoading
-            ? null
-            : () async {
-                final results = await showCustomTimeframePicker(
-                  initialStartDate: selectedStartDate,
-                  initialEndDate: selectedEndDate,
-                );
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: isLoading
+          ? null
+          : () async {
+              final results = await showCustomTimeframePicker(
+                initialStartDate: selectedStartDate,
+                initialEndDate: selectedEndDate,
+              );
 
-                if (results != null &&
-                    results.length >= 2 &&
-                    results[0] != null &&
-                    results[1] != null) {
-                  setState(() {
-                    selectedStartDate = results[0];
-                    selectedEndDate = results[1];
-                  });
-                }
-              },
-        child: Container(
-          height: 54,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: CustomTheme.onBoxColor,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.calendar_month, color: CustomTheme.textColor),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  formatDateRange(context, selectedStartDate, selectedEndDate),
-                  style: TextStyle(
-                    color: selectedStartDate != null && selectedEndDate != null
-                        ? CustomTheme.textColor
-                        : CustomTheme.hintColor,
-                    fontSize: 14,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+              if (results != null &&
+                  results.length >= 2 &&
+                  results[0] != null &&
+                  results[1] != null) {
+                setState(() {
+                  selectedStartDate = results[0];
+                  selectedEndDate = results[1];
+                });
+              }
+            },
+      child: Container(
+        height: 54,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: CustomTheme.standardBoxDecoration,
+        child: Row(
+          children: [
+            const Icon(Icons.calendar_month, color: CustomTheme.textColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                formatDateRange(context, selectedStartDate, selectedEndDate),
+                style: TextStyle(
+                  color: selectedStartDate != null && selectedEndDate != null
+                      ? CustomTheme.textColor
+                      : CustomTheme.hintColor,
+                  fontSize: 14,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
