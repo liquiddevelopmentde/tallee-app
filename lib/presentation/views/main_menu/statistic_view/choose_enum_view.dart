@@ -62,12 +62,12 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
           separatorBuilder: (BuildContext context, int index) =>
               const SizedBox(height: 10),
           itemBuilder: (BuildContext context, int index) {
-            bool isHighlighted = selectedValues.any(
+            bool isSelected = selectedValues.any(
               (item) => item == widget.enumValue[index],
             );
 
             return GestureDetector(
-              child: AnimatedContainer(
+              child: Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 12,
                   horizontal: 12,
@@ -80,7 +80,6 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                     width: 2,
                   ),
                 ),
-                duration: const Duration(milliseconds: 150),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -100,13 +99,11 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                       ],
                     ),
                     AnimatedOpacity(
-                      opacity: isHighlighted ? 1.0 : 0.0,
+                      opacity: isSelected ? 1.0 : 0.0,
                       duration: const Duration(milliseconds: 150),
-                      child: Icon(
+                      child: const Icon(
                         Icons.check,
-                        color: isHighlighted
-                            ? CustomTheme.textColor
-                            : Colors.transparent,
+                        color: CustomTheme.textColor,
                       ),
                     ),
                   ],
