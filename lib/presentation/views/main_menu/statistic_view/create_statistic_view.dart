@@ -237,11 +237,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   /// Shows a bottom sheet to choose a color
   void showTypeSheet(AppLocalizations loc) {
-    showModalBottomSheet(
-      showDragHandle: true,
+    SelectionSheet.show(
       context: context,
-      backgroundColor: CustomTheme.boxColor,
-      isScrollControlled: true,
       builder: (BuildContext context) => SelectionSheet<StatisticType>.multiple(
         title: loc.type,
         description: loc.select_a_type_description,
@@ -258,11 +255,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   /// Shows a bottom sheet to choose a color
   void showScopeSheet(AppLocalizations loc) {
-    showModalBottomSheet(
-      showDragHandle: true,
+    SelectionSheet.show(
       context: context,
-      backgroundColor: CustomTheme.boxColor,
-      isScrollControlled: true,
       builder: (BuildContext context) =>
           SelectionSheet<StatisticScope>.multiple(
             title: loc.scope,
@@ -281,11 +275,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   /// Shows a bottom sheet to choose a color
   void showTimeframeSheet(AppLocalizations loc) {
-    showModalBottomSheet(
-      showDragHandle: true,
+    SelectionSheet.show(
       context: context,
-      backgroundColor: CustomTheme.boxColor,
-      isScrollControlled: true,
       builder: (BuildContext context) => SelectionSheet<Timeframe>(
         title: loc.timeframe,
         description: loc.select_a_timeframe_description,
@@ -300,11 +291,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   }
 
   void showColorSheet(AppLocalizations loc) {
-    showModalBottomSheet(
-      showDragHandle: true,
+    SelectionSheet.show(
       context: context,
-      backgroundColor: CustomTheme.boxColor,
-      isScrollControlled: true,
       builder: (BuildContext context) => SelectionSheet<AppColor>(
         title: loc.color,
         description: loc.select_a_color_description,

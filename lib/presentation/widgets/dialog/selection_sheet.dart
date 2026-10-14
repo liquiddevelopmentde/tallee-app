@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/constants/value_constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 
 class SelectionSheet<T> extends StatefulWidget {
@@ -61,6 +62,25 @@ class SelectionSheet<T> extends StatefulWidget {
 
   // To decide between single and multi selection
   final bool isMultiSelection;
+
+  static void show({
+    required BuildContext context,
+    required Widget Function(BuildContext) builder,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      builder: builder,
+      sheetAnimationStyle: const AnimationStyle(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeInOutCubicEmphasized,
+        reverseCurve: Curves.easeInOut,
+        reverseDuration: Duration(milliseconds: 300),
+      ),
+      showDragHandle: true,
+      backgroundColor: CustomTheme.boxColor,
+      isScrollControlled: true,
+    );
+  }
 
   @override
   State<SelectionSheet<T>> createState() => _SelectionSheetState<T>();
@@ -215,7 +235,14 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
     widget.onValuesUpdated?.call(selectedValues);
   }
 
-  void valueChangeFunction(T value) {
+  Future<void> valueChangeFunction(T value) async {
     widget.isMultiSelection ? onValuesChanged(value) : onValueChanged(value);
+    if (!widget.isMultiSelection) {
+      await Future.delayed(MINIMUM_SKELETON_DURATION).then((_) {
+        if (!mounted) return;
+        Navigator.of(context)
+            .pop(selectedValues.isEmpty ? null : selectedValues.first);
+      });
+    }
   }
 }

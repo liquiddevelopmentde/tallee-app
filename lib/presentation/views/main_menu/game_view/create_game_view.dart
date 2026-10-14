@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -214,7 +213,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                           ],
                         ),
                       ),
-                      onPressed: showRulesetSheet,
+                      onPressed: () => showRulesetSheet(loc),
                     ),
                   ),
 
@@ -235,7 +234,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                       ],
                     ),
                   ),
-                  onPressed: showColorSheet,
+                  onPressed: () => showColorSheet(loc),
                 ),
 
                 // Description input field
@@ -365,14 +364,9 @@ class _CreateGameViewState extends State<CreateGameView> {
   }
 
   /// Shows a bottom sheet to choose a ruleset
-  void showRulesetSheet() {
-    final loc = AppLocalizations.of(context);
-
-    showModalBottomSheet(
+  void showRulesetSheet(AppLocalizations loc) {
+    SelectionSheet.show(
       context: context,
-      backgroundColor: CustomTheme.boxColor,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (BuildContext context) => SelectionSheet<Ruleset>(
         title: loc.ruleset,
         description: loc.choose_ruleset_description,
@@ -387,14 +381,9 @@ class _CreateGameViewState extends State<CreateGameView> {
   }
 
   /// Shows a bottom sheet to choose a color
-  void showColorSheet() {
-    final loc = AppLocalizations.of(context);
-
-    showModalBottomSheet(
-      showDragHandle: true,
+  void showColorSheet(AppLocalizations loc) {
+    SelectionSheet.show(
       context: context,
-      backgroundColor: CustomTheme.boxColor,
-      isScrollControlled: true,
       builder: (BuildContext context) => SelectionSheet<AppColor>(
         title: loc.color,
         description: loc.choose_color_description,
