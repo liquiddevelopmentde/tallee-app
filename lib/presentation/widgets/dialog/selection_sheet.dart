@@ -177,7 +177,7 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                                   if (states.contains(WidgetState.selected)) {
                                     return CustomTheme.textColor;
                                   }
-                                  return CustomTheme.hintColor;
+                                  return Colors.transparent;
                                 },
                               ),
                             ),
