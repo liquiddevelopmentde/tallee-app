@@ -109,7 +109,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                               const SizedBox(height: 5),
                               Text(
                                 loc.no_matching_local_group_found,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: CustomTheme.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -119,7 +119,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                               ),
                               Text(
                                 loc.tap_to_choose_existing,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: CustomTheme.hintColor,
                                   fontSize: 14,
                                 ),
@@ -140,7 +140,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
             if (associatedGroup != null)
               Text(
                 loc.tap_to_choose_different_group,
-                style: const TextStyle(
+                style: TextStyle(
                   color: CustomTheme.hintColor,
                   fontSize: 14,
                   overflow: TextOverflow.visible,

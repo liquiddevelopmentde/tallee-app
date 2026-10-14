@@ -153,7 +153,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 Center(
                   child: buildUnitNameWidget(
                     player,
-                    mainStyle: const TextStyle(
+                    mainStyle: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: CustomTheme.textColor,
@@ -167,7 +167,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       player.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         color: CustomTheme.hintColor,
                       ),
@@ -189,10 +189,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Created at date
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(player.createdAt)}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: CustomTheme.textColor,
-                  ),
+                  style: TextStyle(fontSize: 12, color: CustomTheme.textColor),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
@@ -236,7 +233,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             )
                           : Text(
                               loc.not_part_of_any_group,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
                                 color: CustomTheme.textColor,
                               ),
@@ -284,7 +281,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                           )
                         : Text(
                             loc.no_matches_played_yet,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               color: CustomTheme.textColor,
                             ),

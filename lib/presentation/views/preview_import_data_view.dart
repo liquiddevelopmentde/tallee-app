@@ -74,7 +74,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                     padding: const EdgeInsets.only(bottom: 16, left: 4),
                     child: Text(
                       '${loc.import_preview_description}:',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         color: CustomTheme.hintColor,
                       ),

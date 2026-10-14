@@ -21,10 +21,12 @@ import 'package:tallee/presentation/views/main_menu/settings_view/privacy_policy
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/showcase_provider.dart';
+import 'package:tallee/state/theme_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -76,6 +78,59 @@ class _SettingsViewState extends State<SettingsView> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ),
+
+                  // Theme selection tile
+                  SettingsListTile(
+                    title: loc.theme,
+                    icon: Icons.brightness_6_rounded,
+                    suffixWidget: PullDownMenuButton(
+                      menuWidth: 190,
+                      icon: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: CustomTheme.onBoxColor,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              _themeModeLabel(
+                                context,
+                                context.watch<ThemeProvider>().themeMode,
+                              ),
+                              style: TextStyle(
+                                color: CustomTheme.textColor,
+                                fontSize: 14,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_drop_down,
+                              size: 20,
+                              color: CustomTheme.textColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      items: [
+                        _themeMenuTile(
+                          context,
+                          ThemeMode.system,
+                          loc.theme_system,
+                        ),
+                        _themeMenuTile(context, ThemeMode.dark, loc.theme_dark),
+                        _themeMenuTile(
+                          context,
+                          ThemeMode.light,
+                          loc.theme_light,
+                        ),
+                      ],
+                    ),
+                    onPressed: null,
                   ),
 
                   // Send feedback tile
@@ -283,6 +338,29 @@ class _SettingsViewState extends State<SettingsView> {
         },
       ),
     );
+  }
+
+  PullDownMenuTile _themeMenuTile(
+    BuildContext context,
+    ThemeMode mode,
+    String label,
+  ) {
+    return PullDownMenuTile(
+      icon: context.read<ThemeProvider>().themeMode == mode
+          ? Icons.check
+          : Icons.circle_outlined,
+      label: label,
+      onTap: () => context.read<ThemeProvider>().setThemeMode(mode),
+    );
+  }
+
+  String _themeModeLabel(BuildContext context, ThemeMode mode) {
+    final loc = AppLocalizations.of(context);
+    return switch (mode) {
+      ThemeMode.system => loc.theme_system,
+      ThemeMode.dark => loc.theme_dark,
+      ThemeMode.light => loc.theme_light,
+    };
   }
 
   /// Displays a snackbar based on the import result.

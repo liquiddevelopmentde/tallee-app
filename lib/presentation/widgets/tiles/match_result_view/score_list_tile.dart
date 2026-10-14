@@ -33,7 +33,7 @@ class ScoreListTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      decoration: const BoxDecoration(color: CustomTheme.boxColor),
+      decoration: BoxDecoration(color: CustomTheme.boxColor),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,7 +56,7 @@ class ScoreListTile extends StatelessWidget {
                 }),
               ],
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: CustomTheme.textColor,

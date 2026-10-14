@@ -67,7 +67,7 @@ class NewsCard extends StatelessWidget {
             color: CustomTheme.textColor,
             overflow: TextOverflow.visible,
           ),
-          strong: const TextStyle(
+          strong: TextStyle(
             color: CustomTheme.textColor,
             fontWeight: FontWeight.bold,
             overflow: TextOverflow.visible,

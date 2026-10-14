@@ -61,7 +61,7 @@ class _DataManagementViewState extends State<DataManagementView> {
                         Text(
                           textAlign: TextAlign.start,
                           loc.data_transfer_description,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
                             color: CustomTheme.hintColor,
                             overflow: TextOverflow.visible,
@@ -154,7 +154,7 @@ class _DataManagementViewState extends State<DataManagementView> {
                   isExport
                       ? loc.update_app_export_desc
                       : loc.update_app_import_desc,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: CustomTheme.textColor,
                     overflow: TextOverflow.visible,
                   ),

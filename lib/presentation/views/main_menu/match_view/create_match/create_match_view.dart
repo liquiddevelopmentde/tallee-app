@@ -430,7 +430,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         return Theme(
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
-            colorScheme: const ColorScheme.dark(
+            colorScheme: ColorScheme.dark(
               primary: CustomTheme.primaryColor,
               onPrimary: CustomTheme.textColor,
               surface: CustomTheme.boxColor,
@@ -442,7 +442,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: CustomTheme.boxBorderColor),
+              side: BorderSide(color: CustomTheme.boxBorderColor),
             ),
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -452,7 +452,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 showNavigationArrow: true,
                 initialSelectedDate: selectedCreationDate ?? clock.now(),
                 maxDate: clock.now(),
-                headerStyle: const DateRangePickerHeaderStyle(
+                headerStyle: DateRangePickerHeaderStyle(
                   textAlign: TextAlign.center,
                   backgroundColor: Colors.transparent,
                   textStyle: TextStyle(
@@ -461,12 +461,12 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                monthCellStyle: const DateRangePickerMonthCellStyle(
+                monthCellStyle: DateRangePickerMonthCellStyle(
                   textStyle: TextStyle(
                     color: CustomTheme.textColor,
                     fontSize: 16,
                   ),
-                  todayTextStyle: TextStyle(
+                  todayTextStyle: const TextStyle(
                     color: CustomTheme.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -480,18 +480,18 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     fontSize: 16,
                   ),
                 ),
-                yearCellStyle: const DateRangePickerYearCellStyle(
+                yearCellStyle: DateRangePickerYearCellStyle(
                   textStyle: TextStyle(
                     color: CustomTheme.textColor,
                     fontSize: 16,
                   ),
-                  todayTextStyle: TextStyle(
+                  todayTextStyle: const TextStyle(
                     color: CustomTheme.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
-                monthViewSettings: const DateRangePickerMonthViewSettings(
+                monthViewSettings: DateRangePickerMonthViewSettings(
                   viewHeaderStyle: DateRangePickerViewHeaderStyle(
                     textStyle: TextStyle(
                       color: CustomTheme.textColor,
@@ -503,7 +503,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 ),
                 selectionMode: DateRangePickerSelectionMode.single,
                 selectionColor: CustomTheme.primaryColor,
-                selectionTextStyle: const TextStyle(
+                selectionTextStyle: TextStyle(
                   color: CustomTheme.textColor,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

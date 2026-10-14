@@ -96,7 +96,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                         isErrorReport
                             ? loc.error_report_info_text
                             : loc.feedback_info_text,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           color: CustomTheme.textColor,
                           fontWeight: FontWeight.w500,

@@ -179,7 +179,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
         ),
         child: Text(
           ' #${index + 1} ',
-          style: const TextStyle(
+          style: TextStyle(
             color: CustomTheme.textColor,
             fontWeight: FontWeight.bold,
             fontSize: 16,

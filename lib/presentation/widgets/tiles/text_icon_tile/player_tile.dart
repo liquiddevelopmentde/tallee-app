@@ -28,7 +28,7 @@ class PlayerTile extends StatelessWidget {
       content: buildUnitNameWidget(
         player,
         highlighted: [player.deleted],
-        countStyle: const TextStyle(color: CustomTheme.hintColor),
+        countStyle: TextStyle(color: CustomTheme.hintColor),
       ),
     );
   }

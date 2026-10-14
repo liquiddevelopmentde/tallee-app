@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -183,6 +184,16 @@ void main() {
       SharedPreferencesService.setMatchFilter(MatchFilter.active);
       matchFilter = SharedPreferencesService.getMatchFilter();
       expect(matchFilter, MatchFilter.active);
+    });
+
+    test('Theme mode defaults to system and can be persisted', () {
+      expect(SharedPreferencesService.getThemeMode(), ThemeMode.system);
+
+      SharedPreferencesService.setThemeMode(ThemeMode.light);
+      expect(SharedPreferencesService.getThemeMode(), ThemeMode.light);
+
+      SharedPreferencesService.setThemeMode(ThemeMode.dark);
+      expect(SharedPreferencesService.getThemeMode(), ThemeMode.dark);
     });
   });
 }

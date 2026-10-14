@@ -61,10 +61,10 @@ class TeamCard extends StatelessWidget {
               child: buildUnitNameWidget(
                 team,
                 isTeamMatch: true,
-                mainStyle: const TextStyle(
+                mainStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: CustomTheme.textColor,
                 ),
               ),
             ),
@@ -78,24 +78,24 @@ class TeamCard extends StatelessWidget {
                   Container(
                     width: 1,
                     height: 14,
-                    color: Colors.white.withValues(alpha: 0.35),
+                    color: CustomTheme.textColor.withValues(alpha: 0.35),
                   ),
 
                   // Teammember count
                   Row(
                     spacing: 5,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.people_alt_rounded,
                         size: 14,
-                        color: Colors.white,
+                        color: CustomTheme.textColor,
                       ),
                       Text(
                         '${team.members.length}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: CustomTheme.textColor,
                         ),
                       ),
                     ],
@@ -145,7 +145,7 @@ class TeamCard extends StatelessWidget {
                       buildUnitNameWidget(
                         team,
                         isTeamMatch: true,
-                        mainStyle: const TextStyle(
+                        mainStyle: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: CustomTheme.textColor,

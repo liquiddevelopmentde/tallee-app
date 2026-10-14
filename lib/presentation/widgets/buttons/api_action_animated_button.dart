@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 
 class ApiActionAnimatedButton extends StatefulWidget {
@@ -91,7 +92,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
       child: IgnorePointer(
         ignoring: isDisabled,
         child: Opacity(
-          opacity: isDisabled ? 0.4 : 1.0,
+          opacity: 1.0,
           child: ScaleTransition(
             scale: isDisabled ? disabledScaleAnimation : scaleAnimation,
             child: GestureDetector(
@@ -234,12 +235,23 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
 
   TextStyle _getTextStyling() {
     late Color textColor;
+    if (widget.onPressed == null) {
+      return TextStyle(
+        color: CustomTheme.hintColor,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      );
+    }
     if (widget.buttonType == ButtonType.primary) {
-      textColor = widget.isDestructive ? Colors.white : Colors.black;
+      textColor = widget.isDestructive
+          ? Colors.white
+          : CustomTheme.isDarkMode
+          ? Colors.black
+          : Colors.white;
     } else if (widget.buttonType == ButtonType.secondary) {
-      textColor = widget.isDestructive ? Colors.red : Colors.white;
+      textColor = widget.isDestructive ? Colors.red : CustomTheme.textColor;
     } else {
-      textColor = widget.isDestructive ? Colors.red : Colors.white;
+      textColor = widget.isDestructive ? Colors.red : CustomTheme.textColor;
     }
 
     return TextStyle(
@@ -253,14 +265,24 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     if (widget.buttonType == ButtonType.primary) {
       return BoxDecoration(
         color: buttonState == ApiButtonState.loading
-            ? Colors.grey[200]
-            : (widget.isDestructive ? Colors.red : Colors.white),
+            ? CustomTheme.onBoxColor
+            : widget.onPressed == null
+            ? CustomTheme.onBoxColor
+            : widget.isDestructive
+            ? Colors.red
+            : CustomTheme.isDarkMode
+            ? Colors.white
+            : Colors.black,
         borderRadius: BorderRadius.circular(12),
       );
     } else if (widget.buttonType == ButtonType.secondary) {
       return BoxDecoration(
         border: Border.all(
-          color: widget.isDestructive ? Colors.red : Colors.white,
+          color: widget.onPressed == null
+              ? CustomTheme.hintColor
+              : widget.isDestructive
+              ? Colors.red
+              : CustomTheme.textColor,
           width: 2,
         ),
         borderRadius: BorderRadius.circular(12),

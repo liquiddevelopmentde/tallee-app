@@ -65,7 +65,7 @@ class MatchFileTile extends StatelessWidget {
                             fileName ??
                                 '${match.name.toSafeFilename()}.$MATCH_FILE_EXTENSION',
                             maxLines: 1,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: CustomTheme.textColor,
@@ -78,7 +78,7 @@ class MatchFileTile extends StatelessWidget {
                     // Filesize
                     Text(
                       '${fileSize.toStringAsFixed(1)} KB',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         color: CustomTheme.textColor,
                       ),
@@ -94,9 +94,7 @@ class MatchFileTile extends StatelessWidget {
                         .map(
                           (item) => Text(
                             item,
-                            style: const TextStyle(
-                              color: CustomTheme.hintColor,
-                            ),
+                            style: TextStyle(color: CustomTheme.hintColor),
                           ),
                         )
                         .toList(),

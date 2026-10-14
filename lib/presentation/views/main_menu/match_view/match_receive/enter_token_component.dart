@@ -56,7 +56,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
     final defaultPinTheme = PinTheme(
       height: 60,
       width: 45,
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 35,
         color: CustomTheme.textColor,
         fontWeight: FontWeight.w500,
@@ -104,7 +104,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(
                 loc.input_token_instruction,
-                style: const TextStyle(
+                style: TextStyle(
                   color: CustomTheme.textColor,
                   fontSize: 16,
                   overflow: TextOverflow.visible,
@@ -176,7 +176,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Text(
             loc.share_token_format_info,
-            style: const TextStyle(
+            style: TextStyle(
               color: CustomTheme.textColor,
               fontSize: 14,
               overflow: TextOverflow.visible,

@@ -119,7 +119,7 @@ class AnimatedContent extends StatelessWidget {
                       textAlign: (actionIcon != null || actionLabel != null)
                           ? TextAlign.left
                           : TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: CustomTheme.textColor,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,

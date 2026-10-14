@@ -48,7 +48,7 @@ class EmptyViewMessage extends StatelessWidget {
                 Text(
                   message,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: CustomTheme.hintColor,
                     overflow: TextOverflow.visible,

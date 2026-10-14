@@ -41,11 +41,21 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
   TextStyle get textStyle {
     late Color textColor;
 
+    if (widget.onPressed == null) {
+      return TextStyle(
+        color: CustomTheme.hintColor,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      );
+    }
+
     switch (widget.buttonType) {
       case ButtonType.primary:
         textColor = widget.isDestructive || widget.isEmphasized
             ? Colors.white
-            : Colors.black;
+            : CustomTheme.isDarkMode
+            ? Colors.black
+            : Colors.white;
         break;
       default:
         if (widget.isDestructive) {
@@ -53,7 +63,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
         } else if (widget.isEmphasized) {
           textColor = CustomTheme.primaryColor;
         } else {
-          textColor = Colors.white;
+          textColor = CustomTheme.textColor;
         }
         break;
     }
@@ -69,22 +79,28 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
     if (widget.buttonType == ButtonType.primary) {
       // Primary
       return BoxDecoration(
-        color: widget.isDestructive
+        color: widget.onPressed == null
+            ? CustomTheme.onBoxColor
+            : widget.isDestructive
             ? Colors.red
             : widget.isEmphasized
             ? CustomTheme.primaryColor
-            : Colors.white,
+            : CustomTheme.isDarkMode
+            ? Colors.white
+            : Colors.black,
         borderRadius: BorderRadius.circular(12),
       );
     } else if (widget.buttonType == ButtonType.secondary) {
       // Secondary
       return BoxDecoration(
         border: BoxBorder.all(
-          color: widget.isDestructive
+          color: widget.onPressed == null
+              ? CustomTheme.hintColor
+              : widget.isDestructive
               ? Colors.red
               : widget.isEmphasized
               ? CustomTheme.primaryColor
-              : Colors.white,
+              : CustomTheme.textColor,
           width: 2,
           strokeAlign: BorderSide.strokeAlignInside,
         ),
@@ -102,7 +118,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
     return IgnorePointer(
       ignoring: isDisabled,
       child: Opacity(
-        opacity: isDisabled ? 0.4 : 1.0,
+        opacity: 1.0,
         child: GestureDetector(
           onTapDown: (_) => setState(() => _isPressed = true),
           onTapUp: (_) => setState(() => _isPressed = false),

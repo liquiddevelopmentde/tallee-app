@@ -15,7 +15,7 @@ class PlayerProfileListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = CustomTheme.onBoxColor;
+    final backgroundColor = CustomTheme.onBoxColor;
     final fontColor = backgroundColor.computeLuminance() > 0.5
         ? Colors.black
         : Colors.white;
@@ -28,9 +28,9 @@ class PlayerProfileListTile extends StatelessWidget {
           // Title
           Flexible(
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8),
                   bottomLeft: Radius.circular(8),
                 ),

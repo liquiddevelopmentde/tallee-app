@@ -43,7 +43,7 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(
                 loc.file_share_instruction,
-                style: const TextStyle(
+                style: TextStyle(
                   color: CustomTheme.textColor,
                   fontSize: 16,
                   overflow: TextOverflow.visible,

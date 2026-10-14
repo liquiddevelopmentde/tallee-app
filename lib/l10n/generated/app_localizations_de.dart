@@ -920,6 +920,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings => 'Einstellungen';
 
   @override
+  String get theme => 'Darstellung';
+
+  @override
+  String get theme_system => 'System';
+
+  @override
+  String get theme_dark => 'Dunkel';
+
+  @override
+  String get theme_light => 'Hell';
+
+  @override
   String get share => 'Teilen';
 
   @override

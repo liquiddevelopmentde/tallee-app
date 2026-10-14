@@ -51,7 +51,7 @@ class TopCenteredMessage extends StatelessWidget {
               width: 250,
               child: Text(
                 message!,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   overflow: TextOverflow.visible,
                   color: CustomTheme.hintColor,

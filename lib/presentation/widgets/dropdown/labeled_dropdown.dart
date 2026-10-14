@@ -102,7 +102,7 @@ class LabeledDropdown<T> extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.start,
-                style: const TextStyle(
+                style: TextStyle(
                   color: CustomTheme.textColor,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -114,10 +114,7 @@ class LabeledDropdown<T> extends StatelessWidget {
                 textAlign: TextAlign.start,
                 softWrap: true,
                 maxLines: 2,
-                style: const TextStyle(
-                  color: CustomTheme.textColor,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: CustomTheme.textColor, fontSize: 12),
               ),
             ],
           ),
@@ -253,17 +250,17 @@ class LabeledDropdown<T> extends StatelessWidget {
     );
   }
 
-  TextStyle get headerStyle => const TextStyle(
+  TextStyle get headerStyle => TextStyle(
     color: CustomTheme.textColor,
     fontSize: 14,
     fontWeight: FontWeight.bold,
   );
 
   TextStyle get itemStyle =>
-      const TextStyle(color: CustomTheme.textColor, fontSize: 14);
+      TextStyle(color: CustomTheme.textColor, fontSize: 14);
 
   TextStyle get hintStyle =>
-      const TextStyle(color: CustomTheme.hintColor, fontSize: 14);
+      TextStyle(color: CustomTheme.hintColor, fontSize: 14);
 
   ButtonStyleData get buttonStyle => ButtonStyleData(
     height: 54,
@@ -273,7 +270,7 @@ class LabeledDropdown<T> extends StatelessWidget {
     ),
   );
 
-  IconStyleData get iconStyle => const IconStyleData(
+  IconStyleData get iconStyle => IconStyleData(
     iconEnabledColor: CustomTheme.textColor,
     iconDisabledColor: CustomTheme.hintColor,
   );

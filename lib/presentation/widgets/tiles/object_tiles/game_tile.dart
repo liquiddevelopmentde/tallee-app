@@ -119,7 +119,7 @@ class GameTile extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               softWrap: false,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
                                 color: CustomTheme.hintColor,
                               ),
@@ -165,7 +165,7 @@ class GameTile extends StatelessWidget {
 
             // Chevron
             if (showChevron)
-              const Icon(Icons.chevron_right, color: CustomTheme.hintColor),
+              Icon(Icons.chevron_right, color: CustomTheme.hintColor),
           ],
         ),
       ),

@@ -217,7 +217,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           ),
           child: Row(
             children: [
-              const Icon(Icons.calendar_month, color: CustomTheme.textColor),
+              Icon(Icons.calendar_month, color: CustomTheme.textColor),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -450,7 +450,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         return Theme(
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
-            colorScheme: const ColorScheme.dark(
+            colorScheme: ColorScheme.dark(
               primary: CustomTheme.primaryColor,
               onPrimary: CustomTheme.textColor,
               surface: CustomTheme.boxColor,
@@ -462,7 +462,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: CustomTheme.boxBorderColor),
+              side: BorderSide(color: CustomTheme.boxBorderColor),
             ),
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -474,7 +474,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                     initialStartDate != null && initialEndDate != null
                     ? PickerDateRange(initialStartDate, initialEndDate)
                     : null,
-                headerStyle: const DateRangePickerHeaderStyle(
+                headerStyle: DateRangePickerHeaderStyle(
                   textAlign: TextAlign.center,
                   backgroundColor: Colors.transparent,
                   textStyle: TextStyle(
@@ -483,12 +483,12 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                monthCellStyle: const DateRangePickerMonthCellStyle(
+                monthCellStyle: DateRangePickerMonthCellStyle(
                   textStyle: TextStyle(
                     color: CustomTheme.textColor,
                     fontSize: 16,
                   ),
-                  todayTextStyle: TextStyle(
+                  todayTextStyle: const TextStyle(
                     color: CustomTheme.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -502,18 +502,18 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                     fontSize: 16,
                   ),
                 ),
-                yearCellStyle: const DateRangePickerYearCellStyle(
+                yearCellStyle: DateRangePickerYearCellStyle(
                   textStyle: TextStyle(
                     color: CustomTheme.textColor,
                     fontSize: 16,
                   ),
-                  todayTextStyle: TextStyle(
+                  todayTextStyle: const TextStyle(
                     color: CustomTheme.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
-                monthViewSettings: const DateRangePickerMonthViewSettings(
+                monthViewSettings: DateRangePickerMonthViewSettings(
                   viewHeaderStyle: DateRangePickerViewHeaderStyle(
                     textStyle: TextStyle(
                       color: CustomTheme.textColor,
@@ -530,12 +530,12 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                 rangeSelectionColor: CustomTheme.primaryColor.withValues(
                   alpha: 0.15,
                 ),
-                selectionTextStyle: const TextStyle(
+                selectionTextStyle: TextStyle(
                   color: CustomTheme.textColor,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
-                rangeTextStyle: const TextStyle(
+                rangeTextStyle: TextStyle(
                   color: CustomTheme.textColor,
                   fontSize: 16,
                 ),

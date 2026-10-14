@@ -421,7 +421,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               children: [
                 Text(
                   loc.update_available_content,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: CustomTheme.textColor,
                     overflow: TextOverflow.visible,
                   ),
@@ -429,7 +429,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 const SizedBox(height: 12),
                 Text(
                   loc.update_features_fixes_desc,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: CustomTheme.textColor,
                     overflow: TextOverflow.visible,
                   ),

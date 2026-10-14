@@ -100,7 +100,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                               const SizedBox(height: 5),
                               Text(
                                 loc.no_matching_local_game_found,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: CustomTheme.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -111,7 +111,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                               ),
                               Text(
                                 loc.tap_to_choose_existing,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: CustomTheme.hintColor,
                                   fontSize: 14,
                                   overflow: TextOverflow.visible,
@@ -135,7 +135,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             if (associatedGame != null)
               Text(
                 loc.tap_to_choose_different_game,
-                style: const TextStyle(
+                style: TextStyle(
                   color: CustomTheme.hintColor,
                   fontSize: 14,
                   overflow: TextOverflow.visible,

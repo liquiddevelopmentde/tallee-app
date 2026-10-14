@@ -38,6 +38,8 @@ extension ThemeDataToFlutter on ThemeData {
 class CustomTheme {
   CustomTheme._(); // Private constructor to prevent instantiation
 
+  static bool isDarkMode = true;
+
   // ==================== Colors ====================
 
   /// Primary color of the app theme
@@ -47,31 +49,45 @@ class CustomTheme {
   static const Color secondaryColor = Color(0xFFf2a981);
 
   /// Background color of the app theme
-  static const Color backgroundColor = Color(0xFF0B0B0B);
+  static Color backgroundColor = const Color(0xFF0B0B0B);
 
   /// Default color for boxes and containers
-  static const Color boxColor = Color(0xFF101010);
+  static Color boxColor = const Color(0xFF101010);
 
   /// Default border color for boxes and containers
-  static const Color boxBorderColor = Color(0xFF272727);
+  static Color boxBorderColor = const Color(0xFF272727);
 
   /// Color for boxes and containers displayed on boxes
-  static const Color onBoxColor = Color(0xFF181818);
+  static Color onBoxColor = const Color(0xFF181818);
 
   /// Text color used throughout the app
-  static const Color textColor = Color(0xFFFFFFFF);
+  static Color textColor = const Color(0xFFFFFFFF);
 
   /// Text color used throughout the app
-  static const Color hintColor = Color(0xFF888888);
+  static Color hintColor = const Color(0xFF888888);
 
   /// Background color for the navigation bar
-  static const Color navBarBackgroundColor = Color(0xFF131313);
+  static Color navBarBackgroundColor = const Color(0xFF131313);
 
   /// Selected color for the [NavbarItem]
   static Color navBarItemSelectedColor = primaryColor.withGreen(100);
 
   /// Unselected color for the [NavbarItem]
   static Color navBarItemUnselectedColor = Colors.grey.shade400;
+
+  static void setColors({required bool dark}) {
+    isDarkMode = dark;
+    backgroundColor = dark ? const Color(0xFF0B0B0B) : const Color(0xFFF7F7F7);
+    boxColor = dark ? const Color(0xFF101010) : Colors.white;
+    boxBorderColor = dark ? const Color(0xFF272727) : const Color(0xFFE0E0E0);
+    onBoxColor = dark ? const Color(0xFF181818) : const Color(0xFFF0F0F0);
+    textColor = dark ? Colors.white : const Color(0xFF171717);
+    hintColor = dark ? const Color(0xFF888888) : const Color(0xFF6B6B6B);
+    navBarBackgroundColor = dark ? const Color(0xFF131313) : Colors.white;
+    navBarItemUnselectedColor = dark
+        ? Colors.grey.shade400
+        : Colors.grey.shade700;
+  }
 
   // ==================== App-Colors ====================
 
@@ -109,13 +125,13 @@ class CustomTheme {
   );
 
   // ==================== Decorations ====================
-  static BoxDecoration standardBoxDecoration = BoxDecoration(
+  static BoxDecoration get standardBoxDecoration => BoxDecoration(
     color: boxColor,
     border: Border.all(color: boxBorderColor),
     borderRadius: standardBorderRadiusAll,
   );
 
-  static BoxDecoration highlightedBoxDecoration = BoxDecoration(
+  static BoxDecoration get highlightedBoxDecoration => BoxDecoration(
     color: boxColor,
     border: Border.all(
       color: textColor,
@@ -126,61 +142,74 @@ class CustomTheme {
   );
 
   // ==================== Component Themes ====================
-  static const AppBarTheme appBarTheme = AppBarTheme(
-    backgroundColor: backgroundColor,
-    actionsIconTheme: IconThemeData(color: textColor),
+  static AppBarTheme get appBarTheme => AppBarTheme(
+    backgroundColor: isDarkMode ? backgroundColor : const Color(0xFFF7F7F7),
+    actionsIconTheme: IconThemeData(
+      color: isDarkMode ? textColor : const Color(0xFF171717),
+    ),
     elevation: 0,
     scrolledUnderElevation: 0,
     centerTitle: true,
-    iconTheme: IconThemeData(color: textColor),
+    iconTheme: IconThemeData(
+      color: isDarkMode ? textColor : const Color(0xFF171717),
+    ),
     titleTextStyle: TextStyle(
-      color: textColor,
+      color: isDarkMode ? textColor : const Color(0xFF171717),
       fontSize: 20,
       fontWeight: FontWeight.bold,
       overflow: TextOverflow.ellipsis,
     ),
   );
 
-  static final TextTheme textTheme = const TextTheme(
-    displayLarge: TextStyle(overflow: TextOverflow.ellipsis),
-    displayMedium: TextStyle(overflow: TextOverflow.ellipsis),
-    displaySmall: TextStyle(overflow: TextOverflow.ellipsis),
-    headlineLarge: TextStyle(overflow: TextOverflow.ellipsis),
-    headlineMedium: TextStyle(overflow: TextOverflow.ellipsis),
-    headlineSmall: TextStyle(overflow: TextOverflow.ellipsis),
-    titleLarge: TextStyle(overflow: TextOverflow.ellipsis),
-    titleMedium: TextStyle(overflow: TextOverflow.ellipsis),
-    titleSmall: TextStyle(overflow: TextOverflow.ellipsis),
-    bodyLarge: TextStyle(overflow: TextOverflow.ellipsis),
-    bodyMedium: TextStyle(overflow: TextOverflow.ellipsis),
-    bodySmall: TextStyle(overflow: TextOverflow.ellipsis),
-    labelLarge: TextStyle(overflow: TextOverflow.ellipsis),
-    labelMedium: TextStyle(overflow: TextOverflow.ellipsis),
-    labelSmall: TextStyle(overflow: TextOverflow.ellipsis),
-  ).apply(bodyColor: textColor, displayColor: textColor, fontFamily: 'Inter');
+  static TextTheme get textTheme =>
+      const TextTheme(
+        displayLarge: TextStyle(overflow: TextOverflow.ellipsis),
+        displayMedium: TextStyle(overflow: TextOverflow.ellipsis),
+        displaySmall: TextStyle(overflow: TextOverflow.ellipsis),
+        headlineLarge: TextStyle(overflow: TextOverflow.ellipsis),
+        headlineMedium: TextStyle(overflow: TextOverflow.ellipsis),
+        headlineSmall: TextStyle(overflow: TextOverflow.ellipsis),
+        titleLarge: TextStyle(overflow: TextOverflow.ellipsis),
+        titleMedium: TextStyle(overflow: TextOverflow.ellipsis),
+        titleSmall: TextStyle(overflow: TextOverflow.ellipsis),
+        bodyLarge: TextStyle(overflow: TextOverflow.ellipsis),
+        bodyMedium: TextStyle(overflow: TextOverflow.ellipsis),
+        bodySmall: TextStyle(overflow: TextOverflow.ellipsis),
+        labelLarge: TextStyle(overflow: TextOverflow.ellipsis),
+        labelMedium: TextStyle(overflow: TextOverflow.ellipsis),
+        labelSmall: TextStyle(overflow: TextOverflow.ellipsis),
+      ).apply(
+        bodyColor: isDarkMode ? textColor : const Color(0xFF171717),
+        displayColor: isDarkMode ? textColor : const Color(0xFF171717),
+        fontFamily: 'Inter',
+      );
 
   static final ActionIconThemeData actionIconTheme = ActionIconThemeData(
     backButtonIconBuilder: (context) => const HapticBackButton(),
     closeButtonIconBuilder: (context) => const HapticCloseButton(),
   );
 
-  static const SearchBarThemeData searchBarTheme = SearchBarThemeData(
-    textStyle: WidgetStatePropertyAll(TextStyle(color: textColor)),
+  static SearchBarThemeData get searchBarTheme => SearchBarThemeData(
+    textStyle: WidgetStatePropertyAll(
+      TextStyle(color: isDarkMode ? textColor : const Color(0xFF171717)),
+    ),
     hintStyle: WidgetStatePropertyAll(TextStyle(color: hintColor)),
-    overlayColor: WidgetStatePropertyAll(Colors.transparent),
+    overlayColor: const WidgetStatePropertyAll(Colors.transparent),
   );
 
-  static final RadioThemeData radioTheme = RadioThemeData(
+  static RadioThemeData get radioTheme => RadioThemeData(
     fillColor: WidgetStateProperty.resolveWith<Color>((states) {
       if (states.contains(WidgetState.selected)) {
         return primaryColor;
       }
-      return textColor;
+      return isDarkMode ? textColor : const Color(0xFF171717);
     }),
   );
 
-  static const InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
-    labelStyle: TextStyle(color: textColor),
+  static InputDecorationTheme get inputDecorationTheme => InputDecorationTheme(
+    labelStyle: TextStyle(
+      color: isDarkMode ? textColor : const Color(0xFF171717),
+    ),
     hintStyle: TextStyle(color: hintColor),
   );
 
@@ -249,11 +278,14 @@ class CustomTheme {
     ),
 
     // Color Scheme
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: textColor,
-      brightness: Brightness.dark,
+    colorScheme: ColorScheme(
+      brightness: isDarkMode ? Brightness.dark : Brightness.light,
       primary: primaryColor,
-      onPrimary: textColor,
+      onPrimary: Colors.white,
+      secondary: secondaryColor,
+      onSecondary: Colors.black,
+      error: Colors.red,
+      onError: Colors.white,
       surface: backgroundColor,
       onSurface: textColor,
     ),

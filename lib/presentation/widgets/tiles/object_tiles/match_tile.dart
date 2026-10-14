@@ -199,10 +199,7 @@ class _MatchTileState extends State<MatchTile> {
             ] else ...[
               Text(
                 loc.no_players_available,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: CustomTheme.hintColor,
-                ),
+                style: TextStyle(fontSize: 14, color: CustomTheme.hintColor),
               ),
             ],
           ],
@@ -252,7 +249,7 @@ class _MatchTileState extends State<MatchTile> {
             Expanded(
               child: Text(
                 loc.match_in_progress,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: CustomTheme.textColor,
@@ -288,7 +285,7 @@ class _MatchTileState extends State<MatchTile> {
             Expanded(
               child: Text(
                 loc.tie,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: CustomTheme.textColor,
@@ -336,7 +333,7 @@ class _MatchTileState extends State<MatchTile> {
   // Returns the tie text
   Widget get tieTextWidget => Text(
     AppLocalizations.of(context).tie,
-    style: const TextStyle(
+    style: TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w600,
       color: CustomTheme.textColor,
@@ -348,13 +345,13 @@ class _MatchTileState extends State<MatchTile> {
     final ruleset = widget.match.game.ruleset;
     final players = widget.match.mvp;
 
-    const labelStyle = TextStyle(
+    final labelStyle = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w600,
       color: CustomTheme.textColor,
     );
 
-    const nameStyle = TextStyle(
+    final nameStyle = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w500,
       color: CustomTheme.textColor,
@@ -386,7 +383,7 @@ class _MatchTileState extends State<MatchTile> {
       );
 
       if (i < namesToRender.length - 1) {
-        children.add(const TextSpan(text: ', ', style: labelStyle));
+        children.add(TextSpan(text: ', ', style: labelStyle));
       }
     }
 
@@ -399,7 +396,7 @@ class _MatchTileState extends State<MatchTile> {
 
     return Text.rich(
       TextSpan(
-        style: const TextStyle(color: CustomTheme.textColor),
+        style: TextStyle(color: CustomTheme.textColor),
         children: children,
       ),
       overflow: TextOverflow.ellipsis,
@@ -411,7 +408,7 @@ class _MatchTileState extends State<MatchTile> {
     final ruleset = widget.match.game.ruleset;
     final mvt = widget.match.mvt;
 
-    const mainStyle = TextStyle(
+    final mainStyle = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w500,
       color: CustomTheme.textColor,
@@ -433,10 +430,10 @@ class _MatchTileState extends State<MatchTile> {
 
     return Text.rich(
       TextSpan(
-        style: const TextStyle(color: CustomTheme.textColor),
+        style: TextStyle(color: CustomTheme.textColor),
         children: [
           for (var i = 0; i < mvt.length; i++) ...[
-            if (i > 0) const TextSpan(text: ', ', style: mainStyle),
+            if (i > 0) TextSpan(text: ', ', style: mainStyle),
             WidgetSpan(
               alignment: PlaceholderAlignment.middle,
               child: buildUnitNameWidget(

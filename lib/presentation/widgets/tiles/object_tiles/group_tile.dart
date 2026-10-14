@@ -121,7 +121,7 @@ class _GroupTileState extends State<GroupTile> {
                             : '${loc.created_on} $formattedDate',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           color: CustomTheme.hintColor,
                         ),

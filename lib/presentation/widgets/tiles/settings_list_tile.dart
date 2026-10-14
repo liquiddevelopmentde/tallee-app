@@ -84,7 +84,7 @@ class _SettingsListTileState extends State<SettingsListTile> {
                           AnimatedRotation(
                             duration: const Duration(milliseconds: 200),
                             turns: isExpanded ? 0.5 : 0,
-                            child: const Icon(
+                            child: Icon(
                               Icons.keyboard_arrow_down_rounded,
                               color: CustomTheme.hintColor,
                             ),
@@ -100,7 +100,7 @@ class _SettingsListTileState extends State<SettingsListTile> {
                   Text(
                     widget.description!,
                     overflow: TextOverflow.visible,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       color: CustomTheme.hintColor,
                     ),

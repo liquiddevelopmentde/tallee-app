@@ -43,7 +43,7 @@ class CustomAlertDialog extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: CustomTheme.textColor,
                       ),
@@ -55,7 +55,7 @@ class CustomAlertDialog extends StatelessWidget {
             )
           : Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: CustomTheme.textColor,
               ),
@@ -66,7 +66,7 @@ class CustomAlertDialog extends StatelessWidget {
       actionsAlignment: MainAxisAlignment.center,
       shape: RoundedRectangleBorder(
         borderRadius: CustomTheme.standardBorderRadiusAll,
-        side: const BorderSide(color: CustomTheme.boxBorderColor),
+        side: BorderSide(color: CustomTheme.boxBorderColor),
       ),
     );
   }

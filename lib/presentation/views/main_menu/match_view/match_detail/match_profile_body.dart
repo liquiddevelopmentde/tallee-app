@@ -60,7 +60,7 @@ class MatchProfileBody extends StatelessWidget {
         // Match Name
         Text(
           match.name,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: CustomTheme.textColor,
@@ -73,7 +73,7 @@ class MatchProfileBody extends StatelessWidget {
         // Creation Date
         Text(
           '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(match.createdAt)}',
-          style: const TextStyle(fontSize: 12, color: CustomTheme.textColor),
+          style: TextStyle(fontSize: 12, color: CustomTheme.textColor),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 10),
@@ -134,7 +134,7 @@ class MatchProfileBody extends StatelessWidget {
                     match.isTeamMatch
                         ? loc.no_teams_available
                         : loc.no_players_available,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       color: CustomTheme.textColor,
                     ),
@@ -163,7 +163,7 @@ class MatchProfileBody extends StatelessWidget {
                   )
                 : Text(
                     loc.no_players_available,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       color: CustomTheme.textColor,
                     ),
@@ -220,7 +220,7 @@ class MatchProfileBody extends StatelessWidget {
                   )
                 : Text(
                     loc.no_players_available,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       color: CustomTheme.textColor,
                     ),
@@ -291,7 +291,7 @@ class MatchProfileBody extends StatelessWidget {
       return [
         Text(
           label,
-          style: const TextStyle(fontSize: 16, color: CustomTheme.textColor),
+          style: TextStyle(fontSize: 16, color: CustomTheme.textColor),
         ),
         const SizedBox(width: 20),
         Expanded(child: buildWinnerNameWidget()),
@@ -300,7 +300,7 @@ class MatchProfileBody extends StatelessWidget {
       return [
         Text(
           loc.no_results_entered_yet,
-          style: const TextStyle(fontSize: 14, color: CustomTheme.textColor),
+          style: TextStyle(fontSize: 14, color: CustomTheme.textColor),
         ),
       ];
     }
@@ -380,7 +380,7 @@ class MatchProfileBody extends StatelessWidget {
         Widget nameWidget = buildUnitNameWidget(
           team,
           isTeamMatch: match.isTeamMatch,
-          countStyle: const TextStyle(color: CustomTheme.hintColor),
+          countStyle: TextStyle(color: CustomTheme.hintColor),
         );
         namedScores.add((nameWidget, team.score ?? 0));
       }
@@ -393,7 +393,7 @@ class MatchProfileBody extends StatelessWidget {
         namedScores.add((
           buildUnitNameWidget(
             player,
-            countStyle: const TextStyle(color: CustomTheme.hintColor),
+            countStyle: TextStyle(color: CustomTheme.hintColor),
           ),
           score,
         ));

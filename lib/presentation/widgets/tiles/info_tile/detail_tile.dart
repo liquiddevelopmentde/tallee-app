@@ -26,7 +26,7 @@ class DetailTile extends StatelessWidget {
                     children: [
                       Text(
                         label,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           color: CustomTheme.textColor,
                         ),

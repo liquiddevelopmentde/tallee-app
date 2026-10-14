@@ -127,7 +127,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 8,
                         children: [
-                          const Icon(
+                          Icon(
                             GAME_ICON,
                             color: CustomTheme.hintColor,
                             size: 20,
@@ -136,7 +136,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
                             getSubtitleText(
                               selectedGames!.map((g) => g.name).toList(),
                             ),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: CustomTheme.hintColor,
@@ -151,12 +151,12 @@ class _StatisticsTileState extends State<StatisticsTile> {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 8,
                         children: [
-                          const Icon(GROUP_ICON, color: CustomTheme.hintColor),
+                          Icon(GROUP_ICON, color: CustomTheme.hintColor),
                           Text(
                             getSubtitleText(
                               selectedGroups!.map((g) => g.name).toList(),
                             ),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: CustomTheme.hintColor,

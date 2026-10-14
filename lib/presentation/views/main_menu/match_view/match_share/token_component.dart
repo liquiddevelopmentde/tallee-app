@@ -57,7 +57,7 @@ class TokenComponent extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
                   loc.send_code_instruction,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: CustomTheme.textColor,
                     fontSize: 16,
                     overflow: TextOverflow.visible,
@@ -119,7 +119,7 @@ class TokenComponent extends StatelessWidget {
                         : loc.expires_in(
                             '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
                           ),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: CustomTheme.textColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -221,7 +221,7 @@ class TokenComponent extends StatelessWidget {
                   Text(
                     loc.share_as_token_info,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       overflow: TextOverflow.visible,
                       color: CustomTheme.hintColor,

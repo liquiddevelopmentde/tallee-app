@@ -35,7 +35,7 @@ InlineSpan buildPlayerNameCountSpan(
           .copyWith(color: countColor);
 
   return TextSpan(
-    style: style ?? const TextStyle(color: CustomTheme.textColor),
+    style: style ?? TextStyle(color: CustomTheme.textColor),
     children: [
       TextSpan(text: player.name, style: resolvedMainStyle),
       TextSpan(text: getNameCountText(player), style: resolvedCountStyle),
@@ -78,7 +78,7 @@ Widget buildUnitNameWidget(
         unit.name,
         style:
             mainStyle ??
-            const TextStyle(
+            TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: CustomTheme.textColor,
@@ -146,7 +146,7 @@ Widget _buildPairGameNameWidget(
         Flexible(
           child: Text.rich(
             TextSpan(
-              style: const TextStyle(color: CustomTheme.textColor),
+              style: TextStyle(color: CustomTheme.textColor),
               children: [
                 buildPlayerNameCountSpan(
                   team.members[0],

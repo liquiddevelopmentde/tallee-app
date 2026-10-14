@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:tallee/core/custom_theme.dart';
 
 class FloatingAnimatedButton extends StatefulWidget {
   /// A button for the main menu with an optional icon and a press animation.
@@ -134,7 +135,11 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
         },
         child: Container(
           decoration: BoxDecoration(
-            color: widget.onPressed == null ? Colors.grey : Colors.white,
+            color: widget.onPressed == null
+                ? CustomTheme.onBoxColor
+                : CustomTheme.isDarkMode
+                ? Colors.white
+                : Colors.black,
             borderRadius: BorderRadius.circular(30),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -147,10 +152,10 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
                 const SizedBox(width: 7),
                 Text(
                   widget.text!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: CustomTheme.isDarkMode ? Colors.black : Colors.white,
                   ),
                 ),
               ],
@@ -162,13 +167,23 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
   }
 
   Widget buildIcon() {
-    final icon = Icon(widget.icon, size: 26, color: Colors.black);
+    final icon = Icon(
+      widget.icon,
+      size: 26,
+      color: widget.onPressed == null
+          ? CustomTheme.hintColor
+          : CustomTheme.isDarkMode
+          ? Colors.black
+          : Colors.white,
+    );
 
     if (!widget.showAddBadge) return icon;
 
     final backgroundColor = widget.onPressed == null
-        ? Colors.grey
-        : Colors.white;
+        ? CustomTheme.onBoxColor
+        : CustomTheme.isDarkMode
+        ? Colors.white
+        : Colors.black;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -182,11 +197,15 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
               color: backgroundColor,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.add_circle,
               size: 15,
-              color: Colors.black,
               weight: 200,
+              color: widget.onPressed == null
+                  ? CustomTheme.hintColor
+                  : CustomTheme.isDarkMode
+                  ? Colors.black
+                  : Colors.white,
             ),
           ),
         ),

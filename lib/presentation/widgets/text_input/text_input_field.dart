@@ -59,12 +59,12 @@ class TextInputField extends StatelessWidget {
         fillColor: CustomTheme.boxColor,
         hintText: hintText,
         counterText: showCounterText ? null : '',
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(color: CustomTheme.boxBorderColor),
         ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(color: CustomTheme.boxBorderColor),
         ),
         floatingLabelBehavior: FloatingLabelBehavior.never,

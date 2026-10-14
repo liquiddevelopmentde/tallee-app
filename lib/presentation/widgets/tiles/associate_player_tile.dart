@@ -53,7 +53,7 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
           Expanded(
             child: buildUnitNameWidget(
               widget.player,
-              mainStyle: const TextStyle(
+              mainStyle: TextStyle(
                 fontSize: 18,
                 color: CustomTheme.textColor,
                 fontWeight: FontWeight.w500,

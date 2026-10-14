@@ -455,7 +455,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                             Icon(getRulesetIcon(rulesets[index].$1), size: 16),
                             Text(
                               rulesets[index].$2,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: CustomTheme.textColor,
                                 fontSize: 15,
                               ),
@@ -551,7 +551,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                                   ),
                                   Text(
                                     colors[index].$2,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: CustomTheme.textColor,
                                       fontSize: 15,
                                     ),

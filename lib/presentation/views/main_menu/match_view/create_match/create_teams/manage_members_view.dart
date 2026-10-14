@@ -179,7 +179,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
           Expanded(
             child: Text(
               team.name,
-              style: const TextStyle(
+              style: TextStyle(
                 color: CustomTheme.textColor,
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
@@ -197,7 +197,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               maxLines: 1,
               textAlign: TextAlign.end,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 color: CustomTheme.hintColor,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,

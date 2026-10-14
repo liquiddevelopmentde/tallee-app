@@ -89,7 +89,7 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(
                         loc.color,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: CustomTheme.textColor,

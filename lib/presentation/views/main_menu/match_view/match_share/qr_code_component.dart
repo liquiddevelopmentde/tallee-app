@@ -111,7 +111,7 @@ class QrCodeComponent extends StatelessWidget {
                 : loc.expires_in(
                     '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
                   ),
-            style: const TextStyle(
+            style: TextStyle(
               color: CustomTheme.textColor,
               fontWeight: FontWeight.bold,
               fontSize: 16,
@@ -132,7 +132,7 @@ class QrCodeComponent extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             child: Text(
               loc.scan_qr_code_instruction,
-              style: const TextStyle(
+              style: TextStyle(
                 color: CustomTheme.textColor,
                 fontSize: 14,
                 overflow: TextOverflow.visible,
@@ -166,7 +166,7 @@ class QrCodeComponent extends StatelessWidget {
                   opacity: 0.50,
                   child: PrettyQrView(
                     qrImage: qrImage ?? loadingStateQr(),
-                    decoration: const PrettyQrDecoration(
+                    decoration: PrettyQrDecoration(
                       shape: PrettyQrSquaresSymbol(
                         color: CustomTheme.boxBorderColor,
                       ),
@@ -201,7 +201,7 @@ class QrCodeComponent extends StatelessWidget {
                           Text(
                             loc.share_as_qr_code_info,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               overflow: TextOverflow.visible,
                               color: CustomTheme.hintColor,

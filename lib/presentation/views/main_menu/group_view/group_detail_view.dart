@@ -114,7 +114,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 const SizedBox(height: 10),
                 Text(
                   group.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: CustomTheme.textColor,
@@ -126,7 +126,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       group.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         color: CustomTheme.hintColor,
                       ),
@@ -137,10 +137,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 const SizedBox(height: 5),
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(group.createdAt)}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: CustomTheme.textColor,
-                  ),
+                  style: TextStyle(fontSize: 12, color: CustomTheme.textColor),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),

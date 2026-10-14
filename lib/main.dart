@@ -33,6 +33,7 @@ import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
 import 'package:tallee/state/showcase_provider.dart';
+import 'package:tallee/state/theme_provider.dart';
 
 void main() async {
   ENVIRONMENT = kDebugMode
@@ -123,6 +124,7 @@ void main() async {
             ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
             ChangeNotifierProvider(create: (context) => ShowcaseProvider()),
             ChangeNotifierProvider(create: (context) => RateDialogProvider()),
+            ChangeNotifierProvider(create: (context) => ThemeProvider()),
           ],
           child: DefaultAssetBundle(
             bundle: SentryAssetBundle(),
@@ -170,6 +172,10 @@ class _TalleeState extends State<Tallee> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      key: ValueKey(
+        '${context.watch<ThemeProvider>().themeMode.name}-'
+        '${CustomTheme.isDarkMode}',
+      ),
       navigatorKey: Tallee.navigatorKey,
       scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
       localizationsDelegates: const [
@@ -190,9 +196,10 @@ class _TalleeState extends State<Tallee> {
       },
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
-      themeMode: ThemeMode.dark,
+      themeMode: context.read<ThemeProvider>().themeMode,
       navigatorObservers: [SentryNavigatorObserver()],
       theme: CustomTheme.themeData,
+      darkTheme: CustomTheme.themeData,
       home: SplashScreen(onFinished: handleSplashFinished),
     );
   }

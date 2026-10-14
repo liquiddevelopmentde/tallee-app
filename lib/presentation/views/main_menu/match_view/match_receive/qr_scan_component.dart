@@ -124,7 +124,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
             child: Text(
               loc.scan_qr_receive_instruction,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: CustomTheme.textColor,
                 fontSize: 14,
                 overflow: TextOverflow.visible,
