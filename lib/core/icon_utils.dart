@@ -1,5 +1,6 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/constants/icon_constants.dart';
 import 'package:tallee/core/enums.dart';
 
 /// Returns [IconData] corresponding to a [Ruleset] enum value.
@@ -39,5 +40,16 @@ IconData getStatisticIcon({required StatisticType type}) {
       return Icons.trending_down;
     case StatisticType.winrate:
       return Icons.percent;
+  }
+}
+
+IconData getScopeIcon({required StatisticScope scope}) {
+  switch (scope) {
+    case StatisticScope.allPlayers:
+      return PLAYER_ICON;
+    case StatisticScope.selectedGroups:
+      return GROUP_ICON;
+    case StatisticScope.selectedGames:
+      return GAME_ICON;
   }
 }
