@@ -23,6 +23,7 @@ from urllib.error import HTTPError
 from urllib.request import Request
 from urllib.request import urlopen
 
+import functools
 import json
 import os
 import re
@@ -131,7 +132,15 @@ def get_issue(number: Union[int, str]) -> Optional[Dict[str, Any]]:
     return obj if is_issue(obj) else None
 
 
-_columns: Optional[List[Dict[str, Any]]] = None
+@functools.lru_cache(maxsize=None)
+def columns() -> List[Dict[str, Any]]:
+    """
+    Fetch the project board columns.
+
+    :returns: All columns of the configured project.
+    :rtype: List[Dict[str, Any]]
+    """
+    return get_all(f"/orgs/{ORG}/projects/{PROJECT_ID}/columns")
 
 
 def column_id(title: str) -> int:
@@ -142,14 +151,12 @@ def column_id(title: str) -> int:
     :returns: The id of the matching column.
     :rtype: int
     """
-    global _columns
-    if _columns is None:
-        _columns = get_all(f"/orgs/{ORG}/projects/{PROJECT_ID}/columns")
-    for c in _columns:
+    cols: List[Dict[str, Any]] = columns()
+    for c in cols:
         if c["title"].strip().lower() == title.lower():
             return c["id"]
     sys.exit(f"column '{title}' not found on project {PROJECT_ID}; "
-             f"available: {[c['title'] for c in _columns]}")
+             f"available: {[c['title'] for c in cols]}")
 
 
 def move(issue: Dict[str, Any], column: str) -> None:
@@ -165,9 +172,7 @@ def move(issue: Dict[str, Any], column: str) -> None:
     print(f"issue #{issue['number']} '{issue['title']}' -> {column}")
 
 
-_all_issues: Optional[List[Dict[str, Any]]] = None
-
-
+@functools.lru_cache(maxsize=None)
 def all_issues() -> List[Dict[str, Any]]:
     """
     Fetch every issue in the repository, caching the result.
@@ -175,10 +180,7 @@ def all_issues() -> List[Dict[str, Any]]:
     :returns: All issues in the repository.
     :rtype: List[Dict[str, Any]]
     """
-    global _all_issues
-    if _all_issues is None:
-        _all_issues = get_all(f"/repos/{REPO}/issues?state=all&type=issues")
-    return _all_issues
+    return get_all(f"/repos/{REPO}/issues?state=all&type=issues")
 
 
 def issue_numbers_for_pr(pr: Dict[str, Any]) -> Set[int]:
