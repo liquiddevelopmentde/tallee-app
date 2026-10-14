@@ -112,78 +112,81 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
 
         // Values
         Flexible(
-          child: RadioGroup<T>(
-            groupValue: selectedValue,
-            onChanged: onValueChanged,
-            child: ListView.separated(
-              shrinkWrap: true,
-              separatorBuilder: (_, _) => const SizedBox(height: 12),
-              itemCount: widget.values.length,
-              itemBuilder: (BuildContext context, int index) {
-                final value = widget.values[index];
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => valueChangeFunction(value),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 9,
-                      horizontal: 14,
-                    ),
-                    decoration: CustomTheme.standardBoxDecoration,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          spacing: 12,
-                          children: [
-                            // Leading widget
-                            if (widget.leadingBuilder != null)
-                              widget.leadingBuilder!(value),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: RadioGroup<T>(
+              groupValue: selectedValue,
+              onChanged: onValueChanged,
+              child: ListView.separated(
+                shrinkWrap: true,
+                separatorBuilder: (_, _) => const SizedBox(height: 12),
+                itemCount: widget.values.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final value = widget.values[index];
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => valueChangeFunction(value),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 9,
+                        horizontal: 14,
+                      ),
+                      decoration: CustomTheme.standardBoxDecoration,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            spacing: 12,
+                            children: [
+                              // Leading widget
+                              if (widget.leadingBuilder != null)
+                                widget.leadingBuilder!(value),
 
-                            // Label
-                            Text(widget.labelBuilder(context, value)),
-                          ],
-                        ),
-
-                        if (!widget.isMultiSelection)
-                          // Radio
-                          Radio<T>(
-                            fillColor: WidgetStateProperty.resolveWith<Color>((
-                              states,
-                            ) {
-                              if (states.contains(WidgetState.selected)) {
-                                return CustomTheme.textColor;
-                              }
-                              return CustomTheme.hintColor;
-                            }),
-                            value: value,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            visualDensity: VisualDensity.compact,
-                          )
-                        else
-                          // Checkbox
-                          Checkbox(
-                            value: selectedValues.contains(value),
-                            onChanged: (_) => onValuesChanged(value),
-                            checkColor: CustomTheme.backgroundColor,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            visualDensity: VisualDensity.compact,
-                            fillColor: WidgetStateProperty.resolveWith<Color>((
-                              states,
-                            ) {
-                              if (states.contains(WidgetState.selected)) {
-                                return CustomTheme.textColor;
-                              }
-                              return CustomTheme.hintColor;
-                            }),
+                              // Label
+                              Text(widget.labelBuilder(context, value)),
+                            ],
                           ),
-                      ],
+
+                          if (!widget.isMultiSelection)
+                            // Radio
+                            Radio<T>(
+                              fillColor: WidgetStateProperty.resolveWith<Color>(
+                                (states) {
+                                  if (states.contains(WidgetState.selected)) {
+                                    return CustomTheme.textColor;
+                                  }
+                                  return CustomTheme.hintColor;
+                                },
+                              ),
+                              value: value,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              visualDensity: VisualDensity.compact,
+                            )
+                          else
+                            // Checkbox
+                            Checkbox(
+                              value: selectedValues.contains(value),
+                              onChanged: (_) => onValuesChanged(value),
+                              checkColor: CustomTheme.backgroundColor,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              visualDensity: VisualDensity.compact,
+                              fillColor: WidgetStateProperty.resolveWith<Color>(
+                                (states) {
+                                  if (states.contains(WidgetState.selected)) {
+                                    return CustomTheme.textColor;
+                                  }
+                                  return CustomTheme.hintColor;
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ),
