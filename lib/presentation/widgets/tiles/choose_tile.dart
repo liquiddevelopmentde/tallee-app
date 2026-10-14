@@ -41,14 +41,21 @@ class _ChooseTileState extends State<ChooseTile> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: CustomTheme.standardBoxDecoration,
         child: Row(
-          spacing: 10,
+          spacing: 5,
           children: [
-            if (widget.icon != null) Icon(widget.icon),
-            Text(
-              widget.title,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            Row(
+              spacing: 10,
+              children: [
+                if (widget.icon != null) Icon(widget.icon),
+                Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 16),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
