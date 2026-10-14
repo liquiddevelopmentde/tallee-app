@@ -69,14 +69,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                   vertical: 12,
                   horizontal: 12,
                 ),
-                decoration: BoxDecoration(
-                  color: CustomTheme.boxColor,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: CustomTheme.boxBorderColor,
-                    width: 2,
-                  ),
-                ),
+                decoration: CustomTheme.standardBoxDecoration,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

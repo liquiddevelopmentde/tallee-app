@@ -151,14 +151,7 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                         vertical: 9,
                         horizontal: 14,
                       ),
-                      decoration: BoxDecoration(
-                        color: CustomTheme.boxColor,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: CustomTheme.boxBorderColor,
-                          width: 2,
-                        ),
-                      ),
+                      decoration: CustomTheme.standardBoxDecoration,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
