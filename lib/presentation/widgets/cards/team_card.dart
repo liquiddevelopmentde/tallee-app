@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -33,8 +32,6 @@ class TeamCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final teamColor = getColorFromAppColor(team.color);
-
     // Show only team name and member count
     if (compact) {
       return Container(
