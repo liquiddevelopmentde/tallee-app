@@ -41,6 +41,8 @@ IN_PROGRESS: str = "In Progress"
 IN_REVIEW: str = "In Review"
 DONE: str = "Done"
 
+BACKLOG_LABEL: str = "Workflow/Backlog"
+
 # PR workflow label -> board column.
 PR_LABEL_COLUMNS: Dict[str, str] = {
     "Workflow/In Progress": IN_PROGRESS,
@@ -51,7 +53,6 @@ PR_LABEL_COLUMNS: Dict[str, str] = {
     "Workflow/Merged": DONE,
     "Workflow/Abandoned": DONE,
 }
-BACKLOG_LABEL: str = "Workflow/Backlog"
 
 
 def api(method: str, path: str, body: Optional[Any] = None) -> Any:
