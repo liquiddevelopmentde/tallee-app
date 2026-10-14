@@ -8,6 +8,9 @@
   ],
   "prHourlyLimit": 2,
   "prConcurrentLimit": 3,
+  "labels": [
+    "Type/Dependencies"
+  ],
   "enabledManagers": ["pub"],
   "pub": {
     "enabled": true,
