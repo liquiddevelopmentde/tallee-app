@@ -313,9 +313,9 @@ class _MatchTileState extends State<MatchTile> {
         ),
       ),
       child: Row(
+        spacing: 8,
         children: [
-          getMvpIcon(),
-          const SizedBox(width: 8),
+          const Icon(Icons.emoji_events, size: 20, color: Colors.amber),
           Expanded(child: winnerTextWidget),
         ],
       ),
@@ -454,25 +454,5 @@ class _MatchTileState extends State<MatchTile> {
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
-  }
-
-  // Returns the appropriate icon based on the match's ruleset.
-  Icon getMvpIcon() {
-    final icon = getRulesetIcon(widget.match.game.ruleset);
-
-    switch (widget.match.game.ruleset) {
-      case Ruleset.winner:
-        return Icon(icon, size: 20, color: Colors.amber);
-      case Ruleset.loser:
-        return Icon(icon, size: 20, color: Colors.blue);
-      case Ruleset.lowestScore:
-        return Icon(icon, size: 20, color: Colors.orange);
-      case Ruleset.highestScore:
-        return Icon(icon, size: 20, color: Colors.green);
-      case Ruleset.placement:
-        return Icon(icon, size: 20, color: Colors.deepOrangeAccent);
-      case Ruleset.lives:
-        return Icon(icon, size: 20, color: Colors.red);
-    }
   }
 }
