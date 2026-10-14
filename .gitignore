@@ -177,3 +177,6 @@ untranslated_messages.json
 .env
 
 sentry.properties
+
+# Python
+.venv/

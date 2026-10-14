@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
@@ -10,7 +10,7 @@ import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_detail_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_detail/match_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/player_view/edit_player_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
@@ -24,11 +24,11 @@ class PlayerDetailView extends StatefulWidget {
   const PlayerDetailView({
     super.key,
     required this.player,
-    required this.onPlayerUpdated,
+    this.onPlayerUpdated,
   });
 
   final Player player;
-  final VoidCallback onPlayerUpdated;
+  final VoidCallback? onPlayerUpdated;
 
   @override
   State<PlayerDetailView> createState() => _PlayerDetailViewState();
@@ -120,7 +120,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     await db.playerDao.deletePlayer(playerId: widget.player.id);
                     if (!context.mounted) return;
                     Navigator.pop(context);
-                    widget.onPlayerUpdated();
+                    widget.onPlayerUpdated?.call();
                   }
                 });
               },
@@ -225,7 +225,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                         ),
                                         builder: (context) => GroupDetailView(
                                           group: group,
-                                          callback: widget.onPlayerUpdated,
+                                          onGroupUpdated:
+                                              widget.onPlayerUpdated,
                                         ),
                                       ),
                                     );
@@ -272,7 +273,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                       ),
                                       builder: (context) => MatchDetailView(
                                         match: match,
-                                        onMatchUpdate: widget.onPlayerUpdated,
+                                        onMatchUpdate: () =>
+                                            widget.onPlayerUpdated?.call(),
                                       ),
                                     ),
                                   );

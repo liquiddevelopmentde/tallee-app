@@ -2581,9 +2581,9 @@ class $ScoreEntryTableTable extends ScoreEntryTable
   late final GeneratedColumn<int> score = GeneratedColumn<int>(
     'score',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _changeMeta = const VerificationMeta('change');
   @override
@@ -2646,8 +2646,6 @@ class $ScoreEntryTableTable extends ScoreEntryTable
         _scoreMeta,
         score.isAcceptableOrUnknown(data['score']!, _scoreMeta),
       );
-    } else if (isInserting) {
-      context.missing(_scoreMeta);
     }
     if (data.containsKey('change')) {
       context.handle(
@@ -2681,7 +2679,7 @@ class $ScoreEntryTableTable extends ScoreEntryTable
       score: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}score'],
-      )!,
+      ),
       change: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}change'],
@@ -2700,13 +2698,13 @@ class ScoreEntryTableData extends DataClass
   final String playerId;
   final String matchId;
   final int roundNumber;
-  final int score;
+  final int? score;
   final int change;
   const ScoreEntryTableData({
     required this.playerId,
     required this.matchId,
     required this.roundNumber,
-    required this.score,
+    this.score,
     required this.change,
   });
   @override
@@ -2715,7 +2713,9 @@ class ScoreEntryTableData extends DataClass
     map['player_id'] = Variable<String>(playerId);
     map['match_id'] = Variable<String>(matchId);
     map['round_number'] = Variable<int>(roundNumber);
-    map['score'] = Variable<int>(score);
+    if (!nullToAbsent || score != null) {
+      map['score'] = Variable<int>(score);
+    }
     map['change'] = Variable<int>(change);
     return map;
   }
@@ -2725,7 +2725,9 @@ class ScoreEntryTableData extends DataClass
       playerId: Value(playerId),
       matchId: Value(matchId),
       roundNumber: Value(roundNumber),
-      score: Value(score),
+      score: score == null && nullToAbsent
+          ? const Value.absent()
+          : Value(score),
       change: Value(change),
     );
   }
@@ -2739,7 +2741,7 @@ class ScoreEntryTableData extends DataClass
       playerId: serializer.fromJson<String>(json['playerId']),
       matchId: serializer.fromJson<String>(json['matchId']),
       roundNumber: serializer.fromJson<int>(json['roundNumber']),
-      score: serializer.fromJson<int>(json['score']),
+      score: serializer.fromJson<int?>(json['score']),
       change: serializer.fromJson<int>(json['change']),
     );
   }
@@ -2750,7 +2752,7 @@ class ScoreEntryTableData extends DataClass
       'playerId': serializer.toJson<String>(playerId),
       'matchId': serializer.toJson<String>(matchId),
       'roundNumber': serializer.toJson<int>(roundNumber),
-      'score': serializer.toJson<int>(score),
+      'score': serializer.toJson<int?>(score),
       'change': serializer.toJson<int>(change),
     };
   }
@@ -2759,13 +2761,13 @@ class ScoreEntryTableData extends DataClass
     String? playerId,
     String? matchId,
     int? roundNumber,
-    int? score,
+    Value<int?> score = const Value.absent(),
     int? change,
   }) => ScoreEntryTableData(
     playerId: playerId ?? this.playerId,
     matchId: matchId ?? this.matchId,
     roundNumber: roundNumber ?? this.roundNumber,
-    score: score ?? this.score,
+    score: score.present ? score.value : this.score,
     change: change ?? this.change,
   );
   ScoreEntryTableData copyWithCompanion(ScoreEntryTableCompanion data) {
@@ -2810,7 +2812,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
   final Value<String> playerId;
   final Value<String> matchId;
   final Value<int> roundNumber;
-  final Value<int> score;
+  final Value<int?> score;
   final Value<int> change;
   final Value<int> rowid;
   const ScoreEntryTableCompanion({
@@ -2825,13 +2827,12 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
     required String playerId,
     required String matchId,
     required int roundNumber,
-    required int score,
+    this.score = const Value.absent(),
     required int change,
     this.rowid = const Value.absent(),
   }) : playerId = Value(playerId),
        matchId = Value(matchId),
        roundNumber = Value(roundNumber),
-       score = Value(score),
        change = Value(change);
   static Insertable<ScoreEntryTableData> custom({
     Expression<String>? playerId,
@@ -2855,7 +2856,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
     Value<String>? playerId,
     Value<String>? matchId,
     Value<int>? roundNumber,
-    Value<int>? score,
+    Value<int?>? score,
     Value<int>? change,
     Value<int>? rowid,
   }) {
@@ -7638,7 +7639,7 @@ typedef $$ScoreEntryTableTableCreateCompanionBuilder =
       required String playerId,
       required String matchId,
       required int roundNumber,
-      required int score,
+      Value<int?> score,
       required int change,
       Value<int> rowid,
     });
@@ -7647,7 +7648,7 @@ typedef $$ScoreEntryTableTableUpdateCompanionBuilder =
       Value<String> playerId,
       Value<String> matchId,
       Value<int> roundNumber,
-      Value<int> score,
+      Value<int?> score,
       Value<int> change,
       Value<int> rowid,
     });
@@ -7942,7 +7943,7 @@ class $$ScoreEntryTableTableTableManager
                 Value<String> playerId = const Value.absent(),
                 Value<String> matchId = const Value.absent(),
                 Value<int> roundNumber = const Value.absent(),
-                Value<int> score = const Value.absent(),
+                Value<int?> score = const Value.absent(),
                 Value<int> change = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ScoreEntryTableCompanion(
@@ -7958,7 +7959,7 @@ class $$ScoreEntryTableTableTableManager
                 required String playerId,
                 required String matchId,
                 required int roundNumber,
-                required int score,
+                Value<int?> score = const Value.absent(),
                 required int change,
                 Value<int> rowid = const Value.absent(),
               }) => ScoreEntryTableCompanion.insert(

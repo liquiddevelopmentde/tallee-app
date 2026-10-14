@@ -10,6 +10,7 @@ jobs:
     container:
       image: ghcr.io/renovatebot/renovate:latest
     steps:
+      - uses: actions/checkout@v4
       - name: Run Renovate
         env:
           RENOVATE_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -20,4 +21,11 @@ jobs:
           RENOVATE_GIT_AUTHOR: "Gitea Actions <actions@yannick-weigert.de>"
           RENOVATE_BINARY_SOURCE: install
           LOG_LEVEL: debug
-        run: renovate
+        run: |
+          # Alternating weeks: even = minor, odd = minor + major
+          if [ $(( $(date +%-V) % 2 )) -eq 0 ]; then
+            export RENOVATE_CONFIG_FILE=.gitea/renovate/minor.json
+          else
+            export RENOVATE_CONFIG_FILE=.gitea/renovate/minor-major.json
+          fi
+          renovate

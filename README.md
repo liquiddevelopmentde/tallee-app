@@ -25,6 +25,7 @@ An open-source app to track card- and board games, manage players & groups and g
 ![Flutter](https://img.shields.io/badge/Flutter-3.47.2-027DFD?logo=flutter)
 ![iOS26](https://img.shields.io/badge/iOS-26-white?logo=apple)
 ![Android17](https://img.shields.io/badge/Android-17-3DDC84?logo=android)
+![Renovate](https://img.shields.io/badge/Maintained_with-Renovate-308BE3?logo=renovate&logoColor=FFFFFF)
 
 ## This is Tallee
 
