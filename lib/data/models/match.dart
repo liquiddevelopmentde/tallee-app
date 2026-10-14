@@ -273,6 +273,8 @@ class Match {
 
   bool get useTeamLogic => isTeamMatch || (teams?.isNotEmpty ?? false);
 
+  bool get hasResult => mvp.isNotEmpty || mvt.isNotEmpty;
+
   // Most Valuable Player(s) based on the match's ruleset
   List<Player> get mvp {
     if (players.isEmpty ||
@@ -423,5 +425,16 @@ class Match {
     }
 
     return teams!.where((team) => (team.score ?? 0) > 0).toList();
+  }
+
+  /// True when a lives match ended with all players/teams at 0 lives.
+  /// False when ruleset is not lives or match hasnt ended yet
+  bool get isTie {
+    if (game.ruleset != Ruleset.lives) return false;
+    if (endedAt == null) return false;
+    if (useTeamLogic) {
+      return mvt.isEmpty;
+    }
+    return mvp.isEmpty;
   }
 }
