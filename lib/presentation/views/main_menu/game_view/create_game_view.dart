@@ -74,6 +74,8 @@ class _CreateGameViewState extends State<CreateGameView> {
   Ruleset? selectedRuleset = Ruleset.winner;
   AppColor? selectedColor = AppColor.orange;
 
+  bool get isEditMode => widget.gameToEdit != null;
+
   @override
   void initState() {
     super.initState();
@@ -163,62 +165,7 @@ class _CreateGameViewState extends State<CreateGameView> {
               if (isEditMode)
                 HapticIconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () async {
-                    if (!context.mounted) return;
-
-                    // Build the dialog content based on match count
-                    final String dialogContent = widget.gameCount > 0
-                        ? loc.delete_game_with_matches_warning(widget.gameCount)
-                        : loc.this_cannot_be_undone;
-
-                    showDialog<bool>(
-                      context: context,
-                      builder: (context) => CustomAlertDialog(
-                        title: loc.delete_game,
-                        content: Text(
-                          dialogContent,
-                          overflow: TextOverflow.visible,
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                        actions: [
-                          CustomDialogAction(
-                            isDestructive: true,
-                            onPressed: () => Navigator.of(context).pop(true),
-                            text: loc.delete,
-                          ),
-                          CustomDialogAction(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            buttonType: ButtonType.secondary,
-                            text: loc.cancel,
-                          ),
-                        ],
-                      ),
-                    ).then((confirmed) async {
-                      if (confirmed == true && context.mounted) {
-                        // Delete associated matches
-                        if (widget.gameCount > 0) {
-                          await db.matchDao.deleteMatchesByGame(
-                            gameId: widget.gameToEdit!.id,
-                          );
-                        }
-
-                        // Delete the targetted game
-                        bool success = await db.gameDao.deleteGame(
-                          gameId: widget.gameToEdit!.id,
-                        );
-
-                        if (!context.mounted) return;
-                        if (success) {
-                          widget.onGameChanged.call();
-                          Navigator.of(context)
-                              .pop((game: widget.gameToEdit, delete: true));
-                        } else {
-                          if (!mounted) return;
-                          showSnackbar(message: loc.error_deleting_game);
-                        }
-                      }
-                    });
-                  },
+                  onPressed: () async => await showDeletePopup(context),
                 ),
             ],
           ),
@@ -229,6 +176,7 @@ class _CreateGameViewState extends State<CreateGameView> {
             child: Column(
               spacing: 10,
               children: [
+                // Game name textfield
                 CustomShowcaseWidget(
                   showcaseKey: createGameViewGameNameKey,
                   identifier: createGameViewGameNameIdentifier,
@@ -302,7 +250,7 @@ class _CreateGameViewState extends State<CreateGameView> {
 
                 const Spacer(),
 
-                // Create/Edit game button
+                // Create / Edit game button
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -415,8 +363,6 @@ class _CreateGameViewState extends State<CreateGameView> {
     }
   }
 
-  bool get isEditMode => widget.gameToEdit != null;
-
   /// Shows a bottom sheet to choose a ruleset
   void showRulesetSheet() {
     final loc = AppLocalizations.of(context);
@@ -439,6 +385,7 @@ class _CreateGameViewState extends State<CreateGameView> {
     );
   }
 
+  /// Shows a bottom sheet to choose a color
   void showColorSheet() {
     final loc = AppLocalizations.of(context);
 
@@ -460,6 +407,7 @@ class _CreateGameViewState extends State<CreateGameView> {
     );
   }
 
+  /// Returns a colored circle
   Widget buildColorCircle(AppColor color) => Container(
     width: 16,
     height: 16,
@@ -468,4 +416,61 @@ class _CreateGameViewState extends State<CreateGameView> {
       shape: BoxShape.circle,
     ),
   );
+
+  /// Shows a delete popup with information about how many matches containing
+  /// this game will also be deleted.
+  Future<void> showDeletePopup(BuildContext context) async {
+    if (!context.mounted) return;
+    final loc = AppLocalizations.of(context);
+
+    // Build the dialog content based on match count
+    final String dialogContent = widget.gameCount > 0
+        ? loc.delete_game_with_matches_warning(widget.gameCount)
+        : loc.this_cannot_be_undone;
+
+    showDialog<bool>(
+      context: context,
+      builder: (context) => CustomAlertDialog(
+        title: loc.delete_game,
+        content: Text(
+          dialogContent,
+          overflow: TextOverflow.visible,
+          style: const TextStyle(fontSize: 15),
+        ),
+        actions: [
+          CustomDialogAction(
+            isDestructive: true,
+            onPressed: () => Navigator.of(context).pop(true),
+            text: loc.delete,
+          ),
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(false),
+            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+          ),
+        ],
+      ),
+    ).then((confirmed) async {
+      if (confirmed == true && context.mounted) {
+        // Delete associated matches
+        if (widget.gameCount > 0) {
+          await db.matchDao.deleteMatchesByGame(gameId: widget.gameToEdit!.id);
+        }
+
+        // Delete the targetted game
+        bool success = await db.gameDao.deleteGame(
+          gameId: widget.gameToEdit!.id,
+        );
+
+        if (!context.mounted) return;
+        if (success) {
+          widget.onGameChanged.call();
+          Navigator.of(context).pop((game: widget.gameToEdit, delete: true));
+        } else {
+          if (!mounted) return;
+          showSnackbar(message: loc.error_deleting_game);
+        }
+      }
+    });
+  }
 }
