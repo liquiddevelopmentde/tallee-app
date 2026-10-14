@@ -127,6 +127,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                         Navigator.push(
                           context,
                           adaptivePageRoute(
+                            settings: const RouteSettings(name: RouteNames.previewMatchView),
                             builder: (_) =>
                                 PreviewMatchView(match: data.match!),
                             fullscreenDialog: true,

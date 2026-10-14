@@ -215,6 +215,9 @@ class _GameViewState extends State<GameView> with RouteAware {
                                             Navigator.push(
                                               context,
                                               adaptivePageRoute(
+                                                settings: const RouteSettings(
+                                                  name: RouteNames.createGameView,
+                                                ),
                                                 builder: (context) =>
                                                     CreateGameView(
                                                       gameToEdit:
@@ -280,6 +283,7 @@ class _GameViewState extends State<GameView> with RouteAware {
     Navigator.push(
       context,
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.createGameView),
         builder: (context) => CreateGameView(onGameChanged: loadGames),
       ),
     );

@@ -262,7 +262,10 @@ class TokenComponent extends StatelessWidget {
           onPressed: () async {
             await Navigator.push(
               context,
-              adaptivePageRoute(builder: (context) => const SettingsView()),
+              adaptivePageRoute(
+                settings: const RouteSettings(name: RouteNames.settingsView),
+                builder: (context) => const SettingsView(),
+              ),
             );
             onOnlineSharingPrefChanged.call();
           },

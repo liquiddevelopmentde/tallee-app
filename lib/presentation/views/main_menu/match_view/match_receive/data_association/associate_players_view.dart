@@ -137,6 +137,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                         } else {
                           await Navigator.of(context).push(
                             adaptivePageRoute(
+                              settings: const RouteSettings(name: RouteNames.associateGroupView),
                               builder: (context) => AssociateGroupView(
                                 match: widget.match,
                                 associations: associations,

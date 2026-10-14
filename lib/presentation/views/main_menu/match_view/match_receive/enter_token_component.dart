@@ -228,6 +228,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
         if (mounted) {
           Navigator.of(context).push(
             adaptivePageRoute(
+              settings: const RouteSettings(name: RouteNames.previewMatchView),
               builder: (_) => PreviewMatchView(match: match),
               fullscreenDialog: true,
             ),

@@ -151,6 +151,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                 onPressed: () {
                   Navigator.of(context).push(
                     adaptivePageRoute(
+                      settings: const RouteSettings(name: RouteNames.associatePlayersView),
                       builder: (context) => AssociatePlayersView(
                         match: widget.match,
                         associatedGame: associatedGame,
@@ -180,6 +181,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
     final selected = await Navigator.push<Game>(
       context,
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGameView),
         builder: (context) => ChooseGameView(
           games: filteredGames,
           initialSelectedGames: [?associatedGame],

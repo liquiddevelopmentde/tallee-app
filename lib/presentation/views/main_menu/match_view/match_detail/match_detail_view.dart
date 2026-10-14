@@ -135,6 +135,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     if (match.endedAt != null) {
       Navigator.of(context).push(
         adaptivePageRoute(
+          settings: const RouteSettings(name: RouteNames.matchShareView),
           builder: (context) => MatchShareView(match: match),
           fullscreenDialog: true,
         ),

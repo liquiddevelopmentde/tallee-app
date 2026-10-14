@@ -185,6 +185,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
 
         await Navigator.of(context).push(
           adaptivePageRoute(
+            settings: const RouteSettings(name: RouteNames.previewMatchView),
             builder: (_) => PreviewMatchView(match: loadedMatch),
             fullscreenDialog: true,
           ),

@@ -220,6 +220,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
     final selected = await Navigator.push<Group>(
       context,
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGroupView),
         builder: (context) => ChooseGroupView(
           groups: validGroups,
           initialGroups: [?associatedGroup],
