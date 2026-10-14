@@ -58,7 +58,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
     barColor = getColorFromAppColor(widget.statistic.color);
     selectedGames = widget.statistic.selectedGames;
     selectedGroups = widget.statistic.selectedGroups;
-    icon = getStatisticIcon(type: widget.statistic.type);
+    icon = getTypeIcon(type: widget.statistic.type);
 
     super.initState();
   }
@@ -71,7 +71,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
       barColor = getColorFromAppColor(widget.statistic.color);
       selectedGames = widget.statistic.selectedGames;
       selectedGroups = widget.statistic.selectedGroups;
-      icon = getStatisticIcon(type: widget.statistic.type);
+      icon = getTypeIcon(type: widget.statistic.type);
     }
   }
 

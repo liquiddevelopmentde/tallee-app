@@ -78,7 +78,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                       children: [
                         if (widget.enumValue is List<StatisticType>)
                           Icon(
-                            getStatisticIcon(
+                            getTypeIcon(
                               type: widget.enumValue[index] as StatisticType,
                             ),
                           ),

@@ -22,7 +22,7 @@ IconData getRulesetIcon(Ruleset ruleset) {
 }
 
 /// Returns the icon for the given statistic type.
-IconData getStatisticIcon({required StatisticType type}) {
+IconData getTypeIcon({required StatisticType type}) {
   switch (type) {
     case StatisticType.totalMatches:
       return Icons.casino;

@@ -244,8 +244,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         description: loc.select_a_type_description,
         values: StatisticType.values,
         selectedValues: selectedTypes,
-        leadingBuilder: (StatisticType type) =>
-            Icon(getStatisticIcon(type: type)),
+        leadingBuilder: (StatisticType type) => Icon(getTypeIcon(type: type)),
         labelBuilder: (BuildContext context, StatisticType scope) =>
             translateStatisticTypeToString(scope, context),
         onValuesUpdated: (scopes) => setState(() => selectedTypes = scopes),
