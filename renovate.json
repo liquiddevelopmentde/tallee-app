@@ -1,6 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "onboarding": false,
   "requireConfig": "optional",
   "baseBranchPatterns": [
@@ -11,7 +13,9 @@
   "labels": [
     "Type/Dependencies"
   ],
-  "enabledManagers": ["pub"],
+  "enabledManagers": [
+    "pub"
+  ],
   "pub": {
     "enabled": true,
     "managerFilePatterns": [
@@ -20,7 +24,9 @@
   },
   "packageRules": [
     {
-      "matchManagers": ["pub"],
+      "matchManagers": [
+        "pub"
+      ],
       "rangeStrategy": "bump"
     },
     {

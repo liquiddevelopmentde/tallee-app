@@ -197,6 +197,7 @@ def issue_numbers_for_pr(pr: Dict[str, Any]) -> Set[int]:
                 nums.add(issue["number"])
     return nums
 
+
 def has_open_pr_for_issue(issue: Dict[str, Any]) -> bool:
     """
     Check whether any open pull request references an issue.
@@ -264,6 +265,8 @@ def main() -> None:
     Run the command line entry point.
 
     """
+
+
 def pr_column(pr):
     return next((c for l, c in PR_LABEL_COLUMNS.items() if l in label_names(pr)), None)
 
