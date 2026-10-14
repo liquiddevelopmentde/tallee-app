@@ -67,8 +67,8 @@ def api(method: str, path: str, body: Optional[Any] = None) -> Any:
     """
     data: Optional[bytes] = json.dumps(body).encode() if body is not None else None
     headers: Dict[str, str] = {**AUTH, "Content-Type": "application/json"} if data else AUTH
-    with urlopen(Request(API + path, data=data, method=method, headers=headers)) as r:
-        raw: bytes = r.read()
+    with urlopen(Request(API + path, data=data, method=method, headers=headers)) as response:
+        raw: bytes = response.read()
         return json.loads(raw) if raw else None
 
 
@@ -82,9 +82,9 @@ def get_all(path: str) -> List[Dict[str, Any]]:
     """
     out: List[Dict[str, Any]] = []
     page: int = 1
-    sep: str = "&" if "?" in path else "?"
+    separator: str = "&" if "?" in path else "?"
     while True:
-        batch: List[Dict[str, Any]] = api("GET", f"{path}{sep}limit=50&page={page}")
+        batch: List[Dict[str, Any]] = api("GET", f"{path}{separator}limit=50&page={page}")
         if not batch:
             return out
         out += batch
@@ -101,7 +101,7 @@ def label_names(obj: Dict[str, Any]) -> Set[str]:
     :returns: The set of label names.
     :rtype: Set[str]
     """
-    return {l["name"] for l in obj.get("labels") or []}
+    return {label["name"] for label in obj.get("labels") or []}
 
 
 def is_issue(obj: Any) -> bool:
@@ -152,12 +152,12 @@ def column_id(title: str) -> int:
     :returns: The id of the matching column.
     :rtype: int
     """
-    cols: List[Dict[str, Any]] = columns()
-    for c in cols:
-        if c["title"].strip().lower() == title.lower():
-            return c["id"]
+    board_columns: List[Dict[str, Any]] = columns()
+    for column in board_columns:
+        if column["title"].strip().lower() == title.lower():
+            return column["id"]
     sys.exit(f"column '{title}' not found on project {PROJECT_ID}; "
-             f"available: {[c['title'] for c in cols]}")
+             f"available: {[column['title'] for column in board_columns]}")
 
 
 def move(issue: Dict[str, Any], column: str) -> None:
@@ -197,28 +197,28 @@ def issue_numbers_for_pr(pr: Dict[str, Any]) -> Set[int]:
     """
     branch: str = pr["head"]["ref"]
     nums: Set[int] = set()
-    m: Optional[re.Match] = re.match(r"^[^/]+/0*(\d+)(?:[-_/]|$)", branch)
-    if m:
-        nums.add(int(m.group(1)))
-    for kw in re.finditer(r"(?i)\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+#(\d+)", pr.get("body") or ""):
-        nums.add(int(kw.group(1)))
+    match: Optional[re.Match] = re.match(r"^[^/]+/0*(\d+)(?:[-_/]|$)", branch)
+    if match:
+        nums.add(int(match.group(1)))
+    for keyword in re.finditer(r"(?i)\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+#(\d+)", pr.get("body") or ""):
+        nums.add(int(keyword.group(1)))
     # Branches linked by branch_issue_link.yaml without a number in their name.
     if not nums:
-        for i in all_issues():
-            if i.get("ref") in (branch, f"refs/heads/{branch}"):
-                nums.add(i["number"])
+        for issue in all_issues():
+            if issue.get("ref") in (branch, f"refs/heads/{branch}"):
+                nums.add(issue["number"])
     return nums
 
-
-def open_prs_for_issue(issue: Dict[str, Any]) -> List[Dict[str, Any]]:
+def has_open_pr_for_issue(issue: Dict[str, Any]) -> bool:
     """
-    List the open pull requests that reference an issue.
+    Check whether any open pull request references an issue.
 
     :param issue: The issue object to look up.
-    :returns: The open pull requests linked to the issue.
-    :rtype: List[Dict[str, Any]]
+    :returns: True if an open pull request is linked to the issue.
+    :rtype: bool
     """
-    return [pr for pr in get_all(f"/repos/{REPO}/pulls?state=open") if issue["number"] in issue_numbers_for_pr(pr)]
+    return any(issue["number"] in issue_numbers_for_pr(pr)
+               for pr in get_all(f"/repos/{REPO}/pulls?state=open"))
 
 
 def handle_issue_event(action: str, issue: Dict[str, Any]) -> None:
@@ -240,7 +240,7 @@ def handle_issue_event(action: str, issue: Dict[str, Any]) -> None:
             move(issue, BACKLOG)
     elif action == "closed":
         # Issues with an open PR are driven by that PR's labels instead.
-        if open_prs_for_issue(issue):
+        if has_open_pr_for_issue(issue):
             print(f"issue #{issue['number']} has an open PR; leaving it to the PR")
         else:
             move(issue, DONE)
@@ -260,19 +260,20 @@ def handle_pr_event(pr: Dict[str, Any]) -> None:
     """
     # Fetch fresh labels: the payload may predate the label automation's change.
     labels: Set[str] = label_names(api("GET", f"/repos/{REPO}/issues/{pr['number']}"))
-    column: Optional[str] = next((c for l, c in PR_LABEL_COLUMNS.items() if l in labels), None)
+    column: Optional[str] = next(
+        (mapped for label, mapped in PR_LABEL_COLUMNS.items() if label in labels), None)
     if not column:
         print(f"PR #{pr['number']} has no workflow label mapped to a column")
         return
     nums: Set[int] = issue_numbers_for_pr(pr)
     if not nums:
         print(f"PR #{pr['number']} is not linked to any issue")
-    for n in sorted(nums):
-        issue: Optional[Dict[str, Any]] = get_issue(n)
+    for number in sorted(nums):
+        issue: Optional[Dict[str, Any]] = get_issue(number)
         if issue:
             move(issue, column)
         else:
-            print(f"#{n} referenced by PR #{pr['number']} is not an issue; skipping")
+            print(f"#{number} referenced by PR #{pr['number']} is not an issue; skipping")
 
 
 def main() -> None:
@@ -289,8 +290,8 @@ def main() -> None:
         move(issue, sys.argv[3])
         return
 
-    with open(os.environ["GITHUB_EVENT_PATH"]) as f:
-        payload: Dict[str, Any] = json.load(f)
+    with open(os.environ["GITHUB_EVENT_PATH"]) as event_file:
+        payload: Dict[str, Any] = json.load(event_file)
     event: str = os.environ["GITHUB_EVENT_NAME"]
     if event == "issues":
         handle_issue_event(payload["action"], payload["issue"])
