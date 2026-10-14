@@ -18,7 +18,6 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Set
-from typing import Union
 from urllib.error import HTTPError
 from urllib.request import Request
 from urllib.request import urlopen
@@ -55,7 +54,7 @@ PR_LABEL_COLUMNS: Dict[str, str] = {
 }
 
 
-def api(method: str, path: str, body: Optional[Any] = None) -> Any:
+def api(method: str, path: str, body: Any = None) -> Any:
     """
     Call the Gitea API.
 
@@ -118,7 +117,7 @@ def is_issue(obj: Any) -> bool:
     return isinstance(obj, dict) and obj.get("pull_request") is None
 
 
-def get_issue(number: Union[int, str]) -> Optional[Dict[str, Any]]:
+def get_issue(number: int) -> Optional[Dict[str, Any]]:
     """
     Fetch an issue by its number.
 
@@ -284,7 +283,7 @@ def main() -> None:
     :rtype: None
     """
     if sys.argv[1:2] == ["move"]:
-        issue: Optional[Dict[str, Any]] = get_issue(sys.argv[2])
+        issue: Optional[Dict[str, Any]] = get_issue(int(sys.argv[2]))
         if not issue:
             sys.exit(f"#{sys.argv[2]} is not an issue")
         move(issue, sys.argv[3])
