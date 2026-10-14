@@ -23,7 +23,8 @@ class SelectionSheet<T> extends StatefulWidget {
     this.leadingBuilder,
   }) : selectedValues = const [],
        onValuesUpdated = null,
-       isMultiSelection = false;
+       isMultiSelection = false,
+       exclusivePairs = const [];
 
   /// Generic sheet to select multiple values from a list.
   ///
@@ -43,6 +44,7 @@ class SelectionSheet<T> extends StatefulWidget {
     required this.onValuesUpdated,
     required this.labelBuilder,
     this.leadingBuilder,
+    this.exclusivePairs = const [],
   }) : selectedValue = null,
        onValueUpdated = null,
        isMultiSelection = true;
@@ -50,6 +52,7 @@ class SelectionSheet<T> extends StatefulWidget {
   final String title;
   final String description;
   final List<T> values;
+  final List<(T, T)> exclusivePairs;
 
   final String Function(BuildContext context, T value) labelBuilder;
   final Widget Function(T value)? leadingBuilder;
@@ -145,7 +148,7 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                   final value = widget.values[index];
                   return GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () => valueChangeFunction(value),
+                    onTap: () => handleValueSelection(value),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         vertical: 9,
@@ -214,22 +217,11 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
     );
   }
 
-  void onValueChanged(T? value) {
-    setState(() => selectedValue = value);
-    widget.onValueUpdated?.call(value);
-  }
-
-  void onValuesChanged(T value) {
-    setState(
-      () => selectedValues.contains(value)
-          ? selectedValues.remove(value)
-          : selectedValues.add(value),
-    );
-    widget.onValuesUpdated?.call(selectedValues);
-  }
-
-  Future<void> valueChangeFunction(T value) async {
+  /// Handles the general value selection
+  Future<void> handleValueSelection(T value) async {
     widget.isMultiSelection ? onValuesChanged(value) : onValueChanged(value);
+
+    // Pop sheet
     if (!widget.isMultiSelection) {
       await Future.delayed(MINIMUM_SKELETON_DURATION).then((_) {
         if (!mounted) return;
@@ -237,5 +229,39 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
             .pop(selectedValues.isEmpty ? null : selectedValues.first);
       });
     }
+  }
+
+  /// Handler for single selection
+  void onValueChanged(T? value) {
+    setState(() => selectedValue = value);
+    widget.onValueUpdated?.call(value);
+  }
+
+  /// Handler for multi selection
+  void onValuesChanged(T value) {
+    final shouldRemoveVal = selectedValues.contains(value);
+
+    setState(() {
+      if (shouldRemoveVal) {
+        selectedValues.remove(value);
+      } else {
+        removeConflictingValues(value);
+        selectedValues.add(value);
+      }
+    });
+
+    widget.onValuesUpdated?.call(selectedValues);
+  }
+
+  /// Checks whether [value] has a conflict in [selectedValues]
+  void removeConflictingValues(T value) {
+    List<T> conflictingVals = [];
+    for (final val in selectedValues) {
+      if (widget.exclusivePairs.contains((val, value)) ||
+          widget.exclusivePairs.contains((value, val))) {
+        conflictingVals.add(val);
+      }
+    }
+    selectedValues.removeWhere((val) => conflictingVals.contains(val));
   }
 }

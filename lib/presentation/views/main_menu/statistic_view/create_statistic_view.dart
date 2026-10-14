@@ -269,6 +269,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                 translateScopeToString(scope, context),
             onValuesUpdated: (scopes) =>
                 setState(() => selectedScopes = scopes),
+            exclusivePairs: const [
+              (StatisticScope.allPlayers, StatisticScope.selectedGroups),
+            ],
           ),
     );
   }
