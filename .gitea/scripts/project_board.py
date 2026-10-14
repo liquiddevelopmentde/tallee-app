@@ -218,8 +218,7 @@ def open_prs_for_issue(issue: Dict[str, Any]) -> List[Dict[str, Any]]:
     :returns: The open pull requests linked to the issue.
     :rtype: List[Dict[str, Any]]
     """
-    return [pr for pr in get_all(f"/repos/{REPO}/pulls?state=open")
-            if issue["number"] in issue_numbers_for_pr(pr)]
+    return [pr for pr in get_all(f"/repos/{REPO}/pulls?state=open") if issue["number"] in issue_numbers_for_pr(pr)]
 
 
 def handle_issue_event(action: str, issue: Dict[str, Any]) -> None:
