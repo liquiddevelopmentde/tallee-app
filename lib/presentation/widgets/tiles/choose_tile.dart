@@ -1,26 +1,24 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/custom_theme.dart';
 
 class ChooseTile extends StatefulWidget {
   /// A tile widget that allows users to choose an option by tapping on it.
   /// - [title]: The title text displayed on the tile.
+  /// - [icon]: Optional icon next to the title text.
   /// - [trailing]: Optional trailing text displayed on the tile.
   /// - [onPressed]: The callback invoked when the tile is tapped.
   const ChooseTile({
     super.key,
     required this.title,
+    this.icon,
     this.trailing,
     this.onPressed,
   });
 
-  /// The title text displayed on the tile.
   final String title;
-
-  /// The callback invoked when the tile is tapped.
+  final IconData? icon;
   final VoidCallback? onPressed;
-
-  /// Optional trailing text displayed on the tile.
   final Widget? trailing;
 
   @override
@@ -43,7 +41,9 @@ class _ChooseTileState extends State<ChooseTile> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: CustomTheme.standardBoxDecoration,
         child: Row(
+          spacing: 10,
           children: [
+            if (widget.icon != null) Icon(widget.icon),
             Text(
               widget.title,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

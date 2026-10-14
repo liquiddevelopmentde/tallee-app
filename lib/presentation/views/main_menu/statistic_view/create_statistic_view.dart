@@ -93,6 +93,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                     // Type selection
                     ChooseTile(
                       title: loc.type,
+                      icon: Icons.bar_chart,
                       trailing: Padding(
                         padding: const EdgeInsets.only(right: 5),
                         child: selectedTypes.isEmpty
@@ -130,6 +131,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                     // Scope selection
                     ChooseTile(
                       title: loc.scope,
+                      icon: Icons.hdr_strong,
                       trailing: Padding(
                         padding: const EdgeInsets.only(right: 5),
                         child: selectedScopes.isEmpty
@@ -167,6 +169,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                     // Timeframe selection
                     ChooseTile(
                       title: loc.timeframe,
+                      icon: Icons.date_range,
                       trailing: Padding(
                         padding: const EdgeInsets.only(right: 5),
                         child: Text(
@@ -186,6 +189,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                     // Color selection
                     ChooseTile(
                       title: loc.color,
+                      icon: Icons.palette,
                       trailing: Padding(
                         padding: const EdgeInsets.only(right: 5),
                         child: Row(
