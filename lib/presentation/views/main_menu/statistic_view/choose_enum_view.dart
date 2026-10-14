@@ -51,22 +51,19 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
           }
           Navigator.of(context).pop(popResult);
         },
-        child: ListView.separated(
-          padding: const EdgeInsets.only(
-            bottom: 85,
-            top: 10,
-            right: 10,
-            left: 10,
-          ),
-          itemCount: widget.enumValue.length,
-          separatorBuilder: (BuildContext context, int index) =>
-              const SizedBox(height: 10),
-          itemBuilder: (BuildContext context, int index) {
-            bool isSelected = selectedValues.any(
-              (item) => item == widget.enumValue[index],
-            );
-
-            return GestureDetector(
+        child: RadioGroup(
+          onChanged: (T? value) => onChanged(value!),
+          child: ListView.separated(
+            padding: const EdgeInsets.only(
+              bottom: 85,
+              top: 10,
+              right: 10,
+              left: 10,
+            ),
+            itemCount: widget.enumValue.length,
+            separatorBuilder: (BuildContext context, int index) =>
+                const SizedBox(height: 10),
+            itemBuilder: (BuildContext context, int index) => GestureDetector(
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 12,
@@ -98,47 +95,71 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                         ),
                       ],
                     ),
-                    AnimatedOpacity(
-                      opacity: isSelected ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 150),
-                      child: const Icon(
-                        Icons.check,
-                        color: CustomTheme.textColor,
+
+                    if (!isMultiSelect)
+                      // Radio
+                      Radio<T>(
+                        fillColor: WidgetStateProperty.resolveWith<Color>((
+                          states,
+                        ) {
+                          if (states.contains(WidgetState.selected)) {
+                            return CustomTheme.textColor;
+                          }
+                          return CustomTheme.hintColor;
+                        }),
+                        value: widget.enumValue[index],
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      )
+                    else
+                      // Checkbox
+                      Checkbox(
+                        value: selectedValues.contains(widget.enumValue[index]),
+                        onChanged: (_) => onChanged(widget.enumValue[index]),
+                        checkColor: CustomTheme.backgroundColor,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                        fillColor: WidgetStateProperty.resolveWith<Color>((
+                          states,
+                        ) {
+                          if (states.contains(WidgetState.selected)) {
+                            return CustomTheme.textColor;
+                          }
+                          return Colors.transparent;
+                        }),
                       ),
-                    ),
                   ],
                 ),
               ),
-              onTap: () async {
-                setState(() {
-                  if (selectedValues.contains(widget.enumValue[index])) {
-                    selectedValues.removeWhere(
-                      (val) => val == widget.enumValue[index],
-                    );
-                  } else {
-                    // In single select mode only allow one item
-                    if (!isMultiSelect) {
-                      selectedValues.clear();
-                    }
-                    selectedValues.add(widget.enumValue[index]);
-                  }
-                });
-
-                // Navigate back to create match view instantly
-                if (!isMultiSelect) {
-                  await Future.delayed(MINIMUM_SKELETON_DURATION).then((_) {
-                    if (!context.mounted) return;
-                    Navigator.of(
-                      context,
-                    ).pop(selectedValues.isEmpty ? null : selectedValues.first);
-                  });
-                }
-              },
-            );
-          },
+              onTap: () => onChanged(widget.enumValue[index]),
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> onChanged(T value) async {
+    setState(() {
+      if (selectedValues.contains(value)) {
+        selectedValues.removeWhere((val) => val == value);
+      } else {
+        // In single select mode only allow one item
+        if (!isMultiSelect) {
+          selectedValues.clear();
+        }
+        selectedValues.add(value);
+      }
+    });
+
+    // Navigate back to create match view instantly
+    if (!isMultiSelect) {
+      await Future.delayed(MINIMUM_SKELETON_DURATION).then((_) {
+        if (!mounted) return;
+        Navigator.of(context)
+            .pop(selectedValues.isEmpty ? null : selectedValues.first);
+      });
+    }
   }
 
   bool get isMultiSelect => widget.enableMultiSelection;
