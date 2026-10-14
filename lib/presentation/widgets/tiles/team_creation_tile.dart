@@ -1,11 +1,12 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
 class TeamCreationTile extends StatefulWidget {
@@ -106,30 +107,29 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                         runSpacing: 8,
                         children: teamColors.map((color) {
                           final isSelected = widget.color == color;
+
                           return GestureDetector(
                             onTap: () {
                               widget.onColorSelection?.call(color);
                             },
-                            child: Container(
-                              width: 34,
-                              height: 34,
-                              decoration: BoxDecoration(
-                                color: getColorFromAppColor(color),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Colors.transparent,
-                                  width: 3,
+                            child: ColoredCircle(
+                              color: color,
+                              size: 34,
+                              border: Border.all(
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                width: 3,
+                              ),
+                              child: AnimatedOpacity(
+                                opacity: isSelected ? 1 : 0,
+                                duration: const Duration(milliseconds: 150),
+                                child: const Icon(
+                                  Icons.check,
+                                  size: 18,
+                                  color: Colors.white,
                                 ),
                               ),
-                              child: isSelected
-                                  ? const Icon(
-                                      Icons.check,
-                                      size: 18,
-                                      color: Colors.white,
-                                    )
-                                  : null,
                             ),
                           );
                         }).toList(),

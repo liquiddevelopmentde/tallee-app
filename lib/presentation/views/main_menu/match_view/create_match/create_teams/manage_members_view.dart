@@ -1,11 +1,10 @@
 import 'dart:core' hide Match;
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -14,6 +13,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
 /// Displays the given [teams] as a flat reorderable list where every team is
@@ -156,7 +156,6 @@ class _ManageMembersViewState extends State<ManageMembersView> {
   }
 
   Widget buildTeamTile({required Team team}) {
-    final color = getColorFromAppColor(team.color);
     final loc = AppLocalizations.of(context);
     final length = team.members.length;
     final memberText = length == 1 ? loc.member : loc.members;
@@ -167,11 +166,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
       child: Row(
         children: [
           // Color circle
-          Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
+          ColoredCircle(color: team.color, size: 14),
 
           const SizedBox(width: 10),
 

@@ -10,6 +10,8 @@ class ColoredCircle extends StatelessWidget {
     this.color,
     this.hasRandomColors = false,
     this.size = 16.0,
+    this.border,
+    this.child,
   }) : assert(
          color != null || hasRandomColors,
          'ColoredCircle needs a color or should be random.',
@@ -18,6 +20,8 @@ class ColoredCircle extends StatelessWidget {
   final AppColor? color;
   final bool hasRandomColors;
   final double size;
+  final Border? border;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +57,16 @@ class ColoredCircle extends StatelessWidget {
       );
     }
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
       width: size,
       height: size,
       decoration: BoxDecoration(
         color: getColorFromAppColor(color!),
         shape: BoxShape.circle,
+        border: border,
       ),
+      child: child,
     );
   }
 }
