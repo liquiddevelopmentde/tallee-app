@@ -62,7 +62,6 @@ def api(method: str, path: str, body: Any = None) -> Any:
     :param path: The API path to request.
     :param body: The JSON-serializable request body, if any.
     :returns: The parsed JSON response, or None for empty responses.
-    :rtype: Any
     """
     data: Optional[bytes] = json.dumps(body).encode() if body is not None else None
     headers: Dict[str, str] = {**AUTH, "Content-Type": "application/json"} if data else AUTH
@@ -77,7 +76,6 @@ def get_all(path: str) -> List[Dict[str, Any]]:
 
     :param path: The API path of the paginated list endpoint.
     :returns: Every item across all pages.
-    :rtype: List[Dict[str, Any]]
     """
     out: List[Dict[str, Any]] = []
     page: int = 1
@@ -98,7 +96,6 @@ def label_names(obj: Dict[str, Any]) -> Set[str]:
 
     :param obj: An API object carrying a "labels" field.
     :returns: The set of label names.
-    :rtype: Set[str]
     """
     return {label["name"] for label in obj.get("labels") or []}
 
@@ -112,7 +109,6 @@ def is_issue(obj: Any) -> bool:
 
     :param obj: The API object to inspect.
     :returns: True if the object is an issue.
-    :rtype: bool
     """
     return isinstance(obj, dict) and obj.get("pull_request") is None
 
@@ -123,7 +119,6 @@ def get_issue(number: int) -> Optional[Dict[str, Any]]:
 
     :param number: The issue number.
     :returns: The issue object, or None if it is missing or a pull request.
-    :rtype: Optional[Dict[str, Any]]
     """
     try:
         obj: Dict[str, Any] = api("GET", f"/repos/{REPO}/issues/{number}")
@@ -138,7 +133,6 @@ def columns() -> List[Dict[str, Any]]:
     Fetch the project board columns.
 
     :returns: All columns of the configured project.
-    :rtype: List[Dict[str, Any]]
     """
     return get_all(f"/orgs/{ORG}/projects/{PROJECT_ID}/columns")
 
@@ -149,7 +143,6 @@ def column_id(title: str) -> int:
 
     :param title: The column title, matched case-insensitively.
     :returns: The id of the matching column.
-    :rtype: int
     """
     board_columns: List[Dict[str, Any]] = columns()
     for column in board_columns:
@@ -165,8 +158,6 @@ def move(issue: Dict[str, Any], column: str) -> None:
 
     :param issue: The issue object to move.
     :param column: The title of the target column.
-    :returns: Nothing.
-    :rtype: None
     """
     api("POST", f"/orgs/{ORG}/projects/{PROJECT_ID}/columns/{column_id(column)}/issues/{issue['id']}")
     print(f"issue #{issue['number']} '{issue['title']}' -> {column}")
@@ -178,7 +169,6 @@ def all_issues() -> List[Dict[str, Any]]:
     Fetch every issue in the repository, caching the result.
 
     :returns: All issues in the repository.
-    :rtype: List[Dict[str, Any]]
     """
     return get_all(f"/repos/{REPO}/issues?state=all&type=issues")
 
@@ -192,7 +182,6 @@ def issue_numbers_for_pr(pr: Dict[str, Any]) -> Set[int]:
 
     :param pr: The pull request object.
     :returns: The set of referenced issue numbers.
-    :rtype: Set[int]
     """
     branch: str = pr["head"]["ref"]
     nums: Set[int] = set()
@@ -214,7 +203,6 @@ def has_open_pr_for_issue(issue: Dict[str, Any]) -> bool:
 
     :param issue: The issue object to look up.
     :returns: True if an open pull request is linked to the issue.
-    :rtype: bool
     """
     return any(issue["number"] in issue_numbers_for_pr(pr)
                for pr in get_all(f"/repos/{REPO}/pulls?state=open"))
@@ -226,8 +214,6 @@ def handle_issue_event(action: str, issue: Dict[str, Any]) -> None:
 
     :param action: The issue event action.
     :param issue: The issue object carried by the event.
-    :returns: Nothing.
-    :rtype: None
     """
     if not is_issue(issue):
         return
@@ -254,8 +240,6 @@ def handle_pr_event(pr: Dict[str, Any]) -> None:
     Update the board in response to a pull request event.
 
     :param pr: The pull request object carried by the event.
-    :returns: Nothing.
-    :rtype: None
     """
     # Fetch fresh labels: the payload may predate the label automation's change.
     labels: Set[str] = label_names(api("GET", f"/repos/{REPO}/issues/{pr['number']}"))
@@ -279,8 +263,6 @@ def main() -> None:
     """
     Run the command line entry point.
 
-    :returns: Nothing.
-    :rtype: None
     """
     if sys.argv[1:2] == ["move"]:
         issue: Optional[Dict[str, Any]] = get_issue(int(sys.argv[2]))
