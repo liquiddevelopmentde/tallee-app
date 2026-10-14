@@ -20,15 +20,47 @@ class SelectionSheet<T> extends StatefulWidget {
     required this.onValueUpdated,
     required this.labelBuilder,
     this.leadingBuilder,
-  });
+  }) : selectedValues = const [],
+       onValuesUpdated = null,
+       isMultiSelection = false;
+
+  /// Generic sheet to select multiple values from a list.
+  ///
+  /// - [title]: The title shown on the top of the sheet
+  /// - [description]: The description shown under the title
+  /// - [values]: The values to choose from
+  /// - [selectedValues]: A list of pre selected values when opening the sheet
+  /// - [onValuesUpdated]: A callback when values are selected
+  /// - [labelBuilder]: The builder for the text label
+  /// - [leadingBuilder]: The builder for the leading Widget
+  const SelectionSheet.multiple({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.values,
+    required this.selectedValues,
+    required this.onValuesUpdated,
+    required this.labelBuilder,
+    this.leadingBuilder,
+  }) : selectedValue = null,
+       onValueUpdated = null,
+       isMultiSelection = true;
 
   final String title;
   final String description;
   final List<T> values;
-  final T? selectedValue;
-  final ValueChanged<T?> onValueUpdated;
+
   final String Function(BuildContext context, T value) labelBuilder;
   final Widget Function(T value)? leadingBuilder;
+
+  final T? selectedValue;
+  final ValueChanged<T?>? onValueUpdated;
+
+  final List<T> selectedValues;
+  final ValueChanged<List<T>>? onValuesUpdated;
+
+  // To decide between single and multi selection
+  final bool isMultiSelection;
 
   @override
   State<SelectionSheet<T>> createState() => _SelectionSheetState<T>();
@@ -36,10 +68,13 @@ class SelectionSheet<T> extends StatefulWidget {
 
 class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
   T? selectedValue;
+  List<T> selectedValues = [];
 
   @override
   void initState() {
     selectedValue = widget.selectedValue;
+    selectedValues = widget.selectedValues;
+
     super.initState();
   }
 
@@ -50,23 +85,29 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
       spacing: 20,
       children: [
         // Title & description
-        Column(
-          spacing: 5,
-          children: [
-            // Title
-            Text(
-              widget.title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            spacing: 5,
+            children: [
+              // Title
+              Text(
+                widget.title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
 
-            // Description
-            Text(
-              widget.description,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.visible,
-              style: const TextStyle(color: CustomTheme.hintColor),
-            ),
-          ],
+              // Description
+              Text(
+                widget.description,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.visible,
+                style: const TextStyle(color: CustomTheme.hintColor),
+              ),
+            ],
+          ),
         ),
 
         // Values
@@ -82,7 +123,7 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                 final value = widget.values[index];
                 return GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: () => onValueChanged(value),
+                  onTap: () => valueChangeFunction(value),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: 9,
@@ -104,21 +145,40 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                           ],
                         ),
 
-                        // Radio
-                        Radio<T>(
-                          fillColor: WidgetStateProperty.resolveWith<Color>((
-                            states,
-                          ) {
-                            if (states.contains(WidgetState.selected)) {
-                              return CustomTheme.textColor;
-                            }
-                            return CustomTheme.hintColor;
-                          }),
-                          value: value,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          visualDensity: VisualDensity.compact,
-                        ),
+                        if (!widget.isMultiSelection)
+                          // Radio
+                          Radio<T>(
+                            fillColor: WidgetStateProperty.resolveWith<Color>((
+                              states,
+                            ) {
+                              if (states.contains(WidgetState.selected)) {
+                                return CustomTheme.textColor;
+                              }
+                              return CustomTheme.hintColor;
+                            }),
+                            value: value,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.compact,
+                          )
+                        else
+                          // Checkbox
+                          Checkbox(
+                            value: selectedValues.contains(value),
+                            onChanged: (_) => onValuesChanged(value),
+                            checkColor: CustomTheme.backgroundColor,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.compact,
+                            fillColor: WidgetStateProperty.resolveWith<Color>((
+                              states,
+                            ) {
+                              if (states.contains(WidgetState.selected)) {
+                                return CustomTheme.textColor;
+                              }
+                              return CustomTheme.hintColor;
+                            }),
+                          ),
                       ],
                     ),
                   ),
@@ -133,6 +193,19 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
 
   void onValueChanged(T? value) {
     setState(() => selectedValue = value);
-    widget.onValueUpdated(value);
+    widget.onValueUpdated?.call(value);
+  }
+
+  void onValuesChanged(T value) {
+    setState(
+      () => selectedValues.contains(value)
+          ? selectedValues.remove(value)
+          : selectedValues.add(value),
+    );
+    widget.onValuesUpdated?.call(selectedValues);
+  }
+
+  void valueChangeFunction(T value) {
+    widget.isMultiSelection ? onValuesChanged(value) : onValueChanged(value);
   }
 }
