@@ -1,0 +1,27 @@
+name: "Project Board Sync"
+on:
+  issues:
+    types: [ opened, labeled, closed, reopened ]
+  pull_request:
+    # The workflow label is set by "PR Label Automation"; every state change arrives as "labeled".
+    types: [ labeled ]
+
+jobs:
+  sync-board:
+    name: "Move issue on project board"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      API: ${{ gitea.server_url }}/api/v1
+      TOKEN: ${{ secrets.BOT_TOKEN }}
+      REPO: ${{ github.repository }}
+      ORG: liquid-development
+      PROJECT_ID: "9"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .gitea/scripts
+      - name: "Sync project board"
+        run: python3 .gitea/scripts/project_board.py event

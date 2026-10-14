@@ -1,0 +1,180 @@
+"""Keep the issues of this repository in sync with the organization project board.
+
+Usage:
+  project_board.py event                 # react to the current issues / pull_request event
+  project_board.py move <issue> <column> # put issue #<issue> into <column>
+
+Environment: API, TOKEN, REPO, ORG, PROJECT_ID (+ GITHUB_EVENT_NAME / GITHUB_EVENT_PATH for "event").
+"""
+import json, os, re, sys
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError
+
+API        = os.environ["API"]
+REPO       = os.environ["REPO"]
+ORG        = os.environ["ORG"]
+PROJECT_ID = os.environ["PROJECT_ID"]
+AUTH       = {"Authorization": "token " + os.environ["TOKEN"]}
+
+BACKLOG, TODO, IN_PROGRESS, IN_REVIEW, DONE = "Backlog", "To Do", "In Progress", "In Review", "Done"
+
+# PR workflow label -> board column.
+PR_LABEL_COLUMNS = {
+    "Workflow/In Progress":     IN_PROGRESS,
+    "Workflow/Ready for Review": IN_REVIEW,
+    "Workflow/Revision":        IN_REVIEW,
+    "Workflow/Ready for Merge": IN_REVIEW,
+    "Workflow/Ready to Merge":  IN_REVIEW,
+    "Workflow/Merged":          DONE,
+    "Workflow/Abandoned":       DONE,
+}
+BACKLOG_LABEL = "Workflow/Backlog"
+
+
+def api(method, path, body=None):
+    """Call the Gitea API; returns parsed JSON (or None for empty responses)."""
+    data = json.dumps(body).encode() if body is not None else None
+    headers = {**AUTH, "Content-Type": "application/json"} if data else AUTH
+    with urlopen(Request(API + path, data=data, method=method, headers=headers)) as r:
+        raw = r.read()
+        return json.loads(raw) if raw else None
+
+
+def get_all(path):
+    """GET a paginated list endpoint and return all items."""
+    out, page, sep = [], 1, "&" if "?" in path else "?"
+    while True:
+        batch = api("GET", f"{path}{sep}limit=50&page={page}")
+        if not batch:
+            return out
+        out += batch
+        if len(batch) < 50:
+            return out
+        page += 1
+
+
+def label_names(obj):
+    return {l["name"] for l in obj.get("labels") or []}
+
+
+def is_issue(obj):
+    # Issues and pull requests share one index space; Gitea sets "pull_request" only for PRs.
+    return isinstance(obj, dict) and obj.get("pull_request") is None
+
+
+def get_issue(number):
+    try:
+        obj = api("GET", f"/repos/{REPO}/issues/{number}")
+    except HTTPError:
+        return None
+    return obj if is_issue(obj) else None
+
+
+_columns = None
+def column_id(title):
+    global _columns
+    if _columns is None:
+        _columns = get_all(f"/orgs/{ORG}/projects/{PROJECT_ID}/columns")
+    for c in _columns:
+        if c["title"].strip().lower() == title.lower():
+            return c["id"]
+    sys.exit(f"column '{title}' not found on project {PROJECT_ID}; "
+             f"available: {[c['title'] for c in _columns]}")
+
+
+def move(issue, column):
+    """Add the issue to the project (if needed) and place it in the given column."""
+    api("POST", f"/orgs/{ORG}/projects/{PROJECT_ID}/columns/{column_id(column)}/issues/{issue['id']}")
+    print(f"issue #{issue['number']} '{issue['title']}' -> {column}")
+
+
+_all_issues = None
+def all_issues():
+    global _all_issues
+    if _all_issues is None:
+        _all_issues = get_all(f"/repos/{REPO}/issues?state=all&type=issues")
+    return _all_issues
+
+
+def issue_numbers_for_pr(pr):
+    """Issue numbers a PR belongs to: branch "<type>/<nr>-...", issue ref == branch, closing keywords."""
+    branch = pr["head"]["ref"]
+    nums = set()
+    m = re.match(r"^[^/]+/0*(\d+)(?:[-_/]|$)", branch)
+    if m:
+        nums.add(int(m.group(1)))
+    for kw in re.finditer(r"(?i)\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+#(\d+)", pr.get("body") or ""):
+        nums.add(int(kw.group(1)))
+    # Branches linked by branch_issue_link.yaml without a number in their name.
+    if not nums:
+        for i in all_issues():
+            if i.get("ref") in (branch, f"refs/heads/{branch}"):
+                nums.add(i["number"])
+    return nums
+
+
+def open_prs_for_issue(issue):
+    return [pr for pr in get_all(f"/repos/{REPO}/pulls?state=open")
+            if issue["number"] in issue_numbers_for_pr(pr)]
+
+
+def handle_issue_event(action, issue):
+    if not is_issue(issue):
+        return
+    labels = label_names(issue)
+    if action == "opened":
+        move(issue, BACKLOG if BACKLOG_LABEL in labels else TODO)
+    elif action in ("labeled", "label_updated"):
+        if BACKLOG_LABEL in labels:
+            move(issue, BACKLOG)
+    elif action == "closed":
+        # Issues with an open PR are driven by that PR's labels instead.
+        if open_prs_for_issue(issue):
+            print(f"issue #{issue['number']} has an open PR; leaving it to the PR")
+        else:
+            move(issue, DONE)
+    elif action == "reopened":
+        move(issue, IN_PROGRESS if issue.get("ref") else TODO)
+    else:
+        print(f"no board change for issues/{action}")
+
+
+def handle_pr_event(pr):
+    # Fetch fresh labels: the payload may predate the label automation's change.
+    labels = label_names(api("GET", f"/repos/{REPO}/issues/{pr['number']}"))
+    column = next((c for l, c in PR_LABEL_COLUMNS.items() if l in labels), None)
+    if not column:
+        print(f"PR #{pr['number']} has no workflow label mapped to a column")
+        return
+    nums = issue_numbers_for_pr(pr)
+    if not nums:
+        print(f"PR #{pr['number']} is not linked to any issue")
+    for n in sorted(nums):
+        issue = get_issue(n)
+        if issue:
+            move(issue, column)
+        else:
+            print(f"#{n} referenced by PR #{pr['number']} is not an issue; skipping")
+
+
+def main():
+    if sys.argv[1:2] == ["move"]:
+        issue = get_issue(sys.argv[2])
+        if not issue:
+            sys.exit(f"#{sys.argv[2]} is not an issue")
+        move(issue, sys.argv[3])
+        return
+
+    with open(os.environ["GITHUB_EVENT_PATH"]) as f:
+        payload = json.load(f)
+    event = os.environ["GITHUB_EVENT_NAME"]
+    if event == "issues":
+        handle_issue_event(payload["action"], payload["issue"])
+    elif event == "pull_request":
+        handle_pr_event(payload["pull_request"])
+    else:
+        print(f"unsupported event '{event}'")
+
+
+if __name__ == "__main__":
+    main()
