@@ -48,7 +48,6 @@ PR_LABEL_COLUMNS: Dict[str, str] = {
     "Workflow/Ready for Review": IN_REVIEW,
     "Workflow/Revision": IN_REVIEW,
     "Workflow/Ready for Merge": IN_REVIEW,
-    "Workflow/Ready to Merge": IN_REVIEW,
     "Workflow/Merged": DONE,
     "Workflow/Abandoned": DONE,
 }
