@@ -80,40 +80,40 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 20,
-      children: [
-        // Title & description
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            spacing: 5,
-            children: [
-              // Title
-              Text(
-                widget.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+    return SafeArea(
+      minimum: const EdgeInsets.only(right: 6, left: 6),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 20,
+        children: [
+          // Title & description
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              spacing: 5,
+              children: [
+                // Title
+                Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
-              ),
 
-              // Description
-              Text(
-                widget.description,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.visible,
-                style: const TextStyle(color: CustomTheme.hintColor),
-              ),
-            ],
+                // Description
+                Text(
+                  widget.description,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
+                  style: const TextStyle(color: CustomTheme.hintColor),
+                ),
+              ],
+            ),
           ),
-        ),
 
-        // Values
-        Flexible(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
+          // Values
+          Flexible(
             child: RadioGroup<T>(
               groupValue: selectedValue,
               onChanged: onValueChanged,
@@ -131,7 +131,14 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                         vertical: 9,
                         horizontal: 14,
                       ),
-                      decoration: CustomTheme.standardBoxDecoration,
+                      decoration: BoxDecoration(
+                        color: CustomTheme.boxColor,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: CustomTheme.boxBorderColor,
+                          width: 2,
+                        ),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -189,8 +196,8 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
