@@ -4,6 +4,7 @@ Keep the issues of this repository in sync with the organization project board.
 Usage:
 - project_board.py event                 # react to the current issues / pull_request event
 - project_board.py move <issue> <column> # put issue #<issue> into <column>
+- workflow_dispatch                      # place every existing issue of the repo on the board
 
 Environment:
 - API
@@ -263,6 +264,38 @@ def main() -> None:
     Run the command line entry point.
 
     """
+def pr_column(pr):
+    return next((c for l, c in PR_LABEL_COLUMNS.items() if l in label_names(pr)), None)
+
+
+def desired_column(issue, prs):
+    """Column for an existing issue, derived from its current state and its linked PRs."""
+    # An open PR reflects the current state of work best (newest first).
+    for pr in sorted(prs, key=lambda p: p["updated_at"], reverse=True):
+        if pr["state"] == "open" and pr_column(pr):
+            return pr_column(pr)
+    if issue["state"] == "closed":
+        return DONE
+    if BACKLOG_LABEL in label_names(issue):
+        return BACKLOG
+    if issue.get("ref"):
+        return IN_PROGRESS
+    return TODO
+
+
+def backfill():
+    """Place every existing issue of the repository on the board."""
+    prs_by_issue = {}
+    for pr in get_all(f"/repos/{REPO}/pulls?state=all"):
+        for n in issue_numbers_for_pr(pr):
+            prs_by_issue.setdefault(n, []).append(pr)
+    issues = [i for i in all_issues() if is_issue(i)]
+    print(f"{len(issues)} issue(s) in {REPO}")
+    for issue in sorted(issues, key=lambda i: i["number"]):
+        move(issue, desired_column(issue, prs_by_issue.get(issue["number"], [])))
+
+
+def main():
     if sys.argv[1:2] == ["move"]:
         issue: Optional[Dict[str, Any]] = get_issue(int(sys.argv[2]))
         if not issue:
@@ -273,7 +306,9 @@ def main() -> None:
     with open(os.environ["GITHUB_EVENT_PATH"]) as event_file:
         payload: Dict[str, Any] = json.load(event_file)
     event: str = os.environ["GITHUB_EVENT_NAME"]
-    if event == "issues":
+    if event == "workflow_dispatch":
+        backfill()
+    elif event == "issues":
         handle_issue_event(payload["action"], payload["issue"])
     elif event == "pull_request":
         handle_pr_event(payload["pull_request"])
