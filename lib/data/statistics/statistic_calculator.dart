@@ -271,9 +271,11 @@ class StatisticCalculator {
   /// Determines how many wins the player has in the given matches.
   ///
   /// - singleLooser: Every player except the mvp gets a win
+  /// - Lives: all players that have lives left or no one when all are at 0 lives
   /// - Other rulesets: The mvp gets a win
   static int _wins(Player p, List<Match> matches) =>
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
+        if (m.isTie) return false;
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
         return m.game.ruleset == Ruleset.loser ? !isMvp : isMvp;
       }).length;
@@ -281,9 +283,11 @@ class StatisticCalculator {
   /// Determines how many losses the player has in the given matches.
   ///
   /// - singleLooser: The mvp is the loser
+  /// - Lives: all players that don't have lives left or no one when everyone has 0 lives left
   /// - Other rulesets: Everyone except mvp is the loser
   static int _losses(Player p, List<Match> matches) =>
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
+        if (m.isTie) return false;
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
         return m.game.ruleset == Ruleset.loser ? isMvp : !isMvp;
       }).length;
