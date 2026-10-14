@@ -11,7 +11,7 @@ class ColoredCircle extends StatelessWidget {
     this.hasRandomColors = false,
     this.size = 16.0,
   }) : assert(
-         color == null && !hasRandomColors,
+         color != null || hasRandomColors,
          'ColoredCircle needs a color or should be random.',
        );
 
