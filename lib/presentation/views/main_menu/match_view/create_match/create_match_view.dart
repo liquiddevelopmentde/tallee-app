@@ -285,7 +285,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   child: BottomAnimatedButton(
                     sizeRelativeToWidth: 0.95,
                     buttonType: ButtonType.primary,
-                    onPressed: isSubmitButtonEnabled()
+                    onPressed: isSubmitButtonEnabled
                         ? () => submitButtonNavigation(context)
                         : null,
                     buttonText: buttonText,
@@ -552,7 +552,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// - Currently in edit mode OR
   /// - A game is selected AND
   /// - There are at least two participating units (teams or single players).
-  bool isSubmitButtonEnabled() {
+  bool get isSubmitButtonEnabled {
     if (widget.editMode) return true;
 
     if (selectedGame == null) return false;
@@ -629,6 +629,11 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   Future<void> updateMatch() async {
     final originalMatch = widget.matchToPrefill!;
 
+    // Determine the new creation date:
+    // - If user selected a specific date via date picker -> use that date
+    // - If user didn't change the date AND the original match was created today -> keep original exact timestamp
+    // - If user explicitly changed the date to "today" (from a non-today original) -> use current time (now)
+    // Note: selectedCreationDate == null means "today" (see nullIfToday)
     final DateTime newCreatedAt;
     if (selectedCreationDate != null) {
       newCreatedAt = selectedCreationDate!;
