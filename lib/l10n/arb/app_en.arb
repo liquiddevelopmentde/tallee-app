@@ -205,6 +205,7 @@
   "lowest_score": "Lowest Score",
   "manage_members": "Manage Members",
   "match_in_progress": "Match in progress...",
+  "choose_color_description": "Choose the color for your game.",
   "match_name": "Match name",
   "match_not_ended_share_warning": "Matches can only be shared once they have ended.",
   "match_profile": "Match Profile",
@@ -228,6 +229,7 @@
       }
     }
   },
+  "choose_ruleset_description": "Choose the ruleset you want to play with.",
   "next": "Next",
   "no": "No",
   "no_data_to_export": "No data to export",

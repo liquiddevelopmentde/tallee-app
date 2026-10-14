@@ -1034,6 +1034,12 @@ abstract class AppLocalizations {
   /// **'Match in progress...'**
   String get match_in_progress;
 
+  /// No description provided for @choose_color_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the color for your game.'**
+  String get choose_color_description;
+
   /// No description provided for @match_name.
   ///
   /// In en, this message translates to:
@@ -1129,6 +1135,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 new player will be created} other{{count} new players will be created}}'**
   String new_players_will_be_created(int count);
+
+  /// No description provided for @choose_ruleset_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the ruleset you want to play with.'**
+  String get choose_ruleset_description;
 
   /// No description provided for @next.
   ///

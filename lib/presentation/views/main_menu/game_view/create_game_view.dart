@@ -1,8 +1,4 @@
-import 'dart:math';
-
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_popup/flutter_popup.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
@@ -17,6 +13,7 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 import 'package:tallee/state/showcase_provider.dart';
@@ -251,33 +248,46 @@ class _CreateGameViewState extends State<CreateGameView> {
                     description: loc.showcase_create_game_ruleset,
                     child: ChooseTile(
                       title: loc.ruleset,
-                      trailing: widget.requiredRuleset != null
-                          ? Padding(
-                              padding: const EdgeInsets.only(right: 5),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                spacing: 8,
-                                children: [
-                                  Icon(
-                                    getRulesetIcon(selectedRuleset!),
-                                    size: 16,
-                                  ),
-                                  Text(
-                                    translateRulesetToString(
-                                      selectedRuleset!,
-                                      context,
-                                    ),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ],
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 8,
+                          children: [
+                            Icon(getRulesetIcon(selectedRuleset!), size: 16),
+                            Text(
+                              translateRulesetToString(
+                                selectedRuleset!,
+                                context,
                               ),
-                            )
-                          : getRulesetDropdown(loc),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
+                        ),
+                      ),
+                      onPressed: showRulesetSheet,
                     ),
                   ),
 
                 // Choose color tile
-                ChooseTile(title: loc.color, trailing: getColorDropdown(loc)),
+                ChooseTile(
+                  title: loc.color,
+                  trailing: Padding(
+                    padding: const EdgeInsets.only(right: 5),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 8,
+                      children: [
+                        buildColorCircle(selectedColor!),
+                        Text(
+                          translateAppColorToString(selectedColor!, context),
+                          textAlign: TextAlign.right,
+                        ),
+                      ],
+                    ),
+                  ),
+                  onPressed: showColorSheet,
+                ),
 
                 // Description input field
                 TextInputField(
@@ -407,190 +417,55 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   bool get isEditMode => widget.gameToEdit != null;
 
-  Widget getRulesetDropdown(AppLocalizations loc) {
-    return CustomPopup(
-      showArrow: true,
-      arrowColor: CustomTheme.boxBorderColor,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-      barrierColor: Colors.transparent,
-      contentDecoration: CustomTheme.standardBoxDecoration,
-      onBeforePopup: () => HapticFeedback.selectionClick(),
-      onAfterPopup: () => HapticFeedback.selectionClick(),
-      content: StatefulBuilder(
-        builder: (context, setPopupState) => SizedBox(
-          width: 280,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(
-              rulesets.length,
-              (index) => GestureDetector(
-                onTap: () {
-                  HapticFeedback.selectionClick();
-                  setState(() {
-                    selectedRuleset = rulesets[index].$1;
-                  });
-                  setPopupState(() {});
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                        color: selectedRuleset == rulesets[index].$1
-                            ? CustomTheme.textColor.withAlpha(20)
-                            : Colors.transparent,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 16,
-                        ),
-                        child: Row(
-                          spacing: 8,
-                          children: [
-                            Icon(getRulesetIcon(rulesets[index].$1), size: 16),
-                            Text(
-                              rulesets[index].$2,
-                              style: const TextStyle(
-                                color: CustomTheme.textColor,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (index < rulesets.length - 1)
-                      const Divider(indent: 15, endIndent: 15),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-      child: Row(
-        spacing: 8,
-        children: [
-          Icon(getRulesetIcon(selectedRuleset!), size: 16),
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: Text(
-              translateRulesetToString(selectedRuleset!, context),
-              textAlign: TextAlign.right,
-            ),
-          ),
-          Transform.rotate(
-            angle: pi / 2,
-            child: const Icon(Icons.arrow_forward_ios, size: 16),
-          ),
-        ],
+  /// Shows a bottom sheet to choose a ruleset
+  void showRulesetSheet() {
+    final loc = AppLocalizations.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: CustomTheme.boxColor,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (BuildContext context) => SelectionSheet<Ruleset>(
+        title: loc.ruleset,
+        description: loc.choose_ruleset_description,
+        values: Ruleset.values,
+        selectedValue: selectedRuleset,
+        leadingBuilder: (ruleset) => Icon(getRulesetIcon(ruleset), size: 22),
+        labelBuilder: (context, ruleset) =>
+            translateRulesetToString(ruleset, context),
+        onValueUpdated: (ruleset) => setState(() => selectedRuleset = ruleset),
       ),
     );
   }
 
-  Widget getColorDropdown(AppLocalizations loc) {
-    return CustomPopup(
-      showArrow: true,
-      arrowColor: CustomTheme.boxBorderColor,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-      barrierColor: Colors.transparent,
-      contentDecoration: CustomTheme.standardBoxDecoration,
-      onBeforePopup: () => HapticFeedback.selectionClick(),
-      onAfterPopup: () => HapticFeedback.selectionClick(),
-      content: StatefulBuilder(
-        builder: (context, setPopupState) => SizedBox(
-          width: 150,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(
-              colors.length,
-              (index) => GestureDetector(
-                onTap: () {
-                  HapticFeedback.selectionClick();
-                  setState(() {
-                    selectedColor = colors[index].$1;
-                  });
-                  setPopupState(() {});
-                },
-                child: Column(
-                  children: [
-                    // Selected Highlighting
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                        color: selectedColor == colors[index].$1
-                            ? CustomTheme.textColor.withAlpha(20)
-                            : Colors.transparent,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: Row(
-                          spacing: 8,
-                          children: selectedColor == null
-                              ? [Text(loc.none)]
-                              : [
-                                  Container(
-                                    width: 16,
-                                    height: 16,
-                                    margin: const EdgeInsets.only(left: 12),
-                                    decoration: BoxDecoration(
-                                      color: getColorFromAppColor(
-                                        colors[index].$1,
-                                      ),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  Text(
-                                    colors[index].$2,
-                                    style: const TextStyle(
-                                      color: CustomTheme.textColor,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                ],
-                        ),
-                      ),
-                    ),
-                    if (index < colors.length - 1)
-                      const Divider(indent: 15, endIndent: 15),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-      child: Row(
-        spacing: 8,
-        children: [
-          // Selected Color
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              color: getColorFromAppColor(selectedColor!),
-              shape: BoxShape.circle,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: Text(translateAppColorToString(selectedColor!, context)),
-          ),
-          Transform.rotate(
-            angle: pi / 2,
-            child: const Icon(Icons.arrow_forward_ios, size: 16),
-          ),
-        ],
+  void showColorSheet() {
+    final loc = AppLocalizations.of(context);
+
+    showModalBottomSheet(
+      showDragHandle: true,
+      context: context,
+      backgroundColor: CustomTheme.boxColor,
+      isScrollControlled: true,
+      builder: (BuildContext context) => SelectionSheet<AppColor>(
+        title: loc.color,
+        description: loc.choose_color_description,
+        values: AppColor.values,
+        selectedValue: selectedColor,
+        leadingBuilder: (AppColor color) => buildColorCircle(color),
+        labelBuilder: (BuildContext context, AppColor color) =>
+            translateAppColorToString(color, context),
+        onValueUpdated: (color) => setState(() => selectedColor = color),
       ),
     );
   }
+
+  Widget buildColorCircle(AppColor color) => Container(
+    width: 16,
+    height: 16,
+    decoration: BoxDecoration(
+      color: getColorFromAppColor(color),
+      shape: BoxShape.circle,
+    ),
+  );
 }

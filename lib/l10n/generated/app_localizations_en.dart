@@ -535,6 +535,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get match_in_progress => 'Match in progress...';
 
   @override
+  String get choose_color_description => 'Choose the color for your game.';
+
+  @override
   String get match_name => 'Match name';
 
   @override
@@ -591,6 +594,10 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get choose_ruleset_description =>
+      'Choose the ruleset you want to play with.';
 
   @override
   String get next => 'Next';

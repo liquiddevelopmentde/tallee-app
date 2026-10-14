@@ -540,6 +540,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get match_in_progress => 'Spiel läuft...';
 
   @override
+  String get choose_color_description => 'Wähle die Farbe für dein Spiel.';
+
+  @override
   String get match_name => 'Spieltitel';
 
   @override
@@ -597,6 +600,10 @@ class AppLocalizationsDe extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get choose_ruleset_description =>
+      'Wähle das Regelwerk mit dem du spielen möchtest.';
 
   @override
   String get next => 'Weiter';
