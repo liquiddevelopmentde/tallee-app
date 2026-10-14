@@ -55,6 +55,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get choose_color_description => 'Choose the color for your game.';
+
+  @override
   String get choose_date_range => 'Choose date range';
 
   @override
@@ -70,6 +73,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get choose_other_file => 'Please choose another file.';
 
   @override
+  String get choose_ruleset_description =>
+      'Choose the ruleset you want to play with.';
+
+  @override
   String get choose_scopes => 'Choose Scopes';
 
   @override
@@ -80,13 +87,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get choose_where_to_save => 'Choose where to save your match:';
-
-  @override
-  String get classifier => 'Classifier';
-
-  @override
-  String get classifier_description =>
-      'Choose which metric is calculated and shown in this statistic.';
 
   @override
   String get click_another_player_to_create_a_pair =>
@@ -535,9 +535,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get match_in_progress => 'Match in progress...';
 
   @override
-  String get choose_color_description => 'Choose the color for your game.';
-
-  @override
   String get match_name => 'Match name';
 
   @override
@@ -594,10 +591,6 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
-
-  @override
-  String get choose_ruleset_description =>
-      'Choose the ruleset you want to play with.';
 
   @override
   String get next => 'Next';
@@ -847,10 +840,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scope => 'Scope';
 
   @override
-  String get scope_description =>
-      'Choose which games or players are included in the calculation.';
-
-  @override
   String get search_for_games => 'Search for games';
 
   @override
@@ -869,18 +858,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_for_types => 'Search for types';
 
   @override
-  String get select_a_type => 'Select a type';
+  String get select_a_color_description =>
+      'Select the display color for your chart.';
 
   @override
   String get select_a_scope => 'Select a scope';
-
-  @override
-  String get select_a_type_description =>
-      'Select a chart type for your chart. A separate chart will be created for each type you select.';
-
-  @override
-  String get select_a_color_description =>
-      'Select the display color for your chart.';
 
   @override
   String get select_a_scope_description =>
@@ -891,11 +873,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Here you can narrow down your data to a specific time period.';
 
   @override
-  String get select_loser => 'Select Loser';
+  String get select_a_type => 'Select a type';
 
   @override
-  String get select_the_filtered_timeframe =>
-      'Select the timeframe you want to filter by.';
+  String get select_a_type_description =>
+      'Select a chart type for your chart. A separate chart will be created for each type you select.';
+
+  @override
+  String get select_loser => 'Select Loser';
 
   @override
   String get select_winners => 'Select Winners';

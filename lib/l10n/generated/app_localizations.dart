@@ -188,6 +188,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @choose_color_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the color for your game.'**
+  String get choose_color_description;
+
   /// No description provided for @choose_date_range.
   ///
   /// In en, this message translates to:
@@ -218,6 +224,12 @@ abstract class AppLocalizations {
   /// **'Please choose another file.'**
   String get choose_other_file;
 
+  /// No description provided for @choose_ruleset_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the ruleset you want to play with.'**
+  String get choose_ruleset_description;
+
   /// No description provided for @choose_scopes.
   ///
   /// In en, this message translates to:
@@ -241,18 +253,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose where to save your match:'**
   String get choose_where_to_save;
-
-  /// No description provided for @classifier.
-  ///
-  /// In en, this message translates to:
-  /// **'Classifier'**
-  String get classifier;
-
-  /// No description provided for @classifier_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose which metric is calculated and shown in this statistic.'**
-  String get classifier_description;
 
   /// No description provided for @click_another_player_to_create_a_pair.
   ///
@@ -1034,12 +1034,6 @@ abstract class AppLocalizations {
   /// **'Match in progress...'**
   String get match_in_progress;
 
-  /// No description provided for @choose_color_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose the color for your game.'**
-  String get choose_color_description;
-
   /// No description provided for @match_name.
   ///
   /// In en, this message translates to:
@@ -1135,12 +1129,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 new player will be created} other{{count} new players will be created}}'**
   String new_players_will_be_created(int count);
-
-  /// No description provided for @choose_ruleset_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose the ruleset you want to play with.'**
-  String get choose_ruleset_description;
 
   /// No description provided for @next.
   ///
@@ -1568,12 +1556,6 @@ abstract class AppLocalizations {
   /// **'Scope'**
   String get scope;
 
-  /// No description provided for @scope_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose which games or players are included in the calculation.'**
-  String get scope_description;
-
   /// No description provided for @search_for_games.
   ///
   /// In en, this message translates to:
@@ -1610,29 +1592,17 @@ abstract class AppLocalizations {
   /// **'Search for types'**
   String get search_for_types;
 
-  /// No description provided for @select_a_type.
+  /// No description provided for @select_a_color_description.
   ///
   /// In en, this message translates to:
-  /// **'Select a type'**
-  String get select_a_type;
+  /// **'Select the display color for your chart.'**
+  String get select_a_color_description;
 
   /// No description provided for @select_a_scope.
   ///
   /// In en, this message translates to:
   /// **'Select a scope'**
   String get select_a_scope;
-
-  /// No description provided for @select_a_type_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a chart type for your chart. A separate chart will be created for each type you select.'**
-  String get select_a_type_description;
-
-  /// No description provided for @select_a_color_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the display color for your chart.'**
-  String get select_a_color_description;
 
   /// No description provided for @select_a_scope_description.
   ///
@@ -1646,17 +1616,23 @@ abstract class AppLocalizations {
   /// **'Here you can narrow down your data to a specific time period.'**
   String get select_a_timeframe_description;
 
+  /// No description provided for @select_a_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a type'**
+  String get select_a_type;
+
+  /// No description provided for @select_a_type_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a chart type for your chart. A separate chart will be created for each type you select.'**
+  String get select_a_type_description;
+
   /// No description provided for @select_loser.
   ///
   /// In en, this message translates to:
   /// **'Select Loser'**
   String get select_loser;
-
-  /// No description provided for @select_the_filtered_timeframe.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the timeframe you want to filter by.'**
-  String get select_the_filtered_timeframe;
 
   /// No description provided for @select_winners.
   ///
