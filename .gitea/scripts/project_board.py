@@ -236,6 +236,17 @@ def handle_issue_event(action: str, issue: Dict[str, Any]) -> None:
         print(f"no board change for issues/{action}")
 
 
+def pr_column(pr: Dict[str, Any]) -> Optional[str]:
+    """
+    Map a pull request's workflow label to a board column.
+
+    :param pr: The pull request object.
+    :returns: The mapped column title, or None if no workflow label matches.
+    """
+    return next((mapped for label, mapped in PR_LABEL_COLUMNS.items()
+                 if label in label_names(pr)), None)
+
+
 def handle_pr_event(pr: Dict[str, Any]) -> None:
     """
     Update the board in response to a pull request event.
@@ -243,9 +254,8 @@ def handle_pr_event(pr: Dict[str, Any]) -> None:
     :param pr: The pull request object carried by the event.
     """
     # Fetch fresh labels: the payload may predate the label automation's change.
-    labels: Set[str] = label_names(api("GET", f"/repos/{REPO}/issues/{pr['number']}"))
-    column: Optional[str] = next(
-        (mapped for label, mapped in PR_LABEL_COLUMNS.items() if label in labels), None)
+    fresh: Dict[str, Any] = api("GET", f"/repos/{REPO}/issues/{pr['number']}")
+    column: Optional[str] = pr_column(fresh)
     if not column:
         print(f"PR #{pr['number']} has no workflow label mapped to a column")
         return
@@ -260,23 +270,22 @@ def handle_pr_event(pr: Dict[str, Any]) -> None:
             print(f"#{number} referenced by PR #{pr['number']} is not an issue; skipping")
 
 
-def main() -> None:
+def desired_column(issue: Dict[str, Any], prs: List[Dict[str, Any]]) -> str:
     """
-    Run the command line entry point.
+    Determine the board column an existing issue belongs in.
 
+    The current state and labels of the issue and its linked pull requests
+    are used.
+
+    :param issue: The issue object.
+    :param prs: The pull requests linked to the issue.
+    :returns: The title of the column the issue belongs in.
     """
-
-
-def pr_column(pr):
-    return next((c for l, c in PR_LABEL_COLUMNS.items() if l in label_names(pr)), None)
-
-
-def desired_column(issue, prs):
-    """Column for an existing issue, derived from its current state and its linked PRs."""
     # An open PR reflects the current state of work best (newest first).
-    for pr in sorted(prs, key=lambda p: p["updated_at"], reverse=True):
-        if pr["state"] == "open" and pr_column(pr):
-            return pr_column(pr)
+    for pr in sorted(prs, key=lambda pr: pr["updated_at"], reverse=True):
+        column: Optional[str] = pr_column(pr)
+        if pr["state"] == "open" and column:
+            return column
     if issue["state"] == "closed":
         return DONE
     if BACKLOG_LABEL in label_names(issue):
@@ -286,19 +295,21 @@ def desired_column(issue, prs):
     return TODO
 
 
-def backfill():
-    """Place every existing issue of the repository on the board."""
-    prs_by_issue = {}
+def backfill() -> None:
+    """
+    Place every existing issue of the repository on the board.
+    """
+    prs_by_issue: Dict[int, List[Dict[str, Any]]] = {}
     for pr in get_all(f"/repos/{REPO}/pulls?state=all"):
-        for n in issue_numbers_for_pr(pr):
-            prs_by_issue.setdefault(n, []).append(pr)
-    issues = [i for i in all_issues() if is_issue(i)]
+        for number in issue_numbers_for_pr(pr):
+            prs_by_issue.setdefault(number, []).append(pr)
+    issues: List[Dict[str, Any]] = [issue for issue in all_issues() if is_issue(issue)]
     print(f"{len(issues)} issue(s) in {REPO}")
-    for issue in sorted(issues, key=lambda i: i["number"]):
+    for issue in sorted(issues, key=lambda issue: issue["number"]):
         move(issue, desired_column(issue, prs_by_issue.get(issue["number"], [])))
 
 
-def main():
+def main() -> None:
     if sys.argv[1:2] == ["move"]:
         issue: Optional[Dict[str, Any]] = get_issue(int(sys.argv[2]))
         if not issue:
