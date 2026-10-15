@@ -80,6 +80,10 @@ class _OnboardingViewState extends State<OnboardingView> {
               alignment: Alignment.centerRight,
               child: CustomTextButton(
                 text: loc.skip,
+                style: TextStyle(
+                  color: CustomTheme.textColor,
+                  fontWeight: FontWeight.w600,
+                ),
                 onPressed: () {
                   SharedPreferencesService.setOnboardingCompleted(true);
                   widget.onCompleted();

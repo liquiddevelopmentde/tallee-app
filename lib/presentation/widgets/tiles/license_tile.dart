@@ -73,7 +73,7 @@ class LicenseTile extends StatelessWidget {
                             'v${package.version}',
                             style: TextStyle(
                               fontSize: 11,
-                              color: Colors.grey.shade500,
+                              color: CustomTheme.hintColor,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -88,7 +88,7 @@ class LicenseTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade400,
+                      color: CustomTheme.hintColor,
                       height: 1.3,
                     ),
                   ),
@@ -97,7 +97,7 @@ class LicenseTile extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             // Arrow Icon
-            Icon(Icons.chevron_right, color: Colors.grey.shade600, size: 24),
+            Icon(Icons.chevron_right, color: CustomTheme.hintColor, size: 24),
           ],
         ),
       ),

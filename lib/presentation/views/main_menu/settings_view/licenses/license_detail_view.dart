@@ -20,7 +20,7 @@ class LicenseDetailView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Lizenzdetails')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 24),
         child: Column(
           spacing: 10,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,7 +55,7 @@ class LicenseDetailView extends StatelessWidget {
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey.shade300,
+                            color: CustomTheme.hintColor,
                           ),
                         ),
                       ],
@@ -69,7 +69,7 @@ class LicenseDetailView extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade500,
+                        color: CustomTheme.hintColor,
                       ),
                     ),
                   ],
@@ -112,7 +112,7 @@ class LicenseDetailView extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey.shade300,
+                    color: CustomTheme.textColor,
                     height: 1.5,
                     fontFamily: 'monospace',
                   ),
@@ -129,16 +129,18 @@ class LicenseDetailView extends StatelessWidget {
                       package.license!,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade300,
+                        color: CustomTheme.textColor,
                         height: 1.5,
                         fontFamily: 'monospace',
                       ),
                     )
-                  : Center(
-                      heightFactor: 25,
-                      child: Text(
-                        loc.no_license_text_available,
-                        style: TextStyle(color: Colors.grey.shade500),
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 100),
+                      child: Center(
+                        child: Text(
+                          loc.no_license_text_available,
+                          style: TextStyle(color: CustomTheme.hintColor),
+                        ),
                       ),
                     ),
             ),

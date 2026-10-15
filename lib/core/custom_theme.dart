@@ -70,7 +70,7 @@ class CustomTheme {
   static Color navBarBackgroundColor = const Color(0xFF131313);
 
   /// Selected color for the [NavbarItem]
-  static Color navBarItemSelectedColor = primaryColor.withGreen(100);
+  static Color navBarItemSelectedColor = primaryColor;
 
   /// Unselected color for the [NavbarItem]
   static Color navBarItemUnselectedColor = Colors.grey.shade400;
@@ -84,9 +84,10 @@ class CustomTheme {
     textColor = dark ? Colors.white : const Color(0xFF171717);
     hintColor = dark ? const Color(0xFF888888) : const Color(0xFF6B6B6B);
     navBarBackgroundColor = dark ? const Color(0xFF131313) : Colors.white;
+    navBarItemSelectedColor = primaryColor;
     navBarItemUnselectedColor = dark
         ? Colors.grey.shade400
-        : Colors.grey.shade700;
+        : const Color(0xFF4A4A4A);
   }
 
   // ==================== App-Colors ====================

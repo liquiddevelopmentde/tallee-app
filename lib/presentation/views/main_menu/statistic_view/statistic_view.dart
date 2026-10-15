@@ -96,7 +96,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 children: [
                                   // All Chip
                                   TextChip(
-                                    text: isLoading ? 'skeleton' : loc.all,
+                                    text: loc.all,
                                     activated: noFilterActivated,
                                     onTap: () => {
                                       showOnlyFavourites = false,
@@ -125,7 +125,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 
                                   // Groups Chip
                                   TextChip(
-                                    text: isLoading ? 'skeleton' : loc.groups,
+                                    text: loc.groups,
                                     activated: filteredGroups.isNotEmpty,
                                     count: filteredGroups.length,
                                     onTap: () async {
@@ -161,7 +161,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 
                                   // Games Chip
                                   TextChip(
-                                    text: isLoading ? 'skeleton' : loc.games,
+                                    text: loc.games,
                                     count: filteredGames.length,
                                     activated: filteredGames.isNotEmpty,
                                     onTap: () async {
@@ -196,7 +196,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 
                                   // Type Chip
                                   TextChip(
-                                    text: isLoading ? 'skeleton' : loc.type,
+                                    text: loc.type,
                                     count: filteredStatisticTypes.length,
                                     activated:
                                         filteredStatisticTypes.isNotEmpty,
@@ -238,9 +238,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 
                                   // Timeframe Chip
                                   TextChip(
-                                    text: isLoading
-                                        ? 'skeleton'
-                                        : loc.timeframe,
+                                    text: loc.timeframe,
                                     count: filteredTimeframes.length,
                                     activated: filteredTimeframes.isNotEmpty,
                                     onTap: () async {
