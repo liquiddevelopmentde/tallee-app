@@ -602,12 +602,6 @@ abstract class AppLocalizations {
   /// **'Edit Match'**
   String get edit_match;
 
-  /// No description provided for @edit_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit name'**
-  String get edit_name;
-
   /// No description provided for @edit_player.
   ///
   /// In en, this message translates to:
@@ -1681,12 +1675,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Internal server error'**
   String get server_error;
-
-  /// No description provided for @set_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Set name'**
-  String get set_name;
 
   /// No description provided for @settings.
   ///
