@@ -39,6 +39,7 @@ class CustomTheme {
   CustomTheme._(); // Private constructor to prevent instantiation
 
   static bool isDarkMode = true;
+  static Brightness brightness = Brightness.dark;
 
   // ==================== Colors ====================
 
@@ -98,6 +99,7 @@ class CustomTheme {
 
   static void setColors({required bool dark}) {
     isDarkMode = dark;
+    brightness = dark ? Brightness.dark : Brightness.light;
     backgroundColor = dark ? darkBackgroundColor : lightBackgroundColor;
     boxColor = dark ? darkBoxColor : lightBoxColor;
     boxBorderColor = dark ? darkBoxBorderColor : lightBoxBorderColor;
@@ -169,44 +171,37 @@ class CustomTheme {
 
   // ==================== Component Themes ====================
   static AppBarTheme get appBarTheme => AppBarTheme(
-    backgroundColor: isDarkMode ? backgroundColor : lightBackgroundColor,
-    actionsIconTheme: IconThemeData(
-      color: isDarkMode ? textColor : lightTextColor,
-    ),
+    backgroundColor: backgroundColor,
+    actionsIconTheme: IconThemeData(color: textColor),
     elevation: 0,
     scrolledUnderElevation: 0,
     centerTitle: true,
-    iconTheme: IconThemeData(color: isDarkMode ? textColor : lightTextColor),
+    iconTheme: IconThemeData(color: textColor),
     titleTextStyle: TextStyle(
-      color: isDarkMode ? textColor : lightTextColor,
+      color: textColor,
       fontSize: 20,
       fontWeight: FontWeight.bold,
       overflow: TextOverflow.ellipsis,
     ),
   );
 
-  static TextTheme get textTheme =>
-      const TextTheme(
-        displayLarge: TextStyle(overflow: TextOverflow.ellipsis),
-        displayMedium: TextStyle(overflow: TextOverflow.ellipsis),
-        displaySmall: TextStyle(overflow: TextOverflow.ellipsis),
-        headlineLarge: TextStyle(overflow: TextOverflow.ellipsis),
-        headlineMedium: TextStyle(overflow: TextOverflow.ellipsis),
-        headlineSmall: TextStyle(overflow: TextOverflow.ellipsis),
-        titleLarge: TextStyle(overflow: TextOverflow.ellipsis),
-        titleMedium: TextStyle(overflow: TextOverflow.ellipsis),
-        titleSmall: TextStyle(overflow: TextOverflow.ellipsis),
-        bodyLarge: TextStyle(overflow: TextOverflow.ellipsis),
-        bodyMedium: TextStyle(overflow: TextOverflow.ellipsis),
-        bodySmall: TextStyle(overflow: TextOverflow.ellipsis),
-        labelLarge: TextStyle(overflow: TextOverflow.ellipsis),
-        labelMedium: TextStyle(overflow: TextOverflow.ellipsis),
-        labelSmall: TextStyle(overflow: TextOverflow.ellipsis),
-      ).apply(
-        bodyColor: isDarkMode ? textColor : lightTextColor,
-        displayColor: isDarkMode ? textColor : lightTextColor,
-        fontFamily: 'Inter',
-      );
+  static TextTheme get textTheme => const TextTheme(
+    displayLarge: TextStyle(overflow: TextOverflow.ellipsis),
+    displayMedium: TextStyle(overflow: TextOverflow.ellipsis),
+    displaySmall: TextStyle(overflow: TextOverflow.ellipsis),
+    headlineLarge: TextStyle(overflow: TextOverflow.ellipsis),
+    headlineMedium: TextStyle(overflow: TextOverflow.ellipsis),
+    headlineSmall: TextStyle(overflow: TextOverflow.ellipsis),
+    titleLarge: TextStyle(overflow: TextOverflow.ellipsis),
+    titleMedium: TextStyle(overflow: TextOverflow.ellipsis),
+    titleSmall: TextStyle(overflow: TextOverflow.ellipsis),
+    bodyLarge: TextStyle(overflow: TextOverflow.ellipsis),
+    bodyMedium: TextStyle(overflow: TextOverflow.ellipsis),
+    bodySmall: TextStyle(overflow: TextOverflow.ellipsis),
+    labelLarge: TextStyle(overflow: TextOverflow.ellipsis),
+    labelMedium: TextStyle(overflow: TextOverflow.ellipsis),
+    labelSmall: TextStyle(overflow: TextOverflow.ellipsis),
+  ).apply(bodyColor: textColor, displayColor: textColor, fontFamily: 'Inter');
 
   static final ActionIconThemeData actionIconTheme = ActionIconThemeData(
     backButtonIconBuilder: (context) => const HapticBackButton(),
@@ -214,9 +209,7 @@ class CustomTheme {
   );
 
   static SearchBarThemeData get searchBarTheme => SearchBarThemeData(
-    textStyle: WidgetStatePropertyAll(
-      TextStyle(color: isDarkMode ? textColor : lightTextColor),
-    ),
+    textStyle: WidgetStatePropertyAll(TextStyle(color: textColor)),
     hintStyle: WidgetStatePropertyAll(TextStyle(color: hintColor)),
     overlayColor: const WidgetStatePropertyAll(Colors.transparent),
   );
@@ -226,12 +219,12 @@ class CustomTheme {
       if (states.contains(WidgetState.selected)) {
         return primaryColor;
       }
-      return isDarkMode ? textColor : lightTextColor;
+      return textColor;
     }),
   );
 
   static InputDecorationTheme get inputDecorationTheme => InputDecorationTheme(
-    labelStyle: TextStyle(color: isDarkMode ? textColor : lightTextColor),
+    labelStyle: TextStyle(color: textColor),
     hintStyle: TextStyle(color: hintColor),
   );
 
@@ -301,7 +294,7 @@ class CustomTheme {
 
     // Color Scheme
     colorScheme: ColorScheme(
-      brightness: isDarkMode ? Brightness.dark : Brightness.light,
+      brightness: brightness,
       primary: primaryColor,
       onPrimary: darkTextColor,
       secondary: secondaryColor,
