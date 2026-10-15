@@ -48,46 +48,67 @@ class CustomTheme {
   /// Secondary color of the app theme
   static const Color secondaryColor = Color(0xFFf2a981);
 
+  static const Color darkBackgroundColor = Color(0xFF0B0B0B);
+  static const Color lightBackgroundColor = Color(0xFFF7F7F7);
+  static const Color darkBoxColor = Color(0xFF101010);
+  static const Color lightBoxColor = Colors.white;
+  static const Color darkBoxBorderColor = Color(0xFF272727);
+  static const Color lightBoxBorderColor = Color(0xFFE0E0E0);
+  static const Color darkOnBoxColor = Color(0xFF181818);
+  static const Color lightOnBoxColor = Color(0xFFF0F0F0);
+  static const Color darkTextColor = Colors.white;
+  static const Color blackColor = Colors.black;
+
   /// Background color of the app theme
-  static Color backgroundColor = const Color(0xFF0B0B0B);
+  static Color backgroundColor = darkBackgroundColor;
 
   /// Default color for boxes and containers
-  static Color boxColor = const Color(0xFF101010);
+  static Color boxColor = darkBoxColor;
 
   /// Default border color for boxes and containers
-  static Color boxBorderColor = const Color(0xFF272727);
+  static Color boxBorderColor = darkBoxBorderColor;
 
   /// Color for boxes and containers displayed on boxes
-  static Color onBoxColor = const Color(0xFF181818);
+  static Color onBoxColor = darkOnBoxColor;
 
   /// Text color used throughout the app
-  static Color textColor = const Color(0xFFFFFFFF);
+  static Color textColor = darkTextColor;
+
+  /// Text color used throughout the light app theme
+  static const Color lightTextColor = Color(0xFF171717);
 
   /// Text color used throughout the app
-  static Color hintColor = const Color(0xFF888888);
+  static Color hintColor = darkHintColor;
+
+  static const Color darkHintColor = Color(0xFF888888);
+  static const Color lightHintColor = Color(0xFF6B6B6B);
 
   /// Background color for the navigation bar
-  static Color navBarBackgroundColor = const Color(0xFF131313);
+  static Color navBarBackgroundColor = darkNavBarBackgroundColor;
+
+  static const Color darkNavBarBackgroundColor = Color(0xFF131313);
+  static final Color darkNavBarItemUnselectedColor = Colors.grey.shade400;
+  static const Color lightNavBarItemUnselectedColor = Color(0xFF4A4A4A);
 
   /// Selected color for the [NavbarItem]
   static Color navBarItemSelectedColor = primaryColor;
 
   /// Unselected color for the [NavbarItem]
-  static Color navBarItemUnselectedColor = Colors.grey.shade400;
+  static Color navBarItemUnselectedColor = darkNavBarItemUnselectedColor;
 
   static void setColors({required bool dark}) {
     isDarkMode = dark;
-    backgroundColor = dark ? const Color(0xFF0B0B0B) : const Color(0xFFF7F7F7);
-    boxColor = dark ? const Color(0xFF101010) : Colors.white;
-    boxBorderColor = dark ? const Color(0xFF272727) : const Color(0xFFE0E0E0);
-    onBoxColor = dark ? const Color(0xFF181818) : const Color(0xFFF0F0F0);
-    textColor = dark ? Colors.white : const Color(0xFF171717);
-    hintColor = dark ? const Color(0xFF888888) : const Color(0xFF6B6B6B);
-    navBarBackgroundColor = dark ? const Color(0xFF131313) : Colors.white;
+    backgroundColor = dark ? darkBackgroundColor : lightBackgroundColor;
+    boxColor = dark ? darkBoxColor : lightBoxColor;
+    boxBorderColor = dark ? darkBoxBorderColor : lightBoxBorderColor;
+    onBoxColor = dark ? darkOnBoxColor : lightOnBoxColor;
+    textColor = dark ? darkTextColor : lightTextColor;
+    hintColor = dark ? darkHintColor : lightHintColor;
+    navBarBackgroundColor = dark ? darkNavBarBackgroundColor : lightBoxColor;
     navBarItemSelectedColor = primaryColor;
     navBarItemUnselectedColor = dark
-        ? Colors.grey.shade400
-        : const Color(0xFF4A4A4A);
+        ? darkNavBarItemUnselectedColor
+        : lightNavBarItemUnselectedColor;
   }
 
   // ==================== App-Colors ====================
@@ -95,11 +116,15 @@ class CustomTheme {
   static Color red = Colors.red;
   static Color blue = Colors.blue;
   static Color green = Colors.green;
-  static Color yellow = const Color(0xFFF7CA28);
+  static Color yellow = yellowColor;
   static Color purple = Colors.purple;
-  static Color orange = const Color(0xFFef681f);
-  static Color pink = const Color(0xFFE91E63);
-  static Color teal = const Color(0xFF00BCD4);
+  static Color orange = primaryColor;
+  static Color pink = pinkColor;
+  static Color teal = tealColor;
+
+  static const Color yellowColor = Color(0xFFF7CA28);
+  static const Color pinkColor = Color(0xFFE91E63);
+  static const Color tealColor = Color(0xFF00BCD4);
 
   // ==================== Border Radius ====================
   static const double standardBorderRadius = 12.0;
@@ -144,18 +169,16 @@ class CustomTheme {
 
   // ==================== Component Themes ====================
   static AppBarTheme get appBarTheme => AppBarTheme(
-    backgroundColor: isDarkMode ? backgroundColor : const Color(0xFFF7F7F7),
+    backgroundColor: isDarkMode ? backgroundColor : lightBackgroundColor,
     actionsIconTheme: IconThemeData(
-      color: isDarkMode ? textColor : const Color(0xFF171717),
+      color: isDarkMode ? textColor : lightTextColor,
     ),
     elevation: 0,
     scrolledUnderElevation: 0,
     centerTitle: true,
-    iconTheme: IconThemeData(
-      color: isDarkMode ? textColor : const Color(0xFF171717),
-    ),
+    iconTheme: IconThemeData(color: isDarkMode ? textColor : lightTextColor),
     titleTextStyle: TextStyle(
-      color: isDarkMode ? textColor : const Color(0xFF171717),
+      color: isDarkMode ? textColor : lightTextColor,
       fontSize: 20,
       fontWeight: FontWeight.bold,
       overflow: TextOverflow.ellipsis,
@@ -180,8 +203,8 @@ class CustomTheme {
         labelMedium: TextStyle(overflow: TextOverflow.ellipsis),
         labelSmall: TextStyle(overflow: TextOverflow.ellipsis),
       ).apply(
-        bodyColor: isDarkMode ? textColor : const Color(0xFF171717),
-        displayColor: isDarkMode ? textColor : const Color(0xFF171717),
+        bodyColor: isDarkMode ? textColor : lightTextColor,
+        displayColor: isDarkMode ? textColor : lightTextColor,
         fontFamily: 'Inter',
       );
 
@@ -192,7 +215,7 @@ class CustomTheme {
 
   static SearchBarThemeData get searchBarTheme => SearchBarThemeData(
     textStyle: WidgetStatePropertyAll(
-      TextStyle(color: isDarkMode ? textColor : const Color(0xFF171717)),
+      TextStyle(color: isDarkMode ? textColor : lightTextColor),
     ),
     hintStyle: WidgetStatePropertyAll(TextStyle(color: hintColor)),
     overlayColor: const WidgetStatePropertyAll(Colors.transparent),
@@ -203,14 +226,12 @@ class CustomTheme {
       if (states.contains(WidgetState.selected)) {
         return primaryColor;
       }
-      return isDarkMode ? textColor : const Color(0xFF171717);
+      return isDarkMode ? textColor : lightTextColor;
     }),
   );
 
   static InputDecorationTheme get inputDecorationTheme => InputDecorationTheme(
-    labelStyle: TextStyle(
-      color: isDarkMode ? textColor : const Color(0xFF171717),
-    ),
+    labelStyle: TextStyle(color: isDarkMode ? textColor : lightTextColor),
     hintStyle: TextStyle(color: hintColor),
   );
 
@@ -282,11 +303,11 @@ class CustomTheme {
     colorScheme: ColorScheme(
       brightness: isDarkMode ? Brightness.dark : Brightness.light,
       primary: primaryColor,
-      onPrimary: Colors.white,
+      onPrimary: darkTextColor,
       secondary: secondaryColor,
-      onSecondary: Colors.black,
+      onSecondary: blackColor,
       error: Colors.red,
-      onError: Colors.white,
+      onError: darkTextColor,
       surface: backgroundColor,
       onSurface: textColor,
     ),

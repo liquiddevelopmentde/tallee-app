@@ -99,7 +99,7 @@ class _SettingsViewState extends State<SettingsView> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              _themeModeLabel(
+                              themeModeLabel(
                                 context,
                                 context.watch<ThemeProvider>().themeMode,
                               ),
@@ -117,13 +117,13 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                       ),
                       items: [
-                        _themeMenuTile(
+                        themeMenuTile(
                           context,
                           ThemeMode.system,
                           loc.theme_system,
                         ),
-                        _themeMenuTile(context, ThemeMode.dark, loc.theme_dark),
-                        _themeMenuTile(
+                        themeMenuTile(context, ThemeMode.dark, loc.theme_dark),
+                        themeMenuTile(
                           context,
                           ThemeMode.light,
                           loc.theme_light,
@@ -340,7 +340,7 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  PullDownMenuTile _themeMenuTile(
+  PullDownMenuTile themeMenuTile(
     BuildContext context,
     ThemeMode mode,
     String label,
@@ -354,7 +354,7 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  String _themeModeLabel(BuildContext context, ThemeMode mode) {
+  String themeModeLabel(BuildContext context, ThemeMode mode) {
     final loc = AppLocalizations.of(context);
     return switch (mode) {
       ThemeMode.system => loc.theme_system,
