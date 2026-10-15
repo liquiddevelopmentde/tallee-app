@@ -113,96 +113,7 @@ class _MatchTileState extends State<MatchTile> {
 
             const SizedBox(height: 12),
 
-            Visibility(
-              visible: match.endedAt != null,
-
-              // Match in progress display
-              replacement: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Colors.amber.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.watch_later,
-                      size: 20,
-                      color: Colors.amber,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        loc.match_in_progress,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              child: Visibility(
-                visible: match.useTeamLogic,
-
-                // MVP Display for player matches
-                replacement: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.green.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      getMvpIcon(),
-                      const SizedBox(width: 8),
-                      Expanded(child: getMvpTextWidget(loc)),
-                    ],
-                  ),
-                ),
-
-                // MVT Display for team matches
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.green.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      getMvpIcon(),
-                      const SizedBox(width: 8),
-                      Expanded(child: getMvtTextWidget(loc)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            buildMatchResultBanner(loc),
 
             const SizedBox(height: 12),
 
@@ -318,9 +229,122 @@ class _MatchTileState extends State<MatchTile> {
     }
   }
 
+  /// Builds the banner displaying the match status
+  Widget buildMatchResultBanner(AppLocalizations loc) {
+    final match = widget.match;
+
+    // Match in progress display
+    if (match.endedAt == null) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.amber.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Colors.amber.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.watch_later, size: 20, color: Colors.amber),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                loc.match_in_progress,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: CustomTheme.textColor,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Tie display
+    if (match.isTie) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: CustomTheme.primaryColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: CustomTheme.primaryColor.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.handshake_outlined,
+              size: 20,
+              color: CustomTheme.primaryColor,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                loc.tie,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: CustomTheme.textColor,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Winner display
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.green.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.green.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        spacing: 8,
+        children: [
+          const Icon(Icons.emoji_events, size: 20, color: Colors.amber),
+          Expanded(child: winnerTextWidget),
+        ],
+      ),
+    );
+  }
+
+  // Returns the appropiate winner text widget
+  Widget get winnerTextWidget {
+    if (widget.match.isTie) return tieTextWidget;
+    if (!widget.match.hasResult) return const SizedBox.shrink();
+
+    final loc = AppLocalizations.of(context);
+    return widget.match.useTeamLogic
+        ? getMvtTextWidget(loc)
+        : getMvpTextWidget(loc);
+  }
+
+  // Returns the tie text
+  Widget get tieTextWidget => Text(
+    AppLocalizations.of(context).tie,
+    style: const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: CustomTheme.textColor,
+    ),
+  );
+
   // Returns the appropriate text widget based on the match's ruleset and MVP.
   Widget getMvpTextWidget(AppLocalizations loc) {
-    if (widget.match.mvp.isEmpty) return const SizedBox.shrink();
     final ruleset = widget.match.game.ruleset;
     final players = widget.match.mvp;
 
@@ -384,7 +408,6 @@ class _MatchTileState extends State<MatchTile> {
 
   // Returns the appropriate text widget based on the match's ruleset and MVT.
   Widget getMvtTextWidget(AppLocalizations loc) {
-    if (widget.match.mvt.isEmpty) return const SizedBox.shrink();
     final ruleset = widget.match.game.ruleset;
     final mvt = widget.match.mvt;
 
@@ -431,25 +454,5 @@ class _MatchTileState extends State<MatchTile> {
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
-  }
-
-  // Returns the appropriate icon based on the match's ruleset.
-  Icon getMvpIcon() {
-    final icon = getRulesetIcon(widget.match.game.ruleset);
-
-    switch (widget.match.game.ruleset) {
-      case Ruleset.winner:
-        return Icon(icon, size: 20, color: Colors.amber);
-      case Ruleset.loser:
-        return Icon(icon, size: 20, color: Colors.blue);
-      case Ruleset.lowestScore:
-        return Icon(icon, size: 20, color: Colors.orange);
-      case Ruleset.highestScore:
-        return Icon(icon, size: 20, color: Colors.green);
-      case Ruleset.placement:
-        return Icon(icon, size: 20, color: Colors.deepOrangeAccent);
-      case Ruleset.lives:
-        return Icon(icon, size: 20, color: Colors.red);
-    }
   }
 }
