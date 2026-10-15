@@ -59,7 +59,7 @@ jobs:
         run: |
           touch .env
           flutter test
-          
+  
 
   untranslated_localizations:
     name: 'Check for untranslated localizations'

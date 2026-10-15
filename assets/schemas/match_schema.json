@@ -169,7 +169,6 @@
             },
             "required": [
               "roundNumber",
-              "score",
               "change"
             ],
             "additionalProperties": false

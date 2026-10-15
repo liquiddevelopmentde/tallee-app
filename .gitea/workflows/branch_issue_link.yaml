@@ -19,8 +19,11 @@ jobs:
       DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
       # Minimum similarity (0..1) required to assign a branch to an issue.
       MIN_SCORE: "0.3"
+      ORG: liquid-development
+      PROJECT_ID: "9"
     steps:
       - name: "Assign branch reference to matching issue"
+        id: link
         run: |
           set -euo pipefail
 
@@ -112,6 +115,8 @@ jobs:
               )
               with urlopen(req) as r:
                   print(f"assigned branch '{BRANCH}' to issue #{number} (HTTP {r.status})")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write(f"issue={number}\n")
 
           # Preferred convention: "<type>/<issue-no>-<name>" (e.g. feature/52-foo).
           # A leading number right after the type is an explicit issue reference.
@@ -160,3 +165,11 @@ jobs:
 
           assign(best["number"])
           PY
+
+      - uses: actions/checkout@v4
+        if: ${{ steps.link.outputs.issue != '' }}
+        with:
+          sparse-checkout: .gitea/scripts
+      - name: "Move linked issue to In Progress"
+        if: ${{ steps.link.outputs.issue != '' }}
+        run: python3 .gitea/scripts/project_board.py move "${{ steps.link.outputs.issue }}" "In Progress"
