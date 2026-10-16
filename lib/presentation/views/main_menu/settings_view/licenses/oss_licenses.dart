@@ -2139,13 +2139,13 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''',
   );
 
-/// cupertino_ui 1.1.2
+/// cupertino_ui 1.1.3
 const _cupertino_ui = Package(
     name: 'cupertino_ui',
     description: 'The official Flutter Cupertino Design Library, implementing the iOS design system.',
     repository: 'https://github.com/flutter/packages/tree/main/packages/cupertino_ui',
     authors: [],
-    version: '1.1.2',
+    version: '1.1.3',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -6089,13 +6089,13 @@ const _material_color_utilities = Package(
    limitations under the License.''',
   );
 
-/// material_ui 1.6.0
+/// material_ui 1.7.0
 const _material_ui = Package(
     name: 'material_ui',
     description: "The official Flutter Material UI Library, implementing Google's Material Design design system.",
     repository: 'https://github.com/flutter/packages/tree/main/packages/material_ui',
     authors: [],
-    version: '1.6.0',
+    version: '1.7.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -39894,13 +39894,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// syncfusion_flutter_core 35.1.39
+/// syncfusion_flutter_core 35.1.40+1
 const _syncfusion_flutter_core = Package(
     name: 'syncfusion_flutter_core',
     description: 'Syncfusion Flutter Core is a dependent package for all the Syncfusion Flutter widgets.',
     homepage: 'https://github.com/syncfusion/flutter-widgets/tree/master/packages/syncfusion_flutter_core',
     authors: [],
-    version: '35.1.39',
+    version: '35.1.40+1',
     spdxIdentifiers: [],
     isMarkdown: false,
     isSdk: false,
@@ -39920,13 +39920,13 @@ The Syncfusion<sup>&reg;</sup> license that contains the terms and conditions ca
 https://www.syncfusion.com/content/downloads/syncfusion_license.pdf''',
   );
 
-/// syncfusion_flutter_datepicker 35.1.39
+/// syncfusion_flutter_datepicker 35.1.40+1
 const _syncfusion_flutter_datepicker = Package(
     name: 'syncfusion_flutter_datepicker',
     description: 'The Flutter Date Range Picker widget allows users to easily select dates or a range of dates. It has four built-in views that allow quick navigation to the desired date.',
     homepage: 'https://github.com/syncfusion/flutter-widgets/tree/master/packages/syncfusion_flutter_datepicker',
     authors: [],
-    version: '35.1.39',
+    version: '35.1.40+1',
     spdxIdentifiers: [],
     isMarkdown: false,
     isSdk: false,
@@ -41199,12 +41199,12 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// tallee 0.1.52+695
+/// tallee 0.1.54+697
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.1.52+695',
+    version: '0.1.54+697',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
