@@ -19,14 +19,23 @@ class RouteNames {
   static const String manageMembersView = '/home/matches/create/teams/members';
   static const String matchDetailView = '/home/matches/{id}';
   static const String matchResultView = '/home/matches/{id}/result';
+  static const String matchShareView = '/home/matches/{id}/share';
+  static const String matchReceiveView = '/home/matches/receive';
+  static const String previewMatchView = '/home/matches/receive/preview';
+  static const String associateGameView = '/home/matches/receive/game';
+  static const String associatePlayersView = '/home/matches/receive/players';
+  static const String associateGroupView = '/home/matches/receive/group';
 
   static const String playerDetailView = '/home/players/{id}';
+  static const String editPlayerView = '/home/players/edit';
 
   static const String statisticView = '/home/statistics';
   static const String createStatisticView = '/home/statistics/create';
   static const String chooseEnumView = '/home/statistics/create/scope';
   static const String statisticDetailView = '/home/statistics/{id}';
 
+  static const String privacyPolicyView = '/home/settings/privacy';
+  static const String feedbackFormView = '/home/settings/feedback';
   static const String settingsView = '/home/settings';
   static const String dataManagementView = '/home/settings/data';
   static const String licensesView = '/home/settings/licenses';

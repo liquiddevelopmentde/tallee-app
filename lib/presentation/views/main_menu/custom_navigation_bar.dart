@@ -159,7 +159,12 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 onPressed: () async {
                   await Navigator.push(
                     context,
-                    adaptivePageRoute(builder: (_) => const MatchReceiveView()),
+                    adaptivePageRoute(
+                      settings: const RouteSettings(
+                        name: RouteNames.matchReceiveView,
+                      ),
+                      builder: (_) => const MatchReceiveView(),
+                    ),
                   );
                   if (mounted) {
                     setState(() {

@@ -91,6 +91,9 @@ void main() async {
                     final result = await Tallee.navigatorKey.currentState
                         ?.push<bool>(
                           MaterialPageRoute(
+                            settings: const RouteSettings(
+                              name: RouteNames.feedbackFormView,
+                            ),
                             builder: (context) => FeedbackFormView(
                               associatedEventId: event.eventId,
                             ),
@@ -239,7 +242,10 @@ class _TalleeState extends State<Tallee> {
     if (navigator == null) return;
 
     navigator.pushReplacement(
-      adaptivePageRoute(builder: (_) => const CustomNavigationBar()),
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.groupView),
+        builder: (_) => const CustomNavigationBar(),
+      ),
     );
 
     if (path != null) {

@@ -254,6 +254,9 @@ class _SettingsViewState extends State<SettingsView> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
+                          settings: const RouteSettings(
+                            name: RouteNames.privacyPolicyView,
+                          ),
                           builder: (context) => const PrivacyPolicyView(),
                         ),
                       );

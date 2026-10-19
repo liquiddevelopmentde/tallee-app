@@ -4,6 +4,7 @@ import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/countdown_painter.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
@@ -230,7 +231,10 @@ class QrCodeComponent extends StatelessWidget {
           onPressed: () async {
             await Navigator.push(
               context,
-              adaptivePageRoute(builder: (context) => const SettingsView()),
+              adaptivePageRoute(
+                settings: const RouteSettings(name: RouteNames.settingsView),
+                builder: (context) => const SettingsView(),
+              ),
             );
             onOnlineSharingPrefChanged.call();
           },

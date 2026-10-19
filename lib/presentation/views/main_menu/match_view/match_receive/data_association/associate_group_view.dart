@@ -6,6 +6,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
@@ -227,6 +228,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
     final selected = await Navigator.push<Group>(
       context,
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGroupView),
         builder: (context) => ChooseGroupView(
           groups: validGroups,
           initialGroups: [?associatedGroup],
