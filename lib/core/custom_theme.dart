@@ -46,37 +46,37 @@ class CustomTheme {
   static const Color primaryColor = Color(0xFFEF681F);
   static const Color secondaryColor = Color(0xFFF2A981);
   static const Color backgroundColorDark = Color(0xFF0B0B0B);
-  static const Color backgroundColorLight = Colors.white;
+  static const Color backgroundColorLight = Color(0xFFFFFFFF);
   static const Color boxColorDark = Color(0xFF101010);
   static const Color boxColorLight = Color(0xFFF7F7F7);
   static const Color boxBorderColorDark = Color(0xFF272727);
   static const Color boxBorderColorLight = Color(0xFFE0E0E0);
   static const Color onBoxColorDark = Color(0xFF181818);
   static const Color onBoxColorLight = Color(0xFFF0F0F0);
-  static const Color textColorDark = Colors.white;
+  static const Color textColorDark = Color(0xFFFFFFFF);
   static const Color textColorLight = Color(0xFF171717);
   static const Color hintColorDark = Color(0xFF888888);
   static const Color hintColorLight = Color(0xFF6B6B6B);
-  static const Color errorColorDark = Colors.red;
-  static const Color errorColorLight = Colors.red;
-  static const Color successColorDark = Colors.green;
-  static const Color successColorLight = Colors.green;
-  static const Color warningColorDark = Colors.orange;
-  static const Color warningColorLight = Colors.orange;
+  static const Color errorColorDark = Color(0xFFF44336);
+  static const Color errorColorLight = Color(0xFFF44336);
+  static const Color successColorDark = Color(0xFF4CAF50);
+  static const Color successColorLight = Color(0xFF4CAF50);
+  static const Color warningColorDark = Color(0xFFFF9800);
+  static const Color warningColorLight = Color(0xFFFF9800);
   static const Color navBarBackgroundColorDark = Color(0xFF131313);
   static const Color navBarBackgroundColorLight = Color(0xFFF7F7F7);
   static const Color navBarItemUnselectedColorDark = Color(0xFFBDBDBD);
   static const Color navBarItemUnselectedColorLight = Color(0xFF6B6B6B);
 
-  static const Color redColor = Colors.red;
-  static const Color blueColor = Colors.blue;
-  static const Color greenColor = Colors.green;
-  static const Color yellowColor = Colors.yellow;
-  static const Color purpleColor = Colors.purple;
-  static const Color orangeColor = Colors.orange;
-  static const Color pinkColor = Colors.pink;
-  static const Color tealColor = Colors.teal;
-  static const Color blackColor = Colors.black;
+  static const Color redColor = Color(0xFFF44336);
+  static const Color blueColor = Color(0xFF2196F3);
+  static const Color greenColor = Color(0xFF4CAF50);
+  static const Color yellowColor = Color(0xFFFFEB3B);
+  static const Color purpleColor = Color(0xFF9C27B0);
+  static const Color orangeColor = Color(0xFFFF9800);
+  static const Color pinkColor = Color(0xFFE91E63);
+  static const Color tealColor = Color(0xFF009688);
+  static const Color blackColor = Color(0xFF000000);
 
   // ==================== Adaptive Colors ====================
 
