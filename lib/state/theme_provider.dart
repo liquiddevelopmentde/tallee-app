@@ -37,7 +37,7 @@ class ThemeProvider extends ChangeNotifier with WidgetsBindingObserver {
       ThemeMode.dark => true,
       ThemeMode.light => false,
     };
-    CustomTheme.setColors(dark: isDark);
+    CustomTheme.setColors(isDarkMode: isDark);
   }
 
   @override

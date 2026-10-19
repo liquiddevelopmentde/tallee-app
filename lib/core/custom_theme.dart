@@ -41,108 +41,91 @@ class CustomTheme {
   static bool isDarkMode = true;
   static Brightness brightness = Brightness.dark;
 
-  // ==================== Colors ====================
+  // ==================== Color Definitions ====================
 
-  /// Primary color of the app theme
-  static const Color primaryColor = Color(0xFFef681f);
+  static const Color primaryColor = Color(0xFFEF681F);
+  static const Color secondaryColor = Color(0xFFF2A981);
+  static const Color backgroundColorDark = Color(0xFF0B0B0B);
+  static const Color backgroundColorLight = Colors.white;
+  static const Color boxColorDark = Color(0xFF101010);
+  static const Color boxColorLight = Color(0xFFF7F7F7);
+  static const Color boxBorderColorDark = Color(0xFF272727);
+  static const Color boxBorderColorLight = Color(0xFFE0E0E0);
+  static const Color onBoxColorDark = Color(0xFF181818);
+  static const Color onBoxColorLight = Color(0xFFF0F0F0);
+  static const Color textColorDark = Colors.white;
+  static const Color textColorLight = Color(0xFF171717);
+  static const Color hintColorDark = Color(0xFF888888);
+  static const Color hintColorLight = Color(0xFF6B6B6B);
+  static const Color errorColorDark = Colors.red;
+  static const Color errorColorLight = Colors.red;
+  static const Color successColorDark = Colors.green;
+  static const Color successColorLight = Colors.green;
+  static const Color warningColorDark = Colors.orange;
+  static const Color warningColorLight = Colors.orange;
+  static const Color navBarBackgroundColorDark = Color(0xFF131313);
+  static const Color navBarBackgroundColorLight = Color(0xFFF7F7F7);
+  static const Color navBarItemUnselectedColorDark = Color(0xFFBDBDBD);
+  static const Color navBarItemUnselectedColorLight = Color(0xFF6B6B6B);
 
-  /// Secondary color of the app theme
-  static const Color secondaryColor = Color(0xFFf2a981);
-
-  static const Color darkBackgroundColor = Color(0xFF0B0B0B);
-  static const Color lightBackgroundColor = Colors.white;
-  static const Color darkBoxColor = Color(0xFF101010);
-  static const Color lightBoxColor = Color(0xFFF7F7F7);
-  static const Color darkBoxBorderColor = Color(0xFF272727);
-  static const Color lightBoxBorderColor = Color(0xFFE0E0E0);
-  static const Color darkOnBoxColor = Color(0xFF181818);
-  static const Color lightOnBoxColor = Color(0xFFF0F0F0);
-  static const Color darkTextColor = Colors.white;
+  static const Color redColor = Colors.red;
+  static const Color blueColor = Colors.blue;
+  static const Color greenColor = Colors.green;
+  static const Color yellowColor = Colors.yellow;
+  static const Color purpleColor = Colors.purple;
+  static const Color orangeColor = Colors.orange;
+  static const Color pinkColor = Colors.pink;
+  static const Color tealColor = Colors.teal;
   static const Color blackColor = Colors.black;
 
-  /// Background color of the app theme
-  static Color backgroundColor = darkBackgroundColor;
+  // ==================== Adaptive Colors ====================
 
-  /// Default color for boxes and containers
-  static Color boxColor = darkBoxColor;
-
-  /// Default border color for boxes and containers
-  static Color boxBorderColor = darkBoxBorderColor;
-
-  /// Color for boxes and containers displayed on boxes
-  static Color onBoxColor = darkOnBoxColor;
-
-  /// Text color used throughout the app
-  static Color textColor = darkTextColor;
-
-  /// Text color used throughout the light app theme
-  static const Color lightTextColor = Color(0xFF171717);
-
-  /// Text color used throughout the app
-  static Color hintColor = darkHintColor;
-
-  static const Color darkHintColor = Color(0xFF888888);
-  static const Color lightHintColor = Color(0xFF6B6B6B);
-
-  static const Color darkErrorColor = Colors.red;
-  static const Color lightErrorColor = Colors.red;
-  static const Color darkSuccessColor = Colors.green;
-  static const Color lightSuccessColor = Colors.green;
-  static const Color darkWarningColor = Colors.orange;
-  static const Color lightWarningColor = Colors.orange;
-
-  static Color errorColor = darkErrorColor;
-  static Color successColor = darkSuccessColor;
-  static Color warningColor = darkWarningColor;
-
-  /// Background color for the navigation bar
-  static Color navBarBackgroundColor = darkNavBarBackgroundColor;
-
-  static const Color darkNavBarBackgroundColor = Color(0xFF131313);
-  static final Color darkNavBarItemUnselectedColor = Colors.grey.shade400;
-  static const Color lightNavBarItemUnselectedColor = lightHintColor;
-
-  /// Selected color for the [NavbarItem]
+  static Color backgroundColor = backgroundColorDark;
+  static Color boxColor = boxColorDark;
+  static Color boxBorderColor = boxBorderColorDark;
+  static Color onBoxColor = onBoxColorDark;
+  static Color textColor = textColorDark;
+  static Color hintColor = hintColorDark;
+  static Color errorColor = errorColorDark;
+  static Color successColor = successColorDark;
+  static Color warningColor = warningColorDark;
+  static Color navBarBackgroundColor = navBarBackgroundColorDark;
   static Color navBarItemSelectedColor = primaryColor;
+  static Color navBarItemUnselectedColor = navBarItemUnselectedColorDark;
 
-  /// Unselected color for the [NavbarItem]
-  static Color navBarItemUnselectedColor = darkNavBarItemUnselectedColor;
-
-  static void setColors({required bool dark}) {
-    isDarkMode = dark;
-    brightness = dark ? Brightness.dark : Brightness.light;
-    backgroundColor = dark ? darkBackgroundColor : lightBackgroundColor;
-    boxColor = dark ? darkBoxColor : lightBoxColor;
-    boxBorderColor = dark ? darkBoxBorderColor : lightBoxBorderColor;
-    onBoxColor = dark ? darkOnBoxColor : lightOnBoxColor;
-    textColor = dark ? darkTextColor : lightTextColor;
-    hintColor = dark ? darkHintColor : lightHintColor;
-    errorColor = dark ? darkErrorColor : lightErrorColor;
-    successColor = dark ? darkSuccessColor : lightSuccessColor;
-    warningColor = dark ? darkWarningColor : lightWarningColor;
+  static void setColors({required bool isDarkMode}) {
+    CustomTheme.isDarkMode = isDarkMode;
+    brightness = isDarkMode ? Brightness.dark : Brightness.light;
+    backgroundColor = isDarkMode ? backgroundColorDark : backgroundColorLight;
+    boxColor = isDarkMode ? boxColorDark : boxColorLight;
+    boxBorderColor = isDarkMode ? boxBorderColorDark : boxBorderColorLight;
+    onBoxColor = isDarkMode ? onBoxColorDark : onBoxColorLight;
+    textColor = isDarkMode ? textColorDark : textColorLight;
+    hintColor = isDarkMode ? hintColorDark : hintColorLight;
+    errorColor = isDarkMode ? errorColorDark : errorColorLight;
+    successColor = isDarkMode ? successColorDark : successColorLight;
+    warningColor = isDarkMode ? warningColorDark : warningColorLight;
     red = errorColor;
     green = successColor;
-    navBarBackgroundColor = dark ? darkNavBarBackgroundColor : lightBoxColor;
+    navBarBackgroundColor = isDarkMode
+        ? navBarBackgroundColorDark
+        : navBarBackgroundColorLight;
     navBarItemSelectedColor = primaryColor;
-    navBarItemUnselectedColor = dark
-        ? darkNavBarItemUnselectedColor
-        : lightNavBarItemUnselectedColor;
+    navBarItemUnselectedColor = isDarkMode
+        ? navBarItemUnselectedColorDark
+        : navBarItemUnselectedColorLight;
   }
 
   // ==================== App-Colors ====================
 
-  static Color red = errorColor;
-  static Color blue = Colors.blue;
-  static Color green = successColor;
+  static Color red = redColor;
+  static Color blue = blueColor;
+  static Color green = greenColor;
   static Color yellow = yellowColor;
-  static Color purple = Colors.purple;
-  static Color orange = primaryColor;
+  static Color purple = purpleColor;
+  static Color orange = orangeColor;
   static Color pink = pinkColor;
   static Color teal = tealColor;
-
-  static const Color yellowColor = Color(0xFFF7CA28);
-  static const Color pinkColor = Color(0xFFE91E63);
-  static const Color tealColor = Color(0xFF00BCD4);
 
   // ==================== Border Radius ====================
   static const double standardBorderRadius = 12.0;
@@ -312,11 +295,11 @@ class CustomTheme {
     colorScheme: ColorScheme(
       brightness: brightness,
       primary: primaryColor,
-      onPrimary: darkTextColor,
+      onPrimary: textColorDark,
       secondary: secondaryColor,
       onSecondary: blackColor,
       error: errorColor,
-      onError: darkTextColor,
+      onError: textColorDark,
       surface: backgroundColor,
       onSurface: textColor,
     ),
