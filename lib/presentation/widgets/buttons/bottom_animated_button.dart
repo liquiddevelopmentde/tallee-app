@@ -53,7 +53,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
       case ButtonType.primary:
         textColor = widget.isDestructive || widget.isEmphasized
             ? Colors.white
-            : Theme.of(context).brightness == Brightness.dark
+            : CustomTheme.isDarkMode
             ? Colors.black
             : Colors.white;
         break;
@@ -85,7 +85,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
             ? CustomTheme.errorColor
             : widget.isEmphasized
             ? CustomTheme.primaryColor
-            : Theme.of(context).brightness == Brightness.dark
+            : CustomTheme.isDarkMode
             ? Colors.white
             : Colors.black,
         borderRadius: BorderRadius.circular(12),

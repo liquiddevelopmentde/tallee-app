@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/custom_theme.dart';
 
 class FloatingAnimatedButton extends StatefulWidget {
@@ -90,6 +90,16 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
 
   @override
   Widget build(BuildContext context) {
+    final isDisabled = widget.onPressed == null;
+
+    final buttonBackgroundColor = isDisabled
+        ? context.talleeColors.onBoxColor
+        : context.talleeColors.textColor;
+
+    final buttonForegroundColor = isDisabled
+        ? context.talleeColors.hintColor
+        : context.talleeColors.backgroundColor;
+
     return ScaleTransition(
       scale: widget.onPressed == null ? disabledScaleAnimation : scaleAnimation,
       child: GestureDetector(
@@ -135,11 +145,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
         },
         child: Container(
           decoration: BoxDecoration(
-            color: widget.onPressed == null
-                ? context.talleeColors.onBoxColor
-                : Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black,
+            color: buttonBackgroundColor,
             borderRadius: BorderRadius.circular(30),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -147,7 +153,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildIcon(),
+              buildIcon(buttonForegroundColor),
               if (widget.text != null) ...[
                 const SizedBox(width: 7),
                 Text(
@@ -155,9 +161,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.black
-                        : Colors.white,
+                    color: buttonForegroundColor,
                   ),
                 ),
               ],
@@ -168,24 +172,14 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
     );
   }
 
-  Widget buildIcon() {
-    final icon = Icon(
-      widget.icon,
-      size: 26,
-      color: widget.onPressed == null
-          ? context.talleeColors.hintColor
-          : Theme.of(context).brightness == Brightness.dark
-          ? Colors.black
-          : Colors.white,
-    );
+  Widget buildIcon(Color buttonForegroundColor) {
+    final icon = Icon(widget.icon, size: 26, color: buttonForegroundColor);
 
     if (!widget.showAddBadge) return icon;
 
     final backgroundColor = widget.onPressed == null
         ? context.talleeColors.onBoxColor
-        : Theme.of(context).brightness == Brightness.dark
-        ? Colors.white
-        : Colors.black;
+        : context.talleeColors.textColor;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -203,11 +197,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
               Icons.add_circle,
               size: 15,
               weight: 200,
-              color: widget.onPressed == null
-                  ? context.talleeColors.hintColor
-                  : Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black
-                  : Colors.white,
+              color: buttonForegroundColor,
             ),
           ),
         ),

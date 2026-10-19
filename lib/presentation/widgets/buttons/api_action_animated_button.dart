@@ -245,7 +245,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     if (widget.buttonType == ButtonType.primary) {
       textColor = widget.isDestructive
           ? Colors.white
-          : Theme.of(context).brightness == Brightness.dark
+          : CustomTheme.isDarkMode
           ? Colors.black
           : Colors.white;
     } else if (widget.buttonType == ButtonType.secondary) {
@@ -274,7 +274,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
             ? context.talleeColors.onBoxColor
             : widget.isDestructive
             ? CustomTheme.errorColor
-            : Theme.of(context).brightness == Brightness.dark
+            : CustomTheme.isDarkMode
             ? Colors.white
             : Colors.black,
         borderRadius: BorderRadius.circular(12),
