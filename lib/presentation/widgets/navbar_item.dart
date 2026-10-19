@@ -31,6 +31,7 @@ class _NavbarItemState extends State<NavbarItem>
     with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<double> scaleAnimation;
+  late Animation<double> curvedAnimation;
 
   late Animation<Color?> iconColorAnimation;
   late Animation<Color?> bgColorAnimation;
@@ -47,27 +48,37 @@ class _NavbarItemState extends State<NavbarItem>
       value: widget.isSelected ? 1.0 : 0.0,
     );
 
-    final curved = CurvedAnimation(
+    curvedAnimation = CurvedAnimation(
       parent: animationController,
       curve: Curves.easeOut,
     );
 
-    scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(curved);
+    scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(curvedAnimation);
 
+    // drives font weight interpolation
+    fontSizeAnimation = Tween<double>(
+      begin: 11.0,
+      end: 12.0,
+    ).animate(curvedAnimation);
+    fontWeight = Tween<double>(begin: 0.0, end: 1.0).animate(curvedAnimation);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final colors = context.talleeColors;
     iconColorAnimation = ColorTween(
-      begin: context.talleeColors.navBarItemUnselectedColor,
-      end: context.talleeColors.navBarItemSelectedColor,
-    ).animate(curved);
-
+      begin: colors.navBarItemUnselectedColor,
+      end: colors.navBarItemSelectedColor,
+    ).animate(curvedAnimation);
     bgColorAnimation = ColorTween(
       begin: Colors.transparent,
       end: CustomTheme.primaryColor.withAlpha(50),
-    ).animate(curved);
-
-    fontSizeAnimation = Tween<double>(begin: 11.0, end: 12.0).animate(curved);
-
-    // drives font weight interpolation
-    fontWeight = Tween<double>(begin: 0.0, end: 1.0).animate(curved);
+    ).animate(curvedAnimation);
   }
 
   // Retrigger animation on selection change
