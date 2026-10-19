@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 
 class BottomAnimatedButton extends StatefulWidget {
@@ -53,15 +54,15 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
       case ButtonType.primary:
         textColor = widget.isDestructive || widget.isEmphasized
             ? Colors.white
-            : CustomTheme.isDarkMode
+            : Theme.of(context).brightness == Brightness.dark
             ? Colors.black
             : Colors.white;
         break;
       default:
         if (widget.isDestructive) {
-          textColor = CustomTheme.errorColor;
+          textColor = context.talleeColors.errorColor;
         } else if (widget.isEmphasized) {
-          textColor = CustomTheme.primaryColor;
+          textColor = AppColors.primaryColor;
         } else {
           textColor = context.talleeColors.textColor;
         }
@@ -82,10 +83,10 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
         color: widget.onPressed == null
             ? context.talleeColors.onBoxColor
             : widget.isDestructive
-            ? CustomTheme.errorColor
+            ? context.talleeColors.errorColor
             : widget.isEmphasized
-            ? CustomTheme.primaryColor
-            : CustomTheme.isDarkMode
+            ? AppColors.primaryColor
+            : Theme.of(context).brightness == Brightness.dark
             ? Colors.white
             : Colors.black,
         borderRadius: BorderRadius.circular(12),
@@ -97,9 +98,9 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
           color: widget.onPressed == null
               ? context.talleeColors.hintColor
               : widget.isDestructive
-              ? CustomTheme.errorColor
+              ? context.talleeColors.errorColor
               : widget.isEmphasized
-              ? CustomTheme.primaryColor
+              ? AppColors.primaryColor
               : context.talleeColors.textColor,
           width: 2,
           strokeAlign: BorderSide.strokeAlignInside,

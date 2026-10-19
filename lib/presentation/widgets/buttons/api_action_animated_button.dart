@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 
 class ApiActionAnimatedButton extends StatefulWidget {
@@ -173,12 +173,20 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: buttonState == ApiButtonState.success ? 1.0 : 0.0,
-          child: Icon(Icons.check, size: 26, color: CustomTheme.successColor),
+          child: Icon(
+            Icons.check,
+            size: 26,
+            color: context.talleeColors.successColor,
+          ),
         ),
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: buttonState == ApiButtonState.error ? 1.0 : 0.0,
-          child: Icon(Icons.close, size: 26, color: CustomTheme.errorColor),
+          child: Icon(
+            Icons.close,
+            size: 26,
+            color: context.talleeColors.errorColor,
+          ),
         ),
       ],
     );
@@ -245,16 +253,16 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     if (widget.buttonType == ButtonType.primary) {
       textColor = widget.isDestructive
           ? Colors.white
-          : CustomTheme.isDarkMode
+          : Theme.of(context).brightness == Brightness.dark
           ? Colors.black
           : Colors.white;
     } else if (widget.buttonType == ButtonType.secondary) {
       textColor = widget.isDestructive
-          ? CustomTheme.errorColor
+          ? context.talleeColors.errorColor
           : context.talleeColors.textColor;
     } else {
       textColor = widget.isDestructive
-          ? CustomTheme.errorColor
+          ? context.talleeColors.errorColor
           : context.talleeColors.textColor;
     }
 
@@ -273,8 +281,8 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
             : widget.onPressed == null
             ? context.talleeColors.onBoxColor
             : widget.isDestructive
-            ? CustomTheme.errorColor
-            : CustomTheme.isDarkMode
+            ? context.talleeColors.errorColor
+            : Theme.of(context).brightness == Brightness.dark
             ? Colors.white
             : Colors.black,
         borderRadius: BorderRadius.circular(12),
@@ -285,7 +293,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
           color: widget.onPressed == null
               ? context.talleeColors.hintColor
               : widget.isDestructive
-              ? CustomTheme.errorColor
+              ? context.talleeColors.errorColor
               : context.talleeColors.textColor,
           width: 2,
         ),

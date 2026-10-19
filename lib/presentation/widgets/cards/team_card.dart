@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/app_color_utils.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';

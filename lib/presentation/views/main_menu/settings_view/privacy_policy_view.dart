@@ -1,7 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 class PrivacyPolicyView extends StatelessWidget {
@@ -24,7 +25,7 @@ class PrivacyPolicyView extends StatelessWidget {
               bottom: 10,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: CustomTheme.standardBoxDecoration,
+            decoration: context.standardBoxDecoration,
             child: FutureBuilder<String>(
               future: loadPrivacyPolicy(context),
               builder: (context, snapshot) {

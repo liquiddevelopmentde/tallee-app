@@ -5,7 +5,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -102,7 +103,7 @@ class _MatchShareViewState extends State<MatchShareView>
                   enableFeedback: false,
                   indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
-                    color: CustomTheme.primaryColor,
+                    color: AppColors.primaryColor,
                   ),
                   labelColor: Colors.black,
                   overlayColor: const WidgetStatePropertyAll(

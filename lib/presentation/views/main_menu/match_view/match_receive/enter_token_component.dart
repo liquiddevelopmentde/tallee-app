@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart' hide Material;
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -61,32 +62,32 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
         color: context.talleeColors.textColor,
         fontWeight: FontWeight.w500,
       ),
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: context.standardBoxDecoration,
     );
 
     final focusedPinTheme = defaultPinTheme.copyDecorationWith(
-      border: Border.all(color: CustomTheme.primaryColor),
+      border: Border.all(color: AppColors.primaryColor),
     );
 
     final errorPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
-        border: Border.all(color: CustomTheme.errorColor),
+        border: Border.all(color: context.talleeColors.errorColor),
       ),
       textStyle: TextStyle(
         fontSize: 35,
-        color: CustomTheme.errorColor,
+        color: context.talleeColors.errorColor,
         fontWeight: FontWeight.w500,
       ),
     );
 
     final disabledPinTheme = defaultPinTheme.copyWith(
       decoration: BoxDecoration(
-        border: Border.all(color: CustomTheme.errorColor),
+        border: Border.all(color: context.talleeColors.errorColor),
       ),
     );
 
     final errorTextStyle = TextStyle(
-      color: CustomTheme.errorColor,
+      color: context.talleeColors.errorColor,
       fontSize: 14,
       fontWeight: FontWeight.bold,
       overflow: TextOverflow.visible,

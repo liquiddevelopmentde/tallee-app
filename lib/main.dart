@@ -11,7 +11,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/data/db/database.dart';
@@ -194,8 +194,8 @@ class _TalleeState extends State<Tallee> {
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
       themeMode: context.watch<ThemeProvider>().themeMode,
       navigatorObservers: [SentryNavigatorObserver()],
-      theme: CustomTheme.themeData,
-      darkTheme: CustomTheme.themeData,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       home: SplashScreen(onFinished: handleSplashFinished),
     );
   }

@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
@@ -38,7 +39,7 @@ class MatchFileTile extends StatelessWidget {
           color: context.talleeColors.boxBorderColor,
           width: 2,
         ),
-        borderRadius: CustomTheme.standardBorderRadiusAll,
+        borderRadius: AppColors.standardBorderRadiusAll,
       ),
       margin:
           margin ?? const EdgeInsets.symmetric(horizontal: 30, vertical: 10),

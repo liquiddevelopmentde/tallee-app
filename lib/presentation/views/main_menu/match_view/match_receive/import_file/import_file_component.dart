@@ -3,7 +3,8 @@ import 'dart:core' hide Match;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
@@ -46,7 +47,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
       children: [
         const SizedBox(height: 50),
         Padding(
-          padding: CustomTheme.standardMargin.copyWith(left: 25, right: 25),
+          padding: AppColors.standardMargin.copyWith(left: 25, right: 25),
           child: GestureDetector(
             onTap: () async {
               HapticFeedback.selectionClick();
@@ -68,7 +69,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                 ),
                 decoration: BoxDecoration(
                   color: context.talleeColors.boxColor,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 150),
@@ -156,7 +157,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
       HapticFeedback.successNotification();
       setState(() {
         successfulImport = true;
-        dottedBorderColor = CustomTheme.successColor;
+        dottedBorderColor = context.talleeColors.successColor;
       });
     } else {
       HapticFeedback.errorNotification();
@@ -164,7 +165,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
 
       setState(() {
         if (data.result != ImportResult.canceled) {
-          dottedBorderColor = CustomTheme.errorColor;
+          dottedBorderColor = context.talleeColors.errorColor;
         } else {
           dottedBorderColor = context.talleeColors.boxBorderColor;
         }

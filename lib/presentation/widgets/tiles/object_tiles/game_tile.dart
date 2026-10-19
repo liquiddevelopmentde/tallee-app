@@ -2,7 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
@@ -54,7 +55,7 @@ class GameTile extends StatelessWidget {
         }
       },
       child: AnimatedContainer(
-        margin: CustomTheme.tileMargin,
+        margin: AppColors.tileMargin,
         padding: EdgeInsets.only(
           top: 12,
           bottom: 12,
@@ -63,8 +64,8 @@ class GameTile extends StatelessWidget {
           right: showChevron ? 8 : 12,
         ),
         decoration: !isHighlighted
-            ? CustomTheme.standardBoxDecoration
-            : CustomTheme.highlightedBoxDecoration.copyWith(
+            ? context.standardBoxDecoration
+            : context.highlightedBoxDecoration.copyWith(
                 border: Border.all(
                   color: highlightBorderColor.withValues(alpha: 0.9),
                   width: 2,

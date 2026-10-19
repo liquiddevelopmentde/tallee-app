@@ -9,7 +9,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -177,7 +178,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               icon: Icon(
                 Icons.search,
                 color: matchSearchProvider.isSearching
-                    ? CustomTheme.primaryColor
+                    ? AppColors.primaryColor
                     : null,
               ),
               onPressed: () => matchSearchProvider.toggleSearch(),
@@ -190,7 +191,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               icon: Icon(
                 Icons.search,
                 color: groupSearchProvider.isSearching
-                    ? CustomTheme.primaryColor
+                    ? AppColors.primaryColor
                     : null,
               ),
               onPressed: () => groupSearchProvider.toggleSearch(),
@@ -203,7 +204,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               icon: Icon(
                 Icons.search,
                 color: gameSearchProvider.isSearching
-                    ? CustomTheme.primaryColor
+                    ? AppColors.primaryColor
                     : null,
               ),
               onPressed: () => gameSearchProvider.toggleSearch(),

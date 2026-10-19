@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class PullDownMenuTile extends StatefulWidget {
   /// A single selectable row inside a [CustomPullDownMenu].
@@ -35,7 +36,7 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
   @override
   Widget build(BuildContext context) {
     final Color color = widget.isDestructive
-        ? CustomTheme.red
+        ? AppColors.red
         : context.talleeColors.textColor;
     final Color contentColor = widget.enabled ? color : color.withAlpha(100);
 

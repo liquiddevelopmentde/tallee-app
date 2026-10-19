@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class NavbarItem extends StatefulWidget {
   /// A navigation bar item widget that represents a single tab in a navigation bar.
@@ -77,7 +78,7 @@ class _NavbarItemState extends State<NavbarItem>
     ).animate(curvedAnimation);
     bgColorAnimation = ColorTween(
       begin: Colors.transparent,
-      end: CustomTheme.primaryColor.withAlpha(50),
+      end: AppColors.primaryColor.withAlpha(50),
     ).animate(curvedAnimation);
   }
 

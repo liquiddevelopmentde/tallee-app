@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 export 'custom_dialog_action.dart';
@@ -65,7 +66,7 @@ class CustomAlertDialog extends StatelessWidget {
       backgroundColor: context.talleeColors.boxColor,
       actionsAlignment: MainAxisAlignment.center,
       shape: RoundedRectangleBorder(
-        borderRadius: CustomTheme.standardBorderRadiusAll,
+        borderRadius: AppColors.standardBorderRadiusAll,
         side: BorderSide(color: context.talleeColors.boxBorderColor),
       ),
     );

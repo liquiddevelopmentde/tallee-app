@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -38,12 +39,12 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      decoration: CustomTheme.standardBoxDecoration.copyWith(
+      decoration: context.standardBoxDecoration.copyWith(
         border: Border.all(
           color: widget.borderColor ?? context.talleeColors.boxBorderColor,
         ),
       ),
-      margin: CustomTheme.standardMargin,
+      margin: AppColors.standardMargin,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -82,7 +83,7 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                         vertical: 6,
                         horizontal: 6,
                       ),
-                      decoration: CustomTheme.standardBoxDecoration.copyWith(
+                      decoration: context.standardBoxDecoration.copyWith(
                         color: context.talleeColors.onBoxColor,
                       ),
                       child: Row(
@@ -97,7 +98,8 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: CustomTheme.warningColor,
+                                        color:
+                                            context.talleeColors.warningColor,
                                       ),
                                     )
                                   : buildUnitNameWidget(
@@ -112,7 +114,10 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                                     ),
                             )
                           else
-                            Icon(Icons.search, color: CustomTheme.errorColor),
+                            Icon(
+                              Icons.search,
+                              color: context.talleeColors.errorColor,
+                            ),
                         ],
                       ),
                     ),

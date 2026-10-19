@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -453,7 +454,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
             colorScheme: ColorScheme.dark(
-              primary: CustomTheme.primaryColor,
+              primary: AppColors.primaryColor,
               onPrimary: context.talleeColors.textColor,
               surface: context.talleeColors.boxColor,
               onSurface: context.talleeColors.textColor,
@@ -491,7 +492,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                     fontSize: 16,
                   ),
                   todayTextStyle: const TextStyle(
-                    color: CustomTheme.primaryColor,
+                    color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -510,7 +511,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                     fontSize: 16,
                   ),
                   todayTextStyle: const TextStyle(
-                    color: CustomTheme.primaryColor,
+                    color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -526,10 +527,10 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                   firstDayOfWeek: 1,
                 ),
                 selectionMode: DateRangePickerSelectionMode.range,
-                selectionColor: CustomTheme.primaryColor,
-                startRangeSelectionColor: CustomTheme.primaryColor,
-                endRangeSelectionColor: CustomTheme.primaryColor,
-                rangeSelectionColor: CustomTheme.primaryColor.withValues(
+                selectionColor: AppColors.primaryColor,
+                startRangeSelectionColor: AppColors.primaryColor,
+                endRangeSelectionColor: AppColors.primaryColor,
+                rangeSelectionColor: AppColors.primaryColor.withValues(
                   alpha: 0.15,
                 ),
                 selectionTextStyle: TextStyle(

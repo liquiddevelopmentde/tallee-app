@@ -5,7 +5,8 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
@@ -184,7 +185,7 @@ class _GroupViewState extends State<GroupView> {
                                     },
 
                                     child: ListView.builder(
-                                      padding: CustomTheme.listViewPadding(
+                                      padding: AppColors.listViewPadding(
                                         context,
                                       ),
                                       itemCount: displayedGroups.length,

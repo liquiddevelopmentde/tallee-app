@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 
@@ -194,6 +196,16 @@ void main() {
 
       SharedPreferencesService.setThemeMode(ThemeMode.dark);
       expect(SharedPreferencesService.getThemeMode(), ThemeMode.dark);
+    });
+
+    test('Light and dark ThemeData remain separate', () {
+      expect(lightTheme.brightness, Brightness.light);
+      expect(darkTheme.brightness, Brightness.dark);
+      expect(
+        lightTheme.scaffoldBackgroundColor,
+        AppColors.backgroundColorLight,
+      );
+      expect(darkTheme.scaffoldBackgroundColor, AppColors.backgroundColorDark);
     });
   });
 }

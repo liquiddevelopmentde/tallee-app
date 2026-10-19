@@ -7,7 +7,8 @@ import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -88,7 +89,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
                                       alpha: 0.10 * t,
                                     ),
                                     borderRadius:
-                                        CustomTheme.standardBorderRadiusAll,
+                                        AppColors.standardBorderRadiusAll,
                                   ),
                                 ),
                               ),

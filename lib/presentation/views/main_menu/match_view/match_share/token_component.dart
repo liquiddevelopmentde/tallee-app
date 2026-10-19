@@ -1,7 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
@@ -102,7 +103,7 @@ class TokenComponent extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: progress,
                     backgroundColor: context.talleeColors.onBoxColor,
-                    color: CustomTheme.primaryColor,
+                    color: AppColors.primaryColor,
                     minHeight: 8,
                   ),
                 ),
@@ -134,7 +135,7 @@ class TokenComponent extends StatelessWidget {
                     HapticIconButton(
                       icon: const Icon(
                         Icons.refresh,
-                        color: CustomTheme.primaryColor,
+                        color: AppColors.primaryColor,
                         size: 25,
                       ),
                       onPressed: renewToken,
@@ -285,7 +286,7 @@ class TokenComponent extends StatelessWidget {
             ? context.talleeColors.boxColor
             : context.talleeColors.boxBorderColor.withAlpha(100),
         border: Border.all(color: context.talleeColors.boxBorderColor),
-        borderRadius: CustomTheme.standardBorderRadiusAll,
+        borderRadius: AppColors.standardBorderRadiusAll,
       ),
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Text(

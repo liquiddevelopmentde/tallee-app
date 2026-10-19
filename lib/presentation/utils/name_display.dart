@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 
@@ -25,7 +26,7 @@ InlineSpan buildPlayerNameCountSpan(
       ? context.talleeColors.textColor.withAlpha(150)
       : mainStyle?.color;
   final Color? countColor = highlighted
-      ? CustomTheme.primaryColor.withAlpha(50)
+      ? AppColors.primaryColor.withAlpha(50)
       : countStyle?.color;
 
   final resolvedMainStyle =

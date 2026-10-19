@@ -6,7 +6,8 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -431,7 +432,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
             colorScheme: ColorScheme.dark(
-              primary: CustomTheme.primaryColor,
+              primary: AppColors.primaryColor,
               onPrimary: context.talleeColors.textColor,
               surface: context.talleeColors.boxColor,
               onSurface: context.talleeColors.textColor,
@@ -467,7 +468,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     fontSize: 16,
                   ),
                   todayTextStyle: const TextStyle(
-                    color: CustomTheme.primaryColor,
+                    color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -486,7 +487,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     fontSize: 16,
                   ),
                   todayTextStyle: const TextStyle(
-                    color: CustomTheme.primaryColor,
+                    color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -502,7 +503,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   firstDayOfWeek: 1,
                 ),
                 selectionMode: DateRangePickerSelectionMode.single,
-                selectionColor: CustomTheme.primaryColor,
+                selectionColor: AppColors.primaryColor,
                 selectionTextStyle: TextStyle(
                   color: context.talleeColors.textColor,
                   fontSize: 16,

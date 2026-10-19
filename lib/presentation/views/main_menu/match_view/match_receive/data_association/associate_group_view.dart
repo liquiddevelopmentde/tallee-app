@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -50,13 +51,13 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
             Align(
               alignment: Alignment.center,
               child: Container(
-                margin: CustomTheme.standardMargin,
+                margin: AppColors.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
                   color: associatedGroup == null
-                      ? CustomTheme.warningColor
-                      : CustomTheme.successColor,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                      ? context.talleeColors.warningColor
+                      : context.talleeColors.successColor,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: Text(
                   associatedGroup != null
@@ -90,12 +91,14 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                       onTap: navigateToGroupSelection,
                       child: Container(
                         key: const ValueKey('no_association'),
-                        margin: CustomTheme.tileMargin,
+                        margin: AppColors.tileMargin,
                         height: 150,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        decoration: CustomTheme.standardBoxDecoration.copyWith(
+                        decoration: context.standardBoxDecoration.copyWith(
                           border: Border.all(
-                            color: CustomTheme.warningColor.withAlpha(150),
+                            color: context.talleeColors.warningColor.withAlpha(
+                              150,
+                            ),
                             width: 1,
                           ),
                         ),
@@ -106,7 +109,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                               Icon(
                                 Icons.group_add,
                                 size: 35,
-                                color: CustomTheme.warningColor,
+                                color: context.talleeColors.warningColor,
                               ),
                               const SizedBox(height: 5),
                               Text(
@@ -135,7 +138,9 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                       key: ValueKey(associatedGroup!.id),
                       group: associatedGroup!,
                       onTap: navigateToGroupSelection,
-                      borderColor: CustomTheme.successColor.withAlpha(150),
+                      borderColor: context.talleeColors.successColor.withAlpha(
+                        150,
+                      ),
                     ),
             ),
             const SizedBox(height: 2),

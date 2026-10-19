@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -41,7 +42,7 @@ class TextIconListTile extends StatelessWidget {
           width: 1,
           strokeAlign: BorderSide.strokeAlignCenter,
         ),
-        borderRadius: CustomTheme.standardBorderRadiusAll,
+        borderRadius: AppColors.standardBorderRadiusAll,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

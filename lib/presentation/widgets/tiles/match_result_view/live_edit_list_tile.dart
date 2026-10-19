@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class LiveEditListTile extends StatefulWidget {
@@ -107,7 +107,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: context.standardBoxDecoration,
       child: Column(
         spacing: 4,
         children: [
@@ -179,7 +179,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                         ),
                         builder: (context, t, child) {
                           final iconColor = Color.lerp(
-                            CustomTheme.errorColor,
+                            context.talleeColors.errorColor,
                             context.talleeColors.textColor.withAlpha(90),
                             t,
                           );

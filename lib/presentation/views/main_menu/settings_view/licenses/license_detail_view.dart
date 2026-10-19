@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -95,9 +96,9 @@ class LicenseDetailView extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontSize: 12,
-                              color: CustomTheme.secondaryColor,
+                              color: AppColors.secondaryColor,
                               decoration: TextDecoration.underline,
-                              decorationColor: CustomTheme.secondaryColor,
+                              decorationColor: AppColors.secondaryColor,
                             ),
                           ),
                         ),
@@ -130,7 +131,7 @@ class LicenseDetailView extends StatelessWidget {
                   vertical: 10,
                   horizontal: 16,
                 ),
-                decoration: CustomTheme.standardBoxDecoration,
+                decoration: context.standardBoxDecoration,
                 child: (package.license != null && package.license!.isNotEmpty)
                     ? SelectableText(
                         package.license!,

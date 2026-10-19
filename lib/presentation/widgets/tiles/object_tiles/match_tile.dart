@@ -5,7 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -53,10 +54,10 @@ class _MatchTileState extends State<MatchTile> {
         widget.onTap.call();
       },
       child: Container(
-        margin: CustomTheme.tileMargin,
+        margin: AppColors.tileMargin,
         width: widget.width,
         padding: const EdgeInsets.all(12),
-        decoration: CustomTheme.standardBoxDecoration,
+        decoration: context.standardBoxDecoration,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -238,16 +239,20 @@ class _MatchTileState extends State<MatchTile> {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
-          color: CustomTheme.warningColor.withValues(alpha: 0.1),
+          color: context.talleeColors.warningColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: CustomTheme.warningColor.withValues(alpha: 0.3),
+            color: context.talleeColors.warningColor.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
         child: Row(
           children: [
-            Icon(Icons.watch_later, size: 20, color: CustomTheme.warningColor),
+            Icon(
+              Icons.watch_later,
+              size: 20,
+              color: context.talleeColors.warningColor,
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -270,10 +275,10 @@ class _MatchTileState extends State<MatchTile> {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
-          color: CustomTheme.primaryColor.withValues(alpha: 0.1),
+          color: AppColors.primaryColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: CustomTheme.primaryColor.withValues(alpha: 0.3),
+            color: AppColors.primaryColor.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -282,7 +287,7 @@ class _MatchTileState extends State<MatchTile> {
             const Icon(
               Icons.handshake_outlined,
               size: 20,
-              color: CustomTheme.primaryColor,
+              color: AppColors.primaryColor,
             ),
             const SizedBox(width: 8),
             Expanded(
@@ -305,17 +310,21 @@ class _MatchTileState extends State<MatchTile> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(
-        color: CustomTheme.successColor.withValues(alpha: 0.1),
+        color: context.talleeColors.successColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: CustomTheme.successColor.withValues(alpha: 0.3),
+          color: context.talleeColors.successColor.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
       child: Row(
         spacing: 8,
         children: [
-          Icon(Icons.emoji_events, size: 20, color: CustomTheme.warningColor),
+          Icon(
+            Icons.emoji_events,
+            size: 20,
+            color: context.talleeColors.warningColor,
+          ),
           Expanded(child: winnerTextWidget),
         ],
       ),

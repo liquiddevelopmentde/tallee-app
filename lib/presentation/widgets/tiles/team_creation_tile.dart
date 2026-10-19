@@ -2,7 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
@@ -45,8 +46,8 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
     final loc = AppLocalizations.of(context);
 
     return Container(
-      margin: CustomTheme.standardMargin,
-      decoration: CustomTheme.standardBoxDecoration,
+      margin: AppColors.standardMargin,
+      decoration: context.standardBoxDecoration,
       clipBehavior: Clip.antiAlias,
       child: IntrinsicHeight(
         child: Row(

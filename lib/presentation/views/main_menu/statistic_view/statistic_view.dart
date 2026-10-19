@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
@@ -85,9 +85,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                     // Statistics in db
                     statistics.isNotEmpty
                     ? ReorderableListView.builder(
-                        padding: CustomTheme.listViewPadding(context),
+                        padding: AppColors.listViewPadding(context),
                         header: SingleChildScrollView(
-                          padding: CustomTheme.filterRowPadding,
+                          padding: AppColors.filterRowPadding,
                           scrollDirection: Axis.horizontal,
                           child:
                               // Filter row
@@ -299,7 +299,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                               final t = Curves.easeOut.transform(
                                 animation.value,
                               );
-                              const tileMargin = CustomTheme.tileMargin;
+                              const tileMargin = AppColors.tileMargin;
                               return Transform.scale(
                                 scale: 1.0 + (0.02 * t),
                                 child: Material(

@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -413,7 +413,7 @@ class _CreateGameViewState extends State<CreateGameView> {
       arrowColor: context.talleeColors.boxBorderColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       barrierColor: Colors.transparent,
-      contentDecoration: CustomTheme.standardBoxDecoration,
+      contentDecoration: context.standardBoxDecoration,
       onBeforePopup: () => HapticFeedback.selectionClick(),
       onAfterPopup: () => HapticFeedback.selectionClick(),
       content: StatefulBuilder(
@@ -499,7 +499,7 @@ class _CreateGameViewState extends State<CreateGameView> {
       arrowColor: context.talleeColors.boxBorderColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       barrierColor: Colors.transparent,
-      contentDecoration: CustomTheme.standardBoxDecoration,
+      contentDecoration: context.standardBoxDecoration,
       onBeforePopup: () => HapticFeedback.selectionClick(),
       onAfterPopup: () => HapticFeedback.selectionClick(),
       content: StatefulBuilder(

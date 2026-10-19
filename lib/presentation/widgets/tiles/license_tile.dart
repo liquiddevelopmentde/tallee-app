@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/license_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
@@ -30,7 +30,7 @@ class LicenseTile extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-        decoration: CustomTheme.standardBoxDecoration.copyWith(
+        decoration: context.standardBoxDecoration.copyWith(
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(

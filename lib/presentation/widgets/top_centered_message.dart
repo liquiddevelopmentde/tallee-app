@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class TopCenteredMessage extends StatelessWidget {
   /// A widget that displays a message centered at the top of the screen with an icon, title, and message.

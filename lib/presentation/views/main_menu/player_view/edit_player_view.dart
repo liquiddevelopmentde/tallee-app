@@ -2,7 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
@@ -65,7 +66,7 @@ class _EditPlayerViewState extends State<EditPlayerView> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                margin: CustomTheme.standardMargin,
+                margin: AppColors.standardMargin,
                 child: TextInputField(
                   controller: playerNameController,
                   hintText: loc.player_name,
@@ -73,7 +74,7 @@ class _EditPlayerViewState extends State<EditPlayerView> {
                 ),
               ),
               Container(
-                margin: CustomTheme.standardMargin,
+                margin: AppColors.standardMargin,
                 child: TextInputField(
                   controller: playerDescriptionController,
                   hintText: loc.description,

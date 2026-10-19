@@ -1,7 +1,8 @@
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/app_color_utils.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/dto/news_item.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';

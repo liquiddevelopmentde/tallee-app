@@ -2,7 +2,8 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -312,7 +313,7 @@ class MatchProfileBody extends StatelessWidget {
     const winnerStyle = TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.bold,
-      color: CustomTheme.primaryColor,
+      color: AppColors.primaryColor,
     );
 
     if (useTeamLogic) {
@@ -441,7 +442,7 @@ class MatchProfileBody extends StatelessWidget {
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: score > 0
-              ? CustomTheme.primaryColor
+              ? AppColors.primaryColor
               : context.talleeColors.hintColor,
         ),
       );
@@ -451,7 +452,7 @@ class MatchProfileBody extends StatelessWidget {
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: CustomTheme.primaryColor,
+          color: AppColors.primaryColor,
         ),
       );
     }

@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/countdown_painter.dart';
@@ -46,17 +47,17 @@ class QrCodeComponent extends StatelessWidget {
               foregroundPainter: CountdownPainter(
                 progress: progress,
                 color: secondsRemaining != 0
-                    ? CustomTheme.primaryColor
+                    ? AppColors.primaryColor
                     : Colors.transparent,
               ),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 padding: const EdgeInsets.all(4),
                 child: ClipRRect(
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                   child: Container(
                     color: Colors.white,
                     padding: const EdgeInsets.all(10),
@@ -81,7 +82,7 @@ class QrCodeComponent extends StatelessWidget {
                         if (isLoading)
                           const Center(
                             child: CircularProgressIndicator(
-                              color: CustomTheme.primaryColor,
+                              color: AppColors.primaryColor,
                               strokeWidth: 5,
                             ),
                           ),
@@ -90,7 +91,7 @@ class QrCodeComponent extends StatelessWidget {
                             child: HapticIconButton(
                               icon: const Icon(
                                 Icons.refresh,
-                                color: CustomTheme.primaryColor,
+                                color: AppColors.primaryColor,
                                 size: 70,
                               ),
                               onPressed: renewToken,
@@ -129,7 +130,7 @@ class QrCodeComponent extends StatelessWidget {
                 color: context.talleeColors.boxBorderColor,
                 width: 2,
               ),
-              borderRadius: CustomTheme.standardBorderRadiusAll,
+              borderRadius: AppColors.standardBorderRadiusAll,
             ),
             margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -159,7 +160,7 @@ class QrCodeComponent extends StatelessWidget {
             decoration: BoxDecoration(
               color: context.talleeColors.boxBorderColor.withAlpha(100),
               border: Border.all(color: context.talleeColors.boxBorderColor),
-              borderRadius: CustomTheme.standardBorderRadiusAll,
+              borderRadius: AppColors.standardBorderRadiusAll,
             ),
             padding: const EdgeInsets.all(10),
             child: Stack(
