@@ -89,7 +89,7 @@ class CustomTheme {
 
   static const Color darkNavBarBackgroundColor = Color(0xFF131313);
   static final Color darkNavBarItemUnselectedColor = Colors.grey.shade400;
-  static const Color lightNavBarItemUnselectedColor = Color(0xFF4A4A4A);
+  static const Color lightNavBarItemUnselectedColor = lightHintColor;
 
   /// Selected color for the [NavbarItem]
   static Color navBarItemSelectedColor = primaryColor;
