@@ -70,21 +70,23 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
 
     final errorPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
-        border: Border.all(color: Colors.red),
+        border: Border.all(color: CustomTheme.errorColor),
       ),
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 35,
-        color: Colors.red,
+        color: CustomTheme.errorColor,
         fontWeight: FontWeight.w500,
       ),
     );
 
     final disabledPinTheme = defaultPinTheme.copyWith(
-      decoration: BoxDecoration(border: Border.all(color: Colors.pink)),
+      decoration: BoxDecoration(
+        border: Border.all(color: CustomTheme.errorColor),
+      ),
     );
 
-    const errorTextStyle = TextStyle(
-      color: Colors.red,
+    final errorTextStyle = TextStyle(
+      color: CustomTheme.errorColor,
       fontSize: 14,
       fontWeight: FontWeight.bold,
       overflow: TextOverflow.visible,

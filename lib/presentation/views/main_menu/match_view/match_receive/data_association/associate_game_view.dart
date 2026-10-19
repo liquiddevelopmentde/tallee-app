@@ -42,7 +42,9 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                 margin: CustomTheme.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
-                  color: associatedGame == null ? Colors.orange : Colors.green,
+                  color: associatedGame == null
+                      ? CustomTheme.warningColor
+                      : CustomTheme.successColor,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
                 child: Text(
@@ -84,7 +86,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: CustomTheme.standardBoxDecoration.copyWith(
                           border: Border.all(
-                            color: Colors.orange.withAlpha(150),
+                            color: CustomTheme.warningColor.withAlpha(150),
                             width: 1,
                           ),
                         ),
@@ -92,10 +94,10 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.add_box,
                                 size: 35,
-                                color: Colors.orange,
+                                color: CustomTheme.warningColor,
                               ),
                               const SizedBox(height: 5),
                               Text(
@@ -128,7 +130,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                       key: ValueKey(associatedGame!.id),
                       onTap: navigateToGameSelection,
                       isHighlighted: true,
-                      borderColor: Colors.green.withAlpha(150),
+                      borderColor: CustomTheme.successColor.withAlpha(150),
                     ),
             ),
             const SizedBox(height: 2),

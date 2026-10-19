@@ -94,10 +94,10 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                                   ? Text(
                                       AppLocalizations.of(context)
                                           .create_as_new,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.orange,
+                                        color: CustomTheme.warningColor,
                                       ),
                                     )
                                   : buildUnitNameWidget(
@@ -112,7 +112,7 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                                     ),
                             )
                           else
-                            const Icon(Icons.search, color: Colors.red),
+                            Icon(Icons.search, color: CustomTheme.errorColor),
                         ],
                       ),
                     ),

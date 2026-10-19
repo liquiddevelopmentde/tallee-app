@@ -156,7 +156,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
       HapticFeedback.successNotification();
       setState(() {
         successfulImport = true;
-        dottedBorderColor = Colors.green;
+        dottedBorderColor = CustomTheme.successColor;
       });
     } else {
       HapticFeedback.errorNotification();
@@ -164,7 +164,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
 
       setState(() {
         if (data.result != ImportResult.canceled) {
-          dottedBorderColor = Colors.red;
+          dottedBorderColor = CustomTheme.errorColor;
         } else {
           dottedBorderColor = context.talleeColors.boxBorderColor;
         }

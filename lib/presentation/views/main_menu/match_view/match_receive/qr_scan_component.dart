@@ -270,9 +270,9 @@ class StatusErrorOverlay extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (errorMessage != null) ...[
-                    const Icon(
+                    Icon(
                       Icons.error_outline,
-                      color: Colors.redAccent,
+                      color: CustomTheme.errorColor,
                       size: 40,
                     ),
                     const SizedBox(height: 15),

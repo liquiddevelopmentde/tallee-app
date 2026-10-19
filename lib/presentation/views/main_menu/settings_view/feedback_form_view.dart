@@ -133,8 +133,8 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                             padding: const EdgeInsets.only(top: 4, left: 4),
                             child: Text(
                               loc.invalid_email,
-                              style: const TextStyle(
-                                color: Colors.redAccent,
+                              style: TextStyle(
+                                color: CustomTheme.errorColor,
                                 fontSize: 12,
                               ),
                             ),

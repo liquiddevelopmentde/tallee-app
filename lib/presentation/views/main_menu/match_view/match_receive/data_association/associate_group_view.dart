@@ -53,7 +53,9 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                 margin: CustomTheme.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
-                  color: associatedGroup == null ? Colors.orange : Colors.green,
+                  color: associatedGroup == null
+                      ? CustomTheme.warningColor
+                      : CustomTheme.successColor,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
                 child: Text(
@@ -93,7 +95,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: CustomTheme.standardBoxDecoration.copyWith(
                           border: Border.all(
-                            color: Colors.orange.withAlpha(150),
+                            color: CustomTheme.warningColor.withAlpha(150),
                             width: 1,
                           ),
                         ),
@@ -101,10 +103,10 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.group_add,
                                 size: 35,
-                                color: Colors.orange,
+                                color: CustomTheme.warningColor,
                               ),
                               const SizedBox(height: 5),
                               Text(
@@ -133,7 +135,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                       key: ValueKey(associatedGroup!.id),
                       group: associatedGroup!,
                       onTap: navigateToGroupSelection,
-                      borderColor: Colors.green.withAlpha(150),
+                      borderColor: CustomTheme.successColor.withAlpha(150),
                     ),
             ),
             const SizedBox(height: 2),

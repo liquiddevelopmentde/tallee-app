@@ -238,16 +238,16 @@ class _MatchTileState extends State<MatchTile> {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.amber.withValues(alpha: 0.1),
+          color: CustomTheme.warningColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: Colors.amber.withValues(alpha: 0.3),
+            color: CustomTheme.warningColor.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
         child: Row(
           children: [
-            const Icon(Icons.watch_later, size: 20, color: Colors.amber),
+            Icon(Icons.watch_later, size: 20, color: CustomTheme.warningColor),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -305,17 +305,17 @@ class _MatchTileState extends State<MatchTile> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.green.withValues(alpha: 0.1),
+        color: CustomTheme.successColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Colors.green.withValues(alpha: 0.3),
+          color: CustomTheme.successColor.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
       child: Row(
         spacing: 8,
         children: [
-          const Icon(Icons.emoji_events, size: 20, color: Colors.amber),
+          Icon(Icons.emoji_events, size: 20, color: CustomTheme.warningColor),
           Expanded(child: winnerTextWidget),
         ],
       ),

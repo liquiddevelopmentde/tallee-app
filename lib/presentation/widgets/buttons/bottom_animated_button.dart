@@ -59,7 +59,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
         break;
       default:
         if (widget.isDestructive) {
-          textColor = Colors.red;
+          textColor = CustomTheme.errorColor;
         } else if (widget.isEmphasized) {
           textColor = CustomTheme.primaryColor;
         } else {
@@ -82,7 +82,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
         color: widget.onPressed == null
             ? context.talleeColors.onBoxColor
             : widget.isDestructive
-            ? Colors.red
+            ? CustomTheme.errorColor
             : widget.isEmphasized
             ? CustomTheme.primaryColor
             : Theme.of(context).brightness == Brightness.dark
@@ -97,7 +97,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
           color: widget.onPressed == null
               ? context.talleeColors.hintColor
               : widget.isDestructive
-              ? Colors.red
+              ? CustomTheme.errorColor
               : widget.isEmphasized
               ? CustomTheme.primaryColor
               : context.talleeColors.textColor,

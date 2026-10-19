@@ -173,12 +173,12 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: buttonState == ApiButtonState.success ? 1.0 : 0.0,
-          child: const Icon(Icons.check, size: 26, color: Colors.green),
+          child: Icon(Icons.check, size: 26, color: CustomTheme.successColor),
         ),
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: buttonState == ApiButtonState.error ? 1.0 : 0.0,
-          child: const Icon(Icons.close, size: 26, color: Colors.red),
+          child: Icon(Icons.close, size: 26, color: CustomTheme.errorColor),
         ),
       ],
     );
@@ -250,11 +250,11 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
           : Colors.white;
     } else if (widget.buttonType == ButtonType.secondary) {
       textColor = widget.isDestructive
-          ? Colors.red
+          ? CustomTheme.errorColor
           : context.talleeColors.textColor;
     } else {
       textColor = widget.isDestructive
-          ? Colors.red
+          ? CustomTheme.errorColor
           : context.talleeColors.textColor;
     }
 
@@ -273,7 +273,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
             : widget.onPressed == null
             ? context.talleeColors.onBoxColor
             : widget.isDestructive
-            ? Colors.red
+            ? CustomTheme.errorColor
             : Theme.of(context).brightness == Brightness.dark
             ? Colors.white
             : Colors.black,
@@ -285,7 +285,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
           color: widget.onPressed == null
               ? context.talleeColors.hintColor
               : widget.isDestructive
-              ? Colors.red
+              ? CustomTheme.errorColor
               : context.talleeColors.textColor,
           width: 2,
         ),

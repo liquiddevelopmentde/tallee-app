@@ -179,7 +179,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                         ),
                         builder: (context, t, child) {
                           final iconColor = Color.lerp(
-                            Colors.red,
+                            CustomTheme.errorColor,
                             context.talleeColors.textColor.withAlpha(90),
                             t,
                           );

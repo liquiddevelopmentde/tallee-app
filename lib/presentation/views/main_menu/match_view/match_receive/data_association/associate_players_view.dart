@@ -72,10 +72,12 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: BoxDecoration(
                   color: unassignedCount == 0
-                      ? (newPlayersCount > 0 ? Colors.orange : Colors.green)
+                      ? (newPlayersCount > 0
+                            ? CustomTheme.warningColor
+                            : CustomTheme.successColor)
                       : unassignedCount == players.length
-                      ? Colors.red
-                      : Colors.redAccent,
+                      ? CustomTheme.errorColor
+                      : CustomTheme.errorColor,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
                 child: Text(
@@ -109,8 +111,11 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                     associatedPlayer: associatedPlayer,
                     isNew: isNew,
                     borderColor: associatedPlayer != null
-                        ? (isNew ? Colors.orange : Colors.green).withAlpha(150)
-                        : Colors.red.withAlpha(150),
+                        ? (isNew
+                                  ? CustomTheme.warningColor
+                                  : CustomTheme.successColor)
+                              .withAlpha(150)
+                        : CustomTheme.errorColor.withAlpha(150),
                     onTap: () async {
                       final selectedPlayer = await showPlayerSelectionSheet(
                         associatedPlayer,

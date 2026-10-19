@@ -181,7 +181,10 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 if (widget.player.deleted) ...[
                   Text(
                     loc.deleted,
-                    style: const TextStyle(fontSize: 13, color: Colors.red),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: CustomTheme.errorColor,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ],

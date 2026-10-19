@@ -84,6 +84,17 @@ class CustomTheme {
   static const Color darkHintColor = Color(0xFF888888);
   static const Color lightHintColor = Color(0xFF6B6B6B);
 
+  static const Color darkErrorColor = Colors.red;
+  static const Color lightErrorColor = Colors.red;
+  static const Color darkSuccessColor = Colors.green;
+  static const Color lightSuccessColor = Colors.green;
+  static const Color darkWarningColor = Colors.orange;
+  static const Color lightWarningColor = Colors.orange;
+
+  static Color errorColor = darkErrorColor;
+  static Color successColor = darkSuccessColor;
+  static Color warningColor = darkWarningColor;
+
   /// Background color for the navigation bar
   static Color navBarBackgroundColor = darkNavBarBackgroundColor;
 
@@ -106,6 +117,11 @@ class CustomTheme {
     onBoxColor = dark ? darkOnBoxColor : lightOnBoxColor;
     textColor = dark ? darkTextColor : lightTextColor;
     hintColor = dark ? darkHintColor : lightHintColor;
+    errorColor = dark ? darkErrorColor : lightErrorColor;
+    successColor = dark ? darkSuccessColor : lightSuccessColor;
+    warningColor = dark ? darkWarningColor : lightWarningColor;
+    red = errorColor;
+    green = successColor;
     navBarBackgroundColor = dark ? darkNavBarBackgroundColor : lightBoxColor;
     navBarItemSelectedColor = primaryColor;
     navBarItemUnselectedColor = dark
@@ -115,9 +131,9 @@ class CustomTheme {
 
   // ==================== App-Colors ====================
 
-  static Color red = Colors.red;
+  static Color red = errorColor;
   static Color blue = Colors.blue;
-  static Color green = Colors.green;
+  static Color green = successColor;
   static Color yellow = yellowColor;
   static Color purple = Colors.purple;
   static Color orange = primaryColor;
@@ -299,7 +315,7 @@ class CustomTheme {
       onPrimary: darkTextColor,
       secondary: secondaryColor,
       onSecondary: blackColor,
-      error: Colors.red,
+      error: errorColor,
       onError: darkTextColor,
       surface: backgroundColor,
       onSurface: textColor,
