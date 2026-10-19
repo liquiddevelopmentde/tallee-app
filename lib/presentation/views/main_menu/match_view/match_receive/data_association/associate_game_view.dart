@@ -44,9 +44,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                 margin: AppColors.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
-                  color: associatedGame == null
-                      ? context.talleeColors.warningColor
-                      : context.talleeColors.successColor,
+                  color: associatedGame == null ? Colors.orange : Colors.green,
                   borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: Text(
@@ -88,9 +86,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: context.standardBoxDecoration.copyWith(
                           border: Border.all(
-                            color: context.talleeColors.warningColor.withAlpha(
-                              150,
-                            ),
+                            color: Colors.orange.withAlpha(150),
                             width: 1,
                           ),
                         ),
@@ -98,10 +94,10 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.add_box,
                                 size: 35,
-                                color: context.talleeColors.warningColor,
+                                color: Colors.orange,
                               ),
                               const SizedBox(height: 5),
                               Text(
@@ -134,9 +130,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                       key: ValueKey(associatedGame!.id),
                       onTap: navigateToGameSelection,
                       isHighlighted: true,
-                      borderColor: context.talleeColors.successColor.withAlpha(
-                        150,
-                      ),
+                      borderColor: Colors.green.withAlpha(150),
                     ),
             ),
             const SizedBox(height: 2),

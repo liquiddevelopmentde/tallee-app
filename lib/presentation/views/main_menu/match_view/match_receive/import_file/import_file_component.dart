@@ -29,13 +29,14 @@ class _ImportFileCardState extends State<ImportFileCard> {
   ImportResult? lastResult;
   String? fileName;
 
-  Color? dottedBorderColor;
+  late Color dottedBorderColor;
 
   late ({ImportResult result, Match? match, String filePath}) data;
 
   @override
   void initState() {
     super.initState();
+    dottedBorderColor = context.talleeColors.boxBorderColor;
     if (widget.initialFilePath != null) {
       loadInitialFile();
     }
@@ -60,7 +61,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                 radius: const Radius.circular(12),
                 dashPattern: [10, 5],
                 strokeWidth: 3,
-                color: dottedBorderColor ?? context.talleeColors.boxBorderColor,
+                color: dottedBorderColor,
               ),
               child: Container(
                 width: MediaQuery.widthOf(context) * 0.9,
@@ -161,7 +162,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
       HapticFeedback.successNotification();
       setState(() {
         successfulImport = true;
-        dottedBorderColor = context.talleeColors.successColor;
+        dottedBorderColor = Colors.green;
       });
     } else {
       HapticFeedback.errorNotification();
@@ -169,7 +170,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
 
       setState(() {
         if (data.result != ImportResult.canceled) {
-          dottedBorderColor = context.talleeColors.errorColor;
+          dottedBorderColor = Colors.red;
         } else {
           dottedBorderColor = context.talleeColors.boxBorderColor;
         }

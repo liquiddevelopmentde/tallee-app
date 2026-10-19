@@ -74,12 +74,10 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: BoxDecoration(
                   color: unassignedCount == 0
-                      ? (newPlayersCount > 0
-                            ? context.talleeColors.warningColor
-                            : context.talleeColors.successColor)
+                      ? (newPlayersCount > 0 ? Colors.orange : Colors.green)
                       : unassignedCount == players.length
-                      ? context.talleeColors.errorColor
-                      : context.talleeColors.errorColor,
+                      ? Colors.red
+                      : Colors.redAccent,
                   borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: Text(
@@ -113,11 +111,8 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                     associatedPlayer: associatedPlayer,
                     isNew: isNew,
                     borderColor: associatedPlayer != null
-                        ? (isNew
-                                  ? context.talleeColors.warningColor
-                                  : context.talleeColors.successColor)
-                              .withAlpha(150)
-                        : context.talleeColors.errorColor.withAlpha(150),
+                        ? (isNew ? Colors.orange : Colors.green).withAlpha(150)
+                        : Colors.red.withAlpha(150),
                     onTap: () async {
                       final selectedPlayer = await showPlayerSelectionSheet(
                         associatedPlayer,

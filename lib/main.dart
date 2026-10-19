@@ -33,7 +33,6 @@ import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
 import 'package:tallee/state/showcase_provider.dart';
-import 'package:tallee/state/theme_provider.dart';
 
 void main() async {
   ENVIRONMENT = kDebugMode
@@ -91,9 +90,6 @@ void main() async {
                     final result = await Tallee.navigatorKey.currentState
                         ?.push<bool>(
                           MaterialPageRoute(
-                            settings: const RouteSettings(
-                              name: RouteNames.feedbackFormView,
-                            ),
                             builder: (context) => FeedbackFormView(
                               associatedEventId: event.eventId,
                             ),
@@ -127,7 +123,6 @@ void main() async {
             ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
             ChangeNotifierProvider(create: (context) => ShowcaseProvider()),
             ChangeNotifierProvider(create: (context) => RateDialogProvider()),
-            ChangeNotifierProvider(create: (context) => ThemeProvider()),
           ],
           child: DefaultAssetBundle(
             bundle: SentryAssetBundle(),
@@ -195,10 +190,9 @@ class _TalleeState extends State<Tallee> {
       },
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
-      themeMode: context.watch<ThemeProvider>().themeMode,
+      themeMode: ThemeMode.dark,
       navigatorObservers: [SentryNavigatorObserver()],
       theme: lightTheme,
-      darkTheme: darkTheme,
       home: SplashScreen(onFinished: handleSplashFinished),
     );
   }
@@ -243,7 +237,7 @@ class _TalleeState extends State<Tallee> {
 
     navigator.pushReplacement(
       adaptivePageRoute(
-        settings: const RouteSettings(name: RouteNames.groupView),
+        settings: const RouteSettings(name: RouteNames.mainNavigation),
         builder: (_) => const CustomNavigationBar(),
       ),
     );
