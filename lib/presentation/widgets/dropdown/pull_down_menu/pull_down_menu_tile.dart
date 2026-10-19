@@ -5,7 +5,7 @@ import 'package:tallee/core/custom_theme.dart';
 class PullDownMenuTile extends StatefulWidget {
   /// A single selectable row inside a [CustomPullDownMenu].
   ///
-  /// -[icon]: Icon shown at the trailing edge of the row.
+  /// - [icon]: Optional icon shown at the trailing edge of the row.
   /// - [label]: The text describing the action.
   /// - [onTap]: Called after the menu closes when the tile is tapped.
   /// - [enabled]: Whether the tile can be tapped.
@@ -19,7 +19,7 @@ class PullDownMenuTile extends StatefulWidget {
     this.isDestructive = false,
   });
 
-  final IconData icon;
+  final IconData? icon;
   final String label;
   final VoidCallback onTap;
   final bool enabled;
@@ -75,7 +75,8 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
                 ),
               ),
             ),
-            Icon(widget.icon, size: 20, color: contentColor),
+            if (widget.icon case final icon?)
+              Icon(icon, size: 20, color: contentColor),
           ],
         ),
       ),

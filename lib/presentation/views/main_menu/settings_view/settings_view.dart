@@ -22,6 +22,8 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
+import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_tile.dart'
+    as app_pull_down;
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -340,15 +342,15 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  PullDownMenuTile themeMenuTile(
+  app_pull_down.PullDownMenuTile themeMenuTile(
     BuildContext context,
     ThemeMode mode,
     String label,
   ) {
-    return PullDownMenuTile(
-      icon: context.read<ThemeProvider>().themeMode == mode
-          ? Icons.check
-          : Icons.circle_outlined,
+    final isSelected = context.watch<ThemeProvider>().themeMode == mode;
+
+    return app_pull_down.PullDownMenuTile(
+      icon: isSelected ? Icons.check : null,
       label: label,
       onTap: () => context.read<ThemeProvider>().setThemeMode(mode),
     );
