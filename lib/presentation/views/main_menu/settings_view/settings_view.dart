@@ -99,7 +99,7 @@ class _SettingsViewState extends State<SettingsView> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              themeModeLabel(
+                              getThemeModeLabel(
                                 context,
                                 context.watch<ThemeProvider>().themeMode,
                               ),
@@ -354,7 +354,7 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  String themeModeLabel(BuildContext context, ThemeMode mode) {
+  String getThemeModeLabel(BuildContext context, ThemeMode mode) {
     final loc = AppLocalizations.of(context);
     return switch (mode) {
       ThemeMode.system => loc.theme_system,
