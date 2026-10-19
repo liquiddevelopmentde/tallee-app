@@ -112,7 +112,7 @@ class QrCodeComponent extends StatelessWidget {
                     '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
                   ),
             style: TextStyle(
-              color: CustomTheme.textColor,
+              color: context.talleeColors.textColor,
               fontWeight: FontWeight.bold,
               fontSize: 16,
               overflow: TextOverflow.visible,
@@ -124,8 +124,11 @@ class QrCodeComponent extends StatelessWidget {
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              color: CustomTheme.onBoxColor,
-              border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
+              color: context.talleeColors.onBoxColor,
+              border: Border.all(
+                color: context.talleeColors.boxBorderColor,
+                width: 2,
+              ),
               borderRadius: CustomTheme.standardBorderRadiusAll,
             ),
             margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
@@ -133,7 +136,7 @@ class QrCodeComponent extends StatelessWidget {
             child: Text(
               loc.scan_qr_code_instruction,
               style: TextStyle(
-                color: CustomTheme.textColor,
+                color: context.talleeColors.textColor,
                 fontSize: 14,
                 overflow: TextOverflow.visible,
               ),
@@ -154,8 +157,8 @@ class QrCodeComponent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Container(
             decoration: BoxDecoration(
-              color: CustomTheme.boxBorderColor.withAlpha(100),
-              border: Border.all(color: CustomTheme.boxBorderColor),
+              color: context.talleeColors.boxBorderColor.withAlpha(100),
+              border: Border.all(color: context.talleeColors.boxBorderColor),
               borderRadius: CustomTheme.standardBorderRadiusAll,
             ),
             padding: const EdgeInsets.all(10),
@@ -168,7 +171,7 @@ class QrCodeComponent extends StatelessWidget {
                     qrImage: qrImage ?? loadingStateQr(),
                     decoration: PrettyQrDecoration(
                       shape: PrettyQrSquaresSymbol(
-                        color: CustomTheme.boxBorderColor,
+                        color: context.talleeColors.boxBorderColor,
                       ),
                       background: Colors.transparent,
                     ),
@@ -204,7 +207,7 @@ class QrCodeComponent extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 14,
                               overflow: TextOverflow.visible,
-                              color: CustomTheme.hintColor,
+                              color: context.talleeColors.hintColor,
                             ),
                           ),
                         ],

@@ -95,8 +95,8 @@ class AnimatedContent extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               decoration: BoxDecoration(
-                color: CustomTheme.boxColor,
-                border: Border.all(color: CustomTheme.boxBorderColor),
+                color: context.talleeColors.boxColor,
+                border: Border.all(color: context.talleeColors.boxBorderColor),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -120,7 +120,7 @@ class AnimatedContent extends StatelessWidget {
                           ? TextAlign.left
                           : TextAlign.center,
                       style: TextStyle(
-                        color: CustomTheme.textColor,
+                        color: context.talleeColors.textColor,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
@@ -151,7 +151,7 @@ class AnimatedContent extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       icon: Icon(
                         actionIcon!,
-                        color: CustomTheme.textColor,
+                        color: context.talleeColors.textColor,
                         size: 20,
                       ),
                       onPressed: onActionTap,

@@ -410,7 +410,7 @@ class _CreateGameViewState extends State<CreateGameView> {
   Widget getRulesetDropdown(AppLocalizations loc) {
     return CustomPopup(
       showArrow: true,
-      arrowColor: CustomTheme.boxBorderColor,
+      arrowColor: context.talleeColors.boxBorderColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       barrierColor: Colors.transparent,
       contentDecoration: CustomTheme.standardBoxDecoration,
@@ -441,7 +441,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                           Radius.circular(8),
                         ),
                         color: selectedRuleset == rulesets[index].$1
-                            ? CustomTheme.textColor.withAlpha(20)
+                            ? context.talleeColors.textColor.withAlpha(20)
                             : Colors.transparent,
                       ),
                       child: Padding(
@@ -456,7 +456,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                             Text(
                               rulesets[index].$2,
                               style: TextStyle(
-                                color: CustomTheme.textColor,
+                                color: context.talleeColors.textColor,
                                 fontSize: 15,
                               ),
                             ),
@@ -496,7 +496,7 @@ class _CreateGameViewState extends State<CreateGameView> {
   Widget getColorDropdown(AppLocalizations loc) {
     return CustomPopup(
       showArrow: true,
-      arrowColor: CustomTheme.boxBorderColor,
+      arrowColor: context.talleeColors.boxBorderColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       barrierColor: Colors.transparent,
       contentDecoration: CustomTheme.standardBoxDecoration,
@@ -528,7 +528,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                           Radius.circular(8),
                         ),
                         color: selectedColor == colors[index].$1
-                            ? CustomTheme.textColor.withAlpha(20)
+                            ? context.talleeColors.textColor.withAlpha(20)
                             : Colors.transparent,
                       ),
                       child: Padding(
@@ -552,7 +552,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                                   Text(
                                     colors[index].$2,
                                     style: TextStyle(
-                                      color: CustomTheme.textColor,
+                                      color: context.talleeColors.textColor,
                                       fontSize: 15,
                                     ),
                                   ),

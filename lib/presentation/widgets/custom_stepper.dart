@@ -34,9 +34,9 @@ class _CustomStepperState extends State<CustomStepper> {
 
     return Container(
       decoration: BoxDecoration(
-        color: CustomTheme.onBoxColor,
+        color: context.talleeColors.onBoxColor,
         borderRadius: BorderRadius.circular(9),
-        border: Border.all(color: CustomTheme.boxBorderColor),
+        border: Border.all(color: context.talleeColors.boxBorderColor),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -47,22 +47,26 @@ class _CustomStepperState extends State<CustomStepper> {
               Icons.remove,
               size: 20,
               color: canDecrement
-                  ? CustomTheme.textColor
-                  : CustomTheme.textColor.withAlpha(60),
+                  ? context.talleeColors.textColor
+                  : context.talleeColors.textColor.withAlpha(60),
             ),
             onPressed: canDecrement
                 ? () => {value--, widget.onChanged?.call(value)}
                 : null,
           ),
-          Container(width: 1, height: 22, color: CustomTheme.boxBorderColor),
+          Container(
+            width: 1,
+            height: 22,
+            color: context.talleeColors.boxBorderColor,
+          ),
           HapticIconButton(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             icon: Icon(
               Icons.add,
               size: 20,
               color: canIncrement
-                  ? CustomTheme.textColor
-                  : CustomTheme.textColor.withAlpha(60),
+                  ? context.talleeColors.textColor
+                  : context.talleeColors.textColor.withAlpha(60),
             ),
             onPressed: canIncrement
                 ? () => {value++, widget.onChanged?.call(value)}

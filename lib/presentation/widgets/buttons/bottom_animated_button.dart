@@ -43,7 +43,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
 
     if (widget.onPressed == null) {
       return TextStyle(
-        color: CustomTheme.hintColor,
+        color: context.talleeColors.hintColor,
         fontSize: 16,
         fontWeight: FontWeight.bold,
       );
@@ -53,7 +53,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
       case ButtonType.primary:
         textColor = widget.isDestructive || widget.isEmphasized
             ? Colors.white
-            : CustomTheme.isDarkMode
+            : Theme.of(context).brightness == Brightness.dark
             ? Colors.black
             : Colors.white;
         break;
@@ -63,7 +63,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
         } else if (widget.isEmphasized) {
           textColor = CustomTheme.primaryColor;
         } else {
-          textColor = CustomTheme.textColor;
+          textColor = context.talleeColors.textColor;
         }
         break;
     }
@@ -80,12 +80,12 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
       // Primary
       return BoxDecoration(
         color: widget.onPressed == null
-            ? CustomTheme.onBoxColor
+            ? context.talleeColors.onBoxColor
             : widget.isDestructive
             ? Colors.red
             : widget.isEmphasized
             ? CustomTheme.primaryColor
-            : CustomTheme.isDarkMode
+            : Theme.of(context).brightness == Brightness.dark
             ? Colors.white
             : Colors.black,
         borderRadius: BorderRadius.circular(12),
@@ -95,12 +95,12 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
       return BoxDecoration(
         border: BoxBorder.all(
           color: widget.onPressed == null
-              ? CustomTheme.hintColor
+              ? context.talleeColors.hintColor
               : widget.isDestructive
               ? Colors.red
               : widget.isEmphasized
               ? CustomTheme.primaryColor
-              : CustomTheme.textColor,
+              : context.talleeColors.textColor,
           width: 2,
           strokeAlign: BorderSide.strokeAlignInside,
         ),

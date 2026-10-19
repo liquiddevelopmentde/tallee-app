@@ -31,7 +31,7 @@ class EmptyViewMessage extends StatelessWidget {
             padding: icon == RpgAwesome.clovers_card
                 ? const EdgeInsets.only(left: 8.0)
                 : EdgeInsets.zero,
-            child: Icon(icon, size: 120, color: CustomTheme.hintColor),
+            child: Icon(icon, size: 120, color: context.talleeColors.hintColor),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 48),
@@ -50,7 +50,7 @@ class EmptyViewMessage extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
-                    color: CustomTheme.hintColor,
+                    color: context.talleeColors.hintColor,
                     overflow: TextOverflow.visible,
                   ),
                 ),

@@ -159,7 +159,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         key: _scaffoldMessengerKey,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          backgroundColor: CustomTheme.backgroundColor,
+          backgroundColor: context.talleeColors.backgroundColor,
           appBar: AppBar(title: Text(viewTitle)),
           body: SafeArea(
             maintainBottomViewPadding: true,
@@ -432,23 +432,23 @@ class _CreateMatchViewState extends State<CreateMatchView> {
             splashFactory: NoSplash.splashFactory,
             colorScheme: ColorScheme.dark(
               primary: CustomTheme.primaryColor,
-              onPrimary: CustomTheme.textColor,
-              surface: CustomTheme.boxColor,
-              onSurface: CustomTheme.textColor,
+              onPrimary: context.talleeColors.textColor,
+              surface: context.talleeColors.boxColor,
+              onSurface: context.talleeColors.textColor,
             ),
           ),
           child: Dialog(
-            backgroundColor: CustomTheme.boxColor,
+            backgroundColor: context.talleeColors.boxColor,
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: CustomTheme.boxBorderColor),
+              side: BorderSide(color: context.talleeColors.boxBorderColor),
             ),
             child: Container(
               padding: const EdgeInsets.all(16),
               height: 450,
               child: SfDateRangePicker(
-                backgroundColor: CustomTheme.boxColor,
+                backgroundColor: context.talleeColors.boxColor,
                 showNavigationArrow: true,
                 initialSelectedDate: selectedCreationDate ?? clock.now(),
                 maxDate: clock.now(),
@@ -456,14 +456,14 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   textAlign: TextAlign.center,
                   backgroundColor: Colors.transparent,
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 monthCellStyle: DateRangePickerMonthCellStyle(
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 16,
                   ),
                   todayTextStyle: const TextStyle(
@@ -472,17 +472,17 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     fontSize: 16,
                   ),
                   leadingDatesTextStyle: TextStyle(
-                    color: CustomTheme.hintColor,
+                    color: context.talleeColors.hintColor,
                     fontSize: 16,
                   ),
                   trailingDatesTextStyle: TextStyle(
-                    color: CustomTheme.hintColor,
+                    color: context.talleeColors.hintColor,
                     fontSize: 16,
                   ),
                 ),
                 yearCellStyle: DateRangePickerYearCellStyle(
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 16,
                   ),
                   todayTextStyle: const TextStyle(
@@ -494,7 +494,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 monthViewSettings: DateRangePickerMonthViewSettings(
                   viewHeaderStyle: DateRangePickerViewHeaderStyle(
                     textStyle: TextStyle(
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -504,7 +504,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 selectionMode: DateRangePickerSelectionMode.single,
                 selectionColor: CustomTheme.primaryColor,
                 selectionTextStyle: TextStyle(
-                  color: CustomTheme.textColor,
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),

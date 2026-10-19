@@ -219,7 +219,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
     return showModalBottomSheet<Player?>(
       context: context,
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       builder: (context) {
         return PlayerSelectionWidget.single(
           onSingleChanged: (player) async {

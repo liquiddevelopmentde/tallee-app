@@ -172,10 +172,6 @@ class _TalleeState extends State<Tallee> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      key: ValueKey(
-        '${context.watch<ThemeProvider>().themeMode.name}-'
-        '${CustomTheme.isDarkMode}',
-      ),
       navigatorKey: Tallee.navigatorKey,
       scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
       localizationsDelegates: const [

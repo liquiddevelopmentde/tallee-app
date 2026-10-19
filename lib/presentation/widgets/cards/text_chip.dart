@@ -41,11 +41,11 @@ class _TextChipState extends State<TextChip> {
           duration: const Duration(milliseconds: 150),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: CustomTheme.backgroundColor,
+            color: context.talleeColors.backgroundColor,
             border: Border.all(
               color: widget.activated
-                  ? CustomTheme.textColor.withAlpha(150)
-                  : CustomTheme.textColor.withAlpha(50),
+                  ? context.talleeColors.textColor.withAlpha(150)
+                  : context.talleeColors.textColor.withAlpha(50),
               width: 1,
               strokeAlign: BorderSide.strokeAlignInside,
             ),
@@ -53,7 +53,9 @@ class _TextChipState extends State<TextChip> {
           ),
           child: Text(
             text,
-            style: TextStyle(color: CustomTheme.textColor.withAlpha(255)),
+            style: TextStyle(
+              color: context.talleeColors.textColor.withAlpha(255),
+            ),
           ),
         ),
       ),

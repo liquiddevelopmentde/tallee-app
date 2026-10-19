@@ -276,9 +276,11 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                       vertical: 14,
                     ),
                     decoration: BoxDecoration(
-                      color: CustomTheme.boxColor,
+                      color: context.talleeColors.boxColor,
                       borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: CustomTheme.boxBorderColor),
+                      border: Border.all(
+                        color: context.talleeColors.boxBorderColor,
+                      ),
                     ),
                     child: Text(
                       loc.top_n(displayCount),

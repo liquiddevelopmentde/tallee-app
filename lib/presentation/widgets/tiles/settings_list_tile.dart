@@ -86,7 +86,7 @@ class _SettingsListTileState extends State<SettingsListTile> {
                             turns: isExpanded ? 0.5 : 0,
                             child: Icon(
                               Icons.keyboard_arrow_down_rounded,
-                              color: CustomTheme.hintColor,
+                              color: context.talleeColors.hintColor,
                             ),
                           ),
                         ],
@@ -102,7 +102,7 @@ class _SettingsListTileState extends State<SettingsListTile> {
                     overflow: TextOverflow.visible,
                     style: TextStyle(
                       fontSize: 12,
-                      color: CustomTheme.hintColor,
+                      color: context.talleeColors.hintColor,
                     ),
                   ),
                 ],

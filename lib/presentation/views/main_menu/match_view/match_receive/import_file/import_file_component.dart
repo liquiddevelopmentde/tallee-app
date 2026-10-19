@@ -27,7 +27,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
   ImportResult? lastResult;
   String? fileName;
 
-  Color dottedBorderColor = CustomTheme.boxBorderColor;
+  Color? dottedBorderColor;
 
   late ({ImportResult result, Match? match, String filePath}) data;
 
@@ -58,7 +58,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                 radius: const Radius.circular(12),
                 dashPattern: [10, 5],
                 strokeWidth: 3,
-                color: dottedBorderColor,
+                color: dottedBorderColor ?? context.talleeColors.boxBorderColor,
               ),
               child: Container(
                 width: MediaQuery.widthOf(context) * 0.9,
@@ -67,7 +67,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                   vertical: 40,
                 ),
                 decoration: BoxDecoration(
-                  color: CustomTheme.boxColor,
+                  color: context.talleeColors.boxColor,
                   borderRadius: CustomTheme.standardBorderRadiusAll,
                 ),
                 child: AnimatedSwitcher(
@@ -107,7 +107,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
             overflow: TextOverflow.visible,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: CustomTheme.textColor.withAlpha(225),
+              color: context.talleeColors.textColor.withAlpha(225),
               fontSize: 14,
             ),
             softWrap: true,
@@ -166,7 +166,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
         if (data.result != ImportResult.canceled) {
           dottedBorderColor = Colors.red;
         } else {
-          dottedBorderColor = CustomTheme.boxBorderColor;
+          dottedBorderColor = context.talleeColors.boxBorderColor;
         }
       });
     }

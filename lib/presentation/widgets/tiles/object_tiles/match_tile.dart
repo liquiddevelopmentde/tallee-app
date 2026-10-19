@@ -199,7 +199,10 @@ class _MatchTileState extends State<MatchTile> {
             ] else ...[
               Text(
                 loc.no_players_available,
-                style: TextStyle(fontSize: 14, color: CustomTheme.hintColor),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: context.talleeColors.hintColor,
+                ),
               ),
             ],
           ],
@@ -252,7 +255,7 @@ class _MatchTileState extends State<MatchTile> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: CustomTheme.textColor,
+                  color: context.talleeColors.textColor,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -288,7 +291,7 @@ class _MatchTileState extends State<MatchTile> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: CustomTheme.textColor,
+                  color: context.talleeColors.textColor,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -336,7 +339,7 @@ class _MatchTileState extends State<MatchTile> {
     style: TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w600,
-      color: CustomTheme.textColor,
+      color: context.talleeColors.textColor,
     ),
   );
 
@@ -348,19 +351,19 @@ class _MatchTileState extends State<MatchTile> {
     final labelStyle = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w600,
-      color: CustomTheme.textColor,
+      color: context.talleeColors.textColor,
     );
 
     final nameStyle = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w500,
-      color: CustomTheme.textColor,
+      color: context.talleeColors.textColor,
     );
 
     final countStyle = TextStyle(
       fontSize: 13,
       fontWeight: FontWeight.w500,
-      color: CustomTheme.textColor.withAlpha(100),
+      color: context.talleeColors.textColor.withAlpha(100),
     );
 
     final namesToRender =
@@ -376,6 +379,7 @@ class _MatchTileState extends State<MatchTile> {
     for (var i = 0; i < namesToRender.length; i++) {
       children.add(
         buildPlayerNameCountSpan(
+          context,
           namesToRender[i],
           mainStyle: nameStyle,
           countStyle: countStyle,
@@ -396,7 +400,7 @@ class _MatchTileState extends State<MatchTile> {
 
     return Text.rich(
       TextSpan(
-        style: TextStyle(color: CustomTheme.textColor),
+        style: TextStyle(color: context.talleeColors.textColor),
         children: children,
       ),
       overflow: TextOverflow.ellipsis,
@@ -411,13 +415,13 @@ class _MatchTileState extends State<MatchTile> {
     final mainStyle = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w500,
-      color: CustomTheme.textColor,
+      color: context.talleeColors.textColor,
     );
 
     final countStyle = TextStyle(
       fontSize: 13,
       fontWeight: FontWeight.w500,
-      color: CustomTheme.textColor.withAlpha(100),
+      color: context.talleeColors.textColor.withAlpha(100),
     );
 
     final score =
@@ -430,13 +434,14 @@ class _MatchTileState extends State<MatchTile> {
 
     return Text.rich(
       TextSpan(
-        style: TextStyle(color: CustomTheme.textColor),
+        style: TextStyle(color: context.talleeColors.textColor),
         children: [
           for (var i = 0; i < mvt.length; i++) ...[
             if (i > 0) TextSpan(text: ', ', style: mainStyle),
             WidgetSpan(
               alignment: PlaceholderAlignment.middle,
               child: buildUnitNameWidget(
+                context,
                 mvt[i],
                 isTeamMatch: widget.match.isTeamMatch,
                 mainStyle: mainStyle,

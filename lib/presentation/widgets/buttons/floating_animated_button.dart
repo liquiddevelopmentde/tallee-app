@@ -136,8 +136,8 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
         child: Container(
           decoration: BoxDecoration(
             color: widget.onPressed == null
-                ? CustomTheme.onBoxColor
-                : CustomTheme.isDarkMode
+                ? context.talleeColors.onBoxColor
+                : Theme.of(context).brightness == Brightness.dark
                 ? Colors.white
                 : Colors.black,
             borderRadius: BorderRadius.circular(30),
@@ -155,7 +155,9 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: CustomTheme.isDarkMode ? Colors.black : Colors.white,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.white,
                   ),
                 ),
               ],
@@ -171,8 +173,8 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
       widget.icon,
       size: 26,
       color: widget.onPressed == null
-          ? CustomTheme.hintColor
-          : CustomTheme.isDarkMode
+          ? context.talleeColors.hintColor
+          : Theme.of(context).brightness == Brightness.dark
           ? Colors.black
           : Colors.white,
     );
@@ -180,8 +182,8 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
     if (!widget.showAddBadge) return icon;
 
     final backgroundColor = widget.onPressed == null
-        ? CustomTheme.onBoxColor
-        : CustomTheme.isDarkMode
+        ? context.talleeColors.onBoxColor
+        : Theme.of(context).brightness == Brightness.dark
         ? Colors.white
         : Colors.black;
 
@@ -202,8 +204,8 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
               size: 15,
               weight: 200,
               color: widget.onPressed == null
-                  ? CustomTheme.hintColor
-                  : CustomTheme.isDarkMode
+                  ? context.talleeColors.hintColor
+                  : Theme.of(context).brightness == Brightness.dark
                   ? Colors.black
                   : Colors.white,
             ),

@@ -28,7 +28,7 @@ class DetailTile extends StatelessWidget {
                         label,
                         style: TextStyle(
                           fontSize: 16,
-                          color: CustomTheme.textColor,
+                          color: context.talleeColors.textColor,
                         ),
                       ),
                     ],

@@ -54,9 +54,9 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     const style = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         title: Text(loc.import_data),
         automaticallyImplyLeading: false,
       ),
@@ -76,7 +76,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                       '${loc.import_preview_description}:',
                       style: TextStyle(
                         fontSize: 16,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                     ),
                   ),

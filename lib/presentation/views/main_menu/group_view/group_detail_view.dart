@@ -54,7 +54,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
         title: Text(loc.group_profile),
         actions: [
@@ -117,7 +117,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -128,7 +128,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                       group.description,
                       style: TextStyle(
                         fontSize: 14,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.visible,
@@ -137,7 +137,10 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 const SizedBox(height: 5),
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(group.createdAt)}',
-                  style: TextStyle(fontSize: 12, color: CustomTheme.textColor),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: context.talleeColors.textColor,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),

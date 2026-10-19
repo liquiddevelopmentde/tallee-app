@@ -121,7 +121,7 @@ class GameTile extends StatelessWidget {
                               softWrap: false,
                               style: TextStyle(
                                 fontSize: 12,
-                                color: CustomTheme.hintColor,
+                                color: context.talleeColors.hintColor,
                               ),
                             ),
                           ],
@@ -165,7 +165,7 @@ class GameTile extends StatelessWidget {
 
             // Chevron
             if (showChevron)
-              Icon(Icons.chevron_right, color: CustomTheme.hintColor),
+              Icon(Icons.chevron_right, color: context.talleeColors.hintColor),
           ],
         ),
       ),

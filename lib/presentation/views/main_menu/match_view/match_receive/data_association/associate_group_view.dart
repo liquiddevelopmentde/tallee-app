@@ -110,7 +110,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                               Text(
                                 loc.no_matching_local_group_found,
                                 style: TextStyle(
-                                  color: CustomTheme.textColor,
+                                  color: context.talleeColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   overflow: TextOverflow.visible,
@@ -120,7 +120,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                               Text(
                                 loc.tap_to_choose_existing,
                                 style: TextStyle(
-                                  color: CustomTheme.hintColor,
+                                  color: context.talleeColors.hintColor,
                                   fontSize: 14,
                                 ),
                               ),
@@ -141,7 +141,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
               Text(
                 loc.tap_to_choose_different_group,
                 style: TextStyle(
-                  color: CustomTheme.hintColor,
+                  color: context.talleeColors.hintColor,
                   fontSize: 14,
                   overflow: TextOverflow.visible,
                 ),

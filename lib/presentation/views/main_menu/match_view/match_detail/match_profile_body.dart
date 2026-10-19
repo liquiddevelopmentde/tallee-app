@@ -63,7 +63,7 @@ class MatchProfileBody extends StatelessWidget {
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: CustomTheme.textColor,
+            color: context.talleeColors.textColor,
           ),
           textAlign: TextAlign.center,
           maxLines: 2,
@@ -73,7 +73,7 @@ class MatchProfileBody extends StatelessWidget {
         // Creation Date
         Text(
           '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(match.createdAt)}',
-          style: TextStyle(fontSize: 12, color: CustomTheme.textColor),
+          style: TextStyle(fontSize: 12, color: context.talleeColors.textColor),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 10),
@@ -136,7 +136,7 @@ class MatchProfileBody extends StatelessWidget {
                         : loc.no_players_available,
                     style: TextStyle(
                       fontSize: 14,
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                     ),
                   ),
           ),
@@ -165,7 +165,7 @@ class MatchProfileBody extends StatelessWidget {
                     loc.no_players_available,
                     style: TextStyle(
                       fontSize: 14,
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                     ),
                   ),
           ),
@@ -222,7 +222,7 @@ class MatchProfileBody extends StatelessWidget {
                     loc.no_players_available,
                     style: TextStyle(
                       fontSize: 14,
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                     ),
                   ),
           ),
@@ -277,36 +277,36 @@ class MatchProfileBody extends StatelessWidget {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: getSingleResultRow(loc),
+        children: getSingleResultRow(context, loc),
       );
     } else {
       return getMultiResultRows(context, loc);
     }
   }
 
-  List<Widget> getSingleResultRow(AppLocalizations loc) {
+  List<Widget> getSingleResultRow(BuildContext context, AppLocalizations loc) {
     final ruleset = match.game.ruleset;
     if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
       final label = ruleset == Ruleset.loser ? loc.loser : loc.winner;
       return [
         Text(
           label,
-          style: TextStyle(fontSize: 16, color: CustomTheme.textColor),
+          style: TextStyle(fontSize: 16, color: context.talleeColors.textColor),
         ),
         const SizedBox(width: 20),
-        Expanded(child: buildWinnerNameWidget()),
+        Expanded(child: buildWinnerNameWidget(context)),
       ];
     } else {
       return [
         Text(
           loc.no_results_entered_yet,
-          style: TextStyle(fontSize: 14, color: CustomTheme.textColor),
+          style: TextStyle(fontSize: 14, color: context.talleeColors.textColor),
         ),
       ];
     }
   }
 
-  Widget buildWinnerNameWidget() {
+  Widget buildWinnerNameWidget(BuildContext context) {
     final mvtTeams = match.mvt;
     final mvpPlayers = match.mvp;
     const winnerStyle = TextStyle(
@@ -327,6 +327,7 @@ class MatchProfileBody extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 buildUnitNameWidget(
+                  context,
                   mvtTeams[i],
                   isTeamMatch: match.isTeamMatch,
                   mainStyle: winnerStyle,
@@ -343,7 +344,11 @@ class MatchProfileBody extends StatelessWidget {
         children: [
           for (var i = 0; i < mvpPlayers.length; i++) ...[
             if (i > 0) const TextSpan(text: ', '),
-            buildPlayerNameCountSpan(mvpPlayers[i], mainStyle: winnerStyle),
+            buildPlayerNameCountSpan(
+              context,
+              mvpPlayers[i],
+              mainStyle: winnerStyle,
+            ),
           ],
         ],
       ),
@@ -353,7 +358,7 @@ class MatchProfileBody extends StatelessWidget {
   }
 
   Widget getMultiResultRows(BuildContext context, AppLocalizations loc) {
-    List<(Widget, int)> scores = getSortedScores();
+    List<(Widget, int)> scores = getSortedScores(context);
     bool hasMatchEnded = match.endedAt != null;
 
     return Column(
@@ -372,15 +377,16 @@ class MatchProfileBody extends StatelessWidget {
     );
   }
 
-  List<(Widget, int)> getSortedScores() {
+  List<(Widget, int)> getSortedScores(BuildContext context) {
     List<(Widget, int)> namedScores = [];
     if (useTeamLogic) {
       final teams = match.teams ?? [];
       for (var team in teams) {
         Widget nameWidget = buildUnitNameWidget(
+          context,
           team,
           isTeamMatch: match.isTeamMatch,
-          countStyle: TextStyle(color: CustomTheme.hintColor),
+          countStyle: TextStyle(color: context.talleeColors.hintColor),
         );
         namedScores.add((nameWidget, team.score ?? 0));
       }
@@ -392,8 +398,9 @@ class MatchProfileBody extends StatelessWidget {
         int score = scores[player.id]?.score ?? 0;
         namedScores.add((
           buildUnitNameWidget(
+            context,
             player,
-            countStyle: TextStyle(color: CustomTheme.hintColor),
+            countStyle: TextStyle(color: context.talleeColors.hintColor),
           ),
           score,
         ));
@@ -424,7 +431,7 @@ class MatchProfileBody extends StatelessWidget {
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: getPlacementTextcolor(index),
+          color: getPlacementTextcolor(context, index),
         ),
       );
     } else if (ruleset == Ruleset.lives) {
@@ -433,7 +440,9 @@ class MatchProfileBody extends StatelessWidget {
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: score > 0 ? CustomTheme.primaryColor : CustomTheme.hintColor,
+          color: score > 0
+              ? CustomTheme.primaryColor
+              : context.talleeColors.hintColor,
         ),
       );
     } else {
@@ -448,7 +457,7 @@ class MatchProfileBody extends StatelessWidget {
     }
   }
 
-  Color getPlacementTextcolor(int placement) {
+  Color getPlacementTextcolor(BuildContext context, int placement) {
     switch (placement) {
       case 0:
         return const Color(0xFFFFBF00);
@@ -457,7 +466,7 @@ class MatchProfileBody extends StatelessWidget {
       case 2:
         return const Color(0xFFCD7F32);
       default:
-        return CustomTheme.textColor;
+        return context.talleeColors.textColor;
     }
   }
 

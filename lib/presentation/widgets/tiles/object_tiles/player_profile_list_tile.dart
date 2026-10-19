@@ -15,7 +15,7 @@ class PlayerProfileListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = CustomTheme.onBoxColor;
+    final backgroundColor = context.talleeColors.onBoxColor;
     final fontColor = backgroundColor.computeLuminance() > 0.5
         ? Colors.black
         : Colors.white;

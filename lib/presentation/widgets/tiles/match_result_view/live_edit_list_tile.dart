@@ -173,14 +173,14 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                               applyHeightToLastDescent: false,
                             ),
                             style: valueTextStyle.copyWith(
-                              color: CustomTheme.textColor,
+                              color: context.talleeColors.textColor,
                             ),
                           ),
                         ),
                         builder: (context, t, child) {
                           final iconColor = Color.lerp(
                             Colors.red,
-                            CustomTheme.textColor.withAlpha(90),
+                            context.talleeColors.textColor.withAlpha(90),
                             t,
                           );
 
@@ -230,7 +230,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                             applyHeightToLastDescent: false,
                                           ),
                                       style: valueTextStyle.copyWith(
-                                        color: CustomTheme.textColor,
+                                        color: context.talleeColors.textColor,
                                       ),
                                     ),
                                   ),
@@ -273,7 +273,8 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                             TextAlignVertical.center,
                                         showCursor: true,
                                         enableInteractiveSelection: true,
-                                        cursorColor: CustomTheme.textColor,
+                                        cursorColor:
+                                            context.talleeColors.textColor,
                                         cursorHeight: 36,
                                         style: valueTextStyle.copyWith(
                                           height: 1.0,

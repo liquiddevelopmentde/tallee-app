@@ -26,9 +26,10 @@ class PlayerTile extends StatelessWidget {
       onTileTap: onTileTap,
       backgroundColor: backgroundColor,
       content: buildUnitNameWidget(
+        context,
         player,
         highlighted: [player.deleted],
-        countStyle: TextStyle(color: CustomTheme.hintColor),
+        countStyle: TextStyle(color: context.talleeColors.hintColor),
       ),
     );
   }

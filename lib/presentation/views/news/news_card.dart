@@ -64,11 +64,11 @@ class NewsCard extends StatelessWidget {
     return MarkdownStyleSheet.fromTheme(Theme.of(context).toFlutterThemeData())
         .copyWith(
           p: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: CustomTheme.textColor,
+            color: context.talleeColors.textColor,
             overflow: TextOverflow.visible,
           ),
           strong: TextStyle(
-            color: CustomTheme.textColor,
+            color: context.talleeColors.textColor,
             fontWeight: FontWeight.bold,
             overflow: TextOverflow.visible,
           ),

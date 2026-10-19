@@ -25,8 +25,8 @@ class CustomCheckboxListTile extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         padding: const EdgeInsets.only(left: 2, right: 5),
         decoration: BoxDecoration(
-          color: CustomTheme.boxColor,
-          border: Border.all(color: CustomTheme.boxBorderColor),
+          color: context.talleeColors.boxColor,
+          border: Border.all(color: context.talleeColors.boxBorderColor),
           borderRadius: CustomTheme.standardBorderRadiusAll,
         ),
         child: Row(

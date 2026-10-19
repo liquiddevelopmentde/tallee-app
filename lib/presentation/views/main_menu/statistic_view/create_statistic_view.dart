@@ -87,8 +87,10 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                 margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
-                  color: CustomTheme.boxColor,
-                  border: Border.all(color: CustomTheme.boxBorderColor),
+                  color: context.talleeColors.boxColor,
+                  border: Border.all(
+                    color: context.talleeColors.boxBorderColor,
+                  ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -212,20 +214,20 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           height: 54,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: CustomTheme.onBoxColor,
+            color: context.talleeColors.onBoxColor,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             children: [
-              Icon(Icons.calendar_month, color: CustomTheme.textColor),
+              Icon(Icons.calendar_month, color: context.talleeColors.textColor),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   formatDateRange(context, selectedStartDate, selectedEndDate),
                   style: TextStyle(
                     color: selectedStartDate != null && selectedEndDate != null
-                        ? CustomTheme.textColor
-                        : CustomTheme.hintColor,
+                        ? context.talleeColors.textColor
+                        : context.talleeColors.hintColor,
                     fontSize: 14,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -452,23 +454,23 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
             splashFactory: NoSplash.splashFactory,
             colorScheme: ColorScheme.dark(
               primary: CustomTheme.primaryColor,
-              onPrimary: CustomTheme.textColor,
-              surface: CustomTheme.boxColor,
-              onSurface: CustomTheme.textColor,
+              onPrimary: context.talleeColors.textColor,
+              surface: context.talleeColors.boxColor,
+              onSurface: context.talleeColors.textColor,
             ),
           ),
           child: Dialog(
-            backgroundColor: CustomTheme.boxColor,
+            backgroundColor: context.talleeColors.boxColor,
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: CustomTheme.boxBorderColor),
+              side: BorderSide(color: context.talleeColors.boxBorderColor),
             ),
             child: Container(
               padding: const EdgeInsets.all(16),
               height: 450,
               child: SfDateRangePicker(
-                backgroundColor: CustomTheme.boxColor,
+                backgroundColor: context.talleeColors.boxColor,
                 showNavigationArrow: true,
                 initialSelectedRange:
                     initialStartDate != null && initialEndDate != null
@@ -478,14 +480,14 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                   textAlign: TextAlign.center,
                   backgroundColor: Colors.transparent,
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 monthCellStyle: DateRangePickerMonthCellStyle(
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 16,
                   ),
                   todayTextStyle: const TextStyle(
@@ -494,17 +496,17 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                     fontSize: 16,
                   ),
                   leadingDatesTextStyle: TextStyle(
-                    color: CustomTheme.hintColor,
+                    color: context.talleeColors.hintColor,
                     fontSize: 16,
                   ),
                   trailingDatesTextStyle: TextStyle(
-                    color: CustomTheme.hintColor,
+                    color: context.talleeColors.hintColor,
                     fontSize: 16,
                   ),
                 ),
                 yearCellStyle: DateRangePickerYearCellStyle(
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 16,
                   ),
                   todayTextStyle: const TextStyle(
@@ -516,7 +518,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                 monthViewSettings: DateRangePickerMonthViewSettings(
                   viewHeaderStyle: DateRangePickerViewHeaderStyle(
                     textStyle: TextStyle(
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -531,12 +533,12 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                   alpha: 0.15,
                 ),
                 selectionTextStyle: TextStyle(
-                  color: CustomTheme.textColor,
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
                 rangeTextStyle: TextStyle(
-                  color: CustomTheme.textColor,
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                 ),
                 showActionButtons: true,

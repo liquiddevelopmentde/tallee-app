@@ -40,7 +40,7 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
     return AnimatedContainer(
       decoration: CustomTheme.standardBoxDecoration.copyWith(
         border: Border.all(
-          color: widget.borderColor ?? CustomTheme.boxBorderColor,
+          color: widget.borderColor ?? context.talleeColors.boxBorderColor,
         ),
       ),
       margin: CustomTheme.standardMargin,
@@ -52,15 +52,16 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
         children: [
           Expanded(
             child: buildUnitNameWidget(
+              context,
               widget.player,
               mainStyle: TextStyle(
                 fontSize: 18,
-                color: CustomTheme.textColor,
+                color: context.talleeColors.textColor,
                 fontWeight: FontWeight.w500,
               ),
               countStyle: TextStyle(
                 fontSize: 16,
-                color: CustomTheme.textColor.withAlpha(100),
+                color: context.talleeColors.textColor.withAlpha(100),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -82,7 +83,7 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                         horizontal: 6,
                       ),
                       decoration: CustomTheme.standardBoxDecoration.copyWith(
-                        color: CustomTheme.onBoxColor,
+                        color: context.talleeColors.onBoxColor,
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -100,13 +101,13 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                                       ),
                                     )
                                   : buildUnitNameWidget(
+                                      context,
                                       widget.associatedPlayer!,
                                       mainStyle: const TextStyle(fontSize: 17),
                                       countStyle: TextStyle(
                                         fontSize: 15,
-                                        color: CustomTheme.textColor.withAlpha(
-                                          100,
-                                        ),
+                                        color: context.talleeColors.textColor
+                                            .withAlpha(100),
                                       ),
                                     ),
                             )

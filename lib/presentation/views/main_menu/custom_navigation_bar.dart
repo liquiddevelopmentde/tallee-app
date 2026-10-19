@@ -151,7 +151,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           currentTabTitle(context),
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         scrolledUnderElevation: 0,
         leading: currentIndex == 0
             ? HapticIconButton(
@@ -228,16 +228,16 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         ],
         elevation: 0,
       ),
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: tabs[currentIndex],
       extendBody: true,
       bottomNavigationBar: Container(
         height: 115,
         decoration: BoxDecoration(
-          color: CustomTheme.navBarBackgroundColor,
+          color: context.talleeColors.navBarBackgroundColor,
           border: Border.all(
             strokeAlign: BorderSide.strokeAlignOutside,
-            color: CustomTheme.boxBorderColor,
+            color: context.talleeColors.boxBorderColor,
             width: 2,
           ),
           borderRadius: const BorderRadius.only(
@@ -422,7 +422,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 Text(
                   loc.update_available_content,
                   style: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     overflow: TextOverflow.visible,
                   ),
                 ),
@@ -430,7 +430,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 Text(
                   loc.update_features_fixes_desc,
                   style: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     overflow: TextOverflow.visible,
                   ),
                 ),

@@ -58,7 +58,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       width: 45,
       textStyle: TextStyle(
         fontSize: 35,
-        color: CustomTheme.textColor,
+        color: context.talleeColors.textColor,
         fontWeight: FontWeight.w500,
       ),
       decoration: CustomTheme.standardBoxDecoration,
@@ -105,7 +105,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               child: Text(
                 loc.input_token_instruction,
                 style: TextStyle(
-                  color: CustomTheme.textColor,
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                   overflow: TextOverflow.visible,
                 ),
@@ -177,7 +177,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
           child: Text(
             loc.share_token_format_info,
             style: TextStyle(
-              color: CustomTheme.textColor,
+              color: context.talleeColors.textColor,
               fontSize: 14,
               overflow: TextOverflow.visible,
             ),

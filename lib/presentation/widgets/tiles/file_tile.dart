@@ -33,8 +33,11 @@ class MatchFileTile extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: CustomTheme.onBoxColor,
-        border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
+        color: context.talleeColors.onBoxColor,
+        border: Border.all(
+          color: context.talleeColors.boxBorderColor,
+          width: 2,
+        ),
         borderRadius: CustomTheme.standardBorderRadiusAll,
       ),
       margin:
@@ -68,7 +71,7 @@ class MatchFileTile extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: CustomTheme.textColor,
+                              color: context.talleeColors.textColor,
                             ),
                           ),
                         ),
@@ -80,7 +83,7 @@ class MatchFileTile extends StatelessWidget {
                       '${fileSize.toStringAsFixed(1)} KB',
                       style: TextStyle(
                         fontSize: 13,
-                        color: CustomTheme.textColor,
+                        color: context.talleeColors.textColor,
                       ),
                     ),
                   ],
@@ -94,7 +97,9 @@ class MatchFileTile extends StatelessWidget {
                         .map(
                           (item) => Text(
                             item,
-                            style: TextStyle(color: CustomTheme.hintColor),
+                            style: TextStyle(
+                              color: context.talleeColors.hintColor,
+                            ),
                           ),
                         )
                         .toList(),

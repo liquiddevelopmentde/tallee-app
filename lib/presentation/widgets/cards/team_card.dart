@@ -40,7 +40,7 @@ class TeamCard extends StatelessWidget {
         width: width,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: CustomTheme.onBoxColor,
+          color: context.talleeColors.onBoxColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
@@ -59,12 +59,13 @@ class TeamCard extends StatelessWidget {
             // Team name
             Expanded(
               child: buildUnitNameWidget(
+                context,
                 team,
                 isTeamMatch: true,
                 mainStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
-                  color: CustomTheme.textColor,
+                  color: context.talleeColors.textColor,
                 ),
               ),
             ),
@@ -78,7 +79,9 @@ class TeamCard extends StatelessWidget {
                   Container(
                     width: 1,
                     height: 14,
-                    color: CustomTheme.textColor.withValues(alpha: 0.35),
+                    color: context.talleeColors.textColor.withValues(
+                      alpha: 0.35,
+                    ),
                   ),
 
                   // Teammember count
@@ -88,14 +91,14 @@ class TeamCard extends StatelessWidget {
                       Icon(
                         Icons.people_alt_rounded,
                         size: 14,
-                        color: CustomTheme.textColor,
+                        color: context.talleeColors.textColor,
                       ),
                       Text(
                         '${team.members.length}',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
+                          color: context.talleeColors.textColor,
                         ),
                       ),
                     ],
@@ -114,7 +117,7 @@ class TeamCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: CustomTheme.onBoxColor,
+          color: context.talleeColors.onBoxColor,
         ),
         child: Row(
           spacing: 8,
@@ -143,12 +146,13 @@ class TeamCard extends StatelessWidget {
 
                       // Team name
                       buildUnitNameWidget(
+                        context,
                         team,
                         isTeamMatch: true,
                         mainStyle: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
+                          color: context.talleeColors.textColor,
                         ),
                       ),
                     ],

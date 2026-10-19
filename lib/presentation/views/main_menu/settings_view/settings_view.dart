@@ -57,7 +57,7 @@ class _SettingsViewState extends State<SettingsView> {
         builder: (scaffoldMessengerContext) {
           return Scaffold(
             appBar: AppBar(title: Text(loc.settings)),
-            backgroundColor: CustomTheme.backgroundColor,
+            backgroundColor: context.talleeColors.backgroundColor,
             body: SingleChildScrollView(
               child: Column(
                 spacing: 10,
@@ -92,7 +92,7 @@ class _SettingsViewState extends State<SettingsView> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: CustomTheme.onBoxColor,
+                          color: context.talleeColors.onBoxColor,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
@@ -104,14 +104,14 @@ class _SettingsViewState extends State<SettingsView> {
                                 context.watch<ThemeProvider>().themeMode,
                               ),
                               style: TextStyle(
-                                color: CustomTheme.textColor,
+                                color: context.talleeColors.textColor,
                                 fontSize: 14,
                               ),
                             ),
                             Icon(
                               Icons.arrow_drop_down,
                               size: 20,
-                              color: CustomTheme.textColor,
+                              color: context.talleeColors.textColor,
                             ),
                           ],
                         ),

@@ -35,9 +35,9 @@ class TextIconListTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
-        color: CustomTheme.boxColor,
+        color: context.talleeColors.boxColor,
         border: Border.all(
-          color: CustomTheme.boxBorderColor,
+          color: context.talleeColors.boxBorderColor,
           width: 1,
           strokeAlign: BorderSide.strokeAlignCenter,
         ),
@@ -55,6 +55,7 @@ class TextIconListTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   buildUnitNameWidget(
+                    context,
                     pair ?? player ?? Player(name: text, nameCount: 0),
                     mainStyle: const TextStyle(
                       fontSize: 16,
@@ -63,7 +64,7 @@ class TextIconListTile extends StatelessWidget {
                     countStyle: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: CustomTheme.textColor.withAlpha(100),
+                      color: context.talleeColors.textColor.withAlpha(100),
                     ),
                     pairIconLeft: pairIconLeft,
                   ),
@@ -73,7 +74,7 @@ class TextIconListTile extends StatelessWidget {
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: 12,
-                        color: CustomTheme.textColor.withAlpha(100),
+                        color: context.talleeColors.textColor.withAlpha(100),
                       ),
                     ),
                 ],

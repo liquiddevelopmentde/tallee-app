@@ -213,17 +213,18 @@ class BarChart extends StatelessWidget {
         softWrap: false,
         overflow: TextOverflow.ellipsis,
         text: buildPlayerNameCountSpan(
+          context,
           player,
           style: baseStyle,
           mainStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: CustomTheme.textColor.withAlpha(textAlpha),
+            color: context.talleeColors.textColor.withAlpha(textAlpha),
           ),
           countStyle: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.bold,
-            color: CustomTheme.textColor.withAlpha(
+            color: context.talleeColors.textColor.withAlpha(
               isHighlightedOverflow ? 170 : 150,
             ),
           ),
@@ -232,7 +233,9 @@ class BarChart extends StatelessWidget {
     }
 
     final insideTextColor = const Color(0xFF101010).withAlpha(textAlpha);
-    final outsideTextColor = CustomTheme.textColor.withAlpha(textAlpha);
+    final outsideTextColor = context.talleeColors.textColor.withAlpha(
+      textAlpha,
+    );
 
     return ShaderMask(
       blendMode: BlendMode.srcIn,
@@ -262,6 +265,7 @@ class BarChart extends StatelessWidget {
         softWrap: false,
         overflow: TextOverflow.ellipsis,
         text: buildPlayerNameCountSpan(
+          context,
           player,
           style: baseStyle,
           mainStyle: const TextStyle(

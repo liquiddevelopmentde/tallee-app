@@ -68,7 +68,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
         !isSubmitting;
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
         title: Text(isErrorReport ? loc.report_error : loc.send_feedback),
       ),
@@ -98,7 +98,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                             : loc.feedback_info_text,
                         style: TextStyle(
                           fontSize: 14,
-                          color: CustomTheme.textColor,
+                          color: context.talleeColors.textColor,
                           fontWeight: FontWeight.w500,
                           overflow: TextOverflow.clip,
                         ),

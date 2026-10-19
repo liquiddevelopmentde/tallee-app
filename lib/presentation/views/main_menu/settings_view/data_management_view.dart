@@ -33,7 +33,7 @@ class _DataManagementViewState extends State<DataManagementView> {
         builder: (scaffoldMessengerContext) {
           return Scaffold(
             appBar: AppBar(title: Text(loc.data_backup)),
-            backgroundColor: CustomTheme.backgroundColor,
+            backgroundColor: context.talleeColors.backgroundColor,
             body: SingleChildScrollView(
               child: Column(
                 spacing: 10,
@@ -63,7 +63,7 @@ class _DataManagementViewState extends State<DataManagementView> {
                           loc.data_transfer_description,
                           style: TextStyle(
                             fontSize: 12,
-                            color: CustomTheme.hintColor,
+                            color: context.talleeColors.hintColor,
                             overflow: TextOverflow.visible,
                           ),
                         ),
@@ -155,7 +155,7 @@ class _DataManagementViewState extends State<DataManagementView> {
                       ? loc.update_app_export_desc
                       : loc.update_app_import_desc,
                   style: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     overflow: TextOverflow.visible,
                   ),
                 ),

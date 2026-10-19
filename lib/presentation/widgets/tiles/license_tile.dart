@@ -66,14 +66,14 @@ class LicenseTile extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: CustomTheme.onBoxColor,
+                            color: context.talleeColors.onBoxColor,
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
                             'v${package.version}',
                             style: TextStyle(
                               fontSize: 11,
-                              color: CustomTheme.hintColor,
+                              color: context.talleeColors.hintColor,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -88,7 +88,7 @@ class LicenseTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 13,
-                      color: CustomTheme.hintColor,
+                      color: context.talleeColors.hintColor,
                       height: 1.3,
                     ),
                   ),
@@ -97,7 +97,11 @@ class LicenseTile extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             // Arrow Icon
-            Icon(Icons.chevron_right, color: CustomTheme.hintColor, size: 24),
+            Icon(
+              Icons.chevron_right,
+              color: context.talleeColors.hintColor,
+              size: 24,
+            ),
           ],
         ),
       ),

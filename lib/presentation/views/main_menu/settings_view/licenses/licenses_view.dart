@@ -15,9 +15,9 @@ class LicensesView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(loc.licenses),
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
       ),
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: ListView.builder(
         itemCount: allDependencies.length,
         itemBuilder: (context, index) {

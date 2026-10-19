@@ -44,7 +44,7 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
               child: Text(
                 loc.file_share_instruction,
                 style: TextStyle(
-                  color: CustomTheme.textColor,
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                   overflow: TextOverflow.visible,
                 ),

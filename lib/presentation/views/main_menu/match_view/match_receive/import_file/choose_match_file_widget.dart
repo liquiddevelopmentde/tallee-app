@@ -58,7 +58,7 @@ class ChooseMatchFileWidget extends StatelessWidget {
             Text(
               loc.tap_to_browse,
               style: TextStyle(
-                color: CustomTheme.textColor.withAlpha(180),
+                color: context.talleeColors.textColor.withAlpha(180),
                 fontSize: 14,
                 overflow: TextOverflow.visible,
               ),

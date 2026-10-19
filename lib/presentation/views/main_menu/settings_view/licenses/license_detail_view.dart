@@ -55,7 +55,7 @@ class LicenseDetailView extends StatelessWidget {
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 14,
-                            color: CustomTheme.hintColor,
+                            color: context.talleeColors.hintColor,
                           ),
                         ),
                       ],
@@ -69,7 +69,7 @@ class LicenseDetailView extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                     ),
                   ],
@@ -112,7 +112,7 @@ class LicenseDetailView extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 12,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     height: 1.5,
                     fontFamily: 'monospace',
                   ),
@@ -129,7 +129,7 @@ class LicenseDetailView extends StatelessWidget {
                       package.license!,
                       style: TextStyle(
                         fontSize: 12,
-                        color: CustomTheme.textColor,
+                        color: context.talleeColors.textColor,
                         height: 1.5,
                         fontFamily: 'monospace',
                       ),
@@ -139,7 +139,9 @@ class LicenseDetailView extends StatelessWidget {
                       child: Center(
                         child: Text(
                           loc.no_license_text_available,
-                          style: TextStyle(color: CustomTheme.hintColor),
+                          style: TextStyle(
+                            color: context.talleeColors.hintColor,
+                          ),
                         ),
                       ),
                     ),

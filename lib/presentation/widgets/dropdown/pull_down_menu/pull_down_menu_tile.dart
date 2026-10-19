@@ -36,7 +36,7 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
   Widget build(BuildContext context) {
     final Color color = widget.isDestructive
         ? CustomTheme.red
-        : CustomTheme.textColor;
+        : context.talleeColors.textColor;
     final Color contentColor = widget.enabled ? color : color.withAlpha(100);
 
     return GestureDetector(
@@ -57,7 +57,9 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
           : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        color: isPressed ? CustomTheme.onBoxColor : CustomTheme.boxColor,
+        color: isPressed
+            ? context.talleeColors.onBoxColor
+            : context.talleeColors.boxColor,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           spacing: 10,

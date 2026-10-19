@@ -57,7 +57,7 @@ class _EditPlayerViewState extends State<EditPlayerView> {
       key: scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         appBar: AppBar(title: Text(loc.edit_player)),
         body: SafeArea(
           maintainBottomViewPadding: true,

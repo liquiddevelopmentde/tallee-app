@@ -13,7 +13,7 @@ class PrivacyPolicyView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.privacy_policy)),
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(

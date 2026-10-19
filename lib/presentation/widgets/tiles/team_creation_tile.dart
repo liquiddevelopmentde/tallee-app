@@ -92,7 +92,7 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: CustomTheme.textColor,
+                          color: context.talleeColors.textColor,
                         ),
                       ),
                     ),

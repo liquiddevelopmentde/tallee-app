@@ -101,7 +101,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                               Text(
                                 loc.no_matching_local_game_found,
                                 style: TextStyle(
-                                  color: CustomTheme.textColor,
+                                  color: context.talleeColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   overflow: TextOverflow.visible,
@@ -112,7 +112,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                               Text(
                                 loc.tap_to_choose_existing,
                                 style: TextStyle(
-                                  color: CustomTheme.hintColor,
+                                  color: context.talleeColors.hintColor,
                                   fontSize: 14,
                                   overflow: TextOverflow.visible,
                                 ),
@@ -136,7 +136,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
               Text(
                 loc.tap_to_choose_different_game,
                 style: TextStyle(
-                  color: CustomTheme.hintColor,
+                  color: context.talleeColors.hintColor,
                   fontSize: 14,
                   overflow: TextOverflow.visible,
                 ),

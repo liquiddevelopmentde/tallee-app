@@ -61,7 +61,7 @@ class PullDownMenu extends PopupRoute<void> {
             child: ScaleTransition(
               alignment: Alignment.topRight,
               scale: Tween<double>(begin: 0.92, end: 1).animate(curved),
-              child: menuSurface(),
+              child: menuSurface(context),
             ),
           ),
         ),
@@ -69,13 +69,13 @@ class PullDownMenu extends PopupRoute<void> {
     );
   }
 
-  Widget menuSurface() {
+  Widget menuSurface(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: Container(
         width: menuWidth,
         decoration: BoxDecoration(
-          color: CustomTheme.boxColor,
+          color: context.talleeColors.boxColor,
           borderRadius: BorderRadius.circular(14),
           boxShadow: const [
             BoxShadow(

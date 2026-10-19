@@ -56,16 +56,16 @@ class TextInputField extends StatelessWidget {
       focusNode: focusNode,
       decoration: InputDecoration(
         filled: true,
-        fillColor: CustomTheme.boxColor,
+        fillColor: context.talleeColors.boxColor,
         hintText: hintText,
         counterText: showCounterText ? null : '',
         enabledBorder: OutlineInputBorder(
           borderRadius: const BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
+          borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: const BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
+          borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
         ),
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),

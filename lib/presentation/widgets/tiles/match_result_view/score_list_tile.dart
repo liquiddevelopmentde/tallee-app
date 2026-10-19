@@ -33,7 +33,7 @@ class ScoreListTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      decoration: BoxDecoration(color: CustomTheme.boxColor),
+      decoration: BoxDecoration(color: context.talleeColors.boxColor),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -59,14 +59,14 @@ class ScoreListTile extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: CustomTheme.textColor,
+                color: context.talleeColors.textColor,
               ),
-              cursorColor: CustomTheme.textColor,
+              cursorColor: context.talleeColors.textColor,
               decoration: InputDecoration(
                 hintText: loc.points,
                 counterText: '',
                 filled: true,
-                fillColor: CustomTheme.onBoxColor,
+                fillColor: context.talleeColors.onBoxColor,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 0,
                   vertical: 0,
@@ -74,7 +74,7 @@ class ScoreListTile extends StatelessWidget {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(
-                    color: CustomTheme.textColor.withAlpha(250),
+                    color: context.talleeColors.textColor.withAlpha(250),
                     width: 2,
                   ),
                 ),

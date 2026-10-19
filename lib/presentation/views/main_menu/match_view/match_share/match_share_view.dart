@@ -87,10 +87,10 @@ class _MatchShareViewState extends State<MatchShareView>
               child: Container(
                 height: 50,
                 decoration: BoxDecoration(
-                  color: CustomTheme.onBoxColor,
+                  color: context.talleeColors.onBoxColor,
                   borderRadius: BorderRadius.circular(25),
                   border: Border.all(
-                    color: CustomTheme.boxBorderColor,
+                    color: context.talleeColors.boxBorderColor,
                     width: 2,
                   ),
                 ),
@@ -108,7 +108,7 @@ class _MatchShareViewState extends State<MatchShareView>
                   overlayColor: const WidgetStatePropertyAll(
                     Colors.transparent,
                   ),
-                  unselectedLabelColor: CustomTheme.textColor,
+                  unselectedLabelColor: context.talleeColors.textColor,
                   onTap: (_) {
                     HapticFeedback.selectionClick();
                   },

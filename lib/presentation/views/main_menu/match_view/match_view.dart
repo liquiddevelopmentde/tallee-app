@@ -139,7 +139,7 @@ class _MatchViewState extends State<MatchView> {
     }
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
@@ -521,7 +521,7 @@ class _MatchViewState extends State<MatchView> {
     return await showDialog<bool>(
       context: context,
       builder: (context) => CustomAlertDialog(
-        closeButtonColor: CustomTheme.hintColor,
+        closeButtonColor: context.talleeColors.hintColor,
         showCloseButton: true,
         title: loc.do_you_like_the_app,
         content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),

@@ -61,7 +61,10 @@ class _QrScanComponentState extends State<QrScanComponent> {
           Container(
             decoration: BoxDecoration(
               borderRadius: CustomTheme.standardBorderRadiusAll,
-              border: Border.all(color: CustomTheme.boxBorderColor, width: 3),
+              border: Border.all(
+                color: context.talleeColors.boxBorderColor,
+                width: 3,
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.1),
@@ -116,8 +119,11 @@ class _QrScanComponentState extends State<QrScanComponent> {
           const SizedBox(height: 20),
           Container(
             decoration: BoxDecoration(
-              color: CustomTheme.onBoxColor,
-              border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
+              color: context.talleeColors.onBoxColor,
+              border: Border.all(
+                color: context.talleeColors.boxBorderColor,
+                width: 2,
+              ),
               borderRadius: CustomTheme.standardBorderRadiusAll,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -125,7 +131,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
               loc.scan_qr_receive_instruction,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: CustomTheme.textColor,
+                color: context.talleeColors.textColor,
                 fontSize: 14,
                 overflow: TextOverflow.visible,
               ),

@@ -57,7 +57,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
         title: Text(loc.match_profile),
         actions: [

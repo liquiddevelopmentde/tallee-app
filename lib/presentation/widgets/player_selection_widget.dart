@@ -324,6 +324,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
             content: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: buildUnitNameWidget(
+                context,
                 player,
                 mainStyle: const TextStyle(
                   fontSize: 18,
@@ -331,7 +332,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
                 ),
                 countStyle: TextStyle(
                   fontSize: 16,
-                  color: CustomTheme.textColor.withAlpha(100),
+                  color: context.talleeColors.textColor.withAlpha(100),
                 ),
               ),
             ),

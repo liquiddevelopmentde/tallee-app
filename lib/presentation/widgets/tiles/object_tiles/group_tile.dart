@@ -123,7 +123,7 @@ class _GroupTileState extends State<GroupTile> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 12,
-                          color: CustomTheme.hintColor,
+                          color: context.talleeColors.hintColor,
                         ),
                       ),
                     ],

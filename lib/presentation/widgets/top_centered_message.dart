@@ -34,7 +34,7 @@ class TopCenteredMessage extends StatelessWidget {
             ? MainAxisAlignment.start
             : MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 45, color: CustomTheme.hintColor),
+          Icon(icon, size: 45, color: context.talleeColors.hintColor),
           const SizedBox(height: 10),
           Text(
             title,
@@ -54,7 +54,7 @@ class TopCenteredMessage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   overflow: TextOverflow.visible,
-                  color: CustomTheme.hintColor,
+                  color: context.talleeColors.hintColor,
                 ),
                 textAlign: TextAlign.center,
                 softWrap: true,

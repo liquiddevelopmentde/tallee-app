@@ -100,7 +100,7 @@ class _GameViewState extends State<GameView> with RouteAware {
     }
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,

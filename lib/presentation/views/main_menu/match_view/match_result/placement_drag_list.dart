@@ -174,13 +174,13 @@ class _PlacementDragListState extends State<PlacementDragList> {
         height: badgeSize,
         width: badgeSize,
         decoration: BoxDecoration(
-          color: CustomTheme.boxBorderColor,
+          color: context.talleeColors.boxBorderColor,
           borderRadius: CustomTheme.standardBorderRadiusAll,
         ),
         child: Text(
           ' #${index + 1} ',
           style: TextStyle(
-            color: CustomTheme.textColor,
+            color: context.talleeColors.textColor,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),

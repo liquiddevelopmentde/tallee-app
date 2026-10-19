@@ -87,7 +87,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         }
       },
       child: Scaffold(
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         appBar: AppBar(
           automaticallyImplyLeading: true,
           leading: HapticIconButton(
@@ -124,8 +124,10 @@ class _MatchResultViewState extends State<MatchResultView> {
                         horizontal: 10,
                       ),
                       decoration: BoxDecoration(
-                        color: CustomTheme.boxColor,
-                        border: Border.all(color: CustomTheme.boxBorderColor),
+                        color: context.talleeColors.boxColor,
+                        border: Border.all(
+                          color: context.talleeColors.boxBorderColor,
+                        ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(

@@ -17,7 +17,7 @@ class NewsView extends StatelessWidget {
     final PackageInfo packageInfo = PackageInfoService.info;
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -60,7 +60,7 @@ class NewsView extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: CustomTheme.onBoxColor,
+                              color: context.talleeColors.onBoxColor,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(

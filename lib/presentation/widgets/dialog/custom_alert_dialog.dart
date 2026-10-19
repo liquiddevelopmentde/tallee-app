@@ -45,7 +45,7 @@ class CustomAlertDialog extends StatelessWidget {
                       title,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: CustomTheme.textColor,
+                        color: context.talleeColors.textColor,
                       ),
                     ),
                   ),
@@ -57,16 +57,16 @@ class CustomAlertDialog extends StatelessWidget {
               title,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: CustomTheme.textColor,
+                color: context.talleeColors.textColor,
               ),
             ),
       content: content,
       actions: actions,
-      backgroundColor: CustomTheme.boxColor,
+      backgroundColor: context.talleeColors.boxColor,
       actionsAlignment: MainAxisAlignment.center,
       shape: RoundedRectangleBorder(
         borderRadius: CustomTheme.standardBorderRadiusAll,
-        side: BorderSide(color: CustomTheme.boxBorderColor),
+        side: BorderSide(color: context.talleeColors.boxBorderColor),
       ),
     );
   }

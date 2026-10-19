@@ -40,7 +40,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text(getTitle(widget.enumValue.first, loc))),
       body: PopScope(
@@ -73,10 +73,10 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                   horizontal: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: CustomTheme.boxColor,
+                  color: context.talleeColors.boxColor,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: CustomTheme.boxBorderColor,
+                    color: context.talleeColors.boxBorderColor,
                     width: 2,
                   ),
                 ),
@@ -105,7 +105,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                       child: Icon(
                         Icons.check,
                         color: isHighlighted
-                            ? CustomTheme.textColor
+                            ? context.talleeColors.textColor
                             : Colors.transparent,
                       ),
                     ),

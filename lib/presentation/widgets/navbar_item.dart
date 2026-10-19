@@ -55,8 +55,8 @@ class _NavbarItemState extends State<NavbarItem>
     scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(curved);
 
     iconColorAnimation = ColorTween(
-      begin: CustomTheme.navBarItemUnselectedColor,
-      end: CustomTheme.navBarItemSelectedColor,
+      begin: context.talleeColors.navBarItemUnselectedColor,
+      end: context.talleeColors.navBarItemSelectedColor,
     ).animate(curved);
 
     bgColorAnimation = ColorTween(

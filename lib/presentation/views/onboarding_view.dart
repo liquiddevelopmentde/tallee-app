@@ -72,7 +72,7 @@ class _OnboardingViewState extends State<OnboardingView> {
     final isLastPage = currentPage == pages.length - 1;
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -81,7 +81,7 @@ class _OnboardingViewState extends State<OnboardingView> {
               child: CustomTextButton(
                 text: loc.skip,
                 style: TextStyle(
-                  color: CustomTheme.textColor,
+                  color: context.talleeColors.textColor,
                   fontWeight: FontWeight.w600,
                 ),
                 onPressed: () {
@@ -135,7 +135,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyLarge
                               ?.copyWith(
-                                color: CustomTheme.hintColor,
+                                color: context.talleeColors.hintColor,
                                 overflow: TextOverflow.visible,
                               ),
                         ),
@@ -162,7 +162,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   decoration: BoxDecoration(
                     color: currentPage == index
                         ? CustomTheme.primaryColor
-                        : CustomTheme.textColor.withValues(alpha: 0.3),
+                        : context.talleeColors.textColor.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),

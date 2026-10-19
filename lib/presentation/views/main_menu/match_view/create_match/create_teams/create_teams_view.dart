@@ -73,7 +73,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text(loc.create_teams)),
       body: Stack(

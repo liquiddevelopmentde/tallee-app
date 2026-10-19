@@ -52,7 +52,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(title: Text(loc.manage_members)),
       body: Stack(
         alignment: AlignmentDirectional.center,
@@ -180,7 +180,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
             child: Text(
               team.name,
               style: TextStyle(
-                color: CustomTheme.textColor,
+                color: context.talleeColors.textColor,
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),
@@ -198,7 +198,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               textAlign: TextAlign.end,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: CustomTheme.hintColor,
+                color: context.talleeColors.hintColor,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),

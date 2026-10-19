@@ -129,7 +129,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
                         children: [
                           Icon(
                             GAME_ICON,
-                            color: CustomTheme.hintColor,
+                            color: context.talleeColors.hintColor,
                             size: 20,
                           ),
                           Text(
@@ -139,7 +139,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: CustomTheme.hintColor,
+                              color: context.talleeColors.hintColor,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -151,7 +151,10 @@ class _StatisticsTileState extends State<StatisticsTile> {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 8,
                         children: [
-                          Icon(GROUP_ICON, color: CustomTheme.hintColor),
+                          Icon(
+                            GROUP_ICON,
+                            color: context.talleeColors.hintColor,
+                          ),
                           Text(
                             getSubtitleText(
                               selectedGroups!.map((g) => g.name).toList(),
@@ -159,7 +162,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: CustomTheme.hintColor,
+                              color: context.talleeColors.hintColor,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),

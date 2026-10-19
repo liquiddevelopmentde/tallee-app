@@ -84,7 +84,7 @@ class _GroupViewState extends State<GroupView> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: Stack(
         alignment: Alignment.center,
         children: [

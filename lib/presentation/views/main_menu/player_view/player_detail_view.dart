@@ -152,11 +152,12 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Playername + Playercount
                 Center(
                   child: buildUnitNameWidget(
+                    context,
                     player,
                     mainStyle: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                     ),
                   ),
                 ),
@@ -169,7 +170,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                       player.description,
                       style: TextStyle(
                         fontSize: 14,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.clip,
@@ -189,7 +190,10 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Created at date
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(player.createdAt)}',
-                  style: TextStyle(fontSize: 12, color: CustomTheme.textColor),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: context.talleeColors.textColor,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
@@ -235,7 +239,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                               loc.not_part_of_any_group,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: CustomTheme.textColor,
+                                color: context.talleeColors.textColor,
                               ),
                             ),
                     ),
@@ -283,7 +287,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             loc.no_matches_played_yet,
                             style: TextStyle(
                               fontSize: 14,
-                              color: CustomTheme.textColor,
+                              color: context.talleeColors.textColor,
                             ),
                           ),
                   ),

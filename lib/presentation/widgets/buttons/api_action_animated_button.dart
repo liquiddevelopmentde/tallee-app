@@ -237,7 +237,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     late Color textColor;
     if (widget.onPressed == null) {
       return TextStyle(
-        color: CustomTheme.hintColor,
+        color: context.talleeColors.hintColor,
         fontSize: 16,
         fontWeight: FontWeight.bold,
       );
@@ -245,13 +245,17 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     if (widget.buttonType == ButtonType.primary) {
       textColor = widget.isDestructive
           ? Colors.white
-          : CustomTheme.isDarkMode
+          : Theme.of(context).brightness == Brightness.dark
           ? Colors.black
           : Colors.white;
     } else if (widget.buttonType == ButtonType.secondary) {
-      textColor = widget.isDestructive ? Colors.red : CustomTheme.textColor;
+      textColor = widget.isDestructive
+          ? Colors.red
+          : context.talleeColors.textColor;
     } else {
-      textColor = widget.isDestructive ? Colors.red : CustomTheme.textColor;
+      textColor = widget.isDestructive
+          ? Colors.red
+          : context.talleeColors.textColor;
     }
 
     return TextStyle(
@@ -265,12 +269,12 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     if (widget.buttonType == ButtonType.primary) {
       return BoxDecoration(
         color: buttonState == ApiButtonState.loading
-            ? CustomTheme.onBoxColor
+            ? context.talleeColors.onBoxColor
             : widget.onPressed == null
-            ? CustomTheme.onBoxColor
+            ? context.talleeColors.onBoxColor
             : widget.isDestructive
             ? Colors.red
-            : CustomTheme.isDarkMode
+            : Theme.of(context).brightness == Brightness.dark
             ? Colors.white
             : Colors.black,
         borderRadius: BorderRadius.circular(12),
@@ -279,10 +283,10 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
       return BoxDecoration(
         border: Border.all(
           color: widget.onPressed == null
-              ? CustomTheme.hintColor
+              ? context.talleeColors.hintColor
               : widget.isDestructive
               ? Colors.red
-              : CustomTheme.textColor,
+              : context.talleeColors.textColor,
           width: 2,
         ),
         borderRadius: BorderRadius.circular(12),
