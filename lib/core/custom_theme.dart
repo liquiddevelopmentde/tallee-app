@@ -50,9 +50,9 @@ class CustomTheme {
   static const Color secondaryColor = Color(0xFFf2a981);
 
   static const Color darkBackgroundColor = Color(0xFF0B0B0B);
-  static const Color lightBackgroundColor = Color(0xFFF7F7F7);
+  static const Color lightBackgroundColor = Colors.white;
   static const Color darkBoxColor = Color(0xFF101010);
-  static const Color lightBoxColor = Colors.white;
+  static const Color lightBoxColor = Color(0xFFF7F7F7);
   static const Color darkBoxBorderColor = Color(0xFF272727);
   static const Color lightBoxBorderColor = Color(0xFFE0E0E0);
   static const Color darkOnBoxColor = Color(0xFF181818);
