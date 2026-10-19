@@ -117,45 +117,42 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
 
     return IgnorePointer(
       ignoring: isDisabled,
-      child: Opacity(
-        opacity: 1.0,
-        child: GestureDetector(
-          onTapDown: (_) => setState(() => _isPressed = true),
-          onTapUp: (_) => setState(() => _isPressed = false),
-          onTapCancel: () => setState(() => _isPressed = false),
-          onTap: () {
-            HapticFeedback.selectionClick();
-            if (widget.onPressed != null) {
-              widget.onPressed!();
-            }
-          },
-          child: AnimatedScale(
-            scale: _isPressed ? 0.95 : 1.0,
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        onTap: () {
+          HapticFeedback.selectionClick();
+          if (widget.onPressed != null) {
+            widget.onPressed!();
+          }
+        },
+        child: AnimatedScale(
+          scale: _isPressed ? 0.95 : 1.0,
+          duration: const Duration(milliseconds: 100),
+          child: AnimatedOpacity(
+            opacity: _isPressed ? 0.6 : 1.0,
             duration: const Duration(milliseconds: 100),
-            child: AnimatedOpacity(
-              opacity: _isPressed ? 0.6 : 1.0,
-              duration: const Duration(milliseconds: 100),
-              child: Center(
-                child: Container(
-                  constraints: widget.sizeRelativeToWidth == null
-                      ? widget.buttonConstraints
-                      : BoxConstraints(
-                          minWidth:
-                              MediaQuery.sizeOf(context).width *
-                              widget.sizeRelativeToWidth!,
-                          minHeight: 50,
-                        ),
-                  decoration: buttonDecoration,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  margin: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text(
-                    widget.buttonText,
-                    style: textStyle,
-                    textAlign: TextAlign.center,
-                  ),
+            child: Center(
+              child: Container(
+                constraints: widget.sizeRelativeToWidth == null
+                    ? widget.buttonConstraints
+                    : BoxConstraints(
+                        minWidth:
+                            MediaQuery.sizeOf(context).width *
+                            widget.sizeRelativeToWidth!,
+                        minHeight: 50,
+                      ),
+                decoration: buttonDecoration,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  widget.buttonText,
+                  style: textStyle,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
