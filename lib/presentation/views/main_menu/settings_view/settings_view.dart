@@ -143,7 +143,8 @@ class _SettingsViewState extends State<SettingsView> {
                     onPressed: () async {
                       final result = await Navigator.push<bool>(
                         context,
-                        MaterialPageRoute<bool>(
+                        adaptivePageRoute(
+                          settings: const RouteSettings(name: RouteNames.feedbackFormView),
                           fullscreenDialog: true,
                           builder: (context) => const FeedbackFormView(),
                         ),
