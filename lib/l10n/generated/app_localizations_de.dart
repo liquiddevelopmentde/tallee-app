@@ -293,9 +293,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get edit_match => 'Spiel bearbeiten';
 
   @override
-  String get edit_name => 'Name ändern';
-
-  @override
   String get edit_player => 'Spieler bearbeiten';
 
   @override
@@ -914,22 +911,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get server_error => 'Interner Server Fehler';
 
   @override
-  String get set_name => 'Name setzen';
-
-  @override
   String get settings => 'Einstellungen';
-
-  @override
-  String get theme => 'Darstellung';
-
-  @override
-  String get theme_system => 'System';
-
-  @override
-  String get theme_dark => 'Dunkel';
-
-  @override
-  String get theme_light => 'Hell';
 
   @override
   String get share => 'Teilen';
@@ -1056,6 +1038,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get thank_you_for_report => 'Vielen Dank für deine Fehlermeldung!';
+
+  @override
+  String get theme => 'Darstellung';
+
+  @override
+  String get theme_dark => 'Dunkel';
+
+  @override
+  String get theme_light => 'Hell';
+
+  @override
+  String get theme_system => 'System';
 
   @override
   String get there_are_no_games_matching_your_search =>

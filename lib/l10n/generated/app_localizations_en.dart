@@ -290,9 +290,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_match => 'Edit Match';
 
   @override
-  String get edit_name => 'Edit name';
-
-  @override
   String get edit_player => 'Edit player';
 
   @override
@@ -906,22 +903,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get server_error => 'Internal server error';
 
   @override
-  String get set_name => 'Set name';
-
-  @override
   String get settings => 'Settings';
-
-  @override
-  String get theme => 'Theme';
-
-  @override
-  String get theme_system => 'System';
-
-  @override
-  String get theme_dark => 'Dark';
-
-  @override
-  String get theme_light => 'Light';
 
   @override
   String get share => 'Share';
@@ -1046,6 +1028,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thank_you_for_report => 'Thank you for your error report!';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get theme_dark => 'Dark';
+
+  @override
+  String get theme_light => 'Light';
+
+  @override
+  String get theme_system => 'System';
 
   @override
   String get there_are_no_games_matching_your_search =>
