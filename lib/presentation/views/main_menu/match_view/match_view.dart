@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
@@ -505,6 +506,12 @@ class _MatchViewState extends State<MatchView> {
     await Future.delayed(const Duration(milliseconds: 500), () async {
       didUserLikeApp = await showPreRateDialog(loc);
     });
+
+    if (didUserLikeApp == null) {
+      await RATE_MY_APP.callEvent(RateMyAppEventType.laterButtonPressed);
+    } else if (didUserLikeApp == false) {
+      await RATE_MY_APP.callEvent(RateMyAppEventType.noButtonPressed);
+    }
 
     if (didUserLikeApp is bool && mounted) {
       didUserLikeApp!
