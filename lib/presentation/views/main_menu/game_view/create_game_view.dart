@@ -545,6 +545,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                                     decoration: BoxDecoration(
                                       color: getColorFromAppColor(
                                         colors[index].$1,
+                                        brightness: Theme.of(context)
+                                            .brightness,
                                       ),
                                       shape: BoxShape.circle,
                                     ),
@@ -577,7 +579,10 @@ class _CreateGameViewState extends State<CreateGameView> {
             width: 16,
             height: 16,
             decoration: BoxDecoration(
-              color: getColorFromAppColor(selectedColor!),
+              color: getColorFromAppColor(
+                selectedColor!,
+                brightness: Theme.of(context).brightness,
+              ),
               shape: BoxShape.circle,
             ),
           ),

@@ -20,7 +20,10 @@ class NewsCard extends StatelessWidget {
     final text =
         newsItem.localizedText[locale] ?? newsItem.localizedText['en']!;
 
-    final iconColor = getColorFromAppColor(newsItem.iconColor);
+    final iconColor = getColorFromAppColor(
+      newsItem.iconColor,
+      brightness: Theme.of(context).brightness,
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),

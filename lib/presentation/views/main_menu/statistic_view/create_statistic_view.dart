@@ -261,7 +261,10 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               width: 16,
               height: 16,
               decoration: BoxDecoration(
-                color: getColorFromAppColor(color),
+                color: getColorFromAppColor(
+                  color,
+                  brightness: Theme.of(context).brightness,
+                ),
                 shape: BoxShape.circle,
               ),
             ),
@@ -559,14 +562,22 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   }
 
   Widget buildColorCircle() {
-    final segmentColors = [
-      AppColor.red,
-      AppColor.purple,
-      AppColor.blue,
-      AppColor.green,
-      AppColor.yellow,
-      AppColor.orange,
-    ].map((c) => getColorFromAppColor(c)).toList();
+    final segmentColors =
+        [
+              AppColor.red,
+              AppColor.purple,
+              AppColor.blue,
+              AppColor.green,
+              AppColor.yellow,
+              AppColor.orange,
+            ]
+            .map(
+              (c) => getColorFromAppColor(
+                c,
+                brightness: Theme.of(context).brightness,
+              ),
+            )
+            .toList();
 
     // Repeat first color at the end so the seam does not swallow red.
     final colors = [...segmentColors, segmentColors.first];

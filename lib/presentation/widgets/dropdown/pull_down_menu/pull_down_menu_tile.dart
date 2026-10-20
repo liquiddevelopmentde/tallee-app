@@ -1,6 +1,5 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class PullDownMenuTile extends StatefulWidget {
@@ -36,7 +35,7 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
   @override
   Widget build(BuildContext context) {
     final Color color = widget.isDestructive
-        ? AppColors.red
+        ? context.talleeColors.errorColor
         : context.talleeColors.textColor;
     final Color contentColor = widget.enabled ? color : color.withAlpha(100);
 

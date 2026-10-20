@@ -30,27 +30,28 @@ class AppColors {
   static const Color navBarBackgroundColorLight = Color(0xFFF7F7F7);
   static const Color navBarItemUnselectedColorDark = Color(0xFFBDBDBD);
   static const Color navBarItemUnselectedColorLight = Color(0xFF6B6B6B);
+  static const Color skeletonFromColorDark = Color(0xFF424242);
+  static const Color skeletonToColorDark = Color(0xFF616161);
+  static const Color skeletonFromColorLight = boxBorderColorLight;
+  static const Color skeletonToColorLight = boxColorLight;
 
-  static const Color redColor = Color(0xFFF44336);
-  static const Color blueColor = Color(0xFF2196F3);
-  static const Color greenColor = Color(0xFF4CAF50);
-  static const Color yellowColor = Color(0xFFFFEB3B);
-  static const Color purpleColor = Color(0xFF9C27B0);
-  static const Color orangeColor = Color(0xFFFF9800);
-  static const Color pinkColor = Color(0xFFE91E63);
-  static const Color tealColor = Color(0xFF009688);
+  static const Color redColorDark = Color(0xFFF44336);
+  static const Color blueColorDark = Color(0xFF2196F3);
+  static const Color greenColorDark = Color(0xFF4CAF50);
+  static const Color yellowColorDark = Color(0xFFFFEB3B);
+  static const Color purpleColorDark = Color(0xFF9C27B0);
+  static const Color orangeColorDark = Color(0xFFFF9800);
+  static const Color pinkColorDark = Color(0xFFE91E63);
+  static const Color tealColorDark = Color(0xFF009688);
+  static const Color redColorLight = Color(0xFFE86A6A);
+  static const Color blueColorLight = Color(0xFF64B5F6);
+  static const Color greenColorLight = Color(0xFF81C784);
+  static const Color yellowColorLight = Color(0xFFFFD54F);
+  static const Color purpleColorLight = Color(0xFFBA68C8);
+  static const Color orangeColorLight = Color(0xFFFFB74D);
+  static const Color pinkColorLight = Color(0xFFF06292);
+  static const Color tealColorLight = Color(0xFF4DB6AC);
   static const Color blackColor = Color(0xFF000000);
-
-  // ==================== App-Colors ====================
-
-  static const Color red = redColor;
-  static const Color blue = blueColor;
-  static const Color green = greenColor;
-  static const Color yellow = yellowColor;
-  static const Color purple = purpleColor;
-  static const Color orange = orangeColor;
-  static const Color pink = pinkColor;
-  static const Color teal = tealColor;
 
   // ==================== Border Radius ====================
   static const double standardBorderRadius = 12.0;

@@ -14,6 +14,8 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
     required this.navBarBackgroundColor,
     required this.navBarItemSelectedColor,
     required this.navBarItemUnselectedColor,
+    required this.skeletonFromColor,
+    required this.skeletonToColor,
   });
 
   final Color backgroundColor;
@@ -28,6 +30,8 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
   final Color navBarBackgroundColor;
   final Color navBarItemSelectedColor;
   final Color navBarItemUnselectedColor;
+  final Color skeletonFromColor;
+  final Color skeletonToColor;
 
   @override
   TalleeThemeColors copyWith({
@@ -43,6 +47,8 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
     Color? navBarBackgroundColor,
     Color? navBarItemSelectedColor,
     Color? navBarItemUnselectedColor,
+    Color? skeletonFromColor,
+    Color? skeletonToColor,
   }) {
     return TalleeThemeColors(
       backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -60,6 +66,8 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
           navBarItemSelectedColor ?? this.navBarItemSelectedColor,
       navBarItemUnselectedColor:
           navBarItemUnselectedColor ?? this.navBarItemUnselectedColor,
+      skeletonFromColor: skeletonFromColor ?? this.skeletonFromColor,
+      skeletonToColor: skeletonToColor ?? this.skeletonToColor,
     );
   }
 
@@ -94,6 +102,12 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
         other.navBarItemUnselectedColor,
         t,
       )!,
+      skeletonFromColor: Color.lerp(
+        skeletonFromColor,
+        other.skeletonFromColor,
+        t,
+      )!,
+      skeletonToColor: Color.lerp(skeletonToColor, other.skeletonToColor, t)!,
     );
   }
 }

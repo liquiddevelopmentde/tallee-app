@@ -240,7 +240,13 @@ class _ThemePalette {
           : AppColors.navBarBackgroundColorLight,
       navBarItemUnselectedColor = isDarkMode
           ? AppColors.navBarItemUnselectedColorDark
-          : AppColors.navBarItemUnselectedColorLight;
+          : AppColors.navBarItemUnselectedColorLight,
+      skeletonFromColor = isDarkMode
+          ? AppColors.skeletonFromColorDark
+          : AppColors.skeletonFromColorLight,
+      skeletonToColor = isDarkMode
+          ? AppColors.skeletonToColorDark
+          : AppColors.skeletonToColorLight;
 
   final Color backgroundColor;
   final Color boxColor;
@@ -253,6 +259,8 @@ class _ThemePalette {
   final Color warningColor;
   final Color navBarBackgroundColor;
   final Color navBarItemUnselectedColor;
+  final Color skeletonFromColor;
+  final Color skeletonToColor;
 
   TalleeThemeColors toThemeColors() => TalleeThemeColors(
     backgroundColor: backgroundColor,
@@ -267,6 +275,8 @@ class _ThemePalette {
     navBarBackgroundColor: navBarBackgroundColor,
     navBarItemSelectedColor: AppColors.primaryColor,
     navBarItemUnselectedColor: navBarItemUnselectedColor,
+    skeletonFromColor: skeletonFromColor,
+    skeletonToColor: skeletonToColor,
   );
 }
 

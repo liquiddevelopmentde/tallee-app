@@ -48,7 +48,6 @@ class StatisticsTile extends StatefulWidget {
 
 class _StatisticsTileState extends State<StatisticsTile> {
   late bool isFavourite;
-  late Color barColor;
   late List<Group>? selectedGroups;
   late List<Game>? selectedGames;
   late IconData icon;
@@ -56,7 +55,6 @@ class _StatisticsTileState extends State<StatisticsTile> {
   @override
   void initState() {
     isFavourite = widget.statistic.isFavourite;
-    barColor = getColorFromAppColor(widget.statistic.color);
     selectedGames = widget.statistic.selectedGames;
     selectedGroups = widget.statistic.selectedGroups;
     icon = getStatisticIcon(type: widget.statistic.type);
@@ -69,7 +67,6 @@ class _StatisticsTileState extends State<StatisticsTile> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.statistic != widget.statistic) {
       isFavourite = widget.statistic.isFavourite;
-      barColor = getColorFromAppColor(widget.statistic.color);
       selectedGames = widget.statistic.selectedGames;
       selectedGroups = widget.statistic.selectedGroups;
       icon = getStatisticIcon(type: widget.statistic.type);
@@ -78,6 +75,10 @@ class _StatisticsTileState extends State<StatisticsTile> {
 
   @override
   Widget build(BuildContext context) {
+    final barColor = getColorFromAppColor(
+      widget.statistic.color,
+      brightness: Theme.of(context).brightness,
+    );
     final title = translateStatisticTypeToString(
       widget.statistic.type,
       context,
