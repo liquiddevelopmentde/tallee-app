@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/data/models/statistic.dart';
 
 /// Returns the [Color] object corresponding to a [AppColor] enum value.
 Color getColorFromAppColor(
@@ -42,11 +42,6 @@ AppColor getRandomAppColor() {
   return appColors[Random().nextInt(appColors.length)];
 }
 
-/// Returns a random color from the app colors.
-Color getRandomAppColorValue() {
-  return getColorFromAppColor(getRandomAppColor());
-}
-
 // Returns a AppColor enum value based on the provided team [index].
 AppColor getTeamColor(int index) {
   final colors = [
@@ -60,13 +55,4 @@ AppColor getTeamColor(int index) {
     AppColor.teal,
   ];
   return colors[index % colors.length];
-}
-
-/// Returns a color from the palette based on the statistic's ID as random seed.
-Color getStatisticColor(Statistic stat) {
-  final seed = stat.id.hashCode;
-  final appColors = AppColor.values
-      .map((c) => getColorFromAppColor(c))
-      .toList();
-  return appColors[seed.abs() % appColors.length];
 }
