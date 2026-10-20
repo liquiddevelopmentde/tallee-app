@@ -32,8 +32,8 @@ class AppColors {
   static const Color navBarItemUnselectedColorLight = Color(0xFF6B6B6B);
   static const Color skeletonFromColorDark = Color(0xFF424242);
   static const Color skeletonToColorDark = Color(0xFF616161);
-  static const Color skeletonFromColorLight = boxBorderColorLight;
-  static const Color skeletonToColorLight = boxColorLight;
+  static const Color skeletonFromColorLight = Color(0xFFE0E0E0);
+  static const Color skeletonToColorLight = Color(0xFFF7F7F7);
 
   static const Color redColorDark = Color(0xFFF44336);
   static const Color blueColorDark = Color(0xFF2196F3);
