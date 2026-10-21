@@ -354,10 +354,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 )
                                 .toList();
                           });
-                          final db = context.read<AppDatabase>();
-                          db.statisticDao.updatePosition(
-                            statistics: statistics,
-                          );
+                          updatePositions();
                         },
                         onReorderStart: (_) => HapticFeedback.heavyImpact(),
                         onReorderEnd: (_) => HapticFeedback.selectionClick(),
@@ -548,14 +545,20 @@ class _StatisticsViewState extends State<StatisticsView> {
   }
 
   /// Adds the new statistic, updates the positions of all statistics and updates the tiles.
-  void onStatisticsCreated(List<Statistic> newStats) {
-    statistics = [...newStats, ...statistics];
+  void onStatisticsCreated(Statistic newStat) {
+    // Put at the front of the statistics list
+    statistics = [newStat, ...statistics];
+    updatePositions();
+    createStatisticTiles();
+  }
+
+  /// Updates the position attribute of the statistics after the list changed
+  void updatePositions() {
     statistics = statistics
         .map((stat) => stat.copyWith(position: statistics.indexOf(stat)))
         .toList();
     final db = context.read<AppDatabase>();
     db.statisticDao.updatePosition(statistics: statistics);
-    createStatisticTiles();
   }
 
   /// Refreshes a statistic by the [statisticId], either updating it or removing it if
