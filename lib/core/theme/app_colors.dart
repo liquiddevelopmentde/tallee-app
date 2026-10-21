@@ -42,16 +42,16 @@ class AppColors {
 
   /* Surfaces */
 
-  static const Color backgroundColorLight = Color(0xFFFFFFFF);
-  static const Color boxColorLight = Color(0xFFF7F7F7);
-  static const Color boxBorderColorLight = Color(0xFFE0E0E0);
+  static const Color backgroundColorLight = Color(0xFFF4F4F5);
+  static const Color boxColorLight = Color(0xFFFFFFFF);
+  static const Color boxBorderColorLight = Color(0xFFD9D9DC);
   static const Color onBoxColorLight = Color(0xFFF0F0F0);
   static const Color textColorLight = Color(0xFF171717);
   static const Color hintColorLight = Color(0xFF6B6B6B);
   static const Color errorColorLight = redColorLight;
   static const Color successColorLight = greenColorLight;
   static const Color warningColorLight = orangeColorLight;
-  static const Color navBarBackgroundColorLight = Color(0xFFF7F7F7);
+  static const Color navBarBackgroundColorLight = Color(0xFFFFFFFF);
   static const Color navBarItemUnselectedColorLight = Color(0xFF6B6B6B);
   static const Color skeletonFromColorLight = Color(0xFFD0D0D0);
   static const Color skeletonToColorLight = Color(0xFFE0E0E0);
