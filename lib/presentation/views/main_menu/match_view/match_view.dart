@@ -63,14 +63,14 @@ class _MatchViewState extends State<MatchView> {
   final ScrollController scrollController = ScrollController();
 
   /// Loaded matches from the database, initially filled with skeleton matches
-  List<Match> allMatches = List.filled(
+  List<Match> allMatches = List.generate(
     4,
-    Match(
+    (_) => Match(
       name: 'Skeleton match name',
       game: Game(
         name: 'Game name',
         ruleset: Ruleset.winner,
-        color: AppColor.blue,
+        color: getRandomAppColor(),
       ),
       group: Group(
         name: 'Group name',
