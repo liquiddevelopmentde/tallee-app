@@ -537,7 +537,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   /// Filters the [games] based on the rulesets required by the selected [StatisticType]s
   List<Game> filterGamesForRequiredRuleset(List<Game> games) {
-    final List<Ruleset> requiredRulesets = getRulesetsForType(selectedType!);
+    if (selectedType == null) return games;
+    final requiredRulesets = getRulesetsForType(selectedType!);
     return games.where((g) => requiredRulesets.contains(g.ruleset)).toList();
   }
 
