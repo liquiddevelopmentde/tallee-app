@@ -107,6 +107,10 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                         runSpacing: 8,
                         children: teamColors.map((color) {
                           final isSelected = widget.color == color;
+                          final swatchColor = getColorFromAppColor(
+                            color,
+                            context,
+                          );
                           return GestureDetector(
                             onTap: () {
                               widget.onColorSelection?.call(color);
@@ -115,20 +119,20 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                               width: 34,
                               height: 34,
                               decoration: BoxDecoration(
-                                color: getColorFromAppColor(color, context),
+                                color: swatchColor,
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: isSelected
-                                      ? Colors.white
+                                      ? context.talleeColors.textColor
                                       : Colors.transparent,
                                   width: 3,
                                 ),
                               ),
                               child: isSelected
-                                  ? const Icon(
+                                  ? Icon(
                                       Icons.check,
                                       size: 18,
-                                      color: Colors.white,
+                                      color: context.talleeColors.textColor,
                                     )
                                   : null,
                             ),

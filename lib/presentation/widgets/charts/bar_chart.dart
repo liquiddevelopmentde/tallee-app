@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -194,8 +193,8 @@ class BarChart extends StatelessWidget {
     }
   }
 
-  /// Generates the text widget for the player name. If the bar color is
-  /// yellow, the text with the bar in the background gets black
+  /// Generates the text widget for the player name with a color that contrasts
+  /// with the part of the label covered by the bar.
   Widget playerText({
     required BuildContext context,
     required Player player,
@@ -207,32 +206,7 @@ class BarChart extends StatelessWidget {
     final textAlpha = isHighlightedOverflow ? 150 : 255;
     final baseStyle = DefaultTextStyle.of(context).style;
 
-    if (barColor != getColorFromAppColor(AppColor.yellow, context)) {
-      return RichText(
-        maxLines: 1,
-        softWrap: false,
-        overflow: TextOverflow.ellipsis,
-        text: buildPlayerNameCountSpan(
-          context,
-          player,
-          style: baseStyle,
-          mainStyle: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: context.talleeColors.textColor.withAlpha(textAlpha),
-          ),
-          countStyle: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
-            color: context.talleeColors.textColor.withAlpha(
-              isHighlightedOverflow ? 170 : 150,
-            ),
-          ),
-        ),
-      );
-    }
-
-    final insideTextColor = const Color(0xFF101010).withAlpha(textAlpha);
+    final insideTextColor = barColor.contrastTextColor.withAlpha(textAlpha);
     final outsideTextColor = context.talleeColors.textColor.withAlpha(
       textAlpha,
     );
@@ -268,15 +242,15 @@ class BarChart extends StatelessWidget {
           context,
           player,
           style: baseStyle,
-          mainStyle: const TextStyle(
+          mainStyle: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: insideTextColor,
           ),
-          countStyle: const TextStyle(
+          countStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: insideTextColor,
           ),
         ),
       ),
