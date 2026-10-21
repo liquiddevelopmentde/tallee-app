@@ -37,10 +37,7 @@ class GameTile extends StatelessWidget {
     final title = game.name;
     final description = game.description;
     final ruleset = translateRulesetToString(game.ruleset, context);
-    final gameColor = getColorFromAppColor(
-      game.color,
-      brightness: Theme.of(context).brightness,
-    );
+    final gameColor = getColorFromAppColor(game.color, context);
     final highlightBorderColor = borderColor ?? gameColor;
     final showChevron = onLongPress != null;
 

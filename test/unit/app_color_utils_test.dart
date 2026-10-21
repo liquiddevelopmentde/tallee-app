@@ -3,16 +3,27 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_theme.dart';
 
 void main() {
   group('getColorFromAppColor', () {
-    test('uses optimized colors in light mode', () {
+    testWidgets('uses optimized colors in light mode', (tester) async {
+      late BuildContext context;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: lightTheme,
+          home: Builder(
+            builder: (builderContext) {
+              context = builderContext;
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
       expect(
         AppColor.values
-            .map(
-              (color) =>
-                  getColorFromAppColor(color, brightness: Brightness.light),
-            )
+            .map((color) => getColorFromAppColor(color, context))
             .toList(),
         [
           AppColors.redColorLight,
@@ -27,13 +38,23 @@ void main() {
       );
     });
 
-    test('keeps the existing palette in dark mode', () {
+    testWidgets('keeps the existing palette in dark mode', (tester) async {
+      late BuildContext context;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: darkTheme,
+          home: Builder(
+            builder: (builderContext) {
+              context = builderContext;
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
       expect(
         AppColor.values
-            .map(
-              (color) =>
-                  getColorFromAppColor(color, brightness: Brightness.dark),
-            )
+            .map((color) => getColorFromAppColor(color, context))
             .toList(),
         [
           AppColors.redColorDark,

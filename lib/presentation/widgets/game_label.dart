@@ -16,10 +16,7 @@ class GameLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = getColorFromAppColor(
-      color,
-      brightness: Theme.of(context).brightness,
-    );
+    final backgroundColor = getColorFromAppColor(color, context);
     final textColor = backgroundColor.contrastTextColor;
 
     return Row(

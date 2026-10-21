@@ -16,6 +16,14 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
     required this.navBarItemUnselectedColor,
     required this.skeletonFromColor,
     required this.skeletonToColor,
+    required this.redColor,
+    required this.orangeColor,
+    required this.yellowColor,
+    required this.greenColor,
+    required this.tealColor,
+    required this.blueColor,
+    required this.purpleColor,
+    required this.pinkColor,
   });
 
   final Color backgroundColor;
@@ -32,6 +40,14 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
   final Color navBarItemUnselectedColor;
   final Color skeletonFromColor;
   final Color skeletonToColor;
+  final Color redColor;
+  final Color orangeColor;
+  final Color yellowColor;
+  final Color greenColor;
+  final Color tealColor;
+  final Color blueColor;
+  final Color purpleColor;
+  final Color pinkColor;
 
   @override
   TalleeThemeColors copyWith({
@@ -49,6 +65,14 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
     Color? navBarItemUnselectedColor,
     Color? skeletonFromColor,
     Color? skeletonToColor,
+    Color? redColor,
+    Color? orangeColor,
+    Color? yellowColor,
+    Color? greenColor,
+    Color? tealColor,
+    Color? blueColor,
+    Color? purpleColor,
+    Color? pinkColor,
   }) {
     return TalleeThemeColors(
       backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -68,6 +92,14 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
           navBarItemUnselectedColor ?? this.navBarItemUnselectedColor,
       skeletonFromColor: skeletonFromColor ?? this.skeletonFromColor,
       skeletonToColor: skeletonToColor ?? this.skeletonToColor,
+      redColor: redColor ?? this.redColor,
+      orangeColor: orangeColor ?? this.orangeColor,
+      yellowColor: yellowColor ?? this.yellowColor,
+      greenColor: greenColor ?? this.greenColor,
+      tealColor: tealColor ?? this.tealColor,
+      blueColor: blueColor ?? this.blueColor,
+      purpleColor: purpleColor ?? this.purpleColor,
+      pinkColor: pinkColor ?? this.pinkColor,
     );
   }
 
@@ -108,6 +140,14 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
         t,
       )!,
       skeletonToColor: Color.lerp(skeletonToColor, other.skeletonToColor, t)!,
+      redColor: Color.lerp(redColor, other.redColor, t)!,
+      orangeColor: Color.lerp(orangeColor, other.orangeColor, t)!,
+      yellowColor: Color.lerp(yellowColor, other.yellowColor, t)!,
+      greenColor: Color.lerp(greenColor, other.greenColor, t)!,
+      tealColor: Color.lerp(tealColor, other.tealColor, t)!,
+      blueColor: Color.lerp(blueColor, other.blueColor, t)!,
+      purpleColor: Color.lerp(purpleColor, other.purpleColor, t)!,
+      pinkColor: Color.lerp(pinkColor, other.pinkColor, t)!,
     );
   }
 }

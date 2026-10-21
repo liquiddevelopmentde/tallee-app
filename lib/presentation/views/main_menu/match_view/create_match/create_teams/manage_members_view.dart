@@ -157,10 +157,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
   }
 
   Widget buildTeamTile({required Team team}) {
-    final color = getColorFromAppColor(
-      team.color,
-      brightness: Theme.of(context).brightness,
-    );
+    final color = getColorFromAppColor(team.color, context);
     final loc = AppLocalizations.of(context);
     final length = team.members.length;
     final memberText = length == 1 ? loc.member : loc.members;
