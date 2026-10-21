@@ -3,36 +3,27 @@ import 'dart:math';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 /// Returns the [Color] object corresponding to a [AppColor] enum value.
-Color getColorFromAppColor(
-  AppColor color, {
-  Brightness brightness = Brightness.dark,
-}) {
-  final isLightMode = brightness == Brightness.light;
+Color getColorFromAppColor(AppColor color, BuildContext context) {
   switch (color) {
     case AppColor.red:
-      return isLightMode ? AppColors.redColorLight : AppColors.redColorDark;
+      return context.talleeColors.redColor;
     case AppColor.blue:
-      return isLightMode ? AppColors.blueColorLight : AppColors.blueColorDark;
+      return context.talleeColors.blueColor;
     case AppColor.green:
-      return isLightMode ? AppColors.greenColorLight : AppColors.greenColorDark;
+      return context.talleeColors.greenColor;
     case AppColor.yellow:
-      return isLightMode
-          ? AppColors.yellowColorLight
-          : AppColors.yellowColorDark;
+      return context.talleeColors.yellowColor;
     case AppColor.purple:
-      return isLightMode
-          ? AppColors.purpleColorLight
-          : AppColors.purpleColorDark;
+      return context.talleeColors.purpleColor;
     case AppColor.orange:
-      return isLightMode
-          ? AppColors.orangeColorLight
-          : AppColors.orangeColorDark;
+      return context.talleeColors.orangeColor;
     case AppColor.pink:
-      return isLightMode ? AppColors.pinkColorLight : AppColors.pinkColorDark;
+      return context.talleeColors.pinkColor;
     case AppColor.teal:
-      return isLightMode ? AppColors.tealColorLight : AppColors.tealColorDark;
+      return context.talleeColors.tealColor;
   }
 }
 

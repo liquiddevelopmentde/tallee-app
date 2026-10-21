@@ -32,10 +32,7 @@ class TeamCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final teamColor = getColorFromAppColor(
-      team.color,
-      brightness: Theme.of(context).brightness,
-    );
+    final teamColor = getColorFromAppColor(team.color, context);
 
     // Show only team name and member count
     if (compact) {

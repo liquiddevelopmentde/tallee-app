@@ -246,7 +246,29 @@ class _ThemePalette {
           : AppColors.skeletonFromColorLight,
       skeletonToColor = isDarkMode
           ? AppColors.skeletonToColorDark
-          : AppColors.skeletonToColorLight;
+          : AppColors.skeletonToColorLight,
+      redColor = isDarkMode ? AppColors.redColorDark : AppColors.redColorLight,
+      orangeColor = isDarkMode
+          ? AppColors.orangeColorDark
+          : AppColors.orangeColorLight,
+      yellowColor = isDarkMode
+          ? AppColors.yellowColorDark
+          : AppColors.yellowColorLight,
+      greenColor = isDarkMode
+          ? AppColors.greenColorDark
+          : AppColors.greenColorLight,
+      tealColor = isDarkMode
+          ? AppColors.tealColorDark
+          : AppColors.tealColorLight,
+      blueColor = isDarkMode
+          ? AppColors.blueColorDark
+          : AppColors.blueColorLight,
+      purpleColor = isDarkMode
+          ? AppColors.purpleColorDark
+          : AppColors.purpleColorLight,
+      pinkColor = isDarkMode
+          ? AppColors.pinkColorDark
+          : AppColors.pinkColorLight;
 
   final Color backgroundColor;
   final Color boxColor;
@@ -261,6 +283,14 @@ class _ThemePalette {
   final Color navBarItemUnselectedColor;
   final Color skeletonFromColor;
   final Color skeletonToColor;
+  final Color redColor;
+  final Color orangeColor;
+  final Color yellowColor;
+  final Color greenColor;
+  final Color tealColor;
+  final Color blueColor;
+  final Color purpleColor;
+  final Color pinkColor;
 
   TalleeThemeColors toThemeColors() => TalleeThemeColors(
     backgroundColor: backgroundColor,
@@ -277,6 +307,14 @@ class _ThemePalette {
     navBarItemUnselectedColor: navBarItemUnselectedColor,
     skeletonFromColor: skeletonFromColor,
     skeletonToColor: skeletonToColor,
+    redColor: redColor,
+    orangeColor: orangeColor,
+    yellowColor: yellowColor,
+    greenColor: greenColor,
+    tealColor: tealColor,
+    blueColor: blueColor,
+    purpleColor: purpleColor,
+    pinkColor: pinkColor,
   );
 }
 
