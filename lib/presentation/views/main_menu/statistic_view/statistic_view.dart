@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
@@ -69,6 +70,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final colors = context.talleeColors;
     final tiles = statisticTiles;
 
     return LayoutBuilder(
@@ -295,7 +297,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                           return AnimatedBuilder(
                             animation: animation,
                             child: child,
-                            builder: (context, child) {
+                            builder: (BuildContext context, child) {
                               final t = Curves.easeOut.transform(
                                 animation.value,
                               );
@@ -322,9 +324,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             opacity: 1 * t,
                                             child: DecoratedBox(
                                               decoration: BoxDecoration(
-                                                color: Colors.white.withAlpha(
-                                                  15,
-                                                ),
+                                                color: colors
+                                                    .textColor
+                                                    .withValues(alpha: 0.10),
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                               ),
