@@ -38,6 +38,37 @@ class BottomAnimatedButton extends StatefulWidget {
 class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
   bool isPressed = false;
 
+  bool get isDisabled => widget.onPressed == null;
+
+  Color get accentColor {
+    if (isDisabled) return CustomTheme.hintColor;
+    if (widget.isDestructive) return Colors.red;
+    if (widget.isEmphasized) return CustomTheme.primaryColor;
+    return Colors.white;
+  }
+
+  BoxDecoration get buttonDecoration {
+    if (widget.buttonType == ButtonType.primary) {
+      // Primary
+      return BoxDecoration(
+        color: accentColor,
+        borderRadius: BorderRadius.circular(12),
+      );
+    } else if (widget.buttonType == ButtonType.secondary) {
+      // Secondary
+      return BoxDecoration(
+        border: BoxBorder.all(
+          color: accentColor,
+          width: 2,
+          strokeAlign: BorderSide.strokeAlignInside,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      );
+    }
+    // Tertiary
+    return const BoxDecoration();
+  }
+
   TextStyle get textStyle {
     late Color textColor;
 
@@ -65,79 +96,44 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
     );
   }
 
-  BoxDecoration get buttonDecoration {
-    if (widget.buttonType == ButtonType.primary) {
-      // Primary
-      return BoxDecoration(
-        color: widget.isDestructive
-            ? Colors.red
-            : widget.isEmphasized
-            ? CustomTheme.primaryColor
-            : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      );
-    } else if (widget.buttonType == ButtonType.secondary) {
-      // Secondary
-      return BoxDecoration(
-        border: BoxBorder.all(
-          color: widget.isDestructive
-              ? Colors.red
-              : widget.isEmphasized
-              ? CustomTheme.primaryColor
-              : Colors.white,
-          width: 2,
-          strokeAlign: BorderSide.strokeAlignInside,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      );
-    }
-    // Tertiary
-    return const BoxDecoration();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final isDisabled = widget.onPressed == null;
-
     return IgnorePointer(
       ignoring: isDisabled,
-      child: Opacity(
-        opacity: isDisabled ? 0.4 : 1.0,
-        child: GestureDetector(
-          onTapDown: (_) => setState(() => isPressed = true),
-          onTapUp: (_) => setState(() => isPressed = false),
-          onTapCancel: () => setState(() => isPressed = false),
-          onTap: () {
-            HapticFeedback.selectionClick();
-            if (!isDisabled) widget.onPressed!();
-          },
-          child: AnimatedScale(
-            scale: isPressed ? 0.95 : 1.0,
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => isPressed = true),
+        onTapUp: (_) => setState(() => isPressed = false),
+        onTapCancel: () => setState(() => isPressed = false),
+        onTap: () {
+          HapticFeedback.selectionClick();
+          if (!isDisabled) widget.onPressed!();
+        },
+        child: AnimatedScale(
+          scale: isPressed ? 0.95 : 1.0,
+          duration: const Duration(milliseconds: 100),
+          child: AnimatedOpacity(
+            opacity: isPressed ? 0.6 : 1.0,
             duration: const Duration(milliseconds: 100),
-            child: AnimatedOpacity(
-              opacity: isPressed ? 0.6 : 1.0,
-              duration: const Duration(milliseconds: 100),
-              child: Center(
-                child: Container(
-                  constraints: widget.sizeRelativeToWidth == null
-                      ? widget.buttonConstraints
-                      : BoxConstraints(
-                          minWidth:
-                              MediaQuery.sizeOf(context).width *
-                              widget.sizeRelativeToWidth!,
-                          minHeight: 50,
-                        ),
-                  decoration: buttonDecoration,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  margin: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text(
-                    widget.buttonText,
-                    style: textStyle,
-                    textAlign: TextAlign.center,
-                  ),
+            child: Center(
+              child: Container(
+                constraints: widget.sizeRelativeToWidth == null
+                    ? widget.buttonConstraints
+                    : BoxConstraints(
+                        minWidth:
+                            MediaQuery.sizeOf(context).width *
+                            widget.sizeRelativeToWidth!,
+                        minHeight: 50,
+                      ),
+                decoration: buttonDecoration,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  widget.buttonText,
+                  style: textStyle,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),

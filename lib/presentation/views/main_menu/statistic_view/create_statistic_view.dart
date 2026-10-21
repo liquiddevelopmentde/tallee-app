@@ -243,9 +243,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               // Create statistic button
               Positioned(
                 bottom: 12,
-                child: FloatingAnimatedButton(
-                  text: loc.create_statistic,
-                  icon: STATISTIC_ICON,
+                child: BottomAnimatedButton(
+                  buttonText: loc.create_statistic,
+                  sizeRelativeToWidth: 0.95,
                   onPressed: enableSubmitButton
                       ? () => submitStatistic()
                       : null,
