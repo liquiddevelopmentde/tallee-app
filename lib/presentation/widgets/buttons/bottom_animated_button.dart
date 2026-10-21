@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
 
@@ -36,7 +36,7 @@ class BottomAnimatedButton extends StatefulWidget {
 }
 
 class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
-  bool _isPressed = false;
+  bool isPressed = false;
 
   TextStyle get textStyle {
     late Color textColor;
@@ -104,20 +104,18 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
       child: Opacity(
         opacity: isDisabled ? 0.4 : 1.0,
         child: GestureDetector(
-          onTapDown: (_) => setState(() => _isPressed = true),
-          onTapUp: (_) => setState(() => _isPressed = false),
-          onTapCancel: () => setState(() => _isPressed = false),
+          onTapDown: (_) => setState(() => isPressed = true),
+          onTapUp: (_) => setState(() => isPressed = false),
+          onTapCancel: () => setState(() => isPressed = false),
           onTap: () {
             HapticFeedback.selectionClick();
-            if (widget.onPressed != null) {
-              widget.onPressed!();
-            }
+            if (!isDisabled) widget.onPressed!();
           },
           child: AnimatedScale(
-            scale: _isPressed ? 0.95 : 1.0,
+            scale: isPressed ? 0.95 : 1.0,
             duration: const Duration(milliseconds: 100),
             child: AnimatedOpacity(
-              opacity: _isPressed ? 0.6 : 1.0,
+              opacity: isPressed ? 0.6 : 1.0,
               duration: const Duration(milliseconds: 100),
               child: Center(
                 child: Container(
