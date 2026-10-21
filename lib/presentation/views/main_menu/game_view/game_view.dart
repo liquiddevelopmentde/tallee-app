@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -50,12 +50,12 @@ class _GameViewState extends State<GameView> with RouteAware {
   final ScrollController scrollController = ScrollController();
 
   /// Loaded games from the database, initially filled with skeleton games
-  List<Game> allGames = List.filled(
-    4,
-    Game(
+  List<Game> allGames = List.generate(
+    10,
+    (_) => Game(
       name: 'Skeleton game name',
       ruleset: Ruleset.winner,
-      color: AppColor.blue,
+      color: getRandomAppColor(),
       description: 'Skeleton description for the game tile',
     ),
   );
