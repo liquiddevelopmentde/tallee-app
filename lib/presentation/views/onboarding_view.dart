@@ -84,7 +84,6 @@ class _OnboardingViewState extends State<OnboardingView> {
                 style: TextStyle(
                   color: context.talleeColors.navBarItemSelectedColor,
                   fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
                 ),
                 onPressed: () {
                   SharedPreferencesService.setOnboardingCompleted(true);
