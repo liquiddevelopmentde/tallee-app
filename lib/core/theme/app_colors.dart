@@ -8,32 +8,26 @@ class AppColors {
 
   static const Color primaryColor = Color(0xFFEF681F);
   static const Color secondaryColor = Color(0xFFF2A981);
+
+  // ==== Dark colors ====
+
+  /* Surfaces */
+
   static const Color backgroundColorDark = Color(0xFF0B0B0B);
-  static const Color backgroundColorLight = Color(0xFFFFFFFF);
   static const Color boxColorDark = Color(0xFF101010);
-  static const Color boxColorLight = Color(0xFFF7F7F7);
   static const Color boxBorderColorDark = Color(0xFF272727);
-  static const Color boxBorderColorLight = Color(0xFFE0E0E0);
   static const Color onBoxColorDark = Color(0xFF181818);
-  static const Color onBoxColorLight = Color(0xFFF0F0F0);
   static const Color textColorDark = Color(0xFFFFFFFF);
-  static const Color textColorLight = Color(0xFF171717);
   static const Color hintColorDark = Color(0xFF888888);
-  static const Color hintColorLight = Color(0xFF6B6B6B);
-  static const Color errorColorDark = Color(0xFFF44336);
-  static const Color errorColorLight = Color(0xFFF44336);
-  static const Color successColorDark = Color(0xFF4CAF50);
-  static const Color successColorLight = Color(0xFF4CAF50);
-  static const Color warningColorDark = Color(0xFFFF9800);
-  static const Color warningColorLight = Color(0xFFFF9800);
+  static const Color errorColorDark = redColorDark;
+  static const Color successColorDark = greenColorDark;
+  static const Color warningColorDark = orangeColorDark;
   static const Color navBarBackgroundColorDark = Color(0xFF131313);
-  static const Color navBarBackgroundColorLight = Color(0xFFF7F7F7);
   static const Color navBarItemUnselectedColorDark = Color(0xFFBDBDBD);
-  static const Color navBarItemUnselectedColorLight = Color(0xFF6B6B6B);
   static const Color skeletonFromColorDark = Color(0xFF424242);
   static const Color skeletonToColorDark = Color(0xFF616161);
-  static const Color skeletonFromColorLight = Color(0xFFD0D0D0);
-  static const Color skeletonToColorLight = Color(0xFFE0E0E0);
+
+  /* Palette */
 
   static const Color redColorDark = Color(0xFFF44336);
   static const Color blueColorDark = Color(0xFF2196F3);
@@ -43,6 +37,27 @@ class AppColors {
   static const Color orangeColorDark = Color(0xFFFF9800);
   static const Color pinkColorDark = Color(0xFFE91E63);
   static const Color tealColorDark = Color(0xFF009688);
+
+  // ==== Light colors ====
+
+  /* Surfaces */
+
+  static const Color backgroundColorLight = Color(0xFFFFFFFF);
+  static const Color boxColorLight = Color(0xFFF7F7F7);
+  static const Color boxBorderColorLight = Color(0xFFE0E0E0);
+  static const Color onBoxColorLight = Color(0xFFF0F0F0);
+  static const Color textColorLight = Color(0xFF171717);
+  static const Color hintColorLight = Color(0xFF6B6B6B);
+  static const Color errorColorLight = redColorLight;
+  static const Color successColorLight = greenColorLight;
+  static const Color warningColorLight = orangeColorLight;
+  static const Color navBarBackgroundColorLight = Color(0xFFF7F7F7);
+  static const Color navBarItemUnselectedColorLight = Color(0xFF6B6B6B);
+  static const Color skeletonFromColorLight = Color(0xFFD0D0D0);
+  static const Color skeletonToColorLight = Color(0xFFE0E0E0);
+
+  /* Palette */
+
   static const Color redColorLight = Color(0xFFE86A6A);
   static const Color blueColorLight = Color(0xFF64B5F6);
   static const Color greenColorLight = Color(0xFF81C784);
