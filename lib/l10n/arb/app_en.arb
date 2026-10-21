@@ -57,14 +57,7 @@
   "create_match": "Create Match",
   "create_new_group": "Create new group",
   "create_new_match": "Create new match",
-  "create_statistic": "Create {count, plural, =0{statistics} =1{statistic} other{statistics ({count})}}",
-  "@create_statistic": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "create_statistic": "Create statistic",
   "create_teams": "Create teams",
   "created_on": "Created on",
   "creation_date": "Creation date",
@@ -297,6 +290,7 @@
   "players": "Players",
   "point": "Point",
   "points": "Points",
+  "preview": "Preview",
   "preview_match": "Preview match",
   "privacy_policy": "Privacy Policy",
   "qr_code_expired": "QR Code expired",
@@ -325,6 +319,8 @@
   "select_a_timeframe_description": "Here you can narrow down your data to a specific time period.",
   "select_a_type": "Select a type",
   "select_a_type_description": "Select a chart type for your chart. A separate chart will be created for each type you select.",
+  "select_games": "Select games",
+  "select_groups": "Select groups",
   "select_loser": "Select Loser",
   "select_winners": "Select Winners",
   "selected_games": "Selected games",
@@ -428,5 +424,6 @@
   "worst_score": "Worst score",
   "write_email": "Write an email",
   "yes": "Yes",
-  "yesterday_at": "Yesterday at"
+  "yesterday_at": "Yesterday at",
+  "your_statistic_will_be_shown_here": "Your statistic will be shown here"
 }

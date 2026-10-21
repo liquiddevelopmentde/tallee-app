@@ -1,20 +1,11 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
-import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
-import 'package:tallee/presentation/utils/navigation/route_names.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
-import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
@@ -23,22 +14,16 @@ class ChooseGroupView extends StatefulWidget {
   /// A view that allows the user to choose a group from a list of groups.
   /// - [groups]: A list of available groups to choose from
   /// - [initialGroups]: The initially selected group
-  /// - [statistic]: Optional statistic payload for choosing groups for a statistic
-  /// - [selectedTypes]: Optional list of statistic types to determine the correct button text
   /// - [enableMultiSelection]: Whether multiple groups can be selected
   const ChooseGroupView({
     super.key,
     required this.groups,
     this.initialGroups,
-    this.statistic,
-    this.selectedTypes,
     this.enableMultiSelection = false,
   });
 
   final List<Group> groups;
   final List<Group>? initialGroups;
-  final Statistic? statistic;
-  final List<StatisticType>? selectedTypes;
   final bool enableMultiSelection;
 
   @override
@@ -54,15 +39,11 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
   // If selecting multiple is possible
   late bool enableMultiSelection;
 
-  // How many statistics get created
-  late int statAmount = widget.selectedTypes?.length ?? 0;
-
   @override
   void initState() {
     filteredGroups = [...widget.groups];
     selectedGroups = widget.initialGroups ?? [];
-    enableMultiSelection =
-        widget.enableMultiSelection || widget.statistic != null;
+    enableMultiSelection = widget.enableMultiSelection;
     super.initState();
   }
 
@@ -160,78 +141,15 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                   },
                 ),
               ),
-
-            // Create statistic button
-            if (widget.statistic != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 28),
-                child: BottomAnimatedButton(
-                  buttonConstraints: const BoxConstraints(minWidth: 390),
-                  buttonText: buttonText,
-                  onPressed: selectedGroups.isNotEmpty
-                      ? () => submitStatistic()
-                      : null,
-                ),
-              ),
           ],
         ),
       ),
     );
   }
 
-  String get buttonText =>
-      widget.statistic != null &&
-          widget.statistic!.scopes.contains(StatisticScope.selectedGames)
-      ? AppLocalizations.of(context).continue_
-      : AppLocalizations.of(context).create_statistic(statAmount);
-
   Object? get popResult {
-    if (widget.statistic != null) return null;
     if (enableMultiSelection) return selectedGroups;
     return selectedGroups.isEmpty ? null : selectedGroups.first;
-  }
-
-  Future<void> submitStatistic() async {
-    final statistic = widget.statistic!.copyWith(
-      selectedGroups: selectedGroups,
-    );
-    final db = context.read<AppDatabase>();
-
-    if (widget.statistic!.scopes.contains(StatisticScope.selectedGames)) {
-      // Choose a game
-      final games = await db.gameDao.getAllGames();
-      final filteredGames = filterGamesForRequiredRuleset(games);
-
-      if (mounted) {
-        final createdStatistic = await Navigator.of(context).push<Statistic>(
-          adaptivePageRoute(
-            settings: const RouteSettings(name: RouteNames.chooseGameView),
-            builder: (context) => ChooseGameView(
-              statistic: statistic,
-              games: filteredGames,
-              selectedTypes: widget.selectedTypes,
-            ),
-          ),
-        );
-
-        if (mounted && createdStatistic != null) {
-          Navigator.of(context).pop(createdStatistic);
-        }
-      }
-    } else {
-      // Create statistic
-      await db.statisticDao.addStatistic(statistic: statistic);
-      if (!mounted) return;
-      Navigator.of(context).pop(statistic);
-    }
-  }
-
-  /// Filters the [games] based on the rulesets required by the selected [StatisticType]s
-  List<Game> filterGamesForRequiredRuleset(List<Game> games) {
-    final Set<Ruleset> requiredRulesets = {
-      for (final t in widget.selectedTypes!) ...getRulesetForTypes(t),
-    };
-    return games.where((g) => requiredRulesets.contains(g.ruleset)).toList();
   }
 
   /// Filters the groups based on the search [query].

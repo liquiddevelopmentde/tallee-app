@@ -401,8 +401,8 @@ abstract class AppLocalizations {
   /// No description provided for @create_statistic.
   ///
   /// In en, this message translates to:
-  /// **'Create {count, plural, =0{statistics} =1{statistic} other{statistics ({count})}}'**
-  String create_statistic(int count);
+  /// **'Create statistic'**
+  String get create_statistic;
 
   /// No description provided for @create_teams.
   ///
@@ -1460,6 +1460,12 @@ abstract class AppLocalizations {
   /// **'Points'**
   String get points;
 
+  /// No description provided for @preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get preview;
+
   /// No description provided for @preview_match.
   ///
   /// In en, this message translates to:
@@ -1627,6 +1633,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select a chart type for your chart. A separate chart will be created for each type you select.'**
   String get select_a_type_description;
+
+  /// No description provided for @select_games.
+  ///
+  /// In en, this message translates to:
+  /// **'Select games'**
+  String get select_games;
+
+  /// No description provided for @select_groups.
+  ///
+  /// In en, this message translates to:
+  /// **'Select groups'**
+  String get select_groups;
 
   /// No description provided for @select_loser.
   ///
@@ -2113,6 +2131,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yesterday at'**
   String get yesterday_at;
+
+  /// No description provided for @your_statistic_will_be_shown_here.
+  ///
+  /// In en, this message translates to:
+  /// **'Your statistic will be shown here'**
+  String get your_statistic_will_be_shown_here;
 }
 
 class _AppLocalizationsDelegate

@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -10,7 +10,6 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
@@ -20,24 +19,18 @@ class ChooseGameView extends StatefulWidget {
   /// - [games]: The list of available games
   /// - [initialSelectedGames]: The initially selected games
   /// - [onGamesUpdated]: Optional callback invoked when the games are updated
-  /// - [statistic]: Optional statistic payload for choosing groups for a statistic
-  /// - [selectedTypes]: Optional list of statistic types to determine the correct button text
   /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
   const ChooseGameView({
     super.key,
     required this.games,
     this.initialSelectedGames,
     this.onGamesUpdated,
-    this.statistic,
-    this.selectedTypes,
     this.enableMultiSelection = false,
   });
 
   final List<Game> games;
   final List<Game>? initialSelectedGames;
   final VoidCallback? onGamesUpdated;
-  final Statistic? statistic;
-  final List<StatisticType>? selectedTypes;
   final bool enableMultiSelection;
 
   @override
@@ -63,9 +56,6 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   // If selecting multiple is possible
   late bool enableMultiSelection;
 
-  // How many statistics get created
-  late int statAmount = widget.selectedTypes?.length ?? 0;
-
   Ruleset? get requiredRuleset {
     if (games.isEmpty) return null;
 
@@ -84,8 +74,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     // Start with all games visible
     filteredGames = List<Game>.from(games);
 
-    enableMultiSelection =
-        widget.enableMultiSelection || widget.statistic != null;
+    enableMultiSelection = widget.enableMultiSelection;
     super.initState();
   }
 
@@ -183,30 +172,13 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                   },
                 ),
               ),
-
-            // Create statistic button
-            if (widget.statistic != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 28),
-                child: BottomAnimatedButton(
-                  buttonConstraints: const BoxConstraints(minWidth: 390),
-                  buttonText: buttonText,
-                  onPressed: selectedGames.isNotEmpty
-                      ? () => submitStatistic()
-                      : null,
-                ),
-              ),
           ],
         ),
       ),
     );
   }
 
-  String get buttonText =>
-      AppLocalizations.of(context).create_statistic(statAmount);
-
   Object? get popResult {
-    if (widget.statistic != null) return null;
     if (enableMultiSelection) return selectedGames;
     return selectedGames.isEmpty ? null : selectedGames.first;
   }
@@ -255,15 +227,5 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   /// Re-applies the current filter after the underlying games list changed.
   void refreshFromSource() {
     applySearchFilter(searchBarController.text);
-  }
-
-  /// Updated the statistic with the selected games, adds it to the database
-  /// and pops until the first route to update the statistic overview.
-  Future<void> submitStatistic() async {
-    final statistic = widget.statistic!.copyWith(selectedGames: selectedGames);
-    final db = context.read<AppDatabase>();
-    await db.statisticDao.addStatistic(statistic: statistic);
-    if (!mounted) return;
-    Navigator.of(context).pop(statistic);
   }
 }

@@ -57,14 +57,7 @@
   "create_match": "Spiel erstellen",
   "create_new_group": "Neue Gruppe erstellen",
   "create_new_match": "Neues Spiel erstellen",
-  "create_statistic": "{count, plural, =0{Statistiken erstellen} =1{Statistik erstellen} other{Statistiken erstellen ({count})}}",
-  "@create_statistic": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "create_statistic": "Statistik erstellen",
   "create_teams": "Teams erstellen",
   "created_on": "Erstellt am",
   "creation_date": "Erstellungsdatum",
@@ -297,6 +290,7 @@
   "players": "Spieler:innen",
   "point": "Punkt",
   "points": "Punkte",
+  "preview": "Vorschau",
   "preview_match": "Spielvorschau",
   "privacy_policy": "Datenschutzerklärung",
   "qr_code_expired": "QR-Code abgelaufen",
@@ -320,11 +314,13 @@
   "search_for_timeframes": "Nach Zeiträumen suchen",
   "search_for_types": "Nach Typen suchen",
   "select_a_color_description": "Wähle die Anzeigefarbe für deine Statistik aus.",
-  "select_a_scope": "Wähle einen Bereich",
+  "select_a_scope": "Bereich wählen",
   "select_a_scope_description": "Hier kannst du deine Daten auf bestimmte Gruppen oder Spielvorlagen eingrenzen.",
   "select_a_timeframe_description": "Hier kannst du deine Daten auf einen bestimmten Zeitraum eingrenzen.",
-  "select_a_type": "Wähle einen Typ",
+  "select_a_type": "Typ wählen",
   "select_a_type_description": "Wähle einen oder mehrere Typen aus. Für jeden Typ wird eine eigene Statistik erstellt.",
+  "select_games": "Spielvorlagen wählen",
+  "select_groups": "Gruppen wählen",
   "select_loser": "Verlierer:in wählen",
   "select_winners": "Gewinner:innen wählen",
   "selected_games": "Ausgewählte Spielvorlagen",
@@ -419,5 +415,6 @@
   "worst_score": "Schlechteste Punktzahl",
   "write_email": "Eine E-Mail schreiben",
   "yes": "Ja",
-  "yesterday_at": "Gestern um"
+  "yesterday_at": "Gestern um",
+  "your_statistic_will_be_shown_here": "Hier wird deine Statistik angezeigt"
 }

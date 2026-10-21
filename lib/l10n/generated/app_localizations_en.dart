@@ -165,16 +165,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_new_match => 'Create new match';
 
   @override
-  String create_statistic(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'statistics ($count)',
-      one: 'statistic',
-      zero: 'statistics',
-    );
-    return 'Create $_temp0';
-  }
+  String get create_statistic => 'Create statistic';
 
   @override
   String get create_teams => 'Create teams';
@@ -789,6 +780,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get points => 'Points';
 
   @override
+  String get preview => 'Preview';
+
+  @override
   String get preview_match => 'Preview match';
 
   @override
@@ -878,6 +872,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get select_a_type_description =>
       'Select a chart type for your chart. A separate chart will be created for each type you select.';
+
+  @override
+  String get select_games => 'Select games';
+
+  @override
+  String get select_groups => 'Select groups';
 
   @override
   String get select_loser => 'Select Loser';
@@ -1152,4 +1152,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Yesterday at';
+
+  @override
+  String get your_statistic_will_be_shown_here =>
+      'Your statistic will be shown here';
 }

@@ -168,16 +168,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get create_new_match => 'Neues Spiel erstellen';
 
   @override
-  String create_statistic(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Statistiken erstellen ($count)',
-      one: 'Statistik erstellen',
-      zero: 'Statistiken erstellen',
-    );
-    return '$_temp0';
-  }
+  String get create_statistic => 'Statistik erstellen';
 
   @override
   String get create_teams => 'Teams erstellen';
@@ -797,6 +788,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get points => 'Punkte';
 
   @override
+  String get preview => 'Vorschau';
+
+  @override
   String get preview_match => 'Spielvorschau';
 
   @override
@@ -870,7 +864,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wähle die Anzeigefarbe für deine Statistik aus.';
 
   @override
-  String get select_a_scope => 'Wähle einen Bereich';
+  String get select_a_scope => 'Bereich wählen';
 
   @override
   String get select_a_scope_description =>
@@ -881,11 +875,17 @@ class AppLocalizationsDe extends AppLocalizations {
       'Hier kannst du deine Daten auf einen bestimmten Zeitraum eingrenzen.';
 
   @override
-  String get select_a_type => 'Wähle einen Typ';
+  String get select_a_type => 'Typ wählen';
 
   @override
   String get select_a_type_description =>
       'Wähle einen oder mehrere Typen aus. Für jeden Typ wird eine eigene Statistik erstellt.';
+
+  @override
+  String get select_games => 'Spielvorlagen wählen';
+
+  @override
+  String get select_groups => 'Gruppen wählen';
 
   @override
   String get select_loser => 'Verlierer:in wählen';
@@ -1163,4 +1163,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Gestern um';
+
+  @override
+  String get your_statistic_will_be_shown_here =>
+      'Hier wird deine Statistik angezeigt';
 }

@@ -379,7 +379,7 @@ class _StatisticsViewState extends State<StatisticsView> {
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom + 20,
               child: FloatingAnimatedButton(
-                text: loc.create_statistic(1),
+                text: loc.create_statistic,
                 icon: Icons.add,
                 onPressed: () async {
                   if (!mounted) return;

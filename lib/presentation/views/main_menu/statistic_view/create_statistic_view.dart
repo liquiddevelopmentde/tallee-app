@@ -8,23 +8,25 @@ import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
+import 'package:tallee/data/models/match.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/statistics/statistic_calculator.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
-import 'package:uuid/uuid.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
 
 class CreateStatisticView extends StatefulWidget {
   const CreateStatisticView({super.key, required this.onStatisticCreated});
 
-  final void Function(List<Statistic>) onStatisticCreated;
+  final void Function(Statistic) onStatisticCreated;
 
   @override
   State<CreateStatisticView> createState() => _CreateStatisticViewState();
@@ -33,24 +35,15 @@ class CreateStatisticView extends StatefulWidget {
 class _CreateStatisticViewState extends State<CreateStatisticView> {
   bool isLoading = false;
 
-  /* Controllers for user selections */
-  final ValueNotifier<List<StatisticType>> selectedTypeNotifier =
-      ValueNotifier<List<StatisticType>>([]);
-  final ValueNotifier<List<StatisticScope>> selectedScopeNotifier =
-      ValueNotifier<List<StatisticScope>>([]);
-  final ValueNotifier<Timeframe> selectedTimeframeNotifier =
-      ValueNotifier<Timeframe>(Timeframe.allTime);
-  late final ValueNotifier<AppColor?> selectedColorNotifier =
-      ValueNotifier<AppColor?>(null);
-
   /* Data loaded from the database */
   List<Player> players = [];
   List<Game> games = [];
+  List<Match> matches = [];
   List<Group> groups = [];
 
   /* User selections */
-  List<StatisticType> selectedTypes = [];
-  List<StatisticScope> selectedScopes = [];
+  StatisticType? selectedType;
+  List<StatisticScope> selectedScopes = [StatisticScope.allPlayers];
   List<Game> selectedGames = [];
   List<Group> selectedGroups = [];
   Timeframe selectedTimeframe = Timeframe.allTime;
@@ -60,16 +53,27 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   // null -> random color
   AppColor? selectedColor;
 
-  String get submitButtonText =>
-      selectedScopes.contains(StatisticScope.selectedGroups) ||
-          selectedScopes.contains(StatisticScope.selectedGames)
-      ? AppLocalizations.of(context).continue_
-      : AppLocalizations.of(context).create_statistic(selectedTypes.length);
+  // Pre-selected random color for preview
+  final AppColor randomColor = getRandomAppColor();
+
+  bool get hasGroupScope =>
+      selectedScopes.contains(StatisticScope.selectedGroups);
+
+  bool get hasGameScope =>
+      selectedScopes.contains(StatisticScope.selectedGames);
+
+  bool get hasNoTypeSelected => selectedType == null;
+
+  bool get enableSubmitButton =>
+      selectedType != null &&
+      selectedScopes.isNotEmpty &&
+      (!hasGroupScope || selectedGroups.isNotEmpty) &&
+      (!hasGameScope || selectedGames.isNotEmpty) &&
+      !isLoading;
 
   @override
   void initState() {
     loadAllData();
-
     super.initState();
   }
 
@@ -79,50 +83,46 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
     return ScaffoldMessenger(
       child: Scaffold(
-        appBar: AppBar(title: Text(loc.create_statistic(1))),
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(title: Text(loc.create_statistic)),
         body: SafeArea(
-          maintainBottomViewPadding: true,
           minimum: const EdgeInsets.symmetric(horizontal: 12),
-          child: Column(
+          child: Stack(
+            fit: StackFit.expand,
+            alignment: Alignment.center,
             children: [
-              Expanded(
+              SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 90),
                 child: Column(
                   spacing: 10,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Preview of the statistic with sample data
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeInOut,
+                      alignment: Alignment.topCenter,
+                      child: buildPreview(loc),
+                    ),
+
                     // Type selection
                     ChooseTile(
                       title: loc.type,
                       icon: Icons.bar_chart,
                       trailing: Padding(
                         padding: const EdgeInsets.only(right: 5),
-                        child: selectedTypes.isEmpty
+                        child: selectedType == null
                             ? Text(
                                 loc.select_a_type,
                                 style: const TextStyle(
                                   color: CustomTheme.hintColor,
                                 ),
                               )
-                            : Row(
-                                mainAxisSize: MainAxisSize.min,
-                                spacing: 5,
-                                children: [
-                                  Text(
-                                    translateStatisticTypeToString(
-                                      selectedTypes.first,
-                                      context,
-                                    ),
-                                  ),
-                                  if (selectedTypes.length > 1)
-                                    Text(
-                                      '+ ${selectedTypes.length - 1}',
-                                      style: TextStyle(
-                                        color: CustomTheme.textColor.withAlpha(
-                                          200,
-                                        ),
-                                      ),
-                                    ),
-                                ],
+                            : Text(
+                                translateStatisticTypeToString(
+                                  selectedType!,
+                                  context,
+                                ),
                               ),
                       ),
                       onPressed: () => showTypeSheet(loc),
@@ -165,6 +165,30 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                       ),
                       onPressed: () => showScopeSheet(loc),
                     ),
+
+                    // Group selection
+                    if (hasGroupScope)
+                      ChooseTile(
+                        title: loc.groups,
+                        icon: GROUP_ICON,
+                        trailing: buildSelectionTrailing(
+                          names: selectedGroups.map((g) => g.name).toList(),
+                          hint: loc.select_groups,
+                        ),
+                        onPressed: () => showGroupSelection(),
+                      ),
+
+                    // Game selection
+                    if (hasGameScope)
+                      ChooseTile(
+                        title: loc.games,
+                        icon: GAME_ICON,
+                        trailing: buildSelectionTrailing(
+                          names: selectedGames.map((g) => g.name).toList(),
+                          hint: loc.select_games,
+                        ),
+                        onPressed: () => showGameSelection(),
+                      ),
 
                     // Timeframe selection
                     ChooseTile(
@@ -215,15 +239,13 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 20,
-                ),
-                child: BottomAnimatedButton(
-                  buttonConstraints: const BoxConstraints(minWidth: 390),
-                  buttonText: submitButtonText,
-                  sizeRelativeToWidth: 0.95,
+
+              // Create statistic button
+              Positioned(
+                bottom: 12,
+                child: FloatingAnimatedButton(
+                  text: loc.create_statistic,
+                  icon: STATISTIC_ICON,
                   onPressed: enableSubmitButton
                       ? () => submitStatistic()
                       : null,
@@ -236,22 +258,23 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     );
   }
 
-  bool get enableSubmitButton =>
-      (selectedTypes.isNotEmpty && selectedScopes.isNotEmpty) && !isLoading;
-
   /// Shows a bottom sheet to choose a color
   void showTypeSheet(AppLocalizations loc) {
     SelectionSheet.show(
       context: context,
-      builder: (BuildContext context) => SelectionSheet<StatisticType>.multiple(
+      builder: (BuildContext context) => SelectionSheet<StatisticType>(
         title: loc.type,
         description: loc.select_a_type_description,
         values: StatisticType.values,
-        selectedValues: selectedTypes,
+        selectedValue: selectedType,
         leadingBuilder: (StatisticType type) => Icon(getTypeIcon(type: type)),
         labelBuilder: (BuildContext context, StatisticType scope) =>
             translateStatisticTypeToString(scope, context),
-        onValuesUpdated: (scopes) => setState(() => selectedTypes = scopes),
+        onValueUpdated: (type) => setState(() {
+          selectedType = type;
+          // Drop games that don't fit the rulesets of the new types
+          selectedGames = filterGamesForRequiredRuleset(selectedGames);
+        }),
       ),
     );
   }
@@ -296,6 +319,69 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     );
   }
 
+  /// Opens the [ChooseGroupView] to select the groups for the statistic
+  Future<void> showGroupSelection() async {
+    final result = await Navigator.of(context).push<List<Group>>(
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGroupView),
+        builder: (context) => ChooseGroupView(
+          groups: groups,
+          initialGroups: [...selectedGroups],
+          enableMultiSelection: true,
+        ),
+      ),
+    );
+    if (result == null || !mounted) return;
+    setState(() => selectedGroups = result);
+  }
+
+  /// Opens the [ChooseGameView] to select the games for the statistic. Only
+  /// games matching the rulesets of the selected types are shown
+  Future<void> showGameSelection() async {
+    final result = await Navigator.of(context).push<List<Game>>(
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGameView),
+        builder: (context) => ChooseGameView(
+          games: filterGamesForRequiredRuleset(games),
+          initialSelectedGames: [...selectedGames],
+          enableMultiSelection: true,
+        ),
+      ),
+    );
+    if (result == null || !mounted) return;
+    setState(() => selectedGames = result);
+  }
+
+  /// Builds the trailing widget of a [ChooseTile] showing the first of the
+  /// selected [names] and the amount of the remaining ones
+  Widget buildSelectionTrailing({
+    required List<String> names,
+    required String hint,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 5),
+      child: names.isEmpty
+          ? Text(hint, style: const TextStyle(color: CustomTheme.hintColor))
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 5,
+              children: [
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 150),
+                  child: Text(names.first, overflow: TextOverflow.ellipsis),
+                ),
+                if (names.length > 1)
+                  Text(
+                    '+ ${names.length - 1}',
+                    style: TextStyle(
+                      color: CustomTheme.textColor.withAlpha(200),
+                    ),
+                  ),
+              ],
+            ),
+    );
+  }
+
   void showColorSheet(AppLocalizations loc) {
     SelectionSheet.show(
       context: context,
@@ -309,6 +395,51 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
             translateAppColorToString(color, context),
         onValueUpdated: (color) => setState(() => selectedColor = color!),
       ),
+    );
+  }
+
+  /// Builds a preview of the selected [StatisticType] with the real
+  /// match data
+  Widget buildPreview(AppLocalizations loc) {
+    final type = selectedType ?? StatisticType.totalWins;
+    final statistic = buildStat(type);
+    final values = StatisticCalculator.computeStatisticValues(
+      statistic: statistic,
+      matches: matches,
+      players: players,
+    ).take(statistic.displayCount).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 6,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, top: 10),
+          child: Text(
+            loc.preview,
+            style: const TextStyle(
+              color: CustomTheme.hintColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        StatisticsTile(
+          statistic: statistic,
+          values: hasNoTypeSelected ? [] : values,
+          displayCount: statistic.displayCount,
+          margin: EdgeInsets.zero,
+          width: double.infinity,
+          // Hides the favourite button
+          showAllValues: true,
+          emptyAssets: hasNoTypeSelected
+              ? (
+                  icon: Icons.bar_chart,
+                  title: loc.statistic,
+                  description: loc.your_statistic_will_be_shown_here,
+                )
+              : null,
+        ),
+      ],
     );
   }
 
@@ -369,6 +500,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           db.playerDao.getAllPlayers(),
           db.groupDao.getAllGroups(),
           db.gameDao.getAllGames(),
+          db.matchDao.getAllMatches(),
           Future.delayed(MINIMUM_SKELETON_DURATION),
         ])
         .then((results) async {
@@ -377,6 +509,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
             players = results[0];
             groups = results[1];
             games = results[2];
+            matches = results[3];
             isLoading = false;
           });
         })
@@ -389,81 +522,20 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         });
   }
 
-  /// Creates the statistic based on the user selections. Navigates to the
-  /// ChooseViews if their type has been selected
+  /// Creates one statistic per selected [StatisticType] and saves them
   Future<void> submitStatistic() async {
     final db = context.read<AppDatabase>();
-
-    final result = await resolveBaseStatistic();
-    if (result == null) return; // User cancelled the picker.
-    final baseStat = result.statistic;
-    final isStatSaved = result.isSaved;
-
-    // Create additional statistic based on the base stat
-    final additionalStats = [
-      for (final type in selectedTypes.skip(1))
-        baseStat.copyWith(id: const Uuid().v4(), type: type),
-    ];
-
-    final statsToSave = [
-      // When only "All Players" has been selected, stat wont get saved to db
-      if (!isStatSaved) baseStat,
-      ...additionalStats,
-    ];
-    if (statsToSave.isNotEmpty) {
-      await db.statisticDao.addStatisticsAsList(statistics: statsToSave);
-    }
+    final stat = buildStat(selectedType!);
+    await db.statisticDao.addStatistic(statistic: stat);
 
     if (!mounted) return;
-    widget.onStatisticCreated([baseStat, ...additionalStats]);
+    widget.onStatisticCreated(stat);
     Navigator.of(context).pop();
-  }
-
-  /// Handles the navigation when multiple [StatisticType]s have been selected.
-  /// Returns the base statistic + a flag indicating if it has been saved to the db
-  Future<({Statistic statistic, bool isSaved})?> resolveBaseStatistic() async {
-    final firstType = selectedTypes.first;
-
-    // "Selected Groups" choosen
-    if (selectedScopes.contains(StatisticScope.selectedGroups)) {
-      final stat = await Navigator.of(context).push<Statistic>(
-        adaptivePageRoute(
-          settings: const RouteSettings(name: RouteNames.chooseGroupView),
-          builder: (context) => ChooseGroupView(
-            groups: groups,
-            statistic: buildStat(firstType),
-            selectedTypes: selectedTypes,
-          ),
-        ),
-      );
-      return stat == null ? null : (statistic: stat, isSaved: true);
-    }
-
-    // "Selected Games" choosen
-    if (selectedScopes.contains(StatisticScope.selectedGames)) {
-      final filteredGames = filterGamesForRequiredRuleset(games);
-      final stat = await Navigator.of(context).push<Statistic>(
-        adaptivePageRoute(
-          settings: const RouteSettings(name: RouteNames.chooseGameView),
-          builder: (context) => ChooseGameView(
-            games: filteredGames,
-            statistic: buildStat(firstType),
-            selectedTypes: selectedTypes,
-          ),
-        ),
-      );
-      return stat == null ? null : (statistic: stat, isSaved: true);
-    }
-
-    // "All players" choosen
-    return (statistic: buildStat(firstType), isSaved: false);
   }
 
   /// Filters the [games] based on the rulesets required by the selected [StatisticType]s
   List<Game> filterGamesForRequiredRuleset(List<Game> games) {
-    final Set<Ruleset> requiredRulesets = {
-      for (final t in selectedTypes) ...getRulesetForTypes(t),
-    };
+    final List<Ruleset> requiredRulesets = getRulesetsForType(selectedType!);
     return games.where((g) => requiredRulesets.contains(g.ruleset)).toList();
   }
 
@@ -473,7 +545,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     timeframe: selectedTimeframe,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
-    color: selectedColor ?? getRandomAppColor(),
+    color: selectedColor ?? randomColor,
+    selectedGroups: hasGroupScope ? selectedGroups : null,
+    selectedGames: hasGameScope ? selectedGames : null,
   );
 
   String formatDateRange(
@@ -600,14 +674,5 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         );
       },
     );
-  }
-
-  @override
-  void dispose() {
-    selectedTypeNotifier.dispose();
-    selectedScopeNotifier.dispose();
-    selectedTimeframeNotifier.dispose();
-    selectedColorNotifier.dispose();
-    super.dispose();
   }
 }

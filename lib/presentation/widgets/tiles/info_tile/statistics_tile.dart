@@ -20,6 +20,7 @@ class StatisticsTile extends StatefulWidget {
   /// - [width]: Optional width of the tile.
   /// - [showAllValues]: Whether to show all values or limit to [displayCount].
   /// - [showDisplayCountHighlighting]: Whether to highlight entries that exceed the display count.
+  /// - [emptyAssets]: Optional assets for the empty state.
   const StatisticsTile({
     super.key,
     required this.statistic,
@@ -30,6 +31,7 @@ class StatisticsTile extends StatefulWidget {
     this.showAllValues = false,
     this.showDisplayCountHighlighting = false,
     this.onStatisticChanged,
+    this.emptyAssets,
   });
 
   final Statistic statistic;
@@ -40,6 +42,7 @@ class StatisticsTile extends StatefulWidget {
   final bool showAllValues;
   final bool showDisplayCountHighlighting;
   final ValueChanged<String>? onStatisticChanged;
+  final ({IconData icon, String title, String description})? emptyAssets;
 
   @override
   State<StatisticsTile> createState() => _StatisticsTileState();
@@ -59,7 +62,6 @@ class _StatisticsTileState extends State<StatisticsTile> {
     selectedGames = widget.statistic.selectedGames;
     selectedGroups = widget.statistic.selectedGroups;
     icon = getTypeIcon(type: widget.statistic.type);
-
     super.initState();
   }
 
@@ -77,16 +79,14 @@ class _StatisticsTileState extends State<StatisticsTile> {
 
   @override
   Widget build(BuildContext context) {
-    final title = translateStatisticTypeToString(
-      widget.statistic.type,
-      context,
-    );
+    final title =
+        widget.emptyAssets?.title ??
+        translateStatisticTypeToString(widget.statistic.type, context);
 
     return InfoTile(
-      leadingWidget: Icon(icon),
+      leadingWidget: Icon(widget.emptyAssets?.icon ?? icon),
       title: title,
       trailingWidget: Visibility(
-        // Only show in statistic view
         visible: !widget.showAllValues,
         child: HapticIconButton(
           padding: EdgeInsets.zero,
@@ -109,6 +109,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
               displayCount: widget.displayCount,
               showDisplayCountHighlighting: widget.showDisplayCountHighlighting,
               barColor: barColor,
+              emptyText: widget.emptyAssets?.description,
             ),
 
             // Group & Game info
