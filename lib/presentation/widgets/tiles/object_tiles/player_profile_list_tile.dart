@@ -16,9 +16,6 @@ class PlayerProfileListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final backgroundColor = context.talleeColors.onBoxColor;
-    final fontColor = backgroundColor.computeLuminance() > 0.5
-        ? Colors.black
-        : Colors.white;
 
     return GestureDetector(
       onTap: onTap,
@@ -41,7 +38,10 @@ class PlayerProfileListTile extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
-                style: TextStyle(fontSize: 14, color: fontColor),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: context.talleeColors.textColor,
+                ),
               ),
             ),
           ),
@@ -64,10 +64,17 @@ class PlayerProfileListTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   softWrap: false,
-                  style: TextStyle(fontSize: 14, color: fontColor),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: context.talleeColors.textColor,
+                  ),
                 ),
                 const SizedBox(width: 5),
-                Icon(Icons.people, size: 20, color: fontColor),
+                Icon(
+                  Icons.people,
+                  size: 20,
+                  color: context.talleeColors.textColor,
+                ),
               ],
             ),
           ),
