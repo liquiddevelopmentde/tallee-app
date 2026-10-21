@@ -385,15 +385,18 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   void showColorSheet(AppLocalizations loc) {
     SelectionSheet.show(
       context: context,
-      builder: (BuildContext context) => SelectionSheet<AppColor>(
+      builder: (BuildContext context) => SelectionSheet<AppColor?>(
         title: loc.color,
         description: loc.select_a_color_description,
-        values: AppColor.values,
+        values: const [null, ...AppColor.values],
         selectedValue: selectedColor,
-        leadingBuilder: (AppColor color) => ColoredCircle(color: color),
-        labelBuilder: (BuildContext context, AppColor color) =>
-            translateAppColorToString(color, context),
-        onValueUpdated: (color) => setState(() => selectedColor = color!),
+        leadingBuilder: (AppColor? color) => color == null
+            ? const ColoredCircle(hasRandomColors: true)
+            : ColoredCircle(color: color),
+        labelBuilder: (BuildContext context, AppColor? color) => color == null
+            ? loc.random_color
+            : translateAppColorToString(color, context),
+        onValueUpdated: (color) => setState(() => selectedColor = color),
       ),
     );
   }
