@@ -38,7 +38,7 @@ class TeamCreationTile extends StatefulWidget {
 class _TeamCreationTileState extends State<TeamCreationTile> {
   final teamColors = List.generate(
     AppColor.values.length,
-    (index) => getTeamColor(index),
+    (i) => getTeamColor(index: i),
   );
 
   @override

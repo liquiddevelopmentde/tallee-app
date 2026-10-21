@@ -202,7 +202,10 @@ class _CreateGameViewState extends State<CreateGameView> {
                           mainAxisSize: MainAxisSize.min,
                           spacing: 8,
                           children: [
-                            Icon(getRulesetIcon(selectedRuleset!), size: 16),
+                            Icon(
+                              getRulesetIcon(ruleset: selectedRuleset!),
+                              size: 16,
+                            ),
                             Text(
                               translateRulesetToString(
                                 selectedRuleset!,
@@ -367,15 +370,16 @@ class _CreateGameViewState extends State<CreateGameView> {
   void showRulesetSheet(AppLocalizations loc) {
     SelectionSheet.show(
       context: context,
-      builder: (BuildContext context) => SelectionSheet<Ruleset>(
+      builder: (BuildContext ctx) => SelectionSheet<Ruleset>(
         title: loc.ruleset,
         description: loc.choose_ruleset_description,
         values: Ruleset.values,
         selectedValue: selectedRuleset,
-        leadingBuilder: (ruleset) => Icon(getRulesetIcon(ruleset), size: 22),
-        labelBuilder: (context, ruleset) =>
-            translateRulesetToString(ruleset, context),
-        onValueUpdated: (ruleset) => setState(() => selectedRuleset = ruleset),
+        leadingBuilder: (Ruleset rs) =>
+            Icon(getRulesetIcon(ruleset: rs), size: 22),
+        labelBuilder: (BuildContext ctx, Ruleset rs) =>
+            translateRulesetToString(rs, ctx),
+        onValueUpdated: (Ruleset? rs) => setState(() => selectedRuleset = rs),
       ),
     );
   }
@@ -389,10 +393,10 @@ class _CreateGameViewState extends State<CreateGameView> {
         description: loc.choose_color_description,
         values: AppColor.values,
         selectedValue: selectedColor,
-        leadingBuilder: (AppColor color) => ColoredCircle(color: color),
-        labelBuilder: (BuildContext context, AppColor color) =>
-            translateAppColorToString(color, context),
-        onValueUpdated: (color) => setState(() => selectedColor = color),
+        leadingBuilder: (AppColor clr) => ColoredCircle(color: clr),
+        labelBuilder: (BuildContext ctx, AppColor clr) =>
+            translateAppColorToString(clr, ctx),
+        onValueUpdated: (AppColor? clr) => setState(() => selectedColor = clr),
       ),
     );
   }
@@ -410,7 +414,7 @@ class _CreateGameViewState extends State<CreateGameView> {
 
     showDialog<bool>(
       context: context,
-      builder: (context) => CustomAlertDialog(
+      builder: (BuildContext ctx) => CustomAlertDialog(
         title: loc.delete_game,
         content: Text(
           dialogContent,
@@ -420,11 +424,11 @@ class _CreateGameViewState extends State<CreateGameView> {
         actions: [
           CustomDialogAction(
             isDestructive: true,
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => Navigator.of(ctx).pop(true),
             text: loc.delete,
           ),
           CustomDialogAction(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => Navigator.of(ctx).pop(false),
             buttonType: ButtonType.secondary,
             text: loc.cancel,
           ),

@@ -262,15 +262,15 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   void showTypeSheet(AppLocalizations loc) {
     SelectionSheet.show(
       context: context,
-      builder: (BuildContext context) => SelectionSheet<StatisticType>(
+      builder: (BuildContext ctx) => SelectionSheet<StatisticType>(
         title: loc.type,
         description: loc.select_a_type_description,
         values: StatisticType.values,
         selectedValue: selectedType,
         leadingBuilder: (StatisticType type) => Icon(getTypeIcon(type: type)),
-        labelBuilder: (BuildContext context, StatisticType scope) =>
-            translateStatisticTypeToString(scope, context),
-        onValueUpdated: (type) => setState(() {
+        labelBuilder: (BuildContext ctx, StatisticType scope) =>
+            translateStatisticTypeToString(scope, ctx),
+        onValueUpdated: (StatisticType? type) => setState(() {
           selectedType = type;
           // Drop games that don't fit the rulesets of the new types
           selectedGames = filterGamesForRequiredRuleset(selectedGames);
@@ -283,22 +283,21 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   void showScopeSheet(AppLocalizations loc) {
     SelectionSheet.show(
       context: context,
-      builder: (BuildContext context) =>
-          SelectionSheet<StatisticScope>.multiple(
-            title: loc.scope,
-            description: loc.select_a_scope_description,
-            values: StatisticScope.values,
-            selectedValues: selectedScopes,
-            leadingBuilder: (StatisticScope scope) =>
-                Icon(getScopeIcon(scope: scope)),
-            labelBuilder: (BuildContext context, StatisticScope scope) =>
-                translateScopeToString(scope, context),
-            onValuesUpdated: (scopes) =>
-                setState(() => selectedScopes = scopes),
-            exclusivePairs: const [
-              (StatisticScope.allPlayers, StatisticScope.selectedGroups),
-            ],
-          ),
+      builder: (BuildContext ctx) => SelectionSheet<StatisticScope>.multiple(
+        title: loc.scope,
+        description: loc.select_a_scope_description,
+        values: StatisticScope.values,
+        selectedValues: selectedScopes,
+        leadingBuilder: (StatisticScope scope) =>
+            Icon(getScopeIcon(scope: scope)),
+        labelBuilder: (BuildContext ctx, StatisticScope scope) =>
+            translateScopeToString(scope, ctx),
+        onValuesUpdated: (List<StatisticScope> scopes) =>
+            setState(() => selectedScopes = scopes),
+        exclusivePairs: const [
+          (StatisticScope.allPlayers, StatisticScope.selectedGroups),
+        ],
+      ),
     );
   }
 
@@ -306,15 +305,15 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   void showTimeframeSheet(AppLocalizations loc) {
     SelectionSheet.show(
       context: context,
-      builder: (BuildContext context) => SelectionSheet<Timeframe>(
+      builder: (BuildContext ctx) => SelectionSheet<Timeframe>(
         title: loc.timeframe,
         description: loc.select_a_timeframe_description,
         values: Timeframe.values,
         selectedValue: selectedTimeframe,
-        labelBuilder: (BuildContext context, Timeframe tf) =>
-            translateTimeframeToString(tf, context),
-        onValueUpdated: (timeframe) =>
-            setState(() => selectedTimeframe = timeframe!),
+        labelBuilder: (BuildContext ctx, Timeframe tf) =>
+            translateTimeframeToString(tf, ctx),
+        onValueUpdated: (Timeframe? tf) =>
+            setState(() => selectedTimeframe = tf!),
       ),
     );
   }
@@ -324,7 +323,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     final result = await Navigator.of(context).push<List<Group>>(
       adaptivePageRoute(
         settings: const RouteSettings(name: RouteNames.chooseGroupView),
-        builder: (context) => ChooseGroupView(
+        builder: (BuildContext ctx) => ChooseGroupView(
           groups: groups,
           initialGroups: [...selectedGroups],
           enableMultiSelection: true,
@@ -341,7 +340,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     final result = await Navigator.of(context).push<List<Game>>(
       adaptivePageRoute(
         settings: const RouteSettings(name: RouteNames.chooseGameView),
-        builder: (context) => ChooseGameView(
+        builder: (BuildContext ctx) => ChooseGameView(
           games: filterGamesForRequiredRuleset(games),
           initialSelectedGames: [...selectedGames],
           enableMultiSelection: true,

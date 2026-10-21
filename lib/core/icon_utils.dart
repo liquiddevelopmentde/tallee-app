@@ -4,7 +4,7 @@ import 'package:tallee/core/constants/icon_constants.dart';
 import 'package:tallee/core/enums.dart';
 
 /// Returns [IconData] corresponding to a [Ruleset] enum value.
-IconData getRulesetIcon(Ruleset ruleset) {
+IconData getRulesetIcon({required Ruleset ruleset}) {
   switch (ruleset) {
     case Ruleset.highestScore:
       return Icons.arrow_upward;

@@ -36,7 +36,7 @@ class GameTile extends StatelessWidget {
     final title = game.name;
     final description = game.description;
     final ruleset = translateRulesetToString(game.ruleset, context);
-    final gameColor = getColorFromAppColor(game.color);
+    final gameColor = getColorFromAppColor(color: game.color);
     final highlightBorderColor = borderColor ?? gameColor;
     final showChevron = onLongPress != null;
 
@@ -89,7 +89,7 @@ class GameTile extends StatelessWidget {
                     children: [
                       // Colored Icon
                       ColoredIconContainer(
-                        icon: getRulesetIcon(game.ruleset),
+                        icon: getRulesetIcon(ruleset: game.ruleset),
                         color: gameColor,
                         containerSize: 44,
                         iconSize: 24,

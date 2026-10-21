@@ -216,7 +216,7 @@ class BarChart extends StatelessWidget {
     final textAlpha = isHighlightedOverflow ? 150 : 255;
     final baseStyle = DefaultTextStyle.of(context).style;
 
-    if (barColor != getColorFromAppColor(AppColor.yellow)) {
+    if (barColor != getColorFromAppColor(color: AppColor.yellow)) {
       return RichText(
         maxLines: 1,
         softWrap: false,

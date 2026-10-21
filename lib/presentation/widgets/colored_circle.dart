@@ -32,7 +32,7 @@ class ColoredCircle extends StatelessWidget {
       AppColor.green,
       AppColor.yellow,
       AppColor.orange,
-    ].map((c) => getColorFromAppColor(c)).toList();
+    ].map((clr) => getColorFromAppColor(color: clr)).toList();
 
     // Repeat first color at the end so the seam does not swallow red.
     final colors = [...segmentColors, segmentColors.first];
@@ -62,7 +62,7 @@ class ColoredCircle extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: getColorFromAppColor(color!),
+        color: getColorFromAppColor(color: color!),
         shape: BoxShape.circle,
         border: border,
       ),

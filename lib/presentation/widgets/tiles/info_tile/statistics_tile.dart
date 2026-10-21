@@ -58,7 +58,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
   @override
   void initState() {
     isFavourite = widget.statistic.isFavourite;
-    barColor = getColorFromAppColor(widget.statistic.color);
+    barColor = getColorFromAppColor(color: widget.statistic.color);
     selectedGames = widget.statistic.selectedGames;
     selectedGroups = widget.statistic.selectedGroups;
     icon = getTypeIcon(type: widget.statistic.type);
@@ -70,7 +70,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.statistic != widget.statistic) {
       isFavourite = widget.statistic.isFavourite;
-      barColor = getColorFromAppColor(widget.statistic.color);
+      barColor = getColorFromAppColor(color: widget.statistic.color);
       selectedGames = widget.statistic.selectedGames;
       selectedGroups = widget.statistic.selectedGroups;
       icon = getTypeIcon(type: widget.statistic.type);
