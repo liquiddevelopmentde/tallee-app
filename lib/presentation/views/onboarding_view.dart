@@ -82,7 +82,7 @@ class _OnboardingViewState extends State<OnboardingView> {
               child: CustomTextButton(
                 text: loc.skip,
                 style: TextStyle(
-                  color: context.talleeColors.navBarItemSelectedColor,
+                  color: context.talleeColors.textColor,
                   fontWeight: FontWeight.bold,
                   decoration: TextDecoration.underline,
                 ),
