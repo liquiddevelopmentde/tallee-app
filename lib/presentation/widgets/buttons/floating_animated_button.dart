@@ -92,12 +92,13 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
   @override
   Widget build(BuildContext context) {
     final isDisabled = widget.onPressed == null;
+    final textColor = context.talleeColors.textColor;
 
     final bgColor = isDisabled
-        ? context.talleeColors.onBoxColor
-        : context.talleeColors.textColor;
+        ? Color.lerp(textColor, textColor.contrastTextColor, 0.6)
+        : textColor;
 
-    final fgColor = context.talleeColors.textColor.contrastTextColor;
+    final fgColor = textColor.contrastTextColor;
 
     return ScaleTransition(
       scale: widget.onPressed == null ? disabledScaleAnimation : scaleAnimation,
