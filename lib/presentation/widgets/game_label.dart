@@ -20,9 +20,7 @@ class GameLabel extends StatelessWidget {
       color,
       brightness: Theme.of(context).brightness,
     );
-    final fontColor = backgroundColor.computeLuminance() > 0.5
-        ? Colors.black
-        : Colors.white;
+    final textColor = backgroundColor.contrastTextColor;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -44,7 +42,7 @@ class GameLabel extends StatelessWidget {
             softWrap: false,
             style: TextStyle(
               fontSize: 12,
-              color: fontColor,
+              color: textColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -68,7 +66,7 @@ class GameLabel extends StatelessWidget {
               softWrap: false,
               style: TextStyle(
                 fontSize: 12,
-                color: fontColor,
+                color: textColor,
                 fontWeight: FontWeight.bold,
               ),
             ),

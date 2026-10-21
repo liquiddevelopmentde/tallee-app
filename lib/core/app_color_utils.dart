@@ -56,3 +56,13 @@ AppColor getTeamColor(int index) {
   ];
   return colors[index % colors.length];
 }
+
+extension ColorContrast on Color {
+  /// Returns the text color with the higher contrast to the given color.
+  ///
+  /// The threshold 0.179 is the relative luminance at which black and white
+  /// text have the same WCAG contrast ratio.
+  Color get contrastTextColor => computeLuminance() > 0.179
+      ? AppColors.textColorLight
+      : AppColors.textColorDark;
+}
