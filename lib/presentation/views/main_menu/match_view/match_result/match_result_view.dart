@@ -418,7 +418,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         await db.scoreEntryDao.addScore(
           matchId: widget.match.id,
           playerId: player.id,
-          entry: ScoreEntry(roundNumber: 0, score: lives, change: 0),
+          entry: ScoreEntry(roundNumber: 0, change: lives),
         );
       }
     }
