@@ -594,6 +594,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               height: 450,
               child: SfDateRangePicker(
                 backgroundColor: CustomTheme.boxColor,
+                todayHighlightColor: CustomTheme.primaryColor,
                 showNavigationArrow: true,
                 initialSelectedRange:
                     initialStartDate != null && initialEndDate != null

@@ -317,6 +317,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   onPressed: () async {
                     final updatedPlayer = await Navigator.of(context).push(
                       adaptivePageRoute(
+                        settings: const RouteSettings(name: RouteNames.editPlayerView),
                         builder: (context) => EditPlayerView(
                           playerToEdit: player,
                           onPlayerChanged: widget.onPlayerUpdated,
