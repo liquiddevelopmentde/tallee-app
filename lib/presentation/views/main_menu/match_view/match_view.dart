@@ -507,20 +507,19 @@ class _MatchViewState extends State<MatchView> {
       didUserLikeApp = await showPreRateDialog(loc);
     });
 
-    if (didUserLikeApp == null) {
-      await RATE_MY_APP.callEvent(RateMyAppEventType.laterButtonPressed);
-    } else if (didUserLikeApp!) {
-      if (mounted) {
-        RATE_MY_APP.showStarRateDialog(context);
-      }
-    } else {
-      await RATE_MY_APP.callEvent(RateMyAppEventType.noButtonPressed);
-      if (mounted) {
-        await Future.delayed(
-          const Duration(milliseconds: 500),
-          () => showBadRatingDialog(loc),
-        );
-      }
+    switch (didUserLikeApp) {
+      case null:
+        await RATE_MY_APP.callEvent(RateMyAppEventType.laterButtonPressed);
+      case true:
+        if (mounted) RATE_MY_APP.showStarRateDialog(context);
+      case false:
+        await RATE_MY_APP.callEvent(RateMyAppEventType.noButtonPressed);
+        if (mounted) {
+          await Future.delayed(
+            const Duration(milliseconds: 500),
+            () => showBadRatingDialog(loc),
+          );
+        }
     }
   }
 
