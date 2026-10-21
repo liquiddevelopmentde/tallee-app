@@ -15,6 +15,7 @@ class BarChart extends StatelessWidget {
   /// - [barColor]: The color of the bars in the chart.
   /// - [showAllValues]: Whether to show all values or limit to [displayCount].
   /// - [showDisplayCountHighlighting]: Whether to highlight entries that exceed the display count
+  /// - [emptyText]: Optional text shown over the placeholder when there is no data
   const BarChart({
     super.key,
     required this.values,
@@ -22,6 +23,7 @@ class BarChart extends StatelessWidget {
     required this.barColor,
     required this.showAllValues,
     required this.showDisplayCountHighlighting,
+    this.emptyText,
   });
 
   final List<(Player, num)> values;
@@ -29,6 +31,7 @@ class BarChart extends StatelessWidget {
   final Color barColor;
   final bool showAllValues;
   final bool showDisplayCountHighlighting;
+  final String? emptyText;
 
   static final List<(Player, num)> placeholderValues = [
     (Player(name: ''), 15),
@@ -47,6 +50,8 @@ class BarChart extends StatelessWidget {
   // If its the placeholder, the bar should take the whole space
   double get maxBarWidthFactor => hasData ? 0.8 : 1.0;
 
+  Duration get animationDuration => const Duration(milliseconds: 400);
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
@@ -54,8 +59,9 @@ class BarChart extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         // Bars
-        Opacity(
+        AnimatedOpacity(
           opacity: hasData ? 1.0 : 0.2,
+          duration: animationDuration,
           child: LayoutBuilder(
             builder: (context, constraints) {
               final maxBarWidth = constraints.maxWidth * maxBarWidthFactor;
@@ -119,7 +125,7 @@ class BarChart extends StatelessWidget {
                               children: [
                                 // Bar
                                 AnimatedContainer(
-                                  duration: const Duration(milliseconds: 150),
+                                  duration: animationDuration,
                                   curve: Curves.easeInOut,
                                   height: 24,
                                   width: barWidth,
@@ -172,14 +178,17 @@ class BarChart extends StatelessWidget {
           ),
         ),
 
-        if (!hasData)
-          // Text overlay
-          Text(
-            loc.no_suitable_matches_yet,
+        // Text overlay
+        AnimatedOpacity(
+          opacity: hasData ? 0.0 : 1.0,
+          duration: animationDuration,
+          child: Text(
+            emptyText ?? loc.no_suitable_matches_yet,
             overflow: TextOverflow.visible,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
+        ),
       ],
     );
   }
