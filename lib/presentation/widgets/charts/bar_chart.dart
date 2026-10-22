@@ -243,13 +243,13 @@ class BarChart extends StatelessWidget {
           player,
           style: baseStyle,
           mainStyle: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
             color: insideTextColor,
           ),
           countStyle: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
             color: insideTextColor,
           ),
         ),
