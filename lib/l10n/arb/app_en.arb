@@ -75,7 +75,7 @@
   "delete_all_data": "Delete all data",
   "delete_app_data_description": "Permanently delete all app data. This action is irreversible.",
   "delete_game": "Delete Game",
-  "delete_game_with_matches_warning": "If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.",
+  "delete_game_with_matches_warning": "If you delete this game, {count, plural, =1{1 match} other{{count} matches}} using this game will also be deleted.",
   "@delete_game_with_matches_warning": {
     "placeholders": {
       "count": {
