@@ -27,6 +27,13 @@ Color getColorFromAppColor(AppColor color, BuildContext context) {
   }
 }
 
+/// Returns the text color used on statistics bars for the current theme.
+Color getStatisticsBarTextColor(AppColor color, BuildContext context) {
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  final useBlackText = !isDarkMode || color == AppColor.yellow;
+  return useBlackText ? AppColors.textColorLight : AppColors.textColorDark;
+}
+
 /// Returns a random color from the app colors.
 AppColor getRandomAppColor() {
   const appColors = AppColor.values;

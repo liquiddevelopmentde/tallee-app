@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -21,6 +20,7 @@ class BarChart extends StatelessWidget {
     required this.barColor,
     required this.showAllValues,
     required this.showDisplayCountHighlighting,
+    required this.barTextColor,
   });
 
   final List<(Player, num)> values;
@@ -28,6 +28,7 @@ class BarChart extends StatelessWidget {
   final Color barColor;
   final bool showAllValues;
   final bool showDisplayCountHighlighting;
+  final Color barTextColor;
 
   static final List<(Player, num)> placeholderValues = [
     (Player(name: ''), 15),
@@ -206,7 +207,7 @@ class BarChart extends StatelessWidget {
     final textAlpha = isHighlightedOverflow ? 150 : 255;
     final baseStyle = DefaultTextStyle.of(context).style;
 
-    final insideTextColor = barColor.contrastTextColor.withAlpha(textAlpha);
+    final insideTextColor = barTextColor.withAlpha(textAlpha);
     final outsideTextColor = context.talleeColors.textColor.withAlpha(
       textAlpha,
     );

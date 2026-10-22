@@ -108,6 +108,10 @@ class _StatisticsTileState extends State<StatisticsTile> {
               displayCount: widget.displayCount,
               showDisplayCountHighlighting: widget.showDisplayCountHighlighting,
               barColor: barColor,
+              barTextColor: getStatisticsBarTextColor(
+                widget.statistic.color,
+                context,
+              ),
             ),
 
             // Group & Game info
