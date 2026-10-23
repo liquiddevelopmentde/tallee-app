@@ -23,7 +23,7 @@ void main() {
 
       expect(
         AppColor.values
-            .map((color) => getColorFromAppColor(color, context))
+            .map((c) => getColorFromAppColor(color: c, context: context))
             .toList(),
         [
           AppColors.redColorLight,
@@ -54,7 +54,7 @@ void main() {
 
       expect(
         AppColor.values
-            .map((color) => getColorFromAppColor(color, context))
+            .map((c) => getColorFromAppColor(color: c, context: context))
             .toList(),
         [
           AppColors.redColorDark,

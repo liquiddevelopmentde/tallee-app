@@ -108,16 +108,13 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                         runSpacing: 8,
                         children: teamColors.map((color) {
                           final isSelected = widget.color == color;
-                          final swatchColor = getColorFromAppColor(
-                            color,
-                            context,
-                          );
+
                           return GestureDetector(
                             onTap: () {
                               widget.onColorSelection?.call(color);
                             },
                             child: ColoredCircle(
-                              color: swatchColor,
+                              color: color,
                               size: 34,
                               border: Border.all(
                                 color: isSelected
@@ -128,7 +125,7 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                               child: AnimatedOpacity(
                                 opacity: isSelected ? 1 : 0,
                                 duration: const Duration(milliseconds: 150),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.check,
                                   size: 18,
                                   color: context.talleeColors.textColor,

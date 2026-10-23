@@ -77,7 +77,10 @@ class _StatisticsTileState extends State<StatisticsTile> {
 
   @override
   Widget build(BuildContext context) {
-    final barColor = getColorFromAppColor(widget.statistic.color, context);
+    final barColor = getColorFromAppColor(
+      color: widget.statistic.color,
+      context: context,
+    );
     final title =
         widget.emptyAssets?.title ??
         translateStatisticTypeToString(widget.statistic.type, context);

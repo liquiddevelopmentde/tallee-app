@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/value_constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class SelectionSheet<T> extends StatefulWidget {
   /// Generic sheet to select a single value from a list.
@@ -80,7 +80,7 @@ class SelectionSheet<T> extends StatefulWidget {
         reverseDuration: Duration(milliseconds: 300),
       ),
       showDragHandle: true,
-      backgroundColor: CustomTheme.boxColor,
+      backgroundColor: context.talleeColors.boxColor,
       isScrollControlled: true,
     );
   }
@@ -129,7 +129,7 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                   widget.description,
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.visible,
-                  style: const TextStyle(color: CustomTheme.hintColor),
+                  style: TextStyle(color: context.talleeColors.hintColor),
                 ),
               ],
             ),
@@ -154,7 +154,7 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                         vertical: 9,
                         horizontal: 14,
                       ),
-                      decoration: CustomTheme.standardBoxDecoration,
+                      decoration: context.standardBoxDecoration,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -176,9 +176,9 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                               fillColor: WidgetStateProperty.resolveWith<Color>(
                                 (states) {
                                   if (states.contains(WidgetState.selected)) {
-                                    return CustomTheme.textColor;
+                                    return context.talleeColors.textColor;
                                   }
-                                  return CustomTheme.hintColor;
+                                  return context.talleeColors.hintColor;
                                 },
                               ),
                               value: value,
@@ -191,14 +191,14 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                             Checkbox(
                               value: selectedValues.contains(value),
                               onChanged: (_) => onValuesChanged(value),
-                              checkColor: CustomTheme.backgroundColor,
+                              checkColor: context.talleeColors.backgroundColor,
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                               visualDensity: VisualDensity.compact,
                               fillColor: WidgetStateProperty.resolveWith<Color>(
                                 (states) {
                                   if (states.contains(WidgetState.selected)) {
-                                    return CustomTheme.textColor;
+                                    return context.talleeColors.textColor;
                                   }
                                   return Colors.transparent;
                                 },

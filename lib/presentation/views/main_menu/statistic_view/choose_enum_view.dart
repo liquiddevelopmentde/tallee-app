@@ -77,7 +77,6 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                     width: 2,
                   ),
                 ),
-                duration: const Duration(milliseconds: 150),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

@@ -109,7 +109,7 @@ class _LiveEditViewState extends State<LiveEditView> {
           value: scores[unit] ?? fallbackValue,
           boundaries: widget.boundaries,
           color: isTeamMatch && unit is Team
-              ? getColorFromAppColor(unit.color, context)
+              ? getColorFromAppColor(color: unit.color, context: context)
               : null,
           onChanged: (value) {
             scores[unit] = value;

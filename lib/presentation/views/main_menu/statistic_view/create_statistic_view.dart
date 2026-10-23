@@ -115,8 +115,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                         child: selectedType == null
                             ? Text(
                                 loc.select_a_type,
-                                style: const TextStyle(
-                                  color: CustomTheme.hintColor,
+                                style: TextStyle(
+                                  color: context.talleeColors.hintColor,
                                 ),
                               )
                             : Text(
@@ -138,8 +138,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                         child: selectedScopes.isEmpty
                             ? Text(
                                 loc.select_a_scope,
-                                style: const TextStyle(
-                                  color: CustomTheme.hintColor,
+                                style: TextStyle(
+                                  color: context.talleeColors.hintColor,
                                 ),
                               )
                             : Row(
@@ -156,9 +156,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                     Text(
                                       '+ ${selectedScopes.length - 1}',
                                       style: TextStyle(
-                                        color: CustomTheme.textColor.withAlpha(
-                                          200,
-                                        ),
+                                        color: context.talleeColors.textColor
+                                            .withAlpha(200),
                                       ),
                                     ),
                                 ],
@@ -361,10 +360,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     return Padding(
       padding: const EdgeInsets.only(right: 5),
       child: names.isEmpty
-          ? Text(
-              hint,
-              style: const TextStyle(color: context.talleeColors.hintColor),
-            )
+          ? Text(hint, style: TextStyle(color: context.talleeColors.hintColor))
           : Row(
               mainAxisSize: MainAxisSize.min,
               spacing: 5,
@@ -423,7 +419,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           padding: const EdgeInsets.only(left: 4, top: 10),
           child: Text(
             loc.preview,
-            style: const TextStyle(
+            style: TextStyle(
               color: context.talleeColors.hintColor,
               fontWeight: FontWeight.bold,
             ),
@@ -473,13 +469,10 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       child: Container(
         height: 54,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: context.talleeColors.standardBoxDecoration,
+        decoration: context.standardBoxDecoration,
         child: Row(
           children: [
-            const Icon(
-              Icons.calendar_month,
-              color: context.talleeColors.textColor,
-            ),
+            Icon(Icons.calendar_month, color: context.talleeColors.textColor),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
