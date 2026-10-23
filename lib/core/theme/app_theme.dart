@@ -205,6 +205,7 @@ ThemeData _buildThemeData({
   elevatedButtonTheme: elevatedButtonTheme,
   outlinedButtonTheme: outlinedButtonTheme,
   filledButtonTheme: filledButtonTheme,
+  bottomSheetTheme: BottomSheetThemeData(backgroundColor: palette.boxColor),
   extensions: [palette.toThemeColors()],
 );
 

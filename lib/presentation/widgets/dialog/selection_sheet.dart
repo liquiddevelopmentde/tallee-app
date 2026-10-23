@@ -80,7 +80,6 @@ class SelectionSheet<T> extends StatefulWidget {
         reverseDuration: Duration(milliseconds: 300),
       ),
       showDragHandle: true,
-      backgroundColor: context.talleeColors.boxColor,
       isScrollControlled: true,
     );
   }
