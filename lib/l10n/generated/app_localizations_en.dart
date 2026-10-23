@@ -230,7 +230,7 @@ class AppLocalizationsEn extends AppLocalizations {
       other: '$count matches',
       one: '1 match',
     );
-    return 'If you delete this game template, $_temp0 using this game template will also be deleted.';
+    return 'If you delete this game, $_temp0 using this game will also be deleted.';
   }
 
   @override

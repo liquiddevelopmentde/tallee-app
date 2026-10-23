@@ -56,7 +56,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
-  String get choose_color_description => 'Wähle die Farbe für dein Spiel.';
+  String get choose_color_description =>
+      'Wähle eine Farbe für die Spielvorlage.';
 
   @override
   String get choose_date_range => 'Datumsbereich auswählen';
