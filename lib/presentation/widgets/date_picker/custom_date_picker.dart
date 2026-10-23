@@ -253,13 +253,16 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         children: [
           _buildHeader(context, localeName),
           const SizedBox(height: 12),
-          AnimatedCrossFade(
-            duration: const Duration(milliseconds: 250),
-            crossFadeState: _isYearPickerOpen
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
-            firstChild: _buildCalendarView(context, localeName),
-            secondChild: _buildYearPickerView(context),
+          SizedBox(
+            height: 270,
+            child: AnimatedCrossFade(
+              duration: const Duration(milliseconds: 250),
+              crossFadeState: _isYearPickerOpen
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
+              firstChild: _buildCalendarView(context, localeName),
+              secondChild: _buildYearPickerView(context),
+            ),
           ),
           if (widget.showActionButtons) ...[
             const SizedBox(height: 12),
@@ -280,8 +283,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
           onTap: () {
             HapticFeedback.lightImpact();
             _pageController.previousPage(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeOutCubic,
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeInOutCubic,
             );
           },
           child: Padding(
@@ -343,8 +346,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
           onTap: () {
             HapticFeedback.lightImpact();
             _pageController.nextPage(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeOutCubic,
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeInOutCubic,
             );
           },
           child: Padding(
@@ -695,9 +698,23 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     if (yearIndex < 0) return;
 
     final rowIndex = yearIndex ~/ 3;
-    final targetOffset = rowIndex * 54.0;
+    final renderObject = _yearPickerController.position.context.storageContext
+        .findRenderObject();
+    if (renderObject is! RenderBox) return;
+
+    final itemWidth = (renderObject.size.width - 16) / 3;
+    final itemHeight = itemWidth / 2.2;
+    final rowExtent = itemHeight + 8;
+    final targetOffset =
+        8 +
+        rowIndex * rowExtent -
+        (_yearPickerController.position.viewportDimension - itemHeight) / 2;
     final maxOffset = _yearPickerController.position.maxScrollExtent;
-    _yearPickerController.jumpTo(targetOffset.clamp(0.0, maxOffset).toDouble());
+    _yearPickerController.animateTo(
+      targetOffset.clamp(0.0, maxOffset).toDouble(),
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeInOutCubic,
+    );
   }
 
   Widget _buildActionButtons(BuildContext context, AppLocalizations loc) {
