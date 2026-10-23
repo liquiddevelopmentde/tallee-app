@@ -30,7 +30,8 @@ Color getColorFromAppColor(AppColor color, BuildContext context) {
 /// Returns the text color used on statistics bars for the current theme.
 Color getStatisticsBarTextColor(AppColor color, BuildContext context) {
   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-  final useBlackText = !isDarkMode || color == AppColor.yellow;
+  final useBlackText =
+      !isDarkMode || color == AppColor.yellow || color == AppColor.orange;
   return useBlackText ? AppColors.textColorLight : AppColors.textColorDark;
 }
 

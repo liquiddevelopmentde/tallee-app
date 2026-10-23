@@ -71,7 +71,7 @@ void main() {
   });
 
   group('getStatisticsBarTextColor', () {
-    testWidgets('uses black text for non-yellow bars in light mode', (
+    testWidgets('uses correct text color for bars in light mode', (
       tester,
     ) async {
       late BuildContext context;
@@ -87,35 +87,20 @@ void main() {
         ),
       );
 
-      expect(
-        getStatisticsBarTextColor(AppColor.red, context),
-        AppColors.textColorLight,
-      );
+      final colorMap = <AppColor, Color>{};
+
+      // Create map from all tuples
+      for (final val in AppColor.values) {
+        colorMap[val] = getStatisticsBarTextColor(AppColor.red, context);
+      }
+
+      // Every text is in dark color
+      for (final k in colorMap.keys) {
+        expect(getStatisticsBarTextColor(k, context), AppColors.textColorLight);
+      }
     });
 
-    testWidgets('uses black text for yellow bars in light mode', (
-      tester,
-    ) async {
-      late BuildContext context;
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: lightTheme,
-          home: Builder(
-            builder: (builderContext) {
-              context = builderContext;
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
-
-      expect(
-        getStatisticsBarTextColor(AppColor.yellow, context),
-        AppColors.textColorLight,
-      );
-    });
-
-    testWidgets('uses white text for non-yellow bars in dark mode', (
+    testWidgets('uses correct text color for bars in dark mode', (
       tester,
     ) async {
       late BuildContext context;
@@ -131,30 +116,28 @@ void main() {
         ),
       );
 
-      expect(
-        getStatisticsBarTextColor(AppColor.red, context),
-        AppColors.textColorDark,
-      );
-    });
+      final colorMap = <AppColor, Color>{};
 
-    testWidgets('uses black text for yellow bars in dark mode', (tester) async {
-      late BuildContext context;
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: darkTheme,
-          home: Builder(
-            builder: (builderContext) {
-              context = builderContext;
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
+      // Create map from all tuples
+      for (final val in AppColor.values) {
+        colorMap[val] = getStatisticsBarTextColor(AppColor.red, context);
+      }
 
-      expect(
-        getStatisticsBarTextColor(AppColor.yellow, context),
-        AppColors.textColorLight,
-      );
+      for (final k in colorMap.keys) {
+        // Dark color
+        if (k == AppColor.yellow || k == AppColor.orange) {
+          expect(
+            getStatisticsBarTextColor(k, context),
+            AppColors.textColorLight,
+          );
+        } else {
+          // Light color
+          expect(
+            getStatisticsBarTextColor(k, context),
+            AppColors.textColorDark,
+          );
+        }
+      }
     });
   });
 }
