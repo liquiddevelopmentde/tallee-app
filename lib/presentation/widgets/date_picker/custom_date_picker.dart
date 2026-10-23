@@ -596,6 +596,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     }
 
     if (isStart && hasEndSelected) {
+      if (colIndex == 6) {
+        return const SizedBox.shrink();
+      }
       return Positioned.fill(
         child: Center(
           child: SizedBox(
@@ -613,6 +616,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     }
 
     if (isEnd && hasEndSelected) {
+      if (colIndex == 0) {
+        return const SizedBox.shrink();
+      }
       return Positioned.fill(
         child: Center(
           child: SizedBox(
