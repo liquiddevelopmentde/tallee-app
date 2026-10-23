@@ -1,5 +1,5 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 
 class ColoredIconContainer extends StatelessWidget {
   /// A customizable container widget that displays an icon with a colored background.
@@ -38,14 +38,13 @@ class ColoredIconContainer extends StatelessWidget {
           margin: margin,
           padding: padding,
           decoration: BoxDecoration(
-            color:
-                color?.withAlpha(40) ?? CustomTheme.primaryColor.withAlpha(40),
+            color: color?.withAlpha(40) ?? AppColors.primaryColor.withAlpha(40),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
             icon,
             size: effectiveIconSize,
-            color: color ?? CustomTheme.primaryColor.withBlue(40),
+            color: color ?? AppColors.primaryColor.withBlue(40),
           ),
         ),
       ],

@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class InfoTile extends StatefulWidget {
   /// A tile widget that displays a title with an icon and some content below it.
@@ -44,7 +44,7 @@ class _InfoTileState extends State<InfoTile> {
       margin: widget.margin,
       height: widget.height,
       width: widget.width ?? 380,
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: context.standardBoxDecoration,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: widget.horizontalAlignment,

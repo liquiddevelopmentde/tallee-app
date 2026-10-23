@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
@@ -26,9 +26,10 @@ class PlayerTile extends StatelessWidget {
       onTileTap: onTileTap,
       backgroundColor: backgroundColor,
       content: buildUnitNameWidget(
+        context,
         player,
         highlighted: [player.deleted],
-        countStyle: const TextStyle(color: CustomTheme.hintColor),
+        countStyle: TextStyle(color: context.talleeColors.hintColor),
       ),
     );
   }

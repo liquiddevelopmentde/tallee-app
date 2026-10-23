@@ -16,10 +16,8 @@ class GameLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = getColorFromAppColor(color);
-    final fontColor = backgroundColor.computeLuminance() > 0.5
-        ? Colors.black
-        : Colors.white;
+    final backgroundColor = getColorFromAppColor(color, context);
+    final textColor = backgroundColor.contrastTextColor;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -41,7 +39,7 @@ class GameLabel extends StatelessWidget {
             softWrap: false,
             style: TextStyle(
               fontSize: 12,
-              color: fontColor,
+              color: textColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -65,7 +63,7 @@ class GameLabel extends StatelessWidget {
               softWrap: false,
               style: TextStyle(
                 fontSize: 12,
-                color: fontColor,
+                color: textColor,
                 fontWeight: FontWeight.bold,
               ),
             ),

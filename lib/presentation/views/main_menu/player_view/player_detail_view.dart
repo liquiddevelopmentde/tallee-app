@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -152,11 +152,12 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Playername + Playercount
                 Center(
                   child: buildUnitNameWidget(
+                    context,
                     player,
-                    mainStyle: const TextStyle(
+                    mainStyle: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                     ),
                   ),
                 ),
@@ -167,9 +168,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       player.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.clip,
@@ -189,9 +190,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Created at date
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(player.createdAt)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -236,9 +237,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             )
                           : Text(
                               loc.not_part_of_any_group,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
-                                color: CustomTheme.textColor,
+                                color: context.talleeColors.textColor,
                               ),
                             ),
                     ),
@@ -284,9 +285,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                           )
                         : Text(
                             loc.no_matches_played_yet,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: CustomTheme.textColor,
+                              color: context.talleeColors.textColor,
                             ),
                           ),
                   ),
@@ -317,7 +318,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   onPressed: () async {
                     final updatedPlayer = await Navigator.of(context).push(
                       adaptivePageRoute(
-                        settings: const RouteSettings(name: RouteNames.editPlayerView),
+                        settings: const RouteSettings(
+                          name: RouteNames.editPlayerView,
+                        ),
                         builder: (context) => EditPlayerView(
                           playerToEdit: player,
                           onPlayerChanged: widget.onPlayerUpdated,

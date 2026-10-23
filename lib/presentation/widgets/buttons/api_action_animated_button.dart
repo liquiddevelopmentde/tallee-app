@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 
 class ApiActionAnimatedButton extends StatefulWidget {
@@ -91,7 +92,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
       child: IgnorePointer(
         ignoring: isDisabled,
         child: Opacity(
-          opacity: isDisabled ? 0.4 : 1.0,
+          opacity: 1.0,
           child: ScaleTransition(
             scale: isDisabled ? disabledScaleAnimation : scaleAnimation,
             child: GestureDetector(
@@ -172,12 +173,20 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: buttonState == ApiButtonState.success ? 1.0 : 0.0,
-          child: const Icon(Icons.check, size: 26, color: Colors.green),
+          child: Icon(
+            Icons.check,
+            size: 26,
+            color: context.talleeColors.successColor,
+          ),
         ),
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: buttonState == ApiButtonState.error ? 1.0 : 0.0,
-          child: const Icon(Icons.close, size: 26, color: Colors.red),
+          child: Icon(
+            Icons.close,
+            size: 26,
+            color: context.talleeColors.errorColor,
+          ),
         ),
       ],
     );
@@ -234,12 +243,27 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
 
   TextStyle _getTextStyling() {
     late Color textColor;
+    if (widget.onPressed == null) {
+      return TextStyle(
+        color: context.talleeColors.hintColor,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      );
+    }
     if (widget.buttonType == ButtonType.primary) {
-      textColor = widget.isDestructive ? Colors.white : Colors.black;
+      textColor = widget.isDestructive
+          ? Colors.white
+          : Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.white;
     } else if (widget.buttonType == ButtonType.secondary) {
-      textColor = widget.isDestructive ? Colors.red : Colors.white;
+      textColor = widget.isDestructive
+          ? context.talleeColors.errorColor
+          : context.talleeColors.textColor;
     } else {
-      textColor = widget.isDestructive ? Colors.red : Colors.white;
+      textColor = widget.isDestructive
+          ? context.talleeColors.errorColor
+          : context.talleeColors.textColor;
     }
 
     return TextStyle(
@@ -253,14 +277,24 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     if (widget.buttonType == ButtonType.primary) {
       return BoxDecoration(
         color: buttonState == ApiButtonState.loading
-            ? Colors.grey[200]
-            : (widget.isDestructive ? Colors.red : Colors.white),
+            ? context.talleeColors.onBoxColor
+            : widget.onPressed == null
+            ? context.talleeColors.onBoxColor
+            : widget.isDestructive
+            ? context.talleeColors.errorColor
+            : Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Colors.black,
         borderRadius: BorderRadius.circular(12),
       );
     } else if (widget.buttonType == ButtonType.secondary) {
       return BoxDecoration(
         border: Border.all(
-          color: widget.isDestructive ? Colors.red : Colors.white,
+          color: widget.onPressed == null
+              ? context.talleeColors.hintColor
+              : widget.isDestructive
+              ? context.talleeColors.errorColor
+              : context.talleeColors.textColor,
           width: 2,
         ),
         borderRadius: BorderRadius.circular(12),

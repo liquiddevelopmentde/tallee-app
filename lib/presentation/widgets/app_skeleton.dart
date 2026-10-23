@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class AppSkeleton extends StatefulWidget {
   /// A widget that provides a skeleton loading effect to its child widget tree.
@@ -36,8 +37,8 @@ class _AppSkeletonState extends State<AppSkeleton> {
   Widget build(BuildContext context) {
     return Skeletonizer(
       effect: PulseEffect(
-        from: Colors.grey[800]!,
-        to: Colors.grey[600]!,
+        from: context.talleeColors.skeletonFromColor,
+        to: context.talleeColors.skeletonToColor,
         duration: const Duration(milliseconds: 800),
       ),
       enabled: widget.enabled,

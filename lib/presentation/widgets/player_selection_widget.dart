@@ -4,8 +4,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
@@ -187,7 +188,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: context.standardBoxDecoration,
       child: Column(
         spacing: 10,
         crossAxisAlignment: crossAxisAlignment,
@@ -281,7 +282,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: isPairingMode ? CustomTheme.primaryColor : null,
+              color: isPairingMode ? AppColors.primaryColor : null,
             ),
           ),
         ),
@@ -324,6 +325,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
             content: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: buildUnitNameWidget(
+                context,
                 player,
                 mainStyle: const TextStyle(
                   fontSize: 18,
@@ -331,7 +333,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
                 ),
                 countStyle: TextStyle(
                   fontSize: 16,
-                  color: CustomTheme.textColor.withAlpha(100),
+                  color: context.talleeColors.textColor.withAlpha(100),
                 ),
               ),
             ),
@@ -411,7 +413,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         child: Container(
           decoration: isSelectedForPairing
               ? BoxDecoration(
-                  border: Border.all(color: CustomTheme.primaryColor, width: 2),
+                  border: Border.all(color: AppColors.primaryColor, width: 2),
                   borderRadius: BorderRadius.circular(12),
                 )
               : null,
@@ -424,7 +426,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
               : PlayerTile(
                   player: unit.members.first,
                   backgroundColor: pressingId == unit.id
-                      ? Colors.grey.shade800
+                      ? context.talleeColors.skeletonFromColor
                       : null,
                   onTileTap:
                       !isPaired &&

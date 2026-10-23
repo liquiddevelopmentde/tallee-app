@@ -21,9 +21,12 @@ class RouteNames {
   static const String matchDetailView = '/home/matches/{id}';
   static const String matchResultView = '/home/matches/{id}/result';
   static const String matchReceiveView = '/home/matches/receive';
-  static const String associateGameView = '/home/matches/receive/associate-game';
-  static const String associateGroupView = '/home/matches/receive/associate-group';
-  static const String associatePlayersView = '/home/matches/receive/associate-players';
+  static const String associateGameView =
+      '/home/matches/receive/associate-game';
+  static const String associateGroupView =
+      '/home/matches/receive/associate-group';
+  static const String associatePlayersView =
+      '/home/matches/receive/associate-players';
   static const String matchShareView = '/home/matches/{id}/share';
 
   static const String playerDetailView = '/home/players/{id}';
@@ -40,4 +43,5 @@ class RouteNames {
   static const String licensesView = '/home/settings/licenses';
   static const String licenseDetailView = '/home/settings/licenses/{id}';
   static const String feedbackFormView = '/home/settings/feedback';
+  static const String privacyPolicyView = '/home/settings/privacy';
 }

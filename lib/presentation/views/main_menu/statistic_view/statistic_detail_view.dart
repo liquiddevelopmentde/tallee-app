@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
@@ -276,9 +276,11 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                       vertical: 14,
                     ),
                     decoration: BoxDecoration(
-                      color: CustomTheme.boxColor,
+                      color: context.talleeColors.boxColor,
                       borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: CustomTheme.boxBorderColor),
+                      border: Border.all(
+                        color: context.talleeColors.boxBorderColor,
+                      ),
                     ),
                     child: Text(
                       loc.top_n(displayCount),

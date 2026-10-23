@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -54,7 +54,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
         title: Text(loc.group_profile),
         actions: [
@@ -114,10 +114,10 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 const SizedBox(height: 10),
                 Text(
                   group.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -126,9 +126,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       group.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.visible,
@@ -137,9 +137,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 const SizedBox(height: 5),
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(group.createdAt)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                   ),
                   textAlign: TextAlign.center,
                 ),

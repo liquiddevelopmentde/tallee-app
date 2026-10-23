@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart' hide Material;
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -57,35 +58,37 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
     final defaultPinTheme = PinTheme(
       height: 60,
       width: 45,
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 35,
-        color: CustomTheme.textColor,
+        color: context.talleeColors.textColor,
         fontWeight: FontWeight.w500,
       ),
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: context.standardBoxDecoration,
     );
 
     final focusedPinTheme = defaultPinTheme.copyDecorationWith(
-      border: Border.all(color: CustomTheme.primaryColor),
+      border: Border.all(color: AppColors.primaryColor),
     );
 
     final errorPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
-        border: Border.all(color: Colors.red),
+        border: Border.all(color: context.talleeColors.errorColor),
       ),
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 35,
-        color: Colors.red,
+        color: context.talleeColors.errorColor,
         fontWeight: FontWeight.w500,
       ),
     );
 
     final disabledPinTheme = defaultPinTheme.copyWith(
-      decoration: BoxDecoration(border: Border.all(color: Colors.pink)),
+      decoration: BoxDecoration(
+        border: Border.all(color: context.talleeColors.errorColor),
+      ),
     );
 
-    const errorTextStyle = TextStyle(
-      color: Colors.red,
+    final errorTextStyle = TextStyle(
+      color: context.talleeColors.errorColor,
       fontSize: 14,
       fontWeight: FontWeight.bold,
       overflow: TextOverflow.visible,
@@ -105,8 +108,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(
                 loc.input_token_instruction,
-                style: const TextStyle(
-                  color: CustomTheme.textColor,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                   overflow: TextOverflow.visible,
                 ),
@@ -177,8 +180,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Text(
             loc.share_token_format_info,
-            style: const TextStyle(
-              color: CustomTheme.textColor,
+            style: TextStyle(
+              color: context.talleeColors.textColor,
               fontSize: 14,
               overflow: TextOverflow.visible,
             ),
