@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 class ChooseEnumView<T extends Enum> extends StatefulWidget {
@@ -40,7 +40,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text(getTitle(widget.enumValue.first, loc))),
       body: PopScope(
@@ -69,7 +69,15 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                   vertical: 12,
                   horizontal: 12,
                 ),
-                decoration: CustomTheme.standardBoxDecoration,
+                decoration: BoxDecoration(
+                  color: context.talleeColors.boxColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: context.talleeColors.boxBorderColor,
+                    width: 2,
+                  ),
+                ),
+                duration: const Duration(milliseconds: 150),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -96,9 +104,9 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                           states,
                         ) {
                           if (states.contains(WidgetState.selected)) {
-                            return CustomTheme.textColor;
+                            return context.talleeColors.textColor;
                           }
-                          return CustomTheme.hintColor;
+                          return context.talleeColors.hintColor;
                         }),
                         value: widget.enumValue[index],
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -109,14 +117,14 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                       Checkbox(
                         value: selectedValues.contains(widget.enumValue[index]),
                         onChanged: (_) => onChanged(widget.enumValue[index]),
-                        checkColor: CustomTheme.backgroundColor,
+                        checkColor: context.talleeColors.backgroundColor,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         visualDensity: VisualDensity.compact,
                         fillColor: WidgetStateProperty.resolveWith<Color>((
                           states,
                         ) {
                           if (states.contains(WidgetState.selected)) {
-                            return CustomTheme.textColor;
+                            return context.talleeColors.textColor;
                           }
                           return Colors.transparent;
                         }),

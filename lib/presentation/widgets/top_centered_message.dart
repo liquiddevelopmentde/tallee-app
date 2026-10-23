@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class TopCenteredMessage extends StatelessWidget {
   /// A widget that displays a message centered at the top of the screen with an icon, title, and message.
@@ -34,7 +34,7 @@ class TopCenteredMessage extends StatelessWidget {
             ? MainAxisAlignment.start
             : MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 45, color: CustomTheme.hintColor),
+          Icon(icon, size: 45, color: context.talleeColors.hintColor),
           const SizedBox(height: 10),
           Text(
             title,
@@ -51,10 +51,10 @@ class TopCenteredMessage extends StatelessWidget {
               width: 250,
               child: Text(
                 message!,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   overflow: TextOverflow.visible,
-                  color: CustomTheme.hintColor,
+                  color: context.talleeColors.hintColor,
                 ),
                 textAlign: TextAlign.center,
                 softWrap: true,

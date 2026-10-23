@@ -3,7 +3,8 @@ import 'dart:core' hide Match;
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -69,7 +70,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
             Align(
               alignment: Alignment.center,
               child: Container(
-                margin: CustomTheme.standardMargin,
+                margin: AppColors.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: BoxDecoration(
                   color: unassignedCount == 0
@@ -77,7 +78,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                       : unassignedCount == players.length
                       ? Colors.red
                       : Colors.redAccent,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: Text(
                   unassignedCount != 0
@@ -138,7 +139,9 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                         } else {
                           await Navigator.of(context).push(
                             adaptivePageRoute(
-                              settings: const RouteSettings(name: RouteNames.associateGroupView),
+                              settings: const RouteSettings(
+                                name: RouteNames.associateGroupView,
+                              ),
                               builder: (context) => AssociateGroupView(
                                 match: widget.match,
                                 associations: associations,
@@ -221,7 +224,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
     return showModalBottomSheet<Player?>(
       context: context,
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       builder: (context) {
         return PlayerSelectionWidget.single(
           onSingleChanged: (player) async {

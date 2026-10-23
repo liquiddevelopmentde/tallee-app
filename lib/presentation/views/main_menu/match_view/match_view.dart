@@ -9,7 +9,8 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -63,14 +64,14 @@ class _MatchViewState extends State<MatchView> {
   final ScrollController scrollController = ScrollController();
 
   /// Loaded matches from the database, initially filled with skeleton matches
-  List<Match> allMatches = List.filled(
+  List<Match> allMatches = List.generate(
     4,
-    Match(
+    (_) => Match(
       name: 'Skeleton match name',
       game: Game(
         name: 'Game name',
         ruleset: Ruleset.winner,
-        color: AppColor.blue,
+        color: getRandomAppColor(),
       ),
       group: Group(
         name: 'Group name',
@@ -140,7 +141,7 @@ class _MatchViewState extends State<MatchView> {
     }
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
@@ -211,7 +212,7 @@ class _MatchViewState extends State<MatchView> {
                         // Matches in db
                         if (allMatches.isNotEmpty) ...[
                           SingleChildScrollView(
-                            padding: CustomTheme.filterRowPadding,
+                            padding: AppColors.filterRowPadding,
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               spacing: 5,
@@ -291,7 +292,7 @@ class _MatchViewState extends State<MatchView> {
                                 },
                                 child: ListView.builder(
                                   controller: scrollController,
-                                  padding: CustomTheme.listViewPadding(context),
+                                  padding: AppColors.listViewPadding(context),
                                   itemCount: displayedMatches.length,
                                   itemBuilder: (context, index) => MatchTile(
                                     width:
@@ -528,7 +529,7 @@ class _MatchViewState extends State<MatchView> {
     return await showDialog<bool>(
       context: context,
       builder: (context) => CustomAlertDialog(
-        closeButtonColor: CustomTheme.hintColor,
+        closeButtonColor: context.talleeColors.hintColor,
         showCloseButton: true,
         title: loc.do_you_like_the_app,
         content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),

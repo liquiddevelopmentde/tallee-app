@@ -3,7 +3,8 @@ import 'dart:core' hide Match;
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/core/translations.dart';
@@ -61,8 +62,11 @@ class _QrScanComponentState extends State<QrScanComponent> {
         children: [
           Container(
             decoration: BoxDecoration(
-              borderRadius: CustomTheme.standardBorderRadiusAll,
-              border: Border.all(color: CustomTheme.boxBorderColor, width: 3),
+              borderRadius: AppColors.standardBorderRadiusAll,
+              border: Border.all(
+                color: context.talleeColors.boxBorderColor,
+                width: 3,
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.1),
@@ -73,7 +77,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(
-                CustomTheme.standardBorderRadius - 3,
+                AppColors.standardBorderRadius - 3,
               ),
               child: AspectRatio(
                 aspectRatio: 1.0,
@@ -94,7 +98,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
                           child: Container(
                             decoration: ShapeDecoration(
                               shape: QrScannerOverlayShape(
-                                borderColor: CustomTheme.primaryColor,
+                                borderColor: AppColors.primaryColor,
                                 borderRadius: 20,
                                 borderLength: 40,
                                 borderWidth: 6,
@@ -117,16 +121,19 @@ class _QrScanComponentState extends State<QrScanComponent> {
           const SizedBox(height: 20),
           Container(
             decoration: BoxDecoration(
-              color: CustomTheme.onBoxColor,
-              border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
-              borderRadius: CustomTheme.standardBorderRadiusAll,
+              color: context.talleeColors.onBoxColor,
+              border: Border.all(
+                color: context.talleeColors.boxBorderColor,
+                width: 2,
+              ),
+              borderRadius: AppColors.standardBorderRadiusAll,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Text(
               loc.scan_qr_receive_instruction,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: CustomTheme.textColor,
+              style: TextStyle(
+                color: context.talleeColors.textColor,
                 fontSize: 14,
                 overflow: TextOverflow.visible,
               ),
@@ -266,9 +273,9 @@ class StatusErrorOverlay extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (errorMessage != null) ...[
-                    const Icon(
+                    Icon(
                       Icons.error_outline,
-                      color: Colors.redAccent,
+                      color: context.talleeColors.errorColor,
                       size: 40,
                     ),
                     const SizedBox(height: 15),
@@ -285,7 +292,7 @@ class StatusErrorOverlay extends StatelessWidget {
                     ),
                   ] else if (isProcessing) ...[
                     const CircularProgressIndicator(
-                      color: CustomTheme.primaryColor,
+                      color: AppColors.primaryColor,
                       strokeWidth: 4,
                     ),
                     const SizedBox(height: 15),

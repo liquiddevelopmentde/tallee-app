@@ -97,6 +97,7 @@ class _LiveEditViewState extends State<LiveEditView> {
               : TextInputAction.next,
           onSubmitted: () => focusNextTile(index),
           title: buildUnitNameWidget(
+            context,
             unit,
             isTeamMatch: isTeamMatch,
             rowAlignment: MainAxisAlignment.center,
@@ -108,7 +109,7 @@ class _LiveEditViewState extends State<LiveEditView> {
           value: scores[unit] ?? fallbackValue,
           boundaries: widget.boundaries,
           color: isTeamMatch && unit is Team
-              ? getColorFromAppColor(color: unit.color)
+              ? getColorFromAppColor(unit.color, context)
               : null,
           onChanged: (value) {
             scores[unit] = value;

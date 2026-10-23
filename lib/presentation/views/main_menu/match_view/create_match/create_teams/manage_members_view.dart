@@ -6,7 +6,8 @@ import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -52,7 +53,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(title: Text(loc.manage_members)),
       body: Stack(
         alignment: AlignmentDirectional.center,
@@ -88,7 +89,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
                                       alpha: 0.10 * t,
                                     ),
                                     borderRadius:
-                                        CustomTheme.standardBorderRadiusAll,
+                                        AppColors.standardBorderRadiusAll,
                                   ),
                                 ),
                               ),
@@ -174,8 +175,8 @@ class _ManageMembersViewState extends State<ManageMembersView> {
           Expanded(
             child: Text(
               team.name,
-              style: const TextStyle(
-                color: CustomTheme.textColor,
+              style: TextStyle(
+                color: context.talleeColors.textColor,
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),
@@ -192,8 +193,8 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               maxLines: 1,
               textAlign: TextAlign.end,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: CustomTheme.hintColor,
+              style: TextStyle(
+                color: context.talleeColors.hintColor,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),

@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -360,7 +361,10 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     return Padding(
       padding: const EdgeInsets.only(right: 5),
       child: names.isEmpty
-          ? Text(hint, style: const TextStyle(color: CustomTheme.hintColor))
+          ? Text(
+              hint,
+              style: const TextStyle(color: context.talleeColors.hintColor),
+            )
           : Row(
               mainAxisSize: MainAxisSize.min,
               spacing: 5,
@@ -373,7 +377,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                   Text(
                     '+ ${names.length - 1}',
                     style: TextStyle(
-                      color: CustomTheme.textColor.withAlpha(200),
+                      color: context.talleeColors.textColor.withAlpha(200),
                     ),
                   ),
               ],
@@ -420,7 +424,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           child: Text(
             loc.preview,
             style: const TextStyle(
-              color: CustomTheme.hintColor,
+              color: context.talleeColors.hintColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -469,18 +473,21 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       child: Container(
         height: 54,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: CustomTheme.standardBoxDecoration,
+        decoration: context.talleeColors.standardBoxDecoration,
         child: Row(
           children: [
-            const Icon(Icons.calendar_month, color: CustomTheme.textColor),
+            const Icon(
+              Icons.calendar_month,
+              color: context.talleeColors.textColor,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 formatDateRange(context, selectedStartDate, selectedEndDate),
                 style: TextStyle(
                   color: selectedStartDate != null && selectedEndDate != null
-                      ? CustomTheme.textColor
-                      : CustomTheme.hintColor,
+                      ? context.talleeColors.textColor
+                      : context.talleeColors.hintColor,
                   fontSize: 14,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -575,74 +582,74 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         return Theme(
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
-            colorScheme: const ColorScheme.dark(
-              primary: CustomTheme.primaryColor,
-              onPrimary: CustomTheme.textColor,
-              surface: CustomTheme.boxColor,
-              onSurface: CustomTheme.textColor,
+            colorScheme: ColorScheme.dark(
+              primary: AppColors.primaryColor,
+              onPrimary: context.talleeColors.textColor,
+              surface: context.talleeColors.boxColor,
+              onSurface: context.talleeColors.textColor,
             ),
           ),
           child: Dialog(
-            backgroundColor: CustomTheme.boxColor,
+            backgroundColor: context.talleeColors.boxColor,
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: CustomTheme.boxBorderColor),
+              side: BorderSide(color: context.talleeColors.boxBorderColor),
             ),
             child: Container(
               padding: const EdgeInsets.all(16),
               height: 450,
               child: SfDateRangePicker(
-                backgroundColor: CustomTheme.boxColor,
-                todayHighlightColor: CustomTheme.primaryColor,
+                backgroundColor: context.talleeColors.boxColor,
+                todayHighlightColor: AppColors.primaryColor,
                 showNavigationArrow: true,
                 initialSelectedRange:
                     initialStartDate != null && initialEndDate != null
                     ? PickerDateRange(initialStartDate, initialEndDate)
                     : null,
-                headerStyle: const DateRangePickerHeaderStyle(
+                headerStyle: DateRangePickerHeaderStyle(
                   textAlign: TextAlign.center,
                   backgroundColor: Colors.transparent,
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                monthCellStyle: const DateRangePickerMonthCellStyle(
+                monthCellStyle: DateRangePickerMonthCellStyle(
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 16,
                   ),
-                  todayTextStyle: TextStyle(
-                    color: CustomTheme.primaryColor,
+                  todayTextStyle: const TextStyle(
+                    color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                   leadingDatesTextStyle: TextStyle(
-                    color: CustomTheme.hintColor,
+                    color: context.talleeColors.hintColor,
                     fontSize: 16,
                   ),
                   trailingDatesTextStyle: TextStyle(
-                    color: CustomTheme.hintColor,
+                    color: context.talleeColors.hintColor,
                     fontSize: 16,
                   ),
                 ),
-                yearCellStyle: const DateRangePickerYearCellStyle(
+                yearCellStyle: DateRangePickerYearCellStyle(
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 16,
                   ),
-                  todayTextStyle: TextStyle(
-                    color: CustomTheme.primaryColor,
+                  todayTextStyle: const TextStyle(
+                    color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
-                monthViewSettings: const DateRangePickerMonthViewSettings(
+                monthViewSettings: DateRangePickerMonthViewSettings(
                   viewHeaderStyle: DateRangePickerViewHeaderStyle(
                     textStyle: TextStyle(
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -650,19 +657,19 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                   firstDayOfWeek: 1,
                 ),
                 selectionMode: DateRangePickerSelectionMode.range,
-                selectionColor: CustomTheme.primaryColor,
-                startRangeSelectionColor: CustomTheme.primaryColor,
-                endRangeSelectionColor: CustomTheme.primaryColor,
-                rangeSelectionColor: CustomTheme.primaryColor.withValues(
+                selectionColor: AppColors.primaryColor,
+                startRangeSelectionColor: AppColors.primaryColor,
+                endRangeSelectionColor: AppColors.primaryColor,
+                rangeSelectionColor: AppColors.primaryColor.withValues(
                   alpha: 0.15,
                 ),
-                selectionTextStyle: const TextStyle(
-                  color: CustomTheme.textColor,
+                selectionTextStyle: TextStyle(
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
-                rangeTextStyle: const TextStyle(
-                  color: CustomTheme.textColor,
+                rangeTextStyle: TextStyle(
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                 ),
                 showActionButtons: true,

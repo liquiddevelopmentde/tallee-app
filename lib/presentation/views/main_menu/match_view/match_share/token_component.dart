@@ -1,7 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
@@ -58,8 +59,8 @@ class TokenComponent extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
                   loc.send_code_instruction,
-                  style: const TextStyle(
-                    color: CustomTheme.textColor,
+                  style: TextStyle(
+                    color: context.talleeColors.textColor,
                     fontSize: 16,
                     overflow: TextOverflow.visible,
                   ),
@@ -82,6 +83,7 @@ class TokenComponent extends StatelessWidget {
                     if (i > 0) const SizedBox(width: 8),
                     Expanded(
                       child: charContainer(
+                        context,
                         char: chars.length > i ? chars[i] : ' ',
                         active: secondsRemaining > 0,
                       ),
@@ -101,8 +103,8 @@ class TokenComponent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
                     value: progress,
-                    backgroundColor: CustomTheme.onBoxColor,
-                    color: CustomTheme.primaryColor,
+                    backgroundColor: context.talleeColors.onBoxColor,
+                    color: AppColors.primaryColor,
                     minHeight: 8,
                   ),
                 ),
@@ -120,8 +122,8 @@ class TokenComponent extends StatelessWidget {
                         : loc.expires_in(
                             '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
                           ),
-                    style: const TextStyle(
-                      color: CustomTheme.textColor,
+                    style: TextStyle(
+                      color: context.talleeColors.textColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                       overflow: TextOverflow.visible,
@@ -134,7 +136,7 @@ class TokenComponent extends StatelessWidget {
                     HapticIconButton(
                       icon: const Icon(
                         Icons.refresh,
-                        color: CustomTheme.primaryColor,
+                        color: AppColors.primaryColor,
                         size: 25,
                       ),
                       onPressed: renewToken,
@@ -222,10 +224,10 @@ class TokenComponent extends StatelessWidget {
                   Text(
                     loc.share_as_token_info,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       overflow: TextOverflow.visible,
-                      color: CustomTheme.hintColor,
+                      color: context.talleeColors.hintColor,
                     ),
                   ),
                 ],
@@ -244,6 +246,7 @@ class TokenComponent extends StatelessWidget {
                 if (i > 0) const SizedBox(width: 8),
                 Expanded(
                   child: charContainer(
+                    context,
                     active: false,
                     char: chars.length > i ? chars[i] : ' ',
                   ),
@@ -275,15 +278,19 @@ class TokenComponent extends StatelessWidget {
     );
   }
 
-  Widget charContainer({String char = '', required bool active}) {
+  Widget charContainer(
+    BuildContext context, {
+    String char = '',
+    required bool active,
+  }) {
     return Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: active
-            ? CustomTheme.boxColor
-            : CustomTheme.boxBorderColor.withAlpha(100),
-        border: Border.all(color: CustomTheme.boxBorderColor),
-        borderRadius: CustomTheme.standardBorderRadiusAll,
+            ? context.talleeColors.boxColor
+            : context.talleeColors.boxBorderColor.withAlpha(100),
+        border: Border.all(color: context.talleeColors.boxBorderColor),
+        borderRadius: AppColors.standardBorderRadiusAll,
       ),
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Text(
@@ -291,7 +298,9 @@ class TokenComponent extends StatelessWidget {
         style: TextStyle(
           fontSize: 35,
           fontWeight: FontWeight.w400,
-          color: active ? CustomTheme.textColor : CustomTheme.boxBorderColor,
+          color: active
+              ? context.talleeColors.textColor
+              : context.talleeColors.boxBorderColor,
         ),
       ),
     );

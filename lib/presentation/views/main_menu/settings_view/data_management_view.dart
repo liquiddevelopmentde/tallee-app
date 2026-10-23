@@ -4,7 +4,7 @@ import 'package:new_version_plus/model/version_status.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
@@ -33,7 +33,7 @@ class _DataManagementViewState extends State<DataManagementView> {
         builder: (scaffoldMessengerContext) {
           return Scaffold(
             appBar: AppBar(title: Text(loc.data_backup)),
-            backgroundColor: CustomTheme.backgroundColor,
+            backgroundColor: context.talleeColors.backgroundColor,
             body: SingleChildScrollView(
               child: Column(
                 spacing: 10,
@@ -61,9 +61,9 @@ class _DataManagementViewState extends State<DataManagementView> {
                         Text(
                           textAlign: TextAlign.start,
                           loc.data_transfer_description,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: CustomTheme.hintColor,
+                            color: context.talleeColors.hintColor,
                             overflow: TextOverflow.visible,
                           ),
                         ),
@@ -154,8 +154,8 @@ class _DataManagementViewState extends State<DataManagementView> {
                   isExport
                       ? loc.update_app_export_desc
                       : loc.update_app_import_desc,
-                  style: const TextStyle(
-                    color: CustomTheme.textColor,
+                  style: TextStyle(
+                    color: context.talleeColors.textColor,
                     overflow: TextOverflow.visible,
                   ),
                 ),

@@ -1,11 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class PullDownMenuTile extends StatefulWidget {
   /// A single selectable row inside a [CustomPullDownMenu].
   ///
-  /// -[icon]: Icon shown at the trailing edge of the row.
+  /// - [icon]: Optional icon shown at the trailing edge of the row.
   /// - [label]: The text describing the action.
   /// - [onTap]: Called after the menu closes when the tile is tapped.
   /// - [enabled]: Whether the tile can be tapped.
@@ -19,7 +19,7 @@ class PullDownMenuTile extends StatefulWidget {
     this.isDestructive = false,
   });
 
-  final IconData icon;
+  final IconData? icon;
   final String label;
   final VoidCallback onTap;
   final bool enabled;
@@ -35,8 +35,8 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
   @override
   Widget build(BuildContext context) {
     final Color color = widget.isDestructive
-        ? CustomTheme.red
-        : CustomTheme.textColor;
+        ? context.talleeColors.errorColor
+        : context.talleeColors.textColor;
     final Color contentColor = widget.enabled ? color : color.withAlpha(100);
 
     return GestureDetector(
@@ -57,7 +57,9 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
           : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        color: isPressed ? CustomTheme.onBoxColor : CustomTheme.boxColor,
+        color: isPressed
+            ? context.talleeColors.onBoxColor
+            : context.talleeColors.boxColor,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           spacing: 10,
@@ -73,7 +75,8 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
                 ),
               ),
             ),
-            Icon(widget.icon, size: 20, color: contentColor),
+            if (widget.icon case final icon?)
+              Icon(icon, size: 20, color: contentColor),
           ],
         ),
       ),

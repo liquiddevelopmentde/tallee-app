@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 
 class CountdownPainter extends CustomPainter {
   final double progress;
@@ -20,9 +20,9 @@ class CountdownPainter extends CustomPainter {
     final path = ui.Path();
 
     final rect = Rect.fromLTWH(2, 2, size.width - 4, size.height - 4);
-    const double radius = CustomTheme.standardBorderRadius - 2;
+    double radius = AppColors.standardBorderRadius - 2;
 
-    path.addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(radius)));
+    path.addRRect(RRect.fromRectAndRadius(rect, Radius.circular(radius)));
 
     final metrics = path.computeMetrics().toList();
     if (metrics.isEmpty) return;

@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 
 class CustomSnackBar extends SnackBar {
@@ -95,8 +96,8 @@ class AnimatedContent extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               decoration: BoxDecoration(
-                color: CustomTheme.boxColor,
-                border: Border.all(color: CustomTheme.boxBorderColor),
+                color: context.talleeColors.boxColor,
+                border: Border.all(color: context.talleeColors.boxBorderColor),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -119,8 +120,8 @@ class AnimatedContent extends StatelessWidget {
                       textAlign: (actionIcon != null || actionLabel != null)
                           ? TextAlign.left
                           : TextAlign.center,
-                      style: const TextStyle(
-                        color: CustomTheme.textColor,
+                      style: TextStyle(
+                        color: context.talleeColors.textColor,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
@@ -134,7 +135,7 @@ class AnimatedContent extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        foregroundColor: CustomTheme.primaryColor,
+                        foregroundColor: AppColors.primaryColor,
                       ),
                       onPressed: onActionTap,
                       child: Text(
@@ -151,7 +152,7 @@ class AnimatedContent extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       icon: Icon(
                         actionIcon!,
-                        color: CustomTheme.textColor,
+                        color: context.talleeColors.textColor,
                         size: 20,
                       ),
                       onPressed: onActionTap,

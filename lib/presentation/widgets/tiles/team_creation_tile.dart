@@ -2,8 +2,9 @@ import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_circle.dart';
@@ -46,8 +47,8 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
     final loc = AppLocalizations.of(context);
 
     return Container(
-      margin: CustomTheme.standardMargin,
-      decoration: CustomTheme.standardBoxDecoration,
+      margin: AppColors.standardMargin,
+      decoration: context.standardBoxDecoration,
       clipBehavior: Clip.antiAlias,
       child: IntrinsicHeight(
         child: Row(
@@ -90,10 +91,10 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(
                         loc.color,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: CustomTheme.textColor,
+                          color: context.talleeColors.textColor,
                         ),
                       ),
                     ),
@@ -107,13 +108,16 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                         runSpacing: 8,
                         children: teamColors.map((color) {
                           final isSelected = widget.color == color;
-
+                          final swatchColor = getColorFromAppColor(
+                            color,
+                            context,
+                          );
                           return GestureDetector(
                             onTap: () {
                               widget.onColorSelection?.call(color);
                             },
                             child: ColoredCircle(
-                              color: color,
+                              color: swatchColor,
                               size: 34,
                               border: Border.all(
                                 color: isSelected
@@ -127,7 +131,7 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                                 child: const Icon(
                                   Icons.check,
                                   size: 18,
-                                  color: Colors.white,
+                                  color: context.talleeColors.textColor,
                                 ),
                               ),
                             ),

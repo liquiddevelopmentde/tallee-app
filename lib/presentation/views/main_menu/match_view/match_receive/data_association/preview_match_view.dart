@@ -24,7 +24,9 @@ class PreviewMatchView extends StatelessWidget {
           onConfirm: () async {
             await Navigator.of(context).push(
               adaptivePageRoute(
-                settings: const RouteSettings(name: RouteNames.associateGameView),
+                settings: const RouteSettings(
+                  name: RouteNames.associateGameView,
+                ),
                 builder: (context) => AssociateGameView(match: match),
               ),
             );

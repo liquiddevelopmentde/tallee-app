@@ -2,6 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class BottomAnimatedButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
@@ -40,25 +42,32 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
 
   bool get isDisabled => widget.onPressed == null;
 
-  Color get accentColor {
-    if (isDisabled) return CustomTheme.hintColor;
-    if (widget.isDestructive) return Colors.red;
-    if (widget.isEmphasized) return CustomTheme.primaryColor;
-    return Colors.white;
-  }
-
   BoxDecoration get buttonDecoration {
     if (widget.buttonType == ButtonType.primary) {
       // Primary
       return BoxDecoration(
-        color: accentColor,
+        color: widget.onPressed == null
+            ? context.talleeColors.onBoxColor
+            : widget.isDestructive
+            ? context.talleeColors.errorColor
+            : widget.isEmphasized
+            ? AppColors.primaryColor
+            : Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Colors.black,
         borderRadius: BorderRadius.circular(12),
       );
     } else if (widget.buttonType == ButtonType.secondary) {
       // Secondary
       return BoxDecoration(
         border: BoxBorder.all(
-          color: accentColor,
+          color: widget.onPressed == null
+              ? context.talleeColors.hintColor
+              : widget.isDestructive
+              ? context.talleeColors.errorColor
+              : widget.isEmphasized
+              ? AppColors.primaryColor
+              : context.talleeColors.textColor,
           width: 2,
           strokeAlign: BorderSide.strokeAlignInside,
         ),
@@ -72,19 +81,29 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
   TextStyle get textStyle {
     late Color textColor;
 
+    if (widget.onPressed == null) {
+      return TextStyle(
+        color: context.talleeColors.hintColor,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      );
+    }
+
     switch (widget.buttonType) {
       case ButtonType.primary:
         textColor = widget.isDestructive || widget.isEmphasized
             ? Colors.white
-            : Colors.black;
+            : Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.white;
         break;
       default:
         if (widget.isDestructive) {
-          textColor = Colors.red;
+          textColor = context.talleeColors.errorColor;
         } else if (widget.isEmphasized) {
-          textColor = CustomTheme.primaryColor;
+          textColor = AppColors.primaryColor;
         } else {
-          textColor = Colors.white;
+          textColor = context.talleeColors.textColor;
         }
         break;
     }
@@ -106,7 +125,9 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
         onTapCancel: () => setState(() => isPressed = false),
         onTap: () {
           HapticFeedback.selectionClick();
-          if (!isDisabled) widget.onPressed!();
+          if (!isDisabled) {
+            widget.onPressed!();
+          }
         },
         child: AnimatedScale(
           scale: isPressed ? 0.95 : 1.0,
