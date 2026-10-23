@@ -13,6 +13,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
@@ -215,6 +216,9 @@ class _GameViewState extends State<GameView> with RouteAware {
                                             Navigator.push(
                                               context,
                                               adaptivePageRoute(
+                                                settings: const RouteSettings(
+                                                  name: RouteNames.createGameView,
+                                                ),
                                                 builder: (context) =>
                                                     CreateGameView(
                                                       gameToEdit:
@@ -280,6 +284,7 @@ class _GameViewState extends State<GameView> with RouteAware {
     Navigator.push(
       context,
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.createGameView),
         builder: (context) => CreateGameView(onGameChanged: loadGames),
       ),
     );

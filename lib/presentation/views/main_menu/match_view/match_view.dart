@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/configs.dart';
@@ -506,13 +507,19 @@ class _MatchViewState extends State<MatchView> {
       didUserLikeApp = await showPreRateDialog(loc);
     });
 
-    if (didUserLikeApp is bool && mounted) {
-      didUserLikeApp!
-          ? RATE_MY_APP.showStarRateDialog(context)
-          : await Future.delayed(
-              const Duration(milliseconds: 500),
-              () => showBadRatingDialog(loc),
-            );
+    switch (didUserLikeApp) {
+      case null:
+        await RATE_MY_APP.callEvent(RateMyAppEventType.laterButtonPressed);
+      case true:
+        if (mounted) RATE_MY_APP.showStarRateDialog(context);
+      case false:
+        await RATE_MY_APP.callEvent(RateMyAppEventType.noButtonPressed);
+        if (mounted) {
+          await Future.delayed(
+            const Duration(milliseconds: 500),
+            () => showBadRatingDialog(loc),
+          );
+        }
     }
   }
 
