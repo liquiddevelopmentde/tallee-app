@@ -220,7 +220,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                           spacing: 10,
                           children: [
                             if (selectedColor == null) ...[
-                              const ColoredCircle(hasRandomColors: true),
+                              const ColoredCircle(isRandomColor: true),
                               Text(loc.random_color),
                             ] else ...[
                               ColoredCircle(color: selectedColor!),
@@ -390,7 +390,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         values: const [null, ...AppColor.values],
         selectedValue: selectedColor,
         leadingBuilder: (AppColor? color) => color == null
-            ? const ColoredCircle(hasRandomColors: true)
+            ? const ColoredCircle(isRandomColor: true)
             : ColoredCircle(color: color),
         labelBuilder: (BuildContext context, AppColor? color) => color == null
             ? loc.random_color

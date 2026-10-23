@@ -8,17 +8,17 @@ class ColoredCircle extends StatelessWidget {
   const ColoredCircle({
     super.key,
     this.color,
-    this.hasRandomColors = false,
+    this.isRandomColor = false,
     this.size = 16.0,
     this.border,
     this.child,
   }) : assert(
-         color != null || hasRandomColors,
+         color != null || isRandomColor,
          'ColoredCircle needs a color or should be random.',
        );
 
   final AppColor? color;
-  final bool hasRandomColors;
+  final bool isRandomColor;
   final double size;
   final Border? border;
   final Widget? child;
@@ -41,7 +41,7 @@ class ColoredCircle extends StatelessWidget {
       (i) => i / (colors.length - 1),
     );
 
-    if (hasRandomColors) {
+    if (isRandomColor) {
       return Container(
         width: size,
         height: size,
