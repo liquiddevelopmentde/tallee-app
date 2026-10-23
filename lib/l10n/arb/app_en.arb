@@ -317,7 +317,7 @@
   "select_a_scope_description": "Here you can filter your data by specific groups or games.",
   "select_a_timeframe_description": "Here you can narrow down your data to a specific time period.",
   "select_a_type": "Select a type",
-  "select_a_type_description": "Select a chart type for your chart. A separate chart will be created for each type you select.",
+  "select_a_type_description": "Select a type for your statistic.",
   "select_games": "Select games",
   "select_groups": "Select groups",
   "select_loser": "Select Loser",

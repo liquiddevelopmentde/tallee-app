@@ -877,7 +877,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get select_a_type_description =>
-      'Wähle einen oder mehrere Typen aus. Für jeden Typ wird eine eigene Statistik erstellt.';
+      'Wähle einen Typ für deine Statistik aus.';
 
   @override
   String get select_games => 'Spielvorlagen wählen';

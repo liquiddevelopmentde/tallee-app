@@ -317,7 +317,7 @@
   "select_a_scope_description": "Hier kannst du deine Daten auf bestimmte Gruppen oder Spielvorlagen eingrenzen.",
   "select_a_timeframe_description": "Hier kannst du deine Daten auf einen bestimmten Zeitraum eingrenzen.",
   "select_a_type": "Typ wählen",
-  "select_a_type_description": "Wähle einen oder mehrere Typen aus. Für jeden Typ wird eine eigene Statistik erstellt.",
+  "select_a_type_description": "Wähle einen Typ für deine Statistik aus.",
   "select_games": "Spielvorlagen wählen",
   "select_groups": "Gruppen wählen",
   "select_loser": "Verlierer:in wählen",

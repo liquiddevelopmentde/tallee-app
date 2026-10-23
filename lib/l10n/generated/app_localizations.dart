@@ -1625,7 +1625,7 @@ abstract class AppLocalizations {
   /// No description provided for @select_a_type_description.
   ///
   /// In en, this message translates to:
-  /// **'Select a chart type for your chart. A separate chart will be created for each type you select.'**
+  /// **'Select a type for your statistic.'**
   String get select_a_type_description;
 
   /// No description provided for @select_games.

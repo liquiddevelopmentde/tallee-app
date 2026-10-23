@@ -867,8 +867,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_a_type => 'Select a type';
 
   @override
-  String get select_a_type_description =>
-      'Select a chart type for your chart. A separate chart will be created for each type you select.';
+  String get select_a_type_description => 'Select a type for your statistic.';
 
   @override
   String get select_games => 'Select games';
