@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -207,10 +208,16 @@ class BarChart extends StatelessWidget {
     final textAlpha = isHighlightedOverflow ? 150 : 255;
     final baseStyle = DefaultTextStyle.of(context).style;
 
-    final insideTextColor = barTextColor.withAlpha(textAlpha);
-    final outsideTextColor = context.talleeColors.textColor.withAlpha(
+    final skeletonizing = Skeletonizer.maybeOf(context)?.enabled == true;
+    final skeletonTextColor = context.talleeColors.skeletonFromColor.withAlpha(
       textAlpha,
     );
+    final insideTextColor = skeletonizing
+        ? skeletonTextColor
+        : barTextColor.withAlpha(textAlpha);
+    final outsideTextColor = skeletonizing
+        ? skeletonTextColor
+        : context.talleeColors.textColor.withAlpha(textAlpha);
 
     return ShaderMask(
       blendMode: BlendMode.srcIn,
