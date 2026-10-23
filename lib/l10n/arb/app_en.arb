@@ -43,6 +43,7 @@
   "contact_us_through_mail": "Feel free to contact us via email directly so we can solve your problem!",
   "continue_": "Continue",
   "copy_code": "Copy Code",
+  "select_a_theme_description": "Select the app's displayed theme.",
   "could_not_add_player": "Could not add player {playerName}",
   "@could_not_add_player": {
     "placeholders": {

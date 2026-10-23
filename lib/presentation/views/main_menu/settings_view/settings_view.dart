@@ -8,8 +8,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
@@ -21,9 +21,7 @@ import 'package:tallee/presentation/views/main_menu/settings_view/privacy_policy
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
-import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
-import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_tile.dart'
-    as app_pull_down;
+import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -86,53 +84,23 @@ class _SettingsViewState extends State<SettingsView> {
                   SettingsListTile(
                     title: loc.theme,
                     icon: Icons.brightness_6_rounded,
-                    suffixWidget: PullDownMenuButton(
-                      menuWidth: 190,
-                      icon: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
+                    suffixWidget: Row(
+                      spacing: 10,
+                      children: [
+                        Text(
+                          getThemeModeLabel(
+                            loc,
+                            context.watch<ThemeProvider>().themeMode,
+                          ),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
                         ),
-                        decoration: BoxDecoration(
-                          color: context.talleeColors.onBoxColor,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              getThemeModeLabel(
-                                context,
-                                context.watch<ThemeProvider>().themeMode,
-                              ),
-                              style: TextStyle(
-                                color: context.talleeColors.textColor,
-                                fontSize: 14,
-                              ),
-                            ),
-                            Icon(
-                              Icons.arrow_drop_down,
-                              size: 20,
-                              color: context.talleeColors.textColor,
-                            ),
-                          ],
-                        ),
-                      ),
-                      items: [
-                        themeMenuTile(
-                          context,
-                          ThemeMode.system,
-                          loc.theme_system,
-                        ),
-                        themeMenuTile(context, ThemeMode.dark, loc.theme_dark),
-                        themeMenuTile(
-                          context,
-                          ThemeMode.light,
-                          loc.theme_light,
-                        ),
+                        const Icon(Icons.arrow_forward_ios, size: 16),
                       ],
                     ),
-                    onPressed: null,
+                    onPressed: () => showThemeModeSheet(loc),
                   ),
 
                   // Send feedback tile
@@ -144,7 +112,9 @@ class _SettingsViewState extends State<SettingsView> {
                       final result = await Navigator.push<bool>(
                         context,
                         adaptivePageRoute(
-                          settings: const RouteSettings(name: RouteNames.feedbackFormView),
+                          settings: const RouteSettings(
+                            name: RouteNames.feedbackFormView,
+                          ),
                           fullscreenDialog: true,
                           builder: (context) => const FeedbackFormView(),
                         ),
@@ -346,22 +316,25 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  app_pull_down.PullDownMenuTile themeMenuTile(
-    BuildContext context,
-    ThemeMode mode,
-    String label,
-  ) {
-    final isSelected = context.watch<ThemeProvider>().themeMode == mode;
-
-    return app_pull_down.PullDownMenuTile(
-      icon: isSelected ? Icons.check : null,
-      label: label,
-      onTap: () => context.read<ThemeProvider>().setThemeMode(mode),
+  /// Shows a sheet for selecting the theme mode
+  void showThemeModeSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext context) => SelectionSheet<ThemeMode>(
+        title: loc.theme,
+        description: loc.select_a_theme_description,
+        values: ThemeMode.values,
+        selectedValue: context.watch<ThemeProvider>().themeMode,
+        onValueUpdated: (ThemeMode? tm) =>
+            context.read<ThemeProvider>().setThemeMode(tm!),
+        labelBuilder: (BuildContext ctx, ThemeMode tm) =>
+            getThemeModeLabel(loc, tm),
+      ),
     );
   }
 
-  String getThemeModeLabel(BuildContext context, ThemeMode mode) {
-    final loc = AppLocalizations.of(context);
+  /// Returns the correct localized String for the given [mode].
+  String getThemeModeLabel(AppLocalizations loc, ThemeMode mode) {
     return switch (mode) {
       ThemeMode.system => loc.theme_system,
       ThemeMode.dark => loc.theme_dark,

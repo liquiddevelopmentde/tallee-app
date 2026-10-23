@@ -146,6 +146,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get copy_code => 'Code kopieren';
 
   @override
+  String get select_a_theme_description => 'Wähle die Darstellung der App.';
+
+  @override
   String could_not_add_player(String playerName) {
     return 'Spieler:in $playerName konnte nicht hinzugefügt werden';
   }

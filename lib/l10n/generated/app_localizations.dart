@@ -356,6 +356,12 @@ abstract class AppLocalizations {
   /// **'Copy Code'**
   String get copy_code;
 
+  /// No description provided for @select_a_theme_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the app\'s displayed theme.'**
+  String get select_a_theme_description;
+
   /// No description provided for @could_not_add_player.
   ///
   /// In en, this message translates to:

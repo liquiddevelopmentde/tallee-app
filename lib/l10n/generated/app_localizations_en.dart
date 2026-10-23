@@ -142,6 +142,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy_code => 'Copy Code';
 
   @override
+  String get select_a_theme_description => 'Select the app\'s displayed theme.';
+
+  @override
   String could_not_add_player(String playerName) {
     return 'Could not add player $playerName';
   }
