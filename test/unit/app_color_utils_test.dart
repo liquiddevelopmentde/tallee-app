@@ -87,16 +87,12 @@ void main() {
         ),
       );
 
-      final colorMap = <AppColor, Color>{};
-
-      // Create map from all tuples
-      for (final val in AppColor.values) {
-        colorMap[val] = getStatisticsBarTextColor(AppColor.red, context);
-      }
-
       // Every text is in dark color
-      for (final k in colorMap.keys) {
-        expect(getStatisticsBarTextColor(k, context), AppColors.textColorLight);
+      for (final color in AppColor.values) {
+        expect(
+          getStatisticsBarTextColor(color, context),
+          AppColors.textColorLight,
+        );
       }
     });
 
@@ -116,27 +112,14 @@ void main() {
         ),
       );
 
-      final colorMap = <AppColor, Color>{};
-
-      // Create map from all tuples
-      for (final val in AppColor.values) {
-        colorMap[val] = getStatisticsBarTextColor(AppColor.red, context);
-      }
-
-      for (final k in colorMap.keys) {
-        // Dark color
-        if (k == AppColor.yellow || k == AppColor.orange) {
-          expect(
-            getStatisticsBarTextColor(k, context),
-            AppColors.textColorLight,
-          );
-        } else {
-          // Light color
-          expect(
-            getStatisticsBarTextColor(k, context),
-            AppColors.textColorDark,
-          );
-        }
+      // Dark text on yellow and orange, light text on everything else
+      for (final color in AppColor.values) {
+        final hasDarkText =
+            color == AppColor.yellow || color == AppColor.orange;
+        expect(
+          getStatisticsBarTextColor(color, context),
+          hasDarkText ? AppColors.textColorLight : AppColors.textColorDark,
+        );
       }
     });
   });
