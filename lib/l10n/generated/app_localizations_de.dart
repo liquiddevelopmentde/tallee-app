@@ -866,11 +866,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get select_a_scope_description =>
-      'Hier kannst du deine Daten auf bestimmte Gruppen oder Spielvorlagen eingrenzen.';
+      'Wähle die Gruppen oder Spielvorlagen aus, auf die deine Statistik eingegrenzt werden soll.';
 
   @override
   String get select_a_timeframe_description =>
-      'Hier kannst du deine Daten auf einen bestimmten Zeitraum eingrenzen.';
+      'Wähle den Zeitraum für deine Statistik aus.';
 
   @override
   String get select_a_type => 'Typ wählen';

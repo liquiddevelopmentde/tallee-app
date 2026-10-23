@@ -850,18 +850,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get select_a_color_description =>
-      'Select the display color for your chart.';
+      'Select the display color for your statistic.';
 
   @override
   String get select_a_scope => 'Select a scope';
 
   @override
   String get select_a_scope_description =>
-      'Here you can filter your data by specific groups or games.';
+      'Select the groups or game templates to limit your statistic to.';
 
   @override
   String get select_a_timeframe_description =>
-      'Here you can narrow down your data to a specific time period.';
+      'Select the time period for your statistic.';
 
   @override
   String get select_a_type => 'Select a type';

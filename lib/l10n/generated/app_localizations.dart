@@ -1595,7 +1595,7 @@ abstract class AppLocalizations {
   /// No description provided for @select_a_color_description.
   ///
   /// In en, this message translates to:
-  /// **'Select the display color for your chart.'**
+  /// **'Select the display color for your statistic.'**
   String get select_a_color_description;
 
   /// No description provided for @select_a_scope.
@@ -1607,13 +1607,13 @@ abstract class AppLocalizations {
   /// No description provided for @select_a_scope_description.
   ///
   /// In en, this message translates to:
-  /// **'Here you can filter your data by specific groups or games.'**
+  /// **'Select the groups or game templates to limit your statistic to.'**
   String get select_a_scope_description;
 
   /// No description provided for @select_a_timeframe_description.
   ///
   /// In en, this message translates to:
-  /// **'Here you can narrow down your data to a specific time period.'**
+  /// **'Select the time period for your statistic.'**
   String get select_a_timeframe_description;
 
   /// No description provided for @select_a_type.
