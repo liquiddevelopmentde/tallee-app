@@ -58,7 +58,6 @@ void main() async {
       options.dsn = IS_DEV_ENV ? '' : dotenv.get('SENTRY_DSN', fallback: '');
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
-      options.enableLogs = true;
       // Decrease sampleRate in stable to avoid sending too many events
       options.tracesSampleRate = 1.0;
       options.environment = IS_PROD_ENV
