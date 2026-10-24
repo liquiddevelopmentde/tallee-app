@@ -356,12 +356,6 @@ abstract class AppLocalizations {
   /// **'Copy Code'**
   String get copy_code;
 
-  /// No description provided for @select_a_theme_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the app\'s displayed theme.'**
-  String get select_a_theme_description;
-
   /// No description provided for @could_not_add_player.
   ///
   /// In en, this message translates to:
@@ -1616,6 +1610,12 @@ abstract class AppLocalizations {
   /// **'Select the groups or game templates to limit your statistic to.'**
   String get select_a_scope_description;
 
+  /// No description provided for @select_a_theme_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the app\'s displayed theme.'**
+  String get select_a_theme_description;
+
   /// No description provided for @select_a_timeframe_description.
   ///
   /// In en, this message translates to:
@@ -1987,6 +1987,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Timeframe'**
   String get timeframe;
+
+  /// No description provided for @timeframe_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics related to any of the selected time periods are displayed.'**
+  String get timeframe_filter_description;
+
+  /// No description provided for @type_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics matching any of the selected types are displayed.'**
+  String get type_filter_description;
 
   /// No description provided for @today.
   ///

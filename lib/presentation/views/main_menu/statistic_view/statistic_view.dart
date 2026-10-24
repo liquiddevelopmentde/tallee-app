@@ -214,10 +214,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                   ChooseEnumView<StatisticType>(
                                                     enumValue:
                                                         StatisticType.values,
-
                                                     initialEnums:
                                                         filteredStatisticTypes,
                                                     enableMultiSelection: true,
+                                                    description: loc
+                                                        .type_filter_description,
                                                   ),
                                             ),
                                           );
@@ -254,10 +255,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               builder: (context) =>
                                                   ChooseEnumView<Timeframe>(
                                                     enumValue: Timeframe.values,
-
                                                     initialEnums:
                                                         filteredTimeframes,
                                                     enableMultiSelection: true,
+                                                    description: loc
+                                                        .timeframe_filter_description,
                                                   ),
                                             ),
                                           );
@@ -324,8 +326,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             opacity: 1 * t,
                                             child: DecoratedBox(
                                               decoration: BoxDecoration(
-                                                color: colors
-                                                    .textColor
+                                                color: colors.textColor
                                                     .withValues(alpha: 0.10),
                                                 borderRadius:
                                                     BorderRadius.circular(12),

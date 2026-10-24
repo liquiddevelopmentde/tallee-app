@@ -142,9 +142,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy_code => 'Copy Code';
 
   @override
-  String get select_a_theme_description => 'Select the app\'s displayed theme.';
-
-  @override
   String could_not_add_player(String playerName) {
     return 'Could not add player $playerName';
   }
@@ -863,6 +860,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Select the groups or game templates to limit your statistic to.';
 
   @override
+  String get select_a_theme_description => 'Select the app\'s displayed theme.';
+
+  @override
   String get select_a_timeframe_description =>
       'Select the time period for your statistic.';
 
@@ -1073,6 +1073,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get timeframe => 'Timeframe';
+
+  @override
+  String get timeframe_filter_description =>
+      'All statistics related to any of the selected time periods are displayed.';
+
+  @override
+  String get type_filter_description =>
+      'All statistics matching any of the selected types are displayed.';
 
   @override
   String get today => 'Today';

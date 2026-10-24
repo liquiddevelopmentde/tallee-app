@@ -15,11 +15,13 @@ class ChooseEnumView<T extends Enum> extends StatefulWidget {
     required this.enumValue,
     this.initialEnums,
     this.enableMultiSelection = false,
+    this.description,
   });
 
   final List<T> enumValue;
   final List<T>? initialEnums;
   final bool enableMultiSelection;
+  final String? description;
 
   @override
   State<ChooseEnumView<T>> createState() => _ChooseEnumViewState<T>();
@@ -53,86 +55,122 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
         },
         child: RadioGroup(
           onChanged: (T? value) => onChanged(value!),
-          child: ListView.separated(
-            padding: const EdgeInsets.only(
-              bottom: 85,
-              top: 10,
-              right: 10,
-              left: 10,
-            ),
-            itemCount: widget.enumValue.length,
-            separatorBuilder: (BuildContext context, int index) =>
-                const SizedBox(height: 10),
-            itemBuilder: (BuildContext context, int index) => GestureDetector(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: context.talleeColors.boxColor,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: context.talleeColors.boxBorderColor,
-                    width: 2,
+          child: Column(
+            children: [
+              if (widget.description != null)
+                Padding(
+                  padding: const EdgeInsetsGeometry.symmetric(horizontal: 32),
+                  child: Text(
+                    widget.description!,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.visible,
+                    style: TextStyle(color: context.talleeColors.hintColor),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      spacing: 12,
-                      children: [
-                        if (widget.enumValue is List<StatisticType>)
-                          Icon(
-                            getTypeIcon(
-                              type: widget.enumValue[index] as StatisticType,
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.only(
+                    bottom: 85,
+                    top: 10,
+                    right: 10,
+                    left: 10,
+                  ),
+                  itemCount: widget.enumValue.length,
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const SizedBox(height: 10),
+                  itemBuilder: (BuildContext context, int index) =>
+                      GestureDetector(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: context.talleeColors.boxColor,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: context.talleeColors.boxBorderColor,
+                              width: 2,
                             ),
                           ),
-                        Text(
-                          getValName(widget.enumValue[index], context),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                spacing: 12,
+                                children: [
+                                  if (widget.enumValue is List<StatisticType>)
+                                    Icon(
+                                      getTypeIcon(
+                                        type:
+                                            widget.enumValue[index]
+                                                as StatisticType,
+                                      ),
+                                    ),
+                                  Text(
+                                    getValName(
+                                      widget.enumValue[index],
+                                      context,
+                                    ),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
 
-                    if (!isMultiSelect)
-                      // Radio
-                      Radio<T>(
-                        fillColor: WidgetStateProperty.resolveWith<Color>((
-                          states,
-                        ) {
-                          if (states.contains(WidgetState.selected)) {
-                            return context.talleeColors.textColor;
-                          }
-                          return context.talleeColors.hintColor;
-                        }),
-                        value: widget.enumValue[index],
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: VisualDensity.compact,
-                      )
-                    else
-                      // Checkbox
-                      Checkbox(
-                        value: selectedValues.contains(widget.enumValue[index]),
-                        onChanged: (_) => onChanged(widget.enumValue[index]),
-                        checkColor: context.talleeColors.backgroundColor,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: VisualDensity.compact,
-                        fillColor: WidgetStateProperty.resolveWith<Color>((
-                          states,
-                        ) {
-                          if (states.contains(WidgetState.selected)) {
-                            return context.talleeColors.textColor;
-                          }
-                          return Colors.transparent;
-                        }),
+                              if (!isMultiSelect)
+                                // Radio
+                                Radio<T>(
+                                  fillColor:
+                                      WidgetStateProperty.resolveWith<Color>((
+                                        states,
+                                      ) {
+                                        if (states.contains(
+                                          WidgetState.selected,
+                                        )) {
+                                          return context.talleeColors.textColor;
+                                        }
+                                        return context.talleeColors.hintColor;
+                                      }),
+                                  value: widget.enumValue[index],
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  visualDensity: VisualDensity.compact,
+                                )
+                              else
+                                // Checkbox
+                                Checkbox(
+                                  value: selectedValues.contains(
+                                    widget.enumValue[index],
+                                  ),
+                                  onChanged: (_) =>
+                                      onChanged(widget.enumValue[index]),
+                                  checkColor:
+                                      context.talleeColors.backgroundColor,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  visualDensity: VisualDensity.compact,
+                                  fillColor:
+                                      WidgetStateProperty.resolveWith<Color>((
+                                        states,
+                                      ) {
+                                        if (states.contains(
+                                          WidgetState.selected,
+                                        )) {
+                                          return context.talleeColors.textColor;
+                                        }
+                                        return Colors.transparent;
+                                      }),
+                                ),
+                            ],
+                          ),
+                        ),
+                        onTap: () => onChanged(widget.enumValue[index]),
                       ),
-                  ],
                 ),
               ),
-              onTap: () => onChanged(widget.enumValue[index]),
-            ),
+            ],
           ),
         ),
       ),

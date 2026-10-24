@@ -146,9 +146,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get copy_code => 'Code kopieren';
 
   @override
-  String get select_a_theme_description => 'Wähle die Darstellung der App.';
-
-  @override
   String could_not_add_player(String playerName) {
     return 'Spieler:in $playerName konnte nicht hinzugefügt werden';
   }
@@ -872,6 +869,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wähle die Gruppen oder Spielvorlagen aus, auf die deine Statistik eingegrenzt werden soll.';
 
   @override
+  String get select_a_theme_description => 'Wähle die Darstellung der App.';
+
+  @override
   String get select_a_timeframe_description =>
       'Wähle den Zeitraum für deine Statistik aus.';
 
@@ -1086,6 +1086,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get timeframe => 'Zeitraum';
+
+  @override
+  String get timeframe_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf einen der ausgewählten Zeiträume beziehen.';
+
+  @override
+  String get type_filter_description =>
+      'Es werden alle Statistiken angezeigt, die einem der ausgewählten Typen entsprechen.';
 
   @override
   String get today => 'Heute';

@@ -43,7 +43,6 @@
   "contact_us_through_mail": "Feel free to contact us via email directly so we can solve your problem!",
   "continue_": "Continue",
   "copy_code": "Copy Code",
-  "select_a_theme_description": "Select the app's displayed theme.",
   "could_not_add_player": "Could not add player {playerName}",
   "@could_not_add_player": {
     "placeholders": {
@@ -316,6 +315,7 @@
   "select_a_color_description": "Select the display color for your statistic.",
   "select_a_scope": "Select a scope",
   "select_a_scope_description": "Select the groups or game templates to limit your statistic to.",
+  "select_a_theme_description": "Select the app's displayed theme.",
   "select_a_timeframe_description": "Select the time period for your statistic.",
   "select_a_type": "Select a type",
   "select_a_type_description": "Select a type for your statistic.",
@@ -394,6 +394,7 @@
   "this_cannot_be_undone": "This can't be undone.",
   "tie": "Tie",
   "timeframe": "Timeframe",
+  "timeframe_filter_description": "All statistics related to any of the selected time periods are displayed.",
   "today": "Today",
   "today_at": "Today at",
   "token_expired": "Token expired",
@@ -410,6 +411,7 @@
   "total_score": "Total score",
   "total_wins": "Total wins",
   "type": "Type",
+  "type_filter_description": "All statistics matching any of the selected types are displayed.",
   "unexpected_error": "An unexpected error occurred.",
   "unknown_exception": "Unknown Exception (see console)",
   "unsatisfied": "Unsatisfied?",
