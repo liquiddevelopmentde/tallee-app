@@ -288,11 +288,14 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required String teamId,
     required String matchId,
     required int score,
+    bool setEndedAt = true,
   }) async {
-    await db.matchDao.updateMatchEndedAt(
-      matchId: matchId,
-      endedAt: DateTime.now(),
-    );
+    if (setEndedAt) {
+      await db.matchDao.updateMatchEndedAt(
+        matchId: matchId,
+        endedAt: DateTime.now(),
+      );
+    }
     await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
       const TeamTableCompanion(score: Value(null)),
     );
@@ -374,8 +377,14 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<bool> setWinnerTeam({
     required String teamId,
     required String matchId,
+    bool setEndedAt = true,
   }) async {
-    return await updateTeamScore(teamId: teamId, matchId: matchId, score: 1);
+    return await updateTeamScore(
+      teamId: teamId,
+      matchId: matchId,
+      score: 1,
+      setEndedAt: setEndedAt,
+    );
   }
 
   /// Sets multiple teams as winners of the match with the given [matchId] by assigning a score of 1 to each team.
@@ -383,6 +392,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<bool> setWinnerTeams({
     required List<Team> winners,
     required String matchId,
+    bool setEndedAt = true,
   }) async {
     // Reset all team scores .
     await removeAllTeamScores(matchId: matchId);
@@ -392,7 +402,12 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     }
 
     for (final team in winners) {
-      await updateTeamScore(teamId: team.id, matchId: matchId, score: 1);
+      await updateTeamScore(
+        teamId: team.id,
+        matchId: matchId,
+        score: 1,
+        setEndedAt: setEndedAt,
+      );
     }
     return true;
   }
@@ -408,8 +423,14 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<bool> setLoserTeam({
     required String teamId,
     required String matchId,
+    bool setEndedAt = true,
   }) async {
-    return await updateTeamScore(teamId: teamId, matchId: matchId, score: 0);
+    return await updateTeamScore(
+      teamId: teamId,
+      matchId: matchId,
+      score: 0,
+      setEndedAt: setEndedAt,
+    );
   }
 
   /// Removes the loser from the match with the given [matchId] by setting its score to null.
@@ -423,6 +444,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<bool> setTeamPlacements({
     required String matchId,
     required List<Team> teams,
+    bool setEndedAt = true,
   }) async {
     List<bool?> success = List.generate(teams.length, (index) => null);
     for (int i = 0; i < teams.length; i++) {
@@ -430,6 +452,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
         matchId: matchId,
         teamId: teams[i].id,
         score: teams.length - i,
+        setEndedAt: setEndedAt,
       );
     }
     return success.every((result) => result == true);

@@ -1,5 +1,5 @@
 import 'package:clock/clock.dart';
-import 'package:drift/drift.dart' hide isNotNull;
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/data/db/database.dart';
@@ -754,5 +754,32 @@ void main() {
         );
       },
     );
+
+    test('hasFinishedResult returns true only when match has ended and has results', () async {
+      await database.matchDao.addMatch(match: testMatch1);
+
+      var match = await database.matchDao.getMatchById(matchId: testMatch1.id);
+      expect(match.hasFinishedResult, isFalse);
+
+      await database.scoreEntryDao.setWinner(
+        playerId: testPlayer1.id,
+        matchId: testMatch1.id,
+        setEndedAt: false,
+      );
+
+      match = await database.matchDao.getMatchById(matchId: testMatch1.id);
+      expect(match.hasResult, isTrue);
+      expect(match.endedAt, isNull);
+      expect(match.hasFinishedResult, isFalse);
+
+      await database.matchDao.updateMatchEndedAt(
+        matchId: testMatch1.id,
+        endedAt: fixedDate,
+      );
+
+      match = await database.matchDao.getMatchById(matchId: testMatch1.id);
+      expect(match.endedAt, isNotNull);
+      expect(match.hasFinishedResult, isTrue);
+    });
   });
 }

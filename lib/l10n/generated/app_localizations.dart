@@ -620,6 +620,12 @@ abstract class AppLocalizations {
   /// **'Enable'**
   String get enable;
 
+  /// No description provided for @end_match.
+  ///
+  /// In en, this message translates to:
+  /// **'End Match'**
+  String get end_match;
+
   /// No description provided for @enter_results.
   ///
   /// In en, this message translates to:

@@ -299,6 +299,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enable => 'Enable';
 
   @override
+  String get end_match => 'End Match';
+
+  @override
   String get enter_results => 'Enter Results';
 
   @override

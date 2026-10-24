@@ -287,7 +287,7 @@ class MatchProfileBody extends StatelessWidget {
 
   List<Widget> getSingleResultRow(BuildContext context, AppLocalizations loc) {
     final ruleset = match.game.ruleset;
-    if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
+    if (match.hasFinishedResult) {
       final label = ruleset == Ruleset.loser ? loc.loser : loc.winner;
       return [
         Text(
@@ -409,12 +409,14 @@ class MatchProfileBody extends StatelessWidget {
     }
 
     final ruleset = match.game.ruleset;
-    if (ruleset == Ruleset.highestScore ||
-        ruleset == Ruleset.placement ||
-        ruleset == Ruleset.lives) {
-      namedScores.sort((a, b) => b.$2.compareTo(a.$2));
-    } else if (ruleset == Ruleset.lowestScore) {
-      namedScores.sort((a, b) => a.$2.compareTo(b.$2));
+    if (match.endedAt != null) {
+      if (ruleset == Ruleset.highestScore ||
+          ruleset == Ruleset.placement ||
+          ruleset == Ruleset.lives) {
+        namedScores.sort((a, b) => b.$2.compareTo(a.$2));
+      } else if (ruleset == Ruleset.lowestScore) {
+        namedScores.sort((a, b) => a.$2.compareTo(b.$2));
+      }
     }
     return namedScores;
   }

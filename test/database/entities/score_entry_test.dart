@@ -678,6 +678,19 @@ void main() {
         );
         expect(match.endedAt, isNull);
       });
+
+      test('setWinner() with setEndedAt: false does not set endedAt', () async {
+        await database.scoreEntryDao.setWinner(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          setEndedAt: false,
+        );
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNull);
+      });
     });
 
     group('LOSER', () {
@@ -740,6 +753,19 @@ void main() {
           matchId: testMatch1.id,
         );
         expect(loser, isNull);
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNull);
+      });
+
+      test('setLoser() with setEndedAt: false does not set endedAt', () async {
+        await database.scoreEntryDao.setLoser(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+          setEndedAt: false,
+        );
 
         final match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,

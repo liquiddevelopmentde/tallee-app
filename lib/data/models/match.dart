@@ -275,6 +275,10 @@ class Match {
 
   bool get hasResult => mvp.isNotEmpty || mvt.isNotEmpty;
 
+  /// Whether the match has ended and has a final result that should be
+  /// displayed in the UI
+  bool get hasFinishedResult => endedAt != null && hasResult;
+
   // Most Valuable Player(s) based on the match's ruleset
   List<Player> get mvp {
     if (players.isEmpty ||

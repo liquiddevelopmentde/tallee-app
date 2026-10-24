@@ -302,6 +302,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enable => 'Aktivieren';
 
   @override
+  String get end_match => 'Match beenden';
+
+  @override
   String get enter_results => 'Ergebnisse eintragen';
 
   @override

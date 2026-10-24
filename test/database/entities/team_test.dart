@@ -376,6 +376,23 @@ void main() {
         }
       });
 
+      test('updateTeamScore() with setEndedAt: false does not set endedAt', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+
+        final updated = await database.teamDao.updateTeamScore(
+          teamId: testTeam1.id,
+          matchId: testMatch1.id,
+          score: 5,
+          setEndedAt: false,
+        );
+        expect(updated, isTrue);
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNull);
+      });
+
       test('set-/removeWinnerTeam() works correctly', () async {
         await database.matchDao.addMatch(match: testMatch1);
 
