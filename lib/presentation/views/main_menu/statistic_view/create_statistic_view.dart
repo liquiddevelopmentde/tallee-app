@@ -88,170 +88,179 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         appBar: AppBar(title: Text(loc.create_statistic)),
         body: SafeArea(
           minimum: const EdgeInsets.symmetric(horizontal: 12),
-          child: Stack(
-            fit: StackFit.expand,
-            alignment: Alignment.center,
-            children: [
-              SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: 90),
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              child: ConstrainedBox(
+                // Fill at least the screen so the button sits at the bottom
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Column(
-                  spacing: 10,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Preview of the statistic with sample data
-                    AnimatedSize(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeInOut,
-                      alignment: Alignment.topCenter,
-                      child: buildPreview(loc),
-                    ),
+                    Column(
+                      spacing: 10,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Preview of the statistic with sample data
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                          alignment: Alignment.topCenter,
+                          child: buildPreview(loc),
+                        ),
 
-                    // Type selection
-                    ChooseTile(
-                      title: loc.type,
-                      icon: Icons.bar_chart,
-                      trailing: Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: selectedType == null
-                            ? Text(
-                                loc.select_a_type,
-                                style: TextStyle(
-                                  color: context.talleeColors.hintColor,
-                                ),
-                              )
-                            : Text(
-                                translateStatisticTypeToString(
-                                  selectedType!,
-                                  context,
-                                ),
-                              ),
-                      ),
-                      onPressed: () => showTypeSheet(loc),
-                    ),
-
-                    // Scope selection
-                    ChooseTile(
-                      title: loc.scope,
-                      icon: Icons.hdr_strong,
-                      trailing: Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: selectedScopes.isEmpty
-                            ? Text(
-                                loc.select_a_scope,
-                                style: TextStyle(
-                                  color: context.talleeColors.hintColor,
-                                ),
-                              )
-                            : Row(
-                                mainAxisSize: MainAxisSize.min,
-                                spacing: 5,
-                                children: [
-                                  Text(
-                                    translateScopeToString(
-                                      selectedScopes.first,
+                        // Type selection
+                        ChooseTile(
+                          title: loc.type,
+                          icon: Icons.bar_chart,
+                          trailing: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: selectedType == null
+                                ? Text(
+                                    loc.select_a_type,
+                                    style: TextStyle(
+                                      color: context.talleeColors.hintColor,
+                                    ),
+                                  )
+                                : Text(
+                                    translateStatisticTypeToString(
+                                      selectedType!,
                                       context,
                                     ),
                                   ),
-                                  if (selectedScopes.length > 1)
-                                    Text(
-                                      '+ ${selectedScopes.length - 1}',
-                                      style: TextStyle(
-                                        color: context.talleeColors.textColor
-                                            .withAlpha(200),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                      ),
-                      onPressed: () => showScopeSheet(loc),
-                    ),
-
-                    // Group selection
-                    if (hasGroupScope)
-                      ChooseTile(
-                        title: loc.groups,
-                        icon: GROUP_ICON,
-                        trailing: buildSelectionTrailing(
-                          names: selectedGroups.map((g) => g.name).toList(),
-                          hint: loc.select_groups,
-                        ),
-                        onPressed: () => showGroupSelection(),
-                      ),
-
-                    // Game selection
-                    if (hasGameScope)
-                      ChooseTile(
-                        title: loc.games,
-                        icon: GAME_ICON,
-                        trailing: buildSelectionTrailing(
-                          names: selectedGames.map((g) => g.name).toList(),
-                          hint: loc.select_games,
-                        ),
-                        onPressed: () => showGameSelection(),
-                      ),
-
-                    // Timeframe selection
-                    ChooseTile(
-                      title: loc.timeframe,
-                      icon: Icons.date_range,
-                      trailing: Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Text(
-                          translateTimeframeToString(
-                            selectedTimeframe,
-                            context,
                           ),
+                          onPressed: () => showTypeSheet(loc),
                         ),
-                      ),
-                      onPressed: () => showTimeframeSheet(loc),
+
+                        // Scope selection
+                        ChooseTile(
+                          title: loc.scope,
+                          icon: Icons.hdr_strong,
+                          trailing: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: selectedScopes.isEmpty
+                                ? Text(
+                                    loc.select_a_scope,
+                                    style: TextStyle(
+                                      color: context.talleeColors.hintColor,
+                                    ),
+                                  )
+                                : Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    spacing: 5,
+                                    children: [
+                                      Text(
+                                        translateScopeToString(
+                                          selectedScopes.first,
+                                          context,
+                                        ),
+                                      ),
+                                      if (selectedScopes.length > 1)
+                                        Text(
+                                          '+ ${selectedScopes.length - 1}',
+                                          style: TextStyle(
+                                            color: context
+                                                .talleeColors
+                                                .textColor
+                                                .withAlpha(200),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                          ),
+                          onPressed: () => showScopeSheet(loc),
+                        ),
+
+                        // Group selection
+                        if (hasGroupScope)
+                          ChooseTile(
+                            title: loc.groups,
+                            icon: GROUP_ICON,
+                            trailing: buildSelectionTrailing(
+                              names: selectedGroups.map((g) => g.name).toList(),
+                              hint: loc.select_groups,
+                            ),
+                            onPressed: () => showGroupSelection(),
+                          ),
+
+                        // Game selection
+                        if (hasGameScope)
+                          ChooseTile(
+                            title: loc.games,
+                            icon: GAME_ICON,
+                            trailing: buildSelectionTrailing(
+                              names: selectedGames.map((g) => g.name).toList(),
+                              hint: loc.select_games,
+                            ),
+                            onPressed: () => showGameSelection(),
+                          ),
+
+                        // Timeframe selection
+                        ChooseTile(
+                          title: loc.timeframe,
+                          icon: Icons.date_range,
+                          trailing: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Text(
+                              translateTimeframeToString(
+                                selectedTimeframe,
+                                context,
+                              ),
+                            ),
+                          ),
+                          onPressed: () => showTimeframeSheet(loc),
+                        ),
+
+                        // Date range selection
+                        if (selectedTimeframe == Timeframe.custom)
+                          buildDateRangeField(context),
+
+                        // Color selection
+                        ChooseTile(
+                          title: loc.color,
+                          icon: Icons.palette,
+                          trailing: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Row(
+                              spacing: 10,
+                              children: [
+                                if (selectedColor == null) ...[
+                                  const ColoredCircle(isRandomColor: true),
+                                  Text(loc.random_color),
+                                ] else ...[
+                                  ColoredCircle(color: selectedColor!),
+                                  Text(
+                                    translateAppColorToString(
+                                      selectedColor!,
+                                      context,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          onPressed: () => showColorSheet(loc),
+                        ),
+                      ],
                     ),
 
-                    // Date range selection
-                    if (selectedTimeframe == Timeframe.custom)
-                      buildDateRangeField(context),
-
-                    // Color selection
-                    ChooseTile(
-                      title: loc.color,
-                      icon: Icons.palette,
-                      trailing: Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            if (selectedColor == null) ...[
-                              const ColoredCircle(isRandomColor: true),
-                              Text(loc.random_color),
-                            ] else ...[
-                              ColoredCircle(color: selectedColor!),
-                              Text(
-                                translateAppColorToString(
-                                  selectedColor!,
-                                  context,
-                                ),
-                              ),
-                            ],
-                          ],
+                    // Create statistic button
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 12),
+                      child: Center(
+                        child: BottomAnimatedButton(
+                          buttonText: loc.create_statistic,
+                          sizeRelativeToWidth: 0.95,
+                          onPressed: enableSubmitButton
+                              ? () => submitStatistic()
+                              : null,
                         ),
                       ),
-                      onPressed: () => showColorSheet(loc),
                     ),
                   ],
                 ),
               ),
-
-              // Create statistic button
-              Positioned(
-                bottom: 12,
-                child: BottomAnimatedButton(
-                  buttonText: loc.create_statistic,
-                  sizeRelativeToWidth: 0.95,
-                  onPressed: enableSubmitButton
-                      ? () => submitStatistic()
-                      : null,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

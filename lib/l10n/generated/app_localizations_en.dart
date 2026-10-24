@@ -1079,10 +1079,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'All statistics related to any of the selected time periods are displayed.';
 
   @override
-  String get type_filter_description =>
-      'All statistics matching any of the selected types are displayed.';
-
-  @override
   String get today => 'Today';
 
   @override
@@ -1110,6 +1106,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get type => 'Type';
+
+  @override
+  String get type_filter_description =>
+      'All statistics matching any of the selected types are displayed.';
 
   @override
   String get unexpected_error => 'An unexpected error occurred.';

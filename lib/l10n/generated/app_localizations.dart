@@ -1994,12 +1994,6 @@ abstract class AppLocalizations {
   /// **'All statistics related to any of the selected time periods are displayed.'**
   String get timeframe_filter_description;
 
-  /// No description provided for @type_filter_description.
-  ///
-  /// In en, this message translates to:
-  /// **'All statistics matching any of the selected types are displayed.'**
-  String get type_filter_description;
-
   /// No description provided for @today.
   ///
   /// In en, this message translates to:
@@ -2053,6 +2047,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type'**
   String get type;
+
+  /// No description provided for @type_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics matching any of the selected types are displayed.'**
+  String get type_filter_description;
 
   /// No description provided for @unexpected_error.
   ///
