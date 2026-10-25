@@ -614,12 +614,6 @@ abstract class AppLocalizations {
   /// **'Edit Match'**
   String get edit_match;
 
-  /// No description provided for @edit_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit name'**
-  String get edit_name;
-
   /// No description provided for @edit_player.
   ///
   /// In en, this message translates to:
@@ -1154,28 +1148,34 @@ abstract class AppLocalizations {
   /// **'No'**
   String get no;
 
-  /// No description provided for @no_data_available.
-  ///
-  /// In en, this message translates to:
-  /// **'No data available'**
-  String get no_data_available;
-
   /// No description provided for @no_data_to_export.
   ///
   /// In en, this message translates to:
   /// **'No data to export'**
   String get no_data_to_export;
 
+  /// No description provided for @no_games.
+  ///
+  /// In en, this message translates to:
+  /// **'No Games'**
+  String get no_games;
+
   /// No description provided for @no_games_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No games created yet'**
+  /// **'You haven\'t created any games yet. Create a new game so it will appear here.'**
   String get no_games_created_yet;
+
+  /// No description provided for @no_groups.
+  ///
+  /// In en, this message translates to:
+  /// **'No Groups'**
+  String get no_groups;
 
   /// No description provided for @no_groups_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No groups created yet'**
+  /// **'You haven\'t created any groups yet. Create a new group so it will appear here.'**
   String get no_groups_created_yet;
 
   /// No description provided for @no_license_text_available.
@@ -1184,10 +1184,16 @@ abstract class AppLocalizations {
   /// **'No license text available'**
   String get no_license_text_available;
 
+  /// No description provided for @no_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No Matches'**
+  String get no_matches;
+
   /// No description provided for @no_matches_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No matches created yet'**
+  /// **'You haven\'t created any matches yet. Create a new match so it will appear here.'**
   String get no_matches_created_yet;
 
   /// No description provided for @no_matches_played_yet.
@@ -1208,6 +1214,12 @@ abstract class AppLocalizations {
   /// **'No matching local group found.\nA new group will be created.'**
   String get no_matching_local_group_found;
 
+  /// No description provided for @no_players.
+  ///
+  /// In en, this message translates to:
+  /// **'No Players'**
+  String get no_players;
+
   /// No description provided for @no_players_available.
   ///
   /// In en, this message translates to:
@@ -1217,7 +1229,7 @@ abstract class AppLocalizations {
   /// No description provided for @no_players_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No players created yet'**
+  /// **'You haven\'t created any players yet'**
   String get no_players_created_yet;
 
   /// No description provided for @no_players_found_with_that_name.
@@ -1232,16 +1244,28 @@ abstract class AppLocalizations {
   /// **'No players selected'**
   String get no_players_selected;
 
+  /// No description provided for @no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No Results'**
+  String get no_results;
+
   /// No description provided for @no_results_entered_yet.
   ///
   /// In en, this message translates to:
   /// **'No results entered yet'**
   String get no_results_entered_yet;
 
+  /// No description provided for @no_statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'No Statistics'**
+  String get no_statistics;
+
   /// No description provided for @no_statistics_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No statistics created yet'**
+  /// **'You haven\'t created any statistics yet. Create a new statistic so it will appear here.'**
   String get no_statistics_created_yet;
 
   /// No description provided for @no_statistics_with_filter.
@@ -1249,6 +1273,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No statistics with the selected filter'**
   String get no_statistics_with_filter;
+
+  /// No description provided for @no_suitable_matches_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No suitable matches yet'**
+  String get no_suitable_matches_yet;
 
   /// No description provided for @no_teams_available.
   ///
@@ -1664,12 +1694,6 @@ abstract class AppLocalizations {
   /// **'Internal server error'**
   String get server_error;
 
-  /// No description provided for @set_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Set name'**
-  String get set_name;
-
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
@@ -1886,34 +1910,58 @@ abstract class AppLocalizations {
   /// **'Thank you for your error report!'**
   String get thank_you_for_report;
 
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @theme_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get theme_dark;
+
+  /// No description provided for @theme_light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get theme_light;
+
+  /// No description provided for @theme_system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get theme_system;
+
   /// No description provided for @there_are_no_games_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There are no games matching your search'**
+  /// **'There are no games matching your search.'**
   String get there_are_no_games_matching_your_search;
 
   /// No description provided for @there_is_no_game_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There is no game matching your search'**
+  /// **'There is no game matching your search.'**
   String get there_is_no_game_matching_your_search;
 
   /// No description provided for @there_is_no_group_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There is no group matching your search'**
+  /// **'There is no group matching your search.'**
   String get there_is_no_group_matching_your_search;
 
   /// No description provided for @there_is_no_match_matching_your_filter.
   ///
   /// In en, this message translates to:
-  /// **'There is no match matching your filter'**
+  /// **'There is no match matching your filter.'**
   String get there_is_no_match_matching_your_filter;
 
   /// No description provided for @there_is_no_match_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There is no match matching your search'**
+  /// **'There is no match matching your search.'**
   String get there_is_no_match_matching_your_search;
 
   /// No description provided for @this_cannot_be_undone.
@@ -1963,6 +2011,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tools'**
   String get tools;
+
+  /// No description provided for @top_n.
+  ///
+  /// In en, this message translates to:
+  /// **'Top {count}'**
+  String top_n(int count);
 
   /// No description provided for @total_losses.
   ///

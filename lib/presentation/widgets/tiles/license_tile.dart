@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/license_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
@@ -30,7 +30,7 @@ class LicenseTile extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-        decoration: CustomTheme.standardBoxDecoration.copyWith(
+        decoration: context.standardBoxDecoration.copyWith(
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -66,14 +66,14 @@ class LicenseTile extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: CustomTheme.onBoxColor,
+                            color: context.talleeColors.onBoxColor,
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
                             'v${package.version}',
                             style: TextStyle(
                               fontSize: 11,
-                              color: Colors.grey.shade500,
+                              color: context.talleeColors.hintColor,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -88,7 +88,7 @@ class LicenseTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade400,
+                      color: context.talleeColors.hintColor,
                       height: 1.3,
                     ),
                   ),
@@ -97,7 +97,11 @@ class LicenseTile extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             // Arrow Icon
-            Icon(Icons.chevron_right, color: Colors.grey.shade600, size: 24),
+            Icon(
+              Icons.chevron_right,
+              color: context.talleeColors.hintColor,
+              size: 24,
+            ),
           ],
         ),
       ),

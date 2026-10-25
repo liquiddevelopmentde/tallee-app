@@ -1,40 +1,44 @@
 import 'dart:math';
 
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 /// Returns the [Color] object corresponding to a [AppColor] enum value.
-Color getColorFromAppColor(AppColor color) {
+Color getColorFromAppColor(AppColor color, BuildContext context) {
   switch (color) {
     case AppColor.red:
-      return CustomTheme.red;
+      return context.talleeColors.redColor;
     case AppColor.blue:
-      return CustomTheme.blue;
+      return context.talleeColors.blueColor;
     case AppColor.green:
-      return CustomTheme.green;
+      return context.talleeColors.greenColor;
     case AppColor.yellow:
-      return CustomTheme.yellow;
+      return context.talleeColors.yellowColor;
     case AppColor.purple:
-      return CustomTheme.purple;
+      return context.talleeColors.purpleColor;
     case AppColor.orange:
-      return CustomTheme.orange;
+      return context.talleeColors.orangeColor;
     case AppColor.pink:
-      return CustomTheme.pink;
+      return context.talleeColors.pinkColor;
     case AppColor.teal:
-      return CustomTheme.teal;
+      return context.talleeColors.tealColor;
   }
+}
+
+/// Returns the text color used on statistics bars for the current theme.
+Color getStatisticsBarTextColor(AppColor color, BuildContext context) {
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  final useBlackText =
+      !isDarkMode || color == AppColor.yellow || color == AppColor.orange;
+  return useBlackText ? AppColors.textColorLight : AppColors.textColorDark;
 }
 
 /// Returns a random color from the app colors.
 AppColor getRandomAppColor() {
   const appColors = AppColor.values;
   return appColors[Random().nextInt(appColors.length)];
-}
-
-/// Returns a random color from the app colors.
-Color getRandomAppColorValue() {
-  return getColorFromAppColor(getRandomAppColor());
 }
 
 // Returns a AppColor enum value based on the provided team [index].
@@ -52,11 +56,12 @@ AppColor getTeamColor(int index) {
   return colors[index % colors.length];
 }
 
-/// Returns a color from the palette based on the statistic's ID as random seed.
-Color getStatisticColor(Statistic stat) {
-  final seed = stat.id.hashCode;
-  final appColors = AppColor.values
-      .map((c) => getColorFromAppColor(c))
-      .toList();
-  return appColors[seed.abs() % appColors.length];
+extension ColorContrast on Color {
+  /// Returns the text color with the higher contrast to the given color.
+  ///
+  /// The threshold 0.179 is the relative luminance at which black and white
+  /// text have the same WCAG contrast ratio.
+  Color get contrastTextColor => computeLuminance() > 0.179
+      ? AppColors.textColorLight
+      : AppColors.textColorDark;
 }

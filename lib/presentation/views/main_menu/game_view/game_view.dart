@@ -1,25 +1,27 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/state/game_search_provider.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
@@ -48,17 +50,17 @@ class _GameViewState extends State<GameView> with RouteAware {
   final ScrollController scrollController = ScrollController();
 
   /// Loaded games from the database, initially filled with skeleton games
-  List<Game> games = List.filled(
-    4,
-    Game(
+  List<Game> allGames = List.generate(
+    10,
+    (_) => Game(
       name: 'Skeleton game name',
       ruleset: Ruleset.winner,
-      color: AppColor.blue,
+      color: getRandomAppColor(),
       description: 'Skeleton description for the game tile',
     ),
   );
 
-  late List<Game> filteredGames = [...games];
+  late List<Game> displayedGames = [...allGames];
   bool isSearchBarVisible = true;
 
   @override
@@ -95,18 +97,19 @@ class _GameViewState extends State<GameView> with RouteAware {
 
     // Reset filtered matches when search is disabled
     if (!searchProvider.isSearching) {
-      filteredGames = [...games];
+      displayedGames = [...allGames];
       isSearchBarVisible = true;
     }
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
         children: [
           Column(
             children: [
+              // Searchbar
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
                 switchInCurve: Curves.easeOutCubic,
@@ -145,13 +148,13 @@ class _GameViewState extends State<GameView> with RouteAware {
                           onTrailingButtonPressed: () {
                             searchBarController.clear();
                             setState(() {
-                              filterGames('');
+                              applySearch('');
                             });
                           },
 
                           onChanged: (value) {
                             setState(() {
-                              filterGames(value);
+                              applySearch(value);
                             });
                           },
                         ),
@@ -160,71 +163,96 @@ class _GameViewState extends State<GameView> with RouteAware {
                         key: ValueKey('match-searchbar-hidden'),
                       ),
               ),
+
+              // Content
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
-                  child: Visibility(
-                    visible: games.isNotEmpty,
-                    replacement: Center(
-                      child: TopCenteredMessage(
-                        icon: Icons.info,
-                        title: loc.info,
-                        message: loc.no_games_created_yet,
-                      ),
-                    ),
-                    child: Visibility(
-                      visible: filteredGames.isNotEmpty,
-                      replacement: Center(
-                        child: TopCenteredMessage(
-                          icon: Icons.info,
-                          title: loc.info,
-                          message: loc.there_is_no_game_matching_your_search,
-                        ),
-                      ),
-                      child: NotificationListener<UserScrollNotification>(
-                        onNotification: (notification) {
-                          if (notification.direction ==
-                                  ScrollDirection.reverse &&
-                              isSearchBarVisible) {
-                            setState(() => isSearchBarVisible = false);
-                          } else if (notification.direction ==
-                                  ScrollDirection.forward &&
-                              !isSearchBarVisible) {
-                            setState(() => isSearchBarVisible = true);
-                          }
-                          return true;
-                        },
-                        child: ListView.builder(
-                          padding: CustomTheme.listViewPadding(context),
-                          itemCount: filteredGames.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return GameTile(
-                              gameCount: getGameCount(filteredGames[index]),
-                              onTap: () async {
-                                Navigator.push(
-                                  context,
-                                  adaptivePageRoute(
-                                    builder: (context) => CreateGameView(
-                                      gameToEdit: filteredGames[index],
-                                      onGameChanged: loadGames,
-                                      gameCount: getGameCount(
-                                        filteredGames[index],
+                  child: Center(
+                    child:
+                        // Games
+                        allGames.isNotEmpty
+                        ? displayedGames.isEmpty
+                              ?
+                                // No filtered games
+                                SizedBox.expand(
+                                  child: EmptyViewMessage(
+                                    icon: Icons.search,
+                                    title: loc.no_results,
+                                    message: loc
+                                        .there_is_no_game_matching_your_search,
+                                  ),
+                                )
+                              // Games list
+                              : SizedBox.expand(
+                                  child: NotificationListener<UserScrollNotification>(
+                                    onNotification: (notification) {
+                                      if (notification.direction ==
+                                              ScrollDirection.reverse &&
+                                          isSearchBarVisible) {
+                                        setState(
+                                          () => isSearchBarVisible = false,
+                                        );
+                                      } else if (notification.direction ==
+                                              ScrollDirection.forward &&
+                                          !isSearchBarVisible) {
+                                        setState(
+                                          () => isSearchBarVisible = true,
+                                        );
+                                      }
+                                      return true;
+                                    },
+                                    child: ListView.builder(
+                                      padding: AppColors.listViewPadding(
+                                        context,
                                       ),
+                                      itemCount: displayedGames.length,
+
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return GameTile(
+                                          gameCount: getGameCount(
+                                            displayedGames[index],
+                                          ),
+                                          onTap: () async {
+                                            Navigator.push(
+                                              context,
+                                              adaptivePageRoute(
+                                                settings: const RouteSettings(
+                                                  name:
+                                                      RouteNames.createGameView,
+                                                ),
+                                                builder: (context) =>
+                                                    CreateGameView(
+                                                      gameToEdit:
+                                                          displayedGames[index],
+                                                      onGameChanged: loadGames,
+                                                      gameCount: getGameCount(
+                                                        displayedGames[index],
+                                                      ),
+                                                    ),
+                                              ),
+                                            );
+                                          },
+                                          game: displayedGames[index],
+                                        );
+                                      },
                                     ),
                                   ),
-                                );
-                              },
-                              game: filteredGames[index],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                                )
+                        // No games in db
+                        : !isLoading
+                        ? EmptyViewMessage(
+                            icon: GAME_ICON,
+                            title: loc.no_games,
+                            message: loc.no_games_created_yet,
+                          )
+                        : null,
                   ),
                 ),
               ),
             ],
           ),
+          // Outside the skeleton so it is not cross-faded on loading changes
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: CustomShowcaseWidget(
@@ -242,8 +270,7 @@ class _GameViewState extends State<GameView> with RouteAware {
               targetBorderRadius: BorderRadius.circular(30),
               child: FloatingAnimatedButton(
                 text: loc.create_game,
-                icon: GAME_ICON,
-                showAddBadge: true,
+                icon: Icons.add,
                 onPressed: () {
                   navigateToCreateGameView();
                 },
@@ -259,19 +286,20 @@ class _GameViewState extends State<GameView> with RouteAware {
     Navigator.push(
       context,
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.createGameView),
         builder: (context) => CreateGameView(onGameChanged: loadGames),
       ),
     );
   }
 
-  void filterGames(String query) {
+  void applySearch(String query) {
     setState(() {
       if (query.isEmpty) {
-        filteredGames = [...games];
+        displayedGames = [...allGames];
       } else {
         final List<({Game game, int score})> scoredGames = [];
 
-        for (final game in games) {
+        for (final game in allGames) {
           int maxScore = 0;
 
           // Check game name
@@ -296,7 +324,7 @@ class _GameViewState extends State<GameView> with RouteAware {
 
         // Sort by score descending
         scoredGames.sort((a, b) => b.score.compareTo(a.score));
-        filteredGames = scoredGames.map((e) => e.game).toList();
+        displayedGames = scoredGames.map((e) => e.game).toList();
       }
     });
   }
@@ -337,12 +365,12 @@ class _GameViewState extends State<GameView> with RouteAware {
       gameCounts = results[1] as List<(Game, int)>;
 
       setState(() {
-        games = [...loadedGames]
+        allGames = [...loadedGames]
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
         searchBarController.text.isEmpty
-            ? filteredGames = [...games]
-            : filterGames(searchBarController.text);
+            ? displayedGames = [...allGames]
+            : applySearch(searchBarController.text);
         isLoading = false;
       });
     });

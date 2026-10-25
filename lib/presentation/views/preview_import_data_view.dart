@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -54,9 +54,9 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     const style = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         title: Text(loc.import_data),
         automaticallyImplyLeading: false,
       ),
@@ -74,9 +74,9 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                     padding: const EdgeInsets.only(bottom: 16, left: 4),
                     child: Text(
                       '${loc.import_preview_description}:',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                     ),
                   ),

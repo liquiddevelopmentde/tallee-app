@@ -1,11 +1,12 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
@@ -181,38 +182,42 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final crossAxisAlignment = widget.mode == SelectionMode.single
+        ? CrossAxisAlignment.center
+        : CrossAxisAlignment.start;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: context.standardBoxDecoration,
       child: Column(
-        crossAxisAlignment: widget.mode == SelectionMode.single
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.start,
+        spacing: 10,
+        crossAxisAlignment: crossAxisAlignment,
         children: [
           buildSearchBar(loc),
-          const SizedBox(height: 10),
-          if (widget.mode == SelectionMode.multiple) ...[
-            buildSelectedPlayersHeader(loc),
-            const SizedBox(height: 10),
-            buildSelectedPlayersBar(),
-            const SizedBox(height: 10),
-            Text(
-              loc.all_players,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+
+          if (widget.mode == SelectionMode.multiple && allPlayers.isNotEmpty)
+            Column(
+              crossAxisAlignment: crossAxisAlignment,
+              spacing: 10,
+              children: [
+                buildSelectedPlayersHeader(loc),
+                buildSelectedPlayersBar(),
+                Text(
+                  loc.all_players,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-          ],
+
           Expanded(
             child: AppSkeleton(
               enabled: isLoading,
               child: Visibility(
                 visible: suggestedPlayers.isNotEmpty,
-                replacement: TopCenteredMessage(
-                  icon: Icons.info,
-                  title: loc.info,
-                  message: getInfoText(context),
-                  fullscreen: false,
-                ),
+                replacement: getMessageWidget(loc),
                 child: widget.mode == SelectionMode.single
                     ? buildSingleSelectionList()
                     : buildMultipleSelectionList(),
@@ -277,7 +282,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: isPairingMode ? CustomTheme.primaryColor : null,
+              color: isPairingMode ? AppColors.primaryColor : null,
             ),
           ),
         ),
@@ -320,6 +325,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
             content: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: buildUnitNameWidget(
+                context,
                 player,
                 mainStyle: const TextStyle(
                   fontSize: 18,
@@ -327,7 +333,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
                 ),
                 countStyle: TextStyle(
                   fontSize: 16,
-                  color: CustomTheme.textColor.withAlpha(100),
+                  color: context.talleeColors.textColor.withAlpha(100),
                 ),
               ),
             ),
@@ -407,7 +413,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         child: Container(
           decoration: isSelectedForPairing
               ? BoxDecoration(
-                  border: Border.all(color: CustomTheme.primaryColor, width: 2),
+                  border: Border.all(color: AppColors.primaryColor, width: 2),
                   borderRadius: BorderRadius.circular(12),
                 )
               : null,
@@ -420,7 +426,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
               : PlayerTile(
                   player: unit.members.first,
                   backgroundColor: pressingId == unit.id
-                      ? Colors.grey.shade800
+                      ? context.talleeColors.skeletonFromColor
                       : null,
                   onTileTap:
                       !isPaired &&
@@ -646,19 +652,52 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         .showSnackBar(CustomSnackBar(message: message));
   }
 
-  String getInfoText(BuildContext context) {
-    final loc = AppLocalizations.of(context);
+  Widget getMessageWidget(AppLocalizations loc) {
+    final content = getInfoContent(loc);
+
+    return TopCenteredMessage(
+      icon: content.icon,
+      title: content.title,
+      message: content.message,
+      fullscreen: false,
+    );
+  }
+
+  bool get allPlayerSelected =>
+      // Multi selection
+      (widget.mode == SelectionMode.multiple &&
+          (selectedPlayers.length == allPlayers.length ||
+              widget.availablePlayers?.isEmpty == true)) ||
+      // Single selection
+      (widget.mode == SelectionMode.single &&
+          widget.availablePlayers?.isEmpty == true);
+
+  ({IconData icon, String title, String message}) getInfoContent(
+    AppLocalizations loc,
+  ) {
+    // No players in db
     if (allPlayers.isEmpty) {
-      return loc.no_players_created_yet;
-    } else if (widget.mode == SelectionMode.multiple &&
-        (selectedPlayers.length == allPlayers.length ||
-            widget.availablePlayers?.isEmpty == true)) {
-      return loc.all_players_selected;
-    } else if (widget.mode == SelectionMode.single &&
-        widget.availablePlayers?.isEmpty == true) {
-      return loc.all_players_selected;
-    } else {
-      return loc.no_players_found_with_that_name;
+      return (
+        icon: Icons.person_outline,
+        title: loc.no_players,
+        message: loc.no_players_created_yet,
+      );
     }
+
+    // All players selected
+    if (allPlayerSelected) {
+      return (
+        icon: Icons.person_outline,
+        title: loc.no_players,
+        message: loc.all_players_selected,
+      );
+    }
+
+    // Not found
+    return (
+      icon: Icons.search,
+      title: loc.no_results,
+      message: loc.no_players_found_with_that_name,
+    );
   }
 }

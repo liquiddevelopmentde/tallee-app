@@ -11,7 +11,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/data/db/database.dart';
@@ -33,6 +33,7 @@ import 'package:tallee/state/group_search_provider.dart';
 import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
 import 'package:tallee/state/showcase_provider.dart';
+import 'package:tallee/state/theme_provider.dart';
 
 void main() async {
   ENVIRONMENT = kDebugMode
@@ -57,7 +58,6 @@ void main() async {
       options.dsn = IS_DEV_ENV ? '' : dotenv.get('SENTRY_DSN', fallback: '');
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
-      options.enableLogs = true;
       // Decrease sampleRate in stable to avoid sending too many events
       options.tracesSampleRate = 1.0;
       options.environment = IS_PROD_ENV
@@ -123,6 +123,7 @@ void main() async {
             ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
             ChangeNotifierProvider(create: (context) => ShowcaseProvider()),
             ChangeNotifierProvider(create: (context) => RateDialogProvider()),
+            ChangeNotifierProvider(create: (context) => ThemeProvider()),
           ],
           child: DefaultAssetBundle(
             bundle: SentryAssetBundle(),
@@ -190,9 +191,10 @@ class _TalleeState extends State<Tallee> {
       },
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
-      themeMode: ThemeMode.dark,
+      themeMode: context.watch<ThemeProvider>().themeMode,
       navigatorObservers: [SentryNavigatorObserver()],
-      theme: CustomTheme.themeData,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       home: SplashScreen(onFinished: handleSplashFinished),
     );
   }
@@ -236,7 +238,10 @@ class _TalleeState extends State<Tallee> {
     if (navigator == null) return;
 
     navigator.pushReplacement(
-      adaptivePageRoute(builder: (_) => const CustomNavigationBar()),
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.mainNavigation),
+        builder: (_) => const CustomNavigationBar(),
+      ),
     );
 
     if (path != null) {

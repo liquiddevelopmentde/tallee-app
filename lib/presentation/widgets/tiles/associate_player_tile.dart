@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -38,12 +39,12 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      decoration: CustomTheme.standardBoxDecoration.copyWith(
+      decoration: context.standardBoxDecoration.copyWith(
         border: Border.all(
-          color: widget.borderColor ?? CustomTheme.boxBorderColor,
+          color: widget.borderColor ?? context.talleeColors.boxBorderColor,
         ),
       ),
-      margin: CustomTheme.standardMargin,
+      margin: AppColors.standardMargin,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -52,15 +53,16 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
         children: [
           Expanded(
             child: buildUnitNameWidget(
+              context,
               widget.player,
-              mainStyle: const TextStyle(
+              mainStyle: TextStyle(
                 fontSize: 18,
-                color: CustomTheme.textColor,
+                color: context.talleeColors.textColor,
                 fontWeight: FontWeight.w500,
               ),
               countStyle: TextStyle(
                 fontSize: 16,
-                color: CustomTheme.textColor.withAlpha(100),
+                color: context.talleeColors.textColor.withAlpha(100),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -81,8 +83,8 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                         vertical: 6,
                         horizontal: 6,
                       ),
-                      decoration: CustomTheme.standardBoxDecoration.copyWith(
-                        color: CustomTheme.onBoxColor,
+                      decoration: context.standardBoxDecoration.copyWith(
+                        color: context.talleeColors.onBoxColor,
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -93,25 +95,29 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                                   ? Text(
                                       AppLocalizations.of(context)
                                           .create_as_new,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.orange,
+                                        color:
+                                            context.talleeColors.warningColor,
                                       ),
                                     )
                                   : buildUnitNameWidget(
+                                      context,
                                       widget.associatedPlayer!,
                                       mainStyle: const TextStyle(fontSize: 17),
                                       countStyle: TextStyle(
                                         fontSize: 15,
-                                        color: CustomTheme.textColor.withAlpha(
-                                          100,
-                                        ),
+                                        color: context.talleeColors.textColor
+                                            .withAlpha(100),
                                       ),
                                     ),
                             )
                           else
-                            const Icon(Icons.search, color: Colors.red),
+                            Icon(
+                              Icons.search,
+                              color: context.talleeColors.errorColor,
+                            ),
                         ],
                       ),
                     ),

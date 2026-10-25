@@ -296,9 +296,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_match => 'Edit Match';
 
   @override
-  String get edit_name => 'Edit name';
-
-  @override
   String get edit_player => 'Edit player';
 
   @override
@@ -605,22 +602,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no => 'No';
 
   @override
-  String get no_data_available => 'No data available';
-
-  @override
   String get no_data_to_export => 'No data to export';
 
   @override
-  String get no_games_created_yet => 'No games created yet';
+  String get no_games => 'No Games';
 
   @override
-  String get no_groups_created_yet => 'No groups created yet';
+  String get no_games_created_yet =>
+      'You haven\'t created any games yet. Create a new game so it will appear here.';
+
+  @override
+  String get no_groups => 'No Groups';
+
+  @override
+  String get no_groups_created_yet =>
+      'You haven\'t created any groups yet. Create a new group so it will appear here.';
 
   @override
   String get no_license_text_available => 'No license text available';
 
   @override
-  String get no_matches_created_yet => 'No matches created yet';
+  String get no_matches => 'No Matches';
+
+  @override
+  String get no_matches_created_yet =>
+      'You haven\'t created any matches yet. Create a new match so it will appear here.';
 
   @override
   String get no_matches_played_yet => 'No games played yet';
@@ -634,10 +640,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'No matching local group found.\nA new group will be created.';
 
   @override
+  String get no_players => 'No Players';
+
+  @override
   String get no_players_available => 'No players available';
 
   @override
-  String get no_players_created_yet => 'No players created yet';
+  String get no_players_created_yet => 'You haven\'t created any players yet';
 
   @override
   String get no_players_found_with_that_name =>
@@ -647,14 +656,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_players_selected => 'No players selected';
 
   @override
+  String get no_results => 'No Results';
+
+  @override
   String get no_results_entered_yet => 'No results entered yet';
 
   @override
-  String get no_statistics_created_yet => 'No statistics created yet';
+  String get no_statistics => 'No Statistics';
+
+  @override
+  String get no_statistics_created_yet =>
+      'You haven\'t created any statistics yet. Create a new statistic so it will appear here.';
 
   @override
   String get no_statistics_with_filter =>
       'No statistics with the selected filter';
+
+  @override
+  String get no_suitable_matches_yet => 'No suitable matches yet';
 
   @override
   String get no_teams_available => 'No teams available';
@@ -893,9 +912,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get server_error => 'Internal server error';
 
   @override
-  String get set_name => 'Set name';
-
-  @override
   String get settings => 'Settings';
 
   @override
@@ -1023,24 +1039,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thank_you_for_report => 'Thank you for your error report!';
 
   @override
+  String get theme => 'Theme';
+
+  @override
+  String get theme_dark => 'Dark';
+
+  @override
+  String get theme_light => 'Light';
+
+  @override
+  String get theme_system => 'System';
+
+  @override
   String get there_are_no_games_matching_your_search =>
-      'There are no games matching your search';
+      'There are no games matching your search.';
 
   @override
   String get there_is_no_game_matching_your_search =>
-      'There is no game matching your search';
+      'There is no game matching your search.';
 
   @override
   String get there_is_no_group_matching_your_search =>
-      'There is no group matching your search';
+      'There is no group matching your search.';
 
   @override
   String get there_is_no_match_matching_your_filter =>
-      'There is no match matching your filter';
+      'There is no match matching your filter.';
 
   @override
   String get there_is_no_match_matching_your_search =>
-      'There is no match matching your search';
+      'There is no match matching your search.';
 
   @override
   String get this_cannot_be_undone => 'This can\'t be undone.';
@@ -1065,6 +1093,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tools => 'Tools';
+
+  @override
+  String top_n(int count) {
+    return 'Top $count';
+  }
 
   @override
   String get total_losses => 'Total losses';

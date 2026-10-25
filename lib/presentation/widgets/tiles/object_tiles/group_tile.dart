@@ -1,11 +1,12 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/group.dart';
-import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
-import 'package:tallee/presentation/utils/navigation/route_names.dart';
-import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
@@ -21,7 +22,6 @@ class GroupTile extends StatefulWidget {
     this.onTap,
     this.onPlayerChanged,
     this.borderColor,
-    this.playersClickable = true,
   });
 
   final Group group;
@@ -29,7 +29,6 @@ class GroupTile extends StatefulWidget {
   final VoidCallback? onTap;
   final VoidCallback? onPlayerChanged;
   final Color? borderColor;
-  final bool playersClickable;
 
   @override
   State<GroupTile> createState() => _GroupTileState();
@@ -38,6 +37,12 @@ class GroupTile extends StatefulWidget {
 class _GroupTileState extends State<GroupTile> {
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final description = widget.group.description;
+    final formattedDate = DateFormat.yMMMd(
+      Localizations.localeOf(context).toString(),
+    ).format(widget.group.createdAt);
+
     return GestureDetector(
       onTap: () {
         HapticFeedback.selectionClick();
@@ -46,11 +51,11 @@ class _GroupTileState extends State<GroupTile> {
         }
       },
       child: AnimatedContainer(
-        margin: CustomTheme.tileMargin,
+        margin: AppColors.tileMargin,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         decoration: widget.isHighlighted
-            ? CustomTheme.highlightedBoxDecoration
-            : CustomTheme.standardBoxDecoration.copyWith(
+            ? context.highlightedBoxDecoration
+            : context.standardBoxDecoration.copyWith(
                 border: widget.borderColor != null
                     ? Border.all(color: widget.borderColor!)
                     : null,
@@ -66,10 +71,7 @@ class _GroupTileState extends State<GroupTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Group icon
-                const ColoredIconContainer(
-                  icon: Icons.group,
-                  containerSize: 50,
-                ),
+                const ColoredIconContainer(icon: GROUP_ICON, containerSize: 50),
 
                 // Text content
                 Expanded(
@@ -99,29 +101,30 @@ class _GroupTileState extends State<GroupTile> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
-                            spacing: 6,
+                            spacing: 8,
                             children: [
+                              const Icon(Icons.group, size: 22),
                               Text(
                                 '${widget.group.members.length}',
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const Icon(Icons.group, size: 22),
                             ],
                           ),
                         ],
                       ),
 
-                      // Description
+                      // Description or creation date
                       Text(
-                        widget.group.description,
+                        description.isNotEmpty
+                            ? description
+                            : '${loc.created_on} $formattedDate',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: CustomTheme.hintColor,
+                          color: context.talleeColors.hintColor,
                         ),
                       ),
                     ],
@@ -140,27 +143,7 @@ class _GroupTileState extends State<GroupTile> {
                 for (var member in [
                   ...widget.group.members,
                 ]..sort((a, b) => a.name.compareIgnoringCaseTo(b.name)))
-                  PlayerTile(
-                    player: member,
-                    onTileTap: widget.playersClickable
-                        ? () {
-                            Navigator.push(
-                              context,
-                              adaptivePageRoute(
-                                settings: const RouteSettings(
-                                  name: RouteNames.playerDetailView,
-                                ),
-                                builder: (context) => PlayerDetailView(
-                                  player: member,
-                                  onPlayerUpdated: () {
-                                    widget.onPlayerChanged?.call();
-                                  },
-                                ),
-                              ),
-                            );
-                          }
-                        : null,
-                  ),
+                  PlayerTile(player: member),
               ],
             ),
           ],

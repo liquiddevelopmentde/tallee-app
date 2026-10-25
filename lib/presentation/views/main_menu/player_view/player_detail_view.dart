@@ -1,8 +1,8 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -10,7 +10,7 @@ import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_detail_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_detail/match_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/player_view/edit_player_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
@@ -24,11 +24,11 @@ class PlayerDetailView extends StatefulWidget {
   const PlayerDetailView({
     super.key,
     required this.player,
-    required this.onPlayerUpdated,
+    this.onPlayerUpdated,
   });
 
   final Player player;
-  final VoidCallback onPlayerUpdated;
+  final VoidCallback? onPlayerUpdated;
 
   @override
   State<PlayerDetailView> createState() => _PlayerDetailViewState();
@@ -120,7 +120,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     await db.playerDao.deletePlayer(playerId: widget.player.id);
                     if (!context.mounted) return;
                     Navigator.pop(context);
-                    widget.onPlayerUpdated();
+                    widget.onPlayerUpdated?.call();
                   }
                 });
               },
@@ -152,11 +152,12 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Playername + Playercount
                 Center(
                   child: buildUnitNameWidget(
+                    context,
                     player,
-                    mainStyle: const TextStyle(
+                    mainStyle: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                     ),
                   ),
                 ),
@@ -167,9 +168,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       player.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.clip,
@@ -189,9 +190,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Created at date
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(player.createdAt)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -225,7 +226,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                         ),
                                         builder: (context) => GroupDetailView(
                                           group: group,
-                                          callback: widget.onPlayerUpdated,
+                                          onGroupUpdated:
+                                              widget.onPlayerUpdated,
                                         ),
                                       ),
                                     );
@@ -235,9 +237,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             )
                           : Text(
                               loc.not_part_of_any_group,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
-                                color: CustomTheme.textColor,
+                                color: context.talleeColors.textColor,
                               ),
                             ),
                     ),
@@ -272,7 +274,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                       ),
                                       builder: (context) => MatchDetailView(
                                         match: match,
-                                        onMatchUpdate: widget.onPlayerUpdated,
+                                        onMatchUpdate: () =>
+                                            widget.onPlayerUpdated?.call(),
                                       ),
                                     ),
                                   );
@@ -282,9 +285,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                           )
                         : Text(
                             loc.no_matches_played_yet,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: CustomTheme.textColor,
+                              color: context.talleeColors.textColor,
                             ),
                           ),
                   ),
@@ -315,6 +318,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   onPressed: () async {
                     final updatedPlayer = await Navigator.of(context).push(
                       adaptivePageRoute(
+                        settings: const RouteSettings(
+                          name: RouteNames.editPlayerView,
+                        ),
                         builder: (context) => EditPlayerView(
                           playerToEdit: player,
                           onPlayerChanged: widget.onPlayerUpdated,

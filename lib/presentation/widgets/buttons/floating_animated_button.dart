@@ -1,7 +1,9 @@
 import 'dart:async';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/app_color_utils.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class FloatingAnimatedButton extends StatefulWidget {
   /// A button for the main menu with an optional icon and a press animation.
@@ -89,6 +91,15 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
 
   @override
   Widget build(BuildContext context) {
+    final isDisabled = widget.onPressed == null;
+    final textColor = context.talleeColors.textColor;
+
+    final bgColor = isDisabled
+        ? Color.lerp(textColor, textColor.contrastTextColor, 0.6)
+        : textColor;
+
+    final fgColor = textColor.contrastTextColor;
+
     return ScaleTransition(
       scale: widget.onPressed == null ? disabledScaleAnimation : scaleAnimation,
       child: GestureDetector(
@@ -134,7 +145,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
         },
         child: Container(
           decoration: BoxDecoration(
-            color: widget.onPressed == null ? Colors.grey : Colors.white,
+            color: bgColor,
             borderRadius: BorderRadius.circular(30),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -142,15 +153,15 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildIcon(),
+              Icon(widget.icon, size: 26, color: fgColor),
               if (widget.text != null) ...[
                 const SizedBox(width: 7),
                 Text(
                   widget.text!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: fgColor,
                   ),
                 ),
               ],
@@ -158,39 +169,6 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
           ),
         ),
       ),
-    );
-  }
-
-  Widget buildIcon() {
-    final icon = Icon(widget.icon, size: 26, color: Colors.black);
-
-    if (!widget.showAddBadge) return icon;
-
-    final backgroundColor = widget.onPressed == null
-        ? Colors.grey
-        : Colors.white;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        icon,
-        Positioned(
-          top: -5,
-          right: -6,
-          child: Container(
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.add_circle,
-              size: 15,
-              color: Colors.black,
-              weight: 200,
-            ),
-          ),
-        ),
-      ],
     );
   }
 

@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
@@ -410,10 +410,10 @@ class _CreateGameViewState extends State<CreateGameView> {
   Widget getRulesetDropdown(AppLocalizations loc) {
     return CustomPopup(
       showArrow: true,
-      arrowColor: CustomTheme.boxBorderColor,
+      arrowColor: context.talleeColors.boxBorderColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       barrierColor: Colors.transparent,
-      contentDecoration: CustomTheme.standardBoxDecoration,
+      contentDecoration: context.standardBoxDecoration,
       onBeforePopup: () => HapticFeedback.selectionClick(),
       onAfterPopup: () => HapticFeedback.selectionClick(),
       content: StatefulBuilder(
@@ -441,7 +441,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                           Radius.circular(8),
                         ),
                         color: selectedRuleset == rulesets[index].$1
-                            ? CustomTheme.textColor.withAlpha(20)
+                            ? context.talleeColors.textColor.withAlpha(20)
                             : Colors.transparent,
                       ),
                       child: Padding(
@@ -455,8 +455,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                             Icon(getRulesetIcon(rulesets[index].$1), size: 16),
                             Text(
                               rulesets[index].$2,
-                              style: const TextStyle(
-                                color: CustomTheme.textColor,
+                              style: TextStyle(
+                                color: context.talleeColors.textColor,
                                 fontSize: 15,
                               ),
                             ),
@@ -496,10 +496,10 @@ class _CreateGameViewState extends State<CreateGameView> {
   Widget getColorDropdown(AppLocalizations loc) {
     return CustomPopup(
       showArrow: true,
-      arrowColor: CustomTheme.boxBorderColor,
+      arrowColor: context.talleeColors.boxBorderColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       barrierColor: Colors.transparent,
-      contentDecoration: CustomTheme.standardBoxDecoration,
+      contentDecoration: context.standardBoxDecoration,
       onBeforePopup: () => HapticFeedback.selectionClick(),
       onAfterPopup: () => HapticFeedback.selectionClick(),
       content: StatefulBuilder(
@@ -528,7 +528,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                           Radius.circular(8),
                         ),
                         color: selectedColor == colors[index].$1
-                            ? CustomTheme.textColor.withAlpha(20)
+                            ? context.talleeColors.textColor.withAlpha(20)
                             : Colors.transparent,
                       ),
                       child: Padding(
@@ -545,14 +545,15 @@ class _CreateGameViewState extends State<CreateGameView> {
                                     decoration: BoxDecoration(
                                       color: getColorFromAppColor(
                                         colors[index].$1,
+                                        context,
                                       ),
                                       shape: BoxShape.circle,
                                     ),
                                   ),
                                   Text(
                                     colors[index].$2,
-                                    style: const TextStyle(
-                                      color: CustomTheme.textColor,
+                                    style: TextStyle(
+                                      color: context.talleeColors.textColor,
                                       fontSize: 15,
                                     ),
                                   ),
@@ -577,7 +578,7 @@ class _CreateGameViewState extends State<CreateGameView> {
             width: 16,
             height: 16,
             decoration: BoxDecoration(
-              color: getColorFromAppColor(selectedColor!),
+              color: getColorFromAppColor(selectedColor!, context),
               shape: BoxShape.circle,
             ),
           ),

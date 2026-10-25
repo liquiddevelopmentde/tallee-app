@@ -2,7 +2,8 @@ import 'dart:core' hide Match;
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/edge_blocked_bouncing_scroll_physics.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
@@ -174,13 +175,13 @@ class _PlacementDragListState extends State<PlacementDragList> {
         height: badgeSize,
         width: badgeSize,
         decoration: BoxDecoration(
-          color: CustomTheme.boxBorderColor,
-          borderRadius: CustomTheme.standardBorderRadiusAll,
+          color: context.talleeColors.boxBorderColor,
+          borderRadius: AppColors.standardBorderRadiusAll,
         ),
         child: Text(
           ' #${index + 1} ',
-          style: const TextStyle(
-            color: CustomTheme.textColor,
+          style: TextStyle(
+            color: context.talleeColors.textColor,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
@@ -207,7 +208,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.15 * t),
-                        borderRadius: CustomTheme.standardBorderRadiusAll,
+                        borderRadius: AppColors.standardBorderRadiusAll,
                       ),
                     ),
                   ),

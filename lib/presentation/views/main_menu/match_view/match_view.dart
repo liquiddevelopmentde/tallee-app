@@ -4,27 +4,29 @@ import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_detail/match_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/text_chip.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
@@ -62,14 +64,14 @@ class _MatchViewState extends State<MatchView> {
   final ScrollController scrollController = ScrollController();
 
   /// Loaded matches from the database, initially filled with skeleton matches
-  List<Match> allMatches = List.filled(
+  List<Match> allMatches = List.generate(
     4,
-    Match(
+    (_) => Match(
       name: 'Skeleton match name',
       game: Game(
         name: 'Game name',
         ruleset: Ruleset.winner,
-        color: AppColor.blue,
+        color: getRandomAppColor(),
       ),
       group: Group(
         name: 'Group name',
@@ -139,15 +141,12 @@ class _MatchViewState extends State<MatchView> {
     }
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
         children: [
-          AppSkeleton(
-            enabled: isLoading,
-
-            // No matches created
+          SafeArea(
             child: Column(
               children: [
                 // Searchbar
@@ -204,133 +203,159 @@ class _MatchViewState extends State<MatchView> {
                         ),
                 ),
 
-                // Filter row
-                SingleChildScrollView(
-                  padding: CustomTheme.filterRowPadding,
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 5,
-                    children: [
-                      // All matches
-                      TextChip(
-                        text: loc.all,
-                        onTap: () => setFilter(MatchFilter.all),
-                        activated: selectedFilter == MatchFilter.all,
-                      ),
-
-                      // Active matches
-                      TextChip(
-                        text: loc.active_matches,
-                        onTap: () => setFilter(MatchFilter.active),
-                        activated: selectedFilter == MatchFilter.active,
-                      ),
-
-                      // Finished matches
-                      TextChip(
-                        text: loc.finished_matches,
-                        onTap: () => setFilter(MatchFilter.finished),
-                        activated: selectedFilter == MatchFilter.finished,
-                      ),
-
-                      // Team matches
-                      TextChip(
-                        text: loc.team_matches,
-                        onTap: () => setFilter(MatchFilter.team),
-                        activated: selectedFilter == MatchFilter.team,
-                      ),
-
-                      // To keep padding on the right side
-                      const SizedBox.shrink(),
-                    ],
-                  ),
-                ),
-
-                // Matches
+                // Content
                 Expanded(
-                  // No matches created
+                  child: AppSkeleton(
+                    enabled: isLoading,
+                    child: Column(
+                      children: [
+                        // Matches in db
+                        if (allMatches.isNotEmpty) ...[
+                          SingleChildScrollView(
+                            padding: AppColors.filterRowPadding,
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              spacing: 5,
+                              children: [
+                                // All matches
+                                TextChip(
+                                  text: loc.all,
+                                  onTap: () => applyFilter(MatchFilter.all),
+                                  activated: selectedFilter == MatchFilter.all,
+                                ),
 
-                  child: allMatches.isEmpty
-                      ? Center(
-                          child: TopCenteredMessage(
-                            icon: Icons.info,
-                            title: loc.info,
-                            message: loc.no_matches_created_yet,
+                                // Active matches
+                                TextChip(
+                                  text: loc.active_matches,
+                                  onTap: () => applyFilter(MatchFilter.active),
+                                  activated:
+                                      selectedFilter == MatchFilter.active,
+                                ),
+
+                                // Finished matches
+                                TextChip(
+                                  text: loc.finished_matches,
+                                  onTap: () =>
+                                      applyFilter(MatchFilter.finished),
+                                  activated:
+                                      selectedFilter == MatchFilter.finished,
+                                ),
+
+                                // Team matches
+                                TextChip(
+                                  text: loc.team_matches,
+                                  onTap: () => applyFilter(MatchFilter.team),
+                                  activated: selectedFilter == MatchFilter.team,
+                                ),
+
+                                // To keep padding on the right side
+                                const SizedBox(width: 5),
+                              ],
+                            ),
                           ),
-                        )
-                      // No matches in filter
-                      : filteredMatches.isEmpty
-                      ? Center(
-                          child: TopCenteredMessage(
-                            icon: Icons.info,
-                            title: loc.info,
-                            message: loc.there_is_no_match_matching_your_filter,
-                          ),
-                        )
-                      // No matches in search
-                      : displayedMatches.isEmpty
-                      ? TopCenteredMessage(
-                          icon: Icons.info,
-                          title: loc.info,
-                          message: loc.there_is_no_match_matching_your_search,
-                        )
-                      : NotificationListener<UserScrollNotification>(
-                          onNotification: (notification) {
-                            if (notification.direction ==
-                                    ScrollDirection.reverse &&
-                                isSearchBarVisible) {
-                              setState(() => isSearchBarVisible = false);
-                            } else if (notification.direction ==
-                                    ScrollDirection.forward &&
-                                !isSearchBarVisible) {
-                              setState(() => isSearchBarVisible = true);
-                            }
-                            return true;
-                          },
-                          child: ListView.builder(
-                            controller: scrollController,
-                            padding: CustomTheme.listViewPadding(context),
-                            itemCount: displayedMatches.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return MatchTile(
-                                width: MediaQuery.sizeOf(context).width * 0.95,
-                                onTap: () async {
-                                  if (displayedMatches[index].endedAt != null) {
-                                    Navigator.push(
-                                      context,
-                                      adaptivePageRoute(
-                                        settings: const RouteSettings(
-                                          name: RouteNames.matchDetailView,
-                                        ),
-                                        builder: (context) => MatchDetailView(
-                                          match: displayedMatches[index],
-                                          onMatchUpdate: loadMatches,
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      adaptivePageRoute(
-                                        settings: const RouteSettings(
-                                          name: RouteNames.matchResultView,
-                                        ),
-                                        builder: (context) => MatchResultView(
-                                          match: displayedMatches[index],
-                                          onWinnerChanged: loadMatches,
-                                        ),
-                                      ),
-                                    );
+
+                          // No matches in filter
+                          if (filteredMatches.isEmpty)
+                            Expanded(
+                              child: EmptyViewMessage(
+                                icon: Icons.filter_alt,
+                                title: loc.no_results,
+                                message:
+                                    loc.there_is_no_match_matching_your_filter,
+                              ),
+                            )
+                          // No matches in search
+                          else if (displayedMatches.isEmpty)
+                            Expanded(
+                              child: EmptyViewMessage(
+                                icon: Icons.search,
+                                title: loc.no_results,
+                                message:
+                                    loc.there_is_no_match_matching_your_search,
+                              ),
+                            )
+                          // Normal matches
+                          else
+                            Expanded(
+                              child: NotificationListener<UserScrollNotification>(
+                                onNotification: (notification) {
+                                  if (notification.direction ==
+                                          ScrollDirection.reverse &&
+                                      isSearchBarVisible) {
+                                    setState(() => isSearchBarVisible = false);
+                                  } else if (notification.direction ==
+                                          ScrollDirection.forward &&
+                                      !isSearchBarVisible) {
+                                    setState(() => isSearchBarVisible = true);
                                   }
+                                  return true;
                                 },
-                                match: displayedMatches[index],
-                              );
-                            },
+                                child: ListView.builder(
+                                  controller: scrollController,
+                                  padding: AppColors.listViewPadding(context),
+                                  itemCount: displayedMatches.length,
+                                  itemBuilder: (context, index) => MatchTile(
+                                    width:
+                                        MediaQuery.sizeOf(context).width * 0.95,
+                                    onTap: () async {
+                                      if (displayedMatches[index].endedAt !=
+                                          null) {
+                                        Navigator.push(
+                                          context,
+                                          adaptivePageRoute(
+                                            settings: const RouteSettings(
+                                              name: RouteNames.matchDetailView,
+                                            ),
+                                            builder: (context) =>
+                                                MatchDetailView(
+                                                  match:
+                                                      displayedMatches[index],
+                                                  onMatchUpdate: loadMatches,
+                                                ),
+                                          ),
+                                        );
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          adaptivePageRoute(
+                                            settings: const RouteSettings(
+                                              name: RouteNames.matchResultView,
+                                            ),
+                                            builder: (context) =>
+                                                MatchResultView(
+                                                  match:
+                                                      displayedMatches[index],
+                                                  onWinnerChanged: loadMatches,
+                                                ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    match: displayedMatches[index],
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ]
+                        // No matches in db
+                        else if (!isLoading)
+                          Expanded(
+                            child: EmptyViewMessage(
+                              icon: MATCH_ICON,
+                              spacing: 15,
+                              title: loc.no_matches,
+                              message: loc.no_matches_created_yet,
+                            ),
                           ),
-                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
+
+          // Create match button
           Positioned(
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: CustomShowcaseWidget(
@@ -347,8 +372,7 @@ class _MatchViewState extends State<MatchView> {
               targetBorderRadius: BorderRadius.circular(30),
               child: FloatingAnimatedButton(
                 text: loc.create_match,
-                icon: MATCH_ICON,
-                showAddBadge: true,
+                icon: Icons.add,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -384,14 +408,8 @@ class _MatchViewState extends State<MatchView> {
     );
   }
 
-  void setFilter(MatchFilter filter) {
-    setState(() {
-      selectedFilter = filter;
-      applyFilter(filter);
-    });
-    SharedPreferencesService.setMatchFilter(filter);
-  }
-
+  /// Applies the passed [filter] and also applies the search query
+  /// to the filteredMatches
   void applyFilter(MatchFilter filter) {
     switch (filter) {
       case MatchFilter.all:
@@ -409,7 +427,14 @@ class _MatchViewState extends State<MatchView> {
             .where((match) => match.isTeamMatch)
             .toList();
     }
-    displayedMatches = [...filteredMatches];
+
+    setState(() {
+      selectedFilter = filter;
+      displayedMatches = [...filteredMatches];
+      applySearch(searchBarController.text);
+    });
+
+    SharedPreferencesService.setMatchFilter(filter);
   }
 
   void applySearch(String query) {
@@ -419,7 +444,7 @@ class _MatchViewState extends State<MatchView> {
       } else {
         final List<({Match match, int score})> scoredMatches = [];
 
-        for (final match in allMatches) {
+        for (final match in filteredMatches) {
           int maxScore = 0;
 
           // Check match name
@@ -483,13 +508,19 @@ class _MatchViewState extends State<MatchView> {
       didUserLikeApp = await showPreRateDialog(loc);
     });
 
-    if (didUserLikeApp is bool && mounted) {
-      didUserLikeApp!
-          ? RATE_MY_APP.showStarRateDialog(context)
-          : await Future.delayed(
-              const Duration(milliseconds: 500),
-              () => showBadRatingDialog(loc),
-            );
+    switch (didUserLikeApp) {
+      case null:
+        await RATE_MY_APP.callEvent(RateMyAppEventType.laterButtonPressed);
+      case true:
+        if (mounted) RATE_MY_APP.showStarRateDialog(context);
+      case false:
+        await RATE_MY_APP.callEvent(RateMyAppEventType.noButtonPressed);
+        if (mounted) {
+          await Future.delayed(
+            const Duration(milliseconds: 500),
+            () => showBadRatingDialog(loc),
+          );
+        }
     }
   }
 
@@ -498,7 +529,7 @@ class _MatchViewState extends State<MatchView> {
     return await showDialog<bool>(
       context: context,
       builder: (context) => CustomAlertDialog(
-        closeButtonColor: CustomTheme.hintColor,
+        closeButtonColor: context.talleeColors.hintColor,
         showCloseButton: true,
         title: loc.do_you_like_the_app,
         content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),
@@ -581,9 +612,9 @@ class _MatchViewState extends State<MatchView> {
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
         filteredMatches = [...allMatches];
 
-        searchBarController.text.isEmpty
-            ? displayedMatches = [...allMatches]
-            : applySearch(searchBarController.text);
+        searchBarController.text.isNotEmpty || selectedFilter != MatchFilter.all
+            ? applyFilter(selectedFilter)
+            : displayedMatches = [...allMatches];
 
         isLoading = false;
       });
