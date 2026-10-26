@@ -21,7 +21,7 @@ class PlayerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextIconTile(
-      highlighted: player.deleted,
+      muted: player.deleted,
       onIconTap: onIconTap,
       onTileTap: onTileTap,
       backgroundColor: backgroundColor,

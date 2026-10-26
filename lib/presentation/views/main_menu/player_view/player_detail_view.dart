@@ -67,6 +67,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
+  bool get isPlayerDeleted => widget.player.deleted;
+
   @override
   void initState() {
     super.initState();
@@ -91,7 +93,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
       appBar: AppBar(
         title: Text(loc.player_profile),
         actions: [
-          if (!widget.player.deleted)
+          if (!isPlayerDeleted)
             HapticIconButton(
               icon: const Icon(Icons.delete),
               onPressed: () async {
@@ -141,12 +143,14 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
               ),
               children: [
                 // Icon
-                const Center(
+                Center(
                   child: ColoredIconContainer(
+                    muted: isPlayerDeleted,
                     icon: PLAYER_ICON,
                     containerSize: 55,
                   ),
                 ),
+
                 const SizedBox(height: 10),
 
                 // Playername + Playercount
@@ -161,6 +165,44 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     ),
                   ),
                 ),
+
+                // Deleted badge
+                if (isPlayerDeleted)
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.talleeColors.redColor.withAlpha(75),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 5,
+                        children: [
+                          Icon(
+                            Icons.delete,
+                            color: context.talleeColors.redColor,
+                            size: 15,
+                          ),
+                          Text(
+                            loc.deleted,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: context.talleeColors.redColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
 
                 // Description
                 if (player.description.isNotEmpty)
@@ -177,14 +219,6 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     ),
                   ),
 
-                // Deleted state
-                if (widget.player.deleted) ...[
-                  Text(
-                    loc.deleted,
-                    style: const TextStyle(fontSize: 13, color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
                 const SizedBox(height: 5),
 
                 // Created at date
@@ -199,7 +233,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 const SizedBox(height: 20),
 
                 // Groups
-                if (!widget.player.deleted) ...[
+                if (!isPlayerDeleted) ...[
                   InfoTile(
                     title: '${loc.groups} ($totalGroups)',
                     leadingWidget: const Icon(GROUP_ICON),
@@ -309,7 +343,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
             ),
 
             // Edit player button
-            if (!widget.player.deleted)
+            if (!isPlayerDeleted)
               Positioned(
                 bottom: MediaQuery.viewPaddingOf(context).bottom,
                 child: FloatingAnimatedButton(
