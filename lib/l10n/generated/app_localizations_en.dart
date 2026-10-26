@@ -1030,6 +1030,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thank_you_for_report => 'Thank you for your error report!';
 
   @override
+  String get theme => 'Theme';
+
+  @override
+  String get theme_dark => 'Dark';
+
+  @override
+  String get theme_light => 'Light';
+
+  @override
+  String get theme_system => 'System';
+
+  @override
   String get there_are_no_games_matching_your_search =>
       'There are no games matching your search.';
 

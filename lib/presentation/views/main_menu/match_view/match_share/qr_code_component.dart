@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
@@ -47,17 +48,17 @@ class QrCodeComponent extends StatelessWidget {
               foregroundPainter: CountdownPainter(
                 progress: progress,
                 color: secondsRemaining != 0
-                    ? CustomTheme.primaryColor
+                    ? AppColors.primaryColor
                     : Colors.transparent,
               ),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 padding: const EdgeInsets.all(4),
                 child: ClipRRect(
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                   child: Container(
                     color: Colors.white,
                     padding: const EdgeInsets.all(10),
@@ -82,7 +83,7 @@ class QrCodeComponent extends StatelessWidget {
                         if (isLoading)
                           const Center(
                             child: CircularProgressIndicator(
-                              color: CustomTheme.primaryColor,
+                              color: AppColors.primaryColor,
                               strokeWidth: 5,
                             ),
                           ),
@@ -91,7 +92,7 @@ class QrCodeComponent extends StatelessWidget {
                             child: HapticIconButton(
                               icon: const Icon(
                                 Icons.refresh,
-                                color: CustomTheme.primaryColor,
+                                color: AppColors.primaryColor,
                                 size: 70,
                               ),
                               onPressed: renewToken,
@@ -112,8 +113,8 @@ class QrCodeComponent extends StatelessWidget {
                 : loc.expires_in(
                     '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
                   ),
-            style: const TextStyle(
-              color: CustomTheme.textColor,
+            style: TextStyle(
+              color: context.talleeColors.textColor,
               fontWeight: FontWeight.bold,
               fontSize: 16,
               overflow: TextOverflow.visible,
@@ -125,16 +126,19 @@ class QrCodeComponent extends StatelessWidget {
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              color: CustomTheme.onBoxColor,
-              border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
-              borderRadius: CustomTheme.standardBorderRadiusAll,
+              color: context.talleeColors.onBoxColor,
+              border: Border.all(
+                color: context.talleeColors.boxBorderColor,
+                width: 2,
+              ),
+              borderRadius: AppColors.standardBorderRadiusAll,
             ),
             margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             child: Text(
               loc.scan_qr_code_instruction,
-              style: const TextStyle(
-                color: CustomTheme.textColor,
+              style: TextStyle(
+                color: context.talleeColors.textColor,
                 fontSize: 14,
                 overflow: TextOverflow.visible,
               ),
@@ -155,9 +159,9 @@ class QrCodeComponent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Container(
             decoration: BoxDecoration(
-              color: CustomTheme.boxBorderColor.withAlpha(100),
-              border: Border.all(color: CustomTheme.boxBorderColor),
-              borderRadius: CustomTheme.standardBorderRadiusAll,
+              color: context.talleeColors.boxBorderColor.withAlpha(100),
+              border: Border.all(color: context.talleeColors.boxBorderColor),
+              borderRadius: AppColors.standardBorderRadiusAll,
             ),
             padding: const EdgeInsets.all(10),
             child: Stack(
@@ -167,9 +171,9 @@ class QrCodeComponent extends StatelessWidget {
                   opacity: 0.50,
                   child: PrettyQrView(
                     qrImage: qrImage ?? loadingStateQr(),
-                    decoration: const PrettyQrDecoration(
+                    decoration: PrettyQrDecoration(
                       shape: PrettyQrSquaresSymbol(
-                        color: CustomTheme.boxBorderColor,
+                        color: context.talleeColors.boxBorderColor,
                       ),
                       background: Colors.transparent,
                     ),
@@ -202,10 +206,10 @@ class QrCodeComponent extends StatelessWidget {
                           Text(
                             loc.share_as_qr_code_info,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               overflow: TextOverflow.visible,
-                              color: CustomTheme.hintColor,
+                              color: context.talleeColors.hintColor,
                             ),
                           ),
                         ],

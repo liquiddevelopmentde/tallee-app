@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 
@@ -14,6 +15,7 @@ String getNameCountText(Player player) {
 /// Builds a text span that renders a player's name together with the
 /// `#nameCount` suffix.
 InlineSpan buildPlayerNameCountSpan(
+  BuildContext context,
   Player player, {
   TextStyle? style,
   TextStyle? mainStyle,
@@ -21,10 +23,10 @@ InlineSpan buildPlayerNameCountSpan(
   bool highlighted = false,
 }) {
   final Color? mainColor = highlighted
-      ? CustomTheme.textColor.withAlpha(150)
+      ? context.talleeColors.textColor.withAlpha(150)
       : mainStyle?.color;
   final Color? countColor = highlighted
-      ? CustomTheme.primaryColor.withAlpha(50)
+      ? AppColors.primaryColor.withAlpha(50)
       : countStyle?.color;
 
   final resolvedMainStyle =
@@ -35,7 +37,7 @@ InlineSpan buildPlayerNameCountSpan(
           .copyWith(color: countColor);
 
   return TextSpan(
-    style: style ?? const TextStyle(color: CustomTheme.textColor),
+    style: style ?? TextStyle(color: context.talleeColors.textColor),
     children: [
       TextSpan(text: player.name, style: resolvedMainStyle),
       TextSpan(text: getNameCountText(player), style: resolvedCountStyle),
@@ -46,6 +48,7 @@ InlineSpan buildPlayerNameCountSpan(
 /// Builds a text widget that renders a player's name together with the
 /// `#nameCount` suffix.
 Widget _buildPlayerNameCountWidget(
+  BuildContext context,
   Player player, {
   TextStyle? mainStyle,
   TextStyle? countStyle,
@@ -53,6 +56,7 @@ Widget _buildPlayerNameCountWidget(
 }) {
   return Text.rich(
     buildPlayerNameCountSpan(
+      context,
       player,
       mainStyle: mainStyle,
       countStyle: countStyle,
@@ -64,6 +68,7 @@ Widget _buildPlayerNameCountWidget(
 /// Builds a name display widget for a "Participating Unit" (Player or Team/Pair).
 /// Handles teams, pairs, and individual players with consistent styling.
 Widget buildUnitNameWidget(
+  BuildContext context,
   dynamic unit, {
   bool isTeamMatch = false,
   MainAxisAlignment rowAlignment = MainAxisAlignment.start,
@@ -78,15 +83,16 @@ Widget buildUnitNameWidget(
         unit.name,
         style:
             mainStyle ??
-            const TextStyle(
+            TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: CustomTheme.textColor,
+              color: context.talleeColors.textColor,
             ),
         overflow: TextOverflow.ellipsis,
       );
     } else {
       return _buildPairGameNameWidget(
+        context,
         unit,
         rowAlignment: rowAlignment,
         mainStyle: mainStyle,
@@ -97,6 +103,7 @@ Widget buildUnitNameWidget(
     }
   } else if (unit is Player) {
     return _buildPlayerNameCountWidget(
+      context,
       unit,
       mainStyle: mainStyle,
       countStyle: countStyle,
@@ -111,6 +118,7 @@ Widget buildUnitNameWidget(
 /// Shows either "PlayerA (count) & PlayerB (count)" with a link icon for pairs
 /// or a single player's name with the count for single players.
 Widget _buildPairGameNameWidget(
+  BuildContext context,
   Team team, {
   MainAxisAlignment rowAlignment = MainAxisAlignment.start,
   TextStyle? mainStyle,
@@ -126,7 +134,7 @@ Widget _buildPairGameNameWidget(
       TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        color: CustomTheme.textColor.withAlpha(100),
+        color: context.talleeColors.textColor.withAlpha(100),
       );
 
   final bool showIcon = team.members.length > 1;
@@ -146,9 +154,10 @@ Widget _buildPairGameNameWidget(
         Flexible(
           child: Text.rich(
             TextSpan(
-              style: const TextStyle(color: CustomTheme.textColor),
+              style: TextStyle(color: context.talleeColors.textColor),
               children: [
                 buildPlayerNameCountSpan(
+                  context,
                   team.members[0],
                   mainStyle: resolvedMainStyle,
                   countStyle: resolvedCountStyle,
@@ -158,11 +167,12 @@ Widget _buildPairGameNameWidget(
                   text: ' & ',
                   style: highlighted.isNotEmpty && highlighted.every((h) => h)
                       ? resolvedMainStyle.copyWith(
-                          color: CustomTheme.textColor.withAlpha(150),
+                          color: context.talleeColors.textColor.withAlpha(150),
                         )
                       : resolvedMainStyle,
                 ),
                 buildPlayerNameCountSpan(
+                  context,
                   team.members[1],
                   mainStyle: resolvedMainStyle,
                   countStyle: resolvedCountStyle,
@@ -174,6 +184,7 @@ Widget _buildPairGameNameWidget(
         ),
       ] else if (team.members.isNotEmpty) ...[
         _buildPlayerNameCountWidget(
+          context,
           team.members.first,
           mainStyle: resolvedMainStyle,
           countStyle: resolvedCountStyle,

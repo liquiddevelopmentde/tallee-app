@@ -25,6 +25,7 @@ class PairTile extends StatelessWidget {
       showIcon: showIcon,
       onTileTap: onTileTap,
       content: buildUnitNameWidget(
+        context,
         pair,
         pairIconLeft: pairIconLeft,
         highlighted: List.generate(

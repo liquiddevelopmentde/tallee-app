@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/enter_token_component.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file/import_file_component.dart';
@@ -46,10 +47,10 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
               child: Container(
                 height: 50,
                 decoration: BoxDecoration(
-                  color: CustomTheme.onBoxColor,
+                  color: context.talleeColors.onBoxColor,
                   borderRadius: BorderRadius.circular(25),
                   border: Border.all(
-                    color: CustomTheme.boxBorderColor,
+                    color: context.talleeColors.boxBorderColor,
                     width: 2,
                   ),
                 ),
@@ -61,13 +62,13 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
                   enableFeedback: false,
                   indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
-                    color: CustomTheme.primaryColor,
+                    color: AppColors.primaryColor,
                   ),
                   labelColor: Colors.black,
                   overlayColor: const WidgetStatePropertyAll(
                     Colors.transparent,
                   ),
-                  unselectedLabelColor: CustomTheme.textColor,
+                  unselectedLabelColor: context.talleeColors.textColor,
                   onTap: (_) {
                     HapticFeedback.selectionClick();
                   },

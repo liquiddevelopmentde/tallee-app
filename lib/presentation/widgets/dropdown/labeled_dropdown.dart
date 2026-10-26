@@ -2,7 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Material;
 import 'package:material_ui/material_ui.dart' hide Material;
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/presentation/widgets/dropdown/dropdown_option.dart';
 
 export 'dropdown_option.dart';
@@ -102,8 +102,8 @@ class LabeledDropdown<T> extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.start,
-                style: const TextStyle(
-                  color: CustomTheme.textColor,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   overflow: TextOverflow.visible,
@@ -114,8 +114,8 @@ class LabeledDropdown<T> extends StatelessWidget {
                 textAlign: TextAlign.start,
                 softWrap: true,
                 maxLines: 2,
-                style: const TextStyle(
-                  color: CustomTheme.textColor,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
                   fontSize: 12,
                 ),
               ),
@@ -139,7 +139,7 @@ class LabeledDropdown<T> extends StatelessWidget {
                   ? DropdownButton2<T>(
                       underline: const SizedBox.shrink(),
                       isExpanded: true,
-                      hint: Text(hintText, style: hintStyle),
+                      hint: Text(hintText, style: hintStyle(context)),
                       multiValueListenable: listenable,
                       items: options
                           .map(
@@ -159,10 +159,12 @@ class LabeledDropdown<T> extends StatelessWidget {
                                         isSelected
                                             ? Icons.check_box_outlined
                                             : Icons.check_box_outline_blank,
-                                        color: CustomTheme.textColor,
+                                        color: context.talleeColors.textColor,
                                       ),
                                       const SizedBox(width: 12),
-                                      Expanded(child: optionRow(option)),
+                                      Expanded(
+                                        child: optionRow(context, option),
+                                      ),
                                     ],
                                   );
                                 },
@@ -188,8 +190,8 @@ class LabeledDropdown<T> extends StatelessWidget {
                                   return Text(
                                     selectedLabels,
                                     style: values.isEmpty
-                                        ? hintStyle
-                                        : headerStyle,
+                                        ? hintStyle(context)
+                                        : headerStyle(context),
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                   );
@@ -198,9 +200,9 @@ class LabeledDropdown<T> extends StatelessWidget {
                             )
                             .toList();
                       },
-                      buttonStyleData: buttonStyle,
-                      iconStyleData: iconStyle,
-                      dropdownStyleData: dropdownStyle,
+                      buttonStyleData: buttonStyle(context),
+                      iconStyleData: iconStyle(context),
+                      dropdownStyleData: dropdownStyle(context),
                       menuItemStyleData: menuStyle,
                     )
                   : DropdownButton2<T>(
@@ -208,7 +210,7 @@ class LabeledDropdown<T> extends StatelessWidget {
                       isExpanded: true,
                       hint: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(hintText, style: hintStyle),
+                        child: Text(hintText, style: hintStyle(context)),
                       ),
                       valueListenable: valueListenable,
                       items: options
@@ -216,14 +218,14 @@ class LabeledDropdown<T> extends StatelessWidget {
                             (option) => DropdownItem<T>(
                               value: option.value,
                               height: 44,
-                              child: optionRow(option),
+                              child: optionRow(context, option),
                             ),
                           )
                           .toList(),
                       onChanged: enabled ? onChanged : null,
-                      buttonStyleData: buttonStyle,
-                      iconStyleData: iconStyle,
-                      dropdownStyleData: dropdownStyle,
+                      buttonStyleData: buttonStyle(context),
+                      iconStyleData: iconStyle(context),
+                      dropdownStyleData: dropdownStyle(context),
                       menuItemStyleData: menuStyle,
                       selectedItemBuilder: selectedItemBuilder,
                     ),
@@ -234,9 +236,9 @@ class LabeledDropdown<T> extends StatelessWidget {
     );
   }
 
-  Widget optionRow(DropdownOption<T> option) {
+  Widget optionRow(BuildContext context, DropdownOption<T> option) {
     if (option.leading == null) {
-      return Text(option.label, style: itemStyle);
+      return Text(option.label, style: itemStyle(context));
     }
     return Row(
       children: [
@@ -245,7 +247,7 @@ class LabeledDropdown<T> extends StatelessWidget {
         Expanded(
           child: Text(
             option.label,
-            style: itemStyle,
+            style: itemStyle(context),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -253,40 +255,40 @@ class LabeledDropdown<T> extends StatelessWidget {
     );
   }
 
-  TextStyle get headerStyle => const TextStyle(
-    color: CustomTheme.textColor,
+  TextStyle headerStyle(BuildContext context) => TextStyle(
+    color: context.talleeColors.textColor,
     fontSize: 14,
     fontWeight: FontWeight.bold,
   );
 
-  TextStyle get itemStyle =>
-      const TextStyle(color: CustomTheme.textColor, fontSize: 14);
+  TextStyle itemStyle(BuildContext context) =>
+      TextStyle(color: context.talleeColors.textColor, fontSize: 14);
 
-  TextStyle get hintStyle =>
-      const TextStyle(color: CustomTheme.hintColor, fontSize: 14);
+  TextStyle hintStyle(BuildContext context) =>
+      TextStyle(color: context.talleeColors.hintColor, fontSize: 14);
 
-  ButtonStyleData get buttonStyle => ButtonStyleData(
+  ButtonStyleData buttonStyle(BuildContext context) => ButtonStyleData(
     height: 54,
     decoration: BoxDecoration(
-      color: CustomTheme.onBoxColor,
+      color: context.talleeColors.onBoxColor,
       borderRadius: BorderRadius.circular(12),
     ),
   );
 
-  IconStyleData get iconStyle => const IconStyleData(
-    iconEnabledColor: CustomTheme.textColor,
-    iconDisabledColor: CustomTheme.hintColor,
+  IconStyleData iconStyle(BuildContext context) => IconStyleData(
+    iconEnabledColor: context.talleeColors.textColor,
+    iconDisabledColor: context.talleeColors.hintColor,
   );
 
   MenuItemStyleData get menuStyle =>
       const MenuItemStyleData(padding: EdgeInsets.zero);
 
-  DropdownStyleData get dropdownStyle => DropdownStyleData(
+  DropdownStyleData dropdownStyle(BuildContext context) => DropdownStyleData(
     padding: const EdgeInsets.symmetric(horizontal: 12),
     decoration: BoxDecoration(
-      color: CustomTheme.boxColor,
+      color: context.talleeColors.boxColor,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: CustomTheme.boxBorderColor, width: 1),
+      border: Border.all(color: context.talleeColors.boxBorderColor, width: 1),
     ),
   );
 }

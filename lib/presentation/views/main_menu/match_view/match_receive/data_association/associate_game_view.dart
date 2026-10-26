@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -40,11 +41,11 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             Align(
               alignment: Alignment.center,
               child: Container(
-                margin: CustomTheme.standardMargin,
+                margin: AppColors.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
                   color: associatedGame == null ? Colors.orange : Colors.green,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: Text(
                   associatedGame != null
@@ -80,10 +81,10 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                       onTap: navigateToGameSelection,
                       child: Container(
                         key: const ValueKey('no_association'),
-                        margin: CustomTheme.tileMargin,
+                        margin: AppColors.tileMargin,
                         height: 138,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        decoration: CustomTheme.standardBoxDecoration.copyWith(
+                        decoration: context.standardBoxDecoration.copyWith(
                           border: Border.all(
                             color: Colors.orange.withAlpha(150),
                             width: 1,
@@ -101,8 +102,8 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                               const SizedBox(height: 5),
                               Text(
                                 loc.no_matching_local_game_found,
-                                style: const TextStyle(
-                                  color: CustomTheme.textColor,
+                                style: TextStyle(
+                                  color: context.talleeColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   overflow: TextOverflow.visible,
@@ -112,8 +113,8 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                               ),
                               Text(
                                 loc.tap_to_choose_existing,
-                                style: const TextStyle(
-                                  color: CustomTheme.hintColor,
+                                style: TextStyle(
+                                  color: context.talleeColors.hintColor,
                                   fontSize: 14,
                                   overflow: TextOverflow.visible,
                                 ),
@@ -136,8 +137,8 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             if (associatedGame != null)
               Text(
                 loc.tap_to_choose_different_game,
-                style: const TextStyle(
-                  color: CustomTheme.hintColor,
+                style: TextStyle(
+                  color: context.talleeColors.hintColor,
                   fontSize: 14,
                   overflow: TextOverflow.visible,
                 ),
@@ -152,7 +153,9 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                 onPressed: () {
                   Navigator.of(context).push(
                     adaptivePageRoute(
-                      settings: const RouteSettings(name: RouteNames.associatePlayersView),
+                      settings: const RouteSettings(
+                        name: RouteNames.associatePlayersView,
+                      ),
                       builder: (context) => AssociatePlayersView(
                         match: widget.match,
                         associatedGame: associatedGame,

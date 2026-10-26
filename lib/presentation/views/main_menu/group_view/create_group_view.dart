@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
@@ -81,7 +81,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       key: scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         appBar: AppBar(title: Text(viewTitle)),
         body: SafeArea(
           minimum: const EdgeInsets.symmetric(horizontal: 12),

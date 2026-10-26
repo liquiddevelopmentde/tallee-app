@@ -6,7 +6,8 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -159,7 +160,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         key: _scaffoldMessengerKey,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          backgroundColor: CustomTheme.backgroundColor,
+          backgroundColor: context.talleeColors.backgroundColor,
           appBar: AppBar(title: Text(viewTitle)),
           body: SafeArea(
             maintainBottomViewPadding: true,
@@ -434,72 +435,72 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         return Theme(
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
-            colorScheme: const ColorScheme.dark(
-              primary: CustomTheme.primaryColor,
-              onPrimary: CustomTheme.textColor,
-              surface: CustomTheme.boxColor,
-              onSurface: CustomTheme.textColor,
+            colorScheme: ColorScheme.dark(
+              primary: AppColors.primaryColor,
+              onPrimary: context.talleeColors.textColor,
+              surface: context.talleeColors.boxColor,
+              onSurface: context.talleeColors.textColor,
             ),
           ),
           child: Dialog(
-            backgroundColor: CustomTheme.boxColor,
+            backgroundColor: context.talleeColors.boxColor,
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: CustomTheme.boxBorderColor),
+              side: BorderSide(color: context.talleeColors.boxBorderColor),
             ),
             child: Container(
               padding: const EdgeInsets.all(16),
               height: 450,
               child: SfDateRangePicker(
-                backgroundColor: CustomTheme.boxColor,
-                todayHighlightColor: CustomTheme.primaryColor,
+                backgroundColor: context.talleeColors.boxColor,
+                todayHighlightColor: AppColors.primaryColor,
                 showNavigationArrow: true,
                 initialSelectedDate: selectedCreationDate ?? clock.now(),
                 maxDate: clock.now(),
-                headerStyle: const DateRangePickerHeaderStyle(
+                headerStyle: DateRangePickerHeaderStyle(
                   textAlign: TextAlign.center,
                   backgroundColor: Colors.transparent,
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                monthCellStyle: const DateRangePickerMonthCellStyle(
+                monthCellStyle: DateRangePickerMonthCellStyle(
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 16,
                   ),
-                  todayTextStyle: TextStyle(
-                    color: CustomTheme.primaryColor,
+                  todayTextStyle: const TextStyle(
+                    color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                   leadingDatesTextStyle: TextStyle(
-                    color: CustomTheme.hintColor,
+                    color: context.talleeColors.hintColor,
                     fontSize: 16,
                   ),
                   trailingDatesTextStyle: TextStyle(
-                    color: CustomTheme.hintColor,
+                    color: context.talleeColors.hintColor,
                     fontSize: 16,
                   ),
                 ),
-                yearCellStyle: const DateRangePickerYearCellStyle(
+                yearCellStyle: DateRangePickerYearCellStyle(
                   textStyle: TextStyle(
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                     fontSize: 16,
                   ),
-                  todayTextStyle: TextStyle(
-                    color: CustomTheme.primaryColor,
+                  todayTextStyle: const TextStyle(
+                    color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
-                monthViewSettings: const DateRangePickerMonthViewSettings(
+                monthViewSettings: DateRangePickerMonthViewSettings(
                   viewHeaderStyle: DateRangePickerViewHeaderStyle(
                     textStyle: TextStyle(
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -507,9 +508,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   firstDayOfWeek: 1,
                 ),
                 selectionMode: DateRangePickerSelectionMode.single,
-                selectionColor: CustomTheme.primaryColor,
-                selectionTextStyle: const TextStyle(
-                  color: CustomTheme.textColor,
+                selectionColor: AppColors.primaryColor,
+                selectionTextStyle: TextStyle(
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),

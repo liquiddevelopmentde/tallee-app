@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class LiveEditListTile extends StatefulWidget {
@@ -107,7 +107,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: context.standardBoxDecoration,
       child: Column(
         spacing: 4,
         children: [
@@ -173,14 +173,14 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                               applyHeightToLastDescent: false,
                             ),
                             style: valueTextStyle.copyWith(
-                              color: CustomTheme.textColor,
+                              color: context.talleeColors.textColor,
                             ),
                           ),
                         ),
                         builder: (context, t, child) {
                           final iconColor = Color.lerp(
-                            Colors.red,
-                            CustomTheme.textColor.withAlpha(90),
+                            context.talleeColors.errorColor,
+                            context.talleeColors.textColor.withAlpha(90),
                             t,
                           );
 
@@ -230,7 +230,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                             applyHeightToLastDescent: false,
                                           ),
                                       style: valueTextStyle.copyWith(
-                                        color: CustomTheme.textColor,
+                                        color: context.talleeColors.textColor,
                                       ),
                                     ),
                                   ),
@@ -273,7 +273,8 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                             TextAlignVertical.center,
                                         showCursor: true,
                                         enableInteractiveSelection: true,
-                                        cursorColor: CustomTheme.textColor,
+                                        cursorColor:
+                                            context.talleeColors.textColor,
                                         cursorHeight: 36,
                                         style: valueTextStyle.copyWith(
                                           height: 1.0,

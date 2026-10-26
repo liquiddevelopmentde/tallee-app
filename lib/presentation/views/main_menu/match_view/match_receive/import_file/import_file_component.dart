@@ -3,7 +3,8 @@ import 'dart:core' hide Match;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
@@ -28,13 +29,14 @@ class _ImportFileCardState extends State<ImportFileCard> {
   ImportResult? lastResult;
   String? fileName;
 
-  Color dottedBorderColor = CustomTheme.boxBorderColor;
+  late Color dottedBorderColor;
 
   late ({ImportResult result, Match? match, String filePath}) data;
 
   @override
   void initState() {
     super.initState();
+    dottedBorderColor = context.talleeColors.boxBorderColor;
     if (widget.initialFilePath != null) {
       loadInitialFile();
     }
@@ -47,7 +49,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
       children: [
         const SizedBox(height: 50),
         Padding(
-          padding: CustomTheme.standardMargin.copyWith(left: 25, right: 25),
+          padding: AppColors.standardMargin.copyWith(left: 25, right: 25),
           child: GestureDetector(
             onTap: () async {
               HapticFeedback.selectionClick();
@@ -68,8 +70,8 @@ class _ImportFileCardState extends State<ImportFileCard> {
                   vertical: 40,
                 ),
                 decoration: BoxDecoration(
-                  color: CustomTheme.boxColor,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  color: context.talleeColors.boxColor,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 150),
@@ -108,7 +110,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
             overflow: TextOverflow.visible,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: CustomTheme.textColor.withAlpha(225),
+              color: context.talleeColors.textColor.withAlpha(225),
               fontSize: 14,
             ),
             softWrap: true,
@@ -128,7 +130,9 @@ class _ImportFileCardState extends State<ImportFileCard> {
                         Navigator.push(
                           context,
                           adaptivePageRoute(
-                            settings: const RouteSettings(name: RouteNames.previewMatchView),
+                            settings: const RouteSettings(
+                              name: RouteNames.previewMatchView,
+                            ),
                             builder: (_) =>
                                 PreviewMatchView(match: data.match!),
                             fullscreenDialog: true,
@@ -168,7 +172,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
         if (data.result != ImportResult.canceled) {
           dottedBorderColor = Colors.red;
         } else {
-          dottedBorderColor = CustomTheme.boxBorderColor;
+          dottedBorderColor = context.talleeColors.boxBorderColor;
         }
       });
     }

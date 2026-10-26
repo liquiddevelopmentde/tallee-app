@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/news/news.dart';
 import 'package:tallee/presentation/views/news/news_card.dart';
@@ -17,7 +17,7 @@ class NewsView extends StatelessWidget {
     final PackageInfo packageInfo = PackageInfoService.info;
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -60,7 +60,7 @@ class NewsView extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: CustomTheme.onBoxColor,
+                              color: context.talleeColors.onBoxColor,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(

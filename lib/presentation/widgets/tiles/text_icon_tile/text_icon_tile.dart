@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 export 'pair_tile.dart';
 export 'player_tile.dart';
@@ -7,7 +7,7 @@ export 'player_tile.dart';
 class TextIconTile extends StatelessWidget {
   /// A tile widget that displays text with an optional icon that can be tapped.
   /// - [content]: A content widget to display.
-  /// - [backgroundColor]: Optional background color for the tile. Defaults to [CustomTheme.onBoxColor].
+  /// - [backgroundColor]: Optional background color for the tile. Defaults to [context.talleeColors.onBoxColor].
   /// - [icon]: Optional custom icon. Defaults to [Icons.close].
   /// - [onIconTap]: The callback to be invoked when the icon is tapped.
   /// - [onTileTap]: The callback to be invoked when the tile is tapped.
@@ -31,7 +31,7 @@ class TextIconTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveBgColor = backgroundColor ?? CustomTheme.onBoxColor;
+    final effectiveBgColor = backgroundColor ?? context.talleeColors.onBoxColor;
     final tileBgColor = highlighted
         ? effectiveBgColor.withAlpha((140).round())
         : effectiveBgColor;
@@ -45,7 +45,7 @@ class TextIconTile extends StatelessWidget {
           color: tileBgColor,
           borderRadius: BorderRadius.circular(12),
           border: effectiveBgColor == Colors.transparent
-              ? Border.all(color: CustomTheme.boxBorderColor)
+              ? Border.all(color: context.talleeColors.boxBorderColor)
               : null,
         ),
         child: Row(

@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -40,13 +41,13 @@ class TextIconListTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
-          color: CustomTheme.boxColor,
+          color: context.talleeColors.boxColor,
           border: Border.all(
-            color: CustomTheme.boxBorderColor,
+            color: context.talleeColors.boxBorderColor,
             width: 1,
             strokeAlign: BorderSide.strokeAlignCenter,
           ),
-          borderRadius: CustomTheme.standardBorderRadiusAll,
+          borderRadius: AppColors.standardBorderRadiusAll,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,6 +61,7 @@ class TextIconListTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     buildUnitNameWidget(
+                      context,
                       pair ?? player ?? Player(name: text, nameCount: 0),
                       mainStyle: const TextStyle(
                         fontSize: 16,
@@ -68,7 +70,7 @@ class TextIconListTile extends StatelessWidget {
                       countStyle: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: CustomTheme.textColor.withAlpha(100),
+                        color: context.talleeColors.textColor.withAlpha(100),
                       ),
                       pairIconLeft: pairIconLeft,
                     ),
@@ -78,7 +80,7 @@ class TextIconListTile extends StatelessWidget {
                         textAlign: TextAlign.start,
                         style: TextStyle(
                           fontSize: 12,
-                          color: CustomTheme.textColor.withAlpha(100),
+                          color: context.talleeColors.textColor.withAlpha(100),
                         ),
                       ),
                   ],

@@ -5,7 +5,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
@@ -69,6 +70,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final colors = context.talleeColors;
     final tiles = statisticTiles;
 
     return LayoutBuilder(
@@ -85,9 +87,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                     // Statistics in db
                     statistics.isNotEmpty
                     ? ReorderableListView.builder(
-                        padding: CustomTheme.listViewPadding(context),
+                        padding: AppColors.listViewPadding(context),
                         header: SingleChildScrollView(
-                          padding: CustomTheme.filterRowPadding,
+                          padding: AppColors.filterRowPadding,
                           scrollDirection: Axis.horizontal,
                           child:
                               // Filter row
@@ -96,7 +98,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 children: [
                                   // All Chip
                                   TextChip(
-                                    text: isLoading ? 'skeleton' : loc.all,
+                                    text: loc.all,
                                     activated: noFilterActivated,
                                     onTap: () => {
                                       showOnlyFavourites = false,
@@ -125,7 +127,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 
                                   // Groups Chip
                                   TextChip(
-                                    text: isLoading ? 'skeleton' : loc.groups,
+                                    text: loc.groups,
                                     activated: filteredGroups.isNotEmpty,
                                     count: filteredGroups.length,
                                     onTap: () async {
@@ -161,7 +163,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 
                                   // Games Chip
                                   TextChip(
-                                    text: isLoading ? 'skeleton' : loc.games,
+                                    text: loc.games,
                                     count: filteredGames.length,
                                     activated: filteredGames.isNotEmpty,
                                     onTap: () async {
@@ -196,7 +198,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 
                                   // Type Chip
                                   TextChip(
-                                    text: isLoading ? 'skeleton' : loc.type,
+                                    text: loc.type,
                                     count: filteredStatisticTypes.length,
                                     activated:
                                         filteredStatisticTypes.isNotEmpty,
@@ -238,9 +240,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 
                                   // Timeframe Chip
                                   TextChip(
-                                    text: isLoading
-                                        ? 'skeleton'
-                                        : loc.timeframe,
+                                    text: loc.timeframe,
                                     count: filteredTimeframes.length,
                                     activated: filteredTimeframes.isNotEmpty,
                                     onTap: () async {
@@ -297,11 +297,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                           return AnimatedBuilder(
                             animation: animation,
                             child: child,
-                            builder: (context, child) {
+                            builder: (BuildContext context, child) {
                               final t = Curves.easeOut.transform(
                                 animation.value,
                               );
-                              const tileMargin = CustomTheme.tileMargin;
+                              const tileMargin = AppColors.tileMargin;
                               return Transform.scale(
                                 scale: 1.0 + (0.02 * t),
                                 child: Material(
@@ -324,9 +324,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             opacity: 1 * t,
                                             child: DecoratedBox(
                                               decoration: BoxDecoration(
-                                                color: Colors.white.withAlpha(
-                                                  15,
-                                                ),
+                                                color: colors
+                                                    .textColor
+                                                    .withValues(alpha: 0.10),
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                               ),

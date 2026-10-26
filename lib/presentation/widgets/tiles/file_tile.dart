@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
@@ -33,9 +34,12 @@ class MatchFileTile extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: CustomTheme.onBoxColor,
-        border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
-        borderRadius: CustomTheme.standardBorderRadiusAll,
+        color: context.talleeColors.onBoxColor,
+        border: Border.all(
+          color: context.talleeColors.boxBorderColor,
+          width: 2,
+        ),
+        borderRadius: AppColors.standardBorderRadiusAll,
       ),
       margin:
           margin ?? const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -65,10 +69,10 @@ class MatchFileTile extends StatelessWidget {
                             fileName ??
                                 '${match.name.toSafeFilename()}.$MATCH_FILE_EXTENSION',
                             maxLines: 1,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: CustomTheme.textColor,
+                              color: context.talleeColors.textColor,
                             ),
                           ),
                         ),
@@ -78,9 +82,9 @@ class MatchFileTile extends StatelessWidget {
                     // Filesize
                     Text(
                       '${fileSize.toStringAsFixed(1)} KB',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
-                        color: CustomTheme.textColor,
+                        color: context.talleeColors.textColor,
                       ),
                     ),
                   ],
@@ -94,8 +98,8 @@ class MatchFileTile extends StatelessWidget {
                         .map(
                           (item) => Text(
                             item,
-                            style: const TextStyle(
-                              color: CustomTheme.hintColor,
+                            style: TextStyle(
+                              color: context.talleeColors.hintColor,
                             ),
                           ),
                         )

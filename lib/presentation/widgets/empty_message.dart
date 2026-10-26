@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class EmptyViewMessage extends StatelessWidget {
   const EmptyViewMessage({
@@ -31,7 +31,7 @@ class EmptyViewMessage extends StatelessWidget {
             padding: icon == RpgAwesome.clovers_card
                 ? const EdgeInsets.only(left: 8.0)
                 : EdgeInsets.zero,
-            child: Icon(icon, size: 120, color: CustomTheme.hintColor),
+            child: Icon(icon, size: 120, color: context.talleeColors.hintColor),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 48),
@@ -48,9 +48,9 @@ class EmptyViewMessage extends StatelessWidget {
                 Text(
                   message,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: CustomTheme.hintColor,
+                    color: context.talleeColors.hintColor,
                     overflow: TextOverflow.visible,
                   ),
                 ),
