@@ -416,12 +416,12 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
           ? () async => handleParingSelection(unit)
           : null,
       child: Container(
-        decoration: isPlayerSelectedForPairing
-            ? BoxDecoration(
-                border: Border.all(color: AppColors.primaryColor, width: 2),
-                borderRadius: BorderRadius.circular(12),
-              )
-            : null,
+        decoration: BoxDecoration(
+          border: isPlayerSelectedForPairing
+              ? Border.all(color: AppColors.primaryColor, width: 1.5)
+              : null,
+          borderRadius: BorderRadius.circular(14),
+        ),
         child: isPaired
             ? PairTile(
                 pair: unit,

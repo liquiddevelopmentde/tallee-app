@@ -39,7 +39,7 @@ class TextIconTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTileTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 400),
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: tileBgColor,
@@ -48,17 +48,21 @@ class TextIconTile extends StatelessWidget {
               ? Border.all(color: context.talleeColors.boxBorderColor)
               : null,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (showIcon) const SizedBox(width: 3),
-            Flexible(child: content),
-            if (showIcon) ...<Widget>[
-              const SizedBox(width: 3),
-              Icon(icon, size: 20),
+        child: AnimatedSize(
+          curve: Curves.easeInOutCubicEmphasized,
+          duration: const Duration(milliseconds: 250),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (showIcon) const SizedBox(width: 3),
+              Flexible(child: content),
+              if (showIcon) ...<Widget>[
+                const SizedBox(width: 3),
+                Icon(icon, size: 20),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
