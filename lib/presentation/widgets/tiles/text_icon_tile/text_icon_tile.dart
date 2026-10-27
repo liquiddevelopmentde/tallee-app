@@ -1,4 +1,3 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
@@ -35,58 +34,42 @@ class TextIconTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final iconEnabled = onIconTap != null && icon != null;
     final bgColor = backgroundColor ?? context.talleeColors.onBoxColor;
-    final effectiveBgColor = muted
-        ? Colors.transparent /*bgColor.withAlpha((140).round())*/
-        : bgColor;
-
-    final solidBorder = effectiveBgColor == Colors.transparent && !muted;
-
-    final tile = AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: effectiveBgColor,
-        borderRadius: BorderRadius.circular(12),
-        border: solidBorder
-            ? Border.all(color: context.talleeColors.boxBorderColor)
-            : null,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (iconEnabled) const SizedBox(width: 3),
-          Flexible(child: content),
-          if (iconEnabled) ...<Widget>[
-            const SizedBox(width: 3),
-            GestureDetector(
-              onTap: () {
-                HapticFeedback.selectionClick();
-                onIconTap?.call();
-              },
-              child: Icon(icon!, size: 20),
-            ),
-          ],
-        ],
-      ),
-    );
+    final effectiveBgColor = muted ? Colors.transparent : bgColor;
+    final solidBorder = effectiveBgColor == Colors.transparent;
 
     return GestureDetector(
       onTap: onTileTap,
-      child: muted
-          ? DottedBorder(
-              childOnTop: false,
-              options: RoundedRectDottedBorderOptions(
-                padding: EdgeInsets.zero,
-                borderPadding: const EdgeInsets.all(1.5),
-                radius: const Radius.circular(12),
-                color: context.talleeColors.hintColor,
-                strokeWidth: 1.5,
-                dashPattern: const [5, 5],
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: effectiveBgColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: solidBorder
+                ? context.talleeColors.boxBorderColor
+                : Colors.transparent,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (iconEnabled) const SizedBox(width: 3),
+            Flexible(child: content),
+            if (iconEnabled) ...<Widget>[
+              const SizedBox(width: 3),
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  onIconTap?.call();
+                },
+                child: Icon(icon!, size: 20),
               ),
-              child: tile,
-            )
-          : tile,
+            ],
+          ],
+        ),
+      ),
     );
   }
 }
