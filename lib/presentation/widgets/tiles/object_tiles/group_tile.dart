@@ -20,14 +20,12 @@ class GroupTile extends StatefulWidget {
     required this.group,
     this.isHighlighted = false,
     this.onTap,
-    this.onPlayerChanged,
     this.borderColor,
   });
 
   final Group group;
   final bool isHighlighted;
   final VoidCallback? onTap;
-  final VoidCallback? onPlayerChanged;
   final Color? borderColor;
 
   @override
