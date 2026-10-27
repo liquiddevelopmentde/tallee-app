@@ -34,7 +34,7 @@ class PairTile extends StatelessWidget {
         ),
       ),
       backgroundColor: backgroundColor,
-      highlighted: pair.members.every((player) => player.deleted),
+      muted: pair.members.every((player) => player.deleted),
     );
   }
 }

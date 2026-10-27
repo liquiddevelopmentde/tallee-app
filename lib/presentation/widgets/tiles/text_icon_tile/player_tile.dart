@@ -11,18 +11,24 @@ class PlayerTile extends StatelessWidget {
     this.onTileTap,
     this.backgroundColor,
     this.showIcon = false,
+    this.icon = Icons.close,
+    this.selected = false,
   });
 
   final Player player;
   final VoidCallback? onTileTap;
   final Color? backgroundColor;
   final bool showIcon;
+  final IconData icon;
+  final bool selected;
 
   @override
   Widget build(BuildContext context) {
     return TextIconTile(
       showIcon: showIcon,
-      highlighted: player.deleted,
+      selected: selected,
+      icon: icon,
+      muted: player.deleted,
       onTileTap: onTileTap,
       backgroundColor: backgroundColor,
       content: buildUnitNameWidget(
