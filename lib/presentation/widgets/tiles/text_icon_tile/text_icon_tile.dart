@@ -8,18 +8,18 @@ class TextIconTile extends StatelessWidget {
   /// A tile widget that displays text with an optional icon that can be tapped.
   /// - [content]: A content widget to display.
   /// - [backgroundColor]: Optional background color for the tile. Defaults to [context.talleeColors.onBoxColor].
+  /// - [showIcon]: Whether the icon should be shown.
   /// - [icon]: Optional custom icon. Defaults to [Icons.close].
-  /// - [onIconTap]: The callback to be invoked when the icon is tapped.
   /// - [onTileTap]: The callback to be invoked when the tile is tapped.
   /// - [highlighted]: Whether the tile is highlighted.
   const TextIconTile({
     super.key,
     required this.content,
     this.backgroundColor,
+    this.showIcon = false,
     this.icon = Icons.close,
     this.onTileTap,
     this.highlighted = false,
-    this.showIcon = false,
   });
 
   final Widget content;
