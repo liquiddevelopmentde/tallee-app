@@ -106,6 +106,27 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   late final TextEditingController searchBarController =
       TextEditingController();
 
+  final ScrollController selectedUnitsScrollController = ScrollController();
+
+  /// Ids of units the user added in this session. Only these play an
+  /// appear animation, preselected units are shown right away.
+  final Set<String> addedUnitIds = {};
+
+  /// Removed units that are still animating out, mapped to their old index
+  /// so they stay in place until the animation is done
+  final Map<Team, int> removingUnits = {};
+
+  /// The units shown in the bar: [selectedUnits] plus the [removingUnits]
+  List<Team> get displayedUnits {
+    final units = [...selectedUnits];
+    final sortedRemoving = removingUnits.entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value));
+    for (final entry in sortedRemoving) {
+      units.insert(entry.value.clamp(0, units.length), entry.key);
+    }
+    return units;
+  }
+
   late final List<Player> skeletonData = List.filled(
     widget.mode == SelectionMode.single ? 5 : 7,
     Player(name: 'Player 0'),
@@ -116,6 +137,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   @override
   void dispose() {
     searchBarController.dispose();
+    selectedUnitsScrollController.dispose();
     super.dispose();
   }
 
@@ -295,17 +317,15 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       children: [
         SizedBox(
           height: 50,
-          child: selectedUnits.isEmpty
+          child: displayedUnits.isEmpty
               ? Center(child: Text(loc.no_players_selected))
               : SingleChildScrollView(
+                  controller: selectedUnitsScrollController,
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      for (var unit in selectedUnits)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: buildUnitTile(unit),
-                        ),
+                      for (var unit in displayedUnits)
+                        buildAnimatedUnitTile(unit),
                     ],
                   ),
                 ),
@@ -412,11 +432,61 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     await HapticFeedback.selectionClick();
     setState(() {
       if (!selectedPlayers.any((p) => p.id == player.id)) {
-        selectedUnits.insert(0, Team(name: '', members: [player]));
+        final unit = Team(name: '', members: [player]);
+        selectedUnits.insert(0, unit);
+        addedUnitIds.add(unit.id);
         suggestedPlayers.remove(player);
         widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+        scrollSelectedUnitsToStart();
       }
     });
+  }
+
+  /// Scrolls the bar to the start so newly added units are visible
+  void scrollSelectedUnitsToStart() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!selectedUnitsScrollController.hasClients) return;
+      selectedUnitsScrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    });
+  }
+
+  /// [buildUnitTile] with an animation: the tile grows and fades in when
+  /// added, and shrinks and fades out when removed
+  Widget buildAnimatedUnitTile(Team unit) {
+    final isRemoving = removingUnits.containsKey(unit);
+    return TweenAnimationBuilder<double>(
+      key: ValueKey(unit.id),
+      tween: Tween(
+        begin: addedUnitIds.contains(unit.id) ? 0 : 1,
+        end: isRemoving ? 0 : 1,
+      ),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutCubic,
+      onEnd: () {
+        if (isRemoving) setState(() => removingUnits.remove(unit));
+      },
+      builder: (context, value, child) => ClipRect(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          widthFactor: value,
+          child: Opacity(
+            opacity: value,
+            child: Transform.scale(scale: 0.8 + 0.2 * value, child: child),
+          ),
+        ),
+      ),
+      child: IgnorePointer(
+        ignoring: isRemoving,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: buildUnitTile(unit),
+        ),
+      ),
+    );
   }
 
   Widget buildUnitTile(Team unit) {
@@ -480,7 +550,9 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   /// Removes the player from selection and adds them back to suggestedPlayers
   void removeUnit(Team unit) {
     setState(() {
+      removingUnits[unit] = selectedUnits.indexOf(unit);
       selectedUnits.remove(unit);
+      addedUnitIds.remove(unit.id);
       widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
 
       final player = unit.members.first;
@@ -657,8 +729,11 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       selectedPlayer = player;
       widget.onSingleChanged?.call(player);
     } else {
-      selectedUnits.insert(0, Team(name: '', members: [player]));
+      final unit = Team(name: '', members: [player]);
+      selectedUnits.insert(0, unit);
+      addedUnitIds.add(unit.id);
       widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+      scrollSelectedUnitsToStart();
     }
     allPlayers.add(player);
 
