@@ -25,7 +25,7 @@ class TextIconTile extends StatelessWidget {
   final Widget content;
   final Color? backgroundColor;
   final bool showIcon;
-  final IconData? icon;
+  final IconData icon;
   final VoidCallback? onTileTap;
   final bool highlighted;
 
@@ -56,7 +56,7 @@ class TextIconTile extends StatelessWidget {
             Flexible(child: content),
             if (showIcon) ...<Widget>[
               const SizedBox(width: 3),
-              Icon(icon!, size: 20),
+              Icon(icon, size: 20),
             ],
           ],
         ),
