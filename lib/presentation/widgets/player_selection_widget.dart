@@ -310,16 +310,40 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
                   ),
                 ),
         ),
-        if (isPairingMode)
-          Text(
-            loc.tap_another_player_to_create_a_pair,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              overflow: TextOverflow.visible,
-              fontSize: 12,
-              color: AppColors.primaryColor,
-            ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOutCubicEmphasized,
+          alignment: Alignment.topLeft,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: isPairingMode
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.link,
+                          size: 16,
+                          color: AppColors.primaryColor,
+                        ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            loc.tap_another_player_to_create_a_pair,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryColor,
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : const SizedBox(width: double.infinity),
           ),
+        ),
       ],
     );
   }
@@ -403,6 +427,8 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         !isPaired &&
         !isPlayerSelectedForPairing &&
         pairingSelection.isNotEmpty;
+    final isNotPairable =
+        isPairingMode && !isPlayerSelectedForPairing && !canPlayerBePaired;
 
     return GestureDetector(
       onTap: () =>
@@ -415,30 +441,30 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       onLongPress: !isPaired && widget.pairingEnabled
           ? () async => handleParingSelection(unit)
           : null,
-      child: Container(
-        decoration: BoxDecoration(
-          border: isPlayerSelectedForPairing
-              ? Border.all(color: AppColors.primaryColor, width: 1.5)
-              : null,
-          borderRadius: BorderRadius.circular(14),
+      child: AnimatedScale(
+        scale: pressingId == unit.id ? 0.94 : 1.0,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOut,
+        child: AnimatedOpacity(
+          opacity: isNotPairable ? 0.4 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          child: isPaired
+              ? PairTile(
+                  pair: unit,
+                  pairIconLeft: true,
+                  showIcon: showTileIcons,
+                  onTileTap: () => unmergeUnit(unit),
+                )
+              : PlayerTile(
+                  player: unit.members.first,
+                  selected: isPlayerSelectedForPairing,
+                  showIcon: showTileIcons || canPlayerBePaired,
+                  icon: canPlayerBePaired ? Icons.add_link : Icons.close,
+                  onTileTap: canPlayerBePaired
+                      ? () async => handleParingSelection(unit)
+                      : null,
+                ),
         ),
-        child: isPaired
-            ? PairTile(
-                pair: unit,
-                pairIconLeft: true,
-                showIcon: showTileIcons,
-                onTileTap: () => unmergeUnit(unit),
-              )
-            : PlayerTile(
-                player: unit.members.first,
-                backgroundColor: pressingId == unit.id
-                    ? context.talleeColors.skeletonFromColor
-                    : null,
-                showIcon: showTileIcons,
-                onTileTap: canPlayerBePaired
-                    ? () async => handleParingSelection(unit)
-                    : null,
-              ),
       ),
     );
   }
