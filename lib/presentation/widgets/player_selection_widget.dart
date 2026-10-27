@@ -365,19 +365,21 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         return TextIconListTile(
           player: player,
           icon: Icons.add,
-          onTileTap: () async {
-            await HapticFeedback.selectionClick();
-            setState(() {
-              if (!selectedPlayers.any((p) => p.id == player.id)) {
-                selectedUnits.insert(0, Team(name: '', members: [player]));
-                suggestedPlayers.remove(player);
-                widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
-              }
-            });
-          },
+          onTileTap: () async => await togglePairingSelection(player),
         );
       },
     );
+  }
+
+  Future<void> togglePairingSelection(Player player) async {
+    await HapticFeedback.selectionClick();
+    setState(() {
+      if (!selectedPlayers.any((p) => p.id == player.id)) {
+        selectedUnits.insert(0, Team(name: '', members: [player]));
+        suggestedPlayers.remove(player);
+        widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+      }
+    });
   }
 
   Widget buildUnitTile(Team unit) {
