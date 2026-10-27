@@ -10,7 +10,6 @@ class TextIconListTile extends StatelessWidget {
   /// - [player]: An optional player object to display.
   /// - [pair]: An optional team object representing a pair of players.
   /// - [text]: The text to display if no player or pair is provided.
-  /// - [onIconTap]: The callback to be invoked when the icon is pressed.
   /// - [onTileTap]: The callback to be invoked when the tile is pressed.
   /// - [icon]: The icon to display in the tile.
   const TextIconListTile({
@@ -21,7 +20,6 @@ class TextIconListTile extends StatelessWidget {
     this.pair,
     this.pairIconLeft = false,
     this.icon,
-    this.onIconTap,
     this.onTileTap,
   });
 
@@ -32,7 +30,6 @@ class TextIconListTile extends StatelessWidget {
   final bool pairIconLeft;
   final IconData? icon;
   final VoidCallback? onTileTap;
-  final VoidCallback? onIconTap;
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +84,7 @@ class TextIconListTile extends StatelessWidget {
                 ),
               ),
             ),
-            if (icon != null)
-              GestureDetector(onTap: onIconTap, child: Icon(icon, size: 20)),
+            if (icon != null) Icon(icon, size: 20),
           ],
         ),
       ),
