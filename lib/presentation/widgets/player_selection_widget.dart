@@ -337,28 +337,28 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
             child: isPairingMode
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: Row(
+                ? Text.rich(
+                    TextSpan(
                       children: [
-                        const Icon(
-                          Icons.link,
-                          size: 16,
-                          color: AppColors.primaryColor,
-                        ),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            loc.tap_another_player_to_create_a_pair,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                        const WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 5),
+                            child: Icon(
+                              Icons.link,
+                              size: 16,
                               color: AppColors.primaryColor,
-                              overflow: TextOverflow.visible,
                             ),
                           ),
                         ),
+                        TextSpan(text: loc.tap_another_player_to_create_a_pair),
                       ],
+                    ),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primaryColor,
+                      overflow: TextOverflow.visible,
                     ),
                   )
                 : const SizedBox(width: double.infinity),
