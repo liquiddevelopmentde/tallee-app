@@ -71,7 +71,7 @@ class _GroupTileState extends State<GroupTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Group icon
-                const ColoredIconContainer(icon: GROUP_ICON, containerSize: 50),
+                const ColoredIconContainer(icon: GROUP_ICON),
 
                 // Text content
                 Expanded(
