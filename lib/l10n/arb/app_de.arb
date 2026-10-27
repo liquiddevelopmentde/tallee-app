@@ -26,7 +26,7 @@
   "choose_where_to_save": "Wähle aus, wo du dein Match speichern möchtest:",
   "classifier": "Klassifikator",
   "classifier_description": "Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.",
-  "click_another_player_to_create_a_pair": "Klicke einen weiteren Spieler an, um ein Paar zu erstellen",
+  "tap_another_player_to_create_a_pair": "Tippe auf einen weiteren Spieler an, um ein Paar zu erstellen",
   "close": "Schließen",
   "code_copied": "Code in die Zwischenablage kopiert",
   "code_pasted_from_clipboard": "Code aus der Zwischenablage eingefügt",

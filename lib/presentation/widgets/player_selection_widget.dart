@@ -96,6 +96,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
   // --- Multiple Selection State ---
   List<Team> selectedUnits = [];
+
   List<Player> get selectedPlayers =>
       selectedUnits.expand((u) => u.members).toList();
   bool isPairingMode = false;
@@ -109,6 +110,8 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     widget.mode == SelectionMode.single ? 5 : 7,
     Player(name: 'Player 0'),
   );
+
+  bool get showTileIcons => pairingSelection.isEmpty;
 
   @override
   void dispose() {
@@ -275,15 +278,9 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       children: [
         Expanded(
           child: Text(
-            isPairingMode
-                ? loc.click_another_player_to_create_a_pair
-                : loc.selected_players,
+            loc.selected_players,
             overflow: TextOverflow.visible,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isPairingMode ? AppColors.primaryColor : null,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
       ],
@@ -292,22 +289,38 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
   Widget buildSelectedPlayersBar() {
     final loc = AppLocalizations.of(context);
-    return SizedBox(
-      height: 50,
-      child: selectedUnits.isEmpty
-          ? Center(child: Text(loc.no_players_selected))
-          : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (var unit in selectedUnits)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: buildUnitTile(unit),
-                    ),
-                ],
-              ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 50,
+          child: selectedUnits.isEmpty
+              ? Center(child: Text(loc.no_players_selected))
+              : SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      for (var unit in selectedUnits)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: buildUnitTile(unit),
+                        ),
+                    ],
+                  ),
+                ),
+        ),
+        if (isPairingMode)
+          Text(
+            loc.tap_another_player_to_create_a_pair,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              overflow: TextOverflow.visible,
+              fontSize: 12,
+              color: AppColors.primaryColor,
             ),
+          ),
+      ],
     );
   }
 
@@ -384,67 +397,77 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
   Widget buildUnitTile(Team unit) {
     final isPaired = unit.members.length > 1;
-    final isSelectedForPairing = pairingSelection.contains(unit.id);
+    final isPlayerSelectedForPairing = pairingSelection.contains(unit.id);
+    final canPlayerBePaired =
+        widget.pairingEnabled &&
+        !isPaired &&
+        !isPlayerSelectedForPairing &&
+        pairingSelection.isNotEmpty;
 
-    return Opacity(
-      opacity: 1.0,
-      child: GestureDetector(
-        onTap: () => setState(() {
-          selectedUnits.remove(unit);
-          pairingSelection.remove(unit.id);
-          isPairingMode = pairingSelection.isNotEmpty;
-          widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
-
-          final player = unit.members.first;
-          final currentSearch = searchBarController.text.toLowerCase();
-          if (currentSearch.isEmpty ||
-              player.name.toLowerCase().contains(currentSearch)) {
-            suggestedPlayers.add(player);
-            suggestedPlayers.sort((a, b) => a.name.compareTo(b.name));
-          }
-        }),
-        onLongPressDown: !isPaired && widget.pairingEnabled
-            ? (_) => setState(() => pressingId = unit.id)
+    return GestureDetector(
+      onTap: () =>
+          isPlayerSelectedForPairing ? resetPairing() : removeUnit(unit),
+      onLongPressDown: !isPaired && widget.pairingEnabled
+          ? (_) => setState(() => pressingId = unit.id)
+          : null,
+      onLongPressCancel: () => setState(() => pressingId = null),
+      onLongPressEnd: (_) => setState(() => pressingId = null),
+      onLongPress: !isPaired && widget.pairingEnabled
+          ? () async => handleParingSelection(unit)
+          : null,
+      child: Container(
+        decoration: isPlayerSelectedForPairing
+            ? BoxDecoration(
+                border: Border.all(color: AppColors.primaryColor, width: 2),
+                borderRadius: BorderRadius.circular(12),
+              )
             : null,
-        onLongPressCancel: () => setState(() => pressingId = null),
-        onLongPressEnd: (_) => setState(() => pressingId = null),
-        onLongPress: !isPaired && widget.pairingEnabled
-            ? () async => onTileTap(unit)
-            : null,
-        child: Container(
-          decoration: isSelectedForPairing
-              ? BoxDecoration(
-                  border: Border.all(color: AppColors.primaryColor, width: 2),
-                  borderRadius: BorderRadius.circular(12),
-                )
-              : null,
-          child: isPaired
-              ? PairTile(
-                  showIcon: true,
-                  pair: unit,
-                  pairIconLeft: true,
-                  onTileTap: () => unmergeUnit(unit),
-                )
-              : PlayerTile(
-                  showIcon: true,
-                  player: unit.members.first,
-                  backgroundColor: pressingId == unit.id
-                      ? context.talleeColors.skeletonFromColor
-                      : null,
-                  onTileTap:
-                      !isPaired &&
-                          widget.pairingEnabled &&
-                          pairingSelection.isNotEmpty &&
-                          !isSelectedForPairing
-                      ? () async => onTileTap(unit)
-                      : null,
-                ),
-        ),
+        child: isPaired
+            ? PairTile(
+                pair: unit,
+                pairIconLeft: true,
+                showIcon: showTileIcons,
+                onTileTap: () => unmergeUnit(unit),
+              )
+            : PlayerTile(
+                player: unit.members.first,
+                backgroundColor: pressingId == unit.id
+                    ? context.talleeColors.skeletonFromColor
+                    : null,
+                showIcon: showTileIcons,
+                onTileTap: canPlayerBePaired
+                    ? () async => handleParingSelection(unit)
+                    : null,
+              ),
       ),
     );
   }
 
-  Future<void> onTileTap(Team unit) async {
+  /// Resets the pairing mode
+  void resetPairing() {
+    setState(() {
+      pairingSelection.clear();
+      isPairingMode = false;
+    });
+  }
+
+  /// Removes the player from selection and adds them back to suggestedPlayers
+  void removeUnit(Team unit) {
+    setState(() {
+      selectedUnits.remove(unit);
+      widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+
+      final player = unit.members.first;
+      final currentSearch = searchBarController.text.toLowerCase();
+      if (currentSearch.isEmpty ||
+          player.name.toLowerCase().contains(currentSearch)) {
+        suggestedPlayers.add(player);
+        suggestedPlayers.sort((a, b) => a.name.compareTo(b.name));
+      }
+    });
+  }
+
+  Future<void> handleParingSelection(Team unit) async {
     await HapticFeedback.selectionClick();
     setState(() {
       pairingSelection.add(unit.id);
