@@ -27,7 +27,6 @@ class PlayerTile extends StatelessWidget {
       backgroundColor: backgroundColor,
       content: Row(
         mainAxisSize: MainAxisSize.min,
-        spacing: 1,
         children: [
           if (player.deleted)
             Icon(
