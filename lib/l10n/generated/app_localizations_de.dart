@@ -92,7 +92,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tap_another_player_to_create_a_pair =>
-      'Tippe auf einen weiteren Spieler an, um ein Paar zu erstellen';
+      'Tippe auf eine:n weitere:n Spieler:in, um ein Paar zu bilden';
 
   @override
   String get close => 'Schließen';

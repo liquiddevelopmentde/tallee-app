@@ -26,7 +26,6 @@
   "choose_where_to_save": "Choose where to save your match:",
   "classifier": "Classifier",
   "classifier_description": "Choose which metric is calculated and shown in this statistic.",
-  "tap_another_player_to_create_a_pair": "Tap another player to create a pair",
   "close": "Close",
   "code_copied": "Code copied to clipboard",
   "code_pasted_from_clipboard": "Code pasted from clipboard",
@@ -374,6 +373,7 @@
     }
   },
   "successfully_processed_file": "Successfully processed file",
+  "tap_another_player_to_create_a_pair": "Tap another player to create a pair",
   "tap_import_to_continue": "Tap import match to continue",
   "tap_to_browse": "Tap to browse",
   "tap_to_choose_different_game": "Tap the game to choose a different one",
