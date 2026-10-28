@@ -1,7 +1,8 @@
 import 'dart:core' hide Match;
 
-import 'package:material_ui/material_ui.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
@@ -13,18 +14,9 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 class PlacementDragList extends StatefulWidget {
   /// A list widget for the [MatchResultView] that lets the user drag teams / players to different placements.
   /// - [match]: The match whose players / teams are being reordered.
-  /// - [onPlayerOrderChanged]: The callback invoked with the updated player order whenever a player is moved.
-  /// - [onTeamOrderChanged]: The callback invoked with the updated team order whenever a team is moved.
-  const PlacementDragList({
-    super.key,
-    required this.match,
-    this.onPlayerOrderChanged,
-    this.onTeamOrderChanged,
-  });
+  const PlacementDragList({super.key, required this.match});
 
   final Match match;
-  final void Function(List<Player>)? onPlayerOrderChanged;
-  final void Function(List<Team>)? onTeamOrderChanged;
 
   @override
   State<PlacementDragList> createState() => _PlacementDragListState();
@@ -41,8 +33,21 @@ class _PlacementDragListState extends State<PlacementDragList> {
 
   @override
   initState() {
-    allTeams = widget.match.teams ?? [];
-    allPlayers = widget.match.players;
+    if (useTeamLogic) {
+      allTeams = widget.match.teams ?? [];
+      mergeSort(
+        allTeams,
+        compare: (a, b) => a.score ?? 0.compareTo(b.score ?? 0),
+      );
+    } else {
+      allPlayers = widget.match.players;
+      mergeSort(
+        allPlayers,
+        compare: (a, b) =>
+            widget.match.scores[a.id]?.change ??
+            0.compareTo(widget.match.scores[b.id]?.change ?? 0),
+      );
+    }
 
     placementController = ScrollController();
     valueController = ScrollController();

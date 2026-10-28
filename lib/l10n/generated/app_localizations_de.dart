@@ -96,6 +96,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Klicke einen weiteren Spieler an, um ein Paar zu erstellen';
 
   @override
+  String get classifier => 'Klassifikator';
+
+  @override
+  String get classifier_description =>
+      'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
+
+  @override
   String get close => 'Schließen';
 
   @override
@@ -1008,6 +1015,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get successfully_processed_file => 'Datei erfolgreich verarbeitet';
+
+  @override
+  String get tap_another_player_to_create_a_pair =>
+      'Tippe auf eine:n weitere:n Spieler:in, um ein Paar zu bilden';
 
   @override
   String get tap_import_to_continue =>

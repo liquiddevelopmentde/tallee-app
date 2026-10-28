@@ -92,8 +92,6 @@ class GameTile extends StatelessWidget {
                       ColoredIconContainer(
                         icon: getRulesetIcon(ruleset: game.ruleset),
                         color: gameColor,
-                        containerSize: 44,
-                        iconSize: 24,
                         margin: EdgeInsets.zero,
                       ),
 

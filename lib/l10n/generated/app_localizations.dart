@@ -260,6 +260,18 @@ abstract class AppLocalizations {
   /// **'Click another player to create a pair'**
   String get click_another_player_to_create_a_pair;
 
+  /// No description provided for @classifier.
+  ///
+  /// In en, this message translates to:
+  /// **'Classifier'**
+  String get classifier;
+
+  /// No description provided for @classifier_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which metric is calculated and shown in this statistic.'**
+  String get classifier_description;
+
   /// No description provided for @close.
   ///
   /// In en, this message translates to:
@@ -1849,6 +1861,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Successfully processed file'**
   String get successfully_processed_file;
+
+  /// No description provided for @tap_another_player_to_create_a_pair.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap another player to create a pair'**
+  String get tap_another_player_to_create_a_pair;
 
   /// No description provided for @tap_import_to_continue.
   ///

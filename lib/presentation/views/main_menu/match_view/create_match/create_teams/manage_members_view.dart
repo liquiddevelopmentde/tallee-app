@@ -146,7 +146,6 @@ class _ManageMembersViewState extends State<ManageMembersView> {
                       : null,
                   text: loc.create_match,
                   icon: MATCH_ICON,
-                  showAddBadge: true,
                 ),
               ],
             ),
