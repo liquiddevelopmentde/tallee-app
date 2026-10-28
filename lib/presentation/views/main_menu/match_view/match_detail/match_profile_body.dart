@@ -44,7 +44,6 @@ class MatchProfileBody extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     final content = ListView(
-      physics: const ClampingScrollPhysics(),
       padding: EdgeInsets.only(
         left: 12,
         right: 12,

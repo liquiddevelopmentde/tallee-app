@@ -6,7 +6,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
-import 'package:tallee/presentation/utils/edge_blocked_bouncing_scroll_physics.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
@@ -90,9 +89,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
               ? Expanded(
                   child: ReorderableListView.builder(
                     scrollController: valueController,
-                    physics: const AlwaysScrollableScrollPhysics(
-                      parent: EdgeBlockedBouncingScrollPhysics(),
-                    ),
+                    physics: const AlwaysScrollableScrollPhysics(),
                     padding: EdgeInsets.zero,
                     proxyDecorator: proxyDecorator,
                     onReorderItem: (int oldIndex, int newIndex) {
@@ -140,9 +137,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
               : Expanded(
                   child: ReorderableListView.builder(
                     scrollController: valueController,
-                    physics: const AlwaysScrollableScrollPhysics(
-                      parent: EdgeBlockedBouncingScrollPhysics(),
-                    ),
+                    physics: const AlwaysScrollableScrollPhysics(),
                     padding: EdgeInsets.zero,
                     proxyDecorator: proxyDecorator,
                     onReorderItem: (int oldIndex, int newIndex) {
