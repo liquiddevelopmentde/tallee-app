@@ -6,6 +6,17 @@ import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.d
 /// - [AppEnvironment.production]: Delivered to stores
 enum AppEnvironment { development, testing, production }
 
+extension AppEnvironmentExtension on AppEnvironment {
+  /// The display tag for the environment (dev, testing, prod)
+  String get tag {
+    return switch (this) {
+      AppEnvironment.development => 'dev',
+      AppEnvironment.testing => 'testing',
+      AppEnvironment.production => 'prod',
+    };
+  }
+}
+
 /// Button types used for styling the [CustomWidthButton]
 /// - [ButtonType.primary]: Primary button style.
 /// - [ButtonType.secondary]: Secondary button style.
