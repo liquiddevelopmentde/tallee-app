@@ -53,7 +53,7 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   String get versionString =>
-      '${AppLocalizations.of(context).version} ${packageInfo.version}+${packageInfo.buildNumber}-${ENVIRONMENT.tag}';
+      '${AppLocalizations.of(context).version} ${packageInfo.version}-${ENVIRONMENT.tag}+${packageInfo.buildNumber}';
 
   @override
   Widget build(BuildContext context) {
