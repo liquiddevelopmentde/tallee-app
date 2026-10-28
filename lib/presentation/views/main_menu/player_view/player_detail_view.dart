@@ -108,6 +108,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     actions: [
                       CustomDialogAction(
                         onPressed: () => Navigator.of(context).pop(true),
+                        isDestructive: true,
                         text: loc.delete,
                       ),
                       CustomDialogAction(
