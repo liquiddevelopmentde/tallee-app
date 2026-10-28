@@ -8,21 +8,27 @@ class PlayerTile extends StatelessWidget {
   const PlayerTile({
     super.key,
     required this.player,
-    this.onIconTap,
     this.onTileTap,
     this.backgroundColor,
+    this.showIcon = false,
+    this.icon = Icons.close,
+    this.selected = false,
   });
 
   final Player player;
-  final VoidCallback? onIconTap;
   final VoidCallback? onTileTap;
   final Color? backgroundColor;
+  final bool showIcon;
+  final IconData icon;
+  final bool selected;
 
   @override
   Widget build(BuildContext context) {
     return TextIconTile(
+      showIcon: showIcon,
+      icon: icon,
       muted: player.deleted,
-      onIconTap: onIconTap,
+      selected: selected,
       onTileTap: onTileTap,
       backgroundColor: backgroundColor,
       content: Row(

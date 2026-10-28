@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -19,7 +19,6 @@ class ChooseGameView extends StatefulWidget {
   /// A view that allows the user to choose a game from a list of available games
   /// - [games]: The list of available games
   /// - [initialSelectedGames]: The initially selected games
-  /// - [onGamesUpdated]: Optional callback invoked when the games are updated
   /// - [statistic]: Optional statistic payload for choosing groups for a statistic
   /// - [selectedTypes]: Optional list of statistic types to determine the correct button text
   /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
@@ -27,7 +26,6 @@ class ChooseGameView extends StatefulWidget {
     super.key,
     required this.games,
     this.initialSelectedGames,
-    this.onGamesUpdated,
     this.statistic,
     this.selectedTypes,
     this.enableMultiSelection = false,
@@ -35,7 +33,6 @@ class ChooseGameView extends StatefulWidget {
 
   final List<Game> games;
   final List<Game>? initialSelectedGames;
-  final VoidCallback? onGamesUpdated;
   final Statistic? statistic;
   final List<StatisticType>? selectedTypes;
   final bool enableMultiSelection;

@@ -89,10 +89,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose which metric is calculated and shown in this statistic.';
 
   @override
-  String get click_another_player_to_create_a_pair =>
-      'Click another player to create a pair';
-
-  @override
   String get close => 'Close';
 
   @override
@@ -993,6 +989,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get successfully_processed_file => 'Successfully processed file';
+
+  @override
+  String get tap_another_player_to_create_a_pair =>
+      'Tap another player to create a pair';
 
   @override
   String get tap_import_to_continue => 'Tap import match to continue';
