@@ -7,22 +7,22 @@ class PairTile extends StatelessWidget {
   const PairTile({
     super.key,
     required this.pair,
-    this.onIconTap,
     this.onTileTap,
     this.backgroundColor,
     this.pairIconLeft = false,
+    this.showIcon = false,
   });
 
   final Team pair;
-  final VoidCallback? onIconTap;
   final VoidCallback? onTileTap;
   final Color? backgroundColor;
   final bool pairIconLeft;
+  final bool showIcon;
 
   @override
   Widget build(BuildContext context) {
     return TextIconTile(
-      onIconTap: onIconTap,
+      showIcon: showIcon,
       onTileTap: onTileTap,
       content: buildUnitNameWidget(
         context,
@@ -34,7 +34,7 @@ class PairTile extends StatelessWidget {
         ),
       ),
       backgroundColor: backgroundColor,
-      highlighted: pair.members.every((player) => player.deleted),
+      muted: pair.members.every((player) => player.deleted),
     );
   }
 }

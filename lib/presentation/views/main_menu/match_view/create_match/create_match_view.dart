@@ -354,11 +354,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     selectedGame = await Navigator.of(context).push(
       adaptivePageRoute(
         settings: const RouteSettings(name: RouteNames.chooseGameView),
-        builder: (context) => ChooseGameView(
-          games: games,
-          initialSelectedGames: [?selectedGame],
-          onGamesUpdated: widget.onMatchesUpdated,
-        ),
+        builder: (context) =>
+            ChooseGameView(games: games, initialSelectedGames: [?selectedGame]),
       ),
     );
     setState(() {

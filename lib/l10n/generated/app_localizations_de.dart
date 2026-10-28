@@ -91,8 +91,8 @@ class AppLocalizationsDe extends AppLocalizations {
       'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
 
   @override
-  String get click_another_player_to_create_a_pair =>
-      'Klicke einen weiteren Spieler an, um ein Paar zu erstellen';
+  String get tap_another_player_to_create_a_pair =>
+      'Tippe auf eine:n weitere:n Spieler:in, um ein Paar zu bilden';
 
   @override
   String get close => 'Schließen';

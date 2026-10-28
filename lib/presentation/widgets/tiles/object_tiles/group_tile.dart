@@ -20,14 +20,12 @@ class GroupTile extends StatefulWidget {
     required this.group,
     this.isHighlighted = false,
     this.onTap,
-    this.onPlayerChanged,
     this.borderColor,
   });
 
   final Group group;
   final bool isHighlighted;
   final VoidCallback? onTap;
-  final VoidCallback? onPlayerChanged;
   final Color? borderColor;
 
   @override
@@ -71,7 +69,7 @@ class _GroupTileState extends State<GroupTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Group icon
-                const ColoredIconContainer(icon: GROUP_ICON, containerSize: 50),
+                const ColoredIconContainer(icon: GROUP_ICON),
 
                 // Text content
                 Expanded(

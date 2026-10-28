@@ -2,8 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
@@ -110,6 +110,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
               // Player selection
               Expanded(
                 child: PlayerSelectionWidget.multiple(
+                  pairingEnabled: false,
                   initialSelectedPlayers: initialSelectedPlayers,
                   onPlayerCreated: () => widget.onMembersChanged?.call(),
                   onMultipleChanged: (players, units) {

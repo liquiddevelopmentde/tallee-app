@@ -254,11 +254,11 @@ abstract class AppLocalizations {
   /// **'Choose which metric is calculated and shown in this statistic.'**
   String get classifier_description;
 
-  /// No description provided for @click_another_player_to_create_a_pair.
+  /// No description provided for @tap_another_player_to_create_a_pair.
   ///
   /// In en, this message translates to:
-  /// **'Click another player to create a pair'**
-  String get click_another_player_to_create_a_pair;
+  /// **'Tap another player to create a pair'**
+  String get tap_another_player_to_create_a_pair;
 
   /// No description provided for @close.
   ///

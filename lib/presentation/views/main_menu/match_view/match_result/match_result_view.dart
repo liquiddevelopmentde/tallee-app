@@ -180,13 +180,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
                           // Show draggable placement list
                           if (ruleset == Ruleset.placement)
-                            PlacementDragList(
-                              match: widget.match,
-                              onPlayerOrderChanged: (List<Player> players) =>
-                                  allPlayers = players,
-                              onTeamOrderChanged: (List<Team> teams) =>
-                                  allTeams = teams,
-                            ),
+                            PlacementDragList(match: widget.match),
                         ],
                       ),
                     ),

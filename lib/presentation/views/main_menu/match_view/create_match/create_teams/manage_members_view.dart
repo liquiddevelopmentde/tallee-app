@@ -1,9 +1,9 @@
 import 'dart:core' hide Match;
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -146,7 +146,6 @@ class _ManageMembersViewState extends State<ManageMembersView> {
                       : null,
                   text: loc.create_match,
                   icon: MATCH_ICON,
-                  showAddBadge: true,
                 ),
               ],
             ),
