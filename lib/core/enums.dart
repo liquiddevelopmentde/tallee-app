@@ -11,7 +11,7 @@ extension AppEnvironmentExtension on AppEnvironment {
   String get tag {
     return switch (this) {
       AppEnvironment.development => 'dev',
-      AppEnvironment.testing => 'testing',
+      AppEnvironment.testing => 'test',
       AppEnvironment.production => 'prod',
     };
   }
