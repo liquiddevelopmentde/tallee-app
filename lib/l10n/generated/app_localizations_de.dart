@@ -1148,6 +1148,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get version => 'Version';
 
   @override
+  String get version_copied_to_clipboard => 'Version in Zwischenablage kopiert';
+
+  @override
   String get whats_new => 'Neuigkeiten';
 
   @override
