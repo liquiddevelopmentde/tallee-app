@@ -179,7 +179,6 @@ class _CreateGameViewState extends State<CreateGameView> {
                 // Game name textfield
                 CustomShowcaseWidget(
                   showcaseKey: createGameViewGameNameKey,
-                  identifier: createGameViewGameNameIdentifier,
                   description: loc.showcase_create_game_name,
                   child: TextInputField(
                     controller: gameNameController,
@@ -192,7 +191,6 @@ class _CreateGameViewState extends State<CreateGameView> {
                 if (!isEditMode)
                   CustomShowcaseWidget(
                     showcaseKey: createGameViewGameRulesetKey,
-                    identifier: createGameViewGameRulesetIdentifier,
                     description: loc.showcase_create_game_ruleset,
                     child: ChooseTile(
                       title: loc.ruleset,
@@ -261,7 +259,6 @@ class _CreateGameViewState extends State<CreateGameView> {
                   ),
                   child: CustomShowcaseWidget(
                     showcaseKey: createGameViewCreateGameKey,
-                    identifier: createGameViewCreateGameIdentifier,
                     description: loc.showcase_create_game_button,
                     child: BottomAnimatedButton(
                       buttonText: isEditing ? loc.edit_game : loc.create_game,

@@ -257,7 +257,6 @@ class _GameViewState extends State<GameView> with RouteAware {
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: CustomShowcaseWidget(
               showcaseKey: gameViewCreateButtonKey,
-              identifier: gameViewCreateButtonIdentifier,
               description: loc.showcase_game_view_create,
               tooltipPosition: TooltipPosition.top,
               disableBarrierInteraction: true,

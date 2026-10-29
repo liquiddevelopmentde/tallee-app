@@ -172,7 +172,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 // Match name input field.
                 CustomShowcaseWidget(
                   showcaseKey: createMatchViewMatchNameKey,
-                  identifier: createMatchViewMatchNameIdentifier,
                   description: loc.showcase_create_match_name,
                   child: TextInputField(
                     controller: matchNameController,
@@ -184,7 +183,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 if (!widget.editMode)
                   CustomShowcaseWidget(
                     showcaseKey: createMatchViewMatchGameKey,
-                    identifier: createMatchViewMatchGameIdentifier,
                     description: loc.showcase_create_match_game,
                     child: ChooseTile(
                       title: loc.game,
@@ -254,7 +252,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 if (!widget.editMode)
                   CustomShowcaseWidget(
                     showcaseKey: createMatchViewSelectPlayersKey,
-                    identifier: createMatchViewSelectPlayersIdentifier,
                     description: loc.showcase_create_match_players,
                     targetPadding: const EdgeInsets.only(top: 10),
                     child: Expanded(
@@ -281,7 +278,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 // Create or save button.
                 CustomShowcaseWidget(
                   showcaseKey: createMatchViewCreateMatchKey,
-                  identifier: createMatchViewCreateMatchIdentifier,
                   description: loc.showcase_create_match_button,
                   child: BottomAnimatedButton(
                     sizeRelativeToWidth: 0.95,

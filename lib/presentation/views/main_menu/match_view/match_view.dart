@@ -360,7 +360,6 @@ class _MatchViewState extends State<MatchView> {
             bottom: MediaQuery.paddingOf(context).bottom + 20,
             child: CustomShowcaseWidget(
               showcaseKey: matchViewCreateButtonKey,
-              identifier: matchViewCreateButtonIdentifier,
               description: loc.showcase_match_view_create,
               disableBarrierInteraction: true,
               disposeOnTap: true,

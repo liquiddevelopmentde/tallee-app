@@ -11,7 +11,6 @@ class CustomShowcaseWidget extends StatelessWidget {
     super.key,
     required this.showcaseKey,
     required this.description,
-    required this.identifier,
     required this.child,
     this.tooltipPosition = TooltipPosition.bottom,
     this.onTargetClick,
@@ -23,7 +22,6 @@ class CustomShowcaseWidget extends StatelessWidget {
 
   final GlobalKey showcaseKey;
   final String description;
-  final String identifier;
   final Widget child;
   final TooltipPosition tooltipPosition;
   final VoidCallback? onTargetClick;
