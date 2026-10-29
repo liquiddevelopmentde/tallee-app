@@ -52,8 +52,13 @@ class _SettingsViewState extends State<SettingsView> {
     loadSettings();
   }
 
-  String get versionString =>
-      '${AppLocalizations.of(context).version} ${packageInfo.version}-${ENVIRONMENT.tag}+${packageInfo.buildNumber}';
+  String get formattedVersion => IS_PROD_ENV
+      ? 'v${packageInfo.version} (${packageInfo.buildNumber})'
+      : 'v${packageInfo.version}-${ENVIRONMENT.tag} (${packageInfo.buildNumber})';
+
+  String get rawSemVer => IS_PROD_ENV
+      ? '${packageInfo.version}+${packageInfo.buildNumber}'
+      : '${packageInfo.version}-${ENVIRONMENT.tag}+${packageInfo.buildNumber}';
 
   @override
   Widget build(BuildContext context) {
@@ -360,13 +365,16 @@ class _SettingsViewState extends State<SettingsView> {
 
                             // App version
                             GestureDetector(
-                              onTap: () {
-                                Clipboard.setData(
-                                  ClipboardData(text: versionString),
-                                );
-                              },
+                              onTap: () => copyVersionToClipboard(
+                                scaffoldMessengerContext,
+                                rawSemVer,
+                              ),
+                              onLongPress: () => copyVersionToClipboard(
+                                scaffoldMessengerContext,
+                                rawSemVer,
+                              ),
                               child: Text(
-                                versionString,
+                                formattedVersion,
                                 style: TextStyle(
                                   color: Colors.grey.shade600,
                                   fontSize: 14,
@@ -385,6 +393,19 @@ class _SettingsViewState extends State<SettingsView> {
           );
         },
       ),
+    );
+  }
+
+  void copyVersionToClipboard(
+    BuildContext scaffoldMessengerContext,
+    String rawSemVer,
+  ) {
+    Clipboard.setData(ClipboardData(text: rawSemVer));
+    HapticFeedback.lightImpact();
+    final loc = AppLocalizations.of(context);
+    showSnackbar(
+      context: scaffoldMessengerContext,
+      message: loc.version_copied_to_clipboard,
     );
   }
 

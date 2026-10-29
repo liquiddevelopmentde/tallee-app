@@ -1137,6 +1137,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get version => 'Version';
 
   @override
+  String get version_copied_to_clipboard => 'Version copied to clipboard';
+
+  @override
   String get whats_new => 'What\'s new?';
 
   @override
