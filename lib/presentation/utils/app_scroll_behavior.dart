@@ -2,7 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 /// App-wide scroll behavior.
 ///
-/// Uses [BouncingScrollPhysics] on every platform and disables the overscroll indicator
+/// Uses [BouncingScrollPhysics] on every platform and disables the material overscroll indicator
 class AppScrollBehavior extends MaterialScrollBehavior {
   const AppScrollBehavior();
 
