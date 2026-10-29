@@ -11,21 +11,18 @@ class FloatingAnimatedButton extends StatefulWidget {
   /// - [icon]: The icon of the button.
   /// - [text]: The text of the button.
   /// - [onLongPressed]: The callback to be invoked when the button is pressed longer
-  /// - [showAddBadge]: Whether to show a plus badge on the top right corner on the icon
   const FloatingAnimatedButton({
     super.key,
     required this.onPressed,
     required this.icon,
     this.text,
     this.onLongPressed,
-    this.showAddBadge = false,
   });
 
   final void Function()? onPressed;
   final IconData icon;
   final String? text;
   final void Function()? onLongPressed;
-  final bool showAddBadge;
 
   @override
   State<FloatingAnimatedButton> createState() => _FloatingAnimatedButtonState();
