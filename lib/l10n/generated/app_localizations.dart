@@ -2084,6 +2084,12 @@ abstract class AppLocalizations {
   /// **'Version'**
   String get version;
 
+  /// No description provided for @version_copied_to_clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Version copied to clipboard'**
+  String get version_copied_to_clipboard;
+
   /// No description provided for @whats_new.
   ///
   /// In en, this message translates to:
