@@ -12,7 +12,7 @@ class TextIconTile extends StatelessWidget {
   /// - [showIcon]: Whether the icon should be shown.
   /// - [icon]: Optional custom icon. Defaults to [Icons.close].
   /// - [onTileTap]: The callback to be invoked when the tile is tapped.
-  /// - [muted]: Whether the tile is highlighted.
+  /// - [muted]: Whether to render the tile in a dimmed, outlined style.
   /// - [selected]: Whether the tile is selected, e.g. for pairing.
   const TextIconTile({
     super.key,
@@ -35,10 +35,9 @@ class TextIconTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveBgColor = backgroundColor ?? context.talleeColors.onBoxColor;
-    final tileBgColor = muted
-        ? effectiveBgColor.withAlpha((140).round())
-        : effectiveBgColor;
+    final bgColor = backgroundColor ?? context.talleeColors.onBoxColor;
+    final effectiveBgColor = muted ? Colors.transparent : bgColor;
+    final solidBorder = effectiveBgColor == Colors.transparent;
 
     return GestureDetector(
       onTap: onTileTap,
@@ -47,11 +46,13 @@ class TextIconTile extends StatelessWidget {
         duration: const Duration(milliseconds: 400),
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: tileBgColor,
+          color: effectiveBgColor,
           borderRadius: BorderRadius.circular(12),
-          border: effectiveBgColor == Colors.transparent
-              ? Border.all(color: context.talleeColors.boxBorderColor)
-              : null,
+          border: Border.all(
+            color: solidBorder
+                ? context.talleeColors.boxBorderColor
+                : Colors.transparent,
+          ),
         ),
         foregroundDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),

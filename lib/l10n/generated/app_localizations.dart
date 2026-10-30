@@ -254,24 +254,6 @@ abstract class AppLocalizations {
   /// **'Choose where to save your match:'**
   String get choose_where_to_save;
 
-  /// No description provided for @click_another_player_to_create_a_pair.
-  ///
-  /// In en, this message translates to:
-  /// **'Click another player to create a pair'**
-  String get click_another_player_to_create_a_pair;
-
-  /// No description provided for @classifier.
-  ///
-  /// In en, this message translates to:
-  /// **'Classifier'**
-  String get classifier;
-
-  /// No description provided for @classifier_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose which metric is calculated and shown in this statistic.'**
-  String get classifier_description;
-
   /// No description provided for @close.
   ///
   /// In en, this message translates to:
@@ -2137,6 +2119,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
+
+  /// No description provided for @version_copied_to_clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Version copied to clipboard'**
+  String get version_copied_to_clipboard;
 
   /// No description provided for @whats_new.
   ///

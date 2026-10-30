@@ -423,6 +423,7 @@
   "update_features_fixes_desc": "Please update the app to access the latest features and improvements.",
   "update_now": "Update Now",
   "version": "Version",
+  "version_copied_to_clipboard": "Version copied to clipboard",
   "whats_new": "What's new?",
   "winner": "Winner",
   "winrate": "Winrate",

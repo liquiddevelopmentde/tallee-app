@@ -92,17 +92,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wähle aus, wo du dein Match speichern möchtest:';
 
   @override
-  String get click_another_player_to_create_a_pair =>
-      'Klicke einen weiteren Spieler an, um ein Paar zu erstellen';
-
-  @override
-  String get classifier => 'Klassifikator';
-
-  @override
-  String get classifier_description =>
-      'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
-
-  @override
   String get close => 'Schließen';
 
   @override
@@ -1171,6 +1160,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String get version_copied_to_clipboard => 'Version in Zwischenablage kopiert';
 
   @override
   String get whats_new => 'Neuigkeiten';

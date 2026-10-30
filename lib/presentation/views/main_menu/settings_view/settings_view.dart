@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
@@ -49,6 +50,14 @@ class _SettingsViewState extends State<SettingsView> {
     loadSettings();
   }
 
+  String get formattedVersion => IS_PROD_ENV
+      ? 'v${packageInfo.version} (${packageInfo.buildNumber})'
+      : 'v${packageInfo.version}-${ENVIRONMENT.tag} (${packageInfo.buildNumber})';
+
+  String get rawSemVer => IS_PROD_ENV
+      ? '${packageInfo.version}+${packageInfo.buildNumber}'
+      : '${packageInfo.version}-${ENVIRONMENT.tag}+${packageInfo.buildNumber}';
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
@@ -58,261 +67,309 @@ class _SettingsViewState extends State<SettingsView> {
           return Scaffold(
             appBar: AppBar(title: Text(loc.settings)),
             backgroundColor: context.talleeColors.backgroundColor,
-            body: SingleChildScrollView(
-              child: Column(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    child: Text(
-                      textAlign: TextAlign.start,
-                      loc.general,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  spacing: 10,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: Text(
+                        textAlign: TextAlign.start,
+                        loc.general,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
 
-                  // Theme selection tile
-                  SettingsListTile(
-                    title: loc.theme,
-                    icon: Icons.brightness_6_rounded,
-                    suffixWidget: Row(
-                      spacing: 10,
-                      children: [
-                        Text(
-                          getThemeModeLabel(
-                            loc,
-                            context.watch<ThemeProvider>().themeMode,
-                          ),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const Icon(Icons.arrow_forward_ios, size: 16),
-                      ],
-                    ),
-                    onPressed: () => showThemeModeSheet(loc),
-                  ),
-
-                  // Send feedback tile
-                  SettingsListTile(
-                    title: loc.send_feedback,
-                    icon: Icons.chat_bubble_outline_rounded,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () async {
-                      final result = await Navigator.push<bool>(
-                        context,
-                        adaptivePageRoute(
-                          settings: const RouteSettings(
-                            name: RouteNames.feedbackFormView,
-                          ),
-                          fullscreenDialog: true,
-                          builder: (context) => const FeedbackFormView(),
-                        ),
-                      );
-                      if (result == true && scaffoldMessengerContext.mounted) {
-                        showSnackbar(
-                          context: scaffoldMessengerContext,
-                          message: loc.thank_you_for_feedback,
-                        );
-                      }
-                    },
-                  ),
-
-                  // Online sharing tile
-                  SettingsListTile(
-                    title: loc.online_sharing_title,
-                    icon: Icons.cloud,
-                    description: loc.online_sharing_info_text,
-                    suffixWidget: CustomAdaptiveSwitch(
-                      value: isOnlineSharingEnabled,
-                      onChanged: (value) async {
-                        setState(() {
-                          isOnlineSharingEnabled = value;
-                        });
-                        await SharedPreferencesService.setSharingConsent(value);
-                      },
-                    ),
-                    onPressed: null,
-                  ),
-
-                  // Show app walkthrough tile
-                  SettingsListTile(
-                    title: loc.start_onboarding,
-                    icon: Icons.explore,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () {
-                      context.read<ShowcaseProvider>().restartTour();
-                      Navigator.of(context).pop(0);
-                    },
-                  ),
-
-                  // Data & backup tile
-                  SettingsListTile(
-                    title: loc.data_backup,
-                    icon: Icons.storage_rounded,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        adaptivePageRoute(
-                          settings: const RouteSettings(
-                            name: RouteNames.dataManagementView,
-                          ),
-                          builder: (context) => const DataManagementView(),
-                        ),
-                      );
-                    },
-                  ),
-
-                  // Legal heading
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    child: Text(
-                      textAlign: TextAlign.start,
-                      loc.legal,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  // Licenses tile
-                  SettingsListTile(
-                    title: loc.licenses,
-                    icon: Icons.insert_drive_file,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        adaptivePageRoute(
-                          settings: const RouteSettings(
-                            name: RouteNames.licensesView,
-                          ),
-                          builder: (context) => const LicensesView(),
-                        ),
-                      );
-                    },
-                  ),
-
-                  // Legal notice tile
-                  SettingsListTile(
-                    title: loc.legal_notice,
-                    icon: Icons.account_balance_sharp,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () async {
-                      await launchUrl(Uri.parse(LIQUID_WEBSITE_LEGAL_URL));
-                    },
-                  ),
-
-                  // Privacy policy tile
-                  SettingsListTile(
-                    title: loc.privacy_policy,
-                    icon: Icons.gpp_good_rounded,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          settings: const RouteSettings(
-                            name: RouteNames.privacyPolicyView,
-                          ),
-                          builder: (context) => const PrivacyPolicyView(),
-                        ),
-                      );
-                    },
-                  ),
-
-                  // Socials & copyright
-                  Padding(
-                    padding: const EdgeInsets.only(top: 30, bottom: 20),
-                    child: Center(
-                      child: Column(
-                        spacing: 4,
+                    // Theme selection tile
+                    SettingsListTile(
+                      title: loc.theme,
+                      icon: Icons.brightness_6_rounded,
+                      suffixWidget: Row(
+                        spacing: 10,
                         children: [
-                          // Scoial icons
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: 10,
-                              children: [
-                                // Website
-                                HapticIconButton(
-                                  icon: const Icon(Icons.language),
-                                  onPressed: () => {
-                                    HapticFeedback.lightImpact(),
-                                    launchUrl(Uri.parse(LIQUID_WEBSITE_URL)),
-                                  },
-                                ),
-
-                                // Github
-                                HapticIconButton(
-                                  icon: const FaIcon(FontAwesomeIcons.github),
-                                  onPressed: () => {
-                                    HapticFeedback.lightImpact(),
-                                    launchUrl(Uri.parse(LIQUID_GITHUB_URL)),
-                                  },
-                                ),
-
-                                // Mail
-                                HapticIconButton(
-                                  icon: Icon(
-                                    Platform.isIOS
-                                        ? CupertinoIcons.mail_solid
-                                        : Icons.email,
-                                  ),
-                                  onPressed: () => {
-                                    HapticFeedback.lightImpact(),
-                                    launchUrl(
-                                      Uri.parse('mailto:$LIQUID_CONTACT_EMAIL'),
-                                    ),
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // Copyright
                           Text(
-                            '© ${DateFormat('yyyy').format(DateTime.now())} Liquid Development',
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 14,
+                            getThemeModeLabel(
+                              loc,
+                              context.watch<ThemeProvider>().themeMode,
+                            ),
+                            style: const TextStyle(
                               fontWeight: FontWeight.w600,
+                              fontSize: 15,
                             ),
                           ),
-
-                          // App version
-                          Text(
-                            '${loc.version} ${packageInfo.version} (${packageInfo.buildNumber})',
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          const Icon(Icons.arrow_forward_ios, size: 16),
                         ],
                       ),
+                      onPressed: () => showThemeModeSheet(loc),
                     ),
-                  ),
-                ],
+
+                    // Send feedback tile
+                    SettingsListTile(
+                      title: loc.send_feedback,
+                      icon: Icons.chat_bubble_outline_rounded,
+                      suffixWidget: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                      ),
+                      onPressed: () async {
+                        final result = await Navigator.push<bool>(
+                          context,
+                          adaptivePageRoute(
+                            settings: const RouteSettings(
+                              name: RouteNames.feedbackFormView,
+                            ),
+                            fullscreenDialog: true,
+                            builder: (context) => const FeedbackFormView(),
+                          ),
+                        );
+                        if (result == true &&
+                            scaffoldMessengerContext.mounted) {
+                          showSnackbar(
+                            context: scaffoldMessengerContext,
+                            message: loc.thank_you_for_feedback,
+                          );
+                        }
+                      },
+                    ),
+
+                    // Online sharing tile
+                    SettingsListTile(
+                      title: loc.online_sharing_title,
+                      icon: Icons.cloud,
+                      description: loc.online_sharing_info_text,
+                      suffixWidget: CustomAdaptiveSwitch(
+                        value: isOnlineSharingEnabled,
+                        onChanged: (value) async {
+                          setState(() {
+                            isOnlineSharingEnabled = value;
+                          });
+                          await SharedPreferencesService.setSharingConsent(
+                            value,
+                          );
+                        },
+                      ),
+                      onPressed: null,
+                    ),
+
+                    // Show app walkthrough tile
+                    SettingsListTile(
+                      title: loc.start_onboarding,
+                      icon: Icons.explore,
+                      suffixWidget: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                      ),
+                      onPressed: () {
+                        context.read<ShowcaseProvider>().restartTour();
+                        Navigator.of(context).pop(0);
+                      },
+                    ),
+
+                    // Data & backup tile
+                    SettingsListTile(
+                      title: loc.data_backup,
+                      icon: Icons.storage_rounded,
+                      suffixWidget: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          adaptivePageRoute(
+                            settings: const RouteSettings(
+                              name: RouteNames.dataManagementView,
+                            ),
+                            builder: (context) => const DataManagementView(),
+                          ),
+                        );
+                      },
+                    ),
+
+                    // Legal heading
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: Text(
+                        textAlign: TextAlign.start,
+                        loc.legal,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                    // Licenses tile
+                    SettingsListTile(
+                      title: loc.licenses,
+                      icon: Icons.insert_drive_file,
+                      suffixWidget: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          adaptivePageRoute(
+                            settings: const RouteSettings(
+                              name: RouteNames.licensesView,
+                            ),
+                            builder: (context) => const LicensesView(),
+                          ),
+                        );
+                      },
+                    ),
+
+                    // Legal notice tile
+                    SettingsListTile(
+                      title: loc.legal_notice,
+                      icon: Icons.account_balance_sharp,
+                      suffixWidget: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                      ),
+                      onPressed: () async {
+                        await launchUrl(Uri.parse(LIQUID_WEBSITE_LEGAL_URL));
+                      },
+                    ),
+
+                    // Privacy policy tile
+                    SettingsListTile(
+                      title: loc.privacy_policy,
+                      icon: Icons.gpp_good_rounded,
+                      suffixWidget: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            settings: const RouteSettings(
+                              name: RouteNames.privacyPolicyView,
+                            ),
+                            builder: (context) => const PrivacyPolicyView(),
+                          ),
+                        );
+                      },
+                    ),
+
+                    // Socials & copyright
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 20),
+                      child: Center(
+                        child: Column(
+                          spacing: 4,
+                          children: [
+                            // Scoial icons
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                spacing: 10,
+                                children: [
+                                  // Website
+                                  HapticIconButton(
+                                    icon: const Icon(Icons.language),
+                                    onPressed: () => {
+                                      HapticFeedback.lightImpact(),
+                                      launchUrl(Uri.parse(LIQUID_WEBSITE_URL)),
+                                    },
+                                  ),
+
+                                  // Github
+                                  HapticIconButton(
+                                    icon: const FaIcon(FontAwesomeIcons.github),
+                                    onPressed: () => {
+                                      HapticFeedback.lightImpact(),
+                                      launchUrl(Uri.parse(LIQUID_GITHUB_URL)),
+                                    },
+                                  ),
+
+                                  // Mail
+                                  HapticIconButton(
+                                    icon: Icon(
+                                      Platform.isIOS
+                                          ? CupertinoIcons.mail_solid
+                                          : Icons.email,
+                                    ),
+                                    onPressed: () => {
+                                      HapticFeedback.lightImpact(),
+                                      launchUrl(
+                                        Uri.parse(
+                                          'mailto:$LIQUID_CONTACT_EMAIL',
+                                        ),
+                                      ),
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Copyright
+                            Text(
+                              '© ${DateFormat('yyyy').format(DateTime.now())} Liquid Development',
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+
+                            // App version
+                            GestureDetector(
+                              onTap: () => copyVersionToClipboard(
+                                scaffoldMessengerContext,
+                                rawSemVer,
+                              ),
+                              onLongPress: () => copyVersionToClipboard(
+                                scaffoldMessengerContext,
+                                rawSemVer,
+                              ),
+                              child: Text(
+                                formattedVersion,
+                                style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         },
       ),
+    );
+  }
+
+  void copyVersionToClipboard(
+    BuildContext scaffoldMessengerContext,
+    String rawSemVer,
+  ) {
+    Clipboard.setData(ClipboardData(text: rawSemVer));
+    HapticFeedback.lightImpact();
+    final loc = AppLocalizations.of(context);
+    showSnackbar(
+      context: scaffoldMessengerContext,
+      message: loc.version_copied_to_clipboard,
     );
   }
 

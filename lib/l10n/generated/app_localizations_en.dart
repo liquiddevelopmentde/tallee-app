@@ -89,17 +89,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get choose_where_to_save => 'Choose where to save your match:';
 
   @override
-  String get click_another_player_to_create_a_pair =>
-      'Click another player to create a pair';
-
-  @override
-  String get classifier => 'Classifier';
-
-  @override
-  String get classifier_description =>
-      'Choose which metric is calculated and shown in this statistic.';
-
-  @override
   String get close => 'Close';
 
   @override
@@ -1158,6 +1147,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String get version_copied_to_clipboard => 'Version copied to clipboard';
 
   @override
   String get whats_new => 'What\'s new?';

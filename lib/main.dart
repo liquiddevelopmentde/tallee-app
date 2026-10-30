@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:open_with_app/open_with_app.dart';
@@ -11,11 +10,11 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_theme.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
+import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/app_scroll_behavior.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
@@ -36,10 +35,6 @@ import 'package:tallee/state/showcase_provider.dart';
 import 'package:tallee/state/theme_provider.dart';
 
 void main() async {
-  ENVIRONMENT = kDebugMode
-      ? AppEnvironment.development
-      : AppEnvironment.testing;
-
   SentryWidgetsFlutterBinding.ensureInitialized();
 
   /* Initializing Services */
@@ -190,6 +185,7 @@ class _TalleeState extends State<Tallee> {
         );
       },
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const AppScrollBehavior(),
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
       themeMode: context.watch<ThemeProvider>().themeMode,
       navigatorObservers: [SentryNavigatorObserver()],
