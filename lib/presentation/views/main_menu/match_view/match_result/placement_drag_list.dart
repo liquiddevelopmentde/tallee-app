@@ -93,7 +93,6 @@ class _PlacementDragListState extends State<PlacementDragList> {
                     physics: const AlwaysScrollableScrollPhysics(
                       parent: EdgeBlockedBouncingScrollPhysics(),
                     ),
-
                     padding: EdgeInsets.zero,
                     proxyDecorator: proxyDecorator,
                     onReorderItem: (int oldIndex, int newIndex) {
