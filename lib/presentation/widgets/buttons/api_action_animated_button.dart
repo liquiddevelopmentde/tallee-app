@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class ApiActionAnimatedButton extends StatefulWidget {
   /// A button specifically designed for asynchronous requests.
@@ -21,7 +21,15 @@ class ApiActionAnimatedButton extends StatefulWidget {
     this.sizeRelativeToWidth,
     this.buttonType = ButtonType.primary,
     this.isDestructive = false,
-  });
+  }) : assert(
+         sizeRelativeToWidth == null || buttonConstraints == null,
+         'sizeRelativeToWidth and buttonConstraints can\'t be simultaneously set',
+       ),
+       assert(
+         sizeRelativeToWidth == null ||
+             (sizeRelativeToWidth > 0 && sizeRelativeToWidth <= 1),
+         'sizeRelativeToWidth must be 0 < size <= 1',
+       );
 
   /// Expects a Future to handle the API request duration. If null, the button is disabled.
   final Future<void> Function()? onPressed;

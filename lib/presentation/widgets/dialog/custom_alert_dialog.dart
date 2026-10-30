@@ -21,7 +21,10 @@ class CustomAlertDialog extends StatelessWidget {
     required this.actions,
     this.showCloseButton = false,
     this.closeButtonColor,
-  });
+  }) : assert(
+         closeButtonColor == null || showCloseButton,
+         'closeButtonColor requires showCloseButton to be true',
+       );
 
   final String title;
   final Widget content;

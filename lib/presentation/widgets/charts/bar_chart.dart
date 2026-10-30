@@ -22,7 +22,7 @@ class BarChart extends StatelessWidget {
     required this.showAllValues,
     required this.showDisplayCountHighlighting,
     required this.barTextColor,
-  });
+  }) : assert(displayCount >= 0, 'displayCount must not be negative');
 
   final List<(Player, num)> values;
   final int displayCount;

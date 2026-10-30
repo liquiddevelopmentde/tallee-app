@@ -1,8 +1,8 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/core/enums.dart';
 
 class BottomAnimatedButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
@@ -22,7 +22,19 @@ class BottomAnimatedButton extends StatefulWidget {
     this.buttonType = ButtonType.primary,
     this.isDestructive = false,
     this.isEmphasized = false,
-  });
+  }) : assert(
+         !(isDestructive && isEmphasized),
+         'isDestructive and isEmphasized can\'t be simultaneously true',
+       ),
+       assert(
+         sizeRelativeToWidth == null || buttonConstraints == null,
+         'sizeRelativeToWidth and buttonConstraints can\'t be simultaneously set',
+       ),
+       assert(
+         sizeRelativeToWidth == null ||
+             (sizeRelativeToWidth > 0 && sizeRelativeToWidth <= 1),
+         'sizeRelativeToWidth must be 0 < size <= 1',
+       );
 
   final String buttonText;
   final VoidCallback? onPressed;

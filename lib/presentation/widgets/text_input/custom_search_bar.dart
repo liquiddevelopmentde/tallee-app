@@ -22,7 +22,10 @@ class CustomSearchBar extends StatelessWidget {
     this.onChanged,
     this.constraints,
     this.maxLength,
-  });
+  }) : assert(
+         maxLength == null || maxLength > 0,
+         'maxLength must be greater than 0',
+       );
 
   /// The controller for the search bar's text input.
   final TextEditingController controller;

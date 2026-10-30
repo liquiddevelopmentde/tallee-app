@@ -16,7 +16,7 @@ class TextChip extends StatefulWidget {
     required this.onTap,
     this.count = 0,
     this.activated = false,
-  });
+  }) : assert(count >= 0, 'count must not be negative');
 
   final String text;
   final VoidCallback onTap;
@@ -28,9 +28,12 @@ class TextChip extends StatefulWidget {
 }
 
 class _TextChipState extends State<TextChip> {
+  String get countText => widget.count > 0 ? ' (${widget.count})' : '';
+
+  String get chipText => widget.text + countText;
+
   @override
   Widget build(BuildContext context) {
-    final text = widget.text + (widget.count > 0 ? ' (${widget.count})' : '');
     return Skeleton.unite(
       child: GestureDetector(
         onTap: () {
@@ -52,7 +55,7 @@ class _TextChipState extends State<TextChip> {
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(
-            text,
+            chipText,
             style: TextStyle(
               color: context.talleeColors.textColor.withAlpha(255),
             ),

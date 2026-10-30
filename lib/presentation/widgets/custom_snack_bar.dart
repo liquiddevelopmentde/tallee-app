@@ -72,7 +72,14 @@ class AnimatedContent extends StatelessWidget {
     this.actionIcon,
     this.actionLabel,
     this.onActionTap,
-  });
+  }) : assert(
+         (actionLabel == null && actionIcon == null) || onActionTap != null,
+         'actionLabel or actionIcon require onActionTap to be set',
+       ),
+       assert(
+         actionLabel == null || actionIcon == null,
+         'actionLabel and actionIcon can\'t be simultaneously set',
+       );
 
   final String message;
   final IconData? actionIcon;
