@@ -47,7 +47,6 @@ class _GameViewState extends State<GameView> with RouteAware {
   late List<(Game, int)> gameCounts = [];
 
   final TextEditingController searchBarController = TextEditingController();
-  final ScrollController scrollController = ScrollController();
 
   /// Loaded games from the database, initially filled with skeleton games
   List<Game> allGames = List.generate(
@@ -86,7 +85,6 @@ class _GameViewState extends State<GameView> with RouteAware {
   void dispose() {
     searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
-    scrollController.dispose();
     super.dispose();
   }
 
@@ -203,6 +201,7 @@ class _GameViewState extends State<GameView> with RouteAware {
                                       return true;
                                     },
                                     child: ListView.builder(
+                                      primary: true,
                                       padding: AppColors.listViewPadding(
                                         context,
                                       ),
@@ -339,6 +338,7 @@ class _GameViewState extends State<GameView> with RouteAware {
       if (!searchProvider.isSearching) {
         searchBarController.clear();
       } else {
+        final scrollController = PrimaryScrollController.of(context);
         if (scrollController.hasClients) {
           scrollController.animateTo(
             0,

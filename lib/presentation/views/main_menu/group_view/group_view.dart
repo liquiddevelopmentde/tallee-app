@@ -41,7 +41,6 @@ class _GroupViewState extends State<GroupView> {
   bool isLoading = true;
 
   final TextEditingController searchBarController = TextEditingController();
-  final ScrollController scrollController = ScrollController();
 
   List<Group> allGroups = List.filled(
     7,
@@ -68,7 +67,6 @@ class _GroupViewState extends State<GroupView> {
   void dispose() {
     searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
-    scrollController.dispose();
     super.dispose();
   }
 
@@ -185,6 +183,7 @@ class _GroupViewState extends State<GroupView> {
                                     },
 
                                     child: ListView.builder(
+                                      primary: true,
                                       padding: AppColors.listViewPadding(
                                         context,
                                       ),
@@ -293,6 +292,7 @@ class _GroupViewState extends State<GroupView> {
       if (!searchProvider.isSearching) {
         searchBarController.clear();
       } else {
+        final scrollController = PrimaryScrollController.of(context);
         if (scrollController.hasClients) {
           scrollController.animateTo(
             0,

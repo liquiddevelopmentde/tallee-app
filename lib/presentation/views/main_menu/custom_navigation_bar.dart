@@ -46,11 +46,15 @@ class CustomNavigationBar extends StatefulWidget {
 
 class _CustomNavigationBarState extends State<CustomNavigationBar>
     with SingleTickerProviderStateMixin, RouteAware {
-  /// Currently selected tab index
   int currentIndex = 0;
 
   /// Key count to force rebuild of tab views
   int tabKeyCount = 0;
+
+  final List<ScrollController> tabScrollControllers = List.generate(
+    4,
+    (_) => ScrollController(),
+  );
 
   final GlobalKey navbarGameViewKey = GlobalKey();
   final String navbarGameViewIdentifier = 'navbar_game_view';
@@ -104,6 +108,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   void dispose() {
     showcaseProvider.removeListener(onShowcaseChanged);
     routeObserver.unsubscribe(this);
+    for (final controller in tabScrollControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -235,7 +242,10 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         elevation: 0,
       ),
       backgroundColor: context.talleeColors.backgroundColor,
-      body: tabs[currentIndex],
+      body: PrimaryScrollController(
+        controller: tabScrollControllers[currentIndex],
+        child: tabs[currentIndex],
+      ),
       extendBody: true,
       bottomNavigationBar: Container(
         height: 115,
@@ -351,11 +361,21 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   }
 
   /// Handles tab tap events. Updates the current [index] state.
+  /// Tapping on already active tab scrolls it back to top.
   void onTabTapped(int index) {
     HapticFeedback.selectionClick();
-    setState(() {
-      currentIndex = index;
-    });
+    if (index == currentIndex) {
+      final scrollController = tabScrollControllers[index];
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+        );
+      }
+    } else {
+      setState(() => currentIndex = index);
+    }
   }
 
   /// Returns the title of the current tab based on [currentIndex].

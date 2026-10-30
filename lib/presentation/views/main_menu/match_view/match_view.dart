@@ -61,8 +61,6 @@ class _MatchViewState extends State<MatchView> {
 
   TextEditingController searchBarController = TextEditingController();
 
-  final ScrollController scrollController = ScrollController();
-
   /// Loaded matches from the database, initially filled with skeleton matches
   List<Match> allMatches = List.generate(
     4,
@@ -125,7 +123,6 @@ class _MatchViewState extends State<MatchView> {
     searchProvider.removeListener(handleSearchToggle);
     rateProvider.removeListener(handleRatingDialog);
     searchBarController.dispose();
-    scrollController.dispose();
     super.dispose();
   }
 
@@ -291,7 +288,7 @@ class _MatchViewState extends State<MatchView> {
                                   return true;
                                 },
                                 child: ListView.builder(
-                                  controller: scrollController,
+                                  primary: true,
                                   padding: AppColors.listViewPadding(context),
                                   itemCount: displayedMatches.length,
                                   itemBuilder: (context, index) => MatchTile(
@@ -585,6 +582,7 @@ class _MatchViewState extends State<MatchView> {
       if (!searchProvider.isSearching) {
         searchBarController.clear();
       } else {
+        final scrollController = PrimaryScrollController.of(context);
         if (scrollController.hasClients) {
           scrollController.animateTo(
             0,

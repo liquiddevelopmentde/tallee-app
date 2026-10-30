@@ -87,6 +87,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                     // Statistics in db
                     statistics.isNotEmpty
                     ? ReorderableListView.builder(
+                        primary: true,
                         padding: AppColors.listViewPadding(context),
                         header: SingleChildScrollView(
                           padding: AppColors.filterRowPadding,
@@ -324,8 +325,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             opacity: 1 * t,
                                             child: DecoratedBox(
                                               decoration: BoxDecoration(
-                                                color: colors
-                                                    .textColor
+                                                color: colors.textColor
                                                     .withValues(alpha: 0.10),
                                                 borderRadius:
                                                     BorderRadius.circular(12),
