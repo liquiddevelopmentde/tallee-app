@@ -113,7 +113,6 @@ ThemeData _createThemeData({required bool isDarkMode}) {
     elevation: 0,
     scrolledUnderElevation: 0,
     centerTitle: true,
-    iconTheme: IconThemeData(color: palette.textColor),
     titleTextStyle: TextStyle(
       color: palette.textColor,
       fontSize: 20,
