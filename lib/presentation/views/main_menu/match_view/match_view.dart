@@ -143,8 +143,7 @@ class _MatchViewState extends State<MatchView> {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          SafeArea(
-            child: Column(
+          Column(
               children: [
                 // Searchbar
                 AnimatedSwitcher(
@@ -350,7 +349,6 @@ class _MatchViewState extends State<MatchView> {
                 ),
               ],
             ),
-          ),
 
           // Create match button
           Positioned(
