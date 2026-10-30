@@ -161,6 +161,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(true),
             text: loc.delete,
+            isDestructive: true,
           ),
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(false),
