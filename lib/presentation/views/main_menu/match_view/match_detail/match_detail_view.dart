@@ -171,7 +171,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ],
       ),
     ).then((confirmed) async {
-      if (confirmed != null && confirmed && mounted) {
+      if (confirmed == true && mounted) {
         await db.matchDao.deleteMatch(matchId: match.id);
         if (!mounted) return;
         Navigator.pop(context);
