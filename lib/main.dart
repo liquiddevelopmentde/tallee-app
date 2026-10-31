@@ -14,6 +14,7 @@ import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/app_scroll_behavior.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
@@ -184,6 +185,7 @@ class _TalleeState extends State<Tallee> {
         );
       },
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const AppScrollBehavior(),
       onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
       themeMode: context.watch<ThemeProvider>().themeMode,
       navigatorObservers: [SentryNavigatorObserver()],

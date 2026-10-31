@@ -1,7 +1,7 @@
 import 'dart:math' show max, min;
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/physics.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// `ScrollPhysics` with iOS-like fling feel, but blocks overscroll on both ends.
 class EdgeBlockedBouncingScrollPhysics extends BouncingScrollPhysics {

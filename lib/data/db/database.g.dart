@@ -4855,10 +4855,11 @@ class $$PlayerTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (playerGroupTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           PlayerTableData,
                           $PlayerTableTable,
-                          PlayerGroupTableData
+                          PlayerGroupTableData,
+                          $PlayerGroupTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$PlayerTableTableReferences
@@ -4869,17 +4870,16 @@ class $$PlayerTableTableTableManager
                                 table,
                                 p0,
                               ).playerGroupTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.playerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'player_id',
                           typedResults: items,
                         ),
                       if (playerMatchTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           PlayerTableData,
                           $PlayerTableTable,
-                          PlayerMatchTableData
+                          PlayerMatchTableData,
+                          $PlayerMatchTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$PlayerTableTableReferences
@@ -4890,17 +4890,16 @@ class $$PlayerTableTableTableManager
                                 table,
                                 p0,
                               ).playerMatchTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.playerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'player_id',
                           typedResults: items,
                         ),
                       if (scoreEntryTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           PlayerTableData,
                           $PlayerTableTable,
-                          ScoreEntryTableData
+                          ScoreEntryTableData,
+                          $ScoreEntryTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$PlayerTableTableReferences
@@ -4911,10 +4910,8 @@ class $$PlayerTableTableTableManager
                                 table,
                                 p0,
                               ).scoreEntryTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.playerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'player_id',
                           typedResults: items,
                         ),
                     ];
@@ -5343,10 +5340,11 @@ class $$GroupTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (matchTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           GroupTableData,
                           $GroupTableTable,
-                          MatchTableData
+                          MatchTableData,
+                          $MatchTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$GroupTableTableReferences
@@ -5357,17 +5355,16 @@ class $$GroupTableTableTableManager
                                 table,
                                 p0,
                               ).matchTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.groupId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'group_id',
                           typedResults: items,
                         ),
                       if (playerGroupTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           GroupTableData,
                           $GroupTableTable,
-                          PlayerGroupTableData
+                          PlayerGroupTableData,
+                          $PlayerGroupTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$GroupTableTableReferences
@@ -5378,17 +5375,16 @@ class $$GroupTableTableTableManager
                                 table,
                                 p0,
                               ).playerGroupTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.groupId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'group_id',
                           typedResults: items,
                         ),
                       if (statisticGroupTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           GroupTableData,
                           $GroupTableTable,
-                          StatisticGroupTableData
+                          StatisticGroupTableData,
+                          $StatisticGroupTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$GroupTableTableReferences
@@ -5399,10 +5395,8 @@ class $$GroupTableTableTableManager
                                 table,
                                 p0,
                               ).statisticGroupTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.groupId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'group_id',
                           typedResults: items,
                         ),
                     ];
@@ -5795,10 +5789,11 @@ class $$GameTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (matchTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           GameTableData,
                           $GameTableTable,
-                          MatchTableData
+                          MatchTableData,
+                          $MatchTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$GameTableTableReferences
@@ -5809,17 +5804,16 @@ class $$GameTableTableTableManager
                                 table,
                                 p0,
                               ).matchTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.gameId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'game_id',
                           typedResults: items,
                         ),
                       if (statisticGameTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           GameTableData,
                           $GameTableTable,
-                          StatisticGameTableData
+                          StatisticGameTableData,
+                          $StatisticGameTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$GameTableTableReferences
@@ -5830,10 +5824,8 @@ class $$GameTableTableTableManager
                                 table,
                                 p0,
                               ).statisticGameTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.gameId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'game_id',
                           typedResults: items,
                         ),
                     ];
@@ -6448,10 +6440,11 @@ class $$MatchTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (playerMatchTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           MatchTableData,
                           $MatchTableTable,
-                          PlayerMatchTableData
+                          PlayerMatchTableData,
+                          $PlayerMatchTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$MatchTableTableReferences
@@ -6462,17 +6455,16 @@ class $$MatchTableTableTableManager
                                 table,
                                 p0,
                               ).playerMatchTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.matchId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'match_id',
                           typedResults: items,
                         ),
                       if (scoreEntryTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           MatchTableData,
                           $MatchTableTable,
-                          ScoreEntryTableData
+                          ScoreEntryTableData,
+                          $ScoreEntryTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$MatchTableTableReferences
@@ -6483,10 +6475,8 @@ class $$MatchTableTableTableManager
                                 table,
                                 p0,
                               ).scoreEntryTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.matchId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'match_id',
                           typedResults: items,
                         ),
                     ];
@@ -7135,10 +7125,11 @@ class $$TeamTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (playerMatchTableRefs)
-                    await $_getPrefetchedData<
+                    await $_getPrefetchedDataByColumns<
                       TeamTableData,
                       $TeamTableTable,
-                      PlayerMatchTableData
+                      PlayerMatchTableData,
+                      $PlayerMatchTableTable
                     >(
                       currentTable: table,
                       referencedTable: $$TeamTableTableReferences
@@ -7149,8 +7140,8 @@ class $$TeamTableTableTableManager
                             table,
                             p0,
                           ).playerMatchTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.teamId == item.id),
+                      currentColumn: 'id',
+                      referencedColumn: 'team_id',
                       typedResults: items,
                     ),
                 ];
@@ -8592,10 +8583,11 @@ class $$StatisticTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (statisticScopeTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           StatisticTableData,
                           $StatisticTableTable,
-                          StatisticScopeTableData
+                          StatisticScopeTableData,
+                          $StatisticScopeTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$StatisticTableTableReferences
@@ -8606,17 +8598,16 @@ class $$StatisticTableTableTableManager
                                 table,
                                 p0,
                               ).statisticScopeTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.statisticId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'statistic_id',
                           typedResults: items,
                         ),
                       if (statisticGameTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           StatisticTableData,
                           $StatisticTableTable,
-                          StatisticGameTableData
+                          StatisticGameTableData,
+                          $StatisticGameTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$StatisticTableTableReferences
@@ -8627,17 +8618,16 @@ class $$StatisticTableTableTableManager
                                 table,
                                 p0,
                               ).statisticGameTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.statisticId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'statistic_id',
                           typedResults: items,
                         ),
                       if (statisticGroupTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           StatisticTableData,
                           $StatisticTableTable,
-                          StatisticGroupTableData
+                          StatisticGroupTableData,
+                          $StatisticGroupTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$StatisticTableTableReferences
@@ -8648,10 +8638,8 @@ class $$StatisticTableTableTableManager
                                 table,
                                 p0,
                               ).statisticGroupTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.statisticId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'statistic_id',
                           typedResults: items,
                         ),
                     ];
