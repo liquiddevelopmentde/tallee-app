@@ -96,7 +96,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                     ],
                   ),
                 ).then((confirmed) async {
-                  if (confirmed! && context.mounted) {
+                  if (confirmed == true && context.mounted) {
                     deleteStatistic();
                   }
                 }),
