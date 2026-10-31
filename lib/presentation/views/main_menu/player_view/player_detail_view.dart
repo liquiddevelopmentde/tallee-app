@@ -119,7 +119,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     ],
                   ),
                 ).then((confirmed) async {
-                  if (confirmed! && context.mounted) {
+                  if (confirmed == true && context.mounted) {
                     await db.playerDao.deletePlayer(playerId: widget.player.id);
                     if (!context.mounted) return;
                     Navigator.pop(context);
