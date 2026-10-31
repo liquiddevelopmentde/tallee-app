@@ -87,7 +87,6 @@ class _StatisticsViewState extends State<StatisticsView> {
                     // Statistics in db
                     statistics.isNotEmpty
                     ? ReorderableListView.builder(
-                        primary: true,
                         padding: AppColors.listViewPadding(context),
                         header: SingleChildScrollView(
                           padding: AppColors.filterRowPadding,

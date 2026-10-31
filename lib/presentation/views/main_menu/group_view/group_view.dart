@@ -183,7 +183,6 @@ class _GroupViewState extends State<GroupView> {
                                     },
 
                                     child: ListView.builder(
-                                      primary: true,
                                       padding: AppColors.listViewPadding(
                                         context,
                                       ),

@@ -201,7 +201,6 @@ class _GameViewState extends State<GameView> with RouteAware {
                                       return true;
                                     },
                                     child: ListView.builder(
-                                      primary: true,
                                       padding: AppColors.listViewPadding(
                                         context,
                                       ),
