@@ -68,7 +68,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.8'
+          channel: stable
           cache: true
 
       - name: Cache pub dependencies
@@ -121,7 +121,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.8'
+          channel: stable
           cache: true
 
       - name: Cache pub dependencies
@@ -202,7 +202,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.8'
+          channel: stable
           cache: true
 
       - name: Cache pub dependencies
@@ -273,7 +273,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.8'
+          channel: stable
           cache: true
 
       - name: Cache pub dependencies
@@ -325,7 +325,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.8'
+          channel: stable
           cache: true
 
       - name: Cache pub dependencies
