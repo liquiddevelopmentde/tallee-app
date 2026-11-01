@@ -258,10 +258,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                                 mainAxisSize: MainAxisSize.min,
                                 spacing: 8,
                                 children: [
-                                  Icon(
-                                    getRulesetIcon(selectedRuleset!),
-                                    size: 16,
-                                  ),
+                                  Icon(selectedRuleset!.icon, size: 16),
                                   Text(
                                     selectedRuleset!.toLocalizedString(context),
                                     textAlign: TextAlign.right,
@@ -449,7 +446,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                         child: Row(
                           spacing: 8,
                           children: [
-                            Icon(getRulesetIcon(rulesets[index].$1), size: 16),
+                            Icon(rulesets[index].$1.icon, size: 16),
                             Text(
                               rulesets[index].$2,
                               style: TextStyle(
@@ -473,7 +470,7 @@ class _CreateGameViewState extends State<CreateGameView> {
       child: Row(
         spacing: 8,
         children: [
-          Icon(getRulesetIcon(selectedRuleset!), size: 16),
+          Icon(selectedRuleset!.icon, size: 16),
           Padding(
             padding: const EdgeInsets.only(right: 5),
             child: Text(

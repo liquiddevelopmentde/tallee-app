@@ -2,21 +2,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
-extension StatisticScopeExtension on StatisticScope {
-  /// Translates a [StatisticScope] enum value to its corresponding localized string.
-  String toLocalizedString(BuildContext context) {
-    final loc = AppLocalizations.of(context);
-    switch (this) {
-      case StatisticScope.allPlayers:
-        return loc.all_players;
-      case StatisticScope.selectedGroups:
-        return loc.selected_groups;
-      case StatisticScope.selectedGames:
-        return loc.selected_games;
-    }
-  }
-}
-
 extension StatisticTypeExtension on StatisticType {
   /// Translates a [StatisticType] enum value to its corresponding localized string.
   String toLocalizedString(BuildContext context) {
@@ -38,6 +23,43 @@ extension StatisticTypeExtension on StatisticType {
         return loc.worst_score;
       case StatisticType.winrate:
         return loc.winrate;
+    }
+  }
+
+  /// Returns the icon for the given statistic type.
+  IconData get icon {
+    switch (this) {
+      case StatisticType.totalMatches:
+        return Icons.casino;
+      case StatisticType.totalWins:
+        return Icons.emoji_events;
+      case StatisticType.totalLosses:
+        return Icons.sentiment_dissatisfied;
+      case StatisticType.totalScore:
+        return Icons.scoreboard;
+      case StatisticType.averageScore:
+        return Icons.show_chart;
+      case StatisticType.bestScore:
+        return Icons.trending_up;
+      case StatisticType.worstScore:
+        return Icons.trending_down;
+      case StatisticType.winrate:
+        return Icons.percent;
+    }
+  }
+}
+
+extension StatisticScopeExtension on StatisticScope {
+  /// Translates a [StatisticScope] enum value to its corresponding localized string.
+  String toLocalizedString(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    switch (this) {
+      case StatisticScope.allPlayers:
+        return loc.all_players;
+      case StatisticScope.selectedGroups:
+        return loc.selected_groups;
+      case StatisticScope.selectedGames:
+        return loc.selected_games;
     }
   }
 }

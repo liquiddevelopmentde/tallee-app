@@ -8,7 +8,6 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
 export 'app_color_utils.dart';
-export 'icon_utils.dart';
 export 'translations.dart';
 
 /// Counts how many players in the [match] are not part of the group

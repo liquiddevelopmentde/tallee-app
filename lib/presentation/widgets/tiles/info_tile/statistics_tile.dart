@@ -57,7 +57,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
     isFavourite = widget.statistic.isFavourite;
     selectedGames = widget.statistic.selectedGames;
     selectedGroups = widget.statistic.selectedGroups;
-    icon = getStatisticIcon(type: widget.statistic.type);
+    icon = widget.statistic.type.icon;
 
     super.initState();
   }
@@ -69,7 +69,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
       isFavourite = widget.statistic.isFavourite;
       selectedGames = widget.statistic.selectedGames;
       selectedGroups = widget.statistic.selectedGroups;
-      icon = getStatisticIcon(type: widget.statistic.type);
+      icon = widget.statistic.type.icon;
     }
   }
 

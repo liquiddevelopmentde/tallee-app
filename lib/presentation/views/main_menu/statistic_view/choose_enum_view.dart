@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
@@ -88,11 +87,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
                       spacing: 12,
                       children: [
                         if (widget.enumValue is List<StatisticType>)
-                          Icon(
-                            getStatisticIcon(
-                              type: widget.enumValue[index] as StatisticType,
-                            ),
-                          ),
+                          Icon((widget.enumValue[index] as StatisticType).icon),
                         Text(
                           getValName(widget.enumValue[index], context),
                           style: const TextStyle(fontWeight: FontWeight.bold),
