@@ -103,8 +103,8 @@ class _SettingsViewState extends State<SettingsView> {
                               context.watch<ThemeProvider>().themeMode,
                             ),
                             style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
+                              //fontWeight: FontWeight.w600,
+                              //fontSize: 14,
                             ),
                           ),
                           const Icon(Icons.arrow_forward_ios, size: 16),
@@ -386,8 +386,25 @@ class _SettingsViewState extends State<SettingsView> {
             context.read<ThemeProvider>().setThemeMode(tm!),
         labelBuilder: (BuildContext ctx, ThemeMode tm) =>
             getThemeModeLabel(loc, tm),
+        leadingBuilder: (ThemeMode tm) => Icon(
+          getThemeModeIcon(tm),
+          size: 20,
+          color: context.talleeColors.textColor,
+        ),
       ),
     );
+  }
+
+  /// Returns the correct icon for the given [mode].
+  IconData getThemeModeIcon(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.dark:
+        return Icons.dark_mode;
+      case ThemeMode.light:
+        return Icons.light_mode;
+      case ThemeMode.system:
+        return Icons.contrast;
+    }
   }
 
   /// Returns the correct localized String for the given [mode].
