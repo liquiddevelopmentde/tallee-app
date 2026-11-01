@@ -311,10 +311,7 @@ class _GameViewState extends State<GameView> with RouteAware {
           // Check ruleset name
           maxScore = max(
             maxScore,
-            weightedRatio(
-              translateRulesetToString(game.ruleset, context),
-              query,
-            ),
+            weightedRatio(game.ruleset.toLocalizedString(context), query),
           );
 
           if (maxScore >= FUZZY_SEARCH_THRESHOLD) {

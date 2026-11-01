@@ -76,10 +76,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
   @override
   Widget build(BuildContext context) {
     final barColor = getColorFromAppColor(widget.statistic.color, context);
-    final title = translateStatisticTypeToString(
-      widget.statistic.type,
-      context,
-    );
+    final title = widget.statistic.type.toLocalizedString(context);
 
     return InfoTile(
       leadingWidget: Icon(icon),

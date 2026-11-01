@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 class ChooseEnumView<T extends Enum> extends StatefulWidget {
@@ -155,11 +155,11 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
   /// Returns the localized string translation of the value
   String getValName(T value, BuildContext context) {
     if (value is StatisticScope) {
-      return translateScopeToString(value, context);
+      return value.toLocalizedString(context);
     } else if (value is StatisticType) {
-      return translateStatisticTypeToString(value, context);
+      return value.toLocalizedString(context);
     } else if (value is Timeframe) {
-      return translateTimeframeToString(value, context);
+      return value.toLocalizedString(context);
     } else {
       return value.toString();
     }

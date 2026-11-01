@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/statistic.dart';
@@ -154,10 +153,8 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                                   Text(
                                     widget.statistic.scopes
                                         .map(
-                                          (scope) => translateScopeToString(
-                                            scope,
-                                            context,
-                                          ),
+                                          (scope) =>
+                                              scope.toLocalizedString(context),
                                         )
                                         .join('\n'),
                                     textAlign: TextAlign.end,
@@ -185,10 +182,8 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                                                 null &&
                                             widget.statistic.endDate != null
                                         ? '${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.startDate!)} - ${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.endDate!)}'
-                                        : translateTimeframeToString(
-                                            widget.statistic.timeframe,
-                                            context,
-                                          ),
+                                        : widget.statistic.timeframe
+                                              .toLocalizedString(context),
                                     textAlign: TextAlign.end,
                                   ),
                                 ],

@@ -4,9 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/extensions/transfer_extensions.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/player.dart';
@@ -152,10 +150,8 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                                   .map(
                                     (game) => TextIconListTile(
                                       text: game.name,
-                                      description: translateRulesetToString(
-                                        game.ruleset,
-                                        context,
-                                      ),
+                                      description: game.ruleset
+                                          .toLocalizedString(context),
                                     ),
                                   )
                                   .toList(),
@@ -206,14 +202,12 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                               children: getStatisticsFromData
                                   .map(
                                     (statistic) => TextIconListTile(
-                                      text: translateStatisticTypeToString(
-                                        statistic.type,
+                                      text: statistic.type.toLocalizedString(
                                         context,
                                       ),
                                       description: statistic.scopes
                                           .map(
-                                            (scope) => translateScopeToString(
-                                              scope,
+                                            (scope) => scope.toLocalizedString(
                                               context,
                                             ),
                                           )

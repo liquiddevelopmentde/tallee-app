@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart' hide Material;
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extenseme/theme_context_extensions.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';

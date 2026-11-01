@@ -1,14 +1,14 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_popup/flutter_popup.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -116,14 +116,14 @@ class _CreateGameViewState extends State<CreateGameView> {
       Ruleset.values.length,
       (index) => (
         Ruleset.values[index],
-        translateRulesetToString(Ruleset.values[index], context),
+        Ruleset.values[index].toLocalizedString(context),
       ),
     );
     colors = List.generate(
       AppColor.values.length,
       (index) => (
         AppColor.values[index],
-        translateAppColorToString(AppColor.values[index], context),
+        AppColor.values[index].toLocalizedString(context),
       ),
     );
 
@@ -263,10 +263,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                                     size: 16,
                                   ),
                                   Text(
-                                    translateRulesetToString(
-                                      selectedRuleset!,
-                                      context,
-                                    ),
+                                    selectedRuleset!.toLocalizedString(context),
                                     textAlign: TextAlign.right,
                                   ),
                                 ],
@@ -480,7 +477,7 @@ class _CreateGameViewState extends State<CreateGameView> {
           Padding(
             padding: const EdgeInsets.only(right: 5),
             child: Text(
-              translateRulesetToString(selectedRuleset!, context),
+              selectedRuleset!.toLocalizedString(context),
               textAlign: TextAlign.right,
             ),
           ),
@@ -584,7 +581,7 @@ class _CreateGameViewState extends State<CreateGameView> {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 5),
-            child: Text(translateAppColorToString(selectedColor!, context)),
+            child: Text(selectedColor!.toLocalizedString(context)),
           ),
           Transform.rotate(
             angle: pi / 2,

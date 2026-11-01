@@ -182,10 +182,7 @@ class MatchProfileBody extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             child: GameLabel(
               title: match.game.name,
-              description: translateRulesetToString(
-                match.game.ruleset,
-                context,
-              ),
+              description: match.game.ruleset.toLocalizedString(context),
               color: match.game.color,
             ),
           ),

@@ -139,10 +139,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       multiValueListenable: selectedTypeNotifier,
       options: [
         for (final type in StatisticType.values)
-          DropdownOption(
-            value: type,
-            label: translateStatisticTypeToString(type, context),
-          ),
+          DropdownOption(value: type, label: type.toLocalizedString(context)),
       ],
       onItemTap: onClassifierTapped,
     );
@@ -156,10 +153,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       multiValueListenable: selectedScopeNotifier,
       options: [
         for (final scope in StatisticScope.values)
-          DropdownOption(
-            value: scope,
-            label: translateScopeToString(scope, context),
-          ),
+          DropdownOption(value: scope, label: scope.toLocalizedString(context)),
       ],
       onItemTap: onScopeTapped,
     );
@@ -177,7 +171,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         for (final timeframe in Timeframe.values)
           DropdownOption(
             value: timeframe,
-            label: translateTimeframeToString(timeframe, context),
+            label: timeframe.toLocalizedString(context),
           ),
       ],
       onChanged: (timeframe) {
@@ -256,7 +250,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         for (final color in AppColor.values)
           DropdownOption<AppColor?>(
             value: color,
-            label: translateAppColorToString(color, context),
+            label: color.toLocalizedString(context),
             leading: Container(
               width: 16,
               height: 16,

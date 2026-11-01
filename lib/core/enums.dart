@@ -1,3 +1,6 @@
+export 'package:tallee/core/extensions/app_color_extensions.dart';
+export 'package:tallee/core/extensions/ruleset_extensions.dart';
+export 'package:tallee/core/extensions/statistic_extensions.dart';
 export 'package:tallee/core/extensions/transfer_extensions.dart';
 
 /// The current app environment
