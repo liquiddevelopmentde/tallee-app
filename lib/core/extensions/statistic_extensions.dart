@@ -47,6 +47,26 @@ extension StatisticTypeExtension on StatisticType {
         return Icons.percent;
     }
   }
+
+  /// Returns the rulesets which make sense for a given [StatisticType]
+  List<Ruleset> fittingRulesets() {
+    final scoreBaseRulesets = [Ruleset.lowestScore, Ruleset.highestScore];
+    const allRulesets = Ruleset.values;
+
+    switch (this) {
+      case StatisticType.averageScore:
+      case StatisticType.bestScore:
+      case StatisticType.worstScore:
+      case StatisticType.totalScore:
+        return scoreBaseRulesets;
+
+      case StatisticType.totalMatches:
+      case StatisticType.totalLosses:
+      case StatisticType.winrate:
+      case StatisticType.totalWins:
+        return allRulesets;
+    }
+  }
 }
 
 extension StatisticScopeExtension on StatisticScope {

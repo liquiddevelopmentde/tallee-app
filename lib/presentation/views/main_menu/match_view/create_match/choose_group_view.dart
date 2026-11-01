@@ -1,9 +1,8 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
@@ -229,7 +228,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
   /// Filters the [games] based on the rulesets required by the selected [StatisticType]s
   List<Game> filterGamesForRequiredRuleset(List<Game> games) {
     final Set<Ruleset> requiredRulesets = {
-      for (final t in widget.selectedTypes!) ...getRulesetForTypes(t),
+      for (final t in widget.selectedTypes!) ...t.fittingRulesets(),
     };
     return games.where((g) => requiredRulesets.contains(g.ruleset)).toList();
   }

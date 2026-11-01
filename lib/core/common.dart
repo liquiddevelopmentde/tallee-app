@@ -12,16 +12,12 @@ export 'extensions/string_extensions.dart';
 
 /// Returns the correct singular or plural form of "point(s)" based on the [amount] value.
 String getPointLabel(AppLocalizations loc, int amount) {
-  if (amount == 1) {
-    return '$amount ${loc.point}';
-  } else {
-    return '$amount ${loc.points}';
-  }
+  if (amount == 1) return '$amount ${loc.point}';
+  return '$amount ${loc.points}';
 }
 
-String getLifeLabel(AppLocalizations loc, int amount) {
-  return '$amount ${loc.lives(amount)}';
-}
+String getLifeLabel(AppLocalizations loc, int amount) =>
+    '$amount ${loc.lives(amount)}';
 
 /// Counts how many players in the [match] are not part of the group
 ///
@@ -47,26 +43,6 @@ String getExtraPlayerCount(Match match) {
     return '';
   }
   return ' + ${count.toString()}';
-}
-
-/// Returns the rulesets which make sense for a given [StatisticType]
-List<Ruleset> getRulesetForTypes(StatisticType type) {
-  final scoreBaseRulesets = [Ruleset.lowestScore, Ruleset.highestScore];
-  const allRulesets = Ruleset.values;
-
-  switch (type) {
-    case StatisticType.averageScore:
-    case StatisticType.bestScore:
-    case StatisticType.worstScore:
-    case StatisticType.totalScore:
-      return scoreBaseRulesets;
-
-    case StatisticType.totalMatches:
-    case StatisticType.totalLosses:
-    case StatisticType.winrate:
-    case StatisticType.totalWins:
-      return allRulesets;
-  }
 }
 
 /// Helper function to classify connection/network exceptions

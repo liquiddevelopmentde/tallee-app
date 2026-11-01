@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
@@ -58,6 +57,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   Timeframe selectedTimeframe = Timeframe.allTime;
   DateTime? selectedStartDate;
   DateTime? selectedEndDate;
+
   // null -> random color
   AppColor? selectedColor;
 
@@ -411,7 +411,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   /// Filters the [games] based on the rulesets required by the selected [StatisticType]s
   List<Game> filterGamesForRequiredRuleset(List<Game> games) {
     final Set<Ruleset> requiredRulesets = {
-      for (final t in selectedTypes) ...getRulesetForTypes(t),
+      for (final t in selectedTypes) ...t.fittingRulesets(),
     };
     return games.where((g) => requiredRulesets.contains(g.ruleset)).toList();
   }
