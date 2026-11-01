@@ -1,9 +1,10 @@
 import 'dart:convert';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/transfer_extensions.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/data/db/database.dart';
@@ -351,7 +352,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     Navigator.of(context).maybePop(importResult);
 
     final messengerKey = widget.messengerKey;
-    final message = translateImportResultToString(importResult, context);
+    final message = importResult.toLocalizedString(context);
 
     // Show snackbar with haptic feedback
     if (messengerKey != null) {

@@ -3,11 +3,11 @@ import 'dart:core' hide Match;
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/share_exceptions.dart';
-import 'package:tallee/core/translations.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/theme/theme_context_extenslors.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
@@ -182,10 +182,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
 
       // If an import error occured
       if (response.result != ImportResult.success && mounted) {
-        final message = translateMatchImportResultToString(
-          response.result,
-          context,
-        );
+        final message = response.result.toLocalizedMatchImportString(context);
         await displayErrorMessage(message);
       } else {
         final loadedMatch = response.match!;

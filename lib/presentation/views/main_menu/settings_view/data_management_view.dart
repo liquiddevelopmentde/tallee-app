@@ -1,11 +1,12 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:new_version_plus/model/version_status.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/transfer_extensions.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
@@ -297,7 +298,7 @@ class _DataManagementViewState extends State<DataManagementView> {
         if (context.mounted) {
           showSnackbar(
             context: context,
-            message: translateImportResultToString(result, context),
+            message: result.toLocalizedString(context),
           );
         }
     }
@@ -324,7 +325,7 @@ class _DataManagementViewState extends State<DataManagementView> {
         if (context.mounted) {
           showSnackbar(
             context: context,
-            message: translateExportResultToString(result, context),
+            message: result.toLocalizedString(context),
           );
         }
     }

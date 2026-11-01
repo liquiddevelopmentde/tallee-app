@@ -1,3 +1,5 @@
+export 'package:tallee/core/extensions/transfer_extensions.dart';
+
 /// The current app environment
 /// - [AppEnvironment.development]: Development only
 /// - [AppEnvironment.testing]: Public testing
