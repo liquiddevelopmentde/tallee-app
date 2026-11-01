@@ -73,14 +73,15 @@ class SelectionSheet<T> extends StatefulWidget {
     showModalBottomSheet(
       context: context,
       builder: builder,
+      useSafeArea: true,
+      showDragHandle: true,
+      isScrollControlled: true,
       sheetAnimationStyle: const AnimationStyle(
         duration: Duration(milliseconds: 200),
         curve: Curves.easeInOutCubicEmphasized,
         reverseCurve: Curves.easeInOut,
         reverseDuration: Duration(milliseconds: 300),
       ),
-      showDragHandle: true,
-      isScrollControlled: true,
     );
   }
 
@@ -103,7 +104,7 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      minimum: const EdgeInsets.only(right: 6, left: 6),
+      minimum: const EdgeInsets.only(right: 12, left: 12, bottom: 12),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         spacing: 20,
