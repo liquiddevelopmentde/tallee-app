@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
@@ -324,8 +323,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                             opacity: 1 * t,
                                             child: DecoratedBox(
                                               decoration: BoxDecoration(
-                                                color: colors
-                                                    .textColor
+                                                color: colors.textColor
                                                     .withValues(alpha: 0.10),
                                                 borderRadius:
                                                     BorderRadius.circular(12),
@@ -425,7 +423,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     Statistic skeletonStatistic = Statistic(
       type: StatisticType.totalWins,
       scopes: [StatisticScope.allPlayers],
-      color: getRandomAppColor(),
+      color: AppColor.randomColor(),
       selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
       selectedGroups: [Group(name: 'Group 1', members: [])],
     );
@@ -442,7 +440,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     return Statistic(
       type: StatisticType.totalWins,
       scopes: [StatisticScope.allPlayers],
-      color: getRandomAppColor(),
+      color: AppColor.randomColor(),
       selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
       selectedGroups: [Group(name: 'Group 1', members: [])],
     );

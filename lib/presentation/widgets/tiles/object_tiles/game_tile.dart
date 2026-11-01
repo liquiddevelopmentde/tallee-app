@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
@@ -38,7 +37,7 @@ class GameTile extends StatelessWidget {
     final title = game.name;
     final description = game.description;
     final ruleset = game.ruleset.toLocalizedString(context);
-    final gameColor = getColorFromAppColor(game.color, context);
+    final gameColor = game.color.colorValue(context);
     final highlightBorderColor = borderColor ?? gameColor;
     final showChevron = onLongPress != null;
 

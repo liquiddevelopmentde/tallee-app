@@ -55,7 +55,7 @@ class _GameViewState extends State<GameView> with RouteAware {
     (_) => Game(
       name: 'Skeleton game name',
       ruleset: Ruleset.winner,
-      color: getRandomAppColor(),
+      color: AppColor.randomColor(),
       description: 'Skeleton description for the game tile',
     ),
   );

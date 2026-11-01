@@ -1,6 +1,5 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
@@ -75,7 +74,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
 
   @override
   Widget build(BuildContext context) {
-    final barColor = getColorFromAppColor(widget.statistic.color, context);
+    final barColor = widget.statistic.color.colorValue(context);
     final title = widget.statistic.type.toLocalizedString(context);
 
     return InfoTile(
@@ -105,10 +104,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
               displayCount: widget.displayCount,
               showDisplayCountHighlighting: widget.showDisplayCountHighlighting,
               barColor: barColor,
-              barTextColor: getStatisticsBarTextColor(
-                widget.statistic.color,
-                context,
-              ),
+              barTextColor: widget.statistic.color.statisticBarColor(context),
             ),
 
             // Group & Game info

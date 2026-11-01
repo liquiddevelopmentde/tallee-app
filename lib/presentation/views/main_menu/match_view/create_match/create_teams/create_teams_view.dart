@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -170,7 +169,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     final loc = AppLocalizations.of(context);
     return Team(
       name: '${loc.team} ${teams.length + 1}',
-      color: getTeamColor(teams.length),
+      color: AppColor.teamColor(teams.length),
       members: [],
     );
   }
@@ -226,8 +225,8 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
 
           // Reset color to default if it was based on the index
           final previousIndex = i < index ? i : i + 1;
-          if (teams[i].color == getTeamColor(previousIndex)) {
-            teams[i] = teams[i].copyWith(color: getTeamColor(i));
+          if (teams[i].color == AppColor.teamColor(previousIndex)) {
+            teams[i] = teams[i].copyWith(color: AppColor.teamColor(i));
           }
         }
       }
@@ -320,7 +319,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
         initialTeamCount,
         (index) => Team(
           name: '${loc.team} ${index + 1}',
-          color: getTeamColor(index),
+          color: AppColor.teamColor(index),
           members: [],
         ),
       );

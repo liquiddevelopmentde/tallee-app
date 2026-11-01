@@ -1,6 +1,6 @@
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/dto/news_item.dart';
@@ -20,7 +20,7 @@ class NewsCard extends StatelessWidget {
     final text =
         newsItem.localizedText[locale] ?? newsItem.localizedText['en']!;
 
-    final iconColor = getColorFromAppColor(newsItem.iconColor, context);
+    final iconColor = newsItem.iconColor.colorValue(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),

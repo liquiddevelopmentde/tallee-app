@@ -1,3 +1,5 @@
+import 'dart:math';
+
 export 'package:tallee/core/extensions/app_color_extensions.dart';
 export 'package:tallee/core/extensions/ruleset_extensions.dart';
 export 'package:tallee/core/extensions/statistic_extensions.dart';
@@ -83,7 +85,25 @@ enum ExportResult { success, canceled, unknownException, noData }
 enum Ruleset { winner, loser, highestScore, lowestScore, lives, placement }
 
 /// Different colors for highlighting content
-enum AppColor { red, orange, yellow, green, teal, blue, purple, pink }
+enum AppColor {
+  red,
+  orange,
+  yellow,
+  green,
+  teal,
+  blue,
+  purple,
+  pink;
+
+  /// Returns a random color from the app colors.
+  static AppColor randomColor() => values[Random().nextInt(values.length)];
+
+  /// Returns a color based on the provided team [index].
+  static AppColor teamColor(int index) {
+    const colors = [red, blue, green, yellow, purple, orange, pink, teal];
+    return colors[index % colors.length];
+  }
+}
 
 enum StatisticType {
   totalMatches,

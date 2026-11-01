@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
+import 'package:tallee/core/extensions/app_color_extensions.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class FloatingAnimatedButton extends StatefulWidget {

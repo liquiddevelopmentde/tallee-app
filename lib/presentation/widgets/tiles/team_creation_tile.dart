@@ -1,10 +1,9 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
-import 'package:tallee/core/app_color_utils.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
@@ -38,7 +37,7 @@ class TeamCreationTile extends StatefulWidget {
 class _TeamCreationTileState extends State<TeamCreationTile> {
   final teamColors = List.generate(
     AppColor.values.length,
-    (index) => getTeamColor(index),
+    (index) => AppColor.teamColor(index),
   );
 
   @override
@@ -105,19 +104,16 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                       child: Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: teamColors.map((color) {
+                        children: teamColors.map((AppColor color) {
                           final isSelected = widget.color == color;
-                          final swatchColor = getColorFromAppColor(
-                            color,
-                            context,
-                          );
+                          final swatchColor = (color).colorValue(context);
+                          const containerDim = 34.0;
+
                           return GestureDetector(
-                            onTap: () {
-                              widget.onColorSelection?.call(color);
-                            },
+                            onTap: () => widget.onColorSelection?.call(color),
                             child: Container(
-                              width: 34,
-                              height: 34,
+                              width: containerDim,
+                              height: containerDim,
                               decoration: BoxDecoration(
                                 color: swatchColor,
                                 shape: BoxShape.circle,

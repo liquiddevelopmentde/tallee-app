@@ -255,7 +255,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               width: 16,
               height: 16,
               decoration: BoxDecoration(
-                color: getColorFromAppColor(color, context),
+                color: color.colorValue(context),
                 shape: BoxShape.circle,
               ),
             ),
@@ -422,7 +422,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     timeframe: selectedTimeframe,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
-    color: selectedColor ?? getRandomAppColor(),
+    color: selectedColor ?? AppColor.randomColor(),
   );
 
   String formatDateRange(
@@ -560,7 +560,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       AppColor.green,
       AppColor.yellow,
       AppColor.orange,
-    ].map((c) => getColorFromAppColor(c, context)).toList();
+    ].map((c) => c.colorValue(context)).toList();
 
     // Repeat first color at the end so the seam does not swallow red.
     final colors = [...segmentColors, segmentColors.first];

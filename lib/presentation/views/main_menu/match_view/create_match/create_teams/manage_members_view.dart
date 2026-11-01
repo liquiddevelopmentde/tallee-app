@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
@@ -156,7 +155,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
   }
 
   Widget buildTeamTile({required Team team}) {
-    final color = getColorFromAppColor(team.color, context);
+    final color = team.color.colorValue(context);
     final loc = AppLocalizations.of(context);
     final length = team.members.length;
     final memberText = length == 1 ? loc.member : loc.members;
