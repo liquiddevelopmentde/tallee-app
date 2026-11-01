@@ -22,14 +22,14 @@ jobs:
       ORG: liquid-development
       PROJECT_ID: "9"
     steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .gitea/scripts
+
       - name: "Assign branch reference to matching issue"
         id: link
         run: python3 .gitea/scripts/branch_issue_link.py
 
-      - uses: actions/checkout@v4
-        if: ${{ steps.link.outputs.issue != '' }}
-        with:
-          sparse-checkout: .gitea/scripts
       - name: "Move linked issue to In Progress"
         if: ${{ steps.link.outputs.issue != '' }}
         run: python3 .gitea/scripts/project_board.py move "${{ steps.link.outputs.issue }}" "In Progress"
