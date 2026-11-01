@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class PlayerProfileListTile extends StatelessWidget {
   const PlayerProfileListTile({
@@ -15,10 +15,7 @@ class PlayerProfileListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = CustomTheme.onBoxColor;
-    final fontColor = backgroundColor.computeLuminance() > 0.5
-        ? Colors.black
-        : Colors.white;
+    final backgroundColor = context.talleeColors.onBoxColor;
 
     return GestureDetector(
       onTap: onTap,
@@ -28,9 +25,9 @@ class PlayerProfileListTile extends StatelessWidget {
           // Title
           Flexible(
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8),
                   bottomLeft: Radius.circular(8),
                 ),
@@ -41,7 +38,10 @@ class PlayerProfileListTile extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
-                style: TextStyle(fontSize: 14, color: fontColor),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: context.talleeColors.textColor,
+                ),
               ),
             ),
           ),
@@ -64,10 +64,17 @@ class PlayerProfileListTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   softWrap: false,
-                  style: TextStyle(fontSize: 14, color: fontColor),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: context.talleeColors.textColor,
+                  ),
                 ),
                 const SizedBox(width: 5),
-                Icon(Icons.people, size: 20, color: fontColor),
+                Icon(
+                  Icons.people,
+                  size: 20,
+                  color: context.talleeColors.textColor,
+                ),
               ],
             ),
           ),

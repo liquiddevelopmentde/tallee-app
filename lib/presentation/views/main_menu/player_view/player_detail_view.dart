@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -67,6 +67,8 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
+  bool get isPlayerDeleted => widget.player.deleted;
+
   @override
   void initState() {
     super.initState();
@@ -91,7 +93,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
       appBar: AppBar(
         title: Text(loc.player_profile),
         actions: [
-          if (!widget.player.deleted)
+          if (!isPlayerDeleted)
             HapticIconButton(
               icon: const Icon(Icons.delete),
               onPressed: () async {
@@ -106,6 +108,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     actions: [
                       CustomDialogAction(
                         onPressed: () => Navigator.of(context).pop(true),
+                        isDestructive: true,
                         text: loc.delete,
                       ),
                       CustomDialogAction(
@@ -141,25 +144,66 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
               ),
               children: [
                 // Icon
-                const Center(
+                Center(
                   child: ColoredIconContainer(
+                    muted: isPlayerDeleted,
                     icon: PLAYER_ICON,
                     containerSize: 55,
                   ),
                 ),
+
                 const SizedBox(height: 10),
 
                 // Playername + Playercount
                 Center(
                   child: buildUnitNameWidget(
+                    context,
                     player,
-                    mainStyle: const TextStyle(
+                    mainStyle: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                     ),
                   ),
                 ),
+
+                // Deleted badge
+                if (isPlayerDeleted)
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.talleeColors.redColor.withAlpha(75),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 5,
+                        children: [
+                          Icon(
+                            Icons.delete,
+                            color: context.talleeColors.redColor,
+                            size: 15,
+                          ),
+                          Text(
+                            loc.deleted,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: context.talleeColors.redColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
 
                 // Description
                 if (player.description.isNotEmpty)
@@ -167,38 +211,30 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       player.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.clip,
                     ),
                   ),
 
-                // Deleted state
-                if (widget.player.deleted) ...[
-                  Text(
-                    loc.deleted,
-                    style: const TextStyle(fontSize: 13, color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
                 const SizedBox(height: 5),
 
                 // Created at date
                 Text(
                   '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(player.createdAt)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
 
                 // Groups
-                if (!widget.player.deleted) ...[
+                if (!isPlayerDeleted) ...[
                   InfoTile(
                     title: '${loc.groups} ($totalGroups)',
                     leadingWidget: const Icon(GROUP_ICON),
@@ -236,9 +272,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             )
                           : Text(
                               loc.not_part_of_any_group,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
-                                color: CustomTheme.textColor,
+                                color: context.talleeColors.textColor,
                               ),
                             ),
                     ),
@@ -284,9 +320,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                           )
                         : Text(
                             loc.no_matches_played_yet,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: CustomTheme.textColor,
+                              color: context.talleeColors.textColor,
                             ),
                           ),
                   ),
@@ -308,7 +344,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
             ),
 
             // Edit player button
-            if (!widget.player.deleted)
+            if (!isPlayerDeleted)
               Positioned(
                 bottom: MediaQuery.viewPaddingOf(context).bottom,
                 child: FloatingAnimatedButton(
@@ -317,6 +353,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   onPressed: () async {
                     final updatedPlayer = await Navigator.of(context).push(
                       adaptivePageRoute(
+                        settings: const RouteSettings(
+                          name: RouteNames.editPlayerView,
+                        ),
                         builder: (context) => EditPlayerView(
                           playerToEdit: player,
                           onPlayerChanged: widget.onPlayerUpdated,

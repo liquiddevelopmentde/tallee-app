@@ -1,9 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:tallee/core/app_color_utils.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -22,6 +21,7 @@ class BarChart extends StatelessWidget {
     required this.barColor,
     required this.showAllValues,
     required this.showDisplayCountHighlighting,
+    required this.barTextColor,
   });
 
   final List<(Player, num)> values;
@@ -29,6 +29,7 @@ class BarChart extends StatelessWidget {
   final Color barColor;
   final bool showAllValues;
   final bool showDisplayCountHighlighting;
+  final Color barTextColor;
 
   static final List<(Player, num)> placeholderValues = [
     (Player(name: ''), 15),
@@ -194,8 +195,8 @@ class BarChart extends StatelessWidget {
     }
   }
 
-  /// Generates the text widget for the player name. If the bar color is
-  /// yellow, the text with the bar in the background gets black
+  /// Generates the text widget for the player name with a color that contrasts
+  /// with the part of the label covered by the bar.
   Widget playerText({
     required BuildContext context,
     required Player player,
@@ -207,32 +208,16 @@ class BarChart extends StatelessWidget {
     final textAlpha = isHighlightedOverflow ? 150 : 255;
     final baseStyle = DefaultTextStyle.of(context).style;
 
-    if (barColor != getColorFromAppColor(AppColor.yellow)) {
-      return RichText(
-        maxLines: 1,
-        softWrap: false,
-        overflow: TextOverflow.ellipsis,
-        text: buildPlayerNameCountSpan(
-          player,
-          style: baseStyle,
-          mainStyle: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: CustomTheme.textColor.withAlpha(textAlpha),
-          ),
-          countStyle: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
-            color: CustomTheme.textColor.withAlpha(
-              isHighlightedOverflow ? 170 : 150,
-            ),
-          ),
-        ),
-      );
-    }
-
-    final insideTextColor = const Color(0xFF101010).withAlpha(textAlpha);
-    final outsideTextColor = CustomTheme.textColor.withAlpha(textAlpha);
+    final skeletonizing = Skeletonizer.maybeOf(context)?.enabled == true;
+    final skeletonTextColor = context.talleeColors.skeletonFromColor.withAlpha(
+      textAlpha,
+    );
+    final insideTextColor = skeletonizing
+        ? skeletonTextColor
+        : barTextColor.withAlpha(textAlpha);
+    final outsideTextColor = skeletonizing
+        ? skeletonTextColor
+        : context.talleeColors.textColor.withAlpha(textAlpha);
 
     return ShaderMask(
       blendMode: BlendMode.srcIn,
@@ -262,17 +247,18 @@ class BarChart extends StatelessWidget {
         softWrap: false,
         overflow: TextOverflow.ellipsis,
         text: buildPlayerNameCountSpan(
+          context,
           player,
           style: baseStyle,
-          mainStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          countStyle: const TextStyle(
+          mainStyle: TextStyle(
             fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            color: insideTextColor,
+          ),
+          countStyle: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: insideTextColor,
           ),
         ),
       ),

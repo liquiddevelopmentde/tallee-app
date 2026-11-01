@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tallee/data/models/models.dart';
 
@@ -31,6 +32,7 @@ class SharedPreferencesService {
   static const String showcaseSeenKey = 'showcase_seen';
   static const String onboardingCompletedKey = 'onboarding_completed';
   static const String matchFilterKey = 'match_filter';
+  static const String themeModeKey = 'theme_mode';
 
   static void deleteAllPreferences() {
     _instance.remove(filteredGroupsKey);
@@ -70,6 +72,18 @@ class SharedPreferencesService {
 
     return MatchFilter.values.firstWhereOrNull(
       (filter) => filter.toString() == filterString,
+    );
+  }
+
+  static void setThemeMode(ThemeMode mode) {
+    _instance.setString(themeModeKey, mode.name);
+  }
+
+  static ThemeMode getThemeMode() {
+    final storedMode = _instance.getString(themeModeKey);
+    return ThemeMode.values.firstWhere(
+      (mode) => mode.name == storedMode,
+      orElse: () => ThemeMode.system,
     );
   }
 

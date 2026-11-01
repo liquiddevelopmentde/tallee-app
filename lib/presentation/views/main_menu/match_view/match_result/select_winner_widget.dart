@@ -99,6 +99,7 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
                             compact: true,
                           )
                         : buildUnitNameWidget(
+                            context,
                             allTeams[index],
                             isTeamMatch: false,
                           ),
@@ -124,6 +125,7 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
                 itemBuilder: (context, index) {
                   return CustomCheckboxListTile(
                     content: buildUnitNameWidget(
+                      context,
                       allPlayers[index],
                       mainStyle: const TextStyle(
                         fontSize: 16,

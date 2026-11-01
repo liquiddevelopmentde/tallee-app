@@ -5,7 +5,8 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
@@ -84,7 +85,7 @@ class _GroupViewState extends State<GroupView> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -184,37 +185,33 @@ class _GroupViewState extends State<GroupView> {
                                     },
 
                                     child: ListView.builder(
-                                      padding: CustomTheme.listViewPadding(
+                                      padding: AppColors.listViewPadding(
                                         context,
                                       ),
                                       itemCount: displayedGroups.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                            return GroupTile(
-                                              onPlayerChanged: loadGroups,
-                                              group: displayedGroups[index],
-                                              onTap: () async {
-                                                await Navigator.push(
-                                                  context,
-                                                  adaptivePageRoute(
-                                                    settings:
-                                                        const RouteSettings(
-                                                          name: RouteNames
-                                                              .groupDetailView,
-                                                        ),
-                                                    builder: (context) {
-                                                      return GroupDetailView(
-                                                        group:
-                                                            displayedGroups[index],
-                                                        onGroupUpdated:
-                                                            loadGroups,
-                                                      );
-                                                    },
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return GroupTile(
+                                          group: displayedGroups[index],
+                                          onTap: () async =>
+                                              await Navigator.push(
+                                                context,
+                                                adaptivePageRoute(
+                                                  settings: const RouteSettings(
+                                                    name: RouteNames
+                                                        .groupDetailView,
                                                   ),
-                                                );
-                                              },
-                                            );
-                                          },
+                                                  builder: (context) {
+                                                    return GroupDetailView(
+                                                      group:
+                                                          displayedGroups[index],
+                                                      onGroupUpdated:
+                                                          loadGroups,
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 )

@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class CustomRadioListTile<T> extends StatelessWidget {
   /// A custom radio list tile widget that encapsulates a [Radio] button with additional styling and functionality.
@@ -29,9 +30,9 @@ class CustomRadioListTile<T> extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         padding: const EdgeInsets.only(left: 2, right: 5),
         decoration: BoxDecoration(
-          color: CustomTheme.boxColor,
-          border: Border.all(color: CustomTheme.boxBorderColor),
-          borderRadius: CustomTheme.standardBorderRadiusAll,
+          color: context.talleeColors.boxColor,
+          border: Border.all(color: context.talleeColors.boxBorderColor),
+          borderRadius: AppColors.standardBorderRadiusAll,
         ),
         child: Row(
           children: [

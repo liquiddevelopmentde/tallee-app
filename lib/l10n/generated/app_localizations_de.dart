@@ -91,10 +91,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
 
   @override
-  String get click_another_player_to_create_a_pair =>
-      'Klicke einen weiteren Spieler an, um ein Paar zu erstellen';
-
-  @override
   String get close => 'Schließen';
 
   @override
@@ -297,9 +293,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get edit_match => 'Spiel bearbeiten';
-
-  @override
-  String get edit_name => 'Name ändern';
 
   @override
   String get edit_player => 'Spieler bearbeiten';
@@ -923,9 +916,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get server_error => 'Interner Server Fehler';
 
   @override
-  String get set_name => 'Name setzen';
-
-  @override
   String get settings => 'Einstellungen';
 
   @override
@@ -1019,6 +1009,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get successfully_processed_file => 'Datei erfolgreich verarbeitet';
 
   @override
+  String get tap_another_player_to_create_a_pair =>
+      'Tippe auf eine:n weitere:n Spieler:in, um ein Paar zu bilden';
+
+  @override
   String get tap_import_to_continue =>
       'Tippe auf Spiel importieren, um fortzufahren';
 
@@ -1053,6 +1047,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get thank_you_for_report => 'Vielen Dank für deine Fehlermeldung!';
+
+  @override
+  String get theme => 'Darstellung';
+
+  @override
+  String get theme_dark => 'Dunkel';
+
+  @override
+  String get theme_light => 'Hell';
+
+  @override
+  String get theme_system => 'System';
 
   @override
   String get there_are_no_games_matching_your_search =>
@@ -1155,6 +1161,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String get version_copied_to_clipboard => 'Version in Zwischenablage kopiert';
 
   @override
   String get whats_new => 'Neuigkeiten';

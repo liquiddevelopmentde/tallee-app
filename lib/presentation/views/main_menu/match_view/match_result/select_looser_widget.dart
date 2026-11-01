@@ -75,6 +75,7 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
                             showTeamMembers: false,
                           )
                         : buildUnitNameWidget(
+                            context,
                             allTeams[index],
                             isTeamMatch: false,
                           ),
@@ -109,6 +110,7 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
                 itemBuilder: (context, index) {
                   return CustomRadioListTile(
                     content: buildUnitNameWidget(
+                      context,
                       allPlayers[index],
                       mainStyle: const TextStyle(
                         fontSize: 16,

@@ -7,12 +7,14 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
@@ -48,12 +50,12 @@ class _GameViewState extends State<GameView> with RouteAware {
   final ScrollController scrollController = ScrollController();
 
   /// Loaded games from the database, initially filled with skeleton games
-  List<Game> allGames = List.filled(
-    4,
-    Game(
+  List<Game> allGames = List.generate(
+    10,
+    (_) => Game(
       name: 'Skeleton game name',
       ruleset: Ruleset.winner,
-      color: AppColor.blue,
+      color: getRandomAppColor(),
       description: 'Skeleton description for the game tile',
     ),
   );
@@ -100,7 +102,7 @@ class _GameViewState extends State<GameView> with RouteAware {
     }
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
@@ -201,7 +203,7 @@ class _GameViewState extends State<GameView> with RouteAware {
                                       return true;
                                     },
                                     child: ListView.builder(
-                                      padding: CustomTheme.listViewPadding(
+                                      padding: AppColors.listViewPadding(
                                         context,
                                       ),
                                       itemCount: displayedGames.length,
@@ -215,6 +217,10 @@ class _GameViewState extends State<GameView> with RouteAware {
                                             Navigator.push(
                                               context,
                                               adaptivePageRoute(
+                                                settings: const RouteSettings(
+                                                  name:
+                                                      RouteNames.createGameView,
+                                                ),
                                                 builder: (context) =>
                                                     CreateGameView(
                                                       gameToEdit:
@@ -280,6 +286,7 @@ class _GameViewState extends State<GameView> with RouteAware {
     Navigator.push(
       context,
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.createGameView),
         builder: (context) => CreateGameView(onGameChanged: loadGames),
       ),
     );

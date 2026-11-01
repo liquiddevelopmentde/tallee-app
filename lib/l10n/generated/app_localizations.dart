@@ -254,12 +254,6 @@ abstract class AppLocalizations {
   /// **'Choose which metric is calculated and shown in this statistic.'**
   String get classifier_description;
 
-  /// No description provided for @click_another_player_to_create_a_pair.
-  ///
-  /// In en, this message translates to:
-  /// **'Click another player to create a pair'**
-  String get click_another_player_to_create_a_pair;
-
   /// No description provided for @close.
   ///
   /// In en, this message translates to:
@@ -613,12 +607,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Match'**
   String get edit_match;
-
-  /// No description provided for @edit_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit name'**
-  String get edit_name;
 
   /// No description provided for @edit_player.
   ///
@@ -1700,12 +1688,6 @@ abstract class AppLocalizations {
   /// **'Internal server error'**
   String get server_error;
 
-  /// No description provided for @set_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Set name'**
-  String get set_name;
-
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
@@ -1856,6 +1838,12 @@ abstract class AppLocalizations {
   /// **'Successfully processed file'**
   String get successfully_processed_file;
 
+  /// No description provided for @tap_another_player_to_create_a_pair.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap another player to create a pair'**
+  String get tap_another_player_to_create_a_pair;
+
   /// No description provided for @tap_import_to_continue.
   ///
   /// In en, this message translates to:
@@ -1921,6 +1909,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Thank you for your error report!'**
   String get thank_you_for_report;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @theme_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get theme_dark;
+
+  /// No description provided for @theme_light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get theme_light;
+
+  /// No description provided for @theme_system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get theme_system;
 
   /// No description provided for @there_are_no_games_matching_your_search.
   ///
@@ -2101,6 +2113,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
+
+  /// No description provided for @version_copied_to_clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Version copied to clipboard'**
+  String get version_copied_to_clipboard;
 
   /// No description provided for @whats_new.
   ///

@@ -3,7 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -19,14 +20,12 @@ class GroupTile extends StatefulWidget {
     required this.group,
     this.isHighlighted = false,
     this.onTap,
-    this.onPlayerChanged,
     this.borderColor,
   });
 
   final Group group;
   final bool isHighlighted;
   final VoidCallback? onTap;
-  final VoidCallback? onPlayerChanged;
   final Color? borderColor;
 
   @override
@@ -50,11 +49,11 @@ class _GroupTileState extends State<GroupTile> {
         }
       },
       child: AnimatedContainer(
-        margin: CustomTheme.tileMargin,
+        margin: AppColors.tileMargin,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         decoration: widget.isHighlighted
-            ? CustomTheme.highlightedBoxDecoration
-            : CustomTheme.standardBoxDecoration.copyWith(
+            ? context.highlightedBoxDecoration
+            : context.standardBoxDecoration.copyWith(
                 border: widget.borderColor != null
                     ? Border.all(color: widget.borderColor!)
                     : null,
@@ -70,7 +69,7 @@ class _GroupTileState extends State<GroupTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Group icon
-                const ColoredIconContainer(icon: GROUP_ICON, containerSize: 50),
+                const ColoredIconContainer(icon: GROUP_ICON),
 
                 // Text content
                 Expanded(
@@ -121,9 +120,9 @@ class _GroupTileState extends State<GroupTile> {
                             : '${loc.created_on} $formattedDate',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: CustomTheme.hintColor,
+                          color: context.talleeColors.hintColor,
                         ),
                       ),
                     ],

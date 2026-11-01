@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 /// A custom text button widget.
 /// - [onPressed]: Callback invoked when the button is pressed.
@@ -31,7 +31,7 @@ class CustomTextButton extends StatelessWidget {
           : null,
       child: Text(
         text,
-        style: style ?? const TextStyle(color: CustomTheme.textColor),
+        style: style ?? TextStyle(color: context.talleeColors.textColor),
       ),
     );
   }

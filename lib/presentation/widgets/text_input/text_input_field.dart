@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class TextInputField extends StatelessWidget {
   /// A custom text input field widget that encapsulates a [TextField] with specific styling.
@@ -56,16 +56,16 @@ class TextInputField extends StatelessWidget {
       focusNode: focusNode,
       decoration: InputDecoration(
         filled: true,
-        fillColor: CustomTheme.boxColor,
+        fillColor: context.talleeColors.boxColor,
         hintText: hintText,
         counterText: showCounterText ? null : '',
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
         ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
         ),
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),

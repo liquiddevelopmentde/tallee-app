@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_tile.dart';
 
 class PullDownMenu extends PopupRoute<void> {
@@ -61,7 +61,7 @@ class PullDownMenu extends PopupRoute<void> {
             child: ScaleTransition(
               alignment: Alignment.topRight,
               scale: Tween<double>(begin: 0.92, end: 1).animate(curved),
-              child: menuSurface(),
+              child: menuSurface(context),
             ),
           ),
         ),
@@ -69,13 +69,13 @@ class PullDownMenu extends PopupRoute<void> {
     );
   }
 
-  Widget menuSurface() {
+  Widget menuSurface(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: Container(
         width: menuWidth,
         decoration: BoxDecoration(
-          color: CustomTheme.boxColor,
+          color: context.talleeColors.boxColor,
           borderRadius: BorderRadius.circular(14),
           boxShadow: const [
             BoxShadow(

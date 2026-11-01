@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class ChooseTile extends StatefulWidget {
   /// A tile widget that allows users to choose an option by tapping on it.
@@ -41,7 +41,7 @@ class _ChooseTileState extends State<ChooseTile> {
           : null,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: CustomTheme.standardBoxDecoration,
+        decoration: context.standardBoxDecoration,
         child: Row(
           children: [
             Text(

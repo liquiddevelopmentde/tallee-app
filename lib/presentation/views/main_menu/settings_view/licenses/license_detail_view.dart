@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -19,130 +20,142 @@ class LicenseDetailView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Lizenzdetails')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          spacing: 10,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 6,
-                children: [
-                  const ColoredIconContainer(
-                    icon: Icons.description,
-                    containerSize: 60,
-                  ),
-                  Column(
-                    spacing: 2,
-                    children: [
-                      // Packgage name
-                      Text(
-                        package.name,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          height: 0,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      // Package version
-                      if (package.version != null) ...[
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Column(
+            spacing: 10,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 6,
+                  children: [
+                    const ColoredIconContainer(
+                      icon: Icons.description,
+                      containerSize: 60,
+                    ),
+                    Column(
+                      spacing: 2,
+                      children: [
+                        // Packgage name
                         Text(
-                          '${loc.version} ${package.version}',
+                          package.name,
                           textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade300,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-
-                  // Authors as selectable text
-                  if (package.authors.isNotEmpty) ...[
-                    SelectableText(
-                      package.authors.join(', '),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade500,
-                      ),
-                    ),
-                  ],
-
-                  // Homepage as clickable link
-                  if (package.homepage != null &&
-                      package.homepage!.isNotEmpty) ...[
-                    GestureDetector(
-                      onTap: () async {
-                        final uri = Uri.parse(package.homepage!);
-                        await launchUrl(uri, mode: LaunchMode.platformDefault);
-                      },
-                      child: SizedBox(
-                        width: 300,
-                        child: Text(
-                          package.homepage!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 12,
-                            color: CustomTheme.secondaryColor,
-                            decoration: TextDecoration.underline,
-                            decorationColor: CustomTheme.secondaryColor,
+                            height: 0,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        // Package version
+                        if (package.version != null) ...[
+                          Text(
+                            '${loc.version} ${package.version}',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: context.talleeColors.hintColor,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+
+                    // Authors as selectable text
+                    if (package.authors.isNotEmpty) ...[
+                      SelectableText(
+                        package.authors.join(', '),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.talleeColors.hintColor,
+                        ),
+                      ),
+                    ],
+
+                    // Homepage as clickable link
+                    if (package.homepage != null &&
+                        package.homepage!.isNotEmpty) ...[
+                      GestureDetector(
+                        onTap: () async {
+                          final uri = Uri.parse(package.homepage!);
+                          await launchUrl(
+                            uri,
+                            mode: LaunchMode.platformDefault,
+                          );
+                        },
+                        child: SizedBox(
+                          width: 300,
+                          child: Text(
+                            package.homepage!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.secondaryColor,
+                              decoration: TextDecoration.underline,
+                              decorationColor: AppColors.secondaryColor,
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
-                ],
-              ),
-            ),
-
-            // Description
-            if (package.description.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                child: SelectableText(
-                  package.description,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade300,
-                    height: 1.5,
-                    fontFamily: 'monospace',
-                  ),
                 ),
               ),
 
-            // License text
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              decoration: CustomTheme.standardBoxDecoration,
-              child: (package.license != null && package.license!.isNotEmpty)
-                  ? SelectableText(
-                      package.license!,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade300,
-                        height: 1.5,
-                        fontFamily: 'monospace',
-                      ),
-                    )
-                  : Center(
-                      heightFactor: 25,
-                      child: Text(
-                        loc.no_license_text_available,
-                        style: TextStyle(color: Colors.grey.shade500),
-                      ),
+              // Description
+              if (package.description.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: SelectableText(
+                    package.description,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: context.talleeColors.textColor,
+                      height: 1.5,
+                      fontFamily: 'monospace',
                     ),
-            ),
-          ],
+                  ),
+                ),
+
+              // License text
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 16,
+                ),
+                decoration: context.standardBoxDecoration,
+                child: (package.license != null && package.license!.isNotEmpty)
+                    ? SelectableText(
+                        package.license!,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.talleeColors.textColor,
+                          height: 1.5,
+                          fontFamily: 'monospace',
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 100),
+                        child: Center(
+                          child: Text(
+                            loc.no_license_text_available,
+                            style: TextStyle(
+                              color: context.talleeColors.hintColor,
+                            ),
+                          ),
+                        ),
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );

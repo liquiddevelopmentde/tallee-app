@@ -9,7 +9,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/statistic.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -156,14 +157,19 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           currentTabTitle(context),
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         scrolledUnderElevation: 0,
         leading: currentIndex == 0
             ? HapticIconButton(
                 onPressed: () async {
                   await Navigator.push(
                     context,
-                    adaptivePageRoute(builder: (_) => const MatchReceiveView()),
+                    adaptivePageRoute(
+                      settings: const RouteSettings(
+                        name: RouteNames.matchReceiveView,
+                      ),
+                      builder: (_) => const MatchReceiveView(),
+                    ),
                   );
                   if (mounted) {
                     setState(() {
@@ -182,7 +188,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               icon: Icon(
                 Icons.search,
                 color: matchSearchProvider.isSearching
-                    ? CustomTheme.primaryColor
+                    ? AppColors.primaryColor
                     : null,
               ),
               onPressed: () => matchSearchProvider.toggleSearch(),
@@ -195,7 +201,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               icon: Icon(
                 Icons.search,
                 color: groupSearchProvider.isSearching
-                    ? CustomTheme.primaryColor
+                    ? AppColors.primaryColor
                     : null,
               ),
               onPressed: () => groupSearchProvider.toggleSearch(),
@@ -208,7 +214,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               icon: Icon(
                 Icons.search,
                 color: gameSearchProvider.isSearching
-                    ? CustomTheme.primaryColor
+                    ? AppColors.primaryColor
                     : null,
               ),
               onPressed: () => gameSearchProvider.toggleSearch(),
@@ -233,16 +239,16 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         ],
         elevation: 0,
       ),
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: tabs[currentIndex],
       extendBody: true,
       bottomNavigationBar: Container(
         height: 115,
         decoration: BoxDecoration(
-          color: CustomTheme.navBarBackgroundColor,
+          color: context.talleeColors.navBarBackgroundColor,
           border: Border.all(
             strokeAlign: BorderSide.strokeAlignOutside,
-            color: CustomTheme.boxBorderColor,
+            color: context.talleeColors.boxBorderColor,
             width: 2,
           ),
           borderRadius: const BorderRadius.only(
@@ -435,16 +441,16 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               children: [
                 Text(
                   loc.update_available_content,
-                  style: const TextStyle(
-                    color: CustomTheme.textColor,
+                  style: TextStyle(
+                    color: context.talleeColors.textColor,
                     overflow: TextOverflow.visible,
                   ),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   loc.update_features_fixes_desc,
-                  style: const TextStyle(
-                    color: CustomTheme.textColor,
+                  style: TextStyle(
+                    color: context.talleeColors.textColor,
                     overflow: TextOverflow.visible,
                   ),
                 ),

@@ -1,7 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
@@ -68,7 +69,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
         !isSubmitting;
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
         title: Text(isErrorReport ? loc.report_error : loc.send_feedback),
       ),
@@ -77,7 +78,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: CustomTheme.standardMargin,
+              padding: AppColors.standardMargin,
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
@@ -89,16 +90,16 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                             ? Icons.error_outline_rounded
                             : Icons.chat_bubble_outline_rounded,
                         size: 50,
-                        color: CustomTheme.primaryColor,
+                        color: AppColors.primaryColor,
                       ),
                       const SizedBox(height: 20),
                       Text(
                         isErrorReport
                             ? loc.error_report_info_text
                             : loc.feedback_info_text,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: CustomTheme.textColor,
+                          color: context.talleeColors.textColor,
                           fontWeight: FontWeight.w500,
                           overflow: TextOverflow.clip,
                         ),
@@ -133,8 +134,8 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                             padding: const EdgeInsets.only(top: 4, left: 4),
                             child: Text(
                               loc.invalid_email,
-                              style: const TextStyle(
-                                color: Colors.redAccent,
+                              style: TextStyle(
+                                color: context.talleeColors.errorColor,
                                 fontSize: 12,
                               ),
                             ),

@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 
 class BottomAnimatedButton extends StatefulWidget {
@@ -41,19 +42,29 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
   TextStyle get textStyle {
     late Color textColor;
 
+    if (widget.onPressed == null) {
+      return TextStyle(
+        color: context.talleeColors.hintColor,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      );
+    }
+
     switch (widget.buttonType) {
       case ButtonType.primary:
         textColor = widget.isDestructive || widget.isEmphasized
             ? Colors.white
-            : Colors.black;
+            : Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.white;
         break;
       default:
         if (widget.isDestructive) {
-          textColor = Colors.red;
+          textColor = context.talleeColors.errorColor;
         } else if (widget.isEmphasized) {
-          textColor = CustomTheme.primaryColor;
+          textColor = AppColors.primaryColor;
         } else {
-          textColor = Colors.white;
+          textColor = context.talleeColors.textColor;
         }
         break;
     }
@@ -69,22 +80,28 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
     if (widget.buttonType == ButtonType.primary) {
       // Primary
       return BoxDecoration(
-        color: widget.isDestructive
-            ? Colors.red
+        color: widget.onPressed == null
+            ? context.talleeColors.onBoxColor
+            : widget.isDestructive
+            ? context.talleeColors.errorColor
             : widget.isEmphasized
-            ? CustomTheme.primaryColor
-            : Colors.white,
+            ? AppColors.primaryColor
+            : Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Colors.black,
         borderRadius: BorderRadius.circular(12),
       );
     } else if (widget.buttonType == ButtonType.secondary) {
       // Secondary
       return BoxDecoration(
         border: BoxBorder.all(
-          color: widget.isDestructive
-              ? Colors.red
+          color: widget.onPressed == null
+              ? context.talleeColors.hintColor
+              : widget.isDestructive
+              ? context.talleeColors.errorColor
               : widget.isEmphasized
-              ? CustomTheme.primaryColor
-              : Colors.white,
+              ? AppColors.primaryColor
+              : context.talleeColors.textColor,
           width: 2,
           strokeAlign: BorderSide.strokeAlignInside,
         ),
@@ -101,45 +118,42 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
 
     return IgnorePointer(
       ignoring: isDisabled,
-      child: Opacity(
-        opacity: isDisabled ? 0.4 : 1.0,
-        child: GestureDetector(
-          onTapDown: (_) => setState(() => _isPressed = true),
-          onTapUp: (_) => setState(() => _isPressed = false),
-          onTapCancel: () => setState(() => _isPressed = false),
-          onTap: () {
-            HapticFeedback.selectionClick();
-            if (widget.onPressed != null) {
-              widget.onPressed!();
-            }
-          },
-          child: AnimatedScale(
-            scale: _isPressed ? 0.95 : 1.0,
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        onTap: () {
+          HapticFeedback.selectionClick();
+          if (widget.onPressed != null) {
+            widget.onPressed!();
+          }
+        },
+        child: AnimatedScale(
+          scale: _isPressed ? 0.95 : 1.0,
+          duration: const Duration(milliseconds: 100),
+          child: AnimatedOpacity(
+            opacity: _isPressed ? 0.6 : 1.0,
             duration: const Duration(milliseconds: 100),
-            child: AnimatedOpacity(
-              opacity: _isPressed ? 0.6 : 1.0,
-              duration: const Duration(milliseconds: 100),
-              child: Center(
-                child: Container(
-                  constraints: widget.sizeRelativeToWidth == null
-                      ? widget.buttonConstraints
-                      : BoxConstraints(
-                          minWidth:
-                              MediaQuery.sizeOf(context).width *
-                              widget.sizeRelativeToWidth!,
-                          minHeight: 50,
-                        ),
-                  decoration: buttonDecoration,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  margin: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text(
-                    widget.buttonText,
-                    style: textStyle,
-                    textAlign: TextAlign.center,
-                  ),
+            child: Center(
+              child: Container(
+                constraints: widget.sizeRelativeToWidth == null
+                    ? widget.buttonConstraints
+                    : BoxConstraints(
+                        minWidth:
+                            MediaQuery.sizeOf(context).width *
+                            widget.sizeRelativeToWidth!,
+                        minHeight: 50,
+                      ),
+                decoration: buttonDecoration,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  widget.buttonText,
+                  style: textStyle,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),

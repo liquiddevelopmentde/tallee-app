@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/translations.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -58,7 +58,7 @@ class ChooseMatchFileWidget extends StatelessWidget {
             Text(
               loc.tap_to_browse,
               style: TextStyle(
-                color: CustomTheme.textColor.withAlpha(180),
+                color: context.talleeColors.textColor.withAlpha(180),
                 fontSize: 14,
                 overflow: TextOverflow.visible,
               ),

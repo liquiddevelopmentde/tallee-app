@@ -89,10 +89,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose which metric is calculated and shown in this statistic.';
 
   @override
-  String get click_another_player_to_create_a_pair =>
-      'Click another player to create a pair';
-
-  @override
   String get close => 'Close';
 
   @override
@@ -294,9 +290,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get edit_match => 'Edit Match';
-
-  @override
-  String get edit_name => 'Edit name';
 
   @override
   String get edit_player => 'Edit player';
@@ -915,9 +908,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get server_error => 'Internal server error';
 
   @override
-  String get set_name => 'Set name';
-
-  @override
   String get settings => 'Settings';
 
   @override
@@ -1010,6 +1000,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get successfully_processed_file => 'Successfully processed file';
 
   @override
+  String get tap_another_player_to_create_a_pair =>
+      'Tap another player to create a pair';
+
+  @override
   String get tap_import_to_continue => 'Tap import match to continue';
 
   @override
@@ -1043,6 +1037,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thank_you_for_report => 'Thank you for your error report!';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get theme_dark => 'Dark';
+
+  @override
+  String get theme_light => 'Light';
+
+  @override
+  String get theme_system => 'System';
 
   @override
   String get there_are_no_games_matching_your_search =>
@@ -1144,6 +1150,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String get version_copied_to_clipboard => 'Version copied to clipboard';
 
   @override
   String get whats_new => 'What\'s new?';

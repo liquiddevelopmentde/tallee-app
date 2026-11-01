@@ -2,7 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -47,7 +48,6 @@ class StatisticsTile extends StatefulWidget {
 
 class _StatisticsTileState extends State<StatisticsTile> {
   late bool isFavourite;
-  late Color barColor;
   late List<Group>? selectedGroups;
   late List<Game>? selectedGames;
   late IconData icon;
@@ -55,7 +55,6 @@ class _StatisticsTileState extends State<StatisticsTile> {
   @override
   void initState() {
     isFavourite = widget.statistic.isFavourite;
-    barColor = getColorFromAppColor(widget.statistic.color);
     selectedGames = widget.statistic.selectedGames;
     selectedGroups = widget.statistic.selectedGroups;
     icon = getStatisticIcon(type: widget.statistic.type);
@@ -68,7 +67,6 @@ class _StatisticsTileState extends State<StatisticsTile> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.statistic != widget.statistic) {
       isFavourite = widget.statistic.isFavourite;
-      barColor = getColorFromAppColor(widget.statistic.color);
       selectedGames = widget.statistic.selectedGames;
       selectedGroups = widget.statistic.selectedGroups;
       icon = getStatisticIcon(type: widget.statistic.type);
@@ -77,6 +75,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
 
   @override
   Widget build(BuildContext context) {
+    final barColor = getColorFromAppColor(widget.statistic.color, context);
     final title = translateStatisticTypeToString(
       widget.statistic.type,
       context,
@@ -97,7 +96,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
         ),
       ),
       width: widget.width ?? MediaQuery.sizeOf(context).width * 0.95,
-      margin: widget.margin ?? CustomTheme.tileMargin,
+      margin: widget.margin ?? AppColors.tileMargin,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
@@ -109,6 +108,10 @@ class _StatisticsTileState extends State<StatisticsTile> {
               displayCount: widget.displayCount,
               showDisplayCountHighlighting: widget.showDisplayCountHighlighting,
               barColor: barColor,
+              barTextColor: getStatisticsBarTextColor(
+                widget.statistic.color,
+                context,
+              ),
             ),
 
             // Group & Game info
@@ -127,19 +130,19 @@ class _StatisticsTileState extends State<StatisticsTile> {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 8,
                         children: [
-                          const Icon(
+                          Icon(
                             GAME_ICON,
-                            color: CustomTheme.hintColor,
+                            color: context.talleeColors.hintColor,
                             size: 20,
                           ),
                           Text(
                             getSubtitleText(
                               selectedGames!.map((g) => g.name).toList(),
                             ),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: CustomTheme.hintColor,
+                              color: context.talleeColors.hintColor,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -151,15 +154,18 @@ class _StatisticsTileState extends State<StatisticsTile> {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 8,
                         children: [
-                          const Icon(GROUP_ICON, color: CustomTheme.hintColor),
+                          Icon(
+                            GROUP_ICON,
+                            color: context.talleeColors.hintColor,
+                          ),
                           Text(
                             getSubtitleText(
                               selectedGroups!.map((g) => g.name).toList(),
                             ),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: CustomTheme.hintColor,
+                              color: context.talleeColors.hintColor,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),

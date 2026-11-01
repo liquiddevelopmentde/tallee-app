@@ -1,7 +1,8 @@
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/app_color_utils.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/app_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/dto/news_item.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -19,7 +20,7 @@ class NewsCard extends StatelessWidget {
     final text =
         newsItem.localizedText[locale] ?? newsItem.localizedText['en']!;
 
-    final iconColor = getColorFromAppColor(newsItem.iconColor);
+    final iconColor = getColorFromAppColor(newsItem.iconColor, context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -64,11 +65,11 @@ class NewsCard extends StatelessWidget {
     return MarkdownStyleSheet.fromTheme(Theme.of(context).toFlutterThemeData())
         .copyWith(
           p: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: CustomTheme.textColor,
+            color: context.talleeColors.textColor,
             overflow: TextOverflow.visible,
           ),
-          strong: const TextStyle(
-            color: CustomTheme.textColor,
+          strong: TextStyle(
+            color: context.talleeColors.textColor,
             fontWeight: FontWeight.bold,
             overflow: TextOverflow.visible,
           ),

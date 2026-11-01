@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_stepper.dart';
@@ -89,7 +89,7 @@ class _DiceViewState extends State<DiceView>
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.dice)),
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -103,11 +103,7 @@ class _DiceViewState extends State<DiceView>
                     runSpacing: 14,
                     children: [
                       for (final die in dice)
-                        _Die(
-                          size: _dieSize,
-                          state: die,
-                          animation: controller,
-                        ),
+                        _Die(size: _dieSize, state: die, animation: controller),
                     ],
                   ),
                 ),
@@ -230,7 +226,9 @@ class _Die extends StatelessWidget {
                 borderRadius: BorderRadius.circular(999),
                 boxShadow: [
                   BoxShadow(
-                    color: CustomTheme.backgroundColor.withValues(alpha: 0.55),
+                    color: context.talleeColors.backgroundColor.withValues(
+                      alpha: 0.55,
+                    ),
                     blurRadius: size * 0.18,
                   ),
                 ],
@@ -259,7 +257,7 @@ class _Die extends StatelessWidget {
                 child: Transform(
                   alignment: Alignment.center,
                   transform: transform,
-                  child: _buildCube(faces, size, a, b, c),
+                  child: _buildCube(faces, size, a, b, c, context),
                 ),
               );
             },
@@ -328,7 +326,14 @@ List<_Face> _buildFaces(double half) => [
 
 /// Builds the cube with the faces sorted back to front so the nearest face
 /// is painted last (no z-buffer, so painter's algorithm it is).
-Widget _buildCube(List<_Face> faces, double size, double a, double b, double c) {
+Widget _buildCube(
+  List<_Face> faces,
+  double size,
+  double a,
+  double b,
+  double c,
+  BuildContext context,
+) {
   final rotation = Matrix4.identity()
     ..rotateX(c)
     ..rotateY(b)
@@ -345,14 +350,19 @@ Widget _buildCube(List<_Face> faces, double size, double a, double b, double c) 
         Transform(
           alignment: Alignment.center,
           transform: face.transform,
-          child: _buildFace(face, _faceColor(rotation, face), size),
+          child: _buildFace(
+            face,
+            _faceColor(rotation, face, context),
+            size,
+            context,
+          ),
         ),
     ],
   );
 }
 
 /// Builds a single face with its pips.
-Widget _buildFace(_Face face, Color color, double size) {
+Widget _buildFace(_Face face, Color color, double size, BuildContext context) {
   return Container(
     width: size,
     height: size,
@@ -361,7 +371,7 @@ Widget _buildFace(_Face face, Color color, double size) {
       color: color,
       borderRadius: BorderRadius.circular(size * 0.08),
       border: Border.all(
-        color: CustomTheme.backgroundColor.withValues(alpha: 0.12),
+        color: context.talleeColors.backgroundColor.withValues(alpha: 0.12),
         width: 2,
       ),
     ),
@@ -389,13 +399,17 @@ double _normalZ(Matrix4 r, _Face f) =>
     r.entry(2, 0) * f.nx + r.entry(2, 1) * f.ny + r.entry(2, 2) * f.nz;
 
 /// Shades a face based on how it currently faces the light.
-Color _faceColor(Matrix4 r, _Face f) {
+Color _faceColor(Matrix4 r, _Face f, BuildContext context) {
   final nx = r.entry(0, 0) * f.nx + r.entry(0, 1) * f.ny + r.entry(0, 2) * f.nz;
   final ny = r.entry(1, 0) * f.nx + r.entry(1, 1) * f.ny + r.entry(1, 2) * f.nz;
   final nz = r.entry(2, 0) * f.nx + r.entry(2, 1) * f.ny + r.entry(2, 2) * f.nz;
   final dot = (nx * _lx + ny * _ly + nz * _lz) / _lightLength;
   final brightness = (0.5 + 0.5 * max(0, dot)).clamp(0.5, 1.0);
-  return Color.lerp(CustomTheme.hintColor, CustomTheme.textColor, brightness)!;
+  return Color.lerp(
+    context.talleeColors.hintColor,
+    context.talleeColors.textColor,
+    brightness,
+  )!;
 }
 
 /// Euler angles (Y, X) that bring the face with [value] to the front.
@@ -435,8 +449,8 @@ class _Pip extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(
-        color: CustomTheme.boxColor,
+      decoration: BoxDecoration(
+        color: context.talleeColors.boxColor,
         shape: BoxShape.circle,
       ),
     );
