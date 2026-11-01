@@ -5,10 +5,23 @@ import 'package:http/http.dart' as http;
 import 'package:material_ui/material_ui.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
-export 'app_color_utils.dart';
-export 'translations.dart';
+export 'extensions/string_extensions.dart';
+
+/// Returns the correct singular or plural form of "point(s)" based on the [amount] value.
+String getPointLabel(AppLocalizations loc, int amount) {
+  if (amount == 1) {
+    return '$amount ${loc.point}';
+  } else {
+    return '$amount ${loc.points}';
+  }
+}
+
+String getLifeLabel(AppLocalizations loc, int amount) {
+  return '$amount ${loc.lives(amount)}';
+}
 
 /// Counts how many players in the [match] are not part of the group
 ///
@@ -34,33 +47,6 @@ String getExtraPlayerCount(Match match) {
     return '';
   }
   return ' + ${count.toString()}';
-}
-
-extension Comparison on String {
-  /// Compares this string with [other] ignoring upper-/lowercase.
-  int compareIgnoringCaseTo(String other) =>
-      toLowerCase().compareTo(other.toLowerCase());
-}
-
-extension FilenameSanitization on String {
-  /// Sanitizes a string to be used as a filename.
-  ///
-  /// Replaces spaces with underscores, normalizes German umlauts,
-  /// and removes any characters that are not alphanumeric, dots, underscores, or hyphens.
-  /// If the resulting string is empty, returns the [fallback].
-  String toSafeFilename({String fallback = 'match'}) {
-    final sanitized = replaceAll(' ', '_')
-        .replaceAll('ä', 'ae')
-        .replaceAll('ö', 'oe')
-        .replaceAll('ü', 'ue')
-        .replaceAll('Ä', 'Ae')
-        .replaceAll('Ö', 'Oe')
-        .replaceAll('Ü', 'Ue')
-        .replaceAll('ß', 'ss')
-        .replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '');
-
-    return sanitized.isEmpty ? fallback : sanitized;
-  }
 }
 
 /// Returns the rulesets which make sense for a given [StatisticType]

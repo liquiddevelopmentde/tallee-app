@@ -1,9 +1,9 @@
 import 'dart:math';
 
-export 'package:tallee/core/extensions/app_color_extensions.dart';
-export 'package:tallee/core/extensions/ruleset_extensions.dart';
-export 'package:tallee/core/extensions/statistic_extensions.dart';
-export 'package:tallee/core/extensions/transfer_extensions.dart';
+export 'extensions/app_color_extensions.dart';
+export 'extensions/ruleset_extensions.dart';
+export 'extensions/statistic_extensions.dart';
+export 'extensions/transfer_extensions.dart';
 
 /// The current app environment
 /// - [AppEnvironment.development]: Development only
