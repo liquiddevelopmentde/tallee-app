@@ -1,20 +1,15 @@
-import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
-
 /// The current app environment
 /// - [AppEnvironment.development]: Development only
 /// - [AppEnvironment.testing]: Public testing
 /// - [AppEnvironment.production]: Delivered to stores
-enum AppEnvironment { development, testing, production }
+enum AppEnvironment {
+  development('dev'),
+  testing('test'),
+  production('prod');
 
-extension AppEnvironmentExtension on AppEnvironment {
-  /// The display tag for the environment (dev, testing, prod)
-  String get tag {
-    return switch (this) {
-      AppEnvironment.development => 'dev',
-      AppEnvironment.testing => 'test',
-      AppEnvironment.production => 'prod',
-    };
-  }
+  const AppEnvironment(this.tag);
+
+  final String tag;
 }
 
 /// Button types used for styling the [CustomWidthButton]
