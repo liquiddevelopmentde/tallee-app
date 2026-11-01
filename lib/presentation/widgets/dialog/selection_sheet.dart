@@ -139,7 +139,9 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
           Flexible(
             child: RadioGroup<T>(
               groupValue: selectedValue,
-              onChanged: onValueChanged,
+              onChanged: (value) {
+                if (value != null) handleValueSelection(value);
+              },
               child: ListView.separated(
                 shrinkWrap: true,
                 separatorBuilder: (_, _) => const SizedBox(height: 12),
@@ -219,14 +221,15 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
 
   /// Handles the general value selection
   Future<void> handleValueSelection(T value) async {
+    if (!widget.isMultiSelection && value == selectedValue) return;
+
     widget.isMultiSelection ? onValuesChanged(value) : onValueChanged(value);
 
     // Pop sheet
     if (!widget.isMultiSelection) {
       await Future.delayed(MINIMUM_SKELETON_DURATION).then((_) {
         if (!mounted) return;
-        Navigator.of(context)
-            .pop(selectedValues.isEmpty ? null : selectedValues.first);
+        Navigator.of(context).pop(selectedValue);
       });
     }
   }
