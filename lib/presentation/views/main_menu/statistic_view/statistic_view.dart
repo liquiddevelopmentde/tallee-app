@@ -145,6 +145,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                     initialGroups:
                                                         filteredGroups,
                                                     enableMultiSelection: true,
+                                                    description: loc
+                                                        .group_filter_description,
                                                   ),
                                             ),
                                           );
@@ -180,6 +182,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                     initialSelectedGames:
                                                         filteredGames,
                                                     enableMultiSelection: true,
+                                                    description: loc
+                                                        .game_filter_description,
                                                   ),
                                             ),
                                           );

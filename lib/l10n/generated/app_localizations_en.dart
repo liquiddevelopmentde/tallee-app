@@ -375,6 +375,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get game_associated => 'Game successfully associated';
 
   @override
+  String get game_filter_description =>
+      'All statistics will be displayed that relate to one of the selected game templates.';
+
+  @override
   String get game_name => 'Game Name';
 
   @override
@@ -391,6 +395,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get group_associated => 'Group successfully associated';
+
+  @override
+  String get group_filter_description =>
+      'All statistics will be displayed that relate to one of the selected groups.';
 
   @override
   String get group_members => 'Group Members';

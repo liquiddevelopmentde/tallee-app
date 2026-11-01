@@ -764,6 +764,12 @@ abstract class AppLocalizations {
   /// **'Game successfully associated'**
   String get game_associated;
 
+  /// No description provided for @game_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics will be displayed that relate to one of the selected game templates.'**
+  String get game_filter_description;
+
   /// No description provided for @game_name.
   ///
   /// In en, this message translates to:
@@ -799,6 +805,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Group successfully associated'**
   String get group_associated;
+
+  /// No description provided for @group_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics will be displayed that relate to one of the selected groups.'**
+  String get group_filter_description;
 
   /// No description provided for @group_members.
   ///

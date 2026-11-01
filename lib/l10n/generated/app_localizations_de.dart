@@ -381,6 +381,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get game_associated => 'Spielvorlage erfolgreich verknüpft';
 
   @override
+  String get game_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.';
+
+  @override
   String get game_name => 'Spielvorlagenname';
 
   @override
@@ -397,6 +401,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get group_associated => 'Gruppe erfolgreich verknüpft';
+
+  @override
+  String get group_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Gruppen beziehen.';
 
   @override
   String get group_members => 'Gruppenmitglieder';
