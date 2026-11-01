@@ -21,7 +21,6 @@ An open-source app to track card- and board games, manage players & groups and g
     </a>
 </p>
 
-
 ![Version](https://img.shields.io/badge/App--Version-0.1.0_Beta-orange)
 ![Flutter](https://img.shields.io/badge/Flutter-3.47.2-027DFD?logo=flutter)
 ![iOS26](https://img.shields.io/badge/iOS-26-white?logo=apple)
