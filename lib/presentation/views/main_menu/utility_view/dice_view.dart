@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
@@ -54,6 +56,7 @@ class _DieState {
   _DieState(this.value);
 
   int value;
+  bool selected = false;
   double startA = 0, startB = 0, startC = 0;
   double endA = 0, endB = 0, endC = 0;
 }
@@ -103,7 +106,12 @@ class _DiceViewState extends State<DiceView>
                     runSpacing: 14,
                     children: [
                       for (final die in dice)
-                        _Die(size: _dieSize, state: die, animation: controller),
+                        _Die(
+                          size: _dieSize,
+                          state: die,
+                          animation: controller,
+                          onTap: () => _toggleSelected(die),
+                        ),
                     ],
                   ),
                 ),
@@ -171,9 +179,19 @@ class _DiceViewState extends State<DiceView>
     });
   }
 
+  void _toggleSelected(_DieState die) {
+    // Only allow (de)selecting while the dice are standing still.
+    if (controller.isAnimating) return;
+
+    HapticFeedback.selectionClick();
+    setState(() => die.selected = !die.selected);
+  }
+
   void _throw() {
     setState(() {
       for (final die in dice) {
+        if (die.selected) continue;
+
         die.value = random.nextInt(6) + 1;
         die.startA = die.endA;
         die.startB = die.endB;
@@ -199,70 +217,88 @@ class _Die extends StatelessWidget {
     required this.size,
     required this.state,
     required this.animation,
+    required this.onTap,
   });
 
   final double size;
   final _DieState state;
   final Animation<double> animation;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final faces = _buildFaces(size / 2);
+    final selected = state.selected;
 
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Stack(
-        alignment: Alignment.center,
-        clipBehavior: Clip.none,
-        children: [
-          // Ground shadow, stays in place while the die bounces.
-          Positioned(
-            bottom: -size * 0.12,
-            child: Container(
-              width: size * 0.66,
-              height: size * 0.14,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(999),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.talleeColors.backgroundColor.withValues(
-                      alpha: 0.55,
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: [
+            // Ground shadow, stays in place while the die bounces.
+            Positioned(
+              bottom: -size * 0.12,
+              child: Container(
+                width: size * 0.66,
+                height: size * 0.14,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(999),
+                  boxShadow: [
+                    BoxShadow(
+                      color: context.talleeColors.backgroundColor.withValues(
+                        alpha: 0.55,
+                      ),
+                      blurRadius: size * 0.18,
                     ),
-                    blurRadius: size * 0.18,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          AnimatedBuilder(
-            animation: animation,
-            builder: (context, _) {
-              final t = Curves.easeOutCubic.transform(animation.value);
-              final a = _lerp(state.startA, state.endA, t);
-              final b = _lerp(state.startB, state.endB, t);
-              final c = _lerp(state.startC, state.endC, t);
-              final hop = -size * 0.16 * sin(pi * animation.value);
-              final scale = 1.0 - 0.08 * sin(pi * animation.value);
+            // Kept out of the hit-test tree: perspective transforms break
+            // Flutter's pointer hit-testing.
+            IgnorePointer(
+              child: AnimatedBuilder(
+                animation: animation,
+                builder: (context, _) {
+                  // Selected dice stay put and are skipped by the next throw.
+                  final t = selected
+                      ? 1.0
+                      : Curves.easeOutCubic.transform(animation.value);
+                  final a = _lerp(state.startA, state.endA, t);
+                  final b = _lerp(state.startB, state.endB, t);
+                  final c = _lerp(state.startC, state.endC, t);
+                  final hop = selected
+                      ? 0.0
+                      : -size * 0.16 * sin(pi * animation.value);
+                  final scale = selected
+                      ? 1.0
+                      : 1.0 - 0.08 * sin(pi * animation.value);
 
-              final transform = Matrix4.identity()
-                ..setEntry(3, 2, -0.001)
-                ..rotateX(c)
-                ..rotateY(b)
-                ..rotateZ(a)
-                ..scaleByDouble(scale, scale, scale, 1);
+                  final transform = Matrix4.identity()
+                    ..setEntry(3, 2, -0.001)
+                    ..rotateX(c)
+                    ..rotateY(b)
+                    ..rotateZ(a)
+                    ..scaleByDouble(scale, scale, scale, 1);
 
               return Transform.translate(
                 offset: Offset(0, hop),
                 child: Transform(
                   alignment: Alignment.center,
                   transform: transform,
-                  child: _buildCube(faces, size, a, b, c, context),
+                  child: _buildCube(faces, size, a, b, c, context, selected),
                 ),
               );
-            },
-          ),
-        ],
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -333,6 +369,7 @@ Widget _buildCube(
   double b,
   double c,
   BuildContext context,
+  bool selected,
 ) {
   final rotation = Matrix4.identity()
     ..rotateX(c)
@@ -355,6 +392,7 @@ Widget _buildCube(
             _faceColor(rotation, face, context),
             size,
             context,
+            selected,
           ),
         ),
     ],
@@ -362,7 +400,13 @@ Widget _buildCube(
 }
 
 /// Builds a single face with its pips.
-Widget _buildFace(_Face face, Color color, double size, BuildContext context) {
+Widget _buildFace(
+  _Face face,
+  Color color,
+  double size,
+  BuildContext context,
+  bool selected,
+) {
   return Container(
     width: size,
     height: size,
@@ -371,8 +415,10 @@ Widget _buildFace(_Face face, Color color, double size, BuildContext context) {
       color: color,
       borderRadius: BorderRadius.circular(size * 0.08),
       border: Border.all(
-        color: context.talleeColors.backgroundColor.withValues(alpha: 0.12),
-        width: 2,
+        color: selected
+            ? AppColors.primaryColor
+            : context.talleeColors.backgroundColor.withValues(alpha: 0.12),
+        width: selected ? 3 : 2,
       ),
     ),
     child: Column(
