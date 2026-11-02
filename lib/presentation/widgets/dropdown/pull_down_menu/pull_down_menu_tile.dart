@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/extensions/build_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class PullDownMenuTile extends StatefulWidget {
   /// A single selectable row inside a [CustomPullDownMenu].

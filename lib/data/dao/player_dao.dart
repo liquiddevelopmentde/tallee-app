@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/player_table.dart';
-import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/models.dart';
 
 part 'player_dao.g.dart';
 

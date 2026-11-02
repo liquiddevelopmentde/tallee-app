@@ -3,8 +3,7 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/group_table.dart';
 import 'package:tallee/data/db/tables/match_table.dart';
 import 'package:tallee/data/db/tables/player_group_table.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/models.dart';
 
 part 'group_dao.g.dart';
 

@@ -3,8 +3,7 @@ import 'package:flutter/material.dart' as flutter_material;
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/tallee_theme_colors.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_back_button.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_close_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 extension ThemeDataToFlutter on ThemeData {
   flutter_material.ThemeData toFlutterThemeData() {

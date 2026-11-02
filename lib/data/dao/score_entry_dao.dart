@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/score_entry_table.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/models.dart';
 
 part 'score_entry_dao.g.dart';
 

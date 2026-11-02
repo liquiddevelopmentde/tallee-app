@@ -7,7 +7,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/extensions/build_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/qr_code_component.dart';

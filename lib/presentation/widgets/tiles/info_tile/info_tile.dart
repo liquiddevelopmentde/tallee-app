@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/extensions/build_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class InfoTile extends StatefulWidget {
   /// A tile widget that displays a title with an icon and some content below it.

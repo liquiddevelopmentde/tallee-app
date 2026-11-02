@@ -1,11 +1,10 @@
 import 'dart:core' hide Match;
 
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/extensions/build_context_extensions.dart';
-import 'package:tallee/data/models/match.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/file_tile.dart';
 import 'package:tallee/services/remote_share_service.dart';
 

@@ -2,7 +2,7 @@ import 'dart:core' hide Match;
 
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/extensions/list_extension.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';

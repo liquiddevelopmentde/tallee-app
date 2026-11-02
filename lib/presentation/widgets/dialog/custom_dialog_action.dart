@@ -1,6 +1,6 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class CustomDialogAction extends StatelessWidget {
   /// A custom dialog action widget that represents a button in a dialog.

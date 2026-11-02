@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/extensions/build_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class CustomSearchBar extends StatelessWidget {
   /// A custom search bar widget that encapsulates a [SearchBar] with additional customization options.

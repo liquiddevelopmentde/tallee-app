@@ -1,9 +1,10 @@
 /// Barrel file for all button widgets.
 ///
-/// Imports [BottomAnimatedButton], [CustomTextButton], [FloatingAnimatedButton],
-/// [HapticBackButton], [HapticCloseButton], and [HapticIconButton].
+/// Exports [ApiActionAnimatedButton], [BottomAnimatedButton], [CustomTextButton],
+/// [FloatingAnimatedButton], [HapticBackButton], [HapticCloseButton], and [HapticIconButton].
 library;
 
+export 'api_action_animated_button.dart';
 export 'bottom_animated_button.dart';
 export 'custom_text_button.dart';
 export 'floating_animated_button.dart';

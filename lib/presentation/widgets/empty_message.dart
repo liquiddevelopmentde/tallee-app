@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
-import 'package:tallee/core/extensions/build_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class EmptyViewMessage extends StatelessWidget {
   const EmptyViewMessage({

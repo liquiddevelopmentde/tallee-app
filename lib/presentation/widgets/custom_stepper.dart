@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/extensions/build_context_extensions.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class CustomStepper extends StatefulWidget {
   const CustomStepper({
