@@ -7,7 +7,7 @@ import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/extensions/list_extension.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/build_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';

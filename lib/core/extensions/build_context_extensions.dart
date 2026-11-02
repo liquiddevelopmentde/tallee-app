@@ -3,7 +3,7 @@ import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/tallee_theme_colors.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 
-export 'tallee_theme_colors.dart';
+export '../theme/tallee_theme_colors.dart';
 
 extension BuildContextExtension on BuildContext {
   TalleeThemeColors get talleeColors =>

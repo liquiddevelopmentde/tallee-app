@@ -1,9 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/extensions/build_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
 import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
