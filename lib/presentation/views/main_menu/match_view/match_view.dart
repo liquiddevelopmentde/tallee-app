@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +15,7 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/utils/search_bar_scroll_listener.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_detail/match_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
@@ -28,8 +28,8 @@ import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
-import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
+import 'package:tallee/state/search_provider.dart';
 import 'package:tallee/state/showcase_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -43,11 +43,13 @@ class MatchView extends StatefulWidget {
 
 class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
-  late final MatchSearchProvider searchProvider;
+  late final SearchProvider searchProvider;
   late RateDialogProvider rateProvider;
 
   bool isLoading = true;
-  bool isSearchBarVisible = true;
+
+  /// Last known search mode, used to detect toggles in [handleSearchToggle]
+  bool wasSearching = false;
   MatchFilter selectedFilter =
       SharedPreferencesService.getMatchFilter() ?? MatchFilter.all;
 
@@ -98,7 +100,8 @@ class _MatchViewState extends State<MatchView> {
     super.initState();
     db = context.read<AppDatabase>();
 
-    searchProvider = context.read<MatchSearchProvider>();
+    searchProvider = context.read<SearchProvider>();
+    wasSearching = searchProvider.isSearching(MatchView);
     searchProvider.addListener(handleSearchToggle);
 
     rateProvider = context.read<RateDialogProvider>();
@@ -129,12 +132,11 @@ class _MatchViewState extends State<MatchView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final searchProvider = context.read<MatchSearchProvider>();
+    final searchProvider = context.read<SearchProvider>();
 
     // Reset filtered matches when search is disabled
-    if (!searchProvider.isSearching) {
+    if (!searchProvider.isSearching(MatchView)) {
       applySearch('');
-      isSearchBarVisible = true;
     }
 
     return Scaffold(
@@ -168,7 +170,9 @@ class _MatchViewState extends State<MatchView> {
                     ),
                   );
                 },
-                child: searchProvider.isSearching && isSearchBarVisible
+                child:
+                    searchProvider.isSearching(MatchView) &&
+                        searchProvider.isSearchBarVisible(MatchView)
                     ? Padding(
                         key: const ValueKey('match-searchbar-visible'),
                         padding: const EdgeInsets.only(
@@ -271,19 +275,14 @@ class _MatchViewState extends State<MatchView> {
                         // Normal matches
                         else
                           Expanded(
-                            child: NotificationListener<UserScrollNotification>(
-                              onNotification: (notification) {
-                                if (notification.direction ==
-                                        ScrollDirection.reverse &&
-                                    isSearchBarVisible) {
-                                  setState(() => isSearchBarVisible = false);
-                                } else if (notification.direction ==
-                                        ScrollDirection.forward &&
-                                    !isSearchBarVisible) {
-                                  setState(() => isSearchBarVisible = true);
-                                }
-                                return true;
-                              },
+                            child: SearchBarScrollListener(
+                              isSearchBarVisible: searchProvider
+                                  .isSearchBarVisible(MatchView),
+                              onVisibilityChanged: (visible) =>
+                                  searchProvider.setSearchBarVisible(
+                                    view: MatchView,
+                                    visible: visible,
+                                  ),
                               child: ListView.builder(
                                 padding: AppColors.listViewPadding(context),
                                 itemCount: displayedMatches.length,
@@ -568,9 +567,15 @@ class _MatchViewState extends State<MatchView> {
   void handleSearchToggle() {
     if (!mounted) return;
 
+    // Only the search bar visibility changed (scrolling or tab tap)
+    if (searchProvider.isSearching(MatchView) == wasSearching) {
+      setState(() {});
+      return;
+    }
+    wasSearching = searchProvider.isSearching(MatchView);
+
     setState(() {
-      isSearchBarVisible = true;
-      if (!searchProvider.isSearching) {
+      if (!searchProvider.isSearching(MatchView)) {
         searchBarController.clear();
       } else {
         final scrollController = PrimaryScrollController.of(context);
