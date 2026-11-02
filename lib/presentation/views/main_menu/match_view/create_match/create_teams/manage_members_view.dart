@@ -6,8 +6,8 @@ import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -329,7 +329,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
   bool get allTeamsHaveMembers =>
       teams.every((team) => team.members.isNotEmpty);
 
-  void submitMatch() async {
+  Future<void> submitMatch() async {
     final match = widget.match;
     await db.matchDao.addMatch(match: match);
     if (mounted) {

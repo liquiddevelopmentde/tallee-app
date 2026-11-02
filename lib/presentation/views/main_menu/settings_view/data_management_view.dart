@@ -185,7 +185,7 @@ class _DataManagementViewState extends State<DataManagementView> {
     }
   }
 
-  void handleExport(BuildContext scaffoldMessengerContext) async {
+  Future<void> handleExport(BuildContext scaffoldMessengerContext) async {
     await showVersionDialog(true);
 
     if (!scaffoldMessengerContext.mounted) return;
@@ -205,7 +205,7 @@ class _DataManagementViewState extends State<DataManagementView> {
     showExportSnackBar(context: scaffoldMessengerContext, result: result);
   }
 
-  void handleImport(BuildContext scaffoldMessengerContext) async {
+  Future<void> handleImport(BuildContext scaffoldMessengerContext) async {
     await showVersionDialog(false);
 
     final path = await LocalShareService.pickImportFilePath();
@@ -275,7 +275,7 @@ class _DataManagementViewState extends State<DataManagementView> {
     });
   }
 
-  void showImportSnackBar({
+  Future<void> showImportSnackBar({
     required BuildContext context,
     required ImportResult result,
   }) async {
@@ -294,7 +294,7 @@ class _DataManagementViewState extends State<DataManagementView> {
     }
   }
 
-  void showExportSnackBar({
+  Future<void> showExportSnackBar({
     required BuildContext context,
     required ExportResult result,
   }) async {

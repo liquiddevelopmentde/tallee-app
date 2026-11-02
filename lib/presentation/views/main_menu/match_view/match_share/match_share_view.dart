@@ -154,7 +154,7 @@ class _MatchShareViewState extends State<MatchShareView>
     );
   }
 
-  void initSharingView([bool? initialSharingConsent]) async {
+  Future<void> initSharingView([bool? initialSharingConsent]) async {
     isLoading = true;
     late bool? hasStoredSharingConsent;
 
@@ -305,7 +305,7 @@ class _MatchShareViewState extends State<MatchShareView>
     });
   }
 
-  void renewToken() async {
+  Future<void> renewToken() async {
     setState(() {
       isLoading = true;
     });

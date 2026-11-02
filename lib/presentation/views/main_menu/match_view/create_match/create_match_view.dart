@@ -560,7 +560,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   ///
   /// If a match is being edited, updates the match in the database.
   /// Otherwise, creates a new match and navigates to the MatchResultView.
-  void submitButtonNavigation(BuildContext context) async {
+  Future<void> submitButtonNavigation(BuildContext context) async {
     // mark showcase as seen
     if (showcaseProvider.shouldShowShowcase(
       createMatchViewMatchNameIdentifier,

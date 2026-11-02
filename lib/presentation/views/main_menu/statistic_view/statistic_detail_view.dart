@@ -365,7 +365,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
     if (mounted) Navigator.of(context).pop(displayCount);
   }
 
-  void toggleIsFavourite(BuildContext context) async {
+  Future<void> toggleIsFavourite(BuildContext context) async {
     final updatedIsFavourite = !isFavourite;
     final db = context.read<AppDatabase>();
     await db.statisticDao.updateIsFavourite(
@@ -378,7 +378,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
     });
   }
 
-  void deleteStatistic() async {
+  Future<void> deleteStatistic() async {
     final db = context.read<AppDatabase>();
     await db.statisticDao.deleteStatistic(widget.statistic.id);
     widget.refreshStatistic(widget.statistic.id);

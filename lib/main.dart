@@ -247,7 +247,7 @@ class _TalleeState extends State<Tallee> {
   }
 
   /// Pushes the import view for the .tallee file at [path].
-  void openImport(String path) async {
+  Future<void> openImport(String path) async {
     final navigator = Tallee.navigatorKey.currentState;
     if (navigator == null) return;
 
