@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
