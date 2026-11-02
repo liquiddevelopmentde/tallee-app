@@ -61,7 +61,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
         title: Text(loc.statistic),
         leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => updateCount(),
+          onPressed: updateCount,
         ),
         actions: [
           HapticIconButton(

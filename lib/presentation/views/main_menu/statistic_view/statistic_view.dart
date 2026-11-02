@@ -391,8 +391,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                         name: RouteNames.createStatisticView,
                       ),
                       builder: (context) => CreateStatisticView(
-                        onStatisticCreated: (newStats) =>
-                            onStatisticsCreated(newStats),
+                        onStatisticCreated: onStatisticsCreated,
                       ),
                     ),
                   );

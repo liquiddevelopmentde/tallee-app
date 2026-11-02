@@ -207,9 +207,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                       builder: (context) {
                         return CreateGroupView(
                           groupToEdit: group,
-                          onMembersChanged: () {
-                            loadStatistics();
-                          },
+                          onMembersChanged: loadStatistics,
                         );
                       },
                     ),

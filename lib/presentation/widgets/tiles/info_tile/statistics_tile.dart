@@ -85,7 +85,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
           icon: isFavourite
               ? const Icon(Icons.favorite)
               : const Icon(Icons.favorite_border),
-          onPressed: () => toggleFavourite(),
+          onPressed: toggleFavourite,
         ),
       ),
       width:

@@ -131,7 +131,7 @@ class _MatchShareViewState extends State<MatchShareView>
                       secondsRemaining: secondsRemaining,
                       totalSeconds: totalSeconds,
                       serverSharingEnabled: serverSharingEnabled,
-                      onOnlineSharingPrefChanged: () => initSharingView(),
+                      onOnlineSharingPrefChanged: initSharingView,
                       renewToken: renewToken,
                     ),
                     TokenComponent(
@@ -140,7 +140,7 @@ class _MatchShareViewState extends State<MatchShareView>
                       shareToken: shareToken,
                       isLoading: isLoading,
                       serverSharingEnabled: serverSharingEnabled,
-                      onOnlineSharingPrefChanged: () => initSharingView(),
+                      onOnlineSharingPrefChanged: initSharingView,
                       renewToken: renewToken,
                     ),
                     SaveFileComponent(match: widget.match),

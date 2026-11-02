@@ -133,9 +133,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingAnimatedButton(
-                  onPressed: () => setState(() {
-                    redistributePlayers();
-                  }),
+                  onPressed: () => setState(redistributePlayers),
                   icon: Icons.cached,
                 ),
                 const SizedBox(width: 16),

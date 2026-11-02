@@ -114,7 +114,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               child: BottomAnimatedButton(
                 buttonConstraints: const BoxConstraints(minWidth: 390),
                 buttonText: submitButtonText,
-                onPressed: enableSubmitButton ? () => submitStatistic() : null,
+                onPressed: enableSubmitButton ? submitStatistic : null,
               ),
             ),
           ],

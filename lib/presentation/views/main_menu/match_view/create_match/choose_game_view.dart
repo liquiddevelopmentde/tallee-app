@@ -109,9 +109,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
               child: CustomSearchBar(
                 controller: searchBarController,
                 hintText: loc.search_for_games,
-                onChanged: (value) {
-                  applySearchFilter(value);
-                },
+                onChanged: applySearchFilter,
               ),
             ),
 
@@ -186,9 +184,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                 child: BottomAnimatedButton(
                   buttonConstraints: const BoxConstraints(minWidth: 390),
                   buttonText: buttonText,
-                  onPressed: selectedGames.isNotEmpty
-                      ? () => submitStatistic()
-                      : null,
+                  onPressed: selectedGames.isNotEmpty ? submitStatistic : null,
                 ),
               ),
           ],

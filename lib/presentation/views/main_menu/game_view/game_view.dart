@@ -270,9 +270,7 @@ class _GameViewState extends State<GameView> with RouteAware {
               child: FloatingAnimatedButton(
                 text: loc.create_game,
                 icon: Icons.add,
-                onPressed: () {
-                  navigateToCreateGameView();
-                },
+                onPressed: navigateToCreateGameView,
               ),
             ),
           ),

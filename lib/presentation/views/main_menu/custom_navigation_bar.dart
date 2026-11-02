@@ -186,7 +186,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                     ? AppColors.primaryColor
                     : null,
               ),
-              onPressed: () => matchSearchProvider.toggleSearch(),
+              onPressed: matchSearchProvider.toggleSearch,
             ),
 
           // Only in GroupView
@@ -199,7 +199,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                     ? AppColors.primaryColor
                     : null,
               ),
-              onPressed: () => groupSearchProvider.toggleSearch(),
+              onPressed: groupSearchProvider.toggleSearch,
             ),
 
           // Only in GameView
@@ -212,7 +212,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                     ? AppColors.primaryColor
                     : null,
               ),
-              onPressed: () => gameSearchProvider.toggleSearch(),
+              onPressed: gameSearchProvider.toggleSearch,
             ),
 
           HapticIconButton(

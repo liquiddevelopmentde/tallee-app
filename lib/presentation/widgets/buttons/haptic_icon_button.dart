@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 
 class HapticIconButton extends StatefulWidget {
   const HapticIconButton({
@@ -48,7 +48,7 @@ class _HapticIconButtonState extends State<HapticIconButton>
           behavior: HitTestBehavior.opaque,
           onTapDown: isEnabled ? (_) => handleTapDown() : null,
           onTapUp: isEnabled ? (_) => handleRelease() : null,
-          onTapCancel: isEnabled ? () => handleRelease() : null,
+          onTapCancel: isEnabled ? handleRelease : null,
           onTap: isEnabled
               ? () {
                   HapticFeedback.selectionClick();

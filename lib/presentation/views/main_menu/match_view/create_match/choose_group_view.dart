@@ -165,9 +165,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                 child: BottomAnimatedButton(
                   buttonConstraints: const BoxConstraints(minWidth: 390),
                   buttonText: buttonText,
-                  onPressed: selectedGroups.isNotEmpty
-                      ? () => submitStatistic()
-                      : null,
+                  onPressed: selectedGroups.isNotEmpty ? submitStatistic : null,
                 ),
               ),
           ],
