@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/list_extension.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
@@ -50,12 +50,10 @@ class _LiveEditViewState extends State<LiveEditView> {
   List<FocusNode> focusNodes = [];
 
   List<Team> get allTeams =>
-      (widget.match.teams ?? [])
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      (widget.match.teams ?? [])..sortByLowercaseName((team) => team.name);
 
   List<Player> get allPlayers =>
-      widget.match.players
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      widget.match.players..sortByLowercaseName((player) => player.name);
 
   List<dynamic> get allUnits => useTeamLogic ? allTeams : allPlayers;
 

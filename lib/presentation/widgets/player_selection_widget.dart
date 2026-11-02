@@ -2,12 +2,11 @@ import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/build_context_extensions.dart';
 import 'package:tallee/core/extensions/list_extension.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/extensions/build_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:tallee/data/models/team.dart';
@@ -169,7 +168,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
   void initializeWithAvailablePlayers() {
     allPlayers = [...widget.availablePlayers!];
-    allPlayers.sortByName((player) => player.name);
+    allPlayers.sortByLowercaseName((player) => player.name);
 
     if (widget.mode == SelectionMode.single) {
       suggestedPlayers = [...allPlayers];
@@ -560,7 +559,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       if (currentSearch.isEmpty ||
           player.name.toLowerCase().contains(currentSearch)) {
         suggestedPlayers.add(player);
-        suggestedPlayers.sort((a, b) => a.name.compareTo(b.name));
+        suggestedPlayers.sortByLowercaseName((p) => p.name);
       }
     });
   }
@@ -629,10 +628,10 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       if (!mounted) return;
       setState(() {
         if (widget.availablePlayers != null) {
-          widget.availablePlayers!.sort((a, b) => a.name.compareTo(b.name));
+          widget.availablePlayers!.sortByLowercaseName((p) => p.name);
           allPlayers = [...widget.availablePlayers!];
         } else {
-          loadedPlayers.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+          loadedPlayers.sortByLowercaseName((p) => p.name);
           allPlayers = [...loadedPlayers];
         }
 

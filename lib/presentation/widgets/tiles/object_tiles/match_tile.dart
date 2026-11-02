@@ -4,9 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/build_context_extensions.dart';
 import 'package:tallee/core/extensions/datetime_extension.dart';
+import 'package:tallee/core/extensions/list_extension.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -44,8 +45,7 @@ class _MatchTileState extends State<MatchTile> {
   Widget build(BuildContext context) {
     final match = widget.match;
     final group = match.group;
-    final players = [...match.players]
-      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+    final players = [...match.players]..sortByLowercaseName((p) => p.name);
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(

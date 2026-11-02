@@ -5,9 +5,10 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/extensions/datetime_extension.dart';
-import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/extensions/build_context_extensions.dart';
+import 'package:tallee/core/extensions/datetime_extension.dart';
+import 'package:tallee/core/extensions/list_extension.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -306,12 +307,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       db.playerDao.getAllPlayers(),
       db.gameDao.getAllGames(),
     ]).then((result) async {
-      groups = result[0] as List<Group>
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-      players = result[1] as List<Player>
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-      games = (result[2] as List<Game>)
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      groups = result[0] as List<Group>..sortByLowercaseName((g) => g.name);
+      players = result[1] as List<Player>..sortByLowercaseName((p) => p.name);
+      games = (result[2] as List<Game>)..sortByLowercaseName((g) => g.name);
 
       // If a match is provided, prefill the fields
       if (widget.matchToPrefill != null) {

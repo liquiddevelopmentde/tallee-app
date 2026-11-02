@@ -2,7 +2,7 @@ import 'dart:core' hide Match;
 
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/common.dart';
+import 'package:tallee/core/extensions/list_extension.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
@@ -40,10 +40,8 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
 
   @override
   void initState() {
-    allTeams = (widget.match.teams ?? [])
-      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-    allPlayers = widget.match.players
-      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+    allTeams = (widget.match.teams ?? [])..sortByLowercaseName((t) => t.name);
+    allPlayers = widget.match.players..sortByLowercaseName((p) => p.name);
 
     selectedTeam = widget.match.mvt.firstOrNull;
     selectedPlayer = widget.match.mvp.firstOrNull;
