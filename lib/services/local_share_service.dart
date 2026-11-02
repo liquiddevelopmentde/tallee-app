@@ -213,7 +213,8 @@ class LocalShareService {
   @visibleForTesting
   static bool validateContent(Map<String, dynamic> decoded) {
     // Validate players
-    final players = decoded['players'] as List<dynamic>? ?? [];
+    final players = (decoded['players'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final p in players) {
       final name = p['name'] as String?;
       if (name != null && name.length > MAX_PLAYER_NAME_LENGTH) {
@@ -222,7 +223,8 @@ class LocalShareService {
     }
 
     // Validate games
-    final games = decoded['games'] as List<dynamic>? ?? [];
+    final games = (decoded['games'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final g in games) {
       final name = g['name'] as String?;
       if (name != null && name.length > MAX_GAME_NAME_LENGTH) {
@@ -235,7 +237,8 @@ class LocalShareService {
     }
 
     // Validate groups
-    final groups = decoded['groups'] as List<dynamic>? ?? [];
+    final groups = (decoded['groups'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final g in groups) {
       final name = g['name'] as String?;
       if (name != null && name.length > MAX_GROUP_NAME_LENGTH) {
@@ -244,14 +247,16 @@ class LocalShareService {
     }
 
     // Validate matches and teams
-    final matches = decoded['matches'] as List<dynamic>? ?? [];
+    final matches = (decoded['matches'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final m in matches) {
       final name = m['name'] as String?;
       if (name != null && name.length > MAX_MATCH_NAME_LENGTH) {
         return false;
       }
 
-      final teams = m['teams'] as List<dynamic>? ?? [];
+      final teams = (m['teams'] as List<dynamic>? ?? [])
+          .cast<Map<String, dynamic>>();
       for (final t in teams) {
         final teamName = t['name'] as String?;
         if (teamName != null && teamName.length > MAX_TEAM_NAME_LENGTH) {

@@ -567,7 +567,8 @@ void main() {
           final ctx = await getContext(tester);
           final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
-          final gamesJson = decoded['games'] as List<dynamic>;
+          final gamesJson = (decoded['games'] as List<dynamic>)
+              .cast<Map<String, dynamic>>();
 
           expect(gamesJson.length, 3);
           expect(
@@ -600,7 +601,8 @@ void main() {
           final ctx = await getContext(tester);
           final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
-          final gamesJson = decoded['games'] as List<dynamic>;
+          final gamesJson = (decoded['games'] as List<dynamic>)
+              .cast<Map<String, dynamic>>();
 
           expect(gamesJson.length, 3);
           expect(

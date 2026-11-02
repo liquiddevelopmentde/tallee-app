@@ -349,7 +349,8 @@ class RemoteShareService {
     }
 
     // Validate players
-    final players = decoded['players'] as List<dynamic>?;
+    final players = (decoded['players'] as List<dynamic>?)
+        ?.cast<Map<String, dynamic>>();
     if (players != null) {
       for (final p in players) {
         final playerName = p['name'] as String?;
@@ -369,7 +370,8 @@ class RemoteShareService {
     }
 
     // Validate teams
-    final teams = decoded['teams'] as List<dynamic>?;
+    final teams = (decoded['teams'] as List<dynamic>?)
+        ?.cast<Map<String, dynamic>>();
     if (teams != null) {
       for (final t in teams) {
         final teamName = t['name'] as String?;
