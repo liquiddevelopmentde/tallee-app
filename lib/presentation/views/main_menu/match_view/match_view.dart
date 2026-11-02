@@ -9,7 +9,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -211,7 +211,7 @@ class _MatchViewState extends State<MatchView> {
                       // Matches in db
                       if (allMatches.isNotEmpty) ...[
                         SingleChildScrollView(
-                          padding: AppColors.filterRowPadding,
+                          padding: AppSpacing.filterRowPadding,
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             spacing: 5,
@@ -289,7 +289,7 @@ class _MatchViewState extends State<MatchView> {
                               },
                               child: ListView.builder(
                                 controller: scrollController,
-                                padding: AppColors.listViewPadding(context),
+                                padding: AppSpacing.listViewPadding(context),
                                 itemCount: displayedMatches.length,
                                 itemBuilder: (context, index) => MatchTile(
                                   width:

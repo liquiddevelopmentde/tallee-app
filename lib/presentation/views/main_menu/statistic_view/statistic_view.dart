@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
@@ -86,9 +86,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                     // Statistics in db
                     statistics.isNotEmpty
                     ? ReorderableListView.builder(
-                        padding: AppColors.listViewPadding(context),
+                        padding: AppSpacing.listViewPadding(context),
                         header: SingleChildScrollView(
-                          padding: AppColors.filterRowPadding,
+                          padding: AppSpacing.filterRowPadding,
                           scrollDirection: Axis.horizontal,
                           child:
                               // Filter row
@@ -300,7 +300,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                               final t = Curves.easeOut.transform(
                                 animation.value,
                               );
-                              const tileMargin = AppColors.tileMargin;
+                              final tileMargin = AppSpacing.tileMargin;
                               return Transform.scale(
                                 scale: 1.0 + (0.02 * t),
                                 child: Material(

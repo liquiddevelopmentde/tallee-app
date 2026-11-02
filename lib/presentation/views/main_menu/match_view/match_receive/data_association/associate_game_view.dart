@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -41,7 +42,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             Align(
               alignment: Alignment.center,
               child: Container(
-                margin: AppColors.standardMargin,
+                margin: AppSpacing.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
                   color: associatedGame == null ? Colors.orange : Colors.green,
@@ -81,7 +82,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                       onTap: navigateToGameSelection,
                       child: Container(
                         key: const ValueKey('no_association'),
-                        margin: AppColors.tileMargin,
+                        margin: AppSpacing.tileMargin,
                         height: 138,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: context.standardBoxDecoration.copyWith(

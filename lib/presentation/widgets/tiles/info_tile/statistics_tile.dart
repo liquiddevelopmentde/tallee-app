@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -89,7 +89,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
         ),
       ),
       width: widget.width ?? MediaQuery.sizeOf(context).width * 0.95,
-      margin: widget.margin ?? AppColors.tileMargin,
+      margin: widget.margin ?? AppSpacing.tileMargin,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(

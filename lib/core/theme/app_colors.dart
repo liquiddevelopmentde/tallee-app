@@ -2,7 +2,8 @@ import 'package:material_ui/material_ui.dart';
 
 /// Theme class that defines colors, border radius, padding, decorations, and ThemeData
 class AppColors {
-  const AppColors(); // Private constructor to prevent instantiation
+  // Private constructor
+  const AppColors._();
 
   // ==================== Color Definitions ====================
 
@@ -72,23 +73,4 @@ class AppColors {
   static const double standardBorderRadius = 12.0;
   static BorderRadius get standardBorderRadiusAll =>
       BorderRadius.circular(standardBorderRadius);
-
-  // ==================== Padding & Margins ====================
-  static const EdgeInsets standardMargin = EdgeInsets.symmetric(
-    horizontal: 12,
-    vertical: 6,
-  );
-  static const EdgeInsets tileMargin = EdgeInsets.only(
-    left: 12,
-    right: 12,
-    bottom: 10,
-  );
-
-  static EdgeInsets listViewPadding(BuildContext context) =>
-      EdgeInsets.only(bottom: MediaQuery.viewPaddingOf(context).bottom + 190);
-
-  static const EdgeInsets filterRowPadding = EdgeInsets.only(
-    bottom: 10,
-    left: 12,
-  );
 }

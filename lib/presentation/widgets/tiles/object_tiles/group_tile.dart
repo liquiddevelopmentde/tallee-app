@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
-import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -45,7 +45,7 @@ class _GroupTileState extends State<GroupTile> {
         }
       },
       child: AnimatedContainer(
-        margin: AppColors.tileMargin,
+        margin: AppSpacing.tileMargin,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         decoration: widget.isHighlighted
             ? context.highlightedBoxDecoration

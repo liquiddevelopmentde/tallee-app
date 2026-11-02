@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -44,7 +44,7 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
           color: widget.borderColor ?? context.talleeColors.boxBorderColor,
         ),
       ),
-      margin: AppColors.standardMargin,
+      margin: AppSpacing.standardMargin,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,

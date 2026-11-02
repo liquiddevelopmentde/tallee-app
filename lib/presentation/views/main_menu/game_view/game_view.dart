@@ -8,7 +8,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
-import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -202,7 +202,7 @@ class _GameViewState extends State<GameView> with RouteAware {
                                       return true;
                                     },
                                     child: ListView.builder(
-                                      padding: AppColors.listViewPadding(
+                                      padding: AppSpacing.listViewPadding(
                                         context,
                                       ),
                                       itemCount: displayedGames.length,
