@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/extensions/build_context_extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 
 class BottomAnimatedButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
@@ -54,7 +54,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
       case ButtonType.primary:
         textColor = widget.isDestructive || widget.isEmphasized
             ? Colors.white
-            : Theme.of(context).brightness == Brightness.dark
+            : context.isDarkMode
             ? Colors.black
             : Colors.white;
         break;
@@ -86,7 +86,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
             ? context.talleeColors.errorColor
             : widget.isEmphasized
             ? AppColors.primaryColor
-            : Theme.of(context).brightness == Brightness.dark
+            : context.isDarkMode
             ? Colors.white
             : Colors.black,
         borderRadius: BorderRadius.circular(12),

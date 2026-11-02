@@ -52,9 +52,10 @@ extension AppColorExtension on AppColor {
 
   /// Returns the text color used on statistics bars for the current theme.
   Color statisticBarColor(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final useBlackText =
-        !isDarkMode || this == AppColor.yellow || this == AppColor.orange;
+        !context.isDarkMode ||
+        this == AppColor.yellow ||
+        this == AppColor.orange;
     return useBlackText ? AppColors.textColorLight : AppColors.textColorDark;
   }
 }
