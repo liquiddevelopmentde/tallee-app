@@ -213,8 +213,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   Future<bool> updatePlayerName({
     required String playerId,
     required String name,
-  }) async {
-    return transaction(() async {
+  }) async => transaction(() async {
       final previousPlayer = await (select(
         playerTable,
       )..where((tbl) => tbl.id.equals(playerId))).getSingleOrNull();
@@ -259,7 +258,6 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
 
       return rowsAffected > 0;
     });
-  }
 
   /// Updates the description of the player with the given [playerId] to
   /// [description].

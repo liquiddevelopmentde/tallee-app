@@ -246,8 +246,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                           ? Wrap(
                               spacing: 12,
                               runSpacing: 8,
-                              children: playerGroups.map((group) {
-                                return PlayerProfileListTile(
+                              children: playerGroups.map((group) => PlayerProfileListTile(
                                   title: group.name,
                                   count: group.members.length,
                                   onTap: () {
@@ -264,8 +263,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                       ),
                                     );
                                   },
-                                );
-                              }).toList(),
+                                )).toList(),
                             )
                           : Text(
                               loc.not_part_of_any_group,
@@ -292,8 +290,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                         ? Wrap(
                             spacing: 12,
                             runSpacing: 8,
-                            children: playerMatches.map((match) {
-                              return PlayerProfileListTile(
+                            children: playerMatches.map((match) => PlayerProfileListTile(
                                 title: match.name,
                                 count: match.players.length,
                                 onTap: () {
@@ -310,8 +307,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                     ),
                                   );
                                 },
-                              );
-                            }).toList(),
+                              )).toList(),
                           )
                         : Text(
                             loc.no_matches_played_yet,

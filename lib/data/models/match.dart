@@ -82,9 +82,7 @@ class Match {
   }
 
   @override
-  String toString() {
-    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scoresByRound: $scoresByRound, mvp: $mvp}';
-  }
+  String toString() => 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scoresByRound: $scoresByRound, mvp: $mvp}';
 
   Match copyWith({
     String? id,
@@ -234,8 +232,7 @@ class Match {
     Group? group,
     required List<Player> players,
     List<Team>? teams,
-  }) {
-    return Match(
+  }) => Match(
       id: json['id'],
       createdAt: DateTime.parse(json['createdAt']),
       endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
@@ -269,7 +266,6 @@ class Match {
           : {},
       notes: json['notes'] ?? '',
     );
-  }
 
   bool get useTeamLogic => isTeamMatch || (teams?.isNotEmpty ?? false);
 
@@ -426,9 +422,7 @@ class Match {
         .whereType<int>()
         .reduce((max, score) => score > max ? score : max);
 
-    return teams!.where((team) {
-      return team.score == highestScore;
-    }).toList();
+    return teams!.where((team) => team.score == highestScore).toList();
   }
 
   List<Team> _getLowestScoreTeam() {
@@ -441,9 +435,7 @@ class Match {
         .whereType<int>()
         .reduce((min, score) => score < min ? score : min);
 
-    return teams!.where((team) {
-      return team.score == lowestScore;
-    }).toList();
+    return teams!.where((team) => team.score == lowestScore).toList();
   }
 
   List<Team> _getTeamsWithLivesRemaining() {

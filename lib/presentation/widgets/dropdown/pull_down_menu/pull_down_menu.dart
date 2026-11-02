@@ -69,8 +69,7 @@ class PullDownMenu extends PopupRoute<void> {
     );
   }
 
-  Widget menuSurface(BuildContext context) {
-    return Material(
+  Widget menuSurface(BuildContext context) => Material(
       color: Colors.transparent,
       child: Container(
         width: menuWidth,
@@ -91,7 +90,6 @@ class PullDownMenu extends PopupRoute<void> {
         ),
       ),
     );
-  }
 
   @override
   Widget buildTransitions(
@@ -99,7 +97,5 @@ class PullDownMenu extends PopupRoute<void> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) {
-    return child;
-  }
+  ) => child;
 }

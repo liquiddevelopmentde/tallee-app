@@ -37,8 +37,7 @@ class AssociatePlayerTile extends StatefulWidget {
 
 class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
   @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
+  Widget build(BuildContext context) => AnimatedContainer(
       decoration: context.standardBoxDecoration.copyWith(
         border: Border.all(
           color: widget.borderColor ?? context.talleeColors.boxBorderColor,
@@ -129,5 +128,4 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
         ],
       ),
     );
-  }
 }

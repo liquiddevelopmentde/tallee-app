@@ -237,11 +237,9 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     );
 
     final selectedPlayerIds = selectedPlayers.map((p) => p.id).toSet();
-    final relationshipsToDelete = groupMatches.where((match) {
-      return !match.players.any(
+    final relationshipsToDelete = groupMatches.where((match) => !match.players.any(
         (player) => selectedPlayerIds.contains(player.id),
-      );
-    }).toList();
+      )).toList();
 
     for (final match in relationshipsToDelete) {
       await db.matchDao.removeMatchGroup(matchId: match.id);

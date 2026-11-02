@@ -77,15 +77,11 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               layoutBuilder:
-                  (Widget? currentChild, List<Widget> previousChildren) {
-                    return Stack(
+                  (Widget? currentChild, List<Widget> previousChildren) => Stack(
                       alignment: Alignment.topCenter,
                       children: <Widget>[...previousChildren, ?currentChild],
-                    );
-                  },
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return FadeTransition(opacity: animation, child: child);
-              },
+                    ),
+              transitionBuilder: (Widget child, Animation<double> animation) => FadeTransition(opacity: animation, child: child),
               child: associatedGroup == null
                   ? GestureDetector(
                       onTap: navigateToGroupSelection,

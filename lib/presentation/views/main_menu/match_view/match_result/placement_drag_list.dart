@@ -75,14 +75,12 @@ class _PlacementDragListState extends State<PlacementDragList> {
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
               itemCount: itemCount,
-              itemBuilder: (context, index) {
-                return SizedBox(
+              itemBuilder: (context, index) => SizedBox(
                   height: rowHeight,
                   child: Center(
                     child: placementBadge(index: index, badgeSize: badgeSize),
                   ),
-                );
-              },
+                ),
             ),
           ),
           const SizedBox(width: 4),
@@ -104,8 +102,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                     onReorderStart: (_) => HapticFeedback.heavyImpact(),
                     onReorderEnd: (_) => HapticFeedback.selectionClick(),
                     itemCount: itemCount,
-                    itemBuilder: (context, index) {
-                      return SizedBox(
+                    itemBuilder: (context, index) => SizedBox(
                         key: ValueKey(allTeams[index].id),
                         height: rowHeight,
                         child: isTeamMatch
@@ -133,8 +130,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                                   pairIconLeft: true,
                                 ),
                               ),
-                      );
-                    },
+                      ),
                   ),
                 )
               : Expanded(
@@ -154,8 +150,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                     onReorderStart: (_) => HapticFeedback.heavyImpact(),
                     onReorderEnd: (_) => HapticFeedback.selectionClick(),
                     itemCount: itemCount,
-                    itemBuilder: (context, index) {
-                      return SizedBox(
+                    itemBuilder: (context, index) => SizedBox(
                         key: ValueKey(allPlayers[index].id),
                         height: rowHeight,
                         child: Padding(
@@ -165,8 +160,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                             icon: Icons.drag_handle,
                           ),
                         ),
-                      );
-                    },
+                      ),
                   ),
                 ),
         ],

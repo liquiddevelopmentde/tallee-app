@@ -21,8 +21,7 @@ class CustomTextButton extends StatelessWidget {
   final TextStyle? style;
 
   @override
-  Widget build(BuildContext context) {
-    return TextButton(
+  Widget build(BuildContext context) => TextButton(
       onPressed: onPressed != null
           ? () {
               HapticFeedback.lightImpact();
@@ -34,5 +33,4 @@ class CustomTextButton extends StatelessWidget {
         style: style ?? TextStyle(color: context.talleeColors.textColor),
       ),
     );
-  }
 }

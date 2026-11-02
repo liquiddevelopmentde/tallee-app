@@ -418,8 +418,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CustomAlertDialog(
+        builder: (BuildContext context) => CustomAlertDialog(
             title: loc.update_available,
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -460,8 +459,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 },
               ),
             ],
-          );
-        },
+          ),
       );
     }
   }

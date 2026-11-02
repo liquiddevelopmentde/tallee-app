@@ -21,9 +21,7 @@ class Group {
        description = description ?? '';
 
   @override
-  String toString() {
-    return 'Group{id: $id, name: $name, description: $description, members: $members}';
-  }
+  String toString() => 'Group{id: $id, name: $name, description: $description, members: $members}';
 
   Group copyWith({
     String? id,
@@ -31,15 +29,13 @@ class Group {
     String? description,
     DateTime? createdAt,
     List<Player>? members,
-  }) {
-    return Group(
+  }) => Group(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
       members: members ?? this.members,
     );
-  }
 
   @override
   bool operator ==(Object other) =>
@@ -96,13 +92,11 @@ class Group {
   factory Group.fromNormalizedJson(
     Map<String, dynamic> json,
     List<Player> members,
-  ) {
-    return Group(
+  ) => Group(
       id: json['id'],
       createdAt: DateTime.parse(json['createdAt']),
       name: json['name'],
       description: json['description'] ?? '',
       members: members,
     );
-  }
 }

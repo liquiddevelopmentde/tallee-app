@@ -21,9 +21,7 @@ class Player {
        description = description ?? '';
 
   @override
-  String toString() {
-    return 'Player{id: $id, createdAt: $createdAt, name: $name, nameCount: $nameCount, description: $description, deleted: $deleted}';
-  }
+  String toString() => 'Player{id: $id, createdAt: $createdAt, name: $name, nameCount: $nameCount, description: $description, deleted: $deleted}';
 
   Player copyWith({
     String? id,
@@ -32,8 +30,7 @@ class Player {
     String? description,
     int? nameCount,
     bool? deleted,
-  }) {
-    return Player(
+  }) => Player(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
@@ -41,7 +38,6 @@ class Player {
       nameCount: nameCount ?? this.nameCount,
       deleted: deleted ?? this.deleted,
     );
-  }
 
   @override
   bool operator ==(Object other) =>

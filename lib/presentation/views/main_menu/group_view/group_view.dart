@@ -191,8 +191,7 @@ class _GroupViewState extends State<GroupView> {
                                             context,
                                           ),
                                           itemCount: displayedGroups.length,
-                                          itemBuilder: (BuildContext ctx, int i) {
-                                            return GroupTile(
+                                          itemBuilder: (BuildContext ctx, int i) => GroupTile(
                                               group: displayedGroups[i],
                                               onTap: () async {
                                                 await Navigator.push(
@@ -203,19 +202,16 @@ class _GroupViewState extends State<GroupView> {
                                                           name: RouteNames
                                                               .groupDetailView,
                                                         ),
-                                                    builder: (context) {
-                                                      return GroupDetailView(
+                                                    builder: (context) => GroupDetailView(
                                                         group:
                                                             displayedGroups[i],
                                                         onGroupUpdated:
                                                             loadGroups,
-                                                      );
-                                                    },
+                                                      ),
                                                   ),
                                                 );
                                               },
-                                            );
-                                          },
+                                            ),
                                         ),
                                       ),
                                 )

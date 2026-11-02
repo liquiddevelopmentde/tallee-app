@@ -103,8 +103,7 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       decoration: context.standardBoxDecoration,
@@ -258,13 +257,11 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
                                           TextInputFormatter.withFunction((
                                             oldValue,
                                             newValue,
-                                          ) {
-                                            return isValidScoreInput(
+                                          ) => isValidScoreInput(
                                                   newValue.text,
                                                 )
                                                 ? newValue
-                                                : oldValue;
-                                          }),
+                                                : oldValue),
                                         ],
                                         textAlign: TextAlign.center,
                                         textAlignVertical:
@@ -310,7 +307,6 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
         ],
       ),
     );
-  }
 
   /// Measures the width of [text] rendered with [style].
   double measureTextWidth(String text, TextStyle style) {

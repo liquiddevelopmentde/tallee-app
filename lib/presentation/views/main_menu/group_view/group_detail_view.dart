@@ -158,8 +158,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   content: Wrap(
                     spacing: 12,
                     runSpacing: 8,
-                    children: group.members.map((member) {
-                      return PlayerTile(
+                    children: group.members.map((member) => PlayerTile(
                         player: member,
                         onTileTap: () {
                           Navigator.of(context).pushReplacement(
@@ -174,8 +173,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                             ),
                           );
                         },
-                      );
-                    }).toList(),
+                      )).toList(),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -202,12 +200,10 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                       settings: const RouteSettings(
                         name: RouteNames.createGroupView,
                       ),
-                      builder: (context) {
-                        return CreateGroupView(
+                      builder: (context) => CreateGroupView(
                           groupToEdit: group,
                           onMembersChanged: loadStatistics,
-                        );
-                      },
+                        ),
                     ),
                   );
                   final updatedGroup = result?.updatedGroup;

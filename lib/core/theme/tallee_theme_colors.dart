@@ -73,8 +73,7 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
     Color? blueColor,
     Color? purpleColor,
     Color? pinkColor,
-  }) {
-    return TalleeThemeColors(
+  }) => TalleeThemeColors(
       backgroundColor: backgroundColor ?? this.backgroundColor,
       boxColor: boxColor ?? this.boxColor,
       boxBorderColor: boxBorderColor ?? this.boxBorderColor,
@@ -101,7 +100,6 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
       purpleColor: purpleColor ?? this.purpleColor,
       pinkColor: pinkColor ?? this.pinkColor,
     );
-  }
 
   @override
   TalleeThemeColors lerp(

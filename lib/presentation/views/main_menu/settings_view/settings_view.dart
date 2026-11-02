@@ -61,8 +61,7 @@ class _SettingsViewState extends State<SettingsView> {
     final loc = AppLocalizations.of(context);
     return ScaffoldMessenger(
       child: Builder(
-        builder: (scaffoldMessengerContext) {
-          return Scaffold(
+        builder: (scaffoldMessengerContext) => Scaffold(
             appBar: AppBar(title: Text(loc.settings)),
             backgroundColor: context.talleeColors.backgroundColor,
             body: SafeArea(
@@ -382,8 +381,7 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
               ),
             ),
-          );
-        },
+          ),
       ),
     );
   }

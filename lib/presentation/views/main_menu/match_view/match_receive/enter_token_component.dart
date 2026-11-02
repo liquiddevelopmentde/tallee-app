@@ -152,8 +152,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               forceErrorState: isTokenValid == false || isMatchValid == false,
               errorText: getErrorText(loc),
               errorTextStyle: errorTextStyle,
-              errorBuilder: (errorText, pin) {
-                return SizedBox(
+              errorBuilder: (errorText, pin) => SizedBox(
                   width: 300,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 8),
@@ -163,8 +162,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                );
-              },
+                ),
             ),
           ),
         ),
@@ -256,9 +254,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
     }
   }
 
-  bool validateToken(String? token) {
-    return token != null &&
+  bool validateToken(String? token) => token != null &&
         token.length == 6 &&
         RegExp(r'^[A-Za-z0-9]+$').hasMatch(token);
-  }
 }

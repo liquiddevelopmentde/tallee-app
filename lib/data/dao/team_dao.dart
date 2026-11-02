@@ -369,9 +369,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<bool> setWinnerTeam({
     required String teamId,
     required String matchId,
-  }) async {
-    return await updateTeamScore(teamId: teamId, matchId: matchId, score: 1);
-  }
+  }) async => await updateTeamScore(teamId: teamId, matchId: matchId, score: 1);
 
   /// Sets multiple teams as winners of the match with the given [matchId] by assigning a score of 1 to each team.
   /// Returns `true` if all scores were updated successfully, `false` otherwise.
@@ -394,24 +392,18 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
 
   /// Removes the winner status from all Teams with the given [matchId] by setting its score to null.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
-  Future<bool> removeWinnerTeam({required String matchId}) async {
-    return await removeAllTeamScores(matchId: matchId);
-  }
+  Future<bool> removeWinnerTeam({required String matchId}) async => await removeAllTeamScores(matchId: matchId);
 
   /// Sets the team with the given [teamId] as the loser of the match with the given [matchId] by assigning a score of 0.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
   Future<bool> setLoserTeam({
     required String teamId,
     required String matchId,
-  }) async {
-    return await updateTeamScore(teamId: teamId, matchId: matchId, score: 0);
-  }
+  }) async => await updateTeamScore(teamId: teamId, matchId: matchId, score: 0);
 
   /// Removes the loser from the match with the given [matchId] by setting its score to null.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
-  Future<bool> removeLoserTeam({required String matchId}) async {
-    return await removeAllTeamScores(matchId: matchId);
-  }
+  Future<bool> removeLoserTeam({required String matchId}) async => await removeAllTeamScores(matchId: matchId);
 
   /// Sets the placements for the teams in the match with the given [matchId] by assigning scores based on their order in the [teams] list.
   /// Returns `true` if all scores were updated successfully, `false` otherwise.

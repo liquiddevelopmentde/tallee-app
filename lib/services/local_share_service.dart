@@ -354,8 +354,7 @@ class LocalShareService {
   static List<Team> parseTeamsFromJson(
     List<dynamic> teamsJson,
     Map<String, Player> playerById,
-  ) {
-    return teamsJson.map((t) {
+  ) => teamsJson.map((t) {
       final map = t as Map<String, dynamic>;
       final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
           .cast<String>();
@@ -369,7 +368,6 @@ class LocalShareService {
 
       return Team.fromNormalizedJson(map, members);
     }).toList();
-  }
 
   /// Parses matches from JSON data.
   @visibleForTesting

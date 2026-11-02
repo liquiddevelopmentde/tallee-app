@@ -34,8 +34,7 @@ class AppSkeleton extends StatefulWidget {
 
 class _AppSkeletonState extends State<AppSkeleton> {
   @override
-  Widget build(BuildContext context) {
-    return Skeletonizer(
+  Widget build(BuildContext context) => Skeletonizer(
       effect: PulseEffect(
         from: context.talleeColors.skeletonFromColor,
         to: context.talleeColors.skeletonToColor,
@@ -57,5 +56,4 @@ class _AppSkeletonState extends State<AppSkeleton> {
           ? Align(alignment: widget.alignment, child: widget.child)
           : widget.child,
     );
-  }
 }

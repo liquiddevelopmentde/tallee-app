@@ -75,8 +75,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
       body: SafeArea(
         maintainBottomViewPadding: true,
         child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
+          builder: (context, constraints) => SingleChildScrollView(
               padding: AppSpacing.standardMargin,
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
@@ -168,8 +167,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                   ),
                 ),
               ),
-            );
-          },
+            ),
         ),
       ),
     );

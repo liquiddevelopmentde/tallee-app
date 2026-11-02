@@ -250,8 +250,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     );
   }
 
-  Widget buildSearchBar(AppLocalizations loc) {
-    return CustomSearchBar(
+  Widget buildSearchBar(AppLocalizations loc) => CustomSearchBar(
       maxLength: MAX_PLAYER_NAME_LENGTH,
       controller: searchBarController,
       constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
@@ -288,10 +287,8 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         });
       },
     );
-  }
 
-  Widget buildSelectedPlayersHeader(AppLocalizations loc) {
-    return Row(
+  Widget buildSelectedPlayersHeader(AppLocalizations loc) => Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
@@ -303,7 +300,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         ),
       ],
     );
-  }
 
   Widget buildSelectedPlayersBar() {
     final loc = AppLocalizations.of(context);
@@ -363,8 +359,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     );
   }
 
-  Widget buildSingleSelectionList() {
-    return RadioGroup<Player?>(
+  Widget buildSingleSelectionList() => RadioGroup<Player?>(
       groupValue: selectedPlayer,
       onChanged: (value) {
         widget.onSingleChanged?.call(value);
@@ -405,10 +400,8 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         },
       ),
     );
-  }
 
-  Widget buildMultipleSelectionList() {
-    return ListView.separated(
+  Widget buildMultipleSelectionList() => ListView.separated(
       itemCount: suggestedPlayers.length,
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 10),
@@ -421,7 +414,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         );
       },
     );
-  }
 
   Future<void> togglePairingSelection(Player player) async {
     await HapticFeedback.selectionClick();

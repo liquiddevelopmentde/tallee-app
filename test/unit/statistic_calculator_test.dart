@@ -25,8 +25,7 @@ void main() {
     Group? group,
     DateTime? createdAt,
     DateTime? endedAt,
-  }) {
-    return Match(
+  }) => Match(
       name: name,
       game: game,
       players: players,
@@ -38,7 +37,6 @@ void main() {
           entry.key.id: ScoreEntry(score: entry.value),
       },
     );
-  }
 
   setUp(() {
     testPlayer1 = Player(name: 'Alice');

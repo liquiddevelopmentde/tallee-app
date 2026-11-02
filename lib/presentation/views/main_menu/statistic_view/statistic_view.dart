@@ -73,8 +73,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     final tiles = statisticTiles;
 
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return Stack(
+      builder: (BuildContext context, BoxConstraints constraints) => Stack(
           alignment: Alignment.center,
           children: [
             AppSkeleton(
@@ -292,8 +291,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 ),
                               )
                             : null,
-                        proxyDecorator: (child, index, animation) {
-                          return AnimatedBuilder(
+                        proxyDecorator: (child, index, animation) => AnimatedBuilder(
                             animation: animation,
                             child: child,
                             builder: (BuildContext context, child) {
@@ -337,8 +335,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 ),
                               );
                             },
-                          );
-                        },
+                          ),
                         onReorderItem: (oldIndex, newIndex) {
                           setState(() {
                             final stat = statistics.removeAt(oldIndex);
@@ -360,9 +357,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                         onReorderStart: (_) => HapticFeedback.heavyImpact(),
                         onReorderEnd: (_) => HapticFeedback.selectionClick(),
                         itemCount: tiles.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return tiles[index];
-                        },
+                        itemBuilder: (BuildContext context, int index) => tiles[index],
                       )
                     : (!isLoading)
                     ?
@@ -399,8 +394,7 @@ class _StatisticsViewState extends State<StatisticsView> {
               ),
             ),
           ],
-        );
-      },
+        ),
     );
   }
 
@@ -435,15 +429,13 @@ class _StatisticsViewState extends State<StatisticsView> {
     );
   }
 
-  Statistic getSkeletonStatistic() {
-    return Statistic(
+  Statistic getSkeletonStatistic() => Statistic(
       type: StatisticType.totalWins,
       scopes: [StatisticScope.allPlayers],
       color: AppColor.randomColor(),
       selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
       selectedGroups: [Group(name: 'Group 1', members: [])],
     );
-  }
 
   /// Loads all statistics and needed data from the database
   Future<void> loadStatistics() async {

@@ -419,8 +419,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   Future<void> onCreationDateSelection() async {
     await showDialog<DateTime>(
       context: context,
-      builder: (context) {
-        return Theme(
+      builder: (context) => Theme(
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
             colorScheme: ColorScheme.dark(
@@ -514,8 +513,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
               ),
             ),
           ),
-        );
-      },
+        ),
     );
   }
 

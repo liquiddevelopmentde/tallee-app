@@ -391,8 +391,7 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   bool get isEditMode => widget.gameToEdit != null;
 
-  Widget getRulesetDropdown(AppLocalizations loc) {
-    return CustomPopup(
+  Widget getRulesetDropdown(AppLocalizations loc) => CustomPopup(
       arrowColor: context.talleeColors.boxBorderColor,
       contentPadding: const EdgeInsets.symmetric(vertical: 10),
       barrierColor: Colors.transparent,
@@ -474,10 +473,8 @@ class _CreateGameViewState extends State<CreateGameView> {
         ],
       ),
     );
-  }
 
-  Widget getColorDropdown(AppLocalizations loc) {
-    return CustomPopup(
+  Widget getColorDropdown(AppLocalizations loc) => CustomPopup(
       arrowColor: context.talleeColors.boxBorderColor,
       contentPadding: const EdgeInsets.symmetric(vertical: 10),
       barrierColor: Colors.transparent,
@@ -574,5 +571,4 @@ class _CreateGameViewState extends State<CreateGameView> {
         ],
       ),
     );
-  }
 }

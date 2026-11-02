@@ -65,8 +65,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               onReorderItem: onReorderItem,
               onReorderStart: (_) => HapticFeedback.heavyImpact(),
               onReorderEnd: (_) => HapticFeedback.selectionClick(),
-              proxyDecorator: (child, index, animation) {
-                return AnimatedBuilder(
+              proxyDecorator: (child, index, animation) => AnimatedBuilder(
                   animation: animation,
                   builder: (context, _) {
                     final t = Curves.easeInOut.transform(animation.value);
@@ -98,8 +97,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
                       ),
                     );
                   },
-                );
-              },
+                ),
               itemBuilder: (context, index) {
                 final teamIndex = teamIndexForFlat(index);
                 final memberIndex = memberIndexForFlat(index, teamIndex);

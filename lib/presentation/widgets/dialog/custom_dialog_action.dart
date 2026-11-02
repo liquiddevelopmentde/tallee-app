@@ -23,8 +23,7 @@ class CustomDialogAction extends StatelessWidget {
   final bool isEmphasized;
 
   @override
-  Widget build(BuildContext context) {
-    return BottomAnimatedButton(
+  Widget build(BuildContext context) => BottomAnimatedButton(
       onPressed: onPressed != null
           ? () {
               onPressed?.call();
@@ -36,5 +35,4 @@ class CustomDialogAction extends StatelessWidget {
       isEmphasized: isEmphasized,
       buttonConstraints: const BoxConstraints(minWidth: 300),
     );
-  }
 }

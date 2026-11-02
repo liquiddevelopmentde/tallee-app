@@ -41,8 +41,7 @@ class _SettingsListTileState extends State<SettingsListTile> {
   bool get hasDescription => widget.description != null;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
+  Widget build(BuildContext context) => Center(
       child: SizedBox(
         width: MediaQuery.sizeOf(context).width * AppSpacing.contentWidthFactor,
         child: GestureDetector(
@@ -126,7 +125,6 @@ class _SettingsListTileState extends State<SettingsListTile> {
         ),
       ),
     );
-  }
 
   void handleTap() {
     if (widget.onPressed != null) {

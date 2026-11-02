@@ -30,8 +30,7 @@ class CustomAlertDialog extends StatelessWidget {
   final Color? closeButtonColor;
 
   @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
+  Widget build(BuildContext context) => AlertDialog(
       titlePadding: showCloseButton
           ? const EdgeInsets.only(left: 24.0, top: 12.0, right: 12.0)
           : null,
@@ -69,5 +68,4 @@ class CustomAlertDialog extends StatelessWidget {
         side: BorderSide(color: context.talleeColors.boxBorderColor),
       ),
     );
-  }
 }

@@ -177,8 +177,7 @@ class LabeledDropdown<T> extends StatelessWidget {
                               if (value != null) onItemTap!(value);
                             }
                           : null,
-                      selectedItemBuilder: (context) {
-                        return options
+                      selectedItemBuilder: (context) => options
                             .map(
                               (_) => ValueListenableBuilder<List<T>>(
                                 valueListenable: listenable!,
@@ -198,8 +197,7 @@ class LabeledDropdown<T> extends StatelessWidget {
                                 },
                               ),
                             )
-                            .toList();
-                      },
+                            .toList(),
                       buttonStyleData: buttonStyle(context),
                       iconStyleData: iconStyle(context),
                       dropdownStyleData: dropdownStyle(context),

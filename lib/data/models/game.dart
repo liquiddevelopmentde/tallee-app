@@ -21,9 +21,7 @@ class Game {
        createdAt = createdAt ?? clock.now();
 
   @override
-  String toString() {
-    return 'Game{id: $id, name: $name, ruleset: $ruleset, color: $color, description: $description}';
-  }
+  String toString() => 'Game{id: $id, name: $name, ruleset: $ruleset, color: $color, description: $description}';
 
   Game copyWith({
     String? id,
@@ -32,8 +30,7 @@ class Game {
     Ruleset? ruleset,
     AppColor? color,
     String? description,
-  }) {
-    return Game(
+  }) => Game(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
@@ -41,7 +38,6 @@ class Game {
       color: color ?? this.color,
       description: description ?? this.description,
     );
-  }
 
   @override
   bool operator ==(Object other) =>

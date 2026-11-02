@@ -66,20 +66,16 @@ class AppDatabase extends _$AppDatabase {
   int get schemaVersion => 1;
 
   @override
-  MigrationStrategy get migration {
-    return MigrationStrategy(
+  MigrationStrategy get migration => MigrationStrategy(
       beforeOpen: (details) async {
         await customStatement('PRAGMA foreign_keys = ON');
       },
     );
-  }
 
-  static QueryExecutor _openConnection() {
-    return driftDatabase(
+  static QueryExecutor _openConnection() => driftDatabase(
       name: 'gametracker_db',
       native: const DriftNativeOptions(
         databaseDirectory: getApplicationSupportDirectory,
       ),
     );
-  }
 }

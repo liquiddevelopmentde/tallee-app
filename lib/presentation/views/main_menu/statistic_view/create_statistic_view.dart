@@ -126,8 +126,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   bool get enableSubmitButton =>
       (selectedTypes.isNotEmpty && selectedScopes.isNotEmpty) && !isLoading;
 
-  Widget buildClassifierSection(BuildContext context, AppLocalizations loc) {
-    return LabeledDropdown<StatisticType>.multi(
+  Widget buildClassifierSection(BuildContext context, AppLocalizations loc) => LabeledDropdown<StatisticType>.multi(
       title: loc.classifier,
       description: loc.classifier_description,
       hintText: loc.select_a_classifier,
@@ -139,10 +138,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       ],
       onItemTap: onClassifierTapped,
     );
-  }
 
-  Widget buildScopeSection(BuildContext context, AppLocalizations loc) {
-    return LabeledDropdown<StatisticScope>.multi(
+  Widget buildScopeSection(BuildContext context, AppLocalizations loc) => LabeledDropdown<StatisticScope>.multi(
       title: loc.scope,
       description: loc.scope_description,
       hintText: loc.select_a_scope,
@@ -153,10 +150,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       ],
       onItemTap: onScopeTapped,
     );
-  }
 
-  Widget buildTimeframeSection(BuildContext context, AppLocalizations loc) {
-    return LabeledDropdown<Timeframe>(
+  Widget buildTimeframeSection(BuildContext context, AppLocalizations loc) => LabeledDropdown<Timeframe>(
       title: loc.timeframe,
       description: loc.select_the_filtered_timeframe,
       hintText: isLoading ? loc.loading : loc.select_a_timeframe,
@@ -176,10 +171,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         setState(() => selectedTimeframe = timeframe);
       },
     );
-  }
 
-  Widget buildDateRangeField(BuildContext context) {
-    return Padding(
+  Widget buildDateRangeField(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -229,10 +222,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         ),
       ),
     );
-  }
 
-  Widget buildColorSection(BuildContext context, AppLocalizations loc) {
-    return LabeledDropdown<AppColor?>(
+  Widget buildColorSection(BuildContext context, AppLocalizations loc) => LabeledDropdown<AppColor?>(
       title: loc.color,
       description: loc.select_a_display_color,
       hintText: isLoading ? loc.loading : loc.select_a_timeframe,
@@ -262,7 +253,6 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         setState(() => selectedColor = color);
       },
     );
-  }
 
   /// Toggles a classifier (statistic type) selection.
   void onClassifierTapped(StatisticType value) {
@@ -435,11 +425,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   Future<List<DateTime?>?> showCustomTimeframePicker({
     DateTime? initialStartDate,
     DateTime? initialEndDate,
-  }) async {
-    return showDialog<List<DateTime?>>(
+  }) async => showDialog<List<DateTime?>>(
       context: context,
-      builder: (context) {
-        return Theme(
+      builder: (context) => Theme(
           data: Theme.of(context).copyWith(
             splashFactory: NoSplash.splashFactory,
             colorScheme: ColorScheme.dark(
@@ -542,10 +530,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               ),
             ),
           ),
-        );
-      },
+        ),
     );
-  }
 
   Widget buildColorCircle() {
     final segmentColors = [

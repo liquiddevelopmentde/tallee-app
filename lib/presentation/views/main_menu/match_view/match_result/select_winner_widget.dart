@@ -91,8 +91,7 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
         child: useTeamLogic
             ? ListView.builder(
                 itemCount: allTeams.length,
-                itemBuilder: (context, index) {
-                  return CustomCheckboxListTile(
+                itemBuilder: (context, index) => CustomCheckboxListTile(
                     content: isTeamMatch
                         ? TeamCard(
                             team: allTeams[index],
@@ -117,13 +116,11 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
                         widget.onTeamsSelected?.call(selectedTeams);
                       });
                     },
-                  );
-                },
+                  ),
               )
             : ListView.builder(
                 itemCount: allPlayers.length,
-                itemBuilder: (context, index) {
-                  return CustomCheckboxListTile(
+                itemBuilder: (context, index) => CustomCheckboxListTile(
                     content: buildUnitNameWidget(
                       context,
                       allPlayers[index],
@@ -146,8 +143,7 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
                         widget.onPlayersSelected?.call(selectedPlayers);
                       });
                     },
-                  );
-                },
+                  ),
               ),
       ),
     );

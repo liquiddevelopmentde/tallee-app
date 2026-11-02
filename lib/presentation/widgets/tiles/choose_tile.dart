@@ -29,8 +29,7 @@ class ChooseTile extends StatefulWidget {
 
 class _ChooseTileState extends State<ChooseTile> {
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: widget.onPressed != null
           ? () {
               HapticFeedback.selectionClick();
@@ -65,5 +64,4 @@ class _ChooseTileState extends State<ChooseTile> {
         ),
       ),
     );
-  }
 }

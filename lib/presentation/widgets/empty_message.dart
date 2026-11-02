@@ -17,8 +17,7 @@ class EmptyViewMessage extends StatelessWidget {
   final double spacing;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.paddingOf(context).bottom + 100,
       ),
@@ -59,5 +58,4 @@ class EmptyViewMessage extends StatelessWidget {
         ],
       ),
     );
-  }
 }

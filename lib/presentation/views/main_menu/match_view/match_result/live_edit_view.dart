@@ -82,8 +82,7 @@ class _LiveEditViewState extends State<LiveEditView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
+  Widget build(BuildContext context) => ListView.builder(
       itemCount: allUnits.length,
       itemBuilder: (context, index) {
         final unit = allUnits[index];
@@ -116,7 +115,6 @@ class _LiveEditViewState extends State<LiveEditView> {
         );
       },
     );
-  }
 
   bool get useTeamLogic => widget.match.useTeamLogic;
 

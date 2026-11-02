@@ -37,8 +37,7 @@ class InfoTile extends StatefulWidget {
 
 class _InfoTileState extends State<InfoTile> {
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: widget.padding ?? const EdgeInsets.all(12),
       margin: widget.margin,
       height: widget.height,
@@ -71,5 +70,4 @@ class _InfoTileState extends State<InfoTile> {
         ],
       ),
     );
-  }
 }

@@ -279,8 +279,7 @@ class TokenComponent extends StatelessWidget {
     BuildContext context, {
     String char = '',
     required bool active,
-  }) {
-    return Container(
+  }) => Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: active
@@ -301,5 +300,4 @@ class TokenComponent extends StatelessWidget {
         ),
       ),
     );
-  }
 }

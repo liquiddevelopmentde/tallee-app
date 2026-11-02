@@ -207,8 +207,7 @@ class _GameViewState extends State<GameView> with RouteAware {
                                       ),
                                       itemCount: displayedGames.length,
 
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return GameTile(
+                                      itemBuilder: (BuildContext context, int index) => GameTile(
                                           gameCount: getGameCount(
                                             displayedGames[index],
                                           ),
@@ -233,8 +232,7 @@ class _GameViewState extends State<GameView> with RouteAware {
                                             );
                                           },
                                           game: displayedGames[index],
-                                        );
-                                      },
+                                        ),
                                     ),
                                   ),
                                 )

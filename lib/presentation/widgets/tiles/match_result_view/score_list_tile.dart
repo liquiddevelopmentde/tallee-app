@@ -51,9 +51,7 @@ class ScoreListTile extends StatelessWidget {
               keyboardType: const TextInputType.numberWithOptions(signed: true),
               maxLength: 5,
               inputFormatters: [
-                TextInputFormatter.withFunction((oldValue, newValue) {
-                  return isValidScoreInput(newValue.text) ? newValue : oldValue;
-                }),
+                TextInputFormatter.withFunction((oldValue, newValue) => isValidScoreInput(newValue.text) ? newValue : oldValue),
               ],
               textAlign: TextAlign.center,
               style: TextStyle(

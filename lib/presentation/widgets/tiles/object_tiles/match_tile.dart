@@ -141,13 +141,11 @@ class _MatchTileState extends State<MatchTile> {
                   return Wrap(
                     spacing: spacing,
                     runSpacing: spacing,
-                    children: match.teams!.map((team) {
-                      return TeamCard(
+                    children: match.teams!.map((team) => TeamCard(
                         team: team,
                         compact: true,
                         width: itemWidth,
-                      );
-                    }).toList(),
+                      )).toList(),
                   );
                 },
               ),
@@ -189,9 +187,7 @@ class _MatchTileState extends State<MatchTile> {
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: players.map((player) {
-                  return PlayerTile(player: player);
-                }).toList(),
+                children: players.map((player) => PlayerTile(player: player)).toList(),
               ),
             ] else ...[
               Text(

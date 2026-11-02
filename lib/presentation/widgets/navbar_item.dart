@@ -94,8 +94,7 @@ class _NavbarItemState extends State<NavbarItem>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Expanded(
+  Widget build(BuildContext context) => Expanded(
       child: GestureDetector(
         onTap: () => widget.onTabTapped(widget.index),
         behavior: HitTestBehavior.opaque,
@@ -143,7 +142,6 @@ class _NavbarItemState extends State<NavbarItem>
         ),
       ),
     );
-  }
 
   @override
   void dispose() {

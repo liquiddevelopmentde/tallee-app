@@ -101,9 +101,7 @@ void main() {
         value: database,
         child: MaterialApp(
           home: Builder(
-            builder: (context) {
-              return Container();
-            },
+            builder: (context) => Container(),
           ),
         ),
       ),

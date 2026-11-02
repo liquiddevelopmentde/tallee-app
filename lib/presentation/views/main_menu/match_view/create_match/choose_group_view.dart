@@ -119,8 +119,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                 child: ListView.builder(
                   padding: const EdgeInsets.only(bottom: 85, top: 10),
                   itemCount: filteredGroups.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GroupTile(
+                  itemBuilder: (BuildContext context, int index) => GroupTile(
                       group: filteredGroups[index],
                       isHighlighted: selectedGroups.any(
                         (group) => group.id == filteredGroups[index].id,
@@ -153,8 +152,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                               });
                         }
                       },
-                    );
-                  },
+                    ),
                 ),
               ),
 

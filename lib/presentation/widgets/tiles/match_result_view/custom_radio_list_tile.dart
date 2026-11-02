@@ -20,8 +20,7 @@ class CustomRadioListTile<T> extends StatelessWidget {
   final ValueChanged<T> onContainerTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: () {
         HapticFeedback.selectionClick();
         onContainerTap(value);
@@ -42,5 +41,4 @@ class CustomRadioListTile<T> extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -157,8 +157,7 @@ class _TalleeState extends State<Tallee> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context) => MaterialApp(
       navigatorKey: Tallee.navigatorKey,
       scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
       localizationsDelegates: const [
@@ -186,7 +185,6 @@ class _TalleeState extends State<Tallee> {
       darkTheme: darkTheme,
       home: SplashScreen(onFinished: handleSplashFinished),
     );
-  }
 
   void handleSplashFinished() {
     final navigator = Tallee.navigatorKey.currentState;
@@ -210,9 +208,7 @@ class _TalleeState extends State<Tallee> {
               : RouteNames.groupView,
         ),
         pageBuilder: (context, animation, secondaryAnimation) => targetWidget,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
       ),
     );
 

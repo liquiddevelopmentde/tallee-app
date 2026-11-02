@@ -53,8 +53,7 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Expanded(
+  Widget build(BuildContext context) => Expanded(
       child: useTeamLogic
           ? RadioGroup<Team>(
               groupValue: selectedTeam,
@@ -67,8 +66,7 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: allTeams.length,
-                itemBuilder: (context, index) {
-                  return CustomRadioListTile(
+                itemBuilder: (context, index) => CustomRadioListTile(
                     content: isTeamMatch
                         ? TeamCard(
                             team: allTeams[index],
@@ -93,8 +91,7 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
                         widget.onTeamSelected?.call(selectedTeam);
                       });
                     },
-                  );
-                },
+                  ),
               ),
             )
           : RadioGroup<Player>(
@@ -107,8 +104,7 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: allPlayers.length,
-                itemBuilder: (context, index) {
-                  return CustomRadioListTile(
+                itemBuilder: (context, index) => CustomRadioListTile(
                     content: buildUnitNameWidget(
                       context,
                       allPlayers[index],
@@ -131,10 +127,8 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
                         widget.onPlayerSelected?.call(selectedPlayer);
                       });
                     },
-                  );
-                },
+                  ),
               ),
             ),
     );
-  }
 }

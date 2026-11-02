@@ -42,8 +42,7 @@ class TextInputField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
 
   @override
-  Widget build(BuildContext context) {
-    return TextField(
+  Widget build(BuildContext context) => TextField(
       controller: controller,
       onChanged: onChanged,
       onSubmitted: onSubmitted,
@@ -70,5 +69,4 @@ class TextInputField extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),
     );
-  }
 }

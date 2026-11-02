@@ -24,8 +24,7 @@ class CustomAdaptiveSwitch extends StatefulWidget {
 
 class _CustomAdaptiveSwitchState extends State<CustomAdaptiveSwitch> {
   @override
-  Widget build(BuildContext context) {
-    return Switch.adaptive(
+  Widget build(BuildContext context) => Switch.adaptive(
       value: widget.value,
       onChanged: (bool value) => {
         HapticFeedback.selectionClick(),
@@ -34,5 +33,4 @@ class _CustomAdaptiveSwitchState extends State<CustomAdaptiveSwitch> {
       activeTrackColor: AppColors.primaryColor,
       padding: widget.padding,
     );
-  }
 }

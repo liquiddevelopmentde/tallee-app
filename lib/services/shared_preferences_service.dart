@@ -88,9 +88,7 @@ class SharedPreferencesService {
   }
 
   /// Returns null when the key is not set, so user wasn't asked yet
-  static bool? getSharingConsent() {
-    return _instance.getBool(sharingConsentKey);
-  }
+  static bool? getSharingConsent() => _instance.getBool(sharingConsentKey);
 
   static Future<void> setSharingConsent(bool hasSharingConsent) async {
     await _instance.setBool(sharingConsentKey, hasSharingConsent);
@@ -100,27 +98,21 @@ class SharedPreferencesService {
     _instance.setBool(showFavouritesKey, showFavourites);
   }
 
-  static bool getShowFavourites() {
-    return _instance.getBool(showFavouritesKey) ?? false;
-  }
+  static bool getShowFavourites() => _instance.getBool(showFavouritesKey) ?? false;
 
   static void setFilteredGroups(List<Group> groups) {
     final List<String> groupJsonList = groups.map((group) => group.id).toList();
     _instance.setStringList(filteredGroupsKey, groupJsonList);
   }
 
-  static List<String> getFilteredGroups() {
-    return _instance.getStringList(filteredGroupsKey) ?? [];
-  }
+  static List<String> getFilteredGroups() => _instance.getStringList(filteredGroupsKey) ?? [];
 
   static void setFilteredGames(List<Game> games) {
     final List<String> gameJsonList = games.map((game) => game.id).toList();
     _instance.setStringList(filteredGamesKey, gameJsonList);
   }
 
-  static List<String> getFilteredGames() {
-    return _instance.getStringList(filteredGamesKey) ?? [];
-  }
+  static List<String> getFilteredGames() => _instance.getStringList(filteredGamesKey) ?? [];
 
   static void setFilteredTimeframes(List<Timeframe> timeframes) {
     final List<String> timeframeJsonList = timeframes
@@ -162,9 +154,7 @@ class SharedPreferencesService {
         .toList();
   }
 
-  static bool isOnboardingCompleted() {
-    return _instance.getBool(onboardingCompletedKey) ?? false;
-  }
+  static bool isOnboardingCompleted() => _instance.getBool(onboardingCompletedKey) ?? false;
 
   static void setOnboardingCompleted(bool completed) {
     _instance.setBool(onboardingCompletedKey, completed);
@@ -174,17 +164,13 @@ class SharedPreferencesService {
     _instance.setBool(showcaseTourSkippedKey, skipped);
   }
 
-  static bool isTourSkipped() {
-    return _instance.getBool(showcaseTourSkippedKey) ?? false;
-  }
+  static bool isTourSkipped() => _instance.getBool(showcaseTourSkippedKey) ?? false;
 
   static void setTourCompleted(bool completed) {
     _instance.setBool(showcaseTourCompletedKey, completed);
   }
 
-  static bool isTourCompleted() {
-    return _instance.getBool(showcaseTourCompletedKey) ?? false;
-  }
+  static bool isTourCompleted() => _instance.getBool(showcaseTourCompletedKey) ?? false;
 
   static void setShowcaseSeen(List<String> screenKeys) {
     final currentKeys = getShowcaseSeen();
@@ -192,14 +178,10 @@ class SharedPreferencesService {
     _instance.setStringList(showcaseSeenKey, updatedKeys);
   }
 
-  static List<String> getShowcaseSeen() {
-    return _instance.getStringList(showcaseSeenKey) ?? [];
-  }
+  static List<String> getShowcaseSeen() => _instance.getStringList(showcaseSeenKey) ?? [];
 
-  static bool hasSeenShowcase(String screenKey) {
-    return _instance.getStringList(showcaseSeenKey)?.contains(screenKey) ??
+  static bool hasSeenShowcase(String screenKey) => _instance.getStringList(showcaseSeenKey)?.contains(screenKey) ??
         false;
-  }
 
   static void resetSeenShowcase() {
     _instance.setStringList(showcaseSeenKey, []);

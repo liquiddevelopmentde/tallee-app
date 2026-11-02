@@ -24,8 +24,7 @@ class TopCenteredMessage extends StatelessWidget {
   final bool fullscreen;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: fullscreen ? const EdgeInsets.only(top: 100) : null,
       margin: const EdgeInsets.symmetric(horizontal: 10),
       alignment: Alignment.topCenter,
@@ -63,5 +62,4 @@ class TopCenteredMessage extends StatelessWidget {
         ],
       ),
     );
-  }
 }

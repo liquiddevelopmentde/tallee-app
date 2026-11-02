@@ -52,8 +52,7 @@ Widget _buildPlayerNameCountWidget(
   TextStyle? mainStyle,
   TextStyle? countStyle,
   bool highlighted = false,
-}) {
-  return Text.rich(
+}) => Text.rich(
     buildPlayerNameCountSpan(
       context,
       player,
@@ -62,7 +61,6 @@ Widget _buildPlayerNameCountWidget(
       highlighted: highlighted,
     ),
   );
-}
 
 /// Builds a name display widget for a "Participating Unit" (Player or Team/Pair).
 /// Handles teams, pairs, and individual players with consistent styling.

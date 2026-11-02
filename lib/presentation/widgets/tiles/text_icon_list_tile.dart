@@ -31,8 +31,7 @@ class TextIconListTile extends StatelessWidget {
   final VoidCallback? onTileTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTileTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -86,5 +85,4 @@ class TextIconListTile extends StatelessWidget {
         ),
       ),
     );
-  }
 }

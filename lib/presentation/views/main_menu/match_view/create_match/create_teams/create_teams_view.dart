@@ -87,8 +87,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                     : 110,
               ),
               itemCount: teams.length,
-              itemBuilder: (context, index) {
-                return TeamCreationTile(
+              itemBuilder: (context, index) => TeamCreationTile(
                   color: teams[index].color,
                   controller: nameController[index],
                   hintText: '${loc.team} ${index + 1}',
@@ -103,8 +102,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                       ? TextInputAction.done
                       : TextInputAction.next,
                   onSubmitted: (_) => focusNextTile(index),
-                );
-              },
+                ),
             ),
           ),
 
@@ -306,13 +304,11 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       final matchPlayerIds = matchPlayers.map((p) => p.id).toSet();
 
       // Use prefilled teams, exclude players that are not in the matches players anymore
-      teams = previousTeams.map((team) {
-        return team.copyWith(
+      teams = previousTeams.map((team) => team.copyWith(
           members: team.members
               .where((member) => matchPlayerIds.contains(member.id))
               .toList(),
-        );
-      }).toList();
+        )).toList();
     } else {
       // Init the teams/reset teams
       teams = List.generate(

@@ -28,8 +28,7 @@ class _DataManagementViewState extends State<DataManagementView> {
     final loc = AppLocalizations.of(context);
     return ScaffoldMessenger(
       child: Builder(
-        builder: (scaffoldMessengerContext) {
-          return Scaffold(
+        builder: (scaffoldMessengerContext) => Scaffold(
             appBar: AppBar(title: Text(loc.data_backup)),
             backgroundColor: context.talleeColors.backgroundColor,
             body: SingleChildScrollView(
@@ -108,8 +107,7 @@ class _DataManagementViewState extends State<DataManagementView> {
                 ],
               ),
             ),
-          );
-        },
+          ),
       ),
     );
   }
@@ -140,8 +138,7 @@ class _DataManagementViewState extends State<DataManagementView> {
       await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CustomAlertDialog(
+        builder: (BuildContext context) => CustomAlertDialog(
             title: loc.update_available,
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,8 +174,7 @@ class _DataManagementViewState extends State<DataManagementView> {
                 },
               ),
             ],
-          );
-        },
+          ),
       );
     }
   }

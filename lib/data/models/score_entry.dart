@@ -14,20 +14,16 @@ class ScoreEntry {
   }) : change = change ?? score ?? 0;
 
   @override
-  String toString() {
-    return 'ScoreEntry{roundNumber: $roundNumber, change: $change, score: $score}';
-  }
+  String toString() => 'ScoreEntry{roundNumber: $roundNumber, change: $change, score: $score}';
 
   ScoreEntry copyWith({
     int? roundNumber,
     int? change,
     @Deprecated('Use change instead') int? score,
-  }) {
-    return ScoreEntry(
+  }) => ScoreEntry(
       roundNumber: roundNumber ?? this.roundNumber,
       change: change ?? this.change,
     );
-  }
 
   @override
   bool operator ==(Object other) =>

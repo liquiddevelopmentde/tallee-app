@@ -6,8 +6,7 @@ import 'package:tallee/core/theme/tallee_theme_colors.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 extension ThemeDataToFlutter on ThemeData {
-  flutter_material.ThemeData toFlutterThemeData() {
-    return flutter_material.ThemeData(
+  flutter_material.ThemeData toFlutterThemeData() => flutter_material.ThemeData(
       brightness: brightness,
       primaryColor: AppColors.primaryColor,
       dividerColor: dividerColor,
@@ -32,7 +31,6 @@ extension ThemeDataToFlutter on ThemeData {
         bodyLarge: textTheme.bodyLarge,
       ),
     );
-  }
 }
 
 // ==================== Component Themes ====================
@@ -125,11 +123,9 @@ ThemeData _createThemeData({required bool isDarkMode}) {
     overlayColor: const WidgetStatePropertyAll(Colors.transparent),
   );
   final radioTheme = RadioThemeData(
-    fillColor: WidgetStateProperty.resolveWith<Color>((states) {
-      return states.contains(WidgetState.selected)
+    fillColor: WidgetStateProperty.resolveWith<Color>((states) => states.contains(WidgetState.selected)
           ? AppColors.primaryColor
-          : palette.textColor;
-    }),
+          : palette.textColor),
   );
   final inputDecorationTheme = InputDecorationTheme(
     labelStyle: TextStyle(color: palette.textColor),

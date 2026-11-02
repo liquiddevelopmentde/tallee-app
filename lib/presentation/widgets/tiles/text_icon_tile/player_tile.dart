@@ -23,8 +23,7 @@ class PlayerTile extends StatelessWidget {
   final bool selected;
 
   @override
-  Widget build(BuildContext context) {
-    return TextIconTile(
+  Widget build(BuildContext context) => TextIconTile(
       showIcon: showIcon,
       icon: icon,
       muted: player.deleted,
@@ -49,5 +48,4 @@ class PlayerTile extends StatelessWidget {
         ],
       ),
     );
-  }
 }

@@ -58,8 +58,7 @@ class NewsCard extends StatelessWidget {
     );
   }
 
-  MarkdownStyleSheet buildMarkdownSheet(BuildContext context) {
-    return MarkdownStyleSheet.fromTheme(Theme.of(context).toFlutterThemeData())
+  MarkdownStyleSheet buildMarkdownSheet(BuildContext context) => MarkdownStyleSheet.fromTheme(Theme.of(context).toFlutterThemeData())
         .copyWith(
           p: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: context.talleeColors.textColor,
@@ -71,5 +70,4 @@ class NewsCard extends StatelessWidget {
             overflow: TextOverflow.visible,
           ),
         );
-  }
 }

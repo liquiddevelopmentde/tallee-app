@@ -23,9 +23,7 @@ class Team {
        createdAt = createdAt ?? clock.now();
 
   @override
-  String toString() {
-    return 'Team{id: $id, name: $name, color: $color, score: $score, members: $members}';
-  }
+  String toString() => 'Team{id: $id, name: $name, color: $color, score: $score, members: $members}';
 
   Team copyWith({
     String? id,
@@ -34,8 +32,7 @@ class Team {
     AppColor? color,
     int? score,
     List<Player>? members,
-  }) {
-    return Team(
+  }) => Team(
       id: id ?? this.id,
       name: name ?? this.name,
       createdAt: createdAt ?? this.createdAt,
@@ -43,7 +40,6 @@ class Team {
       score: score ?? this.score,
       members: members ?? this.members,
     );
-  }
 
   @override
   bool operator ==(Object other) =>
@@ -103,8 +99,7 @@ class Team {
   factory Team.fromNormalizedJson(
     Map<String, dynamic> json,
     List<Player> members,
-  ) {
-    return Team(
+  ) => Team(
       id: json['id'],
       name: json['name'],
       createdAt: DateTime.parse(json['createdAt']),
@@ -115,5 +110,4 @@ class Team {
       score: json['score'],
       members: members,
     );
-  }
 }

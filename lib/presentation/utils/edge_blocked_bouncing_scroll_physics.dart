@@ -23,14 +23,12 @@ class EdgeBlockedBouncingScrollPhysics extends BouncingScrollPhysics {
   final double minFlingVelocity;
 
   @override
-  EdgeBlockedBouncingScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return EdgeBlockedBouncingScrollPhysics(
+  EdgeBlockedBouncingScrollPhysics applyTo(ScrollPhysics? ancestor) => EdgeBlockedBouncingScrollPhysics(
       parent: buildParent(ancestor),
       momentumMultiplier: momentumMultiplier,
       friction: friction,
       minFlingVelocity: minFlingVelocity,
     );
-  }
 
   @override
   double applyBoundaryConditions(ScrollMetrics position, double value) {
@@ -50,25 +48,17 @@ class EdgeBlockedBouncingScrollPhysics extends BouncingScrollPhysics {
     return 0;
   }
 
-  bool _isUnderscrolling(ScrollMetrics position, double value) {
-    return value < position.pixels &&
+  bool _isUnderscrolling(ScrollMetrics position, double value) => value < position.pixels &&
         position.pixels <= position.minScrollExtent;
-  }
 
-  bool _isOverscrolling(ScrollMetrics position, double value) {
-    return position.maxScrollExtent <= position.pixels &&
+  bool _isOverscrolling(ScrollMetrics position, double value) => position.maxScrollExtent <= position.pixels &&
         position.pixels < value;
-  }
 
-  bool _didHitTopEdge(ScrollMetrics position, double value) {
-    return value < position.minScrollExtent &&
+  bool _didHitTopEdge(ScrollMetrics position, double value) => value < position.minScrollExtent &&
         position.minScrollExtent < position.pixels;
-  }
 
-  bool _didHitBottomEdge(ScrollMetrics position, double value) {
-    return position.pixels < position.maxScrollExtent &&
+  bool _didHitBottomEdge(ScrollMetrics position, double value) => position.pixels < position.maxScrollExtent &&
         position.maxScrollExtent < value;
-  }
 
   @override
   Simulation? createBallisticSimulation(
@@ -115,8 +105,6 @@ class EdgeBlockedBouncingScrollPhysics extends BouncingScrollPhysics {
   }
 
   @override
-  double carriedMomentum(double existingVelocity) {
-    return super.carriedMomentum(existingVelocity) +
+  double carriedMomentum(double existingVelocity) => super.carriedMomentum(existingVelocity) +
         (existingVelocity * (momentumMultiplier - 1));
-  }
 }

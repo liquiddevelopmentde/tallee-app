@@ -514,8 +514,7 @@ class _MatchViewState extends State<MatchView> {
   }
 
   /// Shows a dialog to check for the users opinion on the app
-  Future<bool?> showPreRateDialog(AppLocalizations loc) async {
-    return await showDialog<bool>(
+  Future<bool?> showPreRateDialog(AppLocalizations loc) async => await showDialog<bool>(
       context: context,
       builder: (context) => CustomAlertDialog(
         closeButtonColor: context.talleeColors.hintColor,
@@ -535,7 +534,6 @@ class _MatchViewState extends State<MatchView> {
         ],
       ),
     );
-  }
 
   /// Shows a dialog prompting the user to contact support via email if they are unsatisfied with the app.
   void showBadRatingDialog(AppLocalizations loc) {

@@ -77,8 +77,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 150),
                   transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                        return FadeTransition(
+                      (Widget child, Animation<double> animation) => FadeTransition(
                           opacity: animation,
                           child: ScaleTransition(
                             scale: animation.drive(
@@ -89,8 +88,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                             ),
                             child: child,
                           ),
-                        );
-                      },
+                        ),
                   child: !successfulImport
                       ? ChooseMatchFileWidget(loc: loc, lastResult: lastResult)
                       : DisplaySelectedFileWidget(
