@@ -50,7 +50,7 @@ class _MatchViewState extends State<MatchView> {
   bool isLoading = true;
   bool isSearchBarVisible = true;
   MatchFilter selectedFilter =
-      SharedPreferencesService.getMatchFilter() ?? MatchFilter.all;
+      SharedPreferencesService.matchFilter ?? MatchFilter.all;
 
   final GlobalKey matchViewCreateButtonKey = GlobalKey();
   final String matchViewCreateButtonIdentifier =
@@ -424,7 +424,7 @@ class _MatchViewState extends State<MatchView> {
       applySearch(searchBarController.text);
     });
 
-    SharedPreferencesService.setMatchFilter(filter);
+    SharedPreferencesService.matchFilter = filter;
   }
 
   void applySearch(String query) {

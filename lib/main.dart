@@ -193,8 +193,7 @@ class _TalleeState extends State<Tallee> {
     final path = pendingImportPath;
     pendingImportPath = null;
 
-    bool isOnboardingCompleted =
-        SharedPreferencesService.isOnboardingCompleted();
+    bool isOnboardingCompleted = SharedPreferencesService.onboardingCompleted;
 
     final targetWidget = !isOnboardingCompleted
         ? OnboardingView(onCompleted: () => navigateToHomeAndHandleImport(path))

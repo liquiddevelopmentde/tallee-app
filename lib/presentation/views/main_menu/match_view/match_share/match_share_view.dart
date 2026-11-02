@@ -158,11 +158,11 @@ class _MatchShareViewState extends State<MatchShareView>
     late bool? hasStoredSharingConsent;
 
     if (initialSharingConsent == null) {
-      hasStoredSharingConsent = SharedPreferencesService.getSharingConsent();
+      hasStoredSharingConsent = SharedPreferencesService.sharingConsent;
       if (hasStoredSharingConsent == null) {
         bool? userDecision = await showConsentDialog();
         if (userDecision != null) {
-          await SharedPreferencesService.setSharingConsent(userDecision);
+          SharedPreferencesService.sharingConsent = userDecision;
           hasStoredSharingConsent = userDecision;
         } else {
           // if the user closed popup without selecting an option, set decision

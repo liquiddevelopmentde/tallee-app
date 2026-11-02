@@ -85,7 +85,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   fontWeight: FontWeight.bold,
                 ),
                 onPressed: () {
-                  SharedPreferencesService.setOnboardingCompleted(true);
+                  SharedPreferencesService.onboardingCompleted = true;
                   widget.onCompleted();
                 },
               ),
@@ -179,7 +179,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     sizeRelativeToWidth: 0.6,
                     onPressed: () {
                       if (isLastPage) {
-                        SharedPreferencesService.setOnboardingCompleted(true);
+                        SharedPreferencesService.onboardingCompleted = true;
                         widget.onCompleted();
                       } else {
                         pageController.nextPage(

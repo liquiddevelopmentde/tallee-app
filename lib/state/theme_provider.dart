@@ -3,7 +3,7 @@ import 'package:tallee/services/shared_preferences_service.dart';
 
 class ThemeProvider extends ChangeNotifier with WidgetsBindingObserver {
   ThemeProvider() {
-    _themeMode = SharedPreferencesService.getThemeMode();
+    _themeMode = SharedPreferencesService.themeMode;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -14,7 +14,7 @@ class ThemeProvider extends ChangeNotifier with WidgetsBindingObserver {
   void setThemeMode(ThemeMode mode) {
     if (_themeMode == mode) return;
     _themeMode = mode;
-    SharedPreferencesService.setThemeMode(mode);
+    SharedPreferencesService.themeMode = mode;
     notifyListeners();
   }
 

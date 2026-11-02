@@ -100,9 +100,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                   activated: noFilterActivated,
                                   onTap: () => {
                                     showOnlyFavourites = false,
-                                    SharedPreferencesService.setShowFavourites(
-                                      false,
-                                    ),
+                                    SharedPreferencesService.showFavourites =
+                                        false,
                                     resetFilter(includeFavourites: true),
                                   },
                                 ),
@@ -116,9 +115,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                       showOnlyFavourites = true;
                                       resetFilter(includeFavourites: false);
                                     }),
-                                    SharedPreferencesService.setShowFavourites(
-                                      showOnlyFavourites,
-                                    ),
+                                    SharedPreferencesService.showFavourites =
+                                        showOnlyFavourites,
                                     createStatisticTiles(),
                                   },
                                 ),
@@ -150,9 +148,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                         resetFavourites();
                                       }
                                     });
-                                    SharedPreferencesService.setFilteredGroups(
-                                      filteredGroups,
-                                    );
+                                    SharedPreferencesService.filteredGroupIds =
+                                        filteredGroups
+                                            .map((e) => e.id)
+                                            .toList();
                                     createStatisticTiles();
                                   },
                                 ),
@@ -185,9 +184,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                         resetFavourites();
                                       }
                                     });
-                                    SharedPreferencesService.setFilteredGames(
-                                      filteredGames,
-                                    );
+                                    SharedPreferencesService.filteredGameIds =
+                                        filteredGames.map((e) => e.id).toList();
                                     createStatisticTiles();
                                   },
                                 ),
@@ -226,9 +224,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                                         resetFavourites();
                                       }
                                     });
-                                    SharedPreferencesService.setFilteredStatisticTypes(
-                                      filteredStatisticTypes,
-                                    );
+                                    SharedPreferencesService
+                                            .filteredStatisticTypes =
+                                        filteredStatisticTypes;
                                     createStatisticTiles();
                                   },
                                 ),
@@ -264,9 +262,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                                         resetFavourites();
                                       }
                                     });
-                                    SharedPreferencesService.setFilteredTimeframes(
-                                      filteredTimeframes,
-                                    );
+                                    SharedPreferencesService
+                                            .filteredTimeframes =
+                                        filteredTimeframes;
                                     createStatisticTiles();
                                   },
                                 ),
@@ -468,8 +466,8 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   /// Loads the filter data from shared preferences and applies it to the current data
   void loadFilterData() {
-    final filteredGroupIds = SharedPreferencesService.getFilteredGroups();
-    final filteredGameIds = SharedPreferencesService.getFilteredGames();
+    final filteredGroupIds = SharedPreferencesService.filteredGroupIds;
+    final filteredGameIds = SharedPreferencesService.filteredGameIds;
 
     filteredGroups = groups
         .where((group) => filteredGroupIds.contains(group.id))
@@ -477,10 +475,9 @@ class _StatisticsViewState extends State<StatisticsView> {
     filteredGames = games
         .where((game) => filteredGameIds.contains(game.id))
         .toList();
-    filteredStatisticTypes =
-        SharedPreferencesService.getFilteredStatisticTypes();
-    filteredTimeframes = SharedPreferencesService.getFilteredTimeframes();
-    showOnlyFavourites = SharedPreferencesService.getShowFavourites();
+    filteredStatisticTypes = SharedPreferencesService.filteredStatisticTypes;
+    filteredTimeframes = SharedPreferencesService.filteredTimeframes;
+    showOnlyFavourites = SharedPreferencesService.showFavourites;
   }
 
   /// Builds a [StatisticsTile] for a given statistic.
@@ -616,7 +613,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   Future<void> resetFavourites() async {
     setState(() {
       showOnlyFavourites = false;
-      SharedPreferencesService.setShowFavourites(false);
+      SharedPreferencesService.showFavourites = false;
     });
   }
 }
