@@ -62,10 +62,7 @@ class StatisticCalculator {
       final minDate = _getMinimumDate(timeframe: statistic.timeframe);
       if (minDate != null) {
         filteredMatches = matches
-            .where(
-              (m) =>
-                  m.game.ruleset.isPlacement && !m.createdAt.isBefore(minDate),
-            )
+            .where((m) => m.hasEnded && !m.createdAt.isBefore(minDate))
             .toList();
       }
     }

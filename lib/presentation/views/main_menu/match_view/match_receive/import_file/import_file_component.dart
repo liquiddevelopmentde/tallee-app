@@ -3,9 +3,9 @@ import 'dart:core' hide Match;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
-import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
@@ -157,7 +157,9 @@ class _ImportFileCardState extends State<ImportFileCard> {
     processFile(data);
   }
 
-  void processFile(dynamic data) {
+  void processFile(
+    ({ImportResult result, Match? match, String filePath}) data,
+  ) {
     lastResult = data.result;
     if (data.result.isSuccess) {
       HapticFeedback.successNotification();
@@ -170,7 +172,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
       successfulImport = false;
 
       setState(() {
-        if (data.result.isNotCanceled) {
+        if (!data.result.isCanceled) {
           dottedBorderColor = Colors.red;
         } else {
           dottedBorderColor = context.talleeColors.boxBorderColor;
