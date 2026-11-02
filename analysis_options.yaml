@@ -46,7 +46,6 @@ linter:
     use_named_constants: true
 
     # Style
-    avoid_positional_boolean_parameters: true
     avoid_redundant_argument_values: true
     comment_references: true
     directives_ordering: true
