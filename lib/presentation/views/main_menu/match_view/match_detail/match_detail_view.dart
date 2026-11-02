@@ -11,7 +11,6 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_detail/matc
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/match_share_view.dart';
 import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
 
@@ -132,7 +131,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   void shareMatch() {
     final loc = AppLocalizations.of(context);
-    if (match.endedAt != null) {
+    if (match.hasEnded) {
       Navigator.of(context).push(
         adaptivePageRoute(
           settings: const RouteSettings(name: RouteNames.matchShareView),

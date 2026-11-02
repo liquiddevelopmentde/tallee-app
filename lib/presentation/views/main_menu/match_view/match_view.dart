@@ -407,13 +407,9 @@ class _MatchViewState extends State<MatchView> {
       case MatchFilter.all:
         filteredMatches = [...allMatches];
       case MatchFilter.active:
-        filteredMatches = allMatches
-            .where((match) => match.endedAt == null)
-            .toList();
+        filteredMatches = allMatches.where((match) => !match.hasEnded).toList();
       case MatchFilter.finished:
-        filteredMatches = allMatches
-            .where((match) => match.endedAt != null)
-            .toList();
+        filteredMatches = allMatches.where((match) => match.hasEnded).toList();
       case MatchFilter.team:
         filteredMatches = allMatches
             .where((match) => match.isTeamMatch)

@@ -356,7 +356,6 @@ class MatchProfileBody extends StatelessWidget {
 
   Widget getMultiResultRows(BuildContext context, AppLocalizations loc) {
     List<(Widget, int)> scores = getSortedScores(context);
-    bool hasMatchEnded = match.endedAt != null;
 
     return Column(
       children: [
@@ -365,7 +364,7 @@ class MatchProfileBody extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(child: scores[i].$1),
-              hasMatchEnded
+              match.hasEnded
                   ? getResultValueText(context, loc, i, scores[i].$2)
                   : const Text('-'),
             ],

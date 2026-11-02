@@ -232,7 +232,7 @@ class _MatchTileState extends State<MatchTile> {
     final match = widget.match;
 
     // Match in progress display
-    if (match.endedAt == null) {
+    if (!match.hasEnded) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(

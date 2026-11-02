@@ -275,6 +275,8 @@ class Match {
 
   bool get hasResult => mvp.isNotEmpty || mvt.isNotEmpty;
 
+  bool get hasEnded => endedAt != null;
+
   /// Counts how many players in the [match] are not part of the group
   ///
   /// Returns the text you append after the group name, e.g. " + 5" or an empty
@@ -456,7 +458,7 @@ class Match {
   /// False when ruleset is not lives or match hasnt ended yet
   bool get isTie {
     if (game.ruleset != Ruleset.lives) return false;
-    if (endedAt == null) return false;
+    if (!hasEnded) return false;
     if (useTeamLogic) {
       return mvt.isEmpty;
     }

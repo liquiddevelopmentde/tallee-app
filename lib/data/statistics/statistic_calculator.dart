@@ -48,7 +48,7 @@ class StatisticCalculator {
           59,
         );
         filteredMatches = matches.where((m) {
-          if (m.endedAt == null) return false;
+          if (!m.hasEnded) return false;
           final isAfterOrAtStart =
               m.createdAt.isAtSameMomentAs(startOfDay) ||
               m.createdAt.isAfter(startOfDay);
@@ -62,7 +62,11 @@ class StatisticCalculator {
       final minDate = _getMinimumDate(timeframe: statistic.timeframe);
       if (minDate != null) {
         filteredMatches = matches
-            .where((m) => m.endedAt != null && !m.createdAt.isBefore(minDate))
+            .where(
+              (m) =>
+                  m.game.ruleset.isPlacementRuleset &&
+                  !m.createdAt.isBefore(minDate),
+            )
             .toList();
       }
     }
