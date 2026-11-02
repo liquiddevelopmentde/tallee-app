@@ -150,7 +150,7 @@ class AnimatedContent extends StatelessWidget {
                     HapticIconButton(
                       padding: EdgeInsets.zero,
                       icon: Icon(
-                        actionIcon!,
+                        actionIcon,
                         color: context.talleeColors.textColor,
                         size: 20,
                       ),

@@ -104,7 +104,7 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                                     )
                                   : buildUnitNameWidget(
                                       context,
-                                      widget.associatedPlayer!,
+                                      widget.associatedPlayer,
                                       mainStyle: const TextStyle(fontSize: 17),
                                       countStyle: TextStyle(
                                         fontSize: 15,

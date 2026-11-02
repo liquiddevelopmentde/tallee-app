@@ -279,8 +279,8 @@ void main() {
         );
 
         expect(scores.length, 2);
-        expect(scores[testPlayer1.id]!, isNotNull);
-        expect(scores[testPlayer2.id]!, isNotNull);
+        expect(scores[testPlayer1.id], isNotNull);
+        expect(scores[testPlayer2.id], isNotNull);
       });
 
       test('getAllMatchScores() with no scores saved', () async {
