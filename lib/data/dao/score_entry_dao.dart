@@ -481,7 +481,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       await db.scoreEntryDao.addScore(
         matchId: matchId,
         playerId: players[i].id,
-        entry: ScoreEntry(roundNumber: 0, change: players.length - i),
+        entry: ScoreEntry(change: players.length - i),
       );
     }
   }

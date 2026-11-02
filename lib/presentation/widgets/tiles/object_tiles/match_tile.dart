@@ -239,7 +239,6 @@ class _MatchTileState extends State<MatchTile> {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: context.talleeColors.warningColor.withValues(alpha: 0.3),
-            width: 1,
           ),
         ),
         child: Row(
@@ -275,7 +274,6 @@ class _MatchTileState extends State<MatchTile> {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: AppColors.primaryColor.withValues(alpha: 0.3),
-            width: 1,
           ),
         ),
         child: Row(
@@ -310,7 +308,6 @@ class _MatchTileState extends State<MatchTile> {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: context.talleeColors.successColor.withValues(alpha: 0.3),
-          width: 1,
         ),
       ),
       child: Row(

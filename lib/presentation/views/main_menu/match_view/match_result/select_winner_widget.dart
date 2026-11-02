@@ -102,7 +102,6 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
                         : buildUnitNameWidget(
                             context,
                             allTeams[index],
-                            isTeamMatch: false,
                           ),
                     value: selectedTeams.contains(allTeams[index]),
                     onChanged: (bool value) {

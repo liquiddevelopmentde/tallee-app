@@ -50,7 +50,6 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
         body: Column(
           children: [
             Align(
-              alignment: Alignment.center,
               child: Container(
                 margin: AppSpacing.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
@@ -100,7 +99,6 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                             color: context.talleeColors.warningColor.withAlpha(
                               150,
                             ),
-                            width: 1,
                           ),
                         ),
                         child: Center(

@@ -40,7 +40,6 @@ class _AssociateGameViewState extends State<AssociateGameView> {
         body: Column(
           children: [
             Align(
-              alignment: Alignment.center,
               child: Container(
                 margin: AppSpacing.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
@@ -88,7 +87,6 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                         decoration: context.standardBoxDecoration.copyWith(
                           border: Border.all(
                             color: Colors.orange.withAlpha(150),
-                            width: 1,
                           ),
                         ),
                         child: Center(

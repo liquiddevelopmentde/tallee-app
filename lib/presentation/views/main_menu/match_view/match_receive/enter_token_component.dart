@@ -97,12 +97,11 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
         const SizedBox(height: 50),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Icon(Icons.cloud_download, size: 50),
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+              margin: const EdgeInsets.symmetric(horizontal: 30),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(
                 loc.input_token_instruction,
@@ -133,7 +132,6 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               focusedPinTheme: focusedPinTheme,
               errorPinTheme: errorPinTheme,
               disabledPinTheme: disabledPinTheme,
-              pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
               showCursor: false,
               animationCurve: Curves.easeInOutCubic,
               animationDuration: const Duration(milliseconds: 100),
@@ -172,7 +170,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
         ),
         Container(
           width: double.infinity,
-          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+          margin: const EdgeInsets.symmetric(horizontal: 30),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Text(
             loc.share_token_format_info,

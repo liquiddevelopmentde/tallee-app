@@ -162,7 +162,6 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                             : (isErrorReport
                                   ? loc.report_error
                                   : loc.send_feedback),
-                        buttonType: ButtonType.primary,
                         onPressed: canSubmit ? () => submit(loc) : null,
                       ),
                       const SizedBox(height: 16),
@@ -211,7 +210,6 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
 
         targetEventId = await Sentry.captureMessage(
           'Feedback: $title',
-          level: SentryLevel.info,
           withScope: (scope) {
             scope.fingerprint = [
               DateTime.now().microsecondsSinceEpoch.toString(),

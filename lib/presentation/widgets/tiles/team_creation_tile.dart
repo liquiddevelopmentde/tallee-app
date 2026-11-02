@@ -60,7 +60,6 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                   children: [
                     // Name input + delete icon
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(

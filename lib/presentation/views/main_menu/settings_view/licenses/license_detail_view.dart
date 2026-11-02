@@ -25,7 +25,6 @@ class LicenseDetailView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             spacing: 10,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Center(
                 child: Column(
@@ -84,7 +83,6 @@ class LicenseDetailView extends StatelessWidget {
                           final uri = Uri.parse(package.homepage!);
                           await launchUrl(
                             uri,
-                            mode: LaunchMode.platformDefault,
                           );
                         },
                         child: SizedBox(

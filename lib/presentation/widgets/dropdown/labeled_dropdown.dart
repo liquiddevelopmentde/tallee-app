@@ -288,7 +288,7 @@ class LabeledDropdown<T> extends StatelessWidget {
     decoration: BoxDecoration(
       color: context.talleeColors.boxColor,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: context.talleeColors.boxBorderColor, width: 1),
+      border: Border.all(color: context.talleeColors.boxBorderColor),
     ),
   );
 }

@@ -64,7 +64,6 @@ void main() {
       testStatistic1 = Statistic(
         type: StatisticType.totalWins,
         scopes: [StatisticScope.allPlayers],
-        timeframe: Timeframe.allTime,
         color: AppColor.blue,
       );
       testStatistic2 = Statistic(

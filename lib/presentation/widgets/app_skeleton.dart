@@ -45,9 +45,6 @@ class _AppSkeletonState extends State<AppSkeleton> {
       enableSwitchAnimation: true,
       switchAnimationConfig: SwitchAnimationConfig(
         duration: const Duration(milliseconds: 200),
-        switchInCurve: Curves.linear,
-        switchOutCurve: Curves.linear,
-        transitionBuilder: AnimatedSwitcher.defaultTransitionBuilder,
         layoutBuilder: !widget.fixLayoutBuilder
             ? AnimatedSwitcher.defaultLayoutBuilder
             : (Widget? currentChild, List<Widget> previousChildren) {

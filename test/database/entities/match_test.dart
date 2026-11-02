@@ -525,7 +525,7 @@ void main() {
       test('updateMatchEndedAt() works correctly', () async {
         await database.matchDao.addMatch(match: testMatch1);
 
-        final DateTime newEndedAt = DateTime(2030, 1, 1, 12, 0, 0);
+        final DateTime newEndedAt = DateTime(2030, 1, 1, 12);
         await database.matchDao.updateMatchEndedAt(
           matchId: testMatch1.id,
           endedAt: newEndedAt,
@@ -551,7 +551,7 @@ void main() {
       test('updateMatchCreatedAt() works correctly', () async {
         await database.matchDao.addMatch(match: testMatch1);
 
-        final DateTime newCreatedAt = DateTime(2020, 1, 1, 12, 0, 0);
+        final DateTime newCreatedAt = DateTime(2020, 1, 1, 12);
         await database.matchDao.updateMatchCreatedAt(
           matchId: testMatch1.id,
           createdAt: newCreatedAt,

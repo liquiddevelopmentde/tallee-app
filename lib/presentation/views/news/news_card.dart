@@ -24,12 +24,10 @@ class NewsCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 2,
         children: [
           ColoredIconContainer(
             icon: newsItem.icon,
-            containerSize: 44,
             color: iconColor,
           ),
           const SizedBox(width: 14),

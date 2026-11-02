@@ -47,7 +47,6 @@ void main() {
       testStatistic = Statistic(
         type: StatisticType.totalWins,
         scopes: [StatisticScope.selectedGames],
-        timeframe: Timeframe.allTime,
         color: AppColor.blue,
       );
     });

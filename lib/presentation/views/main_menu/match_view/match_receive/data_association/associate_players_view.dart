@@ -67,7 +67,6 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
         child: Column(
           children: [
             Align(
-              alignment: Alignment.center,
               child: Container(
                 margin: AppSpacing.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),

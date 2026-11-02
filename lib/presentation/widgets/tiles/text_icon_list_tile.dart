@@ -40,14 +40,12 @@ class TextIconListTile extends StatelessWidget {
           color: context.talleeColors.boxColor,
           border: Border.all(
             color: context.talleeColors.boxBorderColor,
-            width: 1,
             strokeAlign: BorderSide.strokeAlignCenter,
           ),
           borderRadius: AppColors.standardBorderRadiusAll,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
           children: [
             Flexible(
               child: Container(
@@ -58,7 +56,7 @@ class TextIconListTile extends StatelessWidget {
                   children: [
                     buildUnitNameWidget(
                       context,
-                      pair ?? player ?? Player(name: text, nameCount: 0),
+                      pair ?? player ?? Player(name: text),
                       mainStyle: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,

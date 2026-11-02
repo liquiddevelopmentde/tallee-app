@@ -53,7 +53,7 @@ class TokenComponent extends StatelessWidget {
               const Icon(Icons.cloud_upload, size: 50),
               Container(
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                margin: const EdgeInsets.symmetric(horizontal: 30),
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
                   loc.send_code_instruction,

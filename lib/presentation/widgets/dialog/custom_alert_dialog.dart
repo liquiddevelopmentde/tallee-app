@@ -37,9 +37,8 @@ class CustomAlertDialog extends StatelessWidget {
           : null,
       title: showCloseButton
           ? Padding(
-              padding: const EdgeInsets.only(top: 0.0),
+              padding: const EdgeInsets.only(),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: Text(

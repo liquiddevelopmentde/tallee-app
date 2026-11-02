@@ -80,7 +80,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       body: SafeArea(
         child: MatchProfileBody(
           match: match,
-          isPreview: false,
           onEdit: editMatchNavigation,
           onEnterResults: () async {
             await Navigator.push(

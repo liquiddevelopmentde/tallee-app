@@ -70,7 +70,6 @@ class _MatchResultViewState extends State<MatchResultView> {
     final loc = AppLocalizations.of(context);
 
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (didPop) {
           try {
@@ -81,7 +80,6 @@ class _MatchResultViewState extends State<MatchResultView> {
       child: Scaffold(
         backgroundColor: context.talleeColors.backgroundColor,
         appBar: AppBar(
-          automaticallyImplyLeading: true,
           leading: HapticIconButton(
             icon: const Icon(Icons.close),
             onPressed: () => {
@@ -123,7 +121,6 @@ class _MatchResultViewState extends State<MatchResultView> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -364,7 +361,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         await db.scoreEntryDao.addScore(
           matchId: widget.match.id,
           playerId: allPlayers[i].id,
-          entry: ScoreEntry(roundNumber: 0, score: score, change: 0),
+          entry: ScoreEntry(score: score, change: 0),
         );
       }
     }
@@ -402,7 +399,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         await db.scoreEntryDao.addScore(
           matchId: widget.match.id,
           playerId: player.id,
-          entry: ScoreEntry(roundNumber: 0, change: lives),
+          entry: ScoreEntry(change: lives),
         );
       }
     }

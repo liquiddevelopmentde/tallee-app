@@ -147,7 +147,6 @@ void main() {
 
       test('Score & Round can have zero values', () async {
         final ScoreEntry entry = ScoreEntry(
-          roundNumber: 0,
           score: 0,
           change: 0,
         );
@@ -160,7 +159,6 @@ void main() {
         final score = await database.scoreEntryDao.getScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          roundNumber: 0,
         );
 
         expect(score, isNotNull);

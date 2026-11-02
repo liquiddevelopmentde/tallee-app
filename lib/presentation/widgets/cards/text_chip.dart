@@ -47,8 +47,6 @@ class _TextChipState extends State<TextChip> {
               color: widget.activated
                   ? context.talleeColors.textColor.withAlpha(150)
                   : context.talleeColors.textColor.withAlpha(50),
-              width: 1,
-              strokeAlign: BorderSide.strokeAlignInside,
             ),
             borderRadius: BorderRadius.circular(6),
           ),

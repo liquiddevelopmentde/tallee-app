@@ -112,8 +112,6 @@ class MatchProfileBody extends StatelessWidget {
                           }).toList(),
                         )
                       : Wrap(
-                          alignment: WrapAlignment.start,
-                          crossAxisAlignment: WrapCrossAlignment.start,
                           spacing: 12,
                           runSpacing: 8,
                           children: (match.teams ?? []).map((team) {
@@ -148,8 +146,6 @@ class MatchProfileBody extends StatelessWidget {
             horizontalAlignment: CrossAxisAlignment.start,
             content: match.players.isNotEmpty
                 ? Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
                     children: match.players.map((player) {
@@ -207,8 +203,6 @@ class MatchProfileBody extends StatelessWidget {
             horizontalAlignment: CrossAxisAlignment.start,
             content: match.players.isNotEmpty
                 ? Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
                     children: match.players.map((player) {

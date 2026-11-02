@@ -49,7 +49,6 @@ void main() {
       testStatistic = Statistic(
         type: StatisticType.totalMatches,
         scopes: [StatisticScope.selectedGroups],
-        timeframe: Timeframe.allTime,
         color: AppColor.blue,
       );
     });

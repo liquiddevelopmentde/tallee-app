@@ -35,7 +35,6 @@ class _DataManagementViewState extends State<DataManagementView> {
             body: SingleChildScrollView(
               child: Column(
                 spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
@@ -162,7 +161,6 @@ class _DataManagementViewState extends State<DataManagementView> {
             actions: [
               CustomDialogAction(
                 text: loc.update_now,
-                buttonType: ButtonType.primary,
                 onPressed: () async {
                   final Uri url = Uri.parse(status!.appStoreLink);
                   if (await canLaunchUrl(url)) {

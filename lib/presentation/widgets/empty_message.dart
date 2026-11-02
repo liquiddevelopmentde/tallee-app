@@ -25,7 +25,6 @@ class EmptyViewMessage extends StatelessWidget {
       child: Column(
         spacing: spacing,
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
             padding: icon == RpgAwesome.clovers_card

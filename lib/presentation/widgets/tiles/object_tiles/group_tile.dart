@@ -77,7 +77,6 @@ class _GroupTileState extends State<GroupTile> {
                       // Name row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // Name
                           Flexible(
@@ -93,7 +92,6 @@ class _GroupTileState extends State<GroupTile> {
 
                           // Member amount
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             spacing: 8,
                             children: [
@@ -129,8 +127,6 @@ class _GroupTileState extends State<GroupTile> {
 
             // Player
             Wrap(
-              alignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.start,
               spacing: 12.0,
               runSpacing: 8.0,
               children: <Widget>[

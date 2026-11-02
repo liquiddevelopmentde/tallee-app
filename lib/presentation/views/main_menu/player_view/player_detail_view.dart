@@ -244,8 +244,6 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                       alignment: Alignment.topLeft,
                       child: playerGroups.isNotEmpty
                           ? Wrap(
-                              alignment: WrapAlignment.start,
-                              crossAxisAlignment: WrapCrossAlignment.start,
                               spacing: 12,
                               runSpacing: 8,
                               children: playerGroups.map((group) {
@@ -292,8 +290,6 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     alignment: Alignment.topLeft,
                     child: playerMatches.isNotEmpty
                         ? Wrap(
-                            alignment: WrapAlignment.start,
-                            crossAxisAlignment: WrapCrossAlignment.start,
                             spacing: 12,
                             runSpacing: 8,
                             children: playerMatches.map((match) {

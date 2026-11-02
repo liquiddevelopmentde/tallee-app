@@ -45,14 +45,12 @@ class _InfoTileState extends State<InfoTile> {
       width: widget.width ?? 380,
       decoration: context.standardBoxDecoration,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: widget.horizontalAlignment,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   widget.leadingWidget,
                   const SizedBox(width: 5),

@@ -156,8 +156,6 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   leadingWidget: const Icon(Icons.people),
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
                     children: group.members.map((member) {

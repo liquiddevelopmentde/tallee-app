@@ -308,7 +308,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   Widget buildSelectedPlayersBar() {
     final loc = AppLocalizations.of(context);
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(

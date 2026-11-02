@@ -110,13 +110,11 @@ class BarChart extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(
                             width: maxBarWidth,
                             child: Stack(
                               alignment: Alignment.centerLeft,
-                              clipBehavior: Clip.hardEdge,
                               children: [
                                 // Bar
                                 AnimatedContainer(
@@ -231,8 +229,6 @@ class BarChart extends StatelessWidget {
             : 0.0;
 
         return LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
           colors: [
             insideTextColor,
             insideTextColor,

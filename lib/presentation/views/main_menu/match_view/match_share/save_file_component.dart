@@ -30,7 +30,6 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const SizedBox(height: 50),
         Column(
@@ -38,7 +37,7 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
             const Icon(Icons.file_download, size: 50),
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+              margin: const EdgeInsets.symmetric(horizontal: 30),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(
                 loc.file_share_instruction,

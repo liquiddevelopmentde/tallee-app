@@ -132,7 +132,7 @@ class QrCodeComponent extends StatelessWidget {
               ),
               borderRadius: AppColors.standardBorderRadiusAll,
             ),
-            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+            margin: const EdgeInsets.symmetric(horizontal: 30),
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             child: Text(
               loc.scan_qr_code_instruction,

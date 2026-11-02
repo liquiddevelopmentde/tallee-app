@@ -34,7 +34,6 @@ class NewsView extends StatelessWidget {
                         right: 20,
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         spacing: 6,
                         children: [
                           // Icon

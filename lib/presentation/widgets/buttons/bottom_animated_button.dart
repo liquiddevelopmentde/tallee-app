@@ -104,7 +104,6 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
               ? AppColors.primaryColor
               : context.talleeColors.textColor,
           width: 2,
-          strokeAlign: BorderSide.strokeAlignInside,
         ),
         borderRadius: BorderRadius.circular(12),
       );

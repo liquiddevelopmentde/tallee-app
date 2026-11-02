@@ -176,7 +176,6 @@ class _OnboardingViewState extends State<OnboardingView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   BottomAnimatedButton(
-                    buttonType: ButtonType.primary,
                     buttonText: isLastPage ? loc.get_started : loc.next,
                     sizeRelativeToWidth: 0.6,
                     onPressed: () {

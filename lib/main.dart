@@ -213,7 +213,6 @@ class _TalleeState extends State<Tallee> {
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
-        transitionDuration: const Duration(milliseconds: 300),
       ),
     );
 

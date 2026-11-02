@@ -86,7 +86,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
           maintainBottomViewPadding: true,
           child: Column(
             spacing: 10,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               // Group name
               TextInputField(
@@ -121,7 +120,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
               BottomAnimatedButton(
                 buttonText: buttonText,
-                buttonType: ButtonType.primary,
                 onPressed:
                     (groupNameController.text.isEmpty ||
                         (selectedPlayers.length < 2))

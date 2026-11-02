@@ -445,7 +445,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
             actions: [
               CustomDialogAction(
                 text: loc.update_now,
-                buttonType: ButtonType.primary,
                 onPressed: () async {
                   final Uri url = Uri.parse(status!.appStoreLink);
                   if (await canLaunchUrl(url)) {

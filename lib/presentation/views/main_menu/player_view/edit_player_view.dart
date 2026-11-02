@@ -61,7 +61,6 @@ class _EditPlayerViewState extends State<EditPlayerView> {
         body: SafeArea(
           maintainBottomViewPadding: true,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
                 margin: AppSpacing.standardMargin,
@@ -87,7 +86,6 @@ class _EditPlayerViewState extends State<EditPlayerView> {
                 padding: AppSpacing.pagePadding,
                 child: BottomAnimatedButton(
                   buttonText: loc.save_changes,
-                  buttonType: ButtonType.primary,
                   onPressed: enableSaveButton ? savePlayer : null,
                 ),
               ),

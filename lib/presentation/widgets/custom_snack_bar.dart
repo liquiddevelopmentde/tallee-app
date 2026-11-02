@@ -104,7 +104,6 @@ class AnimatedContent extends StatelessWidget {
                     color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 12.5,
                     spreadRadius: 5,
-                    offset: Offset.zero,
                   ),
                 ],
               ),

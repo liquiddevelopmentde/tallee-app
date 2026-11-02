@@ -114,7 +114,6 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
           // Colored unit name
           Row(
             spacing: 5,
-            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (widget.color != null) ...[
@@ -135,7 +134,6 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
           // Button row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Decrease button
               FloatingAnimatedButton(

@@ -53,7 +53,6 @@ class _SettingsListTileState extends State<SettingsListTile> {
             decoration: context.standardBoxDecoration,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -64,7 +63,6 @@ class _SettingsListTileState extends State<SettingsListTile> {
                       children: [
                         ColoredIconContainer(
                           icon: widget.icon,
-                          containerSize: 44,
                         ),
                         const SizedBox(width: 16),
                         Text(

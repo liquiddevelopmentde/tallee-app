@@ -145,7 +145,6 @@ class _CreateGameViewState extends State<CreateGameView> {
     final isEditing = widget.gameToEdit != null;
 
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (didPop) {
           try {
@@ -301,7 +300,6 @@ class _CreateGameViewState extends State<CreateGameView> {
                       description: loc.showcase_create_game_button,
                       child: BottomAnimatedButton(
                         buttonText: isEditing ? loc.edit_game : loc.create_game,
-                        buttonType: ButtonType.primary,
                         onPressed:
                             gameNameController.text.trim().isNotEmpty &&
                                 selectedRuleset != null &&
@@ -395,9 +393,8 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   Widget getRulesetDropdown(AppLocalizations loc) {
     return CustomPopup(
-      showArrow: true,
       arrowColor: context.talleeColors.boxBorderColor,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+      contentPadding: const EdgeInsets.symmetric(vertical: 10),
       barrierColor: Colors.transparent,
       contentDecoration: context.standardBoxDecoration,
       onBeforePopup: HapticFeedback.selectionClick,
@@ -481,9 +478,8 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   Widget getColorDropdown(AppLocalizations loc) {
     return CustomPopup(
-      showArrow: true,
       arrowColor: context.talleeColors.boxBorderColor,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+      contentPadding: const EdgeInsets.symmetric(vertical: 10),
       barrierColor: Colors.transparent,
       contentDecoration: context.standardBoxDecoration,
       onBeforePopup: HapticFeedback.selectionClick,

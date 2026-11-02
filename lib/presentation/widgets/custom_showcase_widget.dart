@@ -49,7 +49,6 @@ class CustomShowcaseWidget extends StatelessWidget {
         color: Colors.black,
       ),
       descriptionTextAlign: TextAlign.center,
-      scaleAnimationDuration: const Duration(milliseconds: 300),
       scaleAnimationCurve: Curves.easeInOut,
       onTargetClick: onTargetClick,
       disableBarrierInteraction: disableBarrierInteraction,

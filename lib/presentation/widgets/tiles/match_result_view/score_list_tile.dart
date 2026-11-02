@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 class ScoreListTile extends StatelessWidget {
@@ -37,7 +37,6 @@ class ScoreListTile extends StatelessWidget {
       decoration: BoxDecoration(color: context.talleeColors.boxColor),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           content,
           SizedBox(
@@ -68,10 +67,7 @@ class ScoreListTile extends StatelessWidget {
                 counterText: '',
                 filled: true,
                 fillColor: context.talleeColors.onBoxColor,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 0,
-                  vertical: 0,
-                ),
+                contentPadding: const EdgeInsets.symmetric(),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(

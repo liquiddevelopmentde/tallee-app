@@ -78,7 +78,6 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
                         : buildUnitNameWidget(
                             context,
                             allTeams[index],
-                            isTeamMatch: false,
                           ),
                     value: allTeams[index],
                     onContainerTap: (team) async {

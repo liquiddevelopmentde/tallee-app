@@ -111,7 +111,6 @@ class _StatisticsTileState extends State<StatisticsTile> {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Wrap(
-                  alignment: WrapAlignment.start,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 30,
                   runSpacing: 4,

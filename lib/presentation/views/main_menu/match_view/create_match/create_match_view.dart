@@ -148,7 +148,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     final viewTitle = widget.editMode ? loc.edit_match : loc.create_new_match;
 
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (didPop) {
           try {
@@ -167,7 +166,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
             minimum: AppSpacing.pagePadding,
             child: Column(
               spacing: 10,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 // Match name input field.
                 CustomShowcaseWidget(
@@ -282,7 +280,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   identifier: createMatchViewCreateMatchIdentifier,
                   description: loc.showcase_create_match_button,
                   child: BottomAnimatedButton(
-                    buttonType: ButtonType.primary,
                     onPressed: isSubmitButtonEnabled
                         ? () => submitButtonNavigation(context)
                         : null,
@@ -498,7 +495,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   ),
                   firstDayOfWeek: 1,
                 ),
-                selectionMode: DateRangePickerSelectionMode.single,
                 selectionColor: AppColors.primaryColor,
                 selectionTextStyle: TextStyle(
                   color: context.talleeColors.textColor,

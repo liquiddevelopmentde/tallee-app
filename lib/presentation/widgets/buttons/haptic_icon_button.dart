@@ -29,7 +29,6 @@ class _HapticIconButtonState extends State<HapticIconButton>
       vsync: this,
       duration: const Duration(milliseconds: 200),
       lowerBound: 0.6,
-      upperBound: 1.0,
       value: 1.0,
     );
     super.initState();

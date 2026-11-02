@@ -41,7 +41,6 @@ void main() {
         name: 'Monopoly',
         ruleset: Ruleset.highestScore,
         description: 'A board game about real estate',
-        color: AppColor.orange,
       );
     });
   });

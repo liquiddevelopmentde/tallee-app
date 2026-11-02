@@ -88,7 +88,6 @@ class _QrScanComponentState extends State<QrScanComponent> {
                         MobileScanner(
                           tapToFocus: true,
                           controller: controller,
-                          fit: BoxFit.cover,
                           onDetect: handleQrCodeDetection,
                         ),
                         // Scanner Overlay
@@ -98,7 +97,6 @@ class _QrScanComponentState extends State<QrScanComponent> {
                               shape: QrScannerOverlayShape(
                                 borderColor: AppColors.primaryColor,
                                 borderRadius: 20,
-                                borderLength: 40,
                                 borderWidth: 6,
                                 cutOutSize: scanAreaSize,
                               ),

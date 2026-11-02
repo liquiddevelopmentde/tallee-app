@@ -530,7 +530,6 @@ class _MatchViewState extends State<MatchView> {
           ),
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(false),
-            buttonType: ButtonType.primary,
             text: loc.no,
           ),
         ],

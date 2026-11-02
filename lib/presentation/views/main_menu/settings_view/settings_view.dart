@@ -69,7 +69,6 @@ class _SettingsViewState extends State<SettingsView> {
               child: SingleChildScrollView(
                 child: Column(
                   spacing: 10,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
@@ -142,7 +141,6 @@ class _SettingsViewState extends State<SettingsView> {
                           ),
                         ],
                       ),
-                      onPressed: null,
                     ),
 
                     // Send feedback tile
@@ -189,7 +187,6 @@ class _SettingsViewState extends State<SettingsView> {
                           );
                         },
                       ),
-                      onPressed: null,
                     ),
 
                     // Show app walkthrough tile

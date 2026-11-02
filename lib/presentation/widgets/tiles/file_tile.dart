@@ -45,7 +45,6 @@ class MatchFileTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Row(
         spacing: 12,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.file_present, size: 36),
           Expanded(
@@ -55,7 +54,6 @@ class MatchFileTile extends StatelessWidget {
               children: [
                 Row(
                   spacing: 4,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Filename
                     Expanded(

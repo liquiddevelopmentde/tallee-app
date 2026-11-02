@@ -23,7 +23,6 @@ void main() {
       testStatistic = Statistic(
         type: StatisticType.totalWins,
         scopes: [StatisticScope.allPlayers],
-        timeframe: Timeframe.allTime,
         color: AppColor.blue,
       );
     });
@@ -63,7 +62,6 @@ void main() {
             StatisticScope.selectedGames,
             StatisticScope.selectedGroups,
           ],
-          timeframe: Timeframe.allTime,
           color: AppColor.red,
         );
         await database.statisticDao.addStatistic(statistic: multi);
