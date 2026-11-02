@@ -11,7 +11,6 @@ import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/preview_match_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/services/remote_share_service.dart';
 
 class EnterTokenComponent extends StatefulWidget {
@@ -141,9 +140,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               onClipboardFound: (value) {
                 HapticFeedback.lightImpact();
                 tokenInputFieldController.text = value;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  CustomSnackBar(message: loc.code_pasted_from_clipboard),
-                );
+                context.showSnackBar(message: loc.code_pasted_from_clipboard);
               },
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),

@@ -13,7 +13,6 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/qr_code_component.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/save_file_component.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/token_component.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -235,15 +234,13 @@ class _MatchShareViewState extends State<MatchShareView>
                 },
               );
             }
-            scaffoldMessengerKey.currentState?.showSnackBar(
-              CustomSnackBar(
-                message: errorMessage,
-                actionIcon: Icons.refresh,
-                onActionTap: () {
-                  scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-                  initSharingView(hasStoredSharingConsent);
-                },
-              ),
+            scaffoldMessengerKey.showSnackBar(
+              message: errorMessage,
+              actionIcon: Icons.refresh,
+              onActionTap: () {
+                scaffoldMessengerKey.hideSnackBar();
+                initSharingView(hasStoredSharingConsent);
+              },
             );
           });
     }
@@ -350,15 +347,13 @@ class _MatchShareViewState extends State<MatchShareView>
       } else {
         errorMessage = loc.unexpected_error;
       }
-      scaffoldMessengerKey.currentState?.showSnackBar(
-        CustomSnackBar(
-          message: errorMessage,
-          actionIcon: Icons.refresh,
-          onActionTap: () {
-            scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-            renewToken();
-          },
-        ),
+      scaffoldMessengerKey.showSnackBar(
+        message: errorMessage,
+        actionIcon: Icons.refresh,
+        onActionTap: () {
+          scaffoldMessengerKey.hideSnackBar();
+          renewToken();
+        },
       );
     }
   }

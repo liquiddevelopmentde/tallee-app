@@ -79,7 +79,7 @@ void main() async {
               message: loc.unexpected_error,
               actionLabel: loc.report_error,
               onActionTap: () async {
-                Tallee.scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+                Tallee.scaffoldMessengerKey.hideSnackBar();
                 final result = await Tallee.navigatorKey.currentState
                     ?.push<bool>(
                       MaterialPageRoute(

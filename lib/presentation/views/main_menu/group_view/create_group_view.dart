@@ -7,7 +7,6 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
@@ -163,7 +162,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       if (mounted) {
         HapticFeedback.errorNotification();
       }
-      showSnackbar(
+      scaffoldMessengerKey.showSnackBar(
         message: widget.groupToEdit == null
             ? loc.error_creating_group
             : loc.error_editing_group,
@@ -248,17 +247,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
     for (var match in relationshipsToDelete) {
       await db.matchDao.removeMatchGroup(matchId: match.id);
-    }
-  }
-
-  /// Displays a snackbar with the given message and optional action.
-  ///
-  /// [message] The message to display in the snackbar.
-  void showSnackbar({required String message}) {
-    final messenger = scaffoldMessengerKey.currentState;
-    if (messenger != null) {
-      messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(CustomSnackBar(message: message));
     }
   }
 }

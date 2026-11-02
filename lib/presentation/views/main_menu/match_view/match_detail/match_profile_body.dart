@@ -464,7 +464,7 @@ class MatchProfileBody extends StatelessWidget {
   }
 
   bool isSingleRowResult() {
-    return match.game.ruleset.isSelectionRuleset;
+    return match.game.ruleset.usesPlayerSelection;
   }
 
   String getPlacementText(BuildContext context, int rank) {

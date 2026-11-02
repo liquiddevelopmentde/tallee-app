@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
 import 'package:tallee/data/db/tables/team_table.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/models/models.dart';
 
 part 'team_dao.g.dart';
@@ -193,9 +194,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     }
 
     for (final members in teamIdToMembers.values) {
-      members.sort(
-        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-      );
+      members.sortByLowercaseName((p) => p.name);
     }
 
     final Map<String, Team> teamMap = {};
@@ -249,8 +248,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     final players = await Future.wait(
       playerIds.map((id) => db.playerDao.getPlayerById(playerId: id)),
     );
-    return players
-      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    return players..sortByLowercaseName((p) => p.name);
   }
 
   /* Update */

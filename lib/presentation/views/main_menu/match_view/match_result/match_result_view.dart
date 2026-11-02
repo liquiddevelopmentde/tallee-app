@@ -55,10 +55,6 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool get isTeamMatch => widget.match.isTeamMatch;
 
-  bool rulesetSupportsPlayerSelection() => ruleset.isSelectionRuleset;
-
-  bool rulesetSupportsScoreEntry() => ruleset.isScoreBased;
-
   @override
   void initState() {
     db = context.read<AppDatabase>();
@@ -98,7 +94,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         body: Column(
           children: [
             Expanded(
-              child: rulesetSupportsScoreEntry()
+              child: ruleset.usesNumericScore
                   ? ruleset.isLives
                         ? LiveEditView.lives(
                             match: widget.match,
@@ -140,7 +136,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                           const SizedBox(height: 10),
 
                           // Show player selection
-                          if (rulesetSupportsPlayerSelection())
+                          if (ruleset.usesPlayerSelection)
                             if (ruleset.isWinner)
                               SelectWinnerWidget(
                                 match: widget.match,
@@ -264,7 +260,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       await handleWinners();
     } else if (ruleset.isLoser) {
       await handleLoser();
-    } else if (ruleset.isScore) {
+    } else if (ruleset.usesPoints) {
       await handleScores();
     } else if (ruleset.isPlacement) {
       await handlePlacement();

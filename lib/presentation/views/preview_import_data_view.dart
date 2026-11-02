@@ -10,7 +10,6 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
@@ -352,9 +351,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
         HapticFeedback.successNotification();
       }
 
-      messengerKey.currentState
-        ?..hideCurrentSnackBar()
-        ..showSnackBar(CustomSnackBar(message: message));
+      messengerKey.showSnackBar(message: message);
     }
   }
 }

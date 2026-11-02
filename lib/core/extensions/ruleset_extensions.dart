@@ -41,11 +41,14 @@ extension RulesetExtension on Ruleset {
     }
   }
 
-  bool get isScore => isHighestScore || isLowestScore;
+  /// Points are counted, the highest or lowest total wins.
+  bool get usesPoints => isHighestScore || isLowestScore;
 
-  bool get isScoreBased => isScore || isLives;
+  /// A numeric value is tracked per player (scores or lives).
+  bool get usesNumericScore => usesPoints || isLives;
 
-  bool get isSelectionRuleset => isWinner || isLoser;
+  /// The result is entered by selecting the winner(s) or the loser.
+  bool get usesPlayerSelection => isWinner || isLoser;
 
   bool get isWinner => this == Ruleset.winner;
 

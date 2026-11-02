@@ -395,7 +395,7 @@ class _MatchTileState extends State<MatchTile> {
       }
     }
 
-    if (ruleset.isScore) {
+    if (ruleset.usesPoints) {
       final mvpScore = widget.match.scores[players.first.id]?.score ?? 0;
       children.add(
         TextSpan(text: ' (${getPointLabel(loc, mvpScore)})', style: labelStyle),

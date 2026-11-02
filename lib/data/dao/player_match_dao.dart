@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
 import 'package:tallee/data/db/tables/team_table.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/models/models.dart';
 
 part 'player_match_dao.g.dart';
@@ -83,7 +84,7 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
           ? fetchedPlayers.toList()
           // Filter deleted players
           : fetchedPlayers.where((p) => !p.deleted).toList())
-      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      ..sortByLowercaseName((p) => p.name);
   }
 
   /// Retrieves a list of [Player]s associated with a specific team in a match.
@@ -137,9 +138,7 @@ class PlayerMatchDao extends DatabaseAccessor<AppDatabase>
     }
 
     for (final players in resultMap.values) {
-      players.sort(
-        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-      );
+      players.sortByLowercaseName((p) => p.name);
     }
 
     return resultMap;

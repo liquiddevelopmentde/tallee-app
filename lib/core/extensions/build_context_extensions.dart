@@ -1,7 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/tallee_theme_colors.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 
 export '../theme/tallee_theme_colors.dart';
 
@@ -24,25 +23,6 @@ extension BuildContextExtension on BuildContext {
     ),
     borderRadius: AppColors.standardBorderRadiusAll,
   );
-
-  /// Displays a snackbar with the given message.
-  ///
-  /// [message] The message to display in the snackbar.
-  void showSnackBar({
-    required String message,
-    String? actionLabel,
-    void Function()? onActionTap,
-  }) {
-    ScaffoldMessenger.of(this)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        CustomSnackBar(
-          message: message,
-          actionLabel: actionLabel,
-          onActionTap: onActionTap,
-        ),
-      );
-  }
 
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
 }

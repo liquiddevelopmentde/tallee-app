@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/extensions/extensions.dart';
@@ -180,7 +179,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                                             widget.statistic.startDate !=
                                                 null &&
                                             widget.statistic.endDate != null
-                                        ? '${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.startDate!)} - ${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.endDate!)}'
+                                        ? '${widget.statistic.startDate!.toShortDate(context)} - ${widget.statistic.endDate!.toShortDate(context)}'
                                         : widget.statistic.timeframe
                                               .toLocalizedString(context),
                                     textAlign: TextAlign.end,
