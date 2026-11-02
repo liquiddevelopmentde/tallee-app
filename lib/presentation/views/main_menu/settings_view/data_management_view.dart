@@ -2,9 +2,9 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:new_version_plus/model/version_status.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/error_extension.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
@@ -126,7 +126,7 @@ class _DataManagementViewState extends State<DataManagementView> {
       status = await newVersionPlus.getVersionStatus();
     } catch (error, stacktrace) {
       // ignore network errors, that come from a users network conditions
-      if (isNetworkError(error)) return;
+      if (error.isNetworkError) return;
       // send other errors to sentry
       Sentry.captureException(
         error,

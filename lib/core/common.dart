@@ -1,7 +1,3 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:http/http.dart' as http;
 import 'package:material_ui/material_ui.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/data/models/models.dart';
@@ -43,16 +39,6 @@ String getExtraPlayerCount(Match match) {
     return '';
   }
   return ' + ${count.toString()}';
-}
-
-/// Helper function to classify connection/network exceptions
-bool isNetworkError(Object error) {
-  return error is SocketException ||
-      error is TimeoutException ||
-      error is HandshakeException ||
-      error is http.ClientException ||
-      error.toString().contains('SocketException') ||
-      error.toString().contains('Failed host lookup');
 }
 
 void handleShowcase({

@@ -9,6 +9,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/error_extension.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
@@ -401,7 +402,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     try {
       status = await newVersionPlus.getVersionStatus();
     } catch (error, stacktrace) {
-      if (isNetworkError(error)) return;
+      if (error.isNetworkError) return;
       Sentry.captureException(
         error,
         stackTrace: stacktrace,
