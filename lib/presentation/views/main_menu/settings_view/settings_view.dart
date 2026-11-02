@@ -8,7 +8,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
@@ -428,66 +427,6 @@ class _SettingsViewState extends State<SettingsView> {
       ThemeMode.dark => loc.theme_dark,
       ThemeMode.light => loc.theme_light,
     };
-  }
-
-  /// Displays a snackbar based on the import result.
-  ///
-  /// [context] The BuildContext to show the snackbar in.
-  /// [result] The result of the import operation.
-  void showImportSnackBar({
-    required BuildContext context,
-    required ImportResult result,
-  }) async {
-    final loc = AppLocalizations.of(context);
-    switch (result) {
-      case ImportResult.success:
-        HapticFeedback.successNotification();
-        if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: loc.data_successfully_imported,
-          );
-        }
-      default:
-        HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: result.toLocalizedString(context),
-          );
-        }
-    }
-  }
-
-  /// Displays a snackbar based on the export result.
-  ///
-  /// [context] The BuildContext to show the snackbar in.
-  /// [result] The result of the export operation.
-  void showExportSnackBar({
-    required BuildContext context,
-    required ExportResult result,
-  }) async {
-    final loc = AppLocalizations.of(context);
-    switch (result) {
-      case ExportResult.success:
-        HapticFeedback.successNotification();
-        if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: loc.data_successfully_exported,
-          );
-        }
-      case ExportResult.canceled:
-      case ExportResult.unknownException:
-      case ExportResult.noData:
-        HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: result.toLocalizedString(context),
-          );
-        }
-    }
   }
 
   /// Displays a snackbar with the given message and optional action.
