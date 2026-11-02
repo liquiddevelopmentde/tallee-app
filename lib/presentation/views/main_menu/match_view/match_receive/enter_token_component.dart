@@ -1,6 +1,6 @@
-import 'package:material_ui/material_ui.dart' show Material;
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart' hide Material;
+import 'package:material_ui/material_ui.dart' show Material;
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/share_exceptions.dart';
