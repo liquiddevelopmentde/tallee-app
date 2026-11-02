@@ -5,8 +5,8 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/extensions/build_context_extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
@@ -166,54 +166,59 @@ class _GroupViewState extends State<GroupView> {
                                 )
                               // Groups list
                               : SizedBox.expand(
-                                  child: NotificationListener<UserScrollNotification>(
-                                    onNotification: (notification) {
-                                      if (notification.direction ==
-                                              ScrollDirection.reverse &&
-                                          isSearchBarVisible) {
-                                        setState(
-                                          () => isSearchBarVisible = false,
-                                        );
-                                      } else if (notification.direction ==
-                                              ScrollDirection.forward &&
-                                          !isSearchBarVisible) {
-                                        setState(
-                                          () => isSearchBarVisible = true,
-                                        );
-                                      }
-                                      return true;
-                                    },
+                                  child:
+                                      NotificationListener<
+                                        UserScrollNotification
+                                      >(
+                                        onNotification: (notification) {
+                                          if (notification.direction ==
+                                                  ScrollDirection.reverse &&
+                                              isSearchBarVisible) {
+                                            setState(
+                                              () => isSearchBarVisible = false,
+                                            );
+                                          } else if (notification.direction ==
+                                                  ScrollDirection.forward &&
+                                              !isSearchBarVisible) {
+                                            setState(
+                                              () => isSearchBarVisible = true,
+                                            );
+                                          }
+                                          return true;
+                                        },
 
-                                    child: ListView.builder(
-                                      padding: AppColors.listViewPadding(
-                                        context,
-                                      ),
-                                      itemCount: displayedGroups.length,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return GroupTile(
-                                          group: displayedGroups[index],
-                                          onTap: () async =>
-                                              await Navigator.push(
-                                                context,
-                                                adaptivePageRoute(
-                                                  settings: const RouteSettings(
-                                                    name: RouteNames
-                                                        .groupDetailView,
+                                        child: ListView.builder(
+                                          padding: AppColors.listViewPadding(
+                                            context,
+                                          ),
+                                          itemCount: displayedGroups.length,
+                                          itemBuilder: (BuildContext ctx, int i) {
+                                            return GroupTile(
+                                              group: displayedGroups[i],
+                                              onTap: () async {
+                                                await Navigator.push(
+                                                  ctx,
+                                                  adaptivePageRoute(
+                                                    settings:
+                                                        const RouteSettings(
+                                                          name: RouteNames
+                                                              .groupDetailView,
+                                                        ),
+                                                    builder: (context) {
+                                                      return GroupDetailView(
+                                                        group:
+                                                            displayedGroups[i],
+                                                        onGroupUpdated:
+                                                            loadGroups,
+                                                      );
+                                                    },
                                                   ),
-                                                  builder: (context) {
-                                                    return GroupDetailView(
-                                                      group:
-                                                          displayedGroups[index],
-                                                      onGroupUpdated:
-                                                          loadGroups,
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                        );
-                                      },
-                                    ),
-                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ),
                                 )
                         : !isLoading
                         ?
@@ -235,18 +240,16 @@ class _GroupViewState extends State<GroupView> {
             child: FloatingAnimatedButton(
               text: loc.create_group,
               icon: Icons.add,
-              onPressed: () async {
-                await Navigator.push(
-                  context,
-                  adaptivePageRoute(
-                    settings: const RouteSettings(
-                      name: RouteNames.createGroupView,
-                    ),
-                    builder: (context) =>
-                        CreateGroupView(onMembersChanged: loadGroups),
+              onPressed: () => Navigator.push(
+                context,
+                adaptivePageRoute(
+                  settings: const RouteSettings(
+                    name: RouteNames.createGroupView,
                   ),
-                );
-              },
+                  builder: (context) =>
+                      CreateGroupView(onMembersChanged: loadGroups),
+                ),
+              ),
             ),
           ),
         ],

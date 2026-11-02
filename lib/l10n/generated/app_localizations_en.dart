@@ -306,6 +306,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Error while deleting game, please try again';
 
   @override
+  String get error_deleting_group =>
+      'Error while deleting group, please try again';
+
+  @override
+  String get error_deleting_match =>
+      'Error while deleting match, please try again';
+
+  @override
   String get error_editing_group =>
       'Error while editing group, please try again';
 
@@ -384,6 +392,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get game_associated => 'Game successfully associated';
 
   @override
+  String get game_deleted => 'Game deleted';
+
+  @override
   String get game_name => 'Game Name';
 
   @override
@@ -400,6 +411,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get group_associated => 'Group successfully associated';
+
+  @override
+  String get group_deleted => 'Group deleted';
 
   @override
   String get group_members => 'Group Members';
@@ -523,6 +537,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get manage_members => 'Manage Members';
+
+  @override
+  String get match_deleted => 'Match deleted';
 
   @override
   String get match_in_progress => 'Match in progress...';

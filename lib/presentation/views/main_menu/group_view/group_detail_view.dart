@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/extensions/datetime_extension.dart';
 import 'package:tallee/core/extensions/build_context_extensions.dart';
+import 'package:tallee/core/extensions/datetime_extension.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -83,9 +83,17 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 ),
               ).then((confirmed) async {
                 if (confirmed == true && context.mounted) {
-                  await db.groupDao.deleteGroup(groupId: group.id);
+                  final success = await db.groupDao.deleteGroup(
+                    groupId: group.id,
+                  );
                   if (!context.mounted) return;
-                  Navigator.pop(context);
+                  if (!success) {
+                    context.showSnackBar(message: loc.error_deleting_group);
+                    return;
+                  }
+
+                  context.showSnackBar(message: loc.group_deleted);
+                  Navigator.of(context).pop();
                   widget.onGroupUpdated?.call();
                 }
               });
@@ -191,9 +199,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 text: loc.edit_group,
                 icon: Icons.edit,
                 onPressed: () async {
-                  final updatedGroup = await Navigator.push<Group?>(
+                  final result = await Navigator.push(
                     context,
-                    adaptivePageRoute(
+                    adaptivePageRoute<({Group? updatedGroup})>(
                       settings: const RouteSettings(
                         name: RouteNames.createGroupView,
                       ),
@@ -207,10 +215,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                       },
                     ),
                   );
+                  final updatedGroup = result?.updatedGroup;
                   if (updatedGroup != null && mounted) {
-                    setState(() {
-                      group = updatedGroup;
-                    });
+                    setState(() => group = updatedGroup);
                     loadStatistics();
                     widget.onGroupUpdated?.call();
                   }

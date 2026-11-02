@@ -159,7 +159,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       HapticFeedback.successNotification();
       widget.onMembersChanged?.call();
       if (mounted) {
-        Navigator.pop(context, updatedGroup);
+        Navigator.of(context).pop((updatedGroup: updatedGroup));
       }
     } else {
       if (mounted) {

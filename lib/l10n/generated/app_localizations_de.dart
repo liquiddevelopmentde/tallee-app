@@ -309,6 +309,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehler beim Löschen der Spielvorlage, bitte erneut versuchen';
 
   @override
+  String get error_deleting_group =>
+      'Fehler beim Löschen der Gruppe, bitte erneut versuchen';
+
+  @override
+  String get error_deleting_match =>
+      'Fehler beim Löschen des Spiels, bitte erneut versuchen';
+
+  @override
   String get error_editing_group =>
       'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
 
@@ -389,6 +397,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get game_associated => 'Spielvorlage erfolgreich verknüpft';
 
   @override
+  String get game_deleted => 'Spielvorlage gelöscht';
+
+  @override
   String get game_name => 'Spielvorlagenname';
 
   @override
@@ -405,6 +416,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get group_associated => 'Gruppe erfolgreich verknüpft';
+
+  @override
+  String get group_deleted => 'Gruppe gelöscht';
 
   @override
   String get group_members => 'Gruppenmitglieder';
@@ -528,6 +542,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get manage_members => 'Mitglieder bearbeiten';
+
+  @override
+  String get match_deleted => 'Spiel gelöscht';
 
   @override
   String get match_in_progress => 'Spiel läuft...';

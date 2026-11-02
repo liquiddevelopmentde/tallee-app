@@ -168,8 +168,14 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       ),
     ).then((confirmed) async {
       if (confirmed == true && mounted) {
-        await db.matchDao.deleteMatch(matchId: match.id);
+        final success = await db.matchDao.deleteMatch(matchId: match.id);
         if (!mounted) return;
+        if (!success) {
+          context.showSnackBar(message: loc.error_deleting_match);
+          return;
+        }
+
+        context.showSnackBar(message: loc.match_deleted);
         Navigator.pop(context);
         widget.onMatchUpdate.call();
       }

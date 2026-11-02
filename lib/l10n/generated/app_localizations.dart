@@ -632,6 +632,18 @@ abstract class AppLocalizations {
   /// **'Error while deleting game, please try again'**
   String get error_deleting_game;
 
+  /// No description provided for @error_deleting_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting group, please try again'**
+  String get error_deleting_group;
+
+  /// No description provided for @error_deleting_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting match, please try again'**
+  String get error_deleting_match;
+
   /// No description provided for @error_editing_group.
   ///
   /// In en, this message translates to:
@@ -764,6 +776,12 @@ abstract class AppLocalizations {
   /// **'Game successfully associated'**
   String get game_associated;
 
+  /// No description provided for @game_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Game deleted'**
+  String get game_deleted;
+
   /// No description provided for @game_name.
   ///
   /// In en, this message translates to:
@@ -799,6 +817,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Group successfully associated'**
   String get group_associated;
+
+  /// No description provided for @group_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Group deleted'**
+  String get group_deleted;
 
   /// No description provided for @group_members.
   ///
@@ -1015,6 +1039,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manage Members'**
   String get manage_members;
+
+  /// No description provided for @match_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Match deleted'**
+  String get match_deleted;
 
   /// No description provided for @match_in_progress.
   ///
