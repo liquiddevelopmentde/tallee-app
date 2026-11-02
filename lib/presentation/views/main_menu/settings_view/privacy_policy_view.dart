@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 class PrivacyPolicyView extends StatelessWidget {

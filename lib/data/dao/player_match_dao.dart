@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
 import 'package:tallee/data/db/tables/team_table.dart';
-import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/models/models.dart';
 
 part 'player_match_dao.g.dart';

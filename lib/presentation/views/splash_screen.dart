@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:lottie/lottie.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
