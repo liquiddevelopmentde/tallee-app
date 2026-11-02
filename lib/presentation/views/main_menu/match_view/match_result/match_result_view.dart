@@ -82,9 +82,9 @@ class _MatchResultViewState extends State<MatchResultView> {
         appBar: AppBar(
           leading: HapticIconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => {
-              widget.onWinnerChanged?.call(),
-              Navigator.pop(context),
+            onPressed: () {
+              widget.onWinnerChanged?.call();
+              Navigator.pop(context);
             },
           ),
           title: Text(widget.match.name),

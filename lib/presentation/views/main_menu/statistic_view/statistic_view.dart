@@ -98,11 +98,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 TextChip(
                                   text: loc.all,
                                   activated: noFilterActivated,
-                                  onTap: () => {
-                                    showOnlyFavourites = false,
+                                  onTap: () {
+                                    showOnlyFavourites = false;
                                     SharedPreferencesService.showFavourites =
-                                        false,
-                                    resetFilter(includeFavourites: true),
+                                        false;
+                                    resetFilter(includeFavourites: true);
                                   },
                                 ),
 
@@ -110,14 +110,14 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 TextChip(
                                   text: loc.favourites,
                                   activated: showOnlyFavourites,
-                                  onTap: () => {
+                                  onTap: () {
                                     setState(() {
                                       showOnlyFavourites = true;
                                       resetFilter(includeFavourites: false);
-                                    }),
+                                    });
                                     SharedPreferencesService.showFavourites =
-                                        showOnlyFavourites,
-                                    createStatisticTiles(),
+                                        showOnlyFavourites;
+                                    createStatisticTiles();
                                   },
                                 ),
 

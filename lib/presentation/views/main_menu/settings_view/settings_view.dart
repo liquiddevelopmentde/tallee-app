@@ -285,18 +285,18 @@ class _SettingsViewState extends State<SettingsView> {
                                 // Website
                                 HapticIconButton(
                                   icon: const Icon(Icons.language),
-                                  onPressed: () => {
-                                    Haptics.lightImpact(),
-                                    launchUrl(Uri.parse(LIQUID_WEBSITE_URL)),
+                                  onPressed: () {
+                                    Haptics.lightImpact();
+                                    launchUrl(Uri.parse(LIQUID_WEBSITE_URL));
                                   },
                                 ),
 
                                 // Github
                                 HapticIconButton(
                                   icon: const FaIcon(FontAwesomeIcons.github),
-                                  onPressed: () => {
-                                    Haptics.lightImpact(),
-                                    launchUrl(Uri.parse(LIQUID_GITHUB_URL)),
+                                  onPressed: () {
+                                    Haptics.lightImpact();
+                                    launchUrl(Uri.parse(LIQUID_GITHUB_URL));
                                   },
                                 ),
 
@@ -307,11 +307,11 @@ class _SettingsViewState extends State<SettingsView> {
                                         ? CupertinoIcons.mail_solid
                                         : Icons.email,
                                   ),
-                                  onPressed: () => {
-                                    Haptics.lightImpact(),
+                                  onPressed: () {
+                                    Haptics.lightImpact();
                                     launchUrl(
                                       Uri.parse('mailto:$LIQUID_CONTACT_EMAIL'),
-                                    ),
+                                    );
                                   },
                                 ),
                               ],

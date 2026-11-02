@@ -26,9 +26,9 @@ class _CustomAdaptiveSwitchState extends State<CustomAdaptiveSwitch> {
   @override
   Widget build(BuildContext context) => Switch.adaptive(
     value: widget.value,
-    onChanged: (bool value) => {
-      Haptics.selectionClick(),
-      widget.onChanged?.call(value),
+    onChanged: (bool value) {
+      Haptics.selectionClick();
+      widget.onChanged?.call(value);
     },
     activeTrackColor: AppColors.primaryColor,
     padding: widget.padding,
