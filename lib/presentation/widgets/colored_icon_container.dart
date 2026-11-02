@@ -52,7 +52,7 @@ class ColoredIconContainer extends StatelessWidget {
               padding: EdgeInsets.zero,
             )
           : const RoundedRectDottedBorderOptions(
-              radius: Radius.circular(0),
+              radius: Radius.zero,
               color: Colors.transparent,
               padding: EdgeInsets.zero,
             ),

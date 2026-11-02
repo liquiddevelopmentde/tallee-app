@@ -31,41 +31,41 @@ class CustomAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-      titlePadding: showCloseButton
-          ? const EdgeInsets.only(left: 24.0, top: 12.0, right: 12.0)
-          : null,
-      title: showCloseButton
-          ? Padding(
-              padding: const EdgeInsets.only(),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: context.talleeColors.textColor,
-                      ),
+    titlePadding: showCloseButton
+        ? const EdgeInsets.only(left: 24.0, top: 12.0, right: 12.0)
+        : null,
+    title: showCloseButton
+        ? Padding(
+            padding: EdgeInsets.zero,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: context.talleeColors.textColor,
                     ),
                   ),
-                  HapticCloseButton(color: closeButtonColor),
-                ],
-              ),
-            )
-          : Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: context.talleeColors.textColor,
-              ),
+                ),
+                HapticCloseButton(color: closeButtonColor),
+              ],
             ),
-      content: content,
-      actions: actions,
-      backgroundColor: context.talleeColors.boxColor,
-      actionsAlignment: MainAxisAlignment.center,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppColors.standardBorderRadiusAll,
-        side: BorderSide(color: context.talleeColors.boxBorderColor),
-      ),
-    );
+          )
+        : Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: context.talleeColors.textColor,
+            ),
+          ),
+    content: content,
+    actions: actions,
+    backgroundColor: context.talleeColors.boxColor,
+    actionsAlignment: MainAxisAlignment.center,
+    shape: RoundedRectangleBorder(
+      borderRadius: AppColors.standardBorderRadiusAll,
+      side: BorderSide(color: context.talleeColors.boxBorderColor),
+    ),
+  );
 }

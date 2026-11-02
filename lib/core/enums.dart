@@ -1,6 +1,6 @@
+/// @docImport 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 /// @docImport 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 /// @docImport 'package:tallee/presentation/widgets/buttons/buttons.dart';
-/// @docImport 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 library;
 
 import 'dart:math';
