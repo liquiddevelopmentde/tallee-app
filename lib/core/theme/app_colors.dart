@@ -1,10 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
-/// Theme class that defines colors, border radius, padding, decorations, and ThemeData
-class AppColors {
-  // Private constructor
-  const AppColors._();
-
+/// Theme class that defines colors, border radius, decorations, and ThemeData
+abstract final class AppColors {
   // ==================== Color Definitions ====================
 
   static const Color primaryColor = Color(0xFFEF681F);

@@ -1,7 +1,5 @@
 /// Centralized named routes used throughout the app.
-class RouteNames {
-  RouteNames._();
-
+abstract final class RouteNames {
   static const String splash = '/';
   static const String onboarding = '/onboarding';
   static const String importFile = '/import';

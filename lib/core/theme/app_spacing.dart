@@ -1,10 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 /// Spacing values (paddings and margins) used across the app.
-class AppSpacing {
-  // Private constructor
-  const AppSpacing._();
-
+abstract final class AppSpacing {
   /// Default width of full-width elements (buttons, tiles)
   /// relative to the screen width.
   static const double contentWidthFactor = 0.95;
