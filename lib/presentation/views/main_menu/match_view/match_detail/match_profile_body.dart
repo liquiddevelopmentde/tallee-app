@@ -86,7 +86,7 @@ class MatchProfileBody extends StatelessWidget {
               const Icon(GROUP_ICON),
               const SizedBox(width: 8),
               Text(
-                '${match.group!.name}${getExtraPlayerCount(match)}',
+                '${match.group!.name}${match.extraPlayerCount}',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],

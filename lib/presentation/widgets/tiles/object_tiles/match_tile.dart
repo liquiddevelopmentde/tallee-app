@@ -90,7 +90,7 @@ class _MatchTileState extends State<MatchTile> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${match.group!.name}${getExtraPlayerCount(match)}',
+                      '${match.group!.name}${match.extraPlayerCount}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
