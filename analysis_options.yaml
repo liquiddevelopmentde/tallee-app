@@ -40,7 +40,6 @@ linter:
 
     # Code quality
     prefer_final_in_for_each: true
-    prefer_final_locals: true
     unnecessary_lambdas: true
     unnecessary_null_checks: true
     use_decorated_box: true
