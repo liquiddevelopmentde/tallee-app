@@ -106,7 +106,7 @@ class _DataManagementViewState extends State<DataManagementView> {
     );
   }
 
-  Future<void> showVersionDialog(bool isExport) async {
+  Future<void> showVersionDialog({bool isExport = false}) async {
     final loc = AppLocalizations.of(context);
 
     VersionStatus? status;
@@ -176,7 +176,7 @@ class _DataManagementViewState extends State<DataManagementView> {
   }
 
   Future<void> handleExport(BuildContext scaffoldMessengerContext) async {
-    await showVersionDialog(true);
+    await showVersionDialog(isExport: true);
 
     if (!scaffoldMessengerContext.mounted) return;
 
@@ -196,7 +196,7 @@ class _DataManagementViewState extends State<DataManagementView> {
   }
 
   Future<void> handleImport(BuildContext scaffoldMessengerContext) async {
-    await showVersionDialog(false);
+    await showVersionDialog();
 
     final path = await LocalShareService.pickImportFilePath();
 
