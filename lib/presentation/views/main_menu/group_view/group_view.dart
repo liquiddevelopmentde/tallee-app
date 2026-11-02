@@ -235,7 +235,7 @@ class _GroupViewState extends State<GroupView> {
           ),
           // Outside the skeleton so it is not cross-faded on loading changes
           Positioned(
-            bottom: MediaQuery.paddingOf(context).bottom + 20,
+            bottom: AppSpacing.floatingButtonBottom(context),
             child: FloatingAnimatedButton(
               text: loc.create_group,
               icon: Icons.add,

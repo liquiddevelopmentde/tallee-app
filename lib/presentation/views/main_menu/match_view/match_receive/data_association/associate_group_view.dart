@@ -160,7 +160,6 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
               padding: const EdgeInsets.all(8.0),
               child: BottomAnimatedButton(
                 buttonText: loc.save_match,
-                sizeRelativeToWidth: 0.95,
                 onPressed: saveMatch,
               ),
             ),

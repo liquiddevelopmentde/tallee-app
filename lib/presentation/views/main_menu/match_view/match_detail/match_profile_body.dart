@@ -3,6 +3,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -232,12 +233,10 @@ class MatchProfileBody extends StatelessWidget {
           Expanded(child: content),
           BottomAnimatedButton(
             buttonText: loc.import_match,
-            sizeRelativeToWidth: 0.95,
             onPressed: onConfirm,
           ),
           BottomAnimatedButton(
             buttonText: loc.cancel,
-            sizeRelativeToWidth: 0.95,
             buttonType: ButtonType.secondary,
             onPressed: onCancel,
           ),
@@ -249,7 +248,7 @@ class MatchProfileBody extends StatelessWidget {
         children: [
           content,
           Positioned(
-            bottom: MediaQuery.paddingOf(context).bottom + 20,
+            bottom: AppSpacing.floatingButtonBottom(context),
             child: Row(
               spacing: 8,
               children: [

@@ -8,6 +8,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -228,7 +229,7 @@ class _CreateGameViewState extends State<CreateGameView> {
             // Game name input field
             body: SafeArea(
               maintainBottomViewPadding: true,
-              minimum: const EdgeInsets.symmetric(horizontal: 12),
+              minimum: AppSpacing.pagePadding,
               child: Column(
                 spacing: 10,
                 children: [
@@ -300,7 +301,6 @@ class _CreateGameViewState extends State<CreateGameView> {
                       description: loc.showcase_create_game_button,
                       child: BottomAnimatedButton(
                         buttonText: isEditing ? loc.edit_game : loc.create_game,
-                        sizeRelativeToWidth: 0.95,
                         buttonType: ButtonType.primary,
                         onPressed:
                             gameNameController.text.trim().isNotEmpty &&

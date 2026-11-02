@@ -130,7 +130,6 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                 buttonText: widget.match.group == null
                     ? loc.save_match
                     : loc.confirm,
-                sizeRelativeToWidth: 0.95,
                 onPressed: unassignedCount == 0
                     ? () async {
                         if (widget.match.group == null) {

@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class CustomStepper extends StatefulWidget {
@@ -42,7 +43,7 @@ class _CustomStepperState extends State<CustomStepper> {
         mainAxisSize: MainAxisSize.min,
         children: [
           HapticIconButton(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: AppSpacing.standardMargin,
             icon: Icon(
               Icons.remove,
               size: 20,
@@ -60,7 +61,7 @@ class _CustomStepperState extends State<CustomStepper> {
             color: context.talleeColors.boxBorderColor,
           ),
           HapticIconButton(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: AppSpacing.standardMargin,
             icon: Icon(
               Icons.add,
               size: 20,

@@ -186,7 +186,6 @@ class _MatchResultViewState extends State<MatchResultView> {
                 children: [
                   // Save Changes Button
                   BottomAnimatedButton(
-                    sizeRelativeToWidth: 0.95,
                     buttonText: loc.save_changes,
                     onPressed: canSave
                         ? () async => await handleSaving()

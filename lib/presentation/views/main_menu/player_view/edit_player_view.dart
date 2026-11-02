@@ -84,9 +84,8 @@ class _EditPlayerViewState extends State<EditPlayerView> {
               ),
               const Spacer(),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: AppSpacing.pagePadding,
                 child: BottomAnimatedButton(
-                  sizeRelativeToWidth: 0.95,
                   buttonText: loc.save_changes,
                   buttonType: ButtonType.primary,
                   onPressed: enableSaveButton ? savePlayer : null,

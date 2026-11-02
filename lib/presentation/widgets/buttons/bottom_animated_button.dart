@@ -3,14 +3,15 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 
 class BottomAnimatedButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
   /// when pressed.
   /// - [buttonText]: The text to be displayed on the button.
   /// - [onPressed]: Callback function that is triggered when the button is pressed.
-  /// - [buttonConstraints]: Optional constraints to control the button's size, only works if [sizeRelativeToWidth] is not provided.
-  /// - [sizeRelativeToWidth]: Optional size of the button relative to the width of the screen.
+  /// - [buttonConstraints]: Optional constraints to control the button's size, takes precedence over [sizeRelativeToWidth].
+  /// - [sizeRelativeToWidth]: Minimum width of the button relative to the screen width. Defaults to [AppSpacing.contentWidthFactor].
   /// - [buttonType]: The type of the button, which determines its styling.
   /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
   const BottomAnimatedButton({
@@ -18,7 +19,7 @@ class BottomAnimatedButton extends StatefulWidget {
     required this.buttonText,
     this.onPressed,
     this.buttonConstraints,
-    this.sizeRelativeToWidth,
+    this.sizeRelativeToWidth = AppSpacing.contentWidthFactor,
     this.buttonType = ButtonType.primary,
     this.isDestructive = false,
     this.isEmphasized = false,
@@ -27,7 +28,7 @@ class BottomAnimatedButton extends StatefulWidget {
   final String buttonText;
   final VoidCallback? onPressed;
   final BoxConstraints? buttonConstraints;
-  final double? sizeRelativeToWidth;
+  final double sizeRelativeToWidth;
   final ButtonType buttonType;
   final bool isDestructive;
   final bool isEmphasized;
@@ -136,14 +137,14 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
             duration: const Duration(milliseconds: 100),
             child: Center(
               child: Container(
-                constraints: widget.sizeRelativeToWidth == null
-                    ? widget.buttonConstraints
-                    : BoxConstraints(
-                        minWidth:
-                            MediaQuery.sizeOf(context).width *
-                            widget.sizeRelativeToWidth!,
-                        minHeight: 50,
-                      ),
+                constraints:
+                    widget.buttonConstraints ??
+                    BoxConstraints(
+                      minWidth:
+                          MediaQuery.sizeOf(context).width *
+                          widget.sizeRelativeToWidth,
+                      minHeight: 50,
+                    ),
                 decoration: buttonDecoration,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,

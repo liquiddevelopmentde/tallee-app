@@ -4,13 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 
 class ApiActionAnimatedButton extends StatefulWidget {
   /// A button specifically designed for asynchronous requests.
   /// - [onPressed]: The async callback that triggers the API request. Pass `null` to disable the button.
   /// - [text]: The text of the button.
-  /// - [buttonConstraints]: Optional constraints to control the button's size, only works if [sizeRelativeToWidth] is not provided.
-  /// - [sizeRelativeToWidth]: Optional size of the button relative to the width of the screen.
+  /// - [buttonConstraints]: Optional constraints to control the button's size, takes precedence over [sizeRelativeToWidth].
+  /// - [sizeRelativeToWidth]: Minimum width of the button relative to the screen width. Defaults to [AppSpacing.contentWidthFactor].
   /// - [buttonType]: The type of the button, which determines its styling.
   /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
   const ApiActionAnimatedButton({
@@ -18,7 +19,7 @@ class ApiActionAnimatedButton extends StatefulWidget {
     required this.onPressed,
     this.text,
     this.buttonConstraints,
-    this.sizeRelativeToWidth,
+    this.sizeRelativeToWidth = AppSpacing.contentWidthFactor,
     this.buttonType = ButtonType.primary,
     this.isDestructive = false,
   });
@@ -30,7 +31,7 @@ class ApiActionAnimatedButton extends StatefulWidget {
 
   final BoxConstraints? buttonConstraints;
 
-  final double? sizeRelativeToWidth;
+  final double sizeRelativeToWidth;
 
   final ButtonType buttonType;
 
@@ -119,14 +120,14 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                constraints: widget.sizeRelativeToWidth == null
-                    ? widget.buttonConstraints
-                    : BoxConstraints(
-                        minWidth:
-                            MediaQuery.sizeOf(context).width *
-                            widget.sizeRelativeToWidth!,
-                        minHeight: 50,
-                      ),
+                constraints:
+                    widget.buttonConstraints ??
+                    BoxConstraints(
+                      minWidth:
+                          MediaQuery.sizeOf(context).width *
+                          widget.sizeRelativeToWidth,
+                      minHeight: 50,
+                    ),
                 decoration: _getButtonDecoration(),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,

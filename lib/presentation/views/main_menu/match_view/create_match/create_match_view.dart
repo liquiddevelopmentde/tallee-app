@@ -7,6 +7,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -163,7 +164,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           appBar: AppBar(title: Text(viewTitle)),
           body: SafeArea(
             maintainBottomViewPadding: true,
-            minimum: const EdgeInsets.symmetric(horizontal: 12),
+            minimum: AppSpacing.pagePadding,
             child: Column(
               spacing: 10,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -281,7 +282,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   identifier: createMatchViewCreateMatchIdentifier,
                   description: loc.showcase_create_match_button,
                   child: BottomAnimatedButton(
-                    sizeRelativeToWidth: 0.95,
                     buttonType: ButtonType.primary,
                     onPressed: isSubmitButtonEnabled
                         ? () => submitButtonNavigation(context)

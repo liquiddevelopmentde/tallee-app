@@ -2,6 +2,7 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 
 class TextChip extends StatefulWidget {
   /// A tappable text chip that shows a label and an optional item count.
@@ -39,7 +40,7 @@ class _TextChipState extends State<TextChip> {
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: AppSpacing.standardMargin,
           decoration: BoxDecoration(
             color: context.talleeColors.backgroundColor,
             border: Border.all(

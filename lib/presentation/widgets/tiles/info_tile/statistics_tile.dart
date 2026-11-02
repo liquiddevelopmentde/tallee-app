@@ -88,7 +88,9 @@ class _StatisticsTileState extends State<StatisticsTile> {
           onPressed: () => toggleFavourite(),
         ),
       ),
-      width: widget.width ?? MediaQuery.sizeOf(context).width * 0.95,
+      width:
+          widget.width ??
+          MediaQuery.sizeOf(context).width * AppSpacing.contentWidthFactor,
       margin: widget.margin ?? AppSpacing.tileMargin,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),

@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -81,7 +82,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
         backgroundColor: context.talleeColors.backgroundColor,
         appBar: AppBar(title: Text(viewTitle)),
         body: SafeArea(
-          minimum: const EdgeInsets.symmetric(horizontal: 12),
+          minimum: AppSpacing.pagePadding,
           maintainBottomViewPadding: true,
           child: Column(
             spacing: 10,
@@ -119,7 +120,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
               ),
 
               BottomAnimatedButton(
-                sizeRelativeToWidth: 0.95,
                 buttonText: buttonText,
                 buttonType: ButtonType.primary,
                 onPressed:

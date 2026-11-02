@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
 class SettingsListTile extends StatefulWidget {
@@ -43,7 +44,7 @@ class _SettingsListTileState extends State<SettingsListTile> {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.95,
+        width: MediaQuery.sizeOf(context).width * AppSpacing.contentWidthFactor,
         child: GestureDetector(
           onTap: () {
             handleTap();

@@ -378,7 +378,7 @@ class _StatisticsViewState extends State<StatisticsView> {
 
             // Outside the skeleton so it is not cross-faded on loading changes
             Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom + 20,
+              bottom: AppSpacing.floatingButtonBottom(context),
               child: FloatingAnimatedButton(
                 text: loc.create_statistic(1),
                 icon: Icons.add,

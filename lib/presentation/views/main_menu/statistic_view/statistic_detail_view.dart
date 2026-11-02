@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -122,7 +123,9 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                       StatisticsTile(
                         statistic: widget.statistic,
                         margin: EdgeInsets.zero,
-                        width: MediaQuery.sizeOf(context).width * 0.95,
+                        width:
+                            MediaQuery.sizeOf(context).width *
+                            AppSpacing.contentWidthFactor,
                         values: widget.values,
                         displayCount: displayCount,
                         showAllValues: true,
@@ -132,7 +135,9 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                       // Details
                       InfoTile(
                         leadingWidget: const Icon(Icons.filter_alt),
-                        width: MediaQuery.sizeOf(context).width * 0.95,
+                        width:
+                            MediaQuery.sizeOf(context).width *
+                            AppSpacing.contentWidthFactor,
                         title: loc.filter,
                         content: Column(
                           spacing: 8,
@@ -250,7 +255,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
               ),
             ),
             Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom + 20,
+              bottom: AppSpacing.floatingButtonBottom(context),
               child: Row(
                 spacing: 10,
                 children: [

@@ -293,7 +293,8 @@ class _MatchViewState extends State<MatchView> {
                                 itemCount: displayedMatches.length,
                                 itemBuilder: (context, index) => MatchTile(
                                   width:
-                                      MediaQuery.sizeOf(context).width * 0.95,
+                                      MediaQuery.sizeOf(context).width *
+                                      AppSpacing.contentWidthFactor,
                                   onTap: () async {
                                     if (displayedMatches[index].endedAt !=
                                         null) {
@@ -349,7 +350,7 @@ class _MatchViewState extends State<MatchView> {
 
           // Create match button
           Positioned(
-            bottom: MediaQuery.paddingOf(context).bottom + 20,
+            bottom: AppSpacing.floatingButtonBottom(context),
             child: CustomShowcaseWidget(
               showcaseKey: matchViewCreateButtonKey,
               identifier: matchViewCreateButtonIdentifier,
