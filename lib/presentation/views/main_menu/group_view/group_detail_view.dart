@@ -62,7 +62,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
           HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
-              final confirmed = await showDialog<bool>(
+              final confirmed = await showDialog<bool?>(
                 context: context,
                 builder: (context) => CustomAlertDialog(
                   title: '${loc.delete_group}?',
@@ -83,7 +83,8 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   ],
                 ),
               );
-              if (confirmed != true || !context.mounted) return;
+              if (confirmed == null || !confirmed) return;
+              if (!context.mounted) return;
 
               final success = await db.groupDao.deleteGroup(groupId: group.id);
               if (!context.mounted) return;
