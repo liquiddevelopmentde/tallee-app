@@ -28,9 +28,9 @@ void main() {
   final fixedDate = DateTime(2025, 11, 19, 0, 11, 23);
   final fakeClock = Clock(() => fixedDate);
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    SharedPreferencesService.init();
+    await SharedPreferencesService.init();
     database = AppDatabase(
       DatabaseConnection(
         NativeDatabase.memory(),

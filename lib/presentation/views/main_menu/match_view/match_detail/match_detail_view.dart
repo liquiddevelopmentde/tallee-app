@@ -144,9 +144,9 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     }
   }
 
-  void confirmDeleteMatch() {
+  Future<void> confirmDeleteMatch() async {
     final loc = AppLocalizations.of(context);
-    showDialog<bool>(
+    await showDialog<bool>(
       context: context,
       builder: (context) => CustomAlertDialog(
         title: '${loc.delete_match}?',

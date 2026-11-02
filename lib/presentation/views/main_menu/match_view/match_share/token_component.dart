@@ -156,13 +156,14 @@ class TokenComponent extends StatelessWidget {
                 text: loc.copy_code,
                 onPressed: isLoading
                     ? null
-                    : () {
-                        Clipboard.setData(ClipboardData(text: displayCode))
-                            .then((_) {
-                              if (context.mounted) {
-                                context.showSnackBar(message: loc.code_copied);
-                              }
-                            });
+                    : () async {
+                        await Clipboard.setData(
+                          ClipboardData(text: displayCode),
+                        ).then((_) {
+                          if (context.mounted) {
+                            context.showSnackBar(message: loc.code_copied);
+                          }
+                        });
                       },
                 icon: Icons.copy,
               ),
@@ -171,8 +172,8 @@ class TokenComponent extends StatelessWidget {
               FloatingAnimatedButton(
                 onPressed: isLoading
                     ? null
-                    : () {
-                        SharePlus.instance.share(
+                    : () async {
+                        await SharePlus.instance.share(
                           ShareParams(
                             text: loc.share_match_text(displayCode),
                             title: loc.share_match_title,

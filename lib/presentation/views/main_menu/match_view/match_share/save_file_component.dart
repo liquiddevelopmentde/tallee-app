@@ -66,8 +66,8 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
             FloatingAnimatedButton(
               text: loc.save_file,
               icon: Icons.folder,
-              onPressed: () {
-                RemoteShareService().saveMatchToCustomLocation(
+              onPressed: () async {
+                await RemoteShareService().saveMatchToCustomLocation(
                   widget.match,
                   dialogTitle: loc.choose_where_to_save,
                 );
@@ -77,8 +77,8 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
             // Share button
             FloatingAnimatedButton(
               icon: Icons.share,
-              onPressed: () {
-                RemoteShareService().shareMatchAsFile(
+              onPressed: () async {
+                await RemoteShareService().shareMatchAsFile(
                   widget.match,
                   text: loc.here_is_shared_match(widget.match.name),
                   title: loc.share_match_title,
