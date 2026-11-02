@@ -131,7 +131,7 @@ void main() {
     group('READ', () {
       test('hasMatchPlayers() works correctly', () async {
         await database.matchDao.addMatch(match: testMatch1);
-        var matchHasPlayers = await database.playerMatchDao.hasMatchPlayers(
+        final matchHasPlayers = await database.playerMatchDao.hasMatchPlayers(
           matchId: testMatch1.id,
         );
         expect(matchHasPlayers, isTrue);

@@ -50,7 +50,7 @@ void main() {
           player: testPlayer4,
         );
 
-        var playerAdded = await database.playerGroupDao.isPlayerInGroup(
+        final playerAdded = await database.playerGroupDao.isPlayerInGroup(
           groupId: testGroup.id,
           playerId: testPlayer4.id,
         );
