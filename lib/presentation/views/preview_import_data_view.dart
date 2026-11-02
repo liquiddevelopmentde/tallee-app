@@ -305,7 +305,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
     if (!mounted) return;
 
-    if (result.$1 != ImportResult.success) {
+    if (!result.$1.isSuccess) {
       finishImport(importResult: result.$1);
       return;
     }
@@ -338,7 +338,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
   Future<void> finishImport({required ImportResult importResult}) async {
     if (!mounted) return;
 
-    if (importResult == ImportResult.success) {
+    if (importResult.isSuccess) {
       // Refresh on success
       context.read<DataRefreshProvider>().refresh();
     }
@@ -350,7 +350,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
     // Show snackbar with haptic feedback
     if (messengerKey != null) {
-      if (importResult == ImportResult.success) {
+      if (importResult.isSuccess) {
         HapticFeedback.successNotification();
       }
 

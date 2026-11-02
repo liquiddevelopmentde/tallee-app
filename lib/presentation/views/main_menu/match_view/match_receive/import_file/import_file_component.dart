@@ -158,7 +158,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
 
   void processFile(dynamic data) {
     lastResult = data.result;
-    if (data.result == ImportResult.success) {
+    if (data.result.isSuccess) {
       HapticFeedback.successNotification();
       setState(() {
         successfulImport = true;
@@ -169,7 +169,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
       successfulImport = false;
 
       setState(() {
-        if (data.result != ImportResult.canceled) {
+        if (data.result.isNotCanceled) {
           dottedBorderColor = Colors.red;
         } else {
           dottedBorderColor = context.talleeColors.boxBorderColor;

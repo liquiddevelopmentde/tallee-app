@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/data/db/database.dart';
@@ -123,7 +123,7 @@ class LocalShareService {
     }
 
     final (status, _) = await validateJson(jsonString);
-    if (status != ImportResult.success) {
+    if (!status.isSuccess) {
       return (status, null);
     }
 
@@ -194,7 +194,7 @@ class LocalShareService {
     String jsonString,
   ) async {
     final (status, decoded) = await validateJson(jsonString);
-    if (status != ImportResult.success || decoded == null) {
+    if (!status.isSuccess || decoded == null) {
       return status;
     }
 

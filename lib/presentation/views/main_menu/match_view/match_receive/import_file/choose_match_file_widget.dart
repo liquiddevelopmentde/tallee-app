@@ -14,8 +14,8 @@ class ChooseMatchFileWidget extends StatelessWidget {
     String title = loc.choose_match_file;
     String? description;
     if (lastResult != null &&
-        lastResult != ImportResult.success &&
-        lastResult != ImportResult.canceled) {
+        !lastResult!.isSuccess &&
+        !lastResult!.isCanceled) {
       title = loc.error_reading_file;
       description = lastResult!.toLocalizedMatchImportString(context);
     }

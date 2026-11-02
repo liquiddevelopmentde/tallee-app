@@ -54,6 +54,10 @@ extension ImportResultExtension on ImportResult {
         return loc.format_exception;
     }
   }
+
+  bool get isSuccess => this == ImportResult.success;
+
+  bool get isCanceled => this == ImportResult.canceled;
 }
 
 extension ExportResultExtension on ExportResult {

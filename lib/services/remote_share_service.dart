@@ -69,7 +69,7 @@ class RemoteShareService {
       final jsonMap = jsonEncode(payload);
       final result = await parseAndValidateMatch(jsonMap, '');
 
-      if (result.result != ImportResult.success) {
+      if (result.result.isSuccess) {
         return (result: result.result, match: null);
       }
 

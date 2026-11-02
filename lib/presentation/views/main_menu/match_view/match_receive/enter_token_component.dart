@@ -218,7 +218,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       isTokenValid = true;
 
       // If an import error occured
-      if (response.result != ImportResult.success && mounted) {
+      if (!response.result.isSuccess && mounted) {
         errorMessage = response.result.toLocalizedMatchImportString(context);
       } else {
         setState(() {
