@@ -1,11 +1,11 @@
 import 'package:clock/clock.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/datetime_extension.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
@@ -226,11 +226,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     title: loc.creation_date,
                     trailing: selectedCreationDate == null
                         ? Text(loc.today)
-                        : Text(
-                            DateFormat.yMMMd(
-                              Localizations.localeOf(context).toString(),
-                            ).format(selectedCreationDate!),
-                          ),
+                        : Text(selectedCreationDate!.toMediumDate(context)),
                     onPressed: () async => onCreationDateSelection(),
                   ),
 

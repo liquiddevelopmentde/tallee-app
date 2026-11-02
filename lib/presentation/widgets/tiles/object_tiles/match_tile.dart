@@ -1,10 +1,10 @@
 import 'dart:core' hide Match;
 
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/datetime_extension.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
@@ -217,13 +217,13 @@ class _MatchTileState extends State<MatchTile> {
     final loc = AppLocalizations.of(context);
 
     if (difference.inDays == 0) {
-      return "${loc.today_at} ${DateFormat('HH:mm').format(dateTime)}";
+      return '${loc.today_at} ${dateTime.toTime(context)}';
     } else if (difference.inDays == 1) {
-      return "${loc.yesterday_at} ${DateFormat('HH:mm').format(dateTime)}";
+      return '${loc.yesterday_at} ${dateTime.toTime(context)}';
     } else if (difference.inDays < 7) {
       return loc.days_ago(difference.inDays);
     } else {
-      return '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(dateTime)}';
+      return '${loc.created_on} ${dateTime.toLocalizedFormat(context)}';
     }
   }
 
