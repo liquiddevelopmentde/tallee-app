@@ -26,10 +26,7 @@ class NewsCard extends StatelessWidget {
       child: Row(
         spacing: 2,
         children: [
-          ColoredIconContainer(
-            icon: newsItem.icon,
-            color: iconColor,
-          ),
+          ColoredIconContainer(icon: newsItem.icon, color: iconColor),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -58,16 +55,17 @@ class NewsCard extends StatelessWidget {
     );
   }
 
-  MarkdownStyleSheet buildMarkdownSheet(BuildContext context) => MarkdownStyleSheet.fromTheme(Theme.of(context).toFlutterThemeData())
-        .copyWith(
-          p: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: context.talleeColors.textColor,
-            overflow: TextOverflow.visible,
-          ),
-          strong: TextStyle(
-            color: context.talleeColors.textColor,
-            fontWeight: FontWeight.bold,
-            overflow: TextOverflow.visible,
-          ),
-        );
+  MarkdownStyleSheet buildMarkdownSheet(BuildContext context) =>
+      MarkdownStyleSheet.fromTheme(Theme.of(context).toFlutterThemeData())
+          .copyWith(
+            p: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: context.talleeColors.textColor,
+              overflow: TextOverflow.visible,
+            ),
+            strong: TextStyle(
+              color: context.talleeColors.textColor,
+              fontWeight: FontWeight.bold,
+              overflow: TextOverflow.visible,
+            ),
+          );
 }

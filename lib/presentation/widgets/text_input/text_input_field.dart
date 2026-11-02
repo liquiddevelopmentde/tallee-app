@@ -43,30 +43,30 @@ class TextInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TextField(
-      controller: controller,
-      onChanged: onChanged,
-      onSubmitted: onSubmitted,
-      textInputAction: textInputAction,
-      keyboardType: keyboardType,
-      maxLength: maxLength,
-      maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
-      maxLines: maxLines,
-      minLines: minLines,
-      focusNode: focusNode,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: context.talleeColors.boxColor,
-        hintText: hintText,
-        counterText: showCounterText ? null : '',
-        enabledBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.never,
+    controller: controller,
+    onChanged: onChanged,
+    onSubmitted: onSubmitted,
+    textInputAction: textInputAction,
+    keyboardType: keyboardType,
+    maxLength: maxLength,
+    maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
+    maxLines: maxLines,
+    minLines: minLines,
+    focusNode: focusNode,
+    decoration: InputDecoration(
+      filled: true,
+      fillColor: context.talleeColors.boxColor,
+      hintText: hintText,
+      counterText: showCounterText ? null : '',
+      enabledBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
       ),
-    );
+      focusedBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
+      ),
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+    ),
+  );
 }

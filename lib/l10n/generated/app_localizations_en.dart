@@ -302,6 +302,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Error while creating group, please try again';
 
   @override
+  String get error_deleting_data =>
+      'Error while deleting data, please try again';
+
+  @override
   String get error_deleting_game =>
       'Error while deleting game, please try again';
 

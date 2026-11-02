@@ -39,7 +39,7 @@ void main() {
         Timeframe.allTime,
       ]);
       SharedPreferencesService.setMatchFilter(MatchFilter.team);
-      SharedPreferencesService.setSharingConsent(true);
+      await SharedPreferencesService.setSharingConsent(true);
 
       SharedPreferencesService.deleteAllPreferences();
 

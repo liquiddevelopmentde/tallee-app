@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/dto/share_create_response.dart';
@@ -110,9 +110,7 @@ class _MatchShareViewState extends State<MatchShareView>
                     Colors.transparent,
                   ),
                   unselectedLabelColor: context.talleeColors.textColor,
-                  onTap: (_) async {
-                    await HapticFeedback.selectionClick();
-                  },
+                  onTap: (_) => Haptics.selectionClick(),
                   tabs: const [
                     Tab(icon: Icon(Icons.qr_code)),
                     Tab(icon: Icon(Icons.pin)),
@@ -189,7 +187,7 @@ class _MatchShareViewState extends State<MatchShareView>
     }
 
     if (hasStoredSharingConsent) {
-      Future.wait([
+      await Future.wait([
             RemoteShareService().getShareToken(widget.match),
             Future.delayed(MINIMUM_SKELETON_DURATION),
           ])

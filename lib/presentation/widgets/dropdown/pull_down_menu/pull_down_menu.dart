@@ -70,26 +70,26 @@ class PullDownMenu extends PopupRoute<void> {
   }
 
   Widget menuSurface(BuildContext context) => Material(
-      color: Colors.transparent,
-      child: Container(
-        width: menuWidth,
-        decoration: BoxDecoration(
-          color: context.talleeColors.boxColor,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 50,
-              offset: Offset(0, 10),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(14),
-          child: Column(mainAxisSize: MainAxisSize.min, children: items),
-        ),
+    color: Colors.transparent,
+    child: Container(
+      width: menuWidth,
+      decoration: BoxDecoration(
+        color: context.talleeColors.boxColor,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 50,
+            offset: Offset(0, 10),
+          ),
+        ],
       ),
-    );
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: Column(mainAxisSize: MainAxisSize.min, children: items),
+      ),
+    ),
+  );
 
   @override
   Widget buildTransitions(

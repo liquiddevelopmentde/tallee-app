@@ -1,10 +1,10 @@
 import 'dart:core' hide Match;
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/models/models.dart';
@@ -49,7 +49,7 @@ class _MatchTileState extends State<MatchTile> {
 
     return GestureDetector(
       onTap: () {
-        HapticFeedback.selectionClick();
+        Haptics.selectionClick();
         widget.onTap.call();
       },
       child: Container(
@@ -141,11 +141,15 @@ class _MatchTileState extends State<MatchTile> {
                   return Wrap(
                     spacing: spacing,
                     runSpacing: spacing,
-                    children: match.teams!.map((team) => TeamCard(
-                        team: team,
-                        compact: true,
-                        width: itemWidth,
-                      )).toList(),
+                    children: match.teams!
+                        .map(
+                          (team) => TeamCard(
+                            team: team,
+                            compact: true,
+                            width: itemWidth,
+                          ),
+                        )
+                        .toList(),
                   );
                 },
               ),
@@ -187,7 +191,9 @@ class _MatchTileState extends State<MatchTile> {
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: players.map((player) => PlayerTile(player: player)).toList(),
+                children: players
+                    .map((player) => PlayerTile(player: player))
+                    .toList(),
               ),
             ] else ...[
               Text(

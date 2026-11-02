@@ -1,9 +1,9 @@
 import 'dart:core' hide Match;
 
 import 'package:collection/collection.dart';
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/edge_blocked_bouncing_scroll_physics.dart';
@@ -76,11 +76,11 @@ class _PlacementDragListState extends State<PlacementDragList> {
               padding: EdgeInsets.zero,
               itemCount: itemCount,
               itemBuilder: (context, index) => SizedBox(
-                  height: rowHeight,
-                  child: Center(
-                    child: placementBadge(index: index, badgeSize: badgeSize),
-                  ),
+                height: rowHeight,
+                child: Center(
+                  child: placementBadge(index: index, badgeSize: badgeSize),
                 ),
+              ),
             ),
           ),
           const SizedBox(width: 4),
@@ -99,38 +99,36 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         allTeams.insert(newIndex, team);
                       });
                     },
-                    onReorderStart: (_) => HapticFeedback.heavyImpact(),
-                    onReorderEnd: (_) => HapticFeedback.selectionClick(),
+                    onReorderStart: (_) => Haptics.heavyImpact(),
+                    onReorderEnd: (_) => Haptics.selectionClick(),
                     itemCount: itemCount,
                     itemBuilder: (context, index) => SizedBox(
-                        key: ValueKey(allTeams[index].id),
-                        height: rowHeight,
-                        child: isTeamMatch
-                            ? TeamCard(
-                                margin: const EdgeInsets.only(
-                                  left: 4,
-                                  right: 4,
-                                  top: 4,
-                                  bottom: 4,
-                                ),
-                                showTeamMembers: false,
-                                showDragHandle: true,
-                                team: allTeams[index],
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                ),
-                                child: TextIconListTile(
-                                  player: allTeams[index].members.first,
-                                  pair: allTeams[index].members.length > 1
-                                      ? allTeams[index]
-                                      : null,
-                                  icon: Icons.drag_handle,
-                                  pairIconLeft: true,
-                                ),
+                      key: ValueKey(allTeams[index].id),
+                      height: rowHeight,
+                      child: isTeamMatch
+                          ? TeamCard(
+                              margin: const EdgeInsets.only(
+                                left: 4,
+                                right: 4,
+                                top: 4,
+                                bottom: 4,
                               ),
-                      ),
+                              showTeamMembers: false,
+                              showDragHandle: true,
+                              team: allTeams[index],
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: TextIconListTile(
+                                player: allTeams[index].members.first,
+                                pair: allTeams[index].members.length > 1
+                                    ? allTeams[index]
+                                    : null,
+                                icon: Icons.drag_handle,
+                                pairIconLeft: true,
+                              ),
+                            ),
+                    ),
                   ),
                 )
               : Expanded(
@@ -147,20 +145,20 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         allPlayers.insert(newIndex, item);
                       });
                     },
-                    onReorderStart: (_) => HapticFeedback.heavyImpact(),
-                    onReorderEnd: (_) => HapticFeedback.selectionClick(),
+                    onReorderStart: (_) => Haptics.heavyImpact(),
+                    onReorderEnd: (_) => Haptics.selectionClick(),
                     itemCount: itemCount,
                     itemBuilder: (context, index) => SizedBox(
-                        key: ValueKey(allPlayers[index].id),
-                        height: rowHeight,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: TextIconListTile(
-                            player: allPlayers[index],
-                            icon: Icons.drag_handle,
-                          ),
+                      key: ValueKey(allPlayers[index].id),
+                      height: rowHeight,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: TextIconListTile(
+                          player: allPlayers[index],
+                          icon: Icons.drag_handle,
                         ),
                       ),
+                    ),
                   ),
                 ),
         ],

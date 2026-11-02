@@ -280,24 +280,24 @@ class TokenComponent extends StatelessWidget {
     String char = '',
     required bool active,
   }) => Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: active
+          ? context.talleeColors.boxColor
+          : context.talleeColors.boxBorderColor.withAlpha(100),
+      border: Border.all(color: context.talleeColors.boxBorderColor),
+      borderRadius: AppColors.standardBorderRadiusAll,
+    ),
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Text(
+      char,
+      style: TextStyle(
+        fontSize: 35,
+        fontWeight: FontWeight.w400,
         color: active
-            ? context.talleeColors.boxColor
-            : context.talleeColors.boxBorderColor.withAlpha(100),
-        border: Border.all(color: context.talleeColors.boxBorderColor),
-        borderRadius: AppColors.standardBorderRadiusAll,
+            ? context.talleeColors.textColor
+            : context.talleeColors.boxBorderColor,
       ),
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Text(
-        char,
-        style: TextStyle(
-          fontSize: 35,
-          fontWeight: FontWeight.w400,
-          color: active
-              ? context.talleeColors.textColor
-              : context.talleeColors.boxBorderColor,
-        ),
-      ),
-    );
+    ),
+  );
 }

@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 
 class ApiActionAnimatedButton extends StatefulWidget {
@@ -197,7 +197,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     if (widget.onPressed == null) return;
     if (buttonState != ApiButtonState.idle) return;
 
-    await HapticFeedback.selectionClick();
+    Haptics.selectionClick();
     animationController.forward();
     await Future.delayed(const Duration(milliseconds: 100));
     animationController.reverse();
@@ -213,7 +213,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
         setState(() {
           buttonState = ApiButtonState.success;
         });
-        await HapticFeedback.heavyImpact();
+        Haptics.heavyImpact();
 
         // Fire and forget reset
         Future.delayed(const Duration(seconds: 2), () {
@@ -230,7 +230,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
           buttonState = ApiButtonState.error;
         });
 
-        await HapticFeedback.heavyImpact();
+        Haptics.heavyImpact();
 
         await Future.delayed(const Duration(seconds: 2));
         if (mounted) {

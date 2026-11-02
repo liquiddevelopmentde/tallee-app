@@ -305,6 +305,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehler beim Erstellen der Gruppe, bitte erneut versuchen';
 
   @override
+  String get error_deleting_data =>
+      'Fehler beim Löschen der Daten, bitte erneut versuchen';
+
+  @override
   String get error_deleting_game =>
       'Fehler beim Löschen der Spielvorlage, bitte erneut versuchen';
 

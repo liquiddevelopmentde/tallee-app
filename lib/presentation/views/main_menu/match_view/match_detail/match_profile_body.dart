@@ -107,7 +107,9 @@ class MatchProfileBody extends StatelessWidget {
             content: match.teams != null && match.teams!.isNotEmpty
                 ? match.isTeamMatch
                       ? Column(
-                          children: (match.teams ?? []).map((team) => TeamCard(team: team)).toList(),
+                          children: (match.teams ?? [])
+                              .map((team) => TeamCard(team: team))
+                              .toList(),
                         )
                       : Wrap(
                           spacing: 12,
@@ -146,12 +148,16 @@ class MatchProfileBody extends StatelessWidget {
                 ? Wrap(
                     spacing: 12,
                     runSpacing: 8,
-                    children: match.players.map((player) => PlayerTile(
-                        player: player,
-                        onTileTap: onPlayerTap != null
-                            ? () => onPlayerTap!(player)
-                            : null,
-                      )).toList(),
+                    children: match.players
+                        .map(
+                          (player) => PlayerTile(
+                            player: player,
+                            onTileTap: onPlayerTap != null
+                                ? () => onPlayerTap!(player)
+                                : null,
+                          ),
+                        )
+                        .toList(),
                   )
                 : Text(
                     loc.no_players_available,
@@ -201,7 +207,9 @@ class MatchProfileBody extends StatelessWidget {
                 ? Wrap(
                     spacing: 12,
                     runSpacing: 8,
-                    children: match.players.map((player) => PlayerTile(player: player)).toList(),
+                    children: match.players
+                        .map((player) => PlayerTile(player: player))
+                        .toList(),
                   )
                 : Text(
                     loc.no_players_available,

@@ -67,11 +67,13 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 150),
               layoutBuilder:
-                  (Widget? currentChild, List<Widget> previousChildren) => Stack(
-                      alignment: Alignment.topCenter,
-                      children: <Widget>[...previousChildren, ?currentChild],
-                    ),
-              transitionBuilder: (Widget child, Animation<double> animation) => FadeTransition(opacity: animation, child: child),
+                  (Widget? currentChild, List<Widget> previousChildren) =>
+                      Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[...previousChildren, ?currentChild],
+                      ),
+              transitionBuilder: (Widget child, Animation<double> animation) =>
+                  FadeTransition(opacity: animation, child: child),
               child: associatedGame == null
                   ? GestureDetector(
                       onTap: navigateToGameSelection,
@@ -199,8 +201,13 @@ class _AssociateGameViewState extends State<AssociateGameView> {
     if (!mounted) return;
 
     final importedGame = widget.match.game;
-    final match = allGames.where((localGame) => localGame.name.toLowerCase() == importedGame.name.toLowerCase() &&
-          localGame.ruleset == importedGame.ruleset).firstOrNull;
+    final match = allGames
+        .where(
+          (localGame) =>
+              localGame.name.toLowerCase() == importedGame.name.toLowerCase() &&
+              localGame.ruleset == importedGame.ruleset,
+        )
+        .firstOrNull;
 
     if (match != null) {
       setState(() {

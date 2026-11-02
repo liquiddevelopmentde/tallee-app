@@ -35,25 +35,25 @@ class AppSkeleton extends StatefulWidget {
 class _AppSkeletonState extends State<AppSkeleton> {
   @override
   Widget build(BuildContext context) => Skeletonizer(
-      effect: PulseEffect(
-        from: context.talleeColors.skeletonFromColor,
-        to: context.talleeColors.skeletonToColor,
-        duration: const Duration(milliseconds: 800),
-      ),
-      enabled: widget.enabled,
-      enableSwitchAnimation: true,
-      switchAnimationConfig: SwitchAnimationConfig(
-        duration: const Duration(milliseconds: 200),
-        layoutBuilder: !widget.fixLayoutBuilder
-            ? AnimatedSwitcher.defaultLayoutBuilder
-            : (Widget? currentChild, List<Widget> previousChildren) {
-                final children = <Widget>[...previousChildren];
-                if (currentChild != null) children.add(currentChild);
-                return Stack(alignment: widget.alignment, children: children);
-              },
-      ),
-      child: widget.fixLayoutBuilder
-          ? Align(alignment: widget.alignment, child: widget.child)
-          : widget.child,
-    );
+    effect: PulseEffect(
+      from: context.talleeColors.skeletonFromColor,
+      to: context.talleeColors.skeletonToColor,
+      duration: const Duration(milliseconds: 800),
+    ),
+    enabled: widget.enabled,
+    enableSwitchAnimation: true,
+    switchAnimationConfig: SwitchAnimationConfig(
+      duration: const Duration(milliseconds: 200),
+      layoutBuilder: !widget.fixLayoutBuilder
+          ? AnimatedSwitcher.defaultLayoutBuilder
+          : (Widget? currentChild, List<Widget> previousChildren) {
+              final children = <Widget>[...previousChildren];
+              if (currentChild != null) children.add(currentChild);
+              return Stack(alignment: widget.alignment, children: children);
+            },
+    ),
+    child: widget.fixLayoutBuilder
+        ? Align(alignment: widget.alignment, child: widget.child)
+        : widget.child,
+  );
 }

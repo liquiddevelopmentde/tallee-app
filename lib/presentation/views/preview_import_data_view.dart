@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -323,14 +323,12 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     finishImport(importResult: result);
   }
 
-  Future<void> cancelImport() async {
-    finishImport(importResult: ImportResult.canceled);
-  }
+  void cancelImport() => finishImport(importResult: ImportResult.canceled);
 
   /// Pops the page and reports the [importResult] to the caller.
   /// When a messengerKey was provided, the result snackbar is shown.
   /// Else the result is returned via pop()
-  Future<void> finishImport({required ImportResult importResult}) async {
+  void finishImport({required ImportResult importResult}) {
     if (!mounted) return;
 
     if (importResult.isSuccess) {
@@ -346,7 +344,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     // Show snackbar with haptic feedback
     if (messengerKey != null) {
       if (importResult.isSuccess) {
-        HapticFeedback.successNotification();
+        Haptics.successNotification();
       }
 
       messengerKey.showSnackBar(message: message);

@@ -83,38 +83,35 @@ class _LiveEditViewState extends State<LiveEditView> {
 
   @override
   Widget build(BuildContext context) => ListView.builder(
-      itemCount: allUnits.length,
-      itemBuilder: (context, index) {
-        final unit = allUnits[index];
-        return LiveEditListTile(
-          isLivesRuleset: widget.livesMode,
-          focusNode: index < focusNodes.length ? focusNodes[index] : null,
-          textInputAction: index == allUnits.length - 1
-              ? TextInputAction.done
-              : TextInputAction.next,
-          onSubmitted: () => focusNextTile(index),
-          title: buildUnitNameWidget(
-            context,
-            unit,
-            isTeamMatch: isTeamMatch,
-            rowAlignment: MainAxisAlignment.center,
-            mainStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          value: scores[unit] ?? fallbackValue,
-          boundaries: widget.boundaries,
-          color: isTeamMatch && unit is Team
-              ? unit.color.colorValue(context)
-              : null,
-          onChanged: (value) {
-            scores[unit] = value;
-            widget.onScoresChanged?.call(scores);
-          },
-        );
-      },
-    );
+    itemCount: allUnits.length,
+    itemBuilder: (context, index) {
+      final unit = allUnits[index];
+      return LiveEditListTile(
+        isLivesRuleset: widget.livesMode,
+        focusNode: index < focusNodes.length ? focusNodes[index] : null,
+        textInputAction: index == allUnits.length - 1
+            ? TextInputAction.done
+            : TextInputAction.next,
+        onSubmitted: () => focusNextTile(index),
+        title: buildUnitNameWidget(
+          context,
+          unit,
+          isTeamMatch: isTeamMatch,
+          rowAlignment: MainAxisAlignment.center,
+          mainStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        value: scores[unit] ?? fallbackValue,
+        boundaries: widget.boundaries,
+        color: isTeamMatch && unit is Team
+            ? unit.color.colorValue(context)
+            : null,
+        onChanged: (value) {
+          scores[unit] = value;
+          widget.onScoresChanged?.call(scores);
+        },
+      );
+    },
+  );
 
   bool get useTeamLogic => widget.match.useTeamLogic;
 

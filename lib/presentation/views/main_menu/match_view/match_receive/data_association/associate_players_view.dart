@@ -219,20 +219,20 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
       context: context,
       backgroundColor: context.talleeColors.backgroundColor,
       builder: (context) => PlayerSelectionWidget.single(
-          onSingleChanged: (player) async {
-            await Future.delayed(const Duration(milliseconds: 200));
-            if (!context.mounted) return;
-            Navigator.of(context).pop(player);
-          },
-          onPlayerCreated: () {
-            setState(() {
-              cachedAllPlayers = null;
-            });
-            autoAssociatePlayers();
-          },
-          availablePlayers: availablePlayers,
-          initialSelectedPlayer: isCreateAsNew ? null : currentSelection,
-        ),
+        onSingleChanged: (player) async {
+          await Future.delayed(const Duration(milliseconds: 200));
+          if (!context.mounted) return;
+          Navigator.of(context).pop(player);
+        },
+        onPlayerCreated: () {
+          setState(() {
+            cachedAllPlayers = null;
+          });
+          autoAssociatePlayers();
+        },
+        availablePlayers: availablePlayers,
+        initialSelectedPlayer: isCreateAsNew ? null : currentSelection,
+      ),
     );
   }
 
@@ -248,23 +248,38 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
       for (final importedPlayer in playersToAssociate) {
         // 1. Try exact ID match first
-        Player? match = allPlayers.where((localPlayer) => !usedLocalPlayerIds.contains(localPlayer.id) &&
-              localPlayer.id == importedPlayer.id).firstOrNull;
+        Player? match = allPlayers
+            .where(
+              (localPlayer) =>
+                  !usedLocalPlayerIds.contains(localPlayer.id) &&
+                  localPlayer.id == importedPlayer.id,
+            )
+            .firstOrNull;
 
         // 2. Try Name + NameCount match
-        match ??= allPlayers.where((localPlayer) => !usedLocalPlayerIds.contains(localPlayer.id) &&
-              localPlayer.name.trim().compareIgnoringCaseTo(
-                    importedPlayer.name.trim(),
-                  ) ==
-                  0 &&
-              localPlayer.nameCount == importedPlayer.nameCount).firstOrNull;
+        match ??= allPlayers
+            .where(
+              (localPlayer) =>
+                  !usedLocalPlayerIds.contains(localPlayer.id) &&
+                  localPlayer.name.trim().compareIgnoringCaseTo(
+                        importedPlayer.name.trim(),
+                      ) ==
+                      0 &&
+                  localPlayer.nameCount == importedPlayer.nameCount,
+            )
+            .firstOrNull;
 
         // 3. Fall back to Name-only match (ignoring case and whitespace)
-        match ??= allPlayers.where((localPlayer) => !usedLocalPlayerIds.contains(localPlayer.id) &&
-              localPlayer.name.trim().compareIgnoringCaseTo(
-                    importedPlayer.name.trim(),
-                  ) ==
-                  0).firstOrNull;
+        match ??= allPlayers
+            .where(
+              (localPlayer) =>
+                  !usedLocalPlayerIds.contains(localPlayer.id) &&
+                  localPlayer.name.trim().compareIgnoringCaseTo(
+                        importedPlayer.name.trim(),
+                      ) ==
+                      0,
+            )
+            .firstOrNull;
 
         if (match != null) {
           associations[importedPlayer.id] = match;

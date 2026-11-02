@@ -109,6 +109,7 @@
   "enable": "Aktivieren",
   "enter_results": "Ergebnisse eintragen",
   "error_creating_group": "Fehler beim Erstellen der Gruppe, bitte erneut versuchen",
+  "error_deleting_data": "Fehler beim Löschen der Daten, bitte erneut versuchen",
   "error_deleting_game": "Fehler beim Löschen der Spielvorlage, bitte erneut versuchen",
   "error_deleting_group": "Fehler beim Löschen der Gruppe, bitte erneut versuchen",
   "error_deleting_match": "Fehler beim Löschen des Spiels, bitte erneut versuchen",

@@ -1,6 +1,6 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 
 class CustomRadioListTile<T> extends StatelessWidget {
@@ -21,24 +21,24 @@ class CustomRadioListTile<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-      onTap: () {
-        HapticFeedback.selectionClick();
-        onContainerTap(value);
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        padding: const EdgeInsets.only(left: 2, right: 5),
-        decoration: BoxDecoration(
-          color: context.talleeColors.boxColor,
-          border: Border.all(color: context.talleeColors.boxBorderColor),
-          borderRadius: AppColors.standardBorderRadiusAll,
-        ),
-        child: Row(
-          children: [
-            Radio<T>(value: value, toggleable: true),
-            Expanded(child: content),
-          ],
-        ),
+    onTap: () {
+      Haptics.selectionClick();
+      onContainerTap(value);
+    },
+    child: Container(
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: const EdgeInsets.only(left: 2, right: 5),
+      decoration: BoxDecoration(
+        color: context.talleeColors.boxColor,
+        border: Border.all(color: context.talleeColors.boxBorderColor),
+        borderRadius: AppColors.standardBorderRadiusAll,
       ),
-    );
+      child: Row(
+        children: [
+          Radio<T>(value: value, toggleable: true),
+          Expanded(child: content),
+        ],
+      ),
+    ),
+  );
 }

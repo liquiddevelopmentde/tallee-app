@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/rendering.dart';
@@ -501,7 +502,7 @@ class _MatchViewState extends State<MatchView> {
       case null:
         await RATE_MY_APP.callEvent(RateMyAppEventType.laterButtonPressed);
       case true:
-        if (mounted) RATE_MY_APP.showStarRateDialog(context);
+        if (mounted) unawaited(RATE_MY_APP.showStarRateDialog(context));
       case false:
         await RATE_MY_APP.callEvent(RateMyAppEventType.noButtonPressed);
         if (mounted) {
@@ -514,26 +515,27 @@ class _MatchViewState extends State<MatchView> {
   }
 
   /// Shows a dialog to check for the users opinion on the app
-  Future<bool?> showPreRateDialog(AppLocalizations loc) async => await showDialog<bool>(
-      context: context,
-      builder: (context) => CustomAlertDialog(
-        closeButtonColor: context.talleeColors.hintColor,
-        showCloseButton: true,
-        title: loc.do_you_like_the_app,
-        content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),
-        actions: [
-          CustomDialogAction(
-            onPressed: () => Navigator.of(context).pop(true),
-            isEmphasized: true,
-            text: loc.yes,
-          ),
-          CustomDialogAction(
-            onPressed: () => Navigator.of(context).pop(false),
-            text: loc.no,
-          ),
-        ],
-      ),
-    );
+  Future<bool?> showPreRateDialog(AppLocalizations loc) async =>
+      await showDialog<bool>(
+        context: context,
+        builder: (context) => CustomAlertDialog(
+          closeButtonColor: context.talleeColors.hintColor,
+          showCloseButton: true,
+          title: loc.do_you_like_the_app,
+          content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),
+          actions: [
+            CustomDialogAction(
+              onPressed: () => Navigator.of(context).pop(true),
+              isEmphasized: true,
+              text: loc.yes,
+            ),
+            CustomDialogAction(
+              onPressed: () => Navigator.of(context).pop(false),
+              text: loc.no,
+            ),
+          ],
+        ),
+      );
 
   /// Shows a dialog prompting the user to contact support via email if they are unsatisfied with the app.
   void showBadRatingDialog(AppLocalizations loc) {

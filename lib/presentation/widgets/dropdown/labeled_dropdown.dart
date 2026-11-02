@@ -178,26 +178,26 @@ class LabeledDropdown<T> extends StatelessWidget {
                             }
                           : null,
                       selectedItemBuilder: (context) => options
-                            .map(
-                              (_) => ValueListenableBuilder<List<T>>(
-                                valueListenable: listenable!,
-                                builder: (context, values, _) {
-                                  final selectedLabels = options
-                                      .where((o) => values.contains(o.value))
-                                      .map((o) => o.label)
-                                      .join(', ');
-                                  return Text(
-                                    selectedLabels,
-                                    style: values.isEmpty
-                                        ? hintStyle(context)
-                                        : headerStyle(context),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  );
-                                },
-                              ),
-                            )
-                            .toList(),
+                          .map(
+                            (_) => ValueListenableBuilder<List<T>>(
+                              valueListenable: listenable!,
+                              builder: (context, values, _) {
+                                final selectedLabels = options
+                                    .where((o) => values.contains(o.value))
+                                    .map((o) => o.label)
+                                    .join(', ');
+                                return Text(
+                                  selectedLabels,
+                                  style: values.isEmpty
+                                      ? hintStyle(context)
+                                      : headerStyle(context),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                );
+                              },
+                            ),
+                          )
+                          .toList(),
                       buttonStyleData: buttonStyle(context),
                       iconStyleData: iconStyle(context),
                       dropdownStyleData: dropdownStyle(context),

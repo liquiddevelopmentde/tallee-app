@@ -38,36 +38,36 @@ class InfoTile extends StatefulWidget {
 class _InfoTileState extends State<InfoTile> {
   @override
   Widget build(BuildContext context) => Container(
-      padding: widget.padding ?? const EdgeInsets.all(12),
-      margin: widget.margin,
-      height: widget.height,
-      width: widget.width ?? 380,
-      decoration: context.standardBoxDecoration,
-      child: Column(
-        crossAxisAlignment: widget.horizontalAlignment,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  widget.leadingWidget,
-                  const SizedBox(width: 5),
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+    padding: widget.padding ?? const EdgeInsets.all(12),
+    margin: widget.margin,
+    height: widget.height,
+    width: widget.width ?? 380,
+    decoration: context.standardBoxDecoration,
+    child: Column(
+      crossAxisAlignment: widget.horizontalAlignment,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                widget.leadingWidget,
+                const SizedBox(width: 5),
+                Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
-              if (widget.trailingWidget != null) widget.trailingWidget!,
-            ],
-          ),
-          const SizedBox(height: 10),
-          widget.content,
-        ],
-      ),
-    );
+                ),
+              ],
+            ),
+            if (widget.trailingWidget != null) widget.trailingWidget!,
+          ],
+        ),
+        const SizedBox(height: 10),
+        widget.content,
+      ],
+    ),
+  );
 }

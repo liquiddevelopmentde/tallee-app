@@ -626,6 +626,12 @@ abstract class AppLocalizations {
   /// **'Error while creating group, please try again'**
   String get error_creating_group;
 
+  /// No description provided for @error_deleting_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting data, please try again'**
+  String get error_deleting_data;
+
   /// No description provided for @error_deleting_game.
   ///
   /// In en, this message translates to:

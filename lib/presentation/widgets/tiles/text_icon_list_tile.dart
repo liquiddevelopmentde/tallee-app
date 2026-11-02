@@ -32,57 +32,57 @@ class TextIconListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-      onTap: onTileTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        decoration: BoxDecoration(
-          color: context.talleeColors.boxColor,
-          border: Border.all(
-            color: context.talleeColors.boxBorderColor,
-            strokeAlign: BorderSide.strokeAlignCenter,
-          ),
-          borderRadius: AppColors.standardBorderRadiusAll,
+    onTap: onTileTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      decoration: BoxDecoration(
+        color: context.talleeColors.boxColor,
+        border: Border.all(
+          color: context.talleeColors.boxBorderColor,
+          strokeAlign: BorderSide.strokeAlignCenter,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12.5),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildUnitNameWidget(
-                      context,
-                      pair ?? player ?? Player(name: text),
-                      mainStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      countStyle: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+        borderRadius: AppColors.standardBorderRadiusAll,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12.5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildUnitNameWidget(
+                    context,
+                    pair ?? player ?? Player(name: text),
+                    mainStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    countStyle: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: context.talleeColors.textColor.withAlpha(100),
+                    ),
+                    pairIconLeft: pairIconLeft,
+                  ),
+                  if (description != null)
+                    Text(
+                      description!,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 12,
                         color: context.talleeColors.textColor.withAlpha(100),
                       ),
-                      pairIconLeft: pairIconLeft,
                     ),
-                    if (description != null)
-                      Text(
-                        description!,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: context.talleeColors.textColor.withAlpha(100),
-                        ),
-                      ),
-                  ],
-                ),
+                ],
               ),
             ),
-            if (icon != null) Icon(icon, size: 20),
-          ],
-        ),
+          ),
+          if (icon != null) Icon(icon, size: 20),
+        ],
       ),
-    );
+    ),
+  );
 }

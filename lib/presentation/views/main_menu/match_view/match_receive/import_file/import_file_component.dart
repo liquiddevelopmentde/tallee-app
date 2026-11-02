@@ -1,9 +1,9 @@
 import 'dart:core' hide Match;
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/models/models.dart';
@@ -53,7 +53,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
           padding: AppSpacing.standardMargin.copyWith(left: 25, right: 25),
           child: GestureDetector(
             onTap: () async {
-              HapticFeedback.selectionClick();
+              Haptics.selectionClick();
               data = await RemoteShareService().chooseFileToImport();
               processFile(data);
             },
@@ -77,18 +77,19 @@ class _ImportFileCardState extends State<ImportFileCard> {
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 150),
                   transitionBuilder:
-                      (Widget child, Animation<double> animation) => FadeTransition(
-                          opacity: animation,
-                          child: ScaleTransition(
-                            scale: animation.drive(
-                              Tween<double>(
-                                begin: 0.95,
-                                end: 1.0,
-                              ).chain(CurveTween(curve: Curves.easeOut)),
+                      (Widget child, Animation<double> animation) =>
+                          FadeTransition(
+                            opacity: animation,
+                            child: ScaleTransition(
+                              scale: animation.drive(
+                                Tween<double>(
+                                  begin: 0.95,
+                                  end: 1.0,
+                                ).chain(CurveTween(curve: Curves.easeOut)),
+                              ),
+                              child: child,
                             ),
-                            child: child,
                           ),
-                        ),
                   child: !successfulImport
                       ? ChooseMatchFileWidget(loc: loc, lastResult: lastResult)
                       : DisplaySelectedFileWidget(
@@ -160,13 +161,13 @@ class _ImportFileCardState extends State<ImportFileCard> {
   ) {
     lastResult = data.result;
     if (data.result.isSuccess) {
-      HapticFeedback.successNotification();
+      Haptics.successNotification();
       setState(() {
         successfulImport = true;
         dottedBorderColor = Colors.green;
       });
     } else {
-      HapticFeedback.errorNotification();
+      Haptics.errorNotification();
       successfulImport = false;
 
       setState(() {

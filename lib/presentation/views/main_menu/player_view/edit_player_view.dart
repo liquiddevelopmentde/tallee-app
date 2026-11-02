@@ -1,8 +1,8 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -120,14 +120,14 @@ class _EditPlayerViewState extends State<EditPlayerView> {
     if (!mounted) return;
 
     if (success) {
-      HapticFeedback.successNotification();
+      Haptics.successNotification();
       widget.onPlayerChanged?.call();
       if (mounted) {
         Navigator.pop(context, updatedPlayer);
       }
     } else {
       if (mounted) {
-        HapticFeedback.errorNotification();
+        Haptics.errorNotification();
       }
       scaffoldMessengerKey.showSnackBar(message: loc.error_editing_player);
     }

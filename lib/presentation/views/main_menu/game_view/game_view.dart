@@ -207,32 +207,37 @@ class _GameViewState extends State<GameView> with RouteAware {
                                       ),
                                       itemCount: displayedGames.length,
 
-                                      itemBuilder: (BuildContext context, int index) => GameTile(
-                                          gameCount: getGameCount(
-                                            displayedGames[index],
-                                          ),
-                                          onTap: () async {
-                                            await Navigator.push(
-                                              context,
-                                              adaptivePageRoute(
-                                                settings: const RouteSettings(
-                                                  name:
-                                                      RouteNames.createGameView,
-                                                ),
-                                                builder: (context) =>
-                                                    CreateGameView(
-                                                      gameToEdit:
+                                      itemBuilder:
+                                          (
+                                            BuildContext context,
+                                            int index,
+                                          ) => GameTile(
+                                            gameCount: getGameCount(
+                                              displayedGames[index],
+                                            ),
+                                            onTap: () async {
+                                              await Navigator.push(
+                                                context,
+                                                adaptivePageRoute(
+                                                  settings: const RouteSettings(
+                                                    name: RouteNames
+                                                        .createGameView,
+                                                  ),
+                                                  builder: (context) =>
+                                                      CreateGameView(
+                                                        gameToEdit:
+                                                            displayedGames[index],
+                                                        onGameChanged:
+                                                            loadGames,
+                                                        gameCount: getGameCount(
                                                           displayedGames[index],
-                                                      onGameChanged: loadGames,
-                                                      gameCount: getGameCount(
-                                                        displayedGames[index],
+                                                        ),
                                                       ),
-                                                    ),
-                                              ),
-                                            );
-                                          },
-                                          game: displayedGames[index],
-                                        ),
+                                                ),
+                                              );
+                                            },
+                                            game: displayedGames[index],
+                                          ),
                                     ),
                                   ),
                                 )

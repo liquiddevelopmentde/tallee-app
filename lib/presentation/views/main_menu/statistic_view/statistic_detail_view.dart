@@ -72,32 +72,32 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
           ),
           HapticIconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () =>
-                showDialog<bool>(
-                  context: context,
-                  builder: (context) => CustomAlertDialog(
-                    title: '${loc.delete_statistic}?',
-                    content: Text(
-                      loc.this_cannot_be_undone,
-                      overflow: TextOverflow.visible,
-                    ),
-                    actions: [
-                      CustomDialogAction(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        text: loc.delete,
-                      ),
-                      CustomDialogAction(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        buttonType: ButtonType.secondary,
-                        text: loc.cancel,
-                      ),
-                    ],
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => CustomAlertDialog(
+                  title: '${loc.delete_statistic}?',
+                  content: Text(
+                    loc.this_cannot_be_undone,
+                    overflow: TextOverflow.visible,
                   ),
-                ).then((confirmed) async {
-                  if (confirmed == true && context.mounted) {
-                    deleteStatistic();
-                  }
-                }),
+                  actions: [
+                    CustomDialogAction(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      text: loc.delete,
+                    ),
+                    CustomDialogAction(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      buttonType: ButtonType.secondary,
+                      text: loc.cancel,
+                    ),
+                  ],
+                ),
+              );
+              if (confirmed == true && context.mounted) {
+                await deleteStatistic();
+              }
+            },
           ),
         ],
       ),
@@ -372,7 +372,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
       widget.statistic.id,
       updatedIsFavourite,
     );
-    widget.refreshStatistic(widget.statistic.id);
+    unawaited(widget.refreshStatistic(widget.statistic.id));
     setState(() {
       isFavourite = updatedIsFavourite;
     });
@@ -381,7 +381,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   Future<void> deleteStatistic() async {
     final db = context.read<AppDatabase>();
     await db.statisticDao.deleteStatistic(widget.statistic.id);
-    widget.refreshStatistic(widget.statistic.id);
+    unawaited(widget.refreshStatistic(widget.statistic.id));
     if (mounted) Navigator.of(context).pop();
   }
 

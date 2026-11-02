@@ -1,8 +1,8 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -151,14 +151,14 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     if (!mounted) return;
 
     if (success) {
-      HapticFeedback.successNotification();
+      Haptics.successNotification();
       widget.onMembersChanged?.call();
       if (mounted) {
         Navigator.of(context).pop((updatedGroup: updatedGroup));
       }
     } else {
       if (mounted) {
-        HapticFeedback.errorNotification();
+        Haptics.errorNotification();
       }
       scaffoldMessengerKey.showSnackBar(
         message: widget.groupToEdit == null
@@ -237,9 +237,13 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     );
 
     final selectedPlayerIds = selectedPlayers.map((p) => p.id).toSet();
-    final relationshipsToDelete = groupMatches.where((match) => !match.players.any(
-        (player) => selectedPlayerIds.contains(player.id),
-      )).toList();
+    final relationshipsToDelete = groupMatches
+        .where(
+          (match) => !match.players.any(
+            (player) => selectedPlayerIds.contains(player.id),
+          ),
+        )
+        .toList();
 
     for (final match in relationshipsToDelete) {
       await db.matchDao.removeMatchGroup(matchId: match.id);

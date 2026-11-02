@@ -1,7 +1,7 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 
@@ -123,7 +123,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
         onTapUp: (_) => setState(() => _isPressed = false),
         onTapCancel: () => setState(() => _isPressed = false),
         onTap: () {
-          HapticFeedback.selectionClick();
+          Haptics.selectionClick();
           if (widget.onPressed != null) {
             widget.onPressed!();
           }

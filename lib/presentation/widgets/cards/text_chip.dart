@@ -1,7 +1,7 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 
 class TextChip extends StatefulWidget {
@@ -35,7 +35,7 @@ class _TextChipState extends State<TextChip> {
     return Skeleton.unite(
       child: GestureDetector(
         onTap: () {
-          HapticFeedback.selectionClick();
+          Haptics.selectionClick();
           widget.onTap();
         },
         child: AnimatedContainer(

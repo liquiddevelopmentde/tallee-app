@@ -120,39 +120,39 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                   padding: const EdgeInsets.only(bottom: 85, top: 10),
                   itemCount: filteredGroups.length,
                   itemBuilder: (BuildContext context, int index) => GroupTile(
-                      group: filteredGroups[index],
-                      isHighlighted: selectedGroups.any(
-                        (group) => group.id == filteredGroups[index].id,
-                      ),
-                      onTap: () async {
-                        setState(() {
-                          if (selectedGroups.contains(filteredGroups[index])) {
-                            selectedGroups.removeWhere(
-                              (group) => group.id == filteredGroups[index].id,
-                            );
-                          } else {
-                            // In single select mode only allow one group
-                            if (!enableMultiSelection) {
-                              selectedGroups.clear();
-                            }
-                            selectedGroups.add(filteredGroups[index]);
-                          }
-                        });
-
-                        // Navigate back to create match view instantly
-                        if (!enableMultiSelection) {
-                          await Future.delayed(MINIMUM_SKELETON_DURATION)
-                              .then((_) {
-                                if (!context.mounted) return;
-                                Navigator.of(context).pop(
-                                  selectedGroups.isEmpty
-                                      ? null
-                                      : selectedGroups.first,
-                                );
-                              });
-                        }
-                      },
+                    group: filteredGroups[index],
+                    isHighlighted: selectedGroups.any(
+                      (group) => group.id == filteredGroups[index].id,
                     ),
+                    onTap: () async {
+                      setState(() {
+                        if (selectedGroups.contains(filteredGroups[index])) {
+                          selectedGroups.removeWhere(
+                            (group) => group.id == filteredGroups[index].id,
+                          );
+                        } else {
+                          // In single select mode only allow one group
+                          if (!enableMultiSelection) {
+                            selectedGroups.clear();
+                          }
+                          selectedGroups.add(filteredGroups[index]);
+                        }
+                      });
+
+                      // Navigate back to create match view instantly
+                      if (!enableMultiSelection) {
+                        await Future.delayed(MINIMUM_SKELETON_DURATION)
+                            .then((_) {
+                              if (!context.mounted) return;
+                              Navigator.of(context).pop(
+                                selectedGroups.isEmpty
+                                    ? null
+                                    : selectedGroups.first,
+                              );
+                            });
+                      }
+                    },
+                  ),
                 ),
               ),
 

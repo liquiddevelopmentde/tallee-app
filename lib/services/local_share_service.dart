@@ -13,15 +13,19 @@ import 'package:tallee/services/shared.dart';
 
 class LocalShareService {
   /// Deletes all data from the database.
+  ///
+  /// Runs in a single transaction: if any step fails, nothing is deleted.
   static Future<void> deleteAllData(BuildContext context) async {
     final db = context.read<AppDatabase>();
 
-    await db.statisticDao.deleteAllStatistics();
-    await db.matchDao.deleteAllMatches();
-    await db.teamDao.deleteAllTeams();
-    await db.groupDao.deleteAllGroups();
-    await db.gameDao.deleteAllGames();
-    await db.playerDao.deleteAllPlayers();
+    await db.transaction(() async {
+      await db.statisticDao.deleteAllStatistics();
+      await db.matchDao.deleteAllMatches();
+      await db.teamDao.deleteAllTeams();
+      await db.groupDao.deleteAllGroups();
+      await db.gameDao.deleteAllGames();
+      await db.playerDao.deleteAllPlayers();
+    });
   }
 
   /// Retrieves all application data and converts it to a JSON string.
@@ -355,19 +359,18 @@ class LocalShareService {
     List<dynamic> teamsJson,
     Map<String, Player> playerById,
   ) => teamsJson.map((t) {
-      final map = t as Map<String, dynamic>;
-      final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
-          .cast<String>();
+    final map = t as Map<String, dynamic>;
+    final memberIds = (map['memberIds'] as List<dynamic>? ?? []).cast<String>();
 
-      // Ignore invalid member IDs (missing players) instead of throwing
-      final members = memberIds
-          .map((id) => playerById[id])
-          .where((p) => p != null)
-          .cast<Player>()
-          .toList();
+    // Ignore invalid member IDs (missing players) instead of throwing
+    final members = memberIds
+        .map((id) => playerById[id])
+        .where((p) => p != null)
+        .cast<Player>()
+        .toList();
 
-      return Team.fromNormalizedJson(map, members);
-    }).toList();
+    return Team.fromNormalizedJson(map, members);
+  }).toList();
 
   /// Parses matches from JSON data.
   @visibleForTesting

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 
 class FloatingAnimatedButton extends StatefulWidget {
   /// A button for the main menu with an optional icon and a press animation.
@@ -106,13 +106,13 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             animationController.forward();
             if (widget.onLongPressed != null) {
               longPressTimer = Timer(const Duration(milliseconds: 400), () {
-                HapticFeedback.heavyImpact();
+                Haptics.heavyImpact();
                 isLongPressing = true;
                 widget.onLongPressed?.call();
                 repeatTimer = Timer.periodic(
                   const Duration(milliseconds: 250),
                   (_) {
-                    HapticFeedback.heavyImpact();
+                    Haptics.heavyImpact();
                     widget.onLongPressed?.call();
                   },
                 );
@@ -126,7 +126,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             disabledAnimationController.reverse();
           } else {
             if (mounted && !isLongPressing) {
-              HapticFeedback.selectionClick();
+              Haptics.selectionClick();
               widget.onPressed?.call();
             }
             isLongPressing = false;

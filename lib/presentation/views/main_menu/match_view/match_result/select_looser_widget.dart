@@ -4,8 +4,8 @@ library;
 import 'dart:core' hide Match;
 
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
@@ -54,81 +54,78 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
 
   @override
   Widget build(BuildContext context) => Expanded(
-      child: useTeamLogic
-          ? RadioGroup<Team>(
-              groupValue: selectedTeam,
-              onChanged: (Team? team) async {
-                setState(() {
-                  selectedTeam = team;
-                  widget.onTeamSelected?.call(selectedTeam);
-                });
-              },
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: allTeams.length,
-                itemBuilder: (context, index) => CustomRadioListTile(
-                    content: isTeamMatch
-                        ? TeamCard(
-                            team: allTeams[index],
-                            compact: true,
-                            showTeamMembers: false,
-                          )
-                        : buildUnitNameWidget(
-                            context,
-                            allTeams[index],
-                          ),
-                    value: allTeams[index],
-                    onContainerTap: (team) async {
-                      setState(() {
-                        // Check if the already selected player is the same as the newly tapped player.
-                        if (selectedTeam == team) {
-                          // If yes deselected the player by setting it to null.
-                          selectedTeam = null;
-                        } else {
-                          // If no assign the newly tapped player to the selected player.
-                          (selectedTeam = team);
-                        }
-                        widget.onTeamSelected?.call(selectedTeam);
-                      });
-                    },
-                  ),
-              ),
-            )
-          : RadioGroup<Player>(
-              groupValue: selectedPlayer,
-              onChanged: (Player? player) => setState(() {
-                HapticFeedback.selectionClick();
-                selectedPlayer = player;
-                widget.onPlayerSelected?.call(selectedPlayer);
-              }),
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: allPlayers.length,
-                itemBuilder: (context, index) => CustomRadioListTile(
-                    content: buildUnitNameWidget(
-                      context,
-                      allPlayers[index],
-                      mainStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    value: allPlayers[index],
-                    onContainerTap: (player) async {
-                      setState(() {
-                        // Check if the already selected player is the same as the newly tapped player.
-                        if (selectedPlayer == player) {
-                          // If yes deselected the player by setting it to null.
-                          selectedPlayer = null;
-                        } else {
-                          // If no assign the newly tapped player to the selected player.
-                          selectedPlayer = player;
-                        }
-                        widget.onPlayerSelected?.call(selectedPlayer);
-                      });
-                    },
-                  ),
+    child: useTeamLogic
+        ? RadioGroup<Team>(
+            groupValue: selectedTeam,
+            onChanged: (Team? team) async {
+              setState(() {
+                selectedTeam = team;
+                widget.onTeamSelected?.call(selectedTeam);
+              });
+            },
+            child: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: allTeams.length,
+              itemBuilder: (context, index) => CustomRadioListTile(
+                content: isTeamMatch
+                    ? TeamCard(
+                        team: allTeams[index],
+                        compact: true,
+                        showTeamMembers: false,
+                      )
+                    : buildUnitNameWidget(context, allTeams[index]),
+                value: allTeams[index],
+                onContainerTap: (team) async {
+                  setState(() {
+                    // Check if the already selected player is the same as the newly tapped player.
+                    if (selectedTeam == team) {
+                      // If yes deselected the player by setting it to null.
+                      selectedTeam = null;
+                    } else {
+                      // If no assign the newly tapped player to the selected player.
+                      (selectedTeam = team);
+                    }
+                    widget.onTeamSelected?.call(selectedTeam);
+                  });
+                },
               ),
             ),
-    );
+          )
+        : RadioGroup<Player>(
+            groupValue: selectedPlayer,
+            onChanged: (Player? player) => setState(() {
+              Haptics.selectionClick();
+              selectedPlayer = player;
+              widget.onPlayerSelected?.call(selectedPlayer);
+            }),
+            child: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: allPlayers.length,
+              itemBuilder: (context, index) => CustomRadioListTile(
+                content: buildUnitNameWidget(
+                  context,
+                  allPlayers[index],
+                  mainStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                value: allPlayers[index],
+                onContainerTap: (player) async {
+                  setState(() {
+                    // Check if the already selected player is the same as the newly tapped player.
+                    if (selectedPlayer == player) {
+                      // If yes deselected the player by setting it to null.
+                      selectedPlayer = null;
+                    } else {
+                      // If no assign the newly tapped player to the selected player.
+                      selectedPlayer = player;
+                    }
+                    widget.onPlayerSelected?.call(selectedPlayer);
+                  });
+                },
+              ),
+            ),
+          ),
+  );
 }

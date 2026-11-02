@@ -25,41 +25,41 @@ class TopCenteredMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      padding: fullscreen ? const EdgeInsets.only(top: 100) : null,
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      alignment: Alignment.topCenter,
-      child: Column(
-        mainAxisAlignment: fullscreen
-            ? MainAxisAlignment.start
-            : MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 45, color: context.talleeColors.hintColor),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              overflow: TextOverflow.visible,
-            ),
-            textAlign: TextAlign.center,
-            softWrap: true,
+    padding: fullscreen ? const EdgeInsets.only(top: 100) : null,
+    margin: const EdgeInsets.symmetric(horizontal: 10),
+    alignment: Alignment.topCenter,
+    child: Column(
+      mainAxisAlignment: fullscreen
+          ? MainAxisAlignment.start
+          : MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 45, color: context.talleeColors.hintColor),
+        const SizedBox(height: 10),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            overflow: TextOverflow.visible,
           ),
-          if (message != null)
-            SizedBox(
-              width: 250,
-              child: Text(
-                message!,
-                style: TextStyle(
-                  fontSize: 14,
-                  overflow: TextOverflow.visible,
-                  color: context.talleeColors.hintColor,
-                ),
-                textAlign: TextAlign.center,
-                softWrap: true,
+          textAlign: TextAlign.center,
+          softWrap: true,
+        ),
+        if (message != null)
+          SizedBox(
+            width: 250,
+            child: Text(
+              message!,
+              style: TextStyle(
+                fontSize: 14,
+                overflow: TextOverflow.visible,
+                color: context.talleeColors.hintColor,
               ),
+              textAlign: TextAlign.center,
+              softWrap: true,
             ),
-        ],
-      ),
-    );
+          ),
+      ],
+    ),
+  );
 }

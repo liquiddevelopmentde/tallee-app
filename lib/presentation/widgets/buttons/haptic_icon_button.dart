@@ -1,5 +1,5 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/haptics.dart';
 
 class HapticIconButton extends StatefulWidget {
   const HapticIconButton({
@@ -50,7 +50,7 @@ class _HapticIconButtonState extends State<HapticIconButton>
           onTapCancel: isEnabled ? handleRelease : null,
           onTap: isEnabled
               ? () {
-                  HapticFeedback.selectionClick();
+                  Haptics.selectionClick();
                   widget.onPressed!.call();
                 }
               : null,

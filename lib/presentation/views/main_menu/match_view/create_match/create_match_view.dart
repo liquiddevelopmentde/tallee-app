@@ -420,100 +420,100 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     await showDialog<DateTime>(
       context: context,
       builder: (context) => Theme(
-          data: Theme.of(context).copyWith(
-            splashFactory: NoSplash.splashFactory,
-            colorScheme: ColorScheme.dark(
-              primary: AppColors.primaryColor,
-              onPrimary: context.talleeColors.textColor,
-              surface: context.talleeColors.boxColor,
-              onSurface: context.talleeColors.textColor,
-            ),
+        data: Theme.of(context).copyWith(
+          splashFactory: NoSplash.splashFactory,
+          colorScheme: ColorScheme.dark(
+            primary: AppColors.primaryColor,
+            onPrimary: context.talleeColors.textColor,
+            surface: context.talleeColors.boxColor,
+            onSurface: context.talleeColors.textColor,
           ),
-          child: Dialog(
-            backgroundColor: context.talleeColors.boxColor,
-            surfaceTintColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: context.talleeColors.boxBorderColor),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              height: 450,
-              child: SfDateRangePicker(
-                backgroundColor: context.talleeColors.boxColor,
-                todayHighlightColor: AppColors.primaryColor,
-                showNavigationArrow: true,
-                initialSelectedDate: selectedCreationDate ?? clock.now(),
-                maxDate: clock.now(),
-                headerStyle: DateRangePickerHeaderStyle(
-                  textAlign: TextAlign.center,
-                  backgroundColor: Colors.transparent,
-                  textStyle: TextStyle(
-                    color: context.talleeColors.textColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                monthCellStyle: DateRangePickerMonthCellStyle(
-                  textStyle: TextStyle(
-                    color: context.talleeColors.textColor,
-                    fontSize: 16,
-                  ),
-                  todayTextStyle: const TextStyle(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  leadingDatesTextStyle: TextStyle(
-                    color: context.talleeColors.hintColor,
-                    fontSize: 16,
-                  ),
-                  trailingDatesTextStyle: TextStyle(
-                    color: context.talleeColors.hintColor,
-                    fontSize: 16,
-                  ),
-                ),
-                yearCellStyle: DateRangePickerYearCellStyle(
-                  textStyle: TextStyle(
-                    color: context.talleeColors.textColor,
-                    fontSize: 16,
-                  ),
-                  todayTextStyle: const TextStyle(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                monthViewSettings: DateRangePickerMonthViewSettings(
-                  viewHeaderStyle: DateRangePickerViewHeaderStyle(
-                    textStyle: TextStyle(
-                      color: context.talleeColors.textColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  firstDayOfWeek: 1,
-                ),
-                selectionColor: AppColors.primaryColor,
-                selectionTextStyle: TextStyle(
+        ),
+        child: Dialog(
+          backgroundColor: context.talleeColors.boxColor,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: context.talleeColors.boxBorderColor),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            height: 450,
+            child: SfDateRangePicker(
+              backgroundColor: context.talleeColors.boxColor,
+              todayHighlightColor: AppColors.primaryColor,
+              showNavigationArrow: true,
+              initialSelectedDate: selectedCreationDate ?? clock.now(),
+              maxDate: clock.now(),
+              headerStyle: DateRangePickerHeaderStyle(
+                textAlign: TextAlign.center,
+                backgroundColor: Colors.transparent,
+                textStyle: TextStyle(
                   color: context.talleeColors.textColor,
-                  fontSize: 16,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
-                showActionButtons: true,
-                onSubmit: (value) {
-                  if (value is DateTime) {
-                    setState(() {
-                      selectedCreationDate = nullIfToday(value);
-                    });
-                    Navigator.pop(context);
-                  }
-                },
-                onCancel: () => Navigator.pop(context),
               ),
+              monthCellStyle: DateRangePickerMonthCellStyle(
+                textStyle: TextStyle(
+                  color: context.talleeColors.textColor,
+                  fontSize: 16,
+                ),
+                todayTextStyle: const TextStyle(
+                  color: AppColors.primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+                leadingDatesTextStyle: TextStyle(
+                  color: context.talleeColors.hintColor,
+                  fontSize: 16,
+                ),
+                trailingDatesTextStyle: TextStyle(
+                  color: context.talleeColors.hintColor,
+                  fontSize: 16,
+                ),
+              ),
+              yearCellStyle: DateRangePickerYearCellStyle(
+                textStyle: TextStyle(
+                  color: context.talleeColors.textColor,
+                  fontSize: 16,
+                ),
+                todayTextStyle: const TextStyle(
+                  color: AppColors.primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              monthViewSettings: DateRangePickerMonthViewSettings(
+                viewHeaderStyle: DateRangePickerViewHeaderStyle(
+                  textStyle: TextStyle(
+                    color: context.talleeColors.textColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                firstDayOfWeek: 1,
+              ),
+              selectionColor: AppColors.primaryColor,
+              selectionTextStyle: TextStyle(
+                color: context.talleeColors.textColor,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              showActionButtons: true,
+              onSubmit: (value) {
+                if (value is DateTime) {
+                  setState(() {
+                    selectedCreationDate = nullIfToday(value);
+                  });
+                  Navigator.pop(context);
+                }
+              },
+              onCancel: () => Navigator.pop(context),
             ),
           ),
         ),
+      ),
     );
   }
 

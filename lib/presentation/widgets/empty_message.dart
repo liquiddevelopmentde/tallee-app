@@ -18,44 +18,44 @@ class EmptyViewMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.paddingOf(context).bottom + 100,
-      ),
-      child: Column(
-        spacing: spacing,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: icon == RpgAwesome.clovers_card
-                ? const EdgeInsets.only(left: 8.0)
-                : EdgeInsets.zero,
-            child: Icon(icon, size: 120, color: context.talleeColors.hintColor),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 48),
-            child: Column(
-              spacing: 3,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+    padding: EdgeInsets.only(
+      bottom: MediaQuery.paddingOf(context).bottom + 100,
+    ),
+    child: Column(
+      spacing: spacing,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: icon == RpgAwesome.clovers_card
+              ? const EdgeInsets.only(left: 8.0)
+              : EdgeInsets.zero,
+          child: Icon(icon, size: 120, color: context.talleeColors.hintColor),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 48),
+          child: Column(
+            spacing: 3,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
                 ),
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: context.talleeColors.hintColor,
-                    overflow: TextOverflow.visible,
-                  ),
+              ),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: context.talleeColors.hintColor,
+                  overflow: TextOverflow.visible,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ),
+  );
 }

@@ -26,17 +26,17 @@ void main() {
     DateTime? createdAt,
     DateTime? endedAt,
   }) => Match(
-      name: name,
-      game: game,
-      players: players,
-      group: group,
-      createdAt: createdAt,
-      endedAt: endedAt,
-      scores: {
-        for (final entry in scores.entries)
-          entry.key.id: ScoreEntry(score: entry.value),
-      },
-    );
+    name: name,
+    game: game,
+    players: players,
+    group: group,
+    createdAt: createdAt,
+    endedAt: endedAt,
+    scores: {
+      for (final entry in scores.entries)
+        entry.key.id: ScoreEntry(score: entry.value),
+    },
+  );
 
   setUp(() {
     testPlayer1 = Player(name: 'Alice');

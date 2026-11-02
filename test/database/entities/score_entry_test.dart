@@ -146,10 +146,7 @@ void main() {
       });
 
       test('Score & Round can have zero values', () async {
-        final ScoreEntry entry = ScoreEntry(
-          score: 0,
-          change: 0,
-        );
+        final ScoreEntry entry = ScoreEntry(score: 0, change: 0);
         await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,

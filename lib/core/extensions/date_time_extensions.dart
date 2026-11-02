@@ -2,8 +2,8 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:intl/intl.dart';
 
 extension DateTimeExtension on DateTime {
-  String toLocalizedFormat(BuildContext context) => DateFormat.yMMMd(Localizations.localeOf(context).toString())
-        .format(this);
+  String toLocalizedFormat(BuildContext context) =>
+      DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(this);
 
   // Returns a [DateTime] String formatted as localized yMMMd (July 10, 1996)
   String toMediumDate(BuildContext context) =>

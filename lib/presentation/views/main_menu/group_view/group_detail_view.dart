@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -60,7 +62,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
           HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
-              showDialog<bool>(
+              final confirmed = await showDialog<bool>(
                 context: context,
                 builder: (context) => CustomAlertDialog(
                   title: '${loc.delete_group}?',
@@ -80,22 +82,19 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     ),
                   ],
                 ),
-              ).then((confirmed) async {
-                if (confirmed == true && context.mounted) {
-                  final success = await db.groupDao.deleteGroup(
-                    groupId: group.id,
-                  );
-                  if (!context.mounted) return;
-                  if (!success) {
-                    context.showSnackBar(message: loc.error_deleting_group);
-                    return;
-                  }
+              );
+              if (confirmed != true || !context.mounted) return;
 
-                  context.showSnackBar(message: loc.group_deleted);
-                  Navigator.of(context).pop();
-                  widget.onGroupUpdated?.call();
-                }
-              });
+              final success = await db.groupDao.deleteGroup(groupId: group.id);
+              if (!context.mounted) return;
+              if (!success) {
+                context.showSnackBar(message: loc.error_deleting_group);
+                return;
+              }
+
+              context.showSnackBar(message: loc.group_deleted);
+              Navigator.of(context).pop();
+              widget.onGroupUpdated?.call();
             },
           ),
         ],
@@ -158,22 +157,26 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   content: Wrap(
                     spacing: 12,
                     runSpacing: 8,
-                    children: group.members.map((member) => PlayerTile(
-                        player: member,
-                        onTileTap: () {
-                          Navigator.of(context).pushReplacement(
-                            adaptivePageRoute(
-                              settings: const RouteSettings(
-                                name: RouteNames.playerDetailView,
-                              ),
-                              builder: (context) => PlayerDetailView(
-                                player: member,
-                                onPlayerUpdated: widget.onGroupUpdated,
-                              ),
-                            ),
-                          );
-                        },
-                      )).toList(),
+                    children: group.members
+                        .map(
+                          (member) => PlayerTile(
+                            player: member,
+                            onTileTap: () {
+                              Navigator.of(context).pushReplacement(
+                                adaptivePageRoute(
+                                  settings: const RouteSettings(
+                                    name: RouteNames.playerDetailView,
+                                  ),
+                                  builder: (context) => PlayerDetailView(
+                                    player: member,
+                                    onPlayerUpdated: widget.onGroupUpdated,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -201,15 +204,15 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                         name: RouteNames.createGroupView,
                       ),
                       builder: (context) => CreateGroupView(
-                          groupToEdit: group,
-                          onMembersChanged: loadStatistics,
-                        ),
+                        groupToEdit: group,
+                        onMembersChanged: loadStatistics,
+                      ),
                     ),
                   );
                   final updatedGroup = result?.updatedGroup;
                   if (updatedGroup != null && mounted) {
                     setState(() => group = updatedGroup);
-                    loadStatistics();
+                    unawaited(loadStatistics());
                     widget.onGroupUpdated?.call();
                   }
                 },

@@ -81,9 +81,7 @@ class LicenseDetailView extends StatelessWidget {
                       GestureDetector(
                         onTap: () async {
                           final uri = Uri.parse(package.homepage!);
-                          await launchUrl(
-                            uri,
-                          );
+                          await launchUrl(uri);
                         },
                         child: SizedBox(
                           width: 300,

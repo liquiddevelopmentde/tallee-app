@@ -1,6 +1,6 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/enter_token_component.dart';
@@ -70,7 +70,7 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
                   ),
                   unselectedLabelColor: context.talleeColors.textColor,
                   onTap: (_) {
-                    HapticFeedback.selectionClick();
+                    Haptics.selectionClick();
                   },
                   tabs: const [
                     Tab(icon: Icon(Icons.qr_code_scanner)),

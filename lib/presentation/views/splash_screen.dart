@@ -29,22 +29,22 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      backgroundColor: AppColors.primaryColor,
-      body: Center(
-        child: Lottie.asset(
-          'assets/logo-animation.json',
-          controller: _controller,
-          fit: BoxFit.contain,
-          frameRate: FrameRate.max,
-          onLoaded: (composition) {
-            _controller
-              ..duration = composition.duration
-              ..forward().then((value) {
-                if (!mounted) return;
-                widget.onFinished?.call();
-              });
-          },
-        ),
+    backgroundColor: AppColors.primaryColor,
+    body: Center(
+      child: Lottie.asset(
+        'assets/logo-animation.json',
+        controller: _controller,
+        fit: BoxFit.contain,
+        frameRate: FrameRate.max,
+        onLoaded: (composition) {
+          _controller
+            ..duration = composition.duration
+            ..forward().then((value) {
+              if (!mounted) return;
+              widget.onFinished?.call();
+            });
+        },
       ),
-    );
+    ),
+  );
 }

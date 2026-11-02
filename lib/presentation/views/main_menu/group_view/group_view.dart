@@ -191,27 +191,32 @@ class _GroupViewState extends State<GroupView> {
                                             context,
                                           ),
                                           itemCount: displayedGroups.length,
-                                          itemBuilder: (BuildContext ctx, int i) => GroupTile(
-                                              group: displayedGroups[i],
-                                              onTap: () async {
-                                                await Navigator.push(
-                                                  ctx,
-                                                  adaptivePageRoute(
-                                                    settings:
-                                                        const RouteSettings(
-                                                          name: RouteNames
-                                                              .groupDetailView,
-                                                        ),
-                                                    builder: (context) => GroupDetailView(
-                                                        group:
-                                                            displayedGroups[i],
-                                                        onGroupUpdated:
-                                                            loadGroups,
-                                                      ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
+                                          itemBuilder:
+                                              (
+                                                BuildContext ctx,
+                                                int i,
+                                              ) => GroupTile(
+                                                group: displayedGroups[i],
+                                                onTap: () async {
+                                                  await Navigator.push(
+                                                    ctx,
+                                                    adaptivePageRoute(
+                                                      settings:
+                                                          const RouteSettings(
+                                                            name: RouteNames
+                                                                .groupDetailView,
+                                                          ),
+                                                      builder: (context) =>
+                                                          GroupDetailView(
+                                                            group:
+                                                                displayedGroups[i],
+                                                            onGroupUpdated:
+                                                                loadGroups,
+                                                          ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
                                         ),
                                       ),
                                 )

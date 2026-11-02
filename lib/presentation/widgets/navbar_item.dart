@@ -95,53 +95,53 @@ class _NavbarItemState extends State<NavbarItem>
 
   @override
   Widget build(BuildContext context) => Expanded(
-      child: GestureDetector(
-        onTap: () => widget.onTabTapped(widget.index),
-        behavior: HitTestBehavior.opaque,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: AnimatedBuilder(
-            animation: animationController,
-            builder: (context, child) {
-              final iconColor = iconColorAnimation.value!;
-              final bgColor = bgColorAnimation.value!;
-              final fontSize = fontSizeAnimation.value;
-              final fontWeight = FontWeight.lerp(
-                FontWeight.w500,
-                FontWeight.bold,
-                this.fontWeight.value,
-              );
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: bgColor,
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
-                    ),
-                    child: ScaleTransition(
-                      scale: scaleAnimation,
-                      child: Icon(widget.icon, color: iconColor, size: 32),
-                    ),
+    child: GestureDetector(
+      onTap: () => widget.onTabTapped(widget.index),
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        child: AnimatedBuilder(
+          animation: animationController,
+          builder: (context, child) {
+            final iconColor = iconColorAnimation.value!;
+            final bgColor = bgColorAnimation.value!;
+            final fontSize = fontSizeAnimation.value;
+            final fontWeight = FontWeight.lerp(
+              FontWeight.w500,
+              FontWeight.bold,
+              this.fontWeight.value,
+            );
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: const BorderRadius.all(Radius.circular(15)),
                   ),
-                  Text(
-                    widget.label,
-                    style: TextStyle(
-                      color: iconColor,
-                      fontSize: fontSize,
-                      fontWeight: fontWeight,
-                    ),
+                  child: ScaleTransition(
+                    scale: scaleAnimation,
+                    child: Icon(widget.icon, color: iconColor, size: 32),
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+                Text(
+                  widget.label,
+                  style: TextStyle(
+                    color: iconColor,
+                    fontSize: fontSize,
+                    fontWeight: fontWeight,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
-    );
+    ),
+  );
 
   @override
   void dispose() {

@@ -101,7 +101,7 @@ class RemoteShareService {
     var filename = '$formattedMatchName.$MATCH_FILE_EXTENSION';
     final temp = await getTemporaryDirectory();
     final path = '${temp.path}/$filename';
-    File(path).writeAsString(jsonEncode(match));
+    await File(path).writeAsString(jsonEncode(match));
     await SharePlus.instance.share(
       ShareParams(text: text, title: title, files: [XFile(path)]),
     );

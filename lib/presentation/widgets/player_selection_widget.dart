@@ -1,9 +1,9 @@
-import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -251,55 +251,53 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   }
 
   Widget buildSearchBar(AppLocalizations loc) => CustomSearchBar(
-      maxLength: MAX_PLAYER_NAME_LENGTH,
-      controller: searchBarController,
-      constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
-      hintText: loc.search_for_players,
-      trailingButtonShown: true,
-      trailingButtonicon: Icons.add_circle,
-      trailingButtonEnabled: searchBarController.text.trim().isNotEmpty,
-      onTrailingButtonPressed: () async {
-        addNewPlayerFromSearch(context: context);
-      },
-      onChanged: (value) {
-        setState(() {
-          if (value.isEmpty) {
-            updateSuggestedPlayers();
-          } else {
-            final List<({Player player, int score})> scoredPlayers = [];
+    maxLength: MAX_PLAYER_NAME_LENGTH,
+    controller: searchBarController,
+    constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
+    hintText: loc.search_for_players,
+    trailingButtonShown: true,
+    trailingButtonicon: Icons.add_circle,
+    trailingButtonEnabled: searchBarController.text.trim().isNotEmpty,
+    onTrailingButtonPressed: () => addNewPlayerFromSearch(context: context),
+    onChanged: (value) {
+      setState(() {
+        if (value.isEmpty) {
+          updateSuggestedPlayers();
+        } else {
+          final List<({Player player, int score})> scoredPlayers = [];
 
-            for (final player in allPlayers) {
-              final bool isNotSelected =
-                  widget.mode == SelectionMode.single ||
-                  !selectedPlayers.any((p) => p.id == player.id);
+          for (final player in allPlayers) {
+            final bool isNotSelected =
+                widget.mode == SelectionMode.single ||
+                !selectedPlayers.any((p) => p.id == player.id);
 
-              if (isNotSelected) {
-                final score = weightedRatio(player.name, value);
-                if (score >= FUZZY_SEARCH_THRESHOLD) {
-                  scoredPlayers.add((player: player, score: score));
-                }
+            if (isNotSelected) {
+              final score = weightedRatio(player.name, value);
+              if (score >= FUZZY_SEARCH_THRESHOLD) {
+                scoredPlayers.add((player: player, score: score));
               }
             }
-
-            scoredPlayers.sort((a, b) => b.score.compareTo(a.score));
-            suggestedPlayers = scoredPlayers.map((e) => e.player).toList();
           }
-        });
-      },
-    );
+
+          scoredPlayers.sort((a, b) => b.score.compareTo(a.score));
+          suggestedPlayers = scoredPlayers.map((e) => e.player).toList();
+        }
+      });
+    },
+  );
 
   Widget buildSelectedPlayersHeader(AppLocalizations loc) => Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            loc.selected_players,
-            overflow: TextOverflow.visible,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Expanded(
+        child: Text(
+          loc.selected_players,
+          overflow: TextOverflow.visible,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-      ],
-    );
+      ),
+    ],
+  );
 
   Widget buildSelectedPlayersBar() {
     final loc = AppLocalizations.of(context);
@@ -360,63 +358,63 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   }
 
   Widget buildSingleSelectionList() => RadioGroup<Player?>(
-      groupValue: selectedPlayer,
-      onChanged: (value) {
-        widget.onSingleChanged?.call(value);
-      },
-      child: ListView.builder(
-        itemCount: suggestedPlayers.length,
-        itemBuilder: (context, index) {
-          final player = suggestedPlayers[index];
-          return CustomRadioListTile<Player?>(
-            content: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: buildUnitNameWidget(
-                context,
-                player,
-                mainStyle: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-                countStyle: TextStyle(
-                  fontSize: 16,
-                  color: context.talleeColors.textColor.withAlpha(100),
-                ),
+    groupValue: selectedPlayer,
+    onChanged: (value) {
+      widget.onSingleChanged?.call(value);
+    },
+    child: ListView.builder(
+      itemCount: suggestedPlayers.length,
+      itemBuilder: (context, index) {
+        final player = suggestedPlayers[index];
+        return CustomRadioListTile<Player?>(
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: buildUnitNameWidget(
+              context,
+              player,
+              mainStyle: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+              countStyle: TextStyle(
+                fontSize: 16,
+                color: context.talleeColors.textColor.withAlpha(100),
               ),
             ),
-            value: player,
-            onContainerTap: (value) async {
-              await HapticFeedback.selectionClick();
-              setState(() {
-                if (selectedPlayer == value) {
-                  selectedPlayer = null;
-                } else {
-                  selectedPlayer = value;
-                }
-              });
-              widget.onSingleChanged?.call(selectedPlayer);
-            },
-          );
-        },
-      ),
-    );
-
-  Widget buildMultipleSelectionList() => ListView.separated(
-      itemCount: suggestedPlayers.length,
-      separatorBuilder: (BuildContext context, int index) =>
-          const SizedBox(height: 10),
-      itemBuilder: (BuildContext context, int index) {
-        final player = suggestedPlayers[index];
-        return TextIconListTile(
-          player: player,
-          icon: Icons.add,
-          onTileTap: () async => await togglePairingSelection(player),
+          ),
+          value: player,
+          onContainerTap: (value) {
+            Haptics.selectionClick();
+            setState(() {
+              if (selectedPlayer == value) {
+                selectedPlayer = null;
+              } else {
+                selectedPlayer = value;
+              }
+            });
+            widget.onSingleChanged?.call(selectedPlayer);
+          },
         );
       },
-    );
+    ),
+  );
+
+  Widget buildMultipleSelectionList() => ListView.separated(
+    itemCount: suggestedPlayers.length,
+    separatorBuilder: (BuildContext context, int index) =>
+        const SizedBox(height: 10),
+    itemBuilder: (BuildContext context, int index) {
+      final player = suggestedPlayers[index];
+      return TextIconListTile(
+        player: player,
+        icon: Icons.add,
+        onTileTap: () async => await togglePairingSelection(player),
+      );
+    },
+  );
 
   Future<void> togglePairingSelection(Player player) async {
-    await HapticFeedback.selectionClick();
+    Haptics.selectionClick();
     setState(() {
       if (!selectedPlayers.any((p) => p.id == player.id)) {
         final unit = Team(name: '', members: [player]);
@@ -552,8 +550,8 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     });
   }
 
-  Future<void> handleParingSelection(Team unit) async {
-    await HapticFeedback.selectionClick();
+  void handleParingSelection(Team unit) {
+    Haptics.selectionClick();
     setState(() {
       pairingSelection.add(unit.id);
       isPairingMode = pairingSelection.isNotEmpty;
@@ -690,10 +688,10 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     if (success) {
       handleSuccessfulPlayerCreation(createdPlayer);
       context.showSnackBar(message: loc.successfully_added_player(playerName));
-      await HapticFeedback.successNotification();
+      Haptics.successNotification();
     } else {
       context.showSnackBar(message: loc.could_not_add_player(playerName));
-      await HapticFeedback.errorNotification();
+      Haptics.errorNotification();
     }
   }
 

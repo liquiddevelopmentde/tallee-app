@@ -76,98 +76,98 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
         maintainBottomViewPadding: true,
         child: LayoutBuilder(
           builder: (context, constraints) => SingleChildScrollView(
-              padding: AppSpacing.standardMargin,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 80),
-                      Icon(
-                        isErrorReport
-                            ? Icons.error_outline_rounded
-                            : Icons.chat_bubble_outline_rounded,
-                        size: 50,
-                        color: AppColors.primaryColor,
+            padding: AppSpacing.standardMargin,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 80),
+                    Icon(
+                      isErrorReport
+                          ? Icons.error_outline_rounded
+                          : Icons.chat_bubble_outline_rounded,
+                      size: 50,
+                      color: AppColors.primaryColor,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      isErrorReport
+                          ? loc.error_report_info_text
+                          : loc.feedback_info_text,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: context.talleeColors.textColor,
+                        fontWeight: FontWeight.w500,
+                        overflow: TextOverflow.clip,
                       ),
-                      const SizedBox(height: 20),
-                      Text(
-                        isErrorReport
-                            ? loc.error_report_info_text
-                            : loc.feedback_info_text,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: context.talleeColors.textColor,
-                          fontWeight: FontWeight.w500,
-                          overflow: TextOverflow.clip,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 40),
-                      TextInputField(
-                        controller: messageController,
-                        focusNode: messageFocusNode,
-                        hintText:
-                            '${isErrorReport ? loc.error_report_hint : loc.feedback_hint} (${loc.required})',
-                        maxLines: 5,
-                        minLines: 5,
-                        maxLength: MAX_FEEDBACK_MESSAGE_LENGTH,
-                        showCounterText: true,
-                        textInputAction: TextInputAction.next,
-                        onSubmitted: (_) => emailFocusNode.requestFocus(),
-                      ),
-                      const SizedBox(height: 16),
-                      TextInputField(
-                        controller: emailController,
-                        focusNode: emailFocusNode,
-                        hintText: '${loc.email} (${loc.optional})',
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        onSubmitted: (_) => nameFocusNode.requestFocus(),
-                      ),
-                      if (showEmailError)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 4, left: 4),
-                            child: Text(
-                              loc.invalid_email,
-                              style: TextStyle(
-                                color: context.talleeColors.errorColor,
-                                fontSize: 12,
-                              ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 40),
+                    TextInputField(
+                      controller: messageController,
+                      focusNode: messageFocusNode,
+                      hintText:
+                          '${isErrorReport ? loc.error_report_hint : loc.feedback_hint} (${loc.required})',
+                      maxLines: 5,
+                      minLines: 5,
+                      maxLength: MAX_FEEDBACK_MESSAGE_LENGTH,
+                      showCounterText: true,
+                      textInputAction: TextInputAction.next,
+                      onSubmitted: (_) => emailFocusNode.requestFocus(),
+                    ),
+                    const SizedBox(height: 16),
+                    TextInputField(
+                      controller: emailController,
+                      focusNode: emailFocusNode,
+                      hintText: '${loc.email} (${loc.optional})',
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      onSubmitted: (_) => nameFocusNode.requestFocus(),
+                    ),
+                    if (showEmailError)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4, left: 4),
+                          child: Text(
+                            loc.invalid_email,
+                            style: TextStyle(
+                              color: context.talleeColors.errorColor,
+                              fontSize: 12,
                             ),
                           ),
                         ),
-                      const SizedBox(height: 16),
-                      TextInputField(
-                        controller: nameController,
-                        focusNode: nameFocusNode,
-                        hintText: '${loc.name} (${loc.optional})',
-                        textInputAction: TextInputAction.done,
-                        onSubmitted: (_) {
-                          nameFocusNode.unfocus();
-                          if (canSubmit) {
-                            submit(loc);
-                          }
-                        },
                       ),
-                      const Spacer(),
-                      const SizedBox(height: 16),
-                      BottomAnimatedButton(
-                        buttonText: isSubmitting
-                            ? loc.sending
-                            : (isErrorReport
-                                  ? loc.report_error
-                                  : loc.send_feedback),
-                        onPressed: canSubmit ? () => submit(loc) : null,
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
+                    const SizedBox(height: 16),
+                    TextInputField(
+                      controller: nameController,
+                      focusNode: nameFocusNode,
+                      hintText: '${loc.name} (${loc.optional})',
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) {
+                        nameFocusNode.unfocus();
+                        if (canSubmit) {
+                          submit(loc);
+                        }
+                      },
+                    ),
+                    const Spacer(),
+                    const SizedBox(height: 16),
+                    BottomAnimatedButton(
+                      buttonText: isSubmitting
+                          ? loc.sending
+                          : (isErrorReport
+                                ? loc.report_error
+                                : loc.send_feedback),
+                      onPressed: canSubmit ? () => submit(loc) : null,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
               ),
             ),
+          ),
         ),
       ),
     );

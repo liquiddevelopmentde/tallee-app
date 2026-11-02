@@ -74,32 +74,31 @@ class TalleeThemeColors extends ThemeExtension<TalleeThemeColors> {
     Color? purpleColor,
     Color? pinkColor,
   }) => TalleeThemeColors(
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      boxColor: boxColor ?? this.boxColor,
-      boxBorderColor: boxBorderColor ?? this.boxBorderColor,
-      onBoxColor: onBoxColor ?? this.onBoxColor,
-      textColor: textColor ?? this.textColor,
-      hintColor: hintColor ?? this.hintColor,
-      errorColor: errorColor ?? this.errorColor,
-      successColor: successColor ?? this.successColor,
-      warningColor: warningColor ?? this.warningColor,
-      navBarBackgroundColor:
-          navBarBackgroundColor ?? this.navBarBackgroundColor,
-      navBarItemSelectedColor:
-          navBarItemSelectedColor ?? this.navBarItemSelectedColor,
-      navBarItemUnselectedColor:
-          navBarItemUnselectedColor ?? this.navBarItemUnselectedColor,
-      skeletonFromColor: skeletonFromColor ?? this.skeletonFromColor,
-      skeletonToColor: skeletonToColor ?? this.skeletonToColor,
-      redColor: redColor ?? this.redColor,
-      orangeColor: orangeColor ?? this.orangeColor,
-      yellowColor: yellowColor ?? this.yellowColor,
-      greenColor: greenColor ?? this.greenColor,
-      tealColor: tealColor ?? this.tealColor,
-      blueColor: blueColor ?? this.blueColor,
-      purpleColor: purpleColor ?? this.purpleColor,
-      pinkColor: pinkColor ?? this.pinkColor,
-    );
+    backgroundColor: backgroundColor ?? this.backgroundColor,
+    boxColor: boxColor ?? this.boxColor,
+    boxBorderColor: boxBorderColor ?? this.boxBorderColor,
+    onBoxColor: onBoxColor ?? this.onBoxColor,
+    textColor: textColor ?? this.textColor,
+    hintColor: hintColor ?? this.hintColor,
+    errorColor: errorColor ?? this.errorColor,
+    successColor: successColor ?? this.successColor,
+    warningColor: warningColor ?? this.warningColor,
+    navBarBackgroundColor: navBarBackgroundColor ?? this.navBarBackgroundColor,
+    navBarItemSelectedColor:
+        navBarItemSelectedColor ?? this.navBarItemSelectedColor,
+    navBarItemUnselectedColor:
+        navBarItemUnselectedColor ?? this.navBarItemUnselectedColor,
+    skeletonFromColor: skeletonFromColor ?? this.skeletonFromColor,
+    skeletonToColor: skeletonToColor ?? this.skeletonToColor,
+    redColor: redColor ?? this.redColor,
+    orangeColor: orangeColor ?? this.orangeColor,
+    yellowColor: yellowColor ?? this.yellowColor,
+    greenColor: greenColor ?? this.greenColor,
+    tealColor: tealColor ?? this.tealColor,
+    blueColor: blueColor ?? this.blueColor,
+    purpleColor: purpleColor ?? this.purpleColor,
+    pinkColor: pinkColor ?? this.pinkColor,
+  );
 
   @override
   TalleeThemeColors lerp(

@@ -158,33 +158,33 @@ class _TalleeState extends State<Tallee> {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-      navigatorKey: Tallee.navigatorKey,
-      scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
-      localizationsDelegates: const [
-        ...AppLocalizations.localizationsDelegates,
-        ...GlobalMaterialLocalizations.delegates,
-        ...GlobalCupertinoLocalizations.delegates,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      localeResolutionCallback: (locale, supportedLocales) {
-        for (final supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale?.languageCode) {
-            return supportedLocale;
-          }
+    navigatorKey: Tallee.navigatorKey,
+    scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
+    localizationsDelegates: const [
+      ...AppLocalizations.localizationsDelegates,
+      ...GlobalMaterialLocalizations.delegates,
+      ...GlobalCupertinoLocalizations.delegates,
+    ],
+    supportedLocales: AppLocalizations.supportedLocales,
+    localeResolutionCallback: (locale, supportedLocales) {
+      for (final supportedLocale in supportedLocales) {
+        if (supportedLocale.languageCode == locale?.languageCode) {
+          return supportedLocale;
         }
-        return supportedLocales.firstWhere(
-          (locale) => locale.languageCode == 'en',
-        );
-      },
-      debugShowCheckedModeBanner: false,
-      scrollBehavior: const AppScrollBehavior(),
-      onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
-      themeMode: context.watch<ThemeProvider>().themeMode,
-      navigatorObservers: [SentryNavigatorObserver()],
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      home: SplashScreen(onFinished: handleSplashFinished),
-    );
+      }
+      return supportedLocales.firstWhere(
+        (locale) => locale.languageCode == 'en',
+      );
+    },
+    debugShowCheckedModeBanner: false,
+    scrollBehavior: const AppScrollBehavior(),
+    onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
+    themeMode: context.watch<ThemeProvider>().themeMode,
+    navigatorObservers: [SentryNavigatorObserver()],
+    theme: lightTheme,
+    darkTheme: darkTheme,
+    home: SplashScreen(onFinished: handleSplashFinished),
+  );
 
   void handleSplashFinished() {
     final navigator = Tallee.navigatorKey.currentState;
@@ -208,7 +208,8 @@ class _TalleeState extends State<Tallee> {
               : RouteNames.groupView,
         ),
         pageBuilder: (context, animation, secondaryAnimation) => targetWidget,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child: child),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(opacity: animation, child: child),
       ),
     );
 

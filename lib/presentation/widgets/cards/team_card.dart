@@ -163,10 +163,12 @@ class TeamCard extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         // Player tiles
-                        ...team.members.map((player) => PlayerTile(
+                        ...team.members.map(
+                          (player) => PlayerTile(
                             player: player,
                             backgroundColor: Colors.transparent,
-                          )),
+                          ),
+                        ),
                       ],
                     ),
                 ],

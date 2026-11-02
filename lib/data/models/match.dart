@@ -82,7 +82,8 @@ class Match {
   }
 
   @override
-  String toString() => 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scoresByRound: $scoresByRound, mvp: $mvp}';
+  String toString() =>
+      'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scoresByRound: $scoresByRound, mvp: $mvp}';
 
   Match copyWith({
     String? id,
@@ -233,39 +234,39 @@ class Match {
     required List<Player> players,
     List<Team>? teams,
   }) => Match(
-      id: json['id'],
-      createdAt: DateTime.parse(json['createdAt']),
-      endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
-      name: json['name'],
-      game: game,
-      group: group,
-      players: players,
-      isTeamMatch: json['isTeamMatch'],
-      teams: teams,
-      scoresByRound: json['scores'] != null
-          ? (json['scores'] as Map<String, dynamic>).map((key, value) {
-              switch (value) {
-                case null:
-                  return MapEntry(key, <ScoreEntry>[]);
-                case List list:
-                  return MapEntry(
-                    key,
-                    list
-                        .map(
-                          (e) => ScoreEntry.fromJson(e as Map<String, dynamic>),
-                        )
-                        .toList(),
-                  );
-                default:
-                  //TODO: Backward compatibility for single ScoreEntry
-                  return MapEntry(key, [
-                    ScoreEntry.fromJson(value as Map<String, dynamic>),
-                  ]);
-              }
-            })
-          : {},
-      notes: json['notes'] ?? '',
-    );
+    id: json['id'],
+    createdAt: DateTime.parse(json['createdAt']),
+    endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
+    name: json['name'],
+    game: game,
+    group: group,
+    players: players,
+    isTeamMatch: json['isTeamMatch'],
+    teams: teams,
+    scoresByRound: json['scores'] != null
+        ? (json['scores'] as Map<String, dynamic>).map((key, value) {
+            switch (value) {
+              case null:
+                return MapEntry(key, <ScoreEntry>[]);
+              case List list:
+                return MapEntry(
+                  key,
+                  list
+                      .map(
+                        (e) => ScoreEntry.fromJson(e as Map<String, dynamic>),
+                      )
+                      .toList(),
+                );
+              default:
+                //TODO: Backward compatibility for single ScoreEntry
+                return MapEntry(key, [
+                  ScoreEntry.fromJson(value as Map<String, dynamic>),
+                ]);
+            }
+          })
+        : {},
+    notes: json['notes'] ?? '',
+  );
 
   bool get useTeamLogic => isTeamMatch || (teams?.isNotEmpty ?? false);
 

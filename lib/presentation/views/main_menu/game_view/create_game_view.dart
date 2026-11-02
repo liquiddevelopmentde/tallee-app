@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/services.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +7,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -172,7 +172,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                             )
                           : loc.this_cannot_be_undone;
 
-                      showDialog<bool>(
+                      final confirmed = await showDialog<bool>(
                         context: context,
                         builder: (context) => CustomAlertDialog(
                           title: loc.delete_game,
@@ -194,33 +194,32 @@ class _CreateGameViewState extends State<CreateGameView> {
                             ),
                           ],
                         ),
-                      ).then((confirmed) async {
-                        if (confirmed == true && context.mounted) {
-                          // Delete associated matches
-                          if (widget.gameCount > 0) {
-                            await db.matchDao.deleteMatchesByGame(
-                              gameId: widget.gameToEdit!.id,
-                            );
-                          }
+                      );
+                      if (confirmed != true || !context.mounted) return;
 
-                          // Delete the targetted game
-                          bool success = await db.gameDao.deleteGame(
-                            gameId: widget.gameToEdit!.id,
-                          );
+                      // Delete associated matches
+                      if (widget.gameCount > 0) {
+                        await db.matchDao.deleteMatchesByGame(
+                          gameId: widget.gameToEdit!.id,
+                        );
+                      }
 
-                          if (!context.mounted) return;
-                          if (success) {
-                            widget.onGameChanged.call();
-                            context.showSnackBar(message: loc.game_deleted);
-                            Navigator.of(context)
-                                .pop((game: widget.gameToEdit, delete: true));
-                          } else {
-                            scaffoldContext.showSnackBar(
-                              message: loc.error_deleting_game,
-                            );
-                          }
-                        }
-                      });
+                      // Delete the targetted game
+                      bool success = await db.gameDao.deleteGame(
+                        gameId: widget.gameToEdit!.id,
+                      );
+
+                      if (!context.mounted) return;
+                      if (success) {
+                        widget.onGameChanged.call();
+                        context.showSnackBar(message: loc.game_deleted);
+                        Navigator.of(context)
+                            .pop((game: widget.gameToEdit, delete: true));
+                      } else {
+                        scaffoldContext.showSnackBar(
+                          message: loc.error_deleting_game,
+                        );
+                      }
                     },
                   ),
               ],
@@ -392,183 +391,177 @@ class _CreateGameViewState extends State<CreateGameView> {
   bool get isEditMode => widget.gameToEdit != null;
 
   Widget getRulesetDropdown(AppLocalizations loc) => CustomPopup(
-      arrowColor: context.talleeColors.boxBorderColor,
-      contentPadding: const EdgeInsets.symmetric(vertical: 10),
-      barrierColor: Colors.transparent,
-      contentDecoration: context.standardBoxDecoration,
-      onBeforePopup: HapticFeedback.selectionClick,
-      onAfterPopup: HapticFeedback.selectionClick,
-      content: StatefulBuilder(
-        builder: (context, setPopupState) => SizedBox(
-          width: 280,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(
-              rulesets.length,
-              (index) => GestureDetector(
-                onTap: () {
-                  HapticFeedback.selectionClick();
-                  setState(() {
-                    selectedRuleset = rulesets[index].$1;
-                  });
-                  setPopupState(() {});
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                        color: selectedRuleset == rulesets[index].$1
-                            ? context.talleeColors.textColor.withAlpha(20)
-                            : Colors.transparent,
+    arrowColor: context.talleeColors.boxBorderColor,
+    contentPadding: const EdgeInsets.symmetric(vertical: 10),
+    barrierColor: Colors.transparent,
+    contentDecoration: context.standardBoxDecoration,
+    onBeforePopup: Haptics.selectionClick,
+    onAfterPopup: Haptics.selectionClick,
+    content: StatefulBuilder(
+      builder: (context, setPopupState) => SizedBox(
+        width: 280,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(
+            rulesets.length,
+            (index) => GestureDetector(
+              onTap: () {
+                Haptics.selectionClick();
+                setState(() {
+                  selectedRuleset = rulesets[index].$1;
+                });
+                setPopupState(() {});
+              },
+              child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      color: selectedRuleset == rulesets[index].$1
+                          ? context.talleeColors.textColor.withAlpha(20)
+                          : Colors.transparent,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 16,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 16,
-                        ),
-                        child: Row(
-                          spacing: 8,
-                          children: [
-                            Icon(rulesets[index].$1.icon, size: 16),
-                            Text(
-                              rulesets[index].$2,
-                              style: TextStyle(
-                                color: context.talleeColors.textColor,
-                                fontSize: 15,
-                              ),
+                      child: Row(
+                        spacing: 8,
+                        children: [
+                          Icon(rulesets[index].$1.icon, size: 16),
+                          Text(
+                            rulesets[index].$2,
+                            style: TextStyle(
+                              color: context.talleeColors.textColor,
+                              fontSize: 15,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                    if (index < rulesets.length - 1)
-                      const Divider(indent: 15, endIndent: 15),
-                  ],
-                ),
+                  ),
+                  if (index < rulesets.length - 1)
+                    const Divider(indent: 15, endIndent: 15),
+                ],
               ),
             ),
           ),
         ),
       ),
-      child: Row(
-        spacing: 8,
-        children: [
-          Icon(selectedRuleset!.icon, size: 16),
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: Text(
-              selectedRuleset!.toLocalizedString(context),
-              textAlign: TextAlign.right,
-            ),
+    ),
+    child: Row(
+      spacing: 8,
+      children: [
+        Icon(selectedRuleset!.icon, size: 16),
+        Padding(
+          padding: const EdgeInsets.only(right: 5),
+          child: Text(
+            selectedRuleset!.toLocalizedString(context),
+            textAlign: TextAlign.right,
           ),
-          Transform.rotate(
-            angle: pi / 2,
-            child: const Icon(Icons.arrow_forward_ios, size: 16),
-          ),
-        ],
-      ),
-    );
+        ),
+        Transform.rotate(
+          angle: pi / 2,
+          child: const Icon(Icons.arrow_forward_ios, size: 16),
+        ),
+      ],
+    ),
+  );
 
   Widget getColorDropdown(AppLocalizations loc) => CustomPopup(
-      arrowColor: context.talleeColors.boxBorderColor,
-      contentPadding: const EdgeInsets.symmetric(vertical: 10),
-      barrierColor: Colors.transparent,
-      contentDecoration: context.standardBoxDecoration,
-      onBeforePopup: HapticFeedback.selectionClick,
-      onAfterPopup: HapticFeedback.selectionClick,
-      content: StatefulBuilder(
-        builder: (context, setPopupState) => SizedBox(
-          width: 150,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(
-              colors.length,
-              (index) => GestureDetector(
-                onTap: () {
-                  HapticFeedback.selectionClick();
-                  setState(() {
-                    selectedColor = colors[index].$1;
-                  });
-                  setPopupState(() {});
-                },
-                child: Column(
-                  children: [
-                    // Selected Highlighting
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                        color: selectedColor == colors[index].$1
-                            ? context.talleeColors.textColor.withAlpha(20)
-                            : Colors.transparent,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: Row(
-                          spacing: 8,
-                          children: selectedColor == null
-                              ? [Text(loc.none)]
-                              : [
-                                  Container(
-                                    width: 16,
-                                    height: 16,
-                                    margin: const EdgeInsets.only(left: 12),
-                                    decoration: BoxDecoration(
-                                      color: colors[index].$1.colorValue(
-                                        context,
-                                      ),
-                                      shape: BoxShape.circle,
-                                    ),
+    arrowColor: context.talleeColors.boxBorderColor,
+    contentPadding: const EdgeInsets.symmetric(vertical: 10),
+    barrierColor: Colors.transparent,
+    contentDecoration: context.standardBoxDecoration,
+    onBeforePopup: Haptics.selectionClick,
+    onAfterPopup: Haptics.selectionClick,
+    content: StatefulBuilder(
+      builder: (context, setPopupState) => SizedBox(
+        width: 150,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(
+            colors.length,
+            (index) => GestureDetector(
+              onTap: () {
+                Haptics.selectionClick();
+                setState(() {
+                  selectedColor = colors[index].$1;
+                });
+                setPopupState(() {});
+              },
+              child: Column(
+                children: [
+                  // Selected Highlighting
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      color: selectedColor == colors[index].$1
+                          ? context.talleeColors.textColor.withAlpha(20)
+                          : Colors.transparent,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Row(
+                        spacing: 8,
+                        children: selectedColor == null
+                            ? [Text(loc.none)]
+                            : [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  margin: const EdgeInsets.only(left: 12),
+                                  decoration: BoxDecoration(
+                                    color: colors[index].$1.colorValue(context),
+                                    shape: BoxShape.circle,
                                   ),
-                                  Text(
-                                    colors[index].$2,
-                                    style: TextStyle(
-                                      color: context.talleeColors.textColor,
-                                      fontSize: 15,
-                                    ),
+                                ),
+                                Text(
+                                  colors[index].$2,
+                                  style: TextStyle(
+                                    color: context.talleeColors.textColor,
+                                    fontSize: 15,
                                   ),
-                                ],
-                        ),
+                                ),
+                              ],
                       ),
                     ),
-                    if (index < colors.length - 1)
-                      const Divider(indent: 15, endIndent: 15),
-                  ],
-                ),
+                  ),
+                  if (index < colors.length - 1)
+                    const Divider(indent: 15, endIndent: 15),
+                ],
               ),
             ),
           ),
         ),
       ),
-      child: Row(
-        spacing: 8,
-        children: [
-          // Selected Color
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              color: selectedColor!.colorValue(context),
-              shape: BoxShape.circle,
-            ),
+    ),
+    child: Row(
+      spacing: 8,
+      children: [
+        // Selected Color
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: selectedColor!.colorValue(context),
+            shape: BoxShape.circle,
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: Text(selectedColor!.toLocalizedString(context)),
-          ),
-          Transform.rotate(
-            angle: pi / 2,
-            child: const Icon(Icons.arrow_forward_ios, size: 16),
-          ),
-        ],
-      ),
-    );
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 5),
+          child: Text(selectedColor!.toLocalizedString(context)),
+        ),
+        Transform.rotate(
+          angle: pi / 2,
+          child: const Icon(Icons.arrow_forward_ios, size: 16),
+        ),
+      ],
+    ),
+  );
 }

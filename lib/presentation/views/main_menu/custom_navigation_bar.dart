@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:new_version_plus/model/version_status.dart';
 import 'package:once/once.dart';
@@ -10,6 +9,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -352,7 +352,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
 
   /// Handles tab tap events. Updates the current [index] state.
   void onTabTapped(int index) {
-    HapticFeedback.selectionClick();
+    Haptics.selectionClick();
     setState(() {
       currentIndex = index;
     });
@@ -402,13 +402,15 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       status = await newVersionPlus.getVersionStatus();
     } catch (error, stacktrace) {
       if (error.isNetworkError) return;
-      Sentry.captureException(
-        error,
-        stackTrace: stacktrace,
-        hint: Hint.withMap({'skipSnackBar': true}),
-        withScope: (scope) {
-          scope.level = SentryLevel.error;
-        },
+      unawaited(
+        Sentry.captureException(
+          error,
+          stackTrace: stacktrace,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
       );
     }
 
@@ -419,47 +421,47 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) => CustomAlertDialog(
-            title: loc.update_available,
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  loc.update_available_content,
-                  style: TextStyle(
-                    color: context.talleeColors.textColor,
-                    overflow: TextOverflow.visible,
-                  ),
+          title: loc.update_available,
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                loc.update_available_content,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
+                  overflow: TextOverflow.visible,
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  loc.update_features_fixes_desc,
-                  style: TextStyle(
-                    color: context.talleeColors.textColor,
-                    overflow: TextOverflow.visible,
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              CustomDialogAction(
-                text: loc.update_now,
-                onPressed: () async {
-                  final Uri url = Uri.parse(status!.appStoreLink);
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url, mode: LaunchMode.externalApplication);
-                  }
-                },
               ),
-              CustomDialogAction(
-                text: loc.later,
-                buttonType: ButtonType.secondary,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              const SizedBox(height: 12),
+              Text(
+                loc.update_features_fixes_desc,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
+                  overflow: TextOverflow.visible,
+                ),
               ),
             ],
           ),
+          actions: [
+            CustomDialogAction(
+              text: loc.update_now,
+              onPressed: () async {
+                final Uri url = Uri.parse(status!.appStoreLink);
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                }
+              },
+            ),
+            CustomDialogAction(
+              text: loc.later,
+              buttonType: ButtonType.secondary,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
       );
     }
   }

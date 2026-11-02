@@ -24,15 +24,15 @@ class CustomDialogAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BottomAnimatedButton(
-      onPressed: onPressed != null
-          ? () {
-              onPressed?.call();
-            }
-          : null,
-      buttonText: text,
-      buttonType: buttonType,
-      isDestructive: isDestructive,
-      isEmphasized: isEmphasized,
-      buttonConstraints: const BoxConstraints(minWidth: 300),
-    );
+    onPressed: onPressed != null
+        ? () {
+            onPressed?.call();
+          }
+        : null,
+    buttonText: text,
+    buttonType: buttonType,
+    isDestructive: isDestructive,
+    isEmphasized: isEmphasized,
+    buttonConstraints: const BoxConstraints(minWidth: 300),
+  );
 }

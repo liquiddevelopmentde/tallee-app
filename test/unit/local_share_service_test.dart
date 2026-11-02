@@ -99,11 +99,7 @@ void main() {
     await tester.pumpWidget(
       Provider<AppDatabase>.value(
         value: database,
-        child: MaterialApp(
-          home: Builder(
-            builder: (context) => Container(),
-          ),
-        ),
+        child: MaterialApp(home: Builder(builder: (context) => Container())),
       ),
     );
     final BuildContext context = tester.element(find.byType(Container));

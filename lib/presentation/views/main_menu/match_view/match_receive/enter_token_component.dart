@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart' hide Material;
 import 'package:material_ui/material_ui.dart' show Material;
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/models/models.dart';
@@ -136,7 +137,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               animationCurve: Curves.easeInOutCubic,
               animationDuration: const Duration(milliseconds: 100),
               onClipboardFound: (value) {
-                HapticFeedback.lightImpact();
+                Haptics.lightImpact();
                 tokenInputFieldController.text = value;
                 context.showSnackBar(message: loc.code_pasted_from_clipboard);
               },
@@ -153,16 +154,16 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               errorText: getErrorText(loc),
               errorTextStyle: errorTextStyle,
               errorBuilder: (errorText, pin) => SizedBox(
-                  width: 300,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      errorText ?? '',
-                      style: errorTextStyle,
-                      textAlign: TextAlign.center,
-                    ),
+                width: 300,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    errorText ?? '',
+                    style: errorTextStyle,
+                    textAlign: TextAlign.center,
                   ),
                 ),
+              ),
             ),
           ),
         ),
@@ -254,7 +255,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
     }
   }
 
-  bool validateToken(String? token) => token != null &&
-        token.length == 6 &&
-        RegExp(r'^[A-Za-z0-9]+$').hasMatch(token);
+  bool validateToken(String? token) =>
+      token != null &&
+      token.length == 6 &&
+      RegExp(r'^[A-Za-z0-9]+$').hasMatch(token);
 }

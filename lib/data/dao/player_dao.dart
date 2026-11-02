@@ -214,50 +214,50 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     required String playerId,
     required String name,
   }) async => transaction(() async {
-      final previousPlayer = await (select(
-        playerTable,
-      )..where((tbl) => tbl.id.equals(playerId))).getSingleOrNull();
-      if (previousPlayer == null) return false;
+    final previousPlayer = await (select(
+      playerTable,
+    )..where((tbl) => tbl.id.equals(playerId))).getSingleOrNull();
+    if (previousPlayer == null) return false;
 
-      final previousName = previousPlayer.name;
-      final previousCount = previousPlayer.nameCount;
+    final previousName = previousPlayer.name;
+    final previousCount = previousPlayer.nameCount;
 
-      // Determine the nameCount for the renamed player in the new group.
-      final newNameCount = await _processNameCount(name: name);
+    // Determine the nameCount for the renamed player in the new group.
+    final newNameCount = await _processNameCount(name: name);
 
-      final rowsAffected =
-          await (update(
-            playerTable,
-          )..where((tbl) => tbl.id.equals(playerId))).write(
-            PlayerTableCompanion(
-              name: Value(name),
-              nameCount: Value(newNameCount),
+    final rowsAffected =
+        await (update(
+          playerTable,
+        )..where((tbl) => tbl.id.equals(playerId))).write(
+          PlayerTableCompanion(
+            name: Value(name),
+            nameCount: Value(newNameCount),
+          ),
+        );
+
+    // Consolidate the previous name group.
+    final remainingCount = await getNameCount(name: previousName);
+
+    if (remainingCount == 1) {
+      // Only one player left
+      await (update(playerTable)..where((p) => p.name.equals(previousName)))
+          .write(const PlayerTableCompanion(nameCount: Value(0)));
+    } else if (remainingCount > 1 && previousCount > 0) {
+      // Shift every player above the gap down by one to keep numbering in order.
+      await (update(playerTable)..where(
+            (tbl) =>
+                tbl.name.equals(previousName) &
+                tbl.nameCount.isBiggerThanValue(previousCount),
+          ))
+          .write(
+            PlayerTableCompanion.custom(
+              nameCount: playerTable.nameCount - const Constant(1),
             ),
           );
+    }
 
-      // Consolidate the previous name group.
-      final remainingCount = await getNameCount(name: previousName);
-
-      if (remainingCount == 1) {
-        // Only one player left
-        await (update(playerTable)..where((p) => p.name.equals(previousName)))
-            .write(const PlayerTableCompanion(nameCount: Value(0)));
-      } else if (remainingCount > 1 && previousCount > 0) {
-        // Shift every player above the gap down by one to keep numbering in order.
-        await (update(playerTable)..where(
-              (tbl) =>
-                  tbl.name.equals(previousName) &
-                  tbl.nameCount.isBiggerThanValue(previousCount),
-            ))
-            .write(
-              PlayerTableCompanion.custom(
-                nameCount: playerTable.nameCount - const Constant(1),
-              ),
-            );
-      }
-
-      return rowsAffected > 0;
-    });
+    return rowsAffected > 0;
+  });
 
   /// Updates the description of the player with the given [playerId] to
   /// [description].

@@ -92,58 +92,55 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
             ? ListView.builder(
                 itemCount: allTeams.length,
                 itemBuilder: (context, index) => CustomCheckboxListTile(
-                    content: isTeamMatch
-                        ? TeamCard(
-                            team: allTeams[index],
-                            showTeamMembers: false,
-                            compact: true,
-                          )
-                        : buildUnitNameWidget(
-                            context,
-                            allTeams[index],
-                          ),
-                    value: selectedTeams.contains(allTeams[index]),
-                    onChanged: (bool value) {
-                      showcaseProvider.markAsSeen(
-                        selectWinnerWidgetListviewIdentifier,
-                      );
-                      setState(() {
-                        if (value) {
-                          selectedTeams.add(allTeams[index]);
-                        } else {
-                          selectedTeams.remove(allTeams[index]);
-                        }
-                        widget.onTeamsSelected?.call(selectedTeams);
-                      });
-                    },
-                  ),
+                  content: isTeamMatch
+                      ? TeamCard(
+                          team: allTeams[index],
+                          showTeamMembers: false,
+                          compact: true,
+                        )
+                      : buildUnitNameWidget(context, allTeams[index]),
+                  value: selectedTeams.contains(allTeams[index]),
+                  onChanged: (bool value) {
+                    showcaseProvider.markAsSeen(
+                      selectWinnerWidgetListviewIdentifier,
+                    );
+                    setState(() {
+                      if (value) {
+                        selectedTeams.add(allTeams[index]);
+                      } else {
+                        selectedTeams.remove(allTeams[index]);
+                      }
+                      widget.onTeamsSelected?.call(selectedTeams);
+                    });
+                  },
+                ),
               )
             : ListView.builder(
                 itemCount: allPlayers.length,
                 itemBuilder: (context, index) => CustomCheckboxListTile(
-                    content: buildUnitNameWidget(
-                      context,
-                      allPlayers[index],
-                      mainStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  content: buildUnitNameWidget(
+                    context,
+                    allPlayers[index],
+                    mainStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                    value: selectedPlayers.contains(allPlayers[index]),
-                    onChanged: (bool value) {
-                      showcaseProvider.markAsSeen(
-                        selectWinnerWidgetListviewIdentifier,
-                      );
-                      setState(() {
-                        if (value) {
-                          selectedPlayers.add(allPlayers[index]);
-                        } else {
-                          selectedPlayers.remove(allPlayers[index]);
-                        }
-                        widget.onPlayersSelected?.call(selectedPlayers);
-                      });
-                    },
                   ),
+                  value: selectedPlayers.contains(allPlayers[index]),
+                  onChanged: (bool value) {
+                    showcaseProvider.markAsSeen(
+                      selectWinnerWidgetListviewIdentifier,
+                    );
+                    setState(() {
+                      if (value) {
+                        selectedPlayers.add(allPlayers[index]);
+                      } else {
+                        selectedPlayers.remove(allPlayers[index]);
+                      }
+                      widget.onPlayersSelected?.call(selectedPlayers);
+                    });
+                  },
+                ),
               ),
       ),
     );
