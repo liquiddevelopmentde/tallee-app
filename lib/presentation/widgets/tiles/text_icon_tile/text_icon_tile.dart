@@ -8,7 +8,7 @@ export 'player_tile.dart';
 class TextIconTile extends StatelessWidget {
   /// A tile widget that displays text with an optional icon that can be tapped.
   /// - [content]: A content widget to display.
-  /// - [backgroundColor]: Optional background color for the tile. Defaults to [context.talleeColors.onBoxColor].
+  /// - [backgroundColor]: Optional background color for the tile. Defaults to `context.talleeColors.onBoxColor`.
   /// - [showIcon]: Whether the icon should be shown.
   /// - [icon]: Optional custom icon. Defaults to [Icons.close].
   /// - [onTileTap]: The callback to be invoked when the tile is tapped.

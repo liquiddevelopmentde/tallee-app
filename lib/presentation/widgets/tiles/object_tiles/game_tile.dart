@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
@@ -13,7 +13,7 @@ class GameTile extends StatelessWidget {
   /// - [onTap]: The callback invoked when the tile is tapped.
   /// - [onLongPress]: The callback invoked when the tile is long pressed.
   /// - [isHighlighted]: A boolean to determine if the tile should be highlighted.
-  /// - [borderColor]: Optional color for the highlight border. If null, [badgeColor] or orange is used.
+  /// - [borderColor]: Optional color for the highlight border. If null gamecolor is used.
   const GameTile({
     super.key,
     required this.game,

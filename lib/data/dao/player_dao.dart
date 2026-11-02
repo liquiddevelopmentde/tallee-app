@@ -152,7 +152,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
         .toList();
   }
 
-  /// Retrieves a [Player] by their [id].
+  /// Retrieves a [Player] by their `id`.
   Future<Player> getPlayerById({required String playerId}) async {
     final query = select(playerTable)..where((p) => p.id.equals(playerId));
     final row = await query.getSingle();

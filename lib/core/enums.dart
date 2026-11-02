@@ -1,3 +1,8 @@
+/// @docImport 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
+/// @docImport 'package:tallee/presentation/widgets/buttons/buttons.dart';
+/// @docImport 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
+library;
+
 import 'dart:math';
 
 export 'extensions/app_color_extensions.dart';
@@ -19,7 +24,7 @@ enum AppEnvironment {
   final String tag;
 }
 
-/// Button types used for styling the [CustomWidthButton]
+/// Button types used for styling the [ApiActionAnimatedButton] / [BottomAnimatedButton]
 /// - [ButtonType.primary]: Primary button style.
 /// - [ButtonType.secondary]: Secondary button style.
 /// - [ButtonType.tertiary]: Tertiary button style.
@@ -39,7 +44,7 @@ enum MatchFilter { all, active, finished, team }
 /// - [ApiButtonState.error]: API call failed.
 enum ApiButtonState { idle, loading, success, error }
 
-/// Result types for import operations in the [SettingsView]
+/// Result types for import operations
 /// - [ImportResult.success]: The import operation was successful.
 /// - [ImportResult.canceled]: The import operation was canceled by the user.
 /// - [ImportResult.fileReadError]: There was an error reading the selected file.

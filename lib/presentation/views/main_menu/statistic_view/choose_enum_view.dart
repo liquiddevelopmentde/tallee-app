@@ -7,7 +7,7 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 class ChooseEnumView<T extends Enum> extends StatefulWidget {
   /// A view that allows the user to choose an enum value from a list of enum values.
   /// - [enumValue]: A list of available enum values to choose from
-  /// - [initialEnum]: The initially selected enum value
+  /// - [initialEnums]: The initially selected enum value
   /// - [enableMultiSelection]: Whether multiple enum values can be selected
   const ChooseEnumView({
     super.key,

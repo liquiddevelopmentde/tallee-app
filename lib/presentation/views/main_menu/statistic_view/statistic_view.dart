@@ -495,7 +495,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     showOnlyFavourites = SharedPreferencesService.getShowFavourites();
   }
 
-  /// Builds a [StatisticTile] for a given statistic.
+  /// Builds a [StatisticsTile] for a given statistic.
   Widget buildStatisticTile({
     required BuildContext context,
     required Statistic statistic,

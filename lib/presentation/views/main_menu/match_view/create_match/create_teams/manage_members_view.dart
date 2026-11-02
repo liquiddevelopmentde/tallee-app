@@ -16,10 +16,10 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_result/matc
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
-/// Displays the given [teams] as a flat reorderable list where every team is
-/// preceded by a header row and followed by its members. Members can be
-/// dragged across team boundaries to be reassigned to another team.
 class ManageMembersView extends StatefulWidget {
+  /// Displays the given [Team]s as a flat reorderable list where every team is
+  /// preceded by a header row and followed by its members. Members can be
+  /// dragged across team boundaries to be reassigned to another team.
   const ManageMembersView({
     super.key,
     required this.match,

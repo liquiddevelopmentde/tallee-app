@@ -236,7 +236,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
   /// Finalizes the team creation by assigning any players that are currently
   /// not part of a team to the available teams.
   ///
-  /// If new teams have been created (those not present in [previousMatch]),
+  /// If new teams have been created (those not present in previousMatch),
   /// the unassigned players are distributed among these new teams to fill them
   /// up evenly. If no new teams exist, players are distributed among all
   /// existing teams, maintaining a balanced member count across teams.

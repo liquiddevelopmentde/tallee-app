@@ -277,7 +277,7 @@ class Match {
 
   bool get hasEnded => endedAt != null;
 
-  /// Counts how many players in the [match] are not part of the group
+  /// Counts how many players in the `match` are not part of the group
   ///
   /// Returns the text you append after the group name, e.g. " + 5" or an empty
   /// string if there are no extra players

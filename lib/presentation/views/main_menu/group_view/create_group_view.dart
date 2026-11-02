@@ -232,7 +232,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   /// After updating the group's members, matches that were previously linked to
   /// this group but don't have any of the newly selected players are considered
   /// obsolete. For each such match, the group association is removed by setting
-  /// its [groupId] to null.
+  /// its `groupId` to null.
   Future<void> deleteObsoleteMatchGroupRelations() async {
     final groupMatches = await db.matchDao.getMatchesByGroup(
       groupId: widget.groupToEdit!.id,

@@ -13,7 +13,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
 
   /* Create */
 
-  /// Adds a new group with the given [id] and [name] to the database.
+  /// Adds a new group with the given `id` and `name` to the database.
   /// This method also adds the group's members to the [PlayerGroupTable].
   Future<bool> addGroup({required Group group}) async {
     if (!await groupExists(groupId: group.id)) {
@@ -248,7 +248,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
 
   /* Delete */
 
-  /// Deletes the group with the given [id] from the database.
+  /// Deletes the group with the given `id` from the database.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> deleteGroup({required String groupId}) async {
     final query = (delete(groupTable)..where((g) => g.id.equals(groupId)));
@@ -266,7 +266,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
 
   /* Update */
 
-  /// Updates the name of the group with the given [id] to [name].
+  /// Updates the name of the group with the given `id` to [name].
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
   Future<bool> updateGroupName({
     required String groupId,

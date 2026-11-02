@@ -13,6 +13,7 @@ import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/share_create_response.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/shared.dart';
 import 'package:uuid/uuid.dart';

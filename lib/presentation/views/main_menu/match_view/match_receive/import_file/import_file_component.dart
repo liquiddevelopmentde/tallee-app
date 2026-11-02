@@ -149,7 +149,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
     );
   }
 
-  /// Loads a file if [initialFilePath] was provided
+  /// Loads a file if initialFilePath was provided
   Future<void> loadInitialFile() async {
     final data = await RemoteShareService().loadMatchFromFile(
       widget.initialFilePath!,

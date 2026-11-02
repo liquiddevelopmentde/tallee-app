@@ -1,3 +1,6 @@
+/// @docImport 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
+library;
+
 import 'dart:core' hide Match;
 
 import 'package:cupertino_ui/cupertino_ui.dart';

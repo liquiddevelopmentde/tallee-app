@@ -19,7 +19,6 @@ class ChooseGameView extends StatefulWidget {
   /// - [initialSelectedGames]: The initially selected games
   /// - [statistic]: Optional statistic payload for choosing groups for a statistic
   /// - [selectedTypes]: Optional list of statistic types to determine the correct button text
-  /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
   const ChooseGameView({
     super.key,
     required this.games,

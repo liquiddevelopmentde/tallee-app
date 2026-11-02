@@ -4,7 +4,6 @@ import 'package:tallee/core/extensions/extensions.dart';
 class InfoTile extends StatefulWidget {
   /// A tile widget that displays a title with an icon and some content below it.
   /// - [title]: The title text displayed on the tile.
-  /// - [icon]: The icon displayed next to the title.
   /// - [content]: The content widget displayed below the title.
   /// - [padding]: Optional padding for the tile content.
   /// - [height]: Optional height for the tile.

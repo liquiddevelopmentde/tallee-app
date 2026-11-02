@@ -4,7 +4,7 @@ import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_me
 
 class PullDownMenu extends PopupRoute<void> {
   /// The [PopupRoute] that positions, animates and renders the menu surface for a
-  /// [CustomPullDownMenu] relative to its trigger button.
+  /// [PullDownMenu] relative to its trigger button.
   /// - [buttonRect]: The trigger button's rect in overlay coordinates.
   /// - [overlaySize]: The size of the overlay the menu is placed in.
   /// - [items]: The tiles to render inside the menu.
