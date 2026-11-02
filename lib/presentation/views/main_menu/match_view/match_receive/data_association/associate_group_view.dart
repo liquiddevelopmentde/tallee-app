@@ -192,8 +192,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(CustomSnackBar(message: loc.unexpected_error));
+      context.showSnackBar(message: loc.unexpected_error);
       return;
     }
 

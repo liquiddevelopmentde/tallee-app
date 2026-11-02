@@ -10,7 +10,6 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/local_share_service.dart';
@@ -270,8 +269,7 @@ class _DataManagementViewState extends State<DataManagementView> {
       if (confirmed == true && mounted && scaffoldMessengerContext.mounted) {
         LocalShareService.deleteAllData(context);
         SharedPreferencesService.deleteAllPreferences();
-        showSnackbar(
-          context: scaffoldMessengerContext,
+        scaffoldMessengerContext.showSnackBar(
           message: AppLocalizations.of(context).data_successfully_deleted,
         );
       }
@@ -287,18 +285,12 @@ class _DataManagementViewState extends State<DataManagementView> {
       case ImportResult.success:
         HapticFeedback.successNotification();
         if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: loc.data_successfully_imported,
-          );
+          context.showSnackBar(message: loc.data_successfully_imported);
         }
       default:
         HapticFeedback.errorNotification();
         if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: result.toLocalizedString(context),
-          );
+          context.showSnackBar(message: result.toLocalizedString(context));
         }
     }
   }
@@ -312,29 +304,15 @@ class _DataManagementViewState extends State<DataManagementView> {
       case ExportResult.success:
         HapticFeedback.successNotification();
         if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: loc.data_successfully_exported,
-          );
+          context.showSnackBar(message: loc.data_successfully_exported);
         }
       case ExportResult.canceled:
       case ExportResult.unknownException:
       case ExportResult.noData:
         HapticFeedback.errorNotification();
         if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: result.toLocalizedString(context),
-          );
+          context.showSnackBar(message: result.toLocalizedString(context));
         }
     }
-  }
-
-  void showSnackbar({required BuildContext context, required String message}) {
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(CustomSnackBar(message: message));
   }
 }

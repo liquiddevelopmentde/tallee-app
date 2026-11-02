@@ -18,7 +18,6 @@ import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licen
 import 'package:tallee/presentation/views/main_menu/settings_view/privacy_policy_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_tile.dart'
     as app_pull_down;
@@ -167,8 +166,7 @@ class _SettingsViewState extends State<SettingsView> {
                         );
                         if (result == true &&
                             scaffoldMessengerContext.mounted) {
-                          showSnackbar(
-                            context: scaffoldMessengerContext,
+                          scaffoldMessengerContext.showSnackBar(
                             message: loc.thank_you_for_feedback,
                           );
                         }
@@ -400,8 +398,7 @@ class _SettingsViewState extends State<SettingsView> {
     Clipboard.setData(ClipboardData(text: rawSemVer));
     HapticFeedback.lightImpact();
     final loc = AppLocalizations.of(context);
-    showSnackbar(
-      context: scaffoldMessengerContext,
+    scaffoldMessengerContext.showSnackBar(
       message: loc.version_copied_to_clipboard,
     );
   }
@@ -427,18 +424,6 @@ class _SettingsViewState extends State<SettingsView> {
       ThemeMode.dark => loc.theme_dark,
       ThemeMode.light => loc.theme_light,
     };
-  }
-
-  /// Displays a snackbar with the given message and optional action.
-  ///
-  /// [context] The BuildContext to show the snackbar in.
-  /// [message] The message to display in the snackbar.
-  void showSnackbar({required BuildContext context, required String message}) {
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(CustomSnackBar(message: message));
   }
 
   Future<void> loadSettings() async {

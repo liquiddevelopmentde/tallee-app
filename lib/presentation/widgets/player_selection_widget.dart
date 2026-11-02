@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/list_extension.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
@@ -13,7 +14,6 @@ import 'package:tallee/data/models/team.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
@@ -169,7 +169,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
   void initializeWithAvailablePlayers() {
     allPlayers = [...widget.availablePlayers!];
-    allPlayers.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+    allPlayers.sortByName((player) => player.name);
 
     if (widget.mode == SelectionMode.single) {
       suggestedPlayers = [...allPlayers];
@@ -702,11 +702,11 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
     if (success) {
       handleSuccessfulPlayerCreation(createdPlayer);
+      context.showSnackBar(message: loc.successfully_added_player(playerName));
       await HapticFeedback.successNotification();
-      showSnackBarMessage(loc.successfully_added_player(playerName));
     } else {
+      context.showSnackBar(message: loc.could_not_add_player(playerName));
       await HapticFeedback.errorNotification();
-      showSnackBarMessage(loc.could_not_add_player(playerName));
     }
   }
 
@@ -751,13 +751,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
           .where((player) => !selectedPlayers.any((p) => p.id == player.id))
           .toList();
     }
-  }
-
-  void showSnackBarMessage(String message) {
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(CustomSnackBar(message: message));
   }
 
   Widget getMessageWidget(AppLocalizations loc) {

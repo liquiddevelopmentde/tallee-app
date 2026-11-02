@@ -12,6 +12,7 @@ import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/core/theme/app_theme.dart';
+import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/app_scroll_behavior.dart';
@@ -22,7 +23,6 @@ import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_
 import 'package:tallee/presentation/views/onboarding_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -72,33 +72,26 @@ void main() async {
                 event.level == SentryLevel.fatal)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final context = Tallee.navigatorKey.currentContext;
-            if (context != null) {
-              final loc = AppLocalizations.of(context);
-              Tallee.scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-              Tallee.scaffoldMessengerKey.currentState?.showSnackBar(
-                CustomSnackBar(
-                  message: loc.unexpected_error,
-                  actionLabel: loc.report_error,
-                  onActionTap: () async {
-                    Tallee.scaffoldMessengerKey.currentState
-                        ?.hideCurrentSnackBar();
-                    final result = await Tallee.navigatorKey.currentState
-                        ?.push<bool>(
-                          MaterialPageRoute(
-                            builder: (context) => FeedbackFormView(
-                              associatedEventId: event.eventId,
-                            ),
-                          ),
-                        );
-                    if (result == true) {
-                      Tallee.scaffoldMessengerKey.currentState?.showSnackBar(
-                        CustomSnackBar(message: loc.thank_you_for_report),
-                      );
-                    }
-                  },
-                ),
-              );
-            }
+            if (context == null) return;
+
+            final loc = AppLocalizations.of(context);
+            context.showSnackBar(
+              message: loc.unexpected_error,
+              actionLabel: loc.report_error,
+              onActionTap: () async {
+                Tallee.scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+                final result = await Tallee.navigatorKey.currentState
+                    ?.push<bool>(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            FeedbackFormView(associatedEventId: event.eventId),
+                      ),
+                    );
+                if (result == true && context.mounted) {
+                  context.showSnackBar(message: loc.thank_you_for_report);
+                }
+              },
+            );
           });
         }
         return event;

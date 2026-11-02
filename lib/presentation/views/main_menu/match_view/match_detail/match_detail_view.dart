@@ -140,9 +140,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackBar(message: loc.match_not_ended_share_warning),
-      );
+      context.showSnackBar(message: loc.match_not_ended_share_warning);
     }
   }
 
