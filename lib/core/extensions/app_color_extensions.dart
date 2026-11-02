@@ -1,9 +1,7 @@
-import 'dart:math';
-
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/extensions/build_context_extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 extension AppColorExtension on AppColor {
@@ -58,25 +56,6 @@ extension AppColorExtension on AppColor {
     final useBlackText =
         !isDarkMode || this == AppColor.yellow || this == AppColor.orange;
     return useBlackText ? AppColors.textColorLight : AppColors.textColorDark;
-  }
-
-  /// Returns a random color from the app colors.
-  AppColor get randomColor =>
-      AppColor.values[Random().nextInt(AppColor.values.length)];
-
-  // Returns a AppColor enum value based on the provided team [index].
-  AppColor teamColor(int index) {
-    final colors = [
-      AppColor.red,
-      AppColor.blue,
-      AppColor.green,
-      AppColor.yellow,
-      AppColor.purple,
-      AppColor.orange,
-      AppColor.pink,
-      AppColor.teal,
-    ];
-    return colors[index % colors.length];
   }
 }
 
