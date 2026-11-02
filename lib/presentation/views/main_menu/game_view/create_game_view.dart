@@ -252,57 +252,51 @@ class _CreateGameViewState extends State<CreateGameView> {
                 const Spacer(),
 
                 // Create / Edit game button
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 20,
-                  ),
-                  child: CustomShowcaseWidget(
-                    showcaseKey: createGameViewCreateGameKey,
-                    description: loc.showcase_create_game_button,
-                    child: BottomAnimatedButton(
-                      buttonText: isEditing ? loc.edit_game : loc.create_game,
-                      sizeRelativeToWidth: 0.95,
-                      buttonType: ButtonType.primary,
-                      onPressed:
-                          gameNameController.text.trim().isNotEmpty &&
-                              selectedRuleset != null &&
-                              selectedColor != null
-                          ? () async {
-                              if (showcaseProvider.shouldShowShowcase(
+                CustomShowcaseWidget(
+                  showcaseKey: createGameViewCreateGameKey,
+                  description: loc.showcase_create_game_button,
+                  child: BottomAnimatedButton(
+                    buttonText: isEditing ? loc.edit_game : loc.create_game,
+                    sizeRelativeToWidth: 0.95,
+                    buttonType: ButtonType.primary,
+                    onPressed:
+                        gameNameController.text.trim().isNotEmpty &&
+                            selectedRuleset != null &&
+                            selectedColor != null
+                        ? () async {
+                            if (showcaseProvider.shouldShowShowcase(
+                              createGameViewGameNameIdentifier,
+                            )) {
+                              showcaseProvider.markAsSeen(
                                 createGameViewGameNameIdentifier,
-                              )) {
-                                showcaseProvider.markAsSeen(
-                                  createGameViewGameNameIdentifier,
-                                );
-                                showcaseProvider.markAsSeen(
-                                  createGameViewGameRulesetIdentifier,
-                                );
-                                showcaseProvider.markAsSeen(
-                                  createGameViewCreateGameIdentifier,
-                                );
-                              }
-
-                              Game newGame = Game(
-                                name: gameNameController.text.trim(),
-                                description: gameDescriptionController.text
-                                    .trim(),
-                                ruleset: selectedRuleset!,
-                                color: selectedColor!,
                               );
-                              if (isEditing) {
-                                await handleGameUpdate(newGame);
-                              } else {
-                                await handleGameCreation(newGame);
-                              }
-                              widget.onGameChanged.call();
-                              if (context.mounted) {
-                                Navigator.of(context)
-                                    .pop((game: newGame, delete: false));
-                              }
+                              showcaseProvider.markAsSeen(
+                                createGameViewGameRulesetIdentifier,
+                              );
+                              showcaseProvider.markAsSeen(
+                                createGameViewCreateGameIdentifier,
+                              );
                             }
-                          : null,
-                    ),
+
+                            Game newGame = Game(
+                              name: gameNameController.text.trim(),
+                              description: gameDescriptionController.text
+                                  .trim(),
+                              ruleset: selectedRuleset!,
+                              color: selectedColor!,
+                            );
+                            if (isEditing) {
+                              await handleGameUpdate(newGame);
+                            } else {
+                              await handleGameCreation(newGame);
+                            }
+                            widget.onGameChanged.call();
+                            if (context.mounted) {
+                              Navigator.of(context)
+                                  .pop((game: newGame, delete: false));
+                            }
+                          }
+                        : null,
                   ),
                 ),
               ],
