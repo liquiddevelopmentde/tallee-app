@@ -243,7 +243,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
   String getBestPlayer(List<Match> matches) {
     final mvpCounts = <Player, int>{};
 
-    for (var match in matches) {
+    for (final match in matches) {
       final mvps = match.mvp;
       for (final mvpPlayer in mvps) {
         if (group.members.any((m) => m.id == mvpPlayer.id)) {

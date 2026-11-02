@@ -375,7 +375,7 @@ class MatchProfileBody extends StatelessWidget {
     List<(Widget, int)> namedScores = [];
     if (useTeamLogic) {
       final teams = match.teams ?? [];
-      for (var team in teams) {
+      for (final team in teams) {
         Widget nameWidget = buildUnitNameWidget(
           context,
           team,
@@ -388,7 +388,7 @@ class MatchProfileBody extends StatelessWidget {
       final scores = match.scores;
       final players = List<Player>.from(match.players)
         ..sortByLowercaseName((p) => p.name);
-      for (var player in players) {
+      for (final player in players) {
         int score = scores[player.id]?.score ?? 0;
         namedScores.add((
           buildUnitNameWidget(

@@ -292,7 +292,7 @@ void main() {
         expect(updatedPlayers.length, newPlayers.length);
 
         /// Create a map of new players for easy lookup
-        final testPlayers = {for (var p in newPlayers) p.id: p};
+        final testPlayers = {for (final p in newPlayers) p.id: p};
 
         for (final player in updatedPlayers) {
           final testPlayer = testPlayers[player.id]!;

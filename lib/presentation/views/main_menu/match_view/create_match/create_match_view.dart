@@ -385,7 +385,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
       // 2. Process current units to remove those players and dissolve broken pairs.
       final List<Team> updatedUnits = [];
-      for (var unit in selectedUnits) {
+      for (final unit in selectedUnits) {
         final remainingMembers = unit.members
             .where((m) => !playersToRemove.any((p) => p.id == m.id))
             .toList();
@@ -395,7 +395,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           continue;
         } else if (remainingMembers.length < unit.members.length) {
           // Unit was a pair, but some members were removed -> dissolve it.
-          for (var p in remainingMembers) {
+          for (final p in remainingMembers) {
             updatedUnits.add(Team(name: '', members: [p]));
           }
         } else {
@@ -406,7 +406,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
       // 3. Add players from the new group who aren't already selected.
       final currentPlayers = updatedUnits.expand((u) => u.members).toList();
-      for (var member in newMembers) {
+      for (final member in newMembers) {
         if (!currentPlayers.any((p) => p.id == member.id)) {
           updatedUnits.add(Team(name: '', members: [member]));
         }

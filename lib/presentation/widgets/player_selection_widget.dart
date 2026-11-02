@@ -320,7 +320,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      for (var unit in displayedUnits)
+                      for (final unit in displayedUnits)
                         buildAnimatedUnitTile(unit),
                     ],
                   ),

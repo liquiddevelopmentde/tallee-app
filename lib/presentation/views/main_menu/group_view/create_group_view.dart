@@ -245,7 +245,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       );
     }).toList();
 
-    for (var match in relationshipsToDelete) {
+    for (final match in relationshipsToDelete) {
       await db.matchDao.removeMatchGroup(matchId: match.id);
     }
   }

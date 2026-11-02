@@ -290,7 +290,7 @@ class Match {
 
     final groupMembers = group!.members;
 
-    for (var player in players) {
+    for (final player in players) {
       if (!groupMembers.any((member) => member.id == player.id)) {
         count++;
       }

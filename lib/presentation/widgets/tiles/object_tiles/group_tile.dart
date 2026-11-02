@@ -134,7 +134,7 @@ class _GroupTileState extends State<GroupTile> {
               spacing: 12.0,
               runSpacing: 8.0,
               children: <Widget>[
-                for (var member in [
+                for (final member in [
                   ...widget.group.members,
                 ]..sortByLowercaseName((m) => m.name))
                   PlayerTile(player: member),

@@ -175,7 +175,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
 
     // Filter null values and cast to Map<String, Player>
     final playerAssociations = <String, Player>{};
-    for (var entry in widget.associations.entries) {
+    for (final entry in widget.associations.entries) {
       if (entry.value != null) {
         playerAssociations[entry.key] = entry.value!;
       }

@@ -39,7 +39,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   @override
   void initState() {
     super.initState();
-    for (var player in playersToAssociate) {
+    for (final player in playersToAssociate) {
       associations[player.id] = null;
     }
     autoAssociatePlayers();
@@ -163,7 +163,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
     // Filter null values and cast to Map<String, Player>
     final playerAssociations = <String, Player>{};
-    for (var entry in associations.entries) {
+    for (final entry in associations.entries) {
       if (entry.value != null) {
         playerAssociations[entry.key] = entry.value!;
       }
@@ -249,7 +249,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     setState(() {
       final usedLocalPlayerIds = <String>{};
 
-      for (var importedPlayer in playersToAssociate) {
+      for (final importedPlayer in playersToAssociate) {
         // 1. Try exact ID match first
         Player? match = allPlayers.where((localPlayer) {
           return !usedLocalPlayerIds.contains(localPlayer.id) &&
