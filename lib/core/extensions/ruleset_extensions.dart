@@ -40,4 +40,22 @@ extension RulesetExtension on Ruleset {
         return Icons.favorite;
     }
   }
+
+  bool get isScoreRuleset => isHighestScoreRuleset || isLowestScoreRuleset;
+
+  bool get isScoreBasedRuleset => isScoreRuleset || isLivesRuleset;
+
+  bool get isSelectionRuleset => isWinnerRuleset || isLoserRuleset;
+
+  bool get isWinnerRuleset => this == Ruleset.winner;
+
+  bool get isLoserRuleset => this == Ruleset.loser;
+
+  bool get isPlacementRuleset => this == Ruleset.placement;
+
+  bool get isLowestScoreRuleset => this == Ruleset.lowestScore;
+
+  bool get isHighestScoreRuleset => this == Ruleset.highestScore;
+
+  bool get isLivesRuleset => this == Ruleset.lives;
 }

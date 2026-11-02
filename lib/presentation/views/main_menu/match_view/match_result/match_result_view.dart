@@ -55,19 +55,15 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool get isTeamMatch => widget.match.isTeamMatch;
 
-  bool rulesetSupportsPlayerSelection() =>
-      ruleset == Ruleset.winner || ruleset == Ruleset.loser;
+  bool rulesetSupportsPlayerSelection() => ruleset.isSelectionRuleset;
 
-  bool rulesetSupportsScoreEntry() =>
-      ruleset == Ruleset.lowestScore ||
-      ruleset == Ruleset.highestScore ||
-      ruleset == Ruleset.lives;
+  bool rulesetSupportsScoreEntry() => ruleset.isScoreBasedRuleset;
 
   @override
   void initState() {
     db = context.read<AppDatabase>();
     ruleset = widget.match.game.ruleset;
-    canSave = ruleset == Ruleset.placement || ruleset == Ruleset.lives;
+    canSave = ruleset.isPlacementRuleset || ruleset.isLivesRuleset;
 
     initData();
     super.initState();
@@ -103,7 +99,7 @@ class _MatchResultViewState extends State<MatchResultView> {
           children: [
             Expanded(
               child: rulesetSupportsScoreEntry()
-                  ? ruleset == Ruleset.lives
+                  ? ruleset.isLivesRuleset
                         ? LiveEditView.lives(
                             match: widget.match,
                             initialScores: scores,
@@ -145,7 +141,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
                           // Show player selection
                           if (rulesetSupportsPlayerSelection())
-                            if (ruleset == Ruleset.winner)
+                            if (ruleset.isWinnerRuleset)
                               SelectWinnerWidget(
                                 match: widget.match,
                                 onPlayersSelected: (List<Player> players) {
@@ -179,7 +175,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                               ),
 
                           // Show draggable placement list
-                          if (ruleset == Ruleset.placement)
+                          if (ruleset.isPlacementRuleset)
                             PlacementDragList(match: widget.match),
                         ],
                       ),
@@ -247,7 +243,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       );
     }
 
-    if (ruleset == Ruleset.lives) {
+    if (ruleset.isLivesRuleset) {
       final int defaultLives = widget.defaultLives;
       scores = scores.map(
         (unit, value) => MapEntry(unit, value ?? defaultLives),
@@ -264,16 +260,15 @@ class _MatchResultViewState extends State<MatchResultView> {
       endedAt: ending,
     );
 
-    if (ruleset == Ruleset.winner) {
+    if (ruleset.isWinnerRuleset) {
       await handleWinners();
-    } else if (ruleset == Ruleset.loser) {
+    } else if (ruleset.isLoserRuleset) {
       await handleLoser();
-    } else if (ruleset == Ruleset.lowestScore ||
-        ruleset == Ruleset.highestScore) {
+    } else if (ruleset.isScoreRuleset) {
       await handleScores();
-    } else if (ruleset == Ruleset.placement) {
+    } else if (ruleset.isPlacementRuleset) {
       await handlePlacement();
-    } else if (ruleset == Ruleset.lives) {
+    } else if (ruleset.isLivesRuleset) {
       await handleLives();
     }
 

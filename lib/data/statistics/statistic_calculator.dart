@@ -277,7 +277,7 @@ class StatisticCalculator {
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
         if (m.isTie) return false;
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
-        return m.game.ruleset == Ruleset.loser ? !isMvp : isMvp;
+        return m.game.ruleset.isLoserRuleset ? !isMvp : isMvp;
       }).length;
 
   /// Determines how many losses the player has in the given matches.
@@ -289,7 +289,7 @@ class StatisticCalculator {
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
         if (m.isTie) return false;
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
-        return m.game.ruleset == Ruleset.loser ? isMvp : !isMvp;
+        return m.game.ruleset.isLoserRuleset ? isMvp : !isMvp;
       }).length;
 
   /// Determines the total score of the player in the given list of matches.

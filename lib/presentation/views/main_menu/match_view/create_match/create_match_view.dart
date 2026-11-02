@@ -196,7 +196,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   ),
 
                 // Choose the default lives
-                if (selectedGame?.ruleset == Ruleset.lives && !widget.editMode)
+                if (selectedGame != null &&
+                    selectedGame!.ruleset.isLivesRuleset &&
+                    !widget.editMode)
                   ChooseTile(
                     title: getLifeLabel(loc, selectedLives),
                     trailing: CustomStepper(
