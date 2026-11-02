@@ -283,7 +283,7 @@ class MatchProfileBody extends StatelessWidget {
   List<Widget> getSingleResultRow(BuildContext context, AppLocalizations loc) {
     final ruleset = match.game.ruleset;
     if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
-      final label = ruleset.isLoserRuleset ? loc.loser : loc.winner;
+      final label = ruleset.isLoser ? loc.loser : loc.winner;
       return [
         Text(
           label,
@@ -403,11 +403,9 @@ class MatchProfileBody extends StatelessWidget {
     }
 
     final ruleset = match.game.ruleset;
-    if (ruleset.isHighestScoreRuleset ||
-        ruleset.isPlacementRuleset ||
-        ruleset.isLivesRuleset) {
+    if (ruleset.isHighestScore || ruleset.isPlacement || ruleset.isLives) {
       namedScores.sort((a, b) => b.$2.compareTo(a.$2));
-    } else if (ruleset.isLowestScoreRuleset) {
+    } else if (ruleset.isLowestScore) {
       namedScores.sort((a, b) => a.$2.compareTo(b.$2));
     }
     return namedScores;
@@ -420,7 +418,7 @@ class MatchProfileBody extends StatelessWidget {
     int score,
   ) {
     final ruleset = match.game.ruleset;
-    if (ruleset.isPlacementRuleset) {
+    if (ruleset.isPlacement) {
       return Text(
         getPlacementText(context, index + 1),
         style: TextStyle(
@@ -429,7 +427,7 @@ class MatchProfileBody extends StatelessWidget {
           color: getPlacementTextcolor(context, index),
         ),
       );
-    } else if (ruleset.isLivesRuleset) {
+    } else if (ruleset.isLives) {
       return Text(
         getLifeLabel(loc, score),
         style: TextStyle(

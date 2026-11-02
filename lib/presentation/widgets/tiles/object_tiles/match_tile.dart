@@ -371,10 +371,10 @@ class _MatchTileState extends State<MatchTile> {
     );
 
     final namesToRender =
-        ruleset.isWinnerRuleset ||
-            ruleset.isHighestScoreRuleset ||
-            ruleset.isLowestScoreRuleset ||
-            ruleset.isLivesRuleset
+        ruleset.isWinner ||
+            ruleset.isHighestScore ||
+            ruleset.isLowestScore ||
+            ruleset.isLives
         ? players
         : [players.first];
 
@@ -395,7 +395,7 @@ class _MatchTileState extends State<MatchTile> {
       }
     }
 
-    if (ruleset.isScoreRuleset) {
+    if (ruleset.isScore) {
       final mvpScore = widget.match.scores[players.first.id]?.score ?? 0;
       children.add(
         TextSpan(text: ' (${getPointLabel(loc, mvpScore)})', style: labelStyle),
@@ -428,8 +428,7 @@ class _MatchTileState extends State<MatchTile> {
       color: context.talleeColors.textColor.withAlpha(100),
     );
 
-    final score =
-        (ruleset.isHighestScoreRuleset || ruleset.isLowestScoreRuleset)
+    final score = (ruleset.isHighestScore || ruleset.isLowestScore)
         ? widget.match.teams!
                   .firstWhere((team) => team.id == mvt.first.id)
                   .score ??

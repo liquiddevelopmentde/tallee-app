@@ -3,6 +3,12 @@ import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 extension ImportResultExtension on ImportResult {
+  /// If the result is [ImportResult.success]
+  bool get isSuccess => this == ImportResult.success;
+
+  /// If the result is [ImportResult.canceled]
+  bool get isCanceled => this == ImportResult.canceled;
+
   /// Translates a [ImportResult] enum value to its corresponding localized string.
   String toLocalizedString(BuildContext context) {
     final loc = AppLocalizations.of(context);
@@ -54,10 +60,6 @@ extension ImportResultExtension on ImportResult {
         return loc.format_exception;
     }
   }
-
-  bool get isSuccess => this == ImportResult.success;
-
-  bool get isCanceled => this == ImportResult.canceled;
 }
 
 extension ExportResultExtension on ExportResult {

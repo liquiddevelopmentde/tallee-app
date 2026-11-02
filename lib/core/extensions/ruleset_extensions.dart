@@ -41,21 +41,21 @@ extension RulesetExtension on Ruleset {
     }
   }
 
-  bool get isScoreRuleset => isHighestScoreRuleset || isLowestScoreRuleset;
+  bool get isScore => isHighestScore || isLowestScore;
 
-  bool get isScoreBasedRuleset => isScoreRuleset || isLivesRuleset;
+  bool get isScoreBased => isScore || isLives;
 
-  bool get isSelectionRuleset => isWinnerRuleset || isLoserRuleset;
+  bool get isSelectionRuleset => isWinner || isLoser;
 
-  bool get isWinnerRuleset => this == Ruleset.winner;
+  bool get isWinner => this == Ruleset.winner;
 
-  bool get isLoserRuleset => this == Ruleset.loser;
+  bool get isLoser => this == Ruleset.loser;
 
-  bool get isPlacementRuleset => this == Ruleset.placement;
+  bool get isPlacement => this == Ruleset.placement;
 
-  bool get isLowestScoreRuleset => this == Ruleset.lowestScore;
+  bool get isLowestScore => this == Ruleset.lowestScore;
 
-  bool get isHighestScoreRuleset => this == Ruleset.highestScore;
+  bool get isHighestScore => this == Ruleset.highestScore;
 
-  bool get isLivesRuleset => this == Ruleset.lives;
+  bool get isLives => this == Ruleset.lives;
 }
