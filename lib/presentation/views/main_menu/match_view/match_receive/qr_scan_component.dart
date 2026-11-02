@@ -58,7 +58,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: Column(
         children: [
-          Container(
+          DecoratedBox(
             decoration: BoxDecoration(
               borderRadius: AppColors.standardBorderRadiusAll,
               border: Border.all(

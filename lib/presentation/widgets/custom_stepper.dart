@@ -33,7 +33,7 @@ class _CustomStepperState extends State<CustomStepper> {
         ? value < widget.maxValue!
         : true;
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: context.talleeColors.onBoxColor,
         borderRadius: BorderRadius.circular(9),
