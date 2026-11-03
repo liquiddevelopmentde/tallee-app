@@ -188,6 +188,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @choose_color_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the color for your game.'**
+  String get choose_color_description;
+
   /// No description provided for @choose_date_range.
   ///
   /// In en, this message translates to:
@@ -218,6 +224,12 @@ abstract class AppLocalizations {
   /// **'Please choose another file.'**
   String get choose_other_file;
 
+  /// No description provided for @choose_ruleset_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the ruleset you want to play with.'**
+  String get choose_ruleset_description;
+
   /// No description provided for @choose_scopes.
   ///
   /// In en, this message translates to:
@@ -241,18 +253,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose where to save your match:'**
   String get choose_where_to_save;
-
-  /// No description provided for @classifier.
-  ///
-  /// In en, this message translates to:
-  /// **'Classifier'**
-  String get classifier;
-
-  /// No description provided for @classifier_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose which metric is calculated and shown in this statistic.'**
-  String get classifier_description;
 
   /// No description provided for @close.
   ///
@@ -395,8 +395,8 @@ abstract class AppLocalizations {
   /// No description provided for @create_statistic.
   ///
   /// In en, this message translates to:
-  /// **'Create {count, plural, =0{statistics} =1{statistic} other{statistics ({count})}}'**
-  String create_statistic(int count);
+  /// **'Create statistic'**
+  String get create_statistic;
 
   /// No description provided for @create_teams.
   ///
@@ -503,7 +503,7 @@ abstract class AppLocalizations {
   /// No description provided for @delete_game_with_matches_warning.
   ///
   /// In en, this message translates to:
-  /// **'If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.'**
+  /// **'If you delete this game, {count, plural, =1{1 match} other{{count} matches}} using this game will also be deleted.'**
   String delete_game_with_matches_warning(int count);
 
   /// No description provided for @delete_group.
@@ -788,6 +788,12 @@ abstract class AppLocalizations {
   /// **'Game deleted'**
   String get game_deleted;
 
+  /// No description provided for @game_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics will be displayed that relate to one of the selected game templates.'**
+  String get game_filter_description;
+
   /// No description provided for @game_name.
   ///
   /// In en, this message translates to:
@@ -829,6 +835,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Group deleted'**
   String get group_deleted;
+
+  /// No description provided for @group_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics will be displayed that relate to one of the selected groups.'**
+  String get group_filter_description;
 
   /// No description provided for @group_members.
   ///
@@ -1484,6 +1496,12 @@ abstract class AppLocalizations {
   /// **'Points'**
   String get points;
 
+  /// No description provided for @preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get preview;
+
   /// No description provided for @preview_match.
   ///
   /// In en, this message translates to:
@@ -1580,12 +1598,6 @@ abstract class AppLocalizations {
   /// **'Scope'**
   String get scope;
 
-  /// No description provided for @scope_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose which games or players are included in the calculation.'**
-  String get scope_description;
-
   /// No description provided for @search_for_games.
   ///
   /// In en, this message translates to:
@@ -1622,17 +1634,11 @@ abstract class AppLocalizations {
   /// **'Search for types'**
   String get search_for_types;
 
-  /// No description provided for @select_a_classifier.
+  /// No description provided for @select_a_color_description.
   ///
   /// In en, this message translates to:
-  /// **'Select a classifier'**
-  String get select_a_classifier;
-
-  /// No description provided for @select_a_display_color.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a display color.'**
-  String get select_a_display_color;
+  /// **'Select the display color for your statistic.'**
+  String get select_a_color_description;
 
   /// No description provided for @select_a_scope.
   ///
@@ -1640,23 +1646,53 @@ abstract class AppLocalizations {
   /// **'Select a scope'**
   String get select_a_scope;
 
-  /// No description provided for @select_a_timeframe.
+  /// No description provided for @select_a_scope_description.
   ///
   /// In en, this message translates to:
-  /// **'Select a timeframe'**
-  String get select_a_timeframe;
+  /// **'Select the groups or game templates to limit your statistic to.'**
+  String get select_a_scope_description;
+
+  /// No description provided for @select_a_theme_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the app\'s displayed theme.'**
+  String get select_a_theme_description;
+
+  /// No description provided for @select_a_timeframe_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the time period for your statistic.'**
+  String get select_a_timeframe_description;
+
+  /// No description provided for @select_a_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a type'**
+  String get select_a_type;
+
+  /// No description provided for @select_a_type_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a type for your statistic.'**
+  String get select_a_type_description;
+
+  /// No description provided for @select_games.
+  ///
+  /// In en, this message translates to:
+  /// **'Select games'**
+  String get select_games;
+
+  /// No description provided for @select_groups.
+  ///
+  /// In en, this message translates to:
+  /// **'Select groups'**
+  String get select_groups;
 
   /// No description provided for @select_loser.
   ///
   /// In en, this message translates to:
   /// **'Select Loser'**
   String get select_loser;
-
-  /// No description provided for @select_the_filtered_timeframe.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the timeframe you want to filter by.'**
-  String get select_the_filtered_timeframe;
 
   /// No description provided for @select_winners.
   ///
@@ -2000,6 +2036,12 @@ abstract class AppLocalizations {
   /// **'Timeframe'**
   String get timeframe;
 
+  /// No description provided for @timeframe_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics related to any of the selected time periods are displayed.'**
+  String get timeframe_filter_description;
+
   /// No description provided for @today.
   ///
   /// In en, this message translates to:
@@ -2053,6 +2095,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type'**
   String get type;
+
+  /// No description provided for @type_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics matching any of the selected types are displayed.'**
+  String get type_filter_description;
 
   /// No description provided for @unexpected_error.
   ///
@@ -2167,6 +2215,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yesterday at'**
   String get yesterday_at;
+
+  /// No description provided for @your_statistic_will_be_shown_here.
+  ///
+  /// In en, this message translates to:
+  /// **'Your statistic will be shown here'**
+  String get your_statistic_will_be_shown_here;
 }
 
 class _AppLocalizationsDelegate

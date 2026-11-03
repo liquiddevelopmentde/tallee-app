@@ -1,20 +1,18 @@
-import 'dart:math';
-
-import 'package:flutter_popup/flutter_popup.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
-import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 import 'package:tallee/state/showcase_provider.dart';
@@ -72,6 +70,8 @@ class _CreateGameViewState extends State<CreateGameView> {
   int selectedLives = 3;
   Ruleset? selectedRuleset = Ruleset.winner;
   AppColor? selectedColor = AppColor.orange;
+
+  bool get isEditMode => widget.gameToEdit != null;
 
   @override
   void initState() {
@@ -162,65 +162,8 @@ class _CreateGameViewState extends State<CreateGameView> {
                 if (isEditMode)
                   HapticIconButton(
                     icon: const Icon(Icons.delete),
-                    onPressed: () async {
-                      if (!context.mounted) return;
-
-                      // Build the dialog content based on match count
-                      final String dialogContent = widget.gameCount > 0
-                          ? loc.delete_game_with_matches_warning(
-                              widget.gameCount,
-                            )
-                          : loc.this_cannot_be_undone;
-
-                      final confirmed = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => CustomAlertDialog(
-                          title: loc.delete_game,
-                          content: Text(
-                            dialogContent,
-                            overflow: TextOverflow.visible,
-                            style: const TextStyle(fontSize: 15),
-                          ),
-                          actions: [
-                            CustomDialogAction(
-                              isDestructive: true,
-                              onPressed: () => Navigator.of(context).pop(true),
-                              text: loc.delete,
-                            ),
-                            CustomDialogAction(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              buttonType: ButtonType.secondary,
-                              text: loc.cancel,
-                            ),
-                          ],
-                        ),
-                      );
-                      if (confirmed != true || !context.mounted) return;
-
-                      // Delete associated matches
-                      if (widget.gameCount > 0) {
-                        await db.matchDao.deleteMatchesByGame(
-                          gameId: widget.gameToEdit!.id,
-                        );
-                      }
-
-                      // Delete the targetted game
-                      bool success = await db.gameDao.deleteGame(
-                        gameId: widget.gameToEdit!.id,
-                      );
-
-                      if (!context.mounted) return;
-                      if (success) {
-                        widget.onGameChanged.call();
-                        context.showSnackBar(message: loc.game_deleted);
-                        Navigator.of(context)
-                            .pop((game: widget.gameToEdit, delete: true));
-                      } else {
-                        scaffoldContext.showSnackBar(
-                          message: loc.error_deleting_game,
-                        );
-                      }
-                    },
+                    onPressed: () async =>
+                        await showDeletePopup(scaffoldContext),
                   ),
               ],
             ),
@@ -231,9 +174,9 @@ class _CreateGameViewState extends State<CreateGameView> {
               child: Column(
                 spacing: 10,
                 children: [
+                  // Game name textfield
                   CustomShowcaseWidget(
                     showcaseKey: createGameViewGameNameKey,
-                    identifier: createGameViewGameNameIdentifier,
                     description: loc.showcase_create_game_name,
                     child: TextInputField(
                       controller: gameNameController,
@@ -246,33 +189,46 @@ class _CreateGameViewState extends State<CreateGameView> {
                   if (!isEditMode)
                     CustomShowcaseWidget(
                       showcaseKey: createGameViewGameRulesetKey,
-                      identifier: createGameViewGameRulesetIdentifier,
                       description: loc.showcase_create_game_ruleset,
                       child: ChooseTile(
                         title: loc.ruleset,
-                        trailing: widget.requiredRuleset != null
-                            ? Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  spacing: 8,
-                                  children: [
-                                    Icon(selectedRuleset!.icon, size: 16),
-                                    Text(
-                                      selectedRuleset!.toLocalizedString(
-                                        context,
-                                      ),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : getRulesetDropdown(loc),
+                        trailing: Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 8,
+                            children: [
+                              Icon(selectedRuleset!.icon, size: 16),
+                              Text(
+                                selectedRuleset!.toLocalizedString(context),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
+                          ),
+                        ),
+                        onPressed: () => showRulesetSheet(loc),
                       ),
                     ),
 
                   // Choose color tile
-                  ChooseTile(title: loc.color, trailing: getColorDropdown(loc)),
+                  ChooseTile(
+                    title: loc.color,
+                    trailing: Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 8,
+                        children: [
+                          ColoredCircle(color: selectedColor),
+                          Text(
+                            selectedColor!.toLocalizedString(context),
+                            textAlign: TextAlign.right,
+                          ),
+                        ],
+                      ),
+                    ),
+                    onPressed: () => showColorSheet(loc),
+                  ),
 
                   // Description input field
                   TextInputField(
@@ -287,57 +243,50 @@ class _CreateGameViewState extends State<CreateGameView> {
 
                   const Spacer(),
 
-                  // Create/Edit game button
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 20,
-                    ),
-                    child: CustomShowcaseWidget(
-                      showcaseKey: createGameViewCreateGameKey,
-                      identifier: createGameViewCreateGameIdentifier,
-                      description: loc.showcase_create_game_button,
-                      child: BottomAnimatedButton(
-                        buttonText: isEditing ? loc.edit_game : loc.create_game,
-                        onPressed:
-                            gameNameController.text.trim().isNotEmpty &&
-                                selectedRuleset != null &&
-                                selectedColor != null
-                            ? () async {
-                                if (showcaseProvider.shouldShowShowcase(
+                  // Create / Edit game button
+                  CustomShowcaseWidget(
+                    showcaseKey: createGameViewCreateGameKey,
+                    description: loc.showcase_create_game_button,
+                    child: BottomAnimatedButton(
+                      buttonText: isEditing ? loc.edit_game : loc.create_game,
+                      onPressed:
+                          gameNameController.text.trim().isNotEmpty &&
+                              selectedRuleset != null &&
+                              selectedColor != null
+                          ? () async {
+                              if (showcaseProvider.shouldShowShowcase(
+                                createGameViewGameNameIdentifier,
+                              )) {
+                                showcaseProvider.markAsSeen(
                                   createGameViewGameNameIdentifier,
-                                )) {
-                                  showcaseProvider.markAsSeen(
-                                    createGameViewGameNameIdentifier,
-                                  );
-                                  showcaseProvider.markAsSeen(
-                                    createGameViewGameRulesetIdentifier,
-                                  );
-                                  showcaseProvider.markAsSeen(
-                                    createGameViewCreateGameIdentifier,
-                                  );
-                                }
-
-                                Game newGame = Game(
-                                  name: gameNameController.text.trim(),
-                                  description: gameDescriptionController.text
-                                      .trim(),
-                                  ruleset: selectedRuleset!,
-                                  color: selectedColor!,
                                 );
-                                if (isEditing) {
-                                  await handleGameUpdate(newGame);
-                                } else {
-                                  await handleGameCreation(newGame);
-                                }
-                                widget.onGameChanged.call();
-                                if (context.mounted) {
-                                  Navigator.of(context)
-                                      .pop((game: newGame, delete: false));
-                                }
+                                showcaseProvider.markAsSeen(
+                                  createGameViewGameRulesetIdentifier,
+                                );
+                                showcaseProvider.markAsSeen(
+                                  createGameViewCreateGameIdentifier,
+                                );
                               }
-                            : null,
-                      ),
+
+                              Game newGame = Game(
+                                name: gameNameController.text.trim(),
+                                description: gameDescriptionController.text
+                                    .trim(),
+                                ruleset: selectedRuleset!,
+                                color: selectedColor!,
+                              );
+                              if (isEditing) {
+                                await handleGameUpdate(newGame);
+                              } else {
+                                await handleGameCreation(newGame);
+                              }
+                              widget.onGameChanged.call();
+                              if (context.mounted) {
+                                Navigator.of(context)
+                                    .pop((game: newGame, delete: false));
+                              }
+                            }
+                          : null,
                     ),
                   ),
                 ],
@@ -388,180 +337,93 @@ class _CreateGameViewState extends State<CreateGameView> {
     await db.gameDao.addGame(game: newGame);
   }
 
-  bool get isEditMode => widget.gameToEdit != null;
-
-  Widget getRulesetDropdown(AppLocalizations loc) => CustomPopup(
-    arrowColor: context.talleeColors.boxBorderColor,
-    contentPadding: const EdgeInsets.symmetric(vertical: 10),
-    barrierColor: Colors.transparent,
-    contentDecoration: context.standardBoxDecoration,
-    onBeforePopup: Haptics.selectionClick,
-    onAfterPopup: Haptics.selectionClick,
-    content: StatefulBuilder(
-      builder: (context, setPopupState) => SizedBox(
-        width: 280,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(
-            rulesets.length,
-            (index) => GestureDetector(
-              onTap: () {
-                Haptics.selectionClick();
-                setState(() {
-                  selectedRuleset = rulesets[index].$1;
-                });
-                setPopupState(() {});
-              },
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      color: selectedRuleset == rulesets[index].$1
-                          ? context.talleeColors.textColor.withAlpha(20)
-                          : Colors.transparent,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 16,
-                      ),
-                      child: Row(
-                        spacing: 8,
-                        children: [
-                          Icon(rulesets[index].$1.icon, size: 16),
-                          Text(
-                            rulesets[index].$2,
-                            style: TextStyle(
-                              color: context.talleeColors.textColor,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (index < rulesets.length - 1)
-                    const Divider(indent: 15, endIndent: 15),
-                ],
-              ),
-            ),
-          ),
-        ),
+  /// Shows a bottom sheet to choose a ruleset
+  void showRulesetSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext ctx) => SelectionSheet<Ruleset>(
+        title: loc.ruleset,
+        description: loc.choose_ruleset_description,
+        values: Ruleset.values,
+        selectedValue: selectedRuleset,
+        leadingBuilder: (Ruleset rs) => Icon(rs.icon, size: 22),
+        labelBuilder: (BuildContext ctx, Ruleset rs) =>
+            rs.toLocalizedString(ctx),
+        onValueUpdated: (Ruleset? rs) => setState(() => selectedRuleset = rs),
       ),
-    ),
-    child: Row(
-      spacing: 8,
-      children: [
-        Icon(selectedRuleset!.icon, size: 16),
-        Padding(
-          padding: const EdgeInsets.only(right: 5),
-          child: Text(
-            selectedRuleset!.toLocalizedString(context),
-            textAlign: TextAlign.right,
-          ),
-        ),
-        Transform.rotate(
-          angle: pi / 2,
-          child: const Icon(Icons.arrow_forward_ios, size: 16),
-        ),
-      ],
-    ),
-  );
+    );
+  }
 
-  Widget getColorDropdown(AppLocalizations loc) => CustomPopup(
-    arrowColor: context.talleeColors.boxBorderColor,
-    contentPadding: const EdgeInsets.symmetric(vertical: 10),
-    barrierColor: Colors.transparent,
-    contentDecoration: context.standardBoxDecoration,
-    onBeforePopup: Haptics.selectionClick,
-    onAfterPopup: Haptics.selectionClick,
-    content: StatefulBuilder(
-      builder: (context, setPopupState) => SizedBox(
-        width: 150,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(
-            colors.length,
-            (index) => GestureDetector(
-              onTap: () {
-                Haptics.selectionClick();
-                setState(() {
-                  selectedColor = colors[index].$1;
-                });
-                setPopupState(() {});
-              },
-              child: Column(
-                children: [
-                  // Selected Highlighting
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      color: selectedColor == colors[index].$1
-                          ? context.talleeColors.textColor.withAlpha(20)
-                          : Colors.transparent,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: Row(
-                        spacing: 8,
-                        children: selectedColor == null
-                            ? [Text(loc.none)]
-                            : [
-                                Container(
-                                  width: 16,
-                                  height: 16,
-                                  margin: const EdgeInsets.only(left: 12),
-                                  decoration: BoxDecoration(
-                                    color: colors[index].$1.colorValue(context),
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                Text(
-                                  colors[index].$2,
-                                  style: TextStyle(
-                                    color: context.talleeColors.textColor,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ],
-                      ),
-                    ),
-                  ),
-                  if (index < colors.length - 1)
-                    const Divider(indent: 15, endIndent: 15),
-                ],
-              ),
-            ),
-          ),
-        ),
+  /// Shows a bottom sheet to choose a color
+  void showColorSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext context) => SelectionSheet<AppColor>(
+        title: loc.color,
+        description: loc.choose_color_description,
+        values: AppColor.values,
+        selectedValue: selectedColor,
+        leadingBuilder: (AppColor clr) => ColoredCircle(color: clr),
+        labelBuilder: (BuildContext ctx, AppColor clr) =>
+            clr.toLocalizedString(ctx),
+        onValueUpdated: (AppColor? clr) => setState(() => selectedColor = clr),
       ),
-    ),
-    child: Row(
-      spacing: 8,
-      children: [
-        // Selected Color
-        Container(
-          width: 16,
-          height: 16,
-          decoration: BoxDecoration(
-            color: selectedColor!.colorValue(context),
-            shape: BoxShape.circle,
+    );
+  }
+
+  /// Shows a delete popup with information about how many matches containing
+  /// this game will also be deleted.
+  Future<void> showDeletePopup(BuildContext context) async {
+    if (!context.mounted) return;
+    final loc = AppLocalizations.of(context);
+
+    // Build the dialog content based on match count
+    final String dialogContent = widget.gameCount > 0
+        ? loc.delete_game_with_matches_warning(widget.gameCount)
+        : loc.this_cannot_be_undone;
+
+    await showDialog<bool>(
+      context: context,
+      builder: (BuildContext ctx) => CustomAlertDialog(
+        title: loc.delete_game,
+        content: Text(
+          dialogContent,
+          overflow: TextOverflow.visible,
+          style: const TextStyle(fontSize: 15),
+        ),
+        actions: [
+          CustomDialogAction(
+            isDestructive: true,
+            onPressed: () => Navigator.of(ctx).pop(true),
+            text: loc.delete,
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 5),
-          child: Text(selectedColor!.toLocalizedString(context)),
-        ),
-        Transform.rotate(
-          angle: pi / 2,
-          child: const Icon(Icons.arrow_forward_ios, size: 16),
-        ),
-      ],
-    ),
-  );
+          CustomDialogAction(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+          ),
+        ],
+      ),
+    ).then((confirmed) async {
+      if (confirmed == true && context.mounted) {
+        // Delete associated matches
+        if (widget.gameCount > 0) {
+          await db.matchDao.deleteMatchesByGame(gameId: widget.gameToEdit!.id);
+        }
+
+        // Delete the targetted game
+        bool success = await db.gameDao.deleteGame(
+          gameId: widget.gameToEdit!.id,
+        );
+
+        if (!context.mounted) return;
+        if (success) {
+          widget.onGameChanged.call();
+          Navigator.of(context).pop((game: widget.gameToEdit, delete: true));
+        } else {
+          context.showSnackBar(message: loc.error_deleting_game);
+        }
+      }
+    });
+  }
 }

@@ -17,6 +17,7 @@ class StatisticsTile extends StatefulWidget {
   /// - [width]: Optional width of the tile.
   /// - [showAllValues]: Whether to show all values or limit to [displayCount].
   /// - [showDisplayCountHighlighting]: Whether to highlight entries that exceed the display count.
+  /// - [emptyAssets]: Optional assets for the empty state.
   const StatisticsTile({
     super.key,
     required this.statistic,
@@ -27,6 +28,7 @@ class StatisticsTile extends StatefulWidget {
     this.showAllValues = false,
     this.showDisplayCountHighlighting = false,
     this.onStatisticChanged,
+    this.emptyAssets,
   });
 
   final Statistic statistic;
@@ -37,6 +39,7 @@ class StatisticsTile extends StatefulWidget {
   final bool showAllValues;
   final bool showDisplayCountHighlighting;
   final ValueChanged<String>? onStatisticChanged;
+  final ({IconData icon, String title, String description})? emptyAssets;
 
   @override
   State<StatisticsTile> createState() => _StatisticsTileState();
@@ -75,10 +78,9 @@ class _StatisticsTileState extends State<StatisticsTile> {
     final title = widget.statistic.type.toLocalizedString(context);
 
     return InfoTile(
-      leadingWidget: Icon(icon),
+      leadingWidget: Icon(widget.emptyAssets?.icon ?? icon),
       title: title,
       trailingWidget: Visibility(
-        // Only show in statistic view
         visible: !widget.showAllValues,
         child: HapticIconButton(
           padding: EdgeInsets.zero,

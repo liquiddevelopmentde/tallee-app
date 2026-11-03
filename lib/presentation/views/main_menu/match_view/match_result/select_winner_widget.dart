@@ -85,7 +85,6 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
     return Expanded(
       child: CustomShowcaseWidget(
         showcaseKey: selectWinnerWidgetListviewKey,
-        identifier: selectWinnerWidgetListviewIdentifier,
         description: loc.showcase_select_winner,
         tooltipPosition: TooltipPosition.top,
         child: useTeamLogic

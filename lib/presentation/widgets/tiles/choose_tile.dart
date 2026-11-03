@@ -5,22 +5,20 @@ import 'package:tallee/core/haptics.dart';
 class ChooseTile extends StatefulWidget {
   /// A tile widget that allows users to choose an option by tapping on it.
   /// - [title]: The title text displayed on the tile.
+  /// - [icon]: Optional icon next to the title text.
   /// - [trailing]: Optional trailing text displayed on the tile.
   /// - [onPressed]: The callback invoked when the tile is tapped.
   const ChooseTile({
     super.key,
     required this.title,
+    this.icon,
     this.trailing,
     this.onPressed,
   });
 
-  /// The title text displayed on the tile.
   final String title;
-
-  /// The callback invoked when the tile is tapped.
+  final IconData? icon;
   final VoidCallback? onPressed;
-
-  /// Optional trailing text displayed on the tile.
   final Widget? trailing;
 
   @override
@@ -42,12 +40,21 @@ class _ChooseTileState extends State<ChooseTile> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: context.standardBoxDecoration,
       child: Row(
+        spacing: 5,
         children: [
-          Text(
-            widget.title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          Row(
+            spacing: 10,
+            children: [
+              if (widget.icon != null) Icon(widget.icon),
+              Text(
+                widget.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,

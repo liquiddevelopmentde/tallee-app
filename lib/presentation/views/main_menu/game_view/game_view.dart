@@ -259,7 +259,6 @@ class _GameViewState extends State<GameView> with RouteAware {
             bottom: AppSpacing.floatingButtonBottom(context),
             child: CustomShowcaseWidget(
               showcaseKey: gameViewCreateButtonKey,
-              identifier: gameViewCreateButtonIdentifier,
               description: loc.showcase_game_view_create,
               tooltipPosition: TooltipPosition.top,
               disableBarrierInteraction: true,

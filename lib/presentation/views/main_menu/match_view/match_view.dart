@@ -354,7 +354,6 @@ class _MatchViewState extends State<MatchView> {
             bottom: AppSpacing.floatingButtonBottom(context),
             child: CustomShowcaseWidget(
               showcaseKey: matchViewCreateButtonKey,
-              identifier: matchViewCreateButtonIdentifier,
               description: loc.showcase_match_view_create,
               disableBarrierInteraction: true,
               disposeOnTap: true,

@@ -139,6 +139,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                   groups: groups,
                                                   initialGroups: filteredGroups,
                                                   enableMultiSelection: true,
+                                                  description: loc
+                                                      .group_filter_description,
                                                 ),
                                           ),
                                         );
@@ -175,6 +177,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                   initialSelectedGames:
                                                       filteredGames,
                                                   enableMultiSelection: true,
+                                                  description: loc
+                                                      .game_filter_description,
                                                 ),
                                           ),
                                         );
@@ -207,10 +211,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                 ChooseEnumView<StatisticType>(
                                                   enumValue:
                                                       StatisticType.values,
-
                                                   initialEnums:
                                                       filteredStatisticTypes,
                                                   enableMultiSelection: true,
+                                                  description: loc
+                                                      .type_filter_description,
                                                 ),
                                           ),
                                         );
@@ -237,23 +242,22 @@ class _StatisticsViewState extends State<StatisticsView> {
                                   count: filteredTimeframes.length,
                                   activated: filteredTimeframes.isNotEmpty,
                                   onTap: () async {
-                                    final result = await Navigator.of(context)
-                                        .push(
-                                          adaptivePageRoute(
-                                            settings: const RouteSettings(
-                                              name: RouteNames.chooseEnumView,
+                                    final result = await Navigator.of(context).push(
+                                      adaptivePageRoute(
+                                        settings: const RouteSettings(
+                                          name: RouteNames.chooseEnumView,
+                                        ),
+                                        fullscreenDialog: true,
+                                        builder: (context) =>
+                                            ChooseEnumView<Timeframe>(
+                                              enumValue: Timeframe.values,
+                                              initialEnums: filteredTimeframes,
+                                              enableMultiSelection: true,
+                                              description: loc
+                                                  .timeframe_filter_description,
                                             ),
-                                            fullscreenDialog: true,
-                                            builder: (context) =>
-                                                ChooseEnumView<Timeframe>(
-                                                  enumValue: Timeframe.values,
-
-                                                  initialEnums:
-                                                      filteredTimeframes,
-                                                  enableMultiSelection: true,
-                                                ),
-                                          ),
-                                        );
+                                      ),
+                                    );
                                     setState(() {
                                       filteredTimeframes = List<Timeframe>.from(
                                         result ?? const <Timeframe>[],
@@ -344,8 +348,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                               )
                               .toList();
                         });
-                        final db = context.read<AppDatabase>();
-                        db.statisticDao.updatePosition(statistics: statistics);
+                        updatePositions();
                       },
                       onReorderStart: (_) => Haptics.heavyImpact(),
                       onReorderEnd: (_) => Haptics.selectionClick(),
@@ -369,7 +372,7 @@ class _StatisticsViewState extends State<StatisticsView> {
           Positioned(
             bottom: AppSpacing.floatingButtonBottom(context),
             child: FloatingAnimatedButton(
-              text: loc.create_statistic(1),
+              text: loc.create_statistic,
               icon: Icons.add,
               onPressed: () async {
                 if (!mounted) return;
@@ -495,8 +498,8 @@ class _StatisticsViewState extends State<StatisticsView> {
     return GestureDetector(
       key: ValueKey(statistic.id),
       onTap: () async {
-        if (!mounted) return;
-        final navigator = Navigator.of(this.context);
+        if (!context.mounted) return;
+        final navigator = Navigator.of(context);
         await navigator.push(
           adaptivePageRoute(
             settings: const RouteSettings(name: RouteNames.statisticDetailView),
@@ -530,14 +533,20 @@ class _StatisticsViewState extends State<StatisticsView> {
   }
 
   /// Adds the new statistic, updates the positions of all statistics and updates the tiles.
-  void onStatisticsCreated(List<Statistic> newStats) {
-    statistics = [...newStats, ...statistics];
+  void onStatisticsCreated(Statistic newStat) {
+    // Put at the front of the statistics list
+    statistics = [newStat, ...statistics];
+    updatePositions();
+    createStatisticTiles();
+  }
+
+  /// Updates the position attribute of the statistics after the list changed
+  void updatePositions() {
     statistics = statistics
         .map((stat) => stat.copyWith(position: statistics.indexOf(stat)))
         .toList();
     final db = context.read<AppDatabase>();
     db.statisticDao.updatePosition(statistics: statistics);
-    createStatisticTiles();
   }
 
   /// Refreshes a statistic by the [statisticId], either updating it or removing it if

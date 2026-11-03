@@ -264,7 +264,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
             children: <Widget>[
               CustomShowcaseWidget(
                 showcaseKey: navbarMatchViewKey,
-                identifier: navbarMatchViewIdentifier,
                 description: loc.showcase_nav_match,
                 disableBarrierInteraction: true,
                 disposeOnTap: true,
@@ -290,7 +289,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               ),
               CustomShowcaseWidget(
                 showcaseKey: navbarGameViewKey,
-                identifier: navbarGameViewIdentifier,
                 description: loc.showcase_nav_game,
                 disableBarrierInteraction: true,
                 disposeOnTap: true,

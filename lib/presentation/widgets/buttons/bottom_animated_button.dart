@@ -38,44 +38,9 @@ class BottomAnimatedButton extends StatefulWidget {
 }
 
 class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
-  bool _isPressed = false;
+  bool isPressed = false;
 
-  TextStyle get textStyle {
-    late Color textColor;
-
-    if (widget.onPressed == null) {
-      return TextStyle(
-        color: context.talleeColors.hintColor,
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-      );
-    }
-
-    switch (widget.buttonType) {
-      case ButtonType.primary:
-        textColor = widget.isDestructive || widget.isEmphasized
-            ? Colors.white
-            : context.isDarkMode
-            ? Colors.black
-            : Colors.white;
-        break;
-      default:
-        if (widget.isDestructive) {
-          textColor = context.talleeColors.errorColor;
-        } else if (widget.isEmphasized) {
-          textColor = AppColors.primaryColor;
-        } else {
-          textColor = context.talleeColors.textColor;
-        }
-        break;
-    }
-
-    return TextStyle(
-      color: textColor,
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-    );
-  }
+  bool get isDisabled => widget.onPressed == null;
 
   BoxDecoration get buttonDecoration {
     if (widget.buttonType == ButtonType.primary) {
@@ -112,54 +77,84 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
     return const BoxDecoration();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final isDisabled = widget.onPressed == null;
+  TextStyle get textStyle {
+    late Color textColor;
 
-    return IgnorePointer(
-      ignoring: isDisabled,
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _isPressed = true),
-        onTapUp: (_) => setState(() => _isPressed = false),
-        onTapCancel: () => setState(() => _isPressed = false),
-        onTap: () {
-          Haptics.selectionClick();
-          if (widget.onPressed != null) {
-            widget.onPressed!();
-          }
-        },
-        child: AnimatedScale(
-          scale: _isPressed ? 0.95 : 1.0,
+    if (widget.onPressed == null) {
+      return TextStyle(
+        color: context.talleeColors.hintColor,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      );
+    }
+
+    switch (widget.buttonType) {
+      case ButtonType.primary:
+        textColor = widget.isDestructive || widget.isEmphasized
+            ? Colors.white
+            : Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.white;
+        break;
+      default:
+        if (widget.isDestructive) {
+          textColor = context.talleeColors.errorColor;
+        } else if (widget.isEmphasized) {
+          textColor = AppColors.primaryColor;
+        } else {
+          textColor = context.talleeColors.textColor;
+        }
+        break;
+    }
+
+    return TextStyle(
+      color: textColor,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => IgnorePointer(
+    ignoring: isDisabled,
+    child: GestureDetector(
+      onTapDown: (_) => setState(() => isPressed = true),
+      onTapUp: (_) => setState(() => isPressed = false),
+      onTapCancel: () => setState(() => isPressed = false),
+      onTap: () {
+        Haptics.selectionClick();
+        if (!isDisabled) {
+          widget.onPressed!();
+        }
+      },
+      child: AnimatedScale(
+        scale: isPressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        child: AnimatedOpacity(
+          opacity: isPressed ? 0.6 : 1.0,
           duration: const Duration(milliseconds: 100),
-          child: AnimatedOpacity(
-            opacity: _isPressed ? 0.6 : 1.0,
-            duration: const Duration(milliseconds: 100),
-            child: Center(
-              child: Container(
-                constraints:
-                    widget.buttonConstraints ??
-                    BoxConstraints(
-                      minWidth:
-                          MediaQuery.sizeOf(context).width *
-                          widget.sizeRelativeToWidth,
-                      minHeight: 50,
-                    ),
-                decoration: buttonDecoration,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                margin: const EdgeInsets.symmetric(vertical: 4),
-                child: Text(
-                  widget.buttonText,
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
+          child: Center(
+            child: Container(
+              constraints:
+                  widget.buttonConstraints ??
+                  BoxConstraints(
+                    minWidth:
+                        MediaQuery.sizeOf(context).width *
+                        widget.sizeRelativeToWidth,
+                    minHeight: 50,
+                  ),
+              decoration: buttonDecoration,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              child: Text(
+                widget.buttonText,
+                style: textStyle,
+                textAlign: TextAlign.center,
               ),
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

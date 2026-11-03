@@ -8,7 +8,6 @@ import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
@@ -17,22 +16,23 @@ class ChooseGameView extends StatefulWidget {
   /// A view that allows the user to choose a game from a list of available games
   /// - [games]: The list of available games
   /// - [initialSelectedGames]: The initially selected games
-  /// - [statistic]: Optional statistic payload for choosing groups for a statistic
-  /// - [selectedTypes]: Optional list of statistic types to determine the correct button text
+  /// - [onGamesUpdated]: Optional callback invoked when the games are updated
+  /// - [enableMultiSelection]: An optional flag to enable multi-selection of games.
+  /// - [description]: An optional description shown at the top
   const ChooseGameView({
     super.key,
     required this.games,
     this.initialSelectedGames,
-    this.statistic,
-    this.selectedTypes,
+    this.onGamesUpdated,
     this.enableMultiSelection = false,
+    this.description,
   });
 
   final List<Game> games;
   final List<Game>? initialSelectedGames;
-  final Statistic? statistic;
-  final List<StatisticType>? selectedTypes;
+  final VoidCallback? onGamesUpdated;
   final bool enableMultiSelection;
+  final String? description;
 
   @override
   State<ChooseGameView> createState() => _ChooseGameViewState();
@@ -57,9 +57,6 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   // If selecting multiple is possible
   late bool enableMultiSelection;
 
-  // How many statistics get created
-  late int statAmount = widget.selectedTypes?.length ?? 0;
-
   Ruleset? get requiredRuleset {
     if (games.isEmpty) return null;
 
@@ -78,8 +75,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
     // Start with all games visible
     filteredGames = List<Game>.from(games);
 
-    enableMultiSelection =
-        widget.enableMultiSelection || widget.statistic != null;
+    enableMultiSelection = widget.enableMultiSelection;
     super.initState();
   }
 
@@ -101,102 +97,111 @@ class _ChooseGameViewState extends State<ChooseGameView> {
           Navigator.of(context).pop(popResult);
         },
         child: Column(
+          spacing: 10,
           children: [
-            // Search Bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: CustomSearchBar(
-                controller: searchBarController,
-                hintText: loc.search_for_games,
-                onChanged: applySearchFilter,
+            // Description
+            if (widget.description != null && games.isNotEmpty)
+              Padding(
+                padding: const EdgeInsetsGeometry.symmetric(horizontal: 32),
+                child: Text(
+                  widget.description!,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
+                  style: TextStyle(color: context.talleeColors.hintColor),
+                ),
+              ),
+
+            // List
+            Expanded(
+              child: Column(
+                children: [
+                  if (games.isNotEmpty)
+                    // Search Bar
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: CustomSearchBar(
+                        controller: searchBarController,
+                        hintText: loc.search_for_games,
+                        onChanged: applySearchFilter,
+                      ),
+                    ),
+
+                  // Game list
+                  if (games.isEmpty)
+                    // No games created
+                    Expanded(
+                      child: EmptyViewMessage(
+                        icon: GAME_ICON,
+                        title: loc.no_games,
+                        message: loc.no_games_created_yet,
+                      ),
+                    )
+                  else if (filteredGames.isEmpty)
+                    // No games matching search query
+                    Expanded(
+                      child: EmptyViewMessage(
+                        icon: GAME_ICON,
+                        title: loc.no_results,
+                        message: loc.there_are_no_games_matching_your_search,
+                      ),
+                    )
+                  else
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 25, top: 10),
+                        itemCount: filteredGames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final game = filteredGames[index];
+                          return GameTile(
+                            game: game,
+                            isHighlighted: selectedGames.any(
+                              (selected) => selected.id == game.id,
+                            ),
+                            onTap: () async {
+                              setState(() {
+                                if (selectedGames.contains(
+                                  filteredGames[index],
+                                )) {
+                                  selectedGames.removeWhere(
+                                    (group) =>
+                                        group.id == filteredGames[index].id,
+                                  );
+                                } else {
+                                  // In single select mode only allow one group
+                                  if (!enableMultiSelection) {
+                                    selectedGames.clear();
+                                  }
+                                  selectedGames.add(filteredGames[index]);
+                                }
+                              });
+
+                              // Navigate back to create match view instantly
+                              if (!enableMultiSelection) {
+                                await Future.delayed(MINIMUM_SKELETON_DURATION)
+                                    .then((_) {
+                                      if (!context.mounted) return;
+                                      Navigator.of(context).pop(
+                                        selectedGames.isEmpty
+                                            ? null
+                                            : selectedGames.first,
+                                      );
+                                    });
+                              }
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                ],
               ),
             ),
-
-            // Game list
-            if (games.isEmpty)
-              // No games created
-              Expanded(
-                child: EmptyViewMessage(
-                  icon: GAME_ICON,
-                  title: loc.no_games,
-                  message: loc.no_games_created_yet,
-                ),
-              )
-            else if (filteredGames.isEmpty)
-              // No games matching search query
-              Expanded(
-                child: EmptyViewMessage(
-                  icon: GAME_ICON,
-                  title: loc.no_results,
-                  message: loc.there_are_no_games_matching_your_search,
-                ),
-              )
-            else
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 85, top: 10),
-                  itemCount: filteredGames.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final game = filteredGames[index];
-                    return GameTile(
-                      game: game,
-                      isHighlighted: selectedGames.any(
-                        (selected) => selected.id == game.id,
-                      ),
-                      onTap: () async {
-                        setState(() {
-                          if (selectedGames.contains(filteredGames[index])) {
-                            selectedGames.removeWhere(
-                              (group) => group.id == filteredGames[index].id,
-                            );
-                          } else {
-                            // In single select mode only allow one group
-                            if (!enableMultiSelection) {
-                              selectedGames.clear();
-                            }
-                            selectedGames.add(filteredGames[index]);
-                          }
-                        });
-
-                        // Navigate back to create match view instantly
-                        if (!enableMultiSelection) {
-                          await Future.delayed(MINIMUM_SKELETON_DURATION)
-                              .then((_) {
-                                if (!context.mounted) return;
-                                Navigator.of(context).pop(
-                                  selectedGames.isEmpty
-                                      ? null
-                                      : selectedGames.first,
-                                );
-                              });
-                        }
-                      },
-                    );
-                  },
-                ),
-              ),
-
-            // Create statistic button
-            if (widget.statistic != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 28),
-                child: BottomAnimatedButton(
-                  buttonConstraints: const BoxConstraints(minWidth: 390),
-                  buttonText: buttonText,
-                  onPressed: selectedGames.isNotEmpty ? submitStatistic : null,
-                ),
-              ),
           ],
         ),
       ),
     );
   }
 
-  String get buttonText =>
-      AppLocalizations.of(context).create_statistic(statAmount);
-
   Object? get popResult {
-    if (widget.statistic != null) return null;
     if (enableMultiSelection) return selectedGames;
     return selectedGames.isEmpty ? null : selectedGames.first;
   }
@@ -245,15 +250,5 @@ class _ChooseGameViewState extends State<ChooseGameView> {
   /// Re-applies the current filter after the underlying games list changed.
   void refreshFromSource() {
     applySearchFilter(searchBarController.text);
-  }
-
-  /// Updated the statistic with the selected games, adds it to the database
-  /// and pops until the first route to update the statistic overview.
-  Future<void> submitStatistic() async {
-    final statistic = widget.statistic!.copyWith(selectedGames: selectedGames);
-    final db = context.read<AppDatabase>();
-    await db.statisticDao.addStatistic(statistic: statistic);
-    if (!mounted) return;
-    Navigator.of(context).pop(statistic);
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -8,19 +6,22 @@ import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/data/statistics/statistic_calculator.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
-import 'package:tallee/presentation/widgets/dropdown/labeled_dropdown.dart';
-import 'package:uuid/uuid.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
+import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
+import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
 
 class CreateStatisticView extends StatefulWidget {
   const CreateStatisticView({super.key, required this.onStatisticCreated});
 
-  final void Function(List<Statistic>) onStatisticCreated;
+  final void Function(Statistic) onStatisticCreated;
 
   @override
   State<CreateStatisticView> createState() => _CreateStatisticViewState();
@@ -29,26 +30,16 @@ class CreateStatisticView extends StatefulWidget {
 class _CreateStatisticViewState extends State<CreateStatisticView> {
   bool isLoading = false;
 
-  /* Controllers for user selections */
-  final ValueNotifier<List<StatisticType>> selectedTypeNotifier =
-      ValueNotifier<List<StatisticType>>([]);
-  final ValueNotifier<List<StatisticScope>> selectedScopeNotifier =
-      ValueNotifier<List<StatisticScope>>([]);
-  final ValueNotifier<Timeframe> selectedTimeframeNotifier =
-      ValueNotifier<Timeframe>(Timeframe.allTime);
-  late final ValueNotifier<AppColor?> selectedColorNotifier =
-      ValueNotifier<AppColor?>(null);
-
   /* Data loaded from the database */
   List<Player> players = [];
   List<Game> games = [];
+  List<Match> matches = [];
   List<Group> groups = [];
 
   /* User selections */
-  List<StatisticType> selectedTypes = [];
-  List<StatisticScope> selectedScopes = [];
+  StatisticType? selectedType;
+  List<StatisticScope> selectedScopes = [StatisticScope.allPlayers];
   List<Game> selectedGames = [];
-  List<Player> selectedPlayers = [];
   List<Group> selectedGroups = [];
   Timeframe selectedTimeframe = Timeframe.allTime;
   DateTime? selectedStartDate;
@@ -57,16 +48,24 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   // null -> random color
   AppColor? selectedColor;
 
-  String get submitButtonText =>
-      selectedScopes.contains(StatisticScope.selectedGroups) ||
-          selectedScopes.contains(StatisticScope.selectedGames)
-      ? AppLocalizations.of(context).continue_
-      : AppLocalizations.of(context).create_statistic(selectedTypes.length);
+  bool get hasGroupScope =>
+      selectedScopes.contains(StatisticScope.selectedGroups);
+
+  bool get hasGameScope =>
+      selectedScopes.contains(StatisticScope.selectedGames);
+
+  bool get hasNoTypeSelected => selectedType == null;
+
+  bool get enableSubmitButton =>
+      selectedType != null &&
+      selectedScopes.isNotEmpty &&
+      (!hasGroupScope || selectedGroups.isNotEmpty) &&
+      (!hasGameScope || selectedGames.isNotEmpty) &&
+      !isLoading;
 
   @override
   void initState() {
     loadAllData();
-
     super.initState();
   }
 
@@ -76,230 +75,405 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
     return ScaffoldMessenger(
       child: Scaffold(
-        appBar: AppBar(title: Text(loc.create_statistic(1))),
-        body: Column(
-          children: [
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: context.talleeColors.boxColor,
-                  border: Border.all(
-                    color: context.talleeColors.boxBorderColor,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(title: Text(loc.create_statistic)),
+        body: SafeArea(
+          minimum: const EdgeInsets.symmetric(horizontal: 12),
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              child: ConstrainedBox(
+                // Fill at least the screen so the button sits at the bottom
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Column(
-                  spacing: 15,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    buildClassifierSection(context, loc),
-                    buildScopeSection(context, loc),
                     Column(
+                      spacing: 10,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        buildTimeframeSection(context, loc),
+                        // Preview of the statistic with sample data
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                          alignment: Alignment.topCenter,
+                          child: buildPreview(loc),
+                        ),
+
+                        // Type selection
+                        ChooseTile(
+                          title: loc.type,
+                          icon: Icons.bar_chart,
+                          trailing: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: selectedType == null
+                                ? Text(
+                                    loc.select_a_type,
+                                    style: TextStyle(
+                                      color: context.talleeColors.hintColor,
+                                    ),
+                                  )
+                                : Text(
+                                    selectedType!.toLocalizedString(context),
+                                  ),
+                          ),
+                          onPressed: () => showTypeSheet(loc),
+                        ),
+
+                        // Scope selection
+                        ChooseTile(
+                          title: loc.scope,
+                          icon: Icons.hdr_strong,
+                          trailing: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: selectedScopes.isEmpty
+                                ? Text(
+                                    loc.select_a_scope,
+                                    style: TextStyle(
+                                      color: context.talleeColors.hintColor,
+                                    ),
+                                  )
+                                : Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    spacing: 5,
+                                    children: [
+                                      Text(
+                                        selectedScopes.first.toLocalizedString(
+                                          context,
+                                        ),
+                                      ),
+                                      if (selectedScopes.length > 1)
+                                        Text(
+                                          '+ ${selectedScopes.length - 1}',
+                                          style: TextStyle(
+                                            color: context
+                                                .talleeColors
+                                                .textColor
+                                                .withAlpha(200),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                          ),
+                          onPressed: () => showScopeSheet(loc),
+                        ),
+
+                        // Group selection
+                        if (hasGroupScope)
+                          ChooseTile(
+                            title: loc.groups,
+                            icon: GROUP_ICON,
+                            trailing: buildSelectionTrailing(
+                              names: selectedGroups.map((g) => g.name).toList(),
+                              hint: loc.select_groups,
+                            ),
+                            onPressed: showGroupSelection,
+                          ),
+
+                        // Game selection
+                        if (hasGameScope)
+                          ChooseTile(
+                            title: loc.games,
+                            icon: GAME_ICON,
+                            trailing: buildSelectionTrailing(
+                              names: selectedGames.map((g) => g.name).toList(),
+                              hint: loc.select_games,
+                            ),
+                            onPressed: showGameSelection,
+                          ),
+
+                        // Timeframe selection
+                        ChooseTile(
+                          title: loc.timeframe,
+                          icon: Icons.date_range,
+                          trailing: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Text(
+                              selectedTimeframe.toLocalizedString(context),
+                            ),
+                          ),
+                          onPressed: () => showTimeframeSheet(loc),
+                        ),
+
+                        // Date range selection
                         if (selectedTimeframe == Timeframe.custom)
                           buildDateRangeField(context),
+
+                        // Color selection
+                        ChooseTile(
+                          title: loc.color,
+                          icon: Icons.palette,
+                          trailing: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Row(
+                              spacing: 10,
+                              children: [
+                                if (selectedColor == null) ...[
+                                  const ColoredCircle(isRandomColor: true),
+                                  Text(loc.random_color),
+                                ] else ...[
+                                  ColoredCircle(color: selectedColor),
+                                  Text(
+                                    selectedColor!.toLocalizedString(context),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          onPressed: () => showColorSheet(loc),
+                        ),
                       ],
                     ),
-                    buildColorSection(context, loc),
+
+                    // Create statistic button
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 12),
+                      child: Center(
+                        child: BottomAnimatedButton(
+                          buttonText: loc.create_statistic,
+                          onPressed: enableSubmitButton
+                              ? submitStatistic
+                              : null,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-              child: BottomAnimatedButton(
-                buttonConstraints: const BoxConstraints(minWidth: 390),
-                buttonText: submitButtonText,
-                onPressed: enableSubmitButton ? submitStatistic : null,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  bool get enableSubmitButton =>
-      (selectedTypes.isNotEmpty && selectedScopes.isNotEmpty) && !isLoading;
+  /// Shows a bottom sheet to choose a color
+  void showTypeSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext ctx) => SelectionSheet<StatisticType>(
+        title: loc.type,
+        description: loc.select_a_type_description,
+        values: StatisticType.values,
+        selectedValue: selectedType,
+        leadingBuilder: (StatisticType type) => Icon(type.icon),
+        labelBuilder: (BuildContext ctx, StatisticType scope) =>
+            scope.toLocalizedString(ctx),
+        onValueUpdated: (StatisticType? type) => setState(() {
+          selectedType = type;
+          // Drop games that don't fit the rulesets of the new types
+          selectedGames = filterGamesForRequiredRuleset(selectedGames);
+        }),
+      ),
+    );
+  }
 
-  Widget buildClassifierSection(BuildContext context, AppLocalizations loc) =>
-      LabeledDropdown<StatisticType>.multi(
-        title: loc.classifier,
-        description: loc.classifier_description,
-        hintText: loc.select_a_classifier,
-        enabled: !isLoading,
-        multiValueListenable: selectedTypeNotifier,
-        options: [
-          for (final type in StatisticType.values)
-            DropdownOption(value: type, label: type.toLocalizedString(context)),
-        ],
-        onItemTap: onClassifierTapped,
-      );
-
-  Widget buildScopeSection(BuildContext context, AppLocalizations loc) =>
-      LabeledDropdown<StatisticScope>.multi(
+  /// Shows a bottom sheet to choose a color
+  void showScopeSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext ctx) => SelectionSheet<StatisticScope>.multiple(
         title: loc.scope,
-        description: loc.scope_description,
-        hintText: loc.select_a_scope,
-        multiValueListenable: selectedScopeNotifier,
-        options: [
-          for (final scope in StatisticScope.values)
-            DropdownOption(
-              value: scope,
-              label: scope.toLocalizedString(context),
-            ),
+        description: loc.select_a_scope_description,
+        values: StatisticScope.values,
+        selectedValues: selectedScopes,
+        leadingBuilder: (StatisticScope scope) => Icon(scope.icon),
+        labelBuilder: (BuildContext ctx, StatisticScope scope) =>
+            scope.toLocalizedString(ctx),
+        onValuesUpdated: (List<StatisticScope> scopes) =>
+            setState(() => selectedScopes = scopes),
+        exclusivePairs: const [
+          (StatisticScope.allPlayers, StatisticScope.selectedGroups),
         ],
-        onItemTap: onScopeTapped,
-      );
+      ),
+    );
+  }
 
-  Widget buildTimeframeSection(BuildContext context, AppLocalizations loc) =>
-      LabeledDropdown<Timeframe>(
+  /// Shows a bottom sheet to choose a color
+  void showTimeframeSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext ctx) => SelectionSheet<Timeframe>(
         title: loc.timeframe,
-        description: loc.select_the_filtered_timeframe,
-        hintText: isLoading ? loc.loading : loc.select_a_timeframe,
-        enabled: !isLoading,
-        valueListenable: selectedTimeframeNotifier,
-        bottomPadding: selectedTimeframe == Timeframe.custom ? 8 : null,
-        options: [
-          for (final timeframe in Timeframe.values)
-            DropdownOption(
-              value: timeframe,
-              label: timeframe.toLocalizedString(context),
-            ),
-        ],
-        onChanged: (timeframe) {
-          if (timeframe == null) return;
-          selectedTimeframeNotifier.value = timeframe;
-          setState(() => selectedTimeframe = timeframe);
-        },
-      );
+        description: loc.select_a_timeframe_description,
+        values: Timeframe.values,
+        selectedValue: selectedTimeframe,
+        labelBuilder: (BuildContext ctx, Timeframe tf) =>
+            tf.toLocalizedString(ctx),
+        onValueUpdated: (Timeframe? tf) =>
+            setState(() => selectedTimeframe = tf!),
+      ),
+    );
+  }
 
-  Widget buildDateRangeField(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: isLoading
-          ? null
-          : () async {
-              final results = await showCustomTimeframePicker(
-                initialStartDate: selectedStartDate,
-                initialEndDate: selectedEndDate,
-              );
-
-              if (results != null &&
-                  results.length >= 2 &&
-                  results[0] != null &&
-                  results[1] != null) {
-                setState(() {
-                  selectedStartDate = results[0];
-                  selectedEndDate = results[1];
-                });
-              }
-            },
-      child: Container(
-        height: 54,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          color: context.talleeColors.onBoxColor,
-          borderRadius: BorderRadius.circular(12),
+  /// Opens the [ChooseGroupView] to select the groups for the statistic
+  Future<void> showGroupSelection() async {
+    final result = await Navigator.of(context).push<List<Group>>(
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGroupView),
+        builder: (BuildContext ctx) => ChooseGroupView(
+          groups: groups,
+          initialGroups: [...selectedGroups],
+          enableMultiSelection: true,
         ),
-        child: Row(
-          children: [
-            Icon(Icons.calendar_month, color: context.talleeColors.textColor),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                formatDateRange(context, selectedStartDate, selectedEndDate),
-                style: TextStyle(
-                  color: selectedStartDate != null && selectedEndDate != null
-                      ? context.talleeColors.textColor
-                      : context.talleeColors.hintColor,
-                  fontSize: 14,
-                ),
-                overflow: TextOverflow.ellipsis,
+      ),
+    );
+    if (result == null || !mounted) return;
+    setState(() => selectedGroups = result);
+  }
+
+  /// Opens the [ChooseGameView] to select the games for the statistic. Only
+  /// games matching the rulesets of the selected types are shown
+  Future<void> showGameSelection() async {
+    final result = await Navigator.of(context).push<List<Game>>(
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGameView),
+        builder: (BuildContext ctx) => ChooseGameView(
+          games: filterGamesForRequiredRuleset(games),
+          initialSelectedGames: [...selectedGames],
+          enableMultiSelection: true,
+        ),
+      ),
+    );
+    if (result == null || !mounted) return;
+    setState(() => selectedGames = result);
+  }
+
+  /// Builds the trailing widget of a [ChooseTile] showing the first of the
+  /// selected [names] and the amount of the remaining ones
+  Widget buildSelectionTrailing({
+    required List<String> names,
+    required String hint,
+  }) => Padding(
+    padding: const EdgeInsets.only(right: 5),
+    child: names.isEmpty
+        ? Text(hint, style: TextStyle(color: context.talleeColors.hintColor))
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 5,
+            children: [
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 150),
+                child: Text(names.first, overflow: TextOverflow.ellipsis),
               ),
+              if (names.length > 1)
+                Text(
+                  '+ ${names.length - 1}',
+                  style: TextStyle(
+                    color: context.talleeColors.textColor.withAlpha(200),
+                  ),
+                ),
+            ],
+          ),
+  );
+
+  void showColorSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext context) => SelectionSheet<AppColor?>(
+        title: loc.color,
+        description: loc.select_a_color_description,
+        values: const [null, ...AppColor.values],
+        selectedValue: selectedColor,
+        leadingBuilder: (AppColor? color) => color == null
+            ? const ColoredCircle(isRandomColor: true)
+            : ColoredCircle(color: color),
+        labelBuilder: (BuildContext context, AppColor? color) =>
+            color == null ? loc.random_color : color.toLocalizedString(context),
+        onValueUpdated: (color) => setState(() => selectedColor = color),
+      ),
+    );
+  }
+
+  /// Builds a preview of the selected [StatisticType] with the real
+  /// match data
+  Widget buildPreview(AppLocalizations loc) {
+    final type = selectedType ?? StatisticType.totalWins;
+    final statistic = buildStat(type);
+    final values = StatisticCalculator.computeStatisticValues(
+      statistic: statistic,
+      matches: matches,
+      players: players,
+    ).take(statistic.displayCount).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 6,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, top: 10),
+          child: Text(
+            loc.preview,
+            style: TextStyle(
+              color: context.talleeColors.hintColor,
+              fontWeight: FontWeight.bold,
             ),
-          ],
+          ),
         ),
+        StatisticsTile(
+          statistic: statistic,
+          values: hasNoTypeSelected ? [] : values,
+          displayCount: statistic.displayCount,
+          margin: EdgeInsets.zero,
+          width: double.infinity,
+          // Hides the favourite button
+          showAllValues: true,
+          emptyAssets: hasNoTypeSelected
+              ? (
+                  icon: Icons.bar_chart,
+                  title: loc.statistic,
+                  description: loc.your_statistic_will_be_shown_here,
+                )
+              : null,
+        ),
+      ],
+    );
+  }
+
+  Widget buildDateRangeField(BuildContext context) => InkWell(
+    borderRadius: BorderRadius.circular(12),
+    onTap: isLoading
+        ? null
+        : () async {
+            final results = await showCustomTimeframePicker(
+              initialStartDate: selectedStartDate,
+              initialEndDate: selectedEndDate,
+            );
+
+            if (results != null &&
+                results.length >= 2 &&
+                results[0] != null &&
+                results[1] != null) {
+              setState(() {
+                selectedStartDate = results[0];
+                selectedEndDate = results[1];
+              });
+            }
+          },
+    child: Container(
+      height: 54,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: context.standardBoxDecoration,
+      child: Row(
+        children: [
+          Icon(Icons.calendar_month, color: context.talleeColors.textColor),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              formatDateRange(context, selectedStartDate, selectedEndDate),
+              style: TextStyle(
+                color: selectedStartDate != null && selectedEndDate != null
+                    ? context.talleeColors.textColor
+                    : context.talleeColors.hintColor,
+                fontSize: 14,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     ),
   );
-
-  Widget buildColorSection(BuildContext context, AppLocalizations loc) =>
-      LabeledDropdown<AppColor?>(
-        title: loc.color,
-        description: loc.select_a_display_color,
-        hintText: isLoading ? loc.loading : loc.select_a_timeframe,
-        valueListenable: selectedColorNotifier,
-        options: [
-          DropdownOption<AppColor?>(
-            value: null,
-            label: loc.random_color,
-            leading: buildColorCircle(),
-          ),
-          for (final color in AppColor.values)
-            DropdownOption<AppColor?>(
-              value: color,
-              label: color.toLocalizedString(context),
-              leading: Container(
-                width: 16,
-                height: 16,
-                decoration: BoxDecoration(
-                  color: color.colorValue(context),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-        ],
-        onChanged: (color) {
-          selectedColorNotifier.value = color;
-          setState(() => selectedColor = color);
-        },
-      );
-
-  /// Toggles a classifier (statistic type) selection.
-  void onClassifierTapped(StatisticType value) {
-    final current = [...selectedTypeNotifier.value];
-    if (current.contains(value)) {
-      current.remove(value);
-    } else {
-      current.add(value);
-    }
-    selectedTypeNotifier.value = current;
-    setState(() {
-      selectedTypes = current;
-    });
-  }
-
-  /// Toggles a scope selection, keeping `selectedGroups` and `allPlayers`
-  /// mutually exclusive.
-  void onScopeTapped(StatisticScope value) {
-    final current = [...selectedScopeNotifier.value];
-    if (current.contains(value)) {
-      current.remove(value);
-    } else {
-      current.add(value);
-    }
-
-    // Keep selectedGroups and allPlayers mutually exclusive.
-    if (current.contains(StatisticScope.selectedGroups) &&
-        current.contains(StatisticScope.allPlayers)) {
-      if (value == StatisticScope.selectedGroups) {
-        current.remove(StatisticScope.allPlayers);
-      } else if (value == StatisticScope.allPlayers) {
-        current.remove(StatisticScope.selectedGroups);
-      }
-    }
-
-    selectedScopeNotifier.value = current;
-    setState(() {
-      selectedScopes = current;
-    });
-  }
 
   Future<void> loadAllData() async {
     setState(() {
@@ -311,6 +485,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           db.playerDao.getAllPlayers(),
           db.groupDao.getAllGroups(),
           db.gameDao.getAllGames(),
+          db.matchDao.getAllMatches(),
           Future.delayed(MINIMUM_SKELETON_DURATION),
         ])
         .then((results) async {
@@ -319,6 +494,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
             players = results[0];
             groups = results[1];
             games = results[2];
+            matches = results[3];
             isLoading = false;
           });
         })
@@ -331,81 +507,21 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         });
   }
 
-  /// Creates the statistic based on the user selections. Navigates to the
-  /// ChooseViews if their type has been selected
+  /// Creates one statistic per selected [StatisticType] and saves them
   Future<void> submitStatistic() async {
     final db = context.read<AppDatabase>();
-
-    final result = await resolveBaseStatistic();
-    if (result == null) return; // User cancelled the picker.
-    final baseStat = result.statistic;
-    final isStatSaved = result.isSaved;
-
-    // Create additional statistic based on the base stat
-    final additionalStats = [
-      for (final type in selectedTypes.skip(1))
-        baseStat.copyWith(id: const Uuid().v4(), type: type),
-    ];
-
-    final statsToSave = [
-      // When only "All Players" has been selected, stat wont get saved to db
-      if (!isStatSaved) baseStat,
-      ...additionalStats,
-    ];
-    if (statsToSave.isNotEmpty) {
-      await db.statisticDao.addStatisticsAsList(statistics: statsToSave);
-    }
+    final stat = buildStat(selectedType!);
+    await db.statisticDao.addStatistic(statistic: stat);
 
     if (!mounted) return;
-    widget.onStatisticCreated([baseStat, ...additionalStats]);
+    widget.onStatisticCreated(stat);
     Navigator.of(context).pop();
-  }
-
-  /// Handles the navigation when multiple [StatisticType]s have been selected.
-  /// Returns the base statistic + a flag indicating if it has been saved to the db
-  Future<({Statistic statistic, bool isSaved})?> resolveBaseStatistic() async {
-    final firstType = selectedTypes.first;
-
-    // "Selected Groups" choosen
-    if (selectedScopes.contains(StatisticScope.selectedGroups)) {
-      final stat = await Navigator.of(context).push<Statistic>(
-        adaptivePageRoute(
-          settings: const RouteSettings(name: RouteNames.chooseGroupView),
-          builder: (context) => ChooseGroupView(
-            groups: groups,
-            statistic: buildStat(firstType),
-            selectedTypes: selectedTypes,
-          ),
-        ),
-      );
-      return stat == null ? null : (statistic: stat, isSaved: true);
-    }
-
-    // "Selected Games" choosen
-    if (selectedScopes.contains(StatisticScope.selectedGames)) {
-      final filteredGames = filterGamesForRequiredRuleset(games);
-      final stat = await Navigator.of(context).push<Statistic>(
-        adaptivePageRoute(
-          settings: const RouteSettings(name: RouteNames.chooseGameView),
-          builder: (context) => ChooseGameView(
-            games: filteredGames,
-            statistic: buildStat(firstType),
-            selectedTypes: selectedTypes,
-          ),
-        ),
-      );
-      return stat == null ? null : (statistic: stat, isSaved: true);
-    }
-
-    // "All players" choosen
-    return (statistic: buildStat(firstType), isSaved: false);
   }
 
   /// Filters the [games] based on the rulesets required by the selected [StatisticType]s
   List<Game> filterGamesForRequiredRuleset(List<Game> games) {
-    final Set<Ruleset> requiredRulesets = {
-      for (final t in selectedTypes) ...t.fittingRulesets(),
-    };
+    if (selectedType == null) return games;
+    final requiredRulesets = selectedType!.fittingRulesets;
     return games.where((g) => requiredRulesets.contains(g.ruleset)).toList();
   }
 
@@ -416,6 +532,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     startDate: selectedStartDate,
     endDate: selectedEndDate,
     color: selectedColor ?? AppColor.randomColor(),
+    selectedGroups: hasGroupScope ? selectedGroups : null,
+    selectedGames: hasGameScope ? selectedGames : null,
   );
 
   String formatDateRange(
@@ -537,45 +655,4 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
       ),
     ),
   );
-
-  Widget buildColorCircle() {
-    final segmentColors = [
-      AppColor.red,
-      AppColor.purple,
-      AppColor.blue,
-      AppColor.green,
-      AppColor.yellow,
-      AppColor.orange,
-    ].map((c) => c.colorValue(context)).toList();
-
-    // Repeat first color at the end so the seam does not swallow red.
-    final colors = [...segmentColors, segmentColors.first];
-    final stops = List<double>.generate(
-      colors.length,
-      (i) => i / (colors.length - 1),
-    );
-
-    return Container(
-      width: 16,
-      height: 16,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: SweepGradient(
-          startAngle: -math.pi / 2,
-          endAngle: 3 * math.pi / 2,
-          colors: colors,
-          stops: stops,
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    selectedTypeNotifier.dispose();
-    selectedScopeNotifier.dispose();
-    selectedTimeframeNotifier.dispose();
-    selectedColorNotifier.dispose();
-    super.dispose();
-  }
 }

@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/constants/icon_constants.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
@@ -49,7 +50,7 @@ extension StatisticTypeExtension on StatisticType {
   }
 
   /// Returns the rulesets which make sense for a given [StatisticType]
-  List<Ruleset> fittingRulesets() {
+  List<Ruleset> get fittingRulesets {
     final scoreBaseRulesets = [Ruleset.lowestScore, Ruleset.highestScore];
     const allRulesets = Ruleset.values;
 
@@ -80,6 +81,17 @@ extension StatisticScopeExtension on StatisticScope {
         return loc.selected_groups;
       case StatisticScope.selectedGames:
         return loc.selected_games;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case StatisticScope.allPlayers:
+        return PLAYER_ICON;
+      case StatisticScope.selectedGroups:
+        return GROUP_ICON;
+      case StatisticScope.selectedGames:
+        return GAME_ICON;
     }
   }
 }
