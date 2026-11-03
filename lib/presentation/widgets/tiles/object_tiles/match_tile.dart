@@ -11,7 +11,6 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
-import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
@@ -82,37 +81,42 @@ class _MatchTileState extends State<MatchTile> {
               ],
             ),
 
-            // Group Info
-            if (group != null) ...[
-              Row(
-                children: [
-                  const Icon(GROUP_ICON, size: 16, color: Colors.grey),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      '${match.group!.name}${getExtraPlayerCount(match)}',
+            // Game Info
+            Row(
+              spacing: 20,
+              children: [
+                Row(
+                  spacing: 4,
+                  children: [
+                    const Icon(GAME_ICON, size: 16, color: Colors.grey),
+                    Text(
+                      match.game.name,
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
+                  ],
+                ),
+
+                // Group Info
+                if (group != null) ...[
+                  Row(
+                    spacing: 6,
+                    children: [
+                      const Icon(GROUP_ICON, size: 18, color: Colors.grey),
+                      Text(
+                        '${match.group!.name}${getExtraPlayerCount(match)}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ],
-              ),
-              const SizedBox(height: 4),
-            ] else ...[
-              const SizedBox(height: 8),
-            ],
-
-            // Game + Ruleset Badge
-            GameLabel(
-              title: match.game.name,
-              description: translateRulesetToString(
-                match.game.ruleset,
-                context,
-              ),
-              color: match.game.color,
+              ],
             ),
-
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
             buildMatchResultBanner(loc),
 
