@@ -10,7 +10,6 @@ import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
-import 'package:tallee/presentation/widgets/game_label.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
@@ -78,20 +77,38 @@ class MatchProfileBody extends StatelessWidget {
         ),
         const SizedBox(height: 10),
 
-        // Group Name
-        if (match.group != null) ...[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(GROUP_ICON),
-              const SizedBox(width: 8),
-              Text(
-                '${match.group!.name}${getExtraPlayerCount(match)}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+        // Game and Group Info
+        Column(
+          spacing: 2,
+          children: [
+            Row(
+              spacing: 8,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(GAME_ICON, size: 22),
+                Text(
+                  match.game.name,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+
+            // Group Name
+            if (match.group != null) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 8,
+                children: [
+                  const Icon(GROUP_ICON),
+                  Text(
+                    '${match.group!.name}${getExtraPlayerCount(match)}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
+          ],
+        ),
 
         const SizedBox(height: 15),
 
@@ -171,25 +188,6 @@ class MatchProfileBody extends StatelessWidget {
           ),
         ],
 
-        const SizedBox(height: 15),
-
-        // Game
-        InfoTile(
-          title: loc.game,
-          leadingWidget: const Icon(GAME_ICON),
-          horizontalAlignment: CrossAxisAlignment.start,
-          content: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            child: GameLabel(
-              title: match.game.name,
-              description: translateRulesetToString(
-                match.game.ruleset,
-                context,
-              ),
-              color: match.game.color,
-            ),
-          ),
-        ),
         const SizedBox(height: 15),
 
         // Results
