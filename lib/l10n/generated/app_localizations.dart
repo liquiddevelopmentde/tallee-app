@@ -782,12 +782,6 @@ abstract class AppLocalizations {
   /// **'Game successfully associated'**
   String get game_associated;
 
-  /// No description provided for @game_deleted.
-  ///
-  /// In en, this message translates to:
-  /// **'Game deleted'**
-  String get game_deleted;
-
   /// No description provided for @game_filter_description.
   ///
   /// In en, this message translates to:

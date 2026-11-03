@@ -393,9 +393,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get game_associated => 'Spielvorlage erfolgreich verknüpft';
 
   @override
-  String get game_deleted => 'Spielvorlage gelöscht';
-
-  @override
   String get game_filter_description =>
       'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.';
 
