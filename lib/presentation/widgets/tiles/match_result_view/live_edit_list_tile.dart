@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
@@ -19,7 +19,7 @@ class LiveEditListTile extends StatefulWidget {
   /// - [focusNode]:
   /// - [textInputAction]:
   /// - [onSubmitted]:
-  const LiveEditListTile({
+  LiveEditListTile({
     super.key,
     required this.title,
     required this.value,
@@ -30,7 +30,10 @@ class LiveEditListTile extends StatefulWidget {
     this.focusNode,
     this.textInputAction,
     this.onSubmitted,
-  });
+  }) : assert(
+         boundaries.min <= boundaries.max,
+         'boundaries.min must be less than or equal to boundaries.max',
+       );
 
   final Widget title;
   final int value;

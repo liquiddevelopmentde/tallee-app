@@ -14,7 +14,10 @@ class CustomDialogAction extends StatelessWidget {
     this.buttonType = ButtonType.primary,
     this.isDestructive = false,
     this.isEmphasized = false,
-  });
+  }) : assert(
+         !(isDestructive && isEmphasized),
+         'isDestructive and isEmphasized can\'t be simultaneously true',
+       );
 
   final String text;
   final ButtonType buttonType;

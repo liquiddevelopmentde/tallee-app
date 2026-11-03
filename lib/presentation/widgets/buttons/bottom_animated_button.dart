@@ -22,7 +22,19 @@ class BottomAnimatedButton extends StatefulWidget {
     this.buttonType = ButtonType.primary,
     this.isDestructive = false,
     this.isEmphasized = false,
-  });
+  }) : assert(
+         !(isDestructive && isEmphasized),
+         'isDestructive and isEmphasized can\'t be simultaneously true',
+       ),
+       assert(
+         sizeRelativeToWidth == null || buttonConstraints == null,
+         'sizeRelativeToWidth and buttonConstraints can\'t be simultaneously set',
+       ),
+       assert(
+         sizeRelativeToWidth == null ||
+             (sizeRelativeToWidth > 0 && sizeRelativeToWidth <= 1),
+         'sizeRelativeToWidth must be 0 < size <= 1',
+       );
 
   final String buttonText;
   final VoidCallback? onPressed;
