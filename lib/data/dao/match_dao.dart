@@ -35,7 +35,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       );
 
       // Add teams
-      if (match.teams != null && match.teams!.isNotEmpty) {
+      if (match.hasTeams) {
         await db.teamDao.addTeamsAsList(teams: match.teams!, matchId: match.id);
       }
 
@@ -240,7 +240,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       // Add teams for matches
       for (final match in matches) {
-        if (match.teams != null && match.teams!.isNotEmpty) {
+        if (match.hasTeams) {
           await db.teamDao.addTeamsAsList(
             teams: match.teams!,
             matchId: match.id,
