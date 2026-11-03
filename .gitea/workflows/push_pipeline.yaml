@@ -281,8 +281,6 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}
           ref: ${{ gitea.ref_name }}
 
-      # Only the `+build` suffix is bumped: it is the Android versionCode. The version
-      # name is set manually on release. `strategy: 'none'` disables the semver bump.
       - name: Bump build number
         id: bump
         uses: stikkyapp/update-pubspec-version@v2
