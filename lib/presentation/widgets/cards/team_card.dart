@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/team.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class TeamCard extends StatelessWidget {
@@ -32,8 +32,6 @@ class TeamCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final teamColor = getColorFromAppColor(team.color, context);
-
     // Show only team name and member count
     if (compact) {
       return Container(
@@ -46,15 +44,8 @@ class TeamCard extends StatelessWidget {
         child: Row(
           spacing: 10,
           children: [
-            // Colored circle
-            Container(
-              width: 14,
-              height: 14,
-              decoration: BoxDecoration(
-                color: teamColor,
-                shape: BoxShape.circle,
-              ),
-            ),
+            // Teamcolor
+            ColoredCircle(color: team.color, size: 14),
 
             // Team name
             Expanded(
@@ -134,15 +125,8 @@ class TeamCard extends StatelessWidget {
                   Row(
                     spacing: 10,
                     children: [
-                      // Colored circle
-                      Container(
-                        width: 14,
-                        height: 14,
-                        decoration: BoxDecoration(
-                          color: teamColor,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+                      // Teamcolor
+                      ColoredCircle(color: team.color, size: 14),
 
                       // Team name
                       buildUnitNameWidget(
