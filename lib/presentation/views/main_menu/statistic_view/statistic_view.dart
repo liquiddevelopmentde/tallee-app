@@ -145,6 +145,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                     initialGroups:
                                                         filteredGroups,
                                                     enableMultiSelection: true,
+                                                    description: loc
+                                                        .group_filter_description,
                                                   ),
                                             ),
                                           );
@@ -180,6 +182,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                     initialSelectedGames:
                                                         filteredGames,
                                                     enableMultiSelection: true,
+                                                    description: loc
+                                                        .game_filter_description,
                                                   ),
                                             ),
                                           );
@@ -214,10 +218,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                                                   ChooseEnumView<StatisticType>(
                                                     enumValue:
                                                         StatisticType.values,
-
                                                     initialEnums:
                                                         filteredStatisticTypes,
                                                     enableMultiSelection: true,
+                                                    description: loc
+                                                        .type_filter_description,
                                                   ),
                                             ),
                                           );
@@ -254,10 +259,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                                               builder: (context) =>
                                                   ChooseEnumView<Timeframe>(
                                                     enumValue: Timeframe.values,
-
                                                     initialEnums:
                                                         filteredTimeframes,
                                                     enableMultiSelection: true,
+                                                    description: loc
+                                                        .timeframe_filter_description,
                                                   ),
                                             ),
                                           );
@@ -353,10 +359,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 )
                                 .toList();
                           });
-                          final db = context.read<AppDatabase>();
-                          db.statisticDao.updatePosition(
-                            statistics: statistics,
-                          );
+                          updatePositions();
                         },
                         onReorderStart: (_) => HapticFeedback.heavyImpact(),
                         onReorderEnd: (_) => HapticFeedback.selectionClick(),
@@ -381,7 +384,7 @@ class _StatisticsViewState extends State<StatisticsView> {
             Positioned(
               bottom: MediaQuery.paddingOf(context).bottom + 20,
               child: FloatingAnimatedButton(
-                text: loc.create_statistic(1),
+                text: loc.create_statistic,
                 icon: Icons.add,
                 onPressed: () async {
                   if (!mounted) return;
@@ -547,14 +550,20 @@ class _StatisticsViewState extends State<StatisticsView> {
   }
 
   /// Adds the new statistic, updates the positions of all statistics and updates the tiles.
-  void onStatisticsCreated(List<Statistic> newStats) {
-    statistics = [...newStats, ...statistics];
+  void onStatisticsCreated(Statistic newStat) {
+    // Put at the front of the statistics list
+    statistics = [newStat, ...statistics];
+    updatePositions();
+    createStatisticTiles();
+  }
+
+  /// Updates the position attribute of the statistics after the list changed
+  void updatePositions() {
     statistics = statistics
         .map((stat) => stat.copyWith(position: statistics.indexOf(stat)))
         .toList();
     final db = context.read<AppDatabase>();
     db.statisticDao.updatePosition(statistics: statistics);
-    createStatisticTiles();
   }
 
   /// Refreshes a statistic by the [statisticId], either updating it or removing it if

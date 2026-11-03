@@ -163,7 +163,6 @@ migrate_working_dir/
 # Flutter/Dart/Pub related
 /build/
 
-
 # Obfuscation related
 app.*.map.json
 
@@ -180,4 +179,3 @@ sentry.properties
 
 # Python
 .venv/
-/AGENTS.md
