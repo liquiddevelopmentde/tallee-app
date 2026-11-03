@@ -36,7 +36,7 @@ void main() async {
   SentryWidgetsFlutterBinding.ensureInitialized();
 
   /* Initializing Services */
-
+  //awdbadßhwa
   // Only init in prod or dev
   if (!IS_TEST_ENV) await RATE_MY_APP.init();
 
