@@ -73,6 +73,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   actions: [
                     CustomDialogAction(
                       onPressed: () => Navigator.of(context).pop(true),
+                      accent: ButtonAccent.destructive,
                       text: loc.delete,
                     ),
                     CustomDialogAction(

@@ -19,7 +19,7 @@ class LiveEditListTile extends StatefulWidget {
   /// - [focusNode]:
   /// - [textInputAction]:
   /// - [onSubmitted]:
-  const LiveEditListTile({
+  LiveEditListTile({
     super.key,
     required this.title,
     required this.value,
@@ -30,7 +30,10 @@ class LiveEditListTile extends StatefulWidget {
     this.focusNode,
     this.textInputAction,
     this.onSubmitted,
-  });
+  }) : assert(
+         boundaries.min <= boundaries.max,
+         'boundaries.min must be less than or equal to boundaries.max',
+       );
 
   final Widget title;
   final int value;

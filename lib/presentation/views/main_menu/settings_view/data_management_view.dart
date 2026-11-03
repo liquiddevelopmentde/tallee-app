@@ -164,7 +164,7 @@ class _DataManagementViewState extends State<DataManagementView> {
             CustomDialogAction(
               text: loc.dont_update,
               buttonType: ButtonType.secondary,
-              isDestructive: true,
+              accent: ButtonAccent.destructive,
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -244,7 +244,7 @@ class _DataManagementViewState extends State<DataManagementView> {
         actions: [
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(true),
-            isDestructive: true,
+            accent: ButtonAccent.destructive,
             text: loc.delete,
           ),
           CustomDialogAction(

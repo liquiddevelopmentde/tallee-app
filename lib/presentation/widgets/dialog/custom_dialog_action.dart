@@ -7,20 +7,19 @@ class CustomDialogAction extends StatelessWidget {
   /// - [text]: The text to be displayed on the button.
   /// - [buttonType]: The type of the button, which determines its styling.
   /// - [onPressed]: Callback function that is triggered when the button is pressed.
+  /// - [accent]: The accent color of the button, e.g. for destructive or emphasized actions.
   const CustomDialogAction({
     super.key,
     this.onPressed,
     required this.text,
     this.buttonType = ButtonType.primary,
-    this.isDestructive = false,
-    this.isEmphasized = false,
+    this.accent = ButtonAccent.neutral,
   });
 
   final String text;
   final ButtonType buttonType;
   final VoidCallback? onPressed;
-  final bool isDestructive;
-  final bool isEmphasized;
+  final ButtonAccent accent;
 
   @override
   Widget build(BuildContext context) => BottomAnimatedButton(
@@ -31,8 +30,7 @@ class CustomDialogAction extends StatelessWidget {
         : null,
     buttonText: text,
     buttonType: buttonType,
-    isDestructive: isDestructive,
-    isEmphasized: isEmphasized,
+    accent: accent,
     buttonConstraints: const BoxConstraints(minWidth: 300),
   );
 }

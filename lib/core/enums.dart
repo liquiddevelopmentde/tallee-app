@@ -30,6 +30,12 @@ enum AppEnvironment {
 /// - [ButtonType.tertiary]: Tertiary button style.
 enum ButtonType { primary, secondary, tertiary }
 
+/// Accent colors for the [BottomAnimatedButton]
+/// - [ButtonAccent.neutral]: Default black / white styling.
+/// - [ButtonAccent.emphasized]: Styled with the primary color.
+/// - [ButtonAccent.destructive]: Styled with the error color.
+enum ButtonAccent { neutral, emphasized, destructive }
+
 /// Filtering options for matches in the [MatchView]
 /// - [MatchFilter.all]: Show all matches
 /// - [MatchFilter.active]: Show all unfinished matches

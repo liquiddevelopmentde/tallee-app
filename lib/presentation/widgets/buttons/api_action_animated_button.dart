@@ -19,10 +19,18 @@ class ApiActionAnimatedButton extends StatefulWidget {
     required this.onPressed,
     this.text,
     this.buttonConstraints,
-    this.sizeRelativeToWidth = AppSpacing.contentWidthFactor,
+    this.sizeRelativeToWidth,
     this.buttonType = ButtonType.primary,
     this.isDestructive = false,
-  });
+  }) : assert(
+         sizeRelativeToWidth == null || buttonConstraints == null,
+         'sizeRelativeToWidth and buttonConstraints can\'t be simultaneously set',
+       ),
+       assert(
+         sizeRelativeToWidth == null ||
+             (sizeRelativeToWidth > 0 && sizeRelativeToWidth <= 1),
+         'sizeRelativeToWidth must be 0 < size <= 1',
+       );
 
   /// Expects a Future to handle the API request duration. If null, the button is disabled.
   final Future<void> Function()? onPressed;
@@ -31,7 +39,7 @@ class ApiActionAnimatedButton extends StatefulWidget {
 
   final BoxConstraints? buttonConstraints;
 
-  final double sizeRelativeToWidth;
+  final double? sizeRelativeToWidth;
 
   final ButtonType buttonType;
 
@@ -125,7 +133,8 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
                     BoxConstraints(
                       minWidth:
                           MediaQuery.sizeOf(context).width *
-                          widget.sizeRelativeToWidth,
+                          (widget.sizeRelativeToWidth ??
+                              AppSpacing.contentWidthFactor),
                       minHeight: 50,
                     ),
                 decoration: _getButtonDecoration(),

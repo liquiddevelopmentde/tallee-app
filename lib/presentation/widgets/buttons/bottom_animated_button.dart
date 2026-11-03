@@ -13,25 +13,31 @@ class BottomAnimatedButton extends StatefulWidget {
   /// - [buttonConstraints]: Optional constraints to control the button's size, takes precedence over [sizeRelativeToWidth].
   /// - [sizeRelativeToWidth]: Minimum width of the button relative to the screen width. Defaults to [AppSpacing.contentWidthFactor].
   /// - [buttonType]: The type of the button, which determines its styling.
-  /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
+  /// - [accent]: The accent color of the button, e.g. for destructive or emphasized actions.
   const BottomAnimatedButton({
     super.key,
     required this.buttonText,
     this.onPressed,
     this.buttonConstraints,
-    this.sizeRelativeToWidth = AppSpacing.contentWidthFactor,
+    this.sizeRelativeToWidth,
     this.buttonType = ButtonType.primary,
-    this.isDestructive = false,
-    this.isEmphasized = false,
-  });
+    this.accent = ButtonAccent.neutral,
+  }) : assert(
+         sizeRelativeToWidth == null || buttonConstraints == null,
+         'sizeRelativeToWidth and buttonConstraints can\'t be simultaneously set',
+       ),
+       assert(
+         sizeRelativeToWidth == null ||
+             (sizeRelativeToWidth > 0 && sizeRelativeToWidth <= 1),
+         'sizeRelativeToWidth must be 0 < size <= 1',
+       );
 
   final String buttonText;
   final VoidCallback? onPressed;
   final BoxConstraints? buttonConstraints;
-  final double sizeRelativeToWidth;
+  final double? sizeRelativeToWidth;
   final ButtonType buttonType;
-  final bool isDestructive;
-  final bool isEmphasized;
+  final ButtonAccent accent;
 
   @override
   State<BottomAnimatedButton> createState() => _BottomAnimatedButtonState();
@@ -42,15 +48,19 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
 
   bool get isDisabled => widget.onPressed == null;
 
+  bool get isDestructive => widget.accent == ButtonAccent.destructive;
+
+  bool get isEmphasized => widget.accent == ButtonAccent.emphasized;
+
   BoxDecoration get buttonDecoration {
     if (widget.buttonType == ButtonType.primary) {
       // Primary
       return BoxDecoration(
         color: widget.onPressed == null
             ? context.talleeColors.onBoxColor
-            : widget.isDestructive
+            : isDestructive
             ? context.talleeColors.errorColor
-            : widget.isEmphasized
+            : isEmphasized
             ? AppColors.primaryColor
             : context.isDarkMode
             ? Colors.white
@@ -63,9 +73,9 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
         border: BoxBorder.all(
           color: widget.onPressed == null
               ? context.talleeColors.hintColor
-              : widget.isDestructive
+              : isDestructive
               ? context.talleeColors.errorColor
-              : widget.isEmphasized
+              : isEmphasized
               ? AppColors.primaryColor
               : context.talleeColors.textColor,
           width: 2,
@@ -90,16 +100,16 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
 
     switch (widget.buttonType) {
       case ButtonType.primary:
-        textColor = widget.isDestructive || widget.isEmphasized
+        textColor = isDestructive || isEmphasized
             ? Colors.white
             : Theme.of(context).brightness == Brightness.dark
             ? Colors.black
             : Colors.white;
         break;
       default:
-        if (widget.isDestructive) {
+        if (isDestructive) {
           textColor = context.talleeColors.errorColor;
-        } else if (widget.isEmphasized) {
+        } else if (isEmphasized) {
           textColor = AppColors.primaryColor;
         } else {
           textColor = context.talleeColors.textColor;
@@ -140,7 +150,8 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
                   BoxConstraints(
                     minWidth:
                         MediaQuery.sizeOf(context).width *
-                        widget.sizeRelativeToWidth,
+                        (widget.sizeRelativeToWidth ??
+                            AppSpacing.contentWidthFactor),
                     minHeight: 50,
                   ),
               decoration: buttonDecoration,

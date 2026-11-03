@@ -21,7 +21,11 @@ class ColoredIconContainer extends StatelessWidget {
     this.margin,
     this.padding,
     this.muted = false,
-  });
+  }) : assert(containerSize > 0, 'containerSize must be greater than 0'),
+       assert(
+         iconSize == null || iconSize <= containerSize,
+         'iconSize must be less than or equal to containerSize',
+       );
 
   final IconData icon;
   final Color? color;

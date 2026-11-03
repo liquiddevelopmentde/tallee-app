@@ -393,7 +393,7 @@ class _CreateGameViewState extends State<CreateGameView> {
         ),
         actions: [
           CustomDialogAction(
-            isDestructive: true,
+            accent: ButtonAccent.destructive,
             onPressed: () => Navigator.of(ctx).pop(true),
             text: loc.delete,
           ),

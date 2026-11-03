@@ -17,7 +17,7 @@ class TextChip extends StatefulWidget {
     required this.onTap,
     this.count = 0,
     this.activated = false,
-  });
+  }) : assert(count >= 0, 'count must not be negative');
 
   final String text;
   final VoidCallback onTap;
@@ -29,35 +29,36 @@ class TextChip extends StatefulWidget {
 }
 
 class _TextChipState extends State<TextChip> {
+  String get countText => widget.count > 0 ? ' (${widget.count})' : '';
+
+  String get chipText => widget.text + countText;
+
   @override
-  Widget build(BuildContext context) {
-    final text = widget.text + (widget.count > 0 ? ' (${widget.count})' : '');
-    return Skeleton.unite(
-      child: GestureDetector(
-        onTap: () {
-          Haptics.selectionClick();
-          widget.onTap();
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: AppSpacing.standardMargin,
-          decoration: BoxDecoration(
-            color: context.talleeColors.backgroundColor,
-            border: Border.all(
-              color: widget.activated
-                  ? context.talleeColors.textColor.withAlpha(150)
-                  : context.talleeColors.textColor.withAlpha(50),
-            ),
-            borderRadius: BorderRadius.circular(6),
+  Widget build(BuildContext context) => Skeleton.unite(
+    child: GestureDetector(
+      onTap: () {
+        Haptics.selectionClick();
+        widget.onTap();
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: AppSpacing.standardMargin,
+        decoration: BoxDecoration(
+          color: context.talleeColors.backgroundColor,
+          border: Border.all(
+            color: widget.activated
+                ? context.talleeColors.textColor.withAlpha(150)
+                : context.talleeColors.textColor.withAlpha(50),
           ),
-          child: Text(
-            text,
-            style: TextStyle(
-              color: context.talleeColors.textColor.withAlpha(255),
-            ),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          chipText,
+          style: TextStyle(
+            color: context.talleeColors.textColor.withAlpha(255),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

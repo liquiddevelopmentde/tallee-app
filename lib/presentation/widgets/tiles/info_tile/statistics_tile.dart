@@ -29,7 +29,7 @@ class StatisticsTile extends StatefulWidget {
     this.showDisplayCountHighlighting = false,
     this.onStatisticChanged,
     this.emptyAssets,
-  });
+  }) : assert(displayCount >= 0, 'displayCount must not be negative');
 
   final Statistic statistic;
   final List<(Player, num)> values;
