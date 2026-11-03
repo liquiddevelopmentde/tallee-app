@@ -9,7 +9,18 @@ class CustomStepper extends StatefulWidget {
     this.onChanged,
     this.maxValue,
     this.minValue,
-  });
+  }) : assert(
+         minValue == null || maxValue == null || minValue <= maxValue,
+         'minValue must be less than or equal to maxValue',
+       ),
+       assert(
+         minValue == null || value >= minValue,
+         'value must be greater than or equal to minValue',
+       ),
+       assert(
+         maxValue == null || value <= maxValue,
+         'value must be less than or equal to maxValue',
+       );
 
   final int value;
   final void Function(int)? onChanged;

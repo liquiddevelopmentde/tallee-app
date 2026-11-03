@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/rendering.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +14,7 @@ import 'package:tallee/data/models/game.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/utils/search_bar_scroll_listener.dart';
 import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
@@ -22,7 +22,7 @@ import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
-import 'package:tallee/state/game_search_provider.dart';
+import 'package:tallee/state/search_provider.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
 class GameView extends StatefulWidget {
@@ -34,7 +34,7 @@ class GameView extends StatefulWidget {
 
 class _GameViewState extends State<GameView> with RouteAware {
   late final AppDatabase db;
-  late final GameSearchProvider searchProvider;
+  late final SearchProvider searchProvider;
 
   final GlobalKey gameViewCreateButtonKey = GlobalKey();
   final String gameViewCreateButtonIdentifier = 'game_view_create_game_button';
@@ -47,7 +47,6 @@ class _GameViewState extends State<GameView> with RouteAware {
   late List<(Game, int)> gameCounts = [];
 
   final TextEditingController searchBarController = TextEditingController();
-  final ScrollController scrollController = ScrollController();
 
   /// Loaded games from the database, initially filled with skeleton games
   List<Game> allGames = List.generate(
@@ -61,13 +60,16 @@ class _GameViewState extends State<GameView> with RouteAware {
   );
 
   late List<Game> displayedGames = [...allGames];
-  bool isSearchBarVisible = true;
+
+  /// Last known search mode, used to detect toggles in [handleSearchToggle]
+  bool wasSearching = false;
 
   @override
   void initState() {
     super.initState();
     db = context.read<AppDatabase>();
-    searchProvider = context.read<GameSearchProvider>();
+    searchProvider = context.read<SearchProvider>();
+    wasSearching = searchProvider.isSearching(GameView);
     searchProvider.addListener(handleSearchToggle);
 
     showcaseProvider = context.read<ShowcaseProvider>();
@@ -86,19 +88,17 @@ class _GameViewState extends State<GameView> with RouteAware {
   void dispose() {
     searchProvider.removeListener(handleSearchToggle);
     searchBarController.dispose();
-    scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final searchProvider = context.read<GameSearchProvider>();
+    final searchProvider = context.read<SearchProvider>();
 
     // Reset filtered matches when search is disabled
-    if (!searchProvider.isSearching) {
+    if (!searchProvider.isSearching(GameView)) {
       displayedGames = [...allGames];
-      isSearchBarVisible = true;
     }
 
     return Scaffold(
@@ -132,7 +132,9 @@ class _GameViewState extends State<GameView> with RouteAware {
                     ),
                   );
                 },
-                child: searchProvider.isSearching && isSearchBarVisible
+                child:
+                    searchProvider.isSearching(GameView) &&
+                        searchProvider.isSearchBarVisible(GameView)
                     ? Padding(
                         key: const ValueKey('match-searchbar-visible'),
                         padding: const EdgeInsets.only(
@@ -185,23 +187,14 @@ class _GameViewState extends State<GameView> with RouteAware {
                                 )
                               // Games list
                               : SizedBox.expand(
-                                  child: NotificationListener<UserScrollNotification>(
-                                    onNotification: (notification) {
-                                      if (notification.direction ==
-                                              ScrollDirection.reverse &&
-                                          isSearchBarVisible) {
-                                        setState(
-                                          () => isSearchBarVisible = false,
-                                        );
-                                      } else if (notification.direction ==
-                                              ScrollDirection.forward &&
-                                          !isSearchBarVisible) {
-                                        setState(
-                                          () => isSearchBarVisible = true,
-                                        );
-                                      }
-                                      return true;
-                                    },
+                                  child: SearchBarScrollListener(
+                                    isSearchBarVisible: searchProvider
+                                        .isSearchBarVisible(GameView),
+                                    onVisibilityChanged: (visible) =>
+                                        searchProvider.setSearchBarVisible(
+                                          view: GameView,
+                                          visible: visible,
+                                        ),
                                     child: ListView.builder(
                                       padding: AppColors.listViewPadding(
                                         context,
@@ -329,15 +322,20 @@ class _GameViewState extends State<GameView> with RouteAware {
   }
 
   void handleSearchToggle() {
-    if (!mounted) {
+    if (!mounted) return;
+
+    // Only the search bar visibility changed (scrolling or tab tap)
+    if (searchProvider.isSearching(GameView) == wasSearching) {
+      setState(() {});
       return;
     }
+    wasSearching = searchProvider.isSearching(GameView);
 
     setState(() {
-      isSearchBarVisible = true;
-      if (!searchProvider.isSearching) {
+      if (!searchProvider.isSearching(GameView)) {
         searchBarController.clear();
       } else {
+        final scrollController = PrimaryScrollController.of(context);
         if (scrollController.hasClients) {
           scrollController.animateTo(
             0,
