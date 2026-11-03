@@ -5,6 +5,7 @@ on:
     branches:
       - "development"
       - "main"
+      - "hotfix/remove-automatic-version-increment"
 
 concurrency:
   group: push-pipeline
@@ -280,17 +281,19 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}
           ref: ${{ gitea.ref_name }}
 
-      - name: Bump and commit build number
+      # Only the `+build` suffix is bumped: it is the Android versionCode. The version
+      # name is set manually on release. `strategy: 'none'` disables the semver bump.
+      - name: Bump build number
+        id: bump
+        uses: stikkyapp/update-pubspec-version@v2
+        with:
+          strategy: 'none'
+          bump-build: true
+          path: './pubspec.yaml'
+
+      - name: Commit build number
         run: |
-          VERSION="$(sed -n 's/^version: *//p' pubspec.yaml | tr -d '\r')"
-          BUILD_NAME="${VERSION%%+*}"
-          BUILD_NUMBER="${VERSION##*+}"
-          [ "$BUILD_NUMBER" = "$VERSION" ] && BUILD_NUMBER=0
-          NEW_VERSION="${BUILD_NAME}+$((BUILD_NUMBER + 1))"
-
-          echo "Bumping $VERSION -> $NEW_VERSION"
-          sed -i "s/^version: .*/version: ${NEW_VERSION}/" pubspec.yaml
-
+          echo "Bumping ${{ steps.bump.outputs.old-version }} -> ${{ steps.bump.outputs.new-version }}"
           git config --global user.name "Gitea Actions [bot]"
           git config --global user.email "actions@yannick-weigert.de"
           git add pubspec.yaml
