@@ -142,7 +142,6 @@
   "format_exception": "Format Exception (see console)",
   "game": "Game",
   "game_associated": "Game successfully associated",
-  "game_deleted": "Game deleted",
   "game_filter_description": "All statistics will be displayed that relate to one of the selected game templates.",
   "game_name": "Game Name",
   "games": "Games",

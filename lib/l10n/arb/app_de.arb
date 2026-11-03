@@ -142,7 +142,6 @@
   "format_exception": "Formatfehler (siehe Konsole)",
   "game": "Spielvorlage",
   "game_associated": "Spielvorlage erfolgreich verknüpft",
-  "game_deleted": "Spielvorlage gelöscht",
   "game_filter_description": "Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.",
   "game_name": "Spielvorlagenname",
   "games": "Spielvorlagen",
