@@ -6,7 +6,10 @@ import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 /// Returns the [Color] object corresponding to a [AppColor] enum value.
-Color getColorFromAppColor(AppColor color, BuildContext context) {
+Color getColorFromAppColor({
+  required AppColor color,
+  required BuildContext context,
+}) {
   switch (color) {
     case AppColor.red:
       return context.talleeColors.redColor;
@@ -42,7 +45,7 @@ AppColor getRandomAppColor() {
 }
 
 // Returns a AppColor enum value based on the provided team [index].
-AppColor getTeamColor(int index) {
+AppColor getTeamColor({required int index}) {
   final colors = [
     AppColor.red,
     AppColor.blue,

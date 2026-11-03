@@ -27,7 +27,14 @@ class TextInputField extends StatelessWidget {
     this.keyboardType,
     this.focusNode,
     this.onSubmitted,
-  });
+  }) : assert(
+         minLines == null || maxLines == null || minLines <= maxLines,
+         'minLines must be less than or equal to maxLines',
+       ),
+       assert(
+         maxLength == null || maxLength > 0,
+         'maxLength must be greater than 0',
+       );
 
   final TextEditingController controller;
   final ValueChanged<String>? onChanged;

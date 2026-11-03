@@ -56,6 +56,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
+  String get choose_color_description =>
+      'Wähle eine Farbe für die Spielvorlage.';
+
+  @override
   String get choose_date_range => 'Datumsbereich auswählen';
 
   @override
@@ -71,6 +75,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get choose_other_file => 'Bitte wähle eine andere Datei aus.';
 
   @override
+  String get choose_ruleset_description =>
+      'Wähle das Regelwerk mit dem du spielen möchtest.';
+
+  @override
   String get choose_scopes => 'Bereiche wählen';
 
   @override
@@ -82,13 +90,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get choose_where_to_save =>
       'Wähle aus, wo du dein Match speichern möchtest:';
-
-  @override
-  String get classifier => 'Klassifikator';
-
-  @override
-  String get classifier_description =>
-      'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
 
   @override
   String get close => 'Schließen';
@@ -164,16 +165,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get create_new_match => 'Neues Spiel erstellen';
 
   @override
-  String create_statistic(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Statistiken erstellen ($count)',
-      one: 'Statistik erstellen',
-      zero: 'Statistiken erstellen',
-    );
-    return '$_temp0';
-  }
+  String get create_statistic => 'Statistik erstellen';
 
   @override
   String get create_teams => 'Teams erstellen';
@@ -389,6 +381,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get game_associated => 'Spielvorlage erfolgreich verknüpft';
 
   @override
+  String get game_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.';
+
+  @override
   String get game_name => 'Spielvorlagenname';
 
   @override
@@ -405,6 +401,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get group_associated => 'Gruppe erfolgreich verknüpft';
+
+  @override
+  String get group_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Gruppen beziehen.';
 
   @override
   String get group_members => 'Gruppenmitglieder';
@@ -790,6 +790,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get points => 'Punkte';
 
   @override
+  String get preview => 'Vorschau';
+
+  @override
   String get preview_match => 'Spielvorschau';
 
   @override
@@ -841,10 +844,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scope => 'Bereich';
 
   @override
-  String get scope_description =>
-      'Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.';
-
-  @override
   String get search_for_games => 'Nach Spielvorlagen suchen';
 
   @override
@@ -863,23 +862,38 @@ class AppLocalizationsDe extends AppLocalizations {
   String get search_for_types => 'Nach Typen suchen';
 
   @override
-  String get select_a_classifier => 'Klassifikator auswählen';
+  String get select_a_color_description =>
+      'Wähle die Anzeigefarbe für deine Statistik aus.';
 
   @override
-  String get select_a_display_color => 'Wähle eine Anzeigefarbe aus.';
+  String get select_a_scope => 'Bereich wählen';
 
   @override
-  String get select_a_scope => 'Bereich auswählen';
+  String get select_a_scope_description =>
+      'Wähle die Gruppen oder Spielvorlagen aus, auf die deine Statistik eingegrenzt werden soll.';
 
   @override
-  String get select_a_timeframe => 'Zeitraum auswählen';
+  String get select_a_theme_description => 'Wähle die Darstellung der App.';
+
+  @override
+  String get select_a_timeframe_description =>
+      'Wähle den Zeitraum für deine Statistik aus.';
+
+  @override
+  String get select_a_type => 'Typ wählen';
+
+  @override
+  String get select_a_type_description =>
+      'Wähle einen Typ für deine Statistik aus.';
+
+  @override
+  String get select_games => 'Spielvorlagen wählen';
+
+  @override
+  String get select_groups => 'Gruppen wählen';
 
   @override
   String get select_loser => 'Verlierer:in wählen';
-
-  @override
-  String get select_the_filtered_timeframe =>
-      'Wähle einen Zeitraum, nach dem gefiltert werden soll.';
 
   @override
   String get select_winners => 'Gewinner:innen wählen';
@@ -1082,6 +1096,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get timeframe => 'Zeitraum';
 
   @override
+  String get timeframe_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf einen der ausgewählten Zeiträume beziehen.';
+
+  @override
   String get today => 'Heute';
 
   @override
@@ -1109,6 +1127,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get type => 'Typ';
+
+  @override
+  String get type_filter_description =>
+      'Es werden alle Statistiken angezeigt, die einem der ausgewählten Typen entsprechen.';
 
   @override
   String get unexpected_error => 'Ein unerwarteter Fehler ist aufgetreten.';
@@ -1170,4 +1192,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Gestern um';
+
+  @override
+  String get your_statistic_will_be_shown_here =>
+      'Hier wird deine Statistik angezeigt';
 }
