@@ -271,7 +271,20 @@ class Match {
     );
   }
 
-  bool get useTeamLogic => isTeamMatch || (teams?.isNotEmpty ?? false);
+  bool get hasTeams => teams?.isNotEmpty ?? false;
+
+  bool get useTeamLogic => isTeamMatch || hasTeams;
+
+  bool get isPairMatch => !isTeamMatch && hasTeams;
+
+  List<Team> get pairs =>
+      isPairMatch ? teams!.where((t) => t.isPair).toList() : const [];
+
+  List<Player> get unpairedPlayers {
+    if (isTeamMatch) return const [];
+    if (!isPairMatch) return players;
+    return teams!.where((t) => !t.isPair).expand((t) => t.members).toList();
+  }
 
   bool get hasResult => mvp.isNotEmpty || mvt.isNotEmpty;
 
@@ -366,7 +379,7 @@ class Match {
 
   // MVP for team-based matches (Most Valuable Team)
   List<Team> get mvt {
-    if (teams == null || teams!.isEmpty) return [];
+    if (!hasTeams) return [];
 
     switch (game.ruleset) {
       case Ruleset.highestScore:
