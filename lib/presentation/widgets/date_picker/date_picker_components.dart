@@ -7,7 +7,7 @@ import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/dto/date_picker_range.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/custom_text_button.dart';
+import 'package:tallee/presentation/widgets/buttons/date_picker_action_button.dart';
 
 class DatePickerHeader extends StatelessWidget {
   const DatePickerHeader({
@@ -336,7 +336,7 @@ class _DayCell extends StatelessWidget {
               height: 34,
               decoration: const BoxDecoration(
                 color: AppColors.primaryColor,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
             ),
           SizedBox(
@@ -548,23 +548,19 @@ class DatePickerActionButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        CustomTextButton(
-          onPressed: onCancel,
-          text: loc.cancel,
-          style: TextStyle(
-            color: context.talleeColors.hintColor,
-            fontWeight: FontWeight.w600,
+        Expanded(
+          child: DatePickerActionButton(
+            text: loc.cancel,
+            onPressed: onCancel,
+            isPrimary: false,
           ),
         ),
         const SizedBox(width: 8),
-        CustomTextButton(
-          onPressed: isSubmitEnabled ? onSubmit : null,
-          text: loc.confirm,
-          style: TextStyle(
-            color: isSubmitEnabled
-                ? AppColors.primaryColor
-                : context.talleeColors.hintColor.withAlpha(100),
-            fontWeight: FontWeight.bold,
+        Expanded(
+          child: DatePickerActionButton(
+            text: loc.confirm,
+            onPressed: isSubmitEnabled ? onSubmit : null,
+            isPrimary: true,
           ),
         ),
       ],
