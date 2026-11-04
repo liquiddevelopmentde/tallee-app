@@ -111,6 +111,7 @@ class DatePickerCalendar extends StatelessWidget {
     super.key,
     required this.localeName,
     required this.pageController,
+    required this.itemCount,
     required this.monthForPage,
     required this.onPageChanged,
     required this.selectionMode,
@@ -122,6 +123,7 @@ class DatePickerCalendar extends StatelessWidget {
 
   final String localeName;
   final PageController pageController;
+  final int itemCount;
   final DateTime Function(int page) monthForPage;
   final ValueChanged<int> onPageChanged;
   final DatePickerSelectionMode selectionMode;
@@ -141,6 +143,7 @@ class DatePickerCalendar extends StatelessWidget {
           height: 240,
           child: PageView.builder(
             controller: pageController,
+            itemCount: itemCount,
             onPageChanged: onPageChanged,
             itemBuilder: (context, page) => _MonthGrid(
               month: monthForPage(page),

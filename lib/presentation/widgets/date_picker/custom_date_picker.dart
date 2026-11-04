@@ -80,12 +80,12 @@ class CustomDatePicker extends StatefulWidget {
 }
 
 class _CustomDatePickerState extends State<CustomDatePicker> {
-  // Start near the middle of the PageView to allow navigation in both directions.
-  static const int initialPage = 1200;
+  static const defaultDateRangeYears = 20;
 
   late final PageController pageController;
   final ScrollController yearPickerController = ScrollController();
-  late final DateTime initialMonth;
+  late final DateTime firstMonth;
+  late final DateTime lastMonth;
   late DateTime focusedMonth;
 
   DateTime? selectedDate;
@@ -100,6 +100,32 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     selectedDate = widget.initialSelectedDate;
     selectedRange = widget.initialSelectedRange;
 
+    final now = clock.now();
+    firstMonth = monthStart(
+      widget.minDate ??
+          DateTime(now.year - defaultDateRangeYears, now.month, now.day),
+    );
+    lastMonth = monthStart(
+      widget.maxDate ??
+          DateTime(now.year + defaultDateRangeYears, now.month, now.day),
+    );
+    assert(
+      !lastMonth.isBefore(firstMonth),
+      'maxDate must not be before minDate.',
+    );
+    assert(
+      selectedDate == null || !isDateOutsideBounds(selectedDate!),
+      'initialSelectedDate must be within minDate and maxDate.',
+    );
+    assert(
+      selectedRange == null ||
+          (selectedRange!.startDate == null ||
+                  !isDateOutsideBounds(selectedRange!.startDate!)) &&
+              (selectedRange!.endDate == null ||
+                  !isDateOutsideBounds(selectedRange!.endDate!)),
+      'initialSelectedRange must be within minDate and maxDate.',
+    );
+
     DateTime focus;
     if (widget.selectionMode == DatePickerSelectionMode.single &&
         selectedDate != null) {
@@ -108,12 +134,15 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         selectedRange?.startDate != null) {
       focus = selectedRange!.startDate!;
     } else {
-      focus = clock.now();
+      focus = now;
     }
-
-    focusedMonth = DateTime(focus.year, focus.month, 1);
-    initialMonth = focusedMonth;
-    pageController = PageController(initialPage: initialPage);
+    focusedMonth = monthStart(focus);
+    if (focusedMonth.isBefore(firstMonth)) {
+      focusedMonth = firstMonth;
+    } else if (focusedMonth.isAfter(lastMonth)) {
+      focusedMonth = lastMonth;
+    }
+    pageController = PageController(initialPage: pageForMonth(focusedMonth));
   }
 
   @override
@@ -124,15 +153,28 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   }
 
   DateTime monthForPage(int page) {
-    final offset = page - initialPage;
-    return DateTime(initialMonth.year, initialMonth.month + offset, 1);
+    return DateTime(firstMonth.year, firstMonth.month + page, 1);
   }
 
   int pageForMonth(DateTime month) {
     final monthDiff =
-        (month.year - initialMonth.year) * 12 +
-        (month.month - initialMonth.month);
-    return initialPage + monthDiff;
+        (month.year - firstMonth.year) * 12 + (month.month - firstMonth.month);
+    return monthDiff.clamp(0, monthCount - 1);
+  }
+
+  int get monthCount =>
+      (lastMonth.year - firstMonth.year) * 12 +
+      lastMonth.month -
+      firstMonth.month +
+      1;
+
+  static DateTime monthStart(DateTime date) =>
+      DateTime(date.year, date.month, 1);
+
+  bool isDateOutsideBounds(DateTime date) {
+    final day = dateOnly(date);
+    return day.isBefore(dateOnly(widget.minDate ?? firstMonth)) ||
+        day.isAfter(dateOnly(widget.maxDate ?? lastMonth));
   }
 
   void onPageChanged(int page) {
@@ -245,6 +287,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
               firstChild: DatePickerCalendar(
                 localeName: localeName,
                 pageController: pageController,
+                itemCount: monthCount,
                 monthForPage: monthForPage,
                 onPageChanged: onPageChanged,
                 selectionMode: widget.selectionMode,
