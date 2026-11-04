@@ -27,6 +27,8 @@ from urllib.error import HTTPError
 from urllib.request import Request
 from urllib.request import urlopen
 
+from gitea_api import is_issue
+
 import json
 import os
 import re
@@ -59,19 +61,6 @@ def api(path: str) -> Tuple[int, Dict[str, str], Any]:
             return response.status, dict(response.headers), json.load(response)
     except HTTPError as err:
         return err.code, dict(err.headers), None
-
-
-def is_issue(obj: Any) -> bool:
-    """
-    Determine whether an API object is an issue rather than a pull request.
-
-    The index space is shared with pull requests; keep only real issues.
-    Gitea always includes the "pull_request" key (null for plain issues).
-
-    :param obj: The API object to inspect.
-    :returns: True if the object is an issue.
-    """
-    return isinstance(obj, dict) and obj.get("pull_request") is None
 
 
 def collect_open_issues() -> List[Dict[str, Any]]:
