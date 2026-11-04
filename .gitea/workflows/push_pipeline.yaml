@@ -11,8 +11,40 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  bump_build_number:
+    name: "Bump build number"
+    runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ gitea.ref_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.BOT_TOKEN }}
+          ref: ${{ gitea.ref_name }}
+
+      - name: Update build number
+        id: bump
+        uses: stikkyapp/update-pubspec-version@v2
+        with:
+          strategy: 'none'
+          bump-build: true
+          path: './pubspec.yaml'
+
+      - name: Commit build number
+        run: |
+          echo "Bumping ${{ steps.bump.outputs.old-version }} -> ${{ steps.bump.outputs.new-version }}"
+          git config --global user.name "Gitea Actions [bot]"
+          git config --global user.email "actions@yannick-weigert.de"
+          git add pubspec.yaml
+          git commit -m "Updated build number [skip ci]"
+          git pull --rebase --autostash origin "$BRANCH_NAME"
+          git push origin HEAD:$BRANCH_NAME
+
   generate_licenses:
     name: "Generate OSS licenses"
+    needs: bump_build_number
     runs-on: ubuntu-latest
     if: always()
     env:
@@ -69,6 +101,7 @@ jobs:
 
   generate_localizations:
     name: "Generate localizations"
+    needs: bump_build_number
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -269,9 +302,6 @@ jobs:
     name: "Build for Android"
     needs: [ test, format ]
     runs-on: ubuntu-latest
-    env:
-      GITEA_TOKEN: ${{ secrets.BOT_TOKEN }}
-      BRANCH_NAME: ${{ gitea.ref_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -279,24 +309,6 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.BOT_TOKEN }}
           ref: ${{ gitea.ref_name }}
-
-      - name: Bump build number
-        id: bump
-        uses: stikkyapp/update-pubspec-version@v2
-        with:
-          strategy: 'none'
-          bump-build: true
-          path: './pubspec.yaml'
-
-      - name: Commit build number
-        run: |
-          echo "Bumping ${{ steps.bump.outputs.old-version }} -> ${{ steps.bump.outputs.new-version }}"
-          git config --global user.name "Gitea Actions [bot]"
-          git config --global user.email "actions@yannick-weigert.de"
-          git add pubspec.yaml
-          git commit -m "Updated build number [skip ci]"
-          git pull --rebase --autostash origin "$BRANCH_NAME"
-          git push origin HEAD:$BRANCH_NAME
 
       - name: Setup Java (Temurin 17)
         uses: actions/setup-java@v3
