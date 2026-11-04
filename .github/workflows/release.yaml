@@ -70,7 +70,6 @@ jobs:
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ vars.ANDROID_KEY_ALIAS }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      SENTRY_URL: ${{ vars.SENTRY_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -160,7 +159,6 @@ jobs:
       IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
       IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      SENTRY_URL: ${{ vars.SENTRY_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

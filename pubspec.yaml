@@ -90,3 +90,4 @@ sentry:
   upload_source_maps: true
   project: tallee-app
   org: liquid-development
+  url: https://glitchtip.liquid-dev.de/
