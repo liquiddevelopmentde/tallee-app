@@ -53,19 +53,12 @@ class CustomDatePicker extends StatefulWidget {
   final DatePickerRange? initialSelectedRange;
   final DateTime? minDate;
   final DateTime? maxDate;
-
   final int firstDayOfWeek;
-
   final bool showActionButtons;
-
   final ValueChanged<DateTime>? onDateSubmitted;
-
   final ValueChanged<DatePickerRange>? onRangeSubmitted;
-
   final VoidCallback? onCancel;
-
   final ValueChanged<DateTime>? onDateSelected;
-
   final ValueChanged<DatePickerRange>? onRangeSelected;
 
   @override
