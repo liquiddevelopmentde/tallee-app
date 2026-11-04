@@ -7,6 +7,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/date_picker_range.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
 import 'package:tallee/data/models/player.dart';
@@ -446,10 +447,15 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     DateTime? initialStartDate,
     DateTime? initialEndDate,
   }) async {
-    return showCustomDateRangePicker(
+    return CustomDatePicker.show<List<DateTime?>>(
       context: context,
-      initialStartDate: initialStartDate,
-      initialEndDate: initialEndDate,
+      selectionMode: DatePickerSelectionMode.range,
+      initialRange: initialStartDate != null || initialEndDate != null
+          ? DatePickerRange(
+              startDate: initialStartDate,
+              endDate: initialEndDate,
+            )
+          : null,
     );
   }
 

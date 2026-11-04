@@ -425,7 +425,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   }
 
   Future<void> onCreationDateSelection() async {
-    final selected = await showCustomDatePicker(
+    final selected = await CustomDatePicker.show<DateTime>(
       context: context,
       initialDate: selectedCreationDate ?? clock.now(),
       maxDate: clock.now(),

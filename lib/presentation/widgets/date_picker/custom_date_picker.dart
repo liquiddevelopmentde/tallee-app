@@ -31,11 +31,56 @@ class CustomDatePicker extends StatefulWidget {
   final ValueChanged<DatePickerRange>? onRangeSelected;
   final VoidCallback? onCancel;
 
+  /// Shows a single-date or date-range picker dialog.
+  static Future<T?> show<T>({
+    required BuildContext context,
+    DatePickerSelectionMode selectionMode = DatePickerSelectionMode.single,
+    DateTime? initialDate,
+    DatePickerRange? initialRange,
+    DateTime? minDate,
+    DateTime? maxDate,
+  }) {
+    assert(
+      (selectionMode == DatePickerSelectionMode.single && T == DateTime) ||
+          (selectionMode == DatePickerSelectionMode.range &&
+              T == List<DateTime?>),
+      'The picker selection mode must match the return type.',
+    );
+
+    return showDialog<T>(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 24,
+          ),
+          child: CustomDatePicker(
+            selectionMode: selectionMode,
+            initialSelectedDate: initialDate,
+            initialSelectedRange: initialRange,
+            minDate: minDate,
+            maxDate: maxDate,
+            onDateSelected: (value) => Navigator.pop<T>(context, value as T),
+            onRangeSelected: (value) => Navigator.pop<T>(
+              context,
+              [value.startDate, value.endDate] as T,
+            ),
+            onCancel: () => Navigator.pop(context),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   State<CustomDatePicker> createState() => _CustomDatePickerState();
 }
 
 class _CustomDatePickerState extends State<CustomDatePicker> {
+  // Start near the middle of the PageView to allow navigation in both directions.
   static const int initialPage = 1200;
 
   late final PageController pageController;
@@ -271,66 +316,4 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
       curve: Curves.easeInOutCubic,
     );
   }
-}
-
-/// Helper function to display a single date picker in a dialog.
-Future<DateTime?> showCustomDatePicker({
-  required BuildContext context,
-  DateTime? initialDate,
-  DateTime? minDate,
-  DateTime? maxDate,
-}) async {
-  return showDialog<DateTime>(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: CustomDatePicker(
-          selectionMode: DatePickerSelectionMode.single,
-          initialSelectedDate: initialDate,
-          minDate: minDate,
-          maxDate: maxDate,
-          onDateSelected: (value) => Navigator.pop(context, value),
-          onCancel: () => Navigator.pop(context),
-        ),
-      );
-    },
-  );
-}
-
-/// Helper function to display a date range picker in a dialog.
-Future<List<DateTime?>?> showCustomDateRangePicker({
-  required BuildContext context,
-  DateTime? initialStartDate,
-  DateTime? initialEndDate,
-  DateTime? minDate,
-  DateTime? maxDate,
-}) async {
-  return showDialog<List<DateTime?>>(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: CustomDatePicker(
-          selectionMode: DatePickerSelectionMode.range,
-          initialSelectedRange:
-              initialStartDate != null || initialEndDate != null
-              ? DatePickerRange(
-                  startDate: initialStartDate,
-                  endDate: initialEndDate,
-                )
-              : null,
-          minDate: minDate,
-          maxDate: maxDate,
-          onRangeSelected: (value) =>
-              Navigator.pop(context, [value.startDate, value.endDate]),
-          onCancel: () => Navigator.pop(context),
-        ),
-      );
-    },
-  );
 }
