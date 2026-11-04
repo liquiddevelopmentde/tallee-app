@@ -1,0 +1,387 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only build, skip Gitea/Play/TestFlight uploads"
+        type: boolean
+        default: true
+      tag:
+        description: "Release tag to attach artifacts to (manual runs only)"
+        type: string
+        required: false
+  push:
+    tags:
+      - "v*"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  ANDROID_PACKAGE: de.liquiddev.tallee
+  IOS_BUNDLE_ID: de.liquiddev.tallee
+  IOS_TEAM_ID: RJB4MM6RVS
+  IOS_PROVISIONING_PROFILE_NAME: ${{ vars.IOS_PROVISIONING_PROFILE_NAME }}
+  GITEA_URL: ${{ vars.GITEA_URL || 'https://git.yannick-weigert.com' }}
+  GITEA_REPO: liquid-development/tallee-app
+  # true  -> workflow_dispatch with dry_run=true
+  # false -> workflow_dispatch with dry_run=false, or any tag push
+  DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+
+jobs:
+  meta:
+    name: Resolve version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Read version from pubspec.yaml
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: $VERSION"
+
+      - name: Summary
+        run: |
+          {
+            echo "### Release build"
+            echo ""
+            echo "- Version: \`${{ steps.version.outputs.version }}\`"
+            echo "- Trigger: \`${{ github.event_name }}\`"
+            echo "- Dry run: \`${{ env.DRY_RUN }}\`"
+            echo "- Publishing enabled: \`${{ vars.STORE_DEPLOY_ENABLED == 'true' }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  build_android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    needs: meta
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools platforms;android-36 build-tools;36.0.0"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Write .env
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          {
+            printf 'API_URL_PROD=%s\n' "$API_URL"
+            printf 'SENTRY_DSN=%s\n' "$SENTRY_DSN"
+          } > .env
+
+      - name: Require release signing on real deploy
+        if: env.DRY_RUN != 'true'
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 is not set, refusing to build an unsigned release."
+            exit 1
+          fi
+
+      - name: Set up release signing
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          {
+            printf 'storeFile=upload-keystore.jks\n'
+            printf 'storePassword=%s\n' "$ANDROID_KEYSTORE_PASSWORD"
+            printf 'keyAlias=%s\n' "$ANDROID_KEY_ALIAS"
+            printf 'keyPassword=%s\n' "$ANDROID_KEYSTORE_PASSWORD"
+          } > android/key.properties
+
+      - name: Build AAB
+        run: flutter build appbundle --release
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Collect artifacts
+        run: |
+          VERSION="${{ needs.meta.outputs.version }}"
+          mkdir -p dist
+          cp build/app/outputs/bundle/release/app-release.aab "dist/tallee-${VERSION}.aab"
+          cp build/app/outputs/flutter-apk/app-release.apk "dist/tallee-${VERSION}.apk"
+          ls -lh dist
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 14
+
+  build_ios:
+    name: Build iOS
+    runs-on: macos-latest
+    needs: meta
+    env:
+      IOS_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+      IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+      IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Write .env
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          {
+            printf 'API_URL_PROD=%s\n' "$API_URL"
+            printf 'SENTRY_DSN=%s\n' "$SENTRY_DSN"
+          } > .env
+
+      - name: Require signing material on real deploy
+        if: env.DRY_RUN != 'true'
+        run: |
+          missing=0
+          if [ -z "$IOS_CERTIFICATE_P12_BASE64" ]; then
+            echo "::error::IOS_CERTIFICATE_P12_BASE64 is not set."
+            missing=1
+          fi
+          if [ -z "$IOS_PROVISIONING_PROFILE_BASE64" ]; then
+            echo "::error::IOS_PROVISIONING_PROFILE_BASE64 is not set."
+            missing=1
+          fi
+          exit $missing
+
+      - name: Import signing certificate
+        if: env.IOS_CERTIFICATE_P12_BASE64 != ''
+        uses: apple-actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+
+      - name: Install provisioning profile
+        if: env.IOS_PROVISIONING_PROFILE_BASE64 != ''
+        run: |
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > /tmp/tallee.mobileprovision
+          cp /tmp/tallee.mobileprovision "$HOME/Library/MobileDevice/Provisioning Profiles/"
+
+      - name: Write ExportOptions.plist
+        if: env.DRY_RUN != 'true'
+        run: |
+          cat > ios/ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>${IOS_TEAM_ID}</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>${IOS_BUNDLE_ID}</key>
+              <string>${IOS_PROVISIONING_PROFILE_NAME}</string>
+            </dict>
+            <key>uploadSymbols</key>
+            <true/>
+            <key>stripSwiftSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Build IPA
+        if: env.DRY_RUN != 'true'
+        run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
+
+      - name: Build unsigned (dry run)
+        if: env.DRY_RUN == 'true'
+        run: flutter build ios --release --no-codesign
+
+      - name: Collect artifact
+        if: env.DRY_RUN != 'true'
+        run: |
+          VERSION="${{ needs.meta.outputs.version }}"
+          mkdir -p dist
+          cp build/ios/ipa/*.ipa "dist/tallee-${VERSION}.ipa"
+          ls -lh dist
+
+      - name: Upload artifact
+        if: env.DRY_RUN != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 14
+
+#  publish_gitea_release:
+#    name: Attach artifacts to Gitea release
+#    runs-on: ubuntu-latest
+#    needs: [meta, build_android, build_ios]
+#    if: vars.STORE_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || inputs.dry_run == false)
+#    environment: production
+#    env:
+#      TAG: ${{ inputs.tag || github.ref_name }}
+#    steps:
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v4
+#        with:
+#          path: dist
+#          merge-multiple: true
+#
+#      - name: Upload assets to Gitea release
+#        env:
+#          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+#        run: |
+#          set -euo pipefail
+#          API="${GITEA_URL}/api/v1/repos/${GITEA_REPO}"
+#          RELEASE_ID=$(curl -fsS -H "Authorization: token ${GITEA_TOKEN}" \
+#            "${API}/releases/tags/${TAG}" | jq -r '.id // empty')
+#          if [ -z "$RELEASE_ID" ]; then
+#            echo "No Gitea release for ${TAG} yet, creating a published one."
+#            payload=$(jq -n --arg tag "$TAG" \
+#              '{tag_name: $tag, name: $tag, draft: false, prerelease: ($tag | test("alpha|beta|rc"))}')
+#            RELEASE_ID=$(curl -fsS -X POST \
+#              -H "Authorization: token ${GITEA_TOKEN}" \
+#              -H "Content-Type: application/json" \
+#              -d "$payload" "${API}/releases" | jq -r '.id')
+#          fi
+#          if [ -z "$RELEASE_ID" ] || [ "$RELEASE_ID" = "null" ]; then
+#            echo "::error::Could not resolve or create a Gitea release for tag ${TAG}."
+#            exit 1
+#          fi
+#          for file in dist/*; do
+#            name=$(basename "$file")
+#            # The version contains a "+" (build number), so encode the name.
+#            encoded=$(jq -rn --arg v "$name" '$v | @uri')
+#            echo "Uploading ${name} to release ${RELEASE_ID}"
+#            curl -fsS -X POST -H "Authorization: token ${GITEA_TOKEN}" \
+#              -F "attachment=@${file}" \
+#              "${API}/releases/${RELEASE_ID}/assets?name=${encoded}"
+#          done
+#
+#  publish_play_store:
+#    name: Upload to Google Play
+#    runs-on: ubuntu-latest
+#    needs: [meta, build_android]
+#    if: vars.STORE_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || inputs.dry_run == false)
+#    environment: production
+#    steps:
+#      - name: Download artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: android
+#          path: dist
+#
+#      - name: Upload AAB to Play Store
+#        uses: r0adkll/upload-google-play@v1
+#        with:
+#          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+#          packageName: ${{ env.ANDROID_PACKAGE }}
+#          releaseFiles: dist/*.aab
+#          tracks: ${{ vars.PLAY_TRACK || 'internal' }}
+#          status: ${{ vars.PLAY_RELEASE_STATUS || 'draft' }}
+#          releaseName: v${{ needs.meta.outputs.version }}
+#
+#  publish_appstore:
+#    name: Upload to TestFlight + stage App Store draft
+#    runs-on: ubuntu-latest
+#    needs: [meta, build_ios]
+#    if: vars.STORE_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || inputs.dry_run == false)
+#    environment: production
+#    steps:
+#      - name: Download artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: ios
+#          path: dist
+#
+#      - name: Resolve IPA path
+#        id: ipa
+#        run: echo "path=$(ls dist/*.ipa | head -n 1)" >> "$GITHUB_OUTPUT"
+#
+#      - name: Upload IPA to TestFlight
+#        uses: apple-actions/upload-testflight-build@v5
+#        with:
+#          app-path: ${{ steps.ipa.outputs.path }}
+#          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
+#          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
+#          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+#          wait-for-processing: 'true'
+#
+#      - name: Install App Store Connect CLI
+#        uses: rudrankriyam/setup-asc@v1
+#
+#      - name: Stage App Store version as draft
+#        env:
+#          ASC_BYPASS_KEYCHAIN: "1"
+#          ASC_NO_UPDATE: "1"
+#          ASC_TELEMETRY_DISABLED: "1"
+#          ASC_APP_ID: ${{ env.IOS_BUNDLE_ID }}
+#          ASC_KEY_ID: ${{ vars.APPSTORE_API_KEY_ID }}
+#          ASC_ISSUER_ID: ${{ vars.APPSTORE_ISSUER_ID }}
+#          APPSTORE_API_PRIVATE_KEY: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+#          VERSION: ${{ needs.meta.outputs.version }}
+#        run: |
+#          set -euo pipefail
+#          export ASC_PRIVATE_KEY_B64="$(printf '%s' "$APPSTORE_API_PRIVATE_KEY" | base64 | tr -d '\n')"
+#          APP_VERSION="${VERSION%%+*}"
+#
+#          BUILD_ID=$(asc builds info --app "$ASC_APP_ID" --latest --platform IOS \
+#            | jq -r '.data.id // .id // empty')
+#          if [ -z "$BUILD_ID" ] || [ "$BUILD_ID" = "null" ]; then
+#            echo "::error::Could not resolve the uploaded iOS build."
+#            exit 1
+#          fi
+#          echo "Staging App Store version ${APP_VERSION} with build ${BUILD_ID}"
+#
+#          # Creates/updates the version and attaches the build, but does NOT submit.
+#          asc release stage \
+#            --app "$ASC_APP_ID" \
+#            --version "$APP_VERSION" \
+#            --build-id "$BUILD_ID" \
+#            --confirm
