@@ -68,8 +68,9 @@ jobs:
     env:
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_ALIAS: ${{ vars.ANDROID_KEY_ALIAS }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_URL: ${{ vars.SENTRY_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -130,6 +131,10 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
+      - name: Upload debug symbols to GlitchTip
+        if: env.SENTRY_AUTH_TOKEN != ''
+        run: flutter pub run sentry_dart_plugin
+
       - name: Collect artifacts
         run: |
           VERSION="${{ needs.meta.outputs.version }}"
@@ -155,6 +160,7 @@ jobs:
       IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
       IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_URL: ${{ vars.SENTRY_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -240,6 +246,10 @@ jobs:
       - name: Build unsigned (dry run)
         if: env.DRY_RUN == 'true'
         run: flutter build ios --release --no-codesign
+
+      - name: Upload debug symbols to GlitchTip
+        if: env.SENTRY_AUTH_TOKEN != ''
+        run: flutter pub run sentry_dart_plugin
 
       - name: Collect artifact
         if: env.DRY_RUN != 'true'
