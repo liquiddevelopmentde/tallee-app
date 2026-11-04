@@ -99,36 +99,36 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     super.dispose();
   }
 
-  DateTime _monthForPage(int page) {
+  DateTime monthForPage(int page) {
     final offset = page - initialPage;
     return DateTime(initialMonth.year, initialMonth.month + offset, 1);
   }
 
-  int _pageForMonth(DateTime month) {
+  int pageForMonth(DateTime month) {
     final monthDiff =
         (month.year - initialMonth.year) * 12 +
         (month.month - initialMonth.month);
     return initialPage + monthDiff;
   }
 
-  void _onPageChanged(int page) {
+  void onPageChanged(int page) {
     setState(() {
-      focusedMonth = _monthForPage(page);
+      focusedMonth = monthForPage(page);
     });
   }
 
-  void _jumpToMonth(DateTime month) {
+  void jumpToMonth(DateTime month) {
     final targetMonth = DateTime(month.year, month.month, 1);
     setState(() {
       focusedMonth = targetMonth;
       isYearPickerOpen = false;
     });
-    final page = _pageForMonth(targetMonth);
+    final page = pageForMonth(targetMonth);
     pageController.jumpToPage(page);
   }
 
-  void _onDayTapped(DateTime date) {
-    if (_isDateDisabled(date)) return;
+  void onDayTapped(DateTime date) {
+    if (isDateDisabled(date)) return;
 
     HapticFeedback.lightImpact();
 
@@ -141,7 +141,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
         if (currentStart == null || currentEnd != null) {
           selectedRange = DatePickerRange(startDate: date, endDate: null);
-        } else if (_isBeforeDay(date, currentStart)) {
+        } else if (isBeforeDay(date, currentStart)) {
           selectedRange = DatePickerRange(startDate: date, endDate: null);
         } else {
           selectedRange = DatePickerRange(
@@ -153,38 +153,38 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     });
   }
 
-  bool _isDateDisabled(DateTime date) {
-    final day = _dateOnly(date);
-    if (widget.minDate != null && day.isBefore(_dateOnly(widget.minDate!))) {
+  bool isDateDisabled(DateTime date) {
+    final day = dateOnly(date);
+    if (widget.minDate != null && day.isBefore(dateOnly(widget.minDate!))) {
       return true;
     }
-    if (widget.maxDate != null && day.isAfter(_dateOnly(widget.maxDate!))) {
+    if (widget.maxDate != null && day.isAfter(dateOnly(widget.maxDate!))) {
       return true;
     }
     return false;
   }
 
-  static DateTime _dateOnly(DateTime date) =>
+  static DateTime dateOnly(DateTime date) =>
       DateTime(date.year, date.month, date.day);
 
-  static bool _isSameDay(DateTime? a, DateTime? b) {
+  static bool isSameDay(DateTime? a, DateTime? b) {
     if (a == null || b == null) return false;
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
-  static bool _isBeforeDay(DateTime a, DateTime b) {
-    return _dateOnly(a).isBefore(_dateOnly(b));
+  static bool isBeforeDay(DateTime a, DateTime b) {
+    return dateOnly(a).isBefore(dateOnly(b));
   }
 
-  bool get _isSubmitEnabled {
+  bool get isSubmitEnabled {
     if (widget.selectionMode == DatePickerSelectionMode.single) {
       return selectedDate != null;
     }
     return selectedRange?.isComplete ?? false;
   }
 
-  void _handleSubmit() {
-    if (!_isSubmitEnabled) return;
+  void handleSubmit() {
+    if (!isSubmitEnabled) return;
     HapticFeedback.lightImpact();
     if (widget.selectionMode == DatePickerSelectionMode.single) {
       widget.onDateSelected?.call(selectedDate!);
@@ -209,7 +209,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildHeader(context, localeName),
+          buildHeader(context, localeName),
           const SizedBox(height: 12),
           SizedBox(
             height: 270,
@@ -218,18 +218,18 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
               crossFadeState: isYearPickerOpen
                   ? CrossFadeState.showSecond
                   : CrossFadeState.showFirst,
-              firstChild: _buildCalendarView(context, localeName),
-              secondChild: _buildYearPickerView(context),
+              firstChild: buildCalendarView(context, localeName),
+              secondChild: buildYearPickerView(context),
             ),
           ),
           const SizedBox(height: 12),
-          _buildActionButtons(context, loc),
+          buildActionButtons(context, loc),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, String localeName) {
+  Widget buildHeader(BuildContext context, String localeName) {
     final monthYearStr = DateFormat.yMMMM(localeName).format(focusedMonth);
 
     return Row(
@@ -262,7 +262,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
               if (isYearPickerOpen) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (!mounted) return;
-                  _scrollYearPickerToFocusedYear();
+                  scrollYearPickerToFocusedYear();
                 });
               }
             },
@@ -318,20 +318,20 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     );
   }
 
-  Widget _buildCalendarView(BuildContext context, String localeName) {
+  Widget buildCalendarView(BuildContext context, String localeName) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildWeekdayHeader(context, localeName),
+        buildWeekdayHeader(context, localeName),
         const SizedBox(height: 8),
         SizedBox(
           height: 240,
           child: PageView.builder(
             controller: pageController,
-            onPageChanged: _onPageChanged,
+            onPageChanged: onPageChanged,
             itemBuilder: (context, page) {
-              final month = _monthForPage(page);
-              return _buildMonthGrid(context, month);
+              final month = monthForPage(page);
+              return buildMonthGrid(context, month);
             },
           ),
         ),
@@ -339,7 +339,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     );
   }
 
-  Widget _buildWeekdayHeader(BuildContext context, String localeName) {
+  Widget buildWeekdayHeader(BuildContext context, String localeName) {
     final monday = DateTime(2026, 1, 5); // Known Monday
     final weekdays = <String>[];
     for (int i = 0; i < 7; i++) {
@@ -365,7 +365,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     );
   }
 
-  Widget _buildMonthGrid(BuildContext context, DateTime month) {
+  Widget buildMonthGrid(BuildContext context, DateTime month) {
     final firstDayOfMonth = DateTime(month.year, month.month, 1);
     final weekdayOfFirst = firstDayOfMonth.weekday;
     final leadingDays = (weekdayOfFirst - 1) % 7;
@@ -380,7 +380,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
               final cellIndex = rowIndex * 7 + colIndex;
               final cellDate = gridStartDate.add(Duration(days: cellIndex));
               return Expanded(
-                child: _buildDayCell(
+                child: buildDayCell(
                   context: context,
                   cellDate: cellDate,
                   month: month,
@@ -394,7 +394,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     );
   }
 
-  Widget _buildDayCell({
+  Widget buildDayCell({
     required BuildContext context,
     required DateTime cellDate,
     required DateTime month,
@@ -402,8 +402,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   }) {
     final isCurrentMonth =
         cellDate.year == month.year && cellDate.month == month.month;
-    final isDisabled = !isCurrentMonth || _isDateDisabled(cellDate);
-    final isToday = _isSameDay(cellDate, clock.now());
+    final isDisabled = !isCurrentMonth || isDateDisabled(cellDate);
+    final isToday = isSameDay(cellDate, clock.now());
 
     bool isSelected = false;
     bool isStart = false;
@@ -411,18 +411,18 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     bool isInRange = false;
 
     if (widget.selectionMode == DatePickerSelectionMode.single) {
-      isSelected = isCurrentMonth && _isSameDay(cellDate, selectedDate);
+      isSelected = isCurrentMonth && isSameDay(cellDate, selectedDate);
     } else {
       final start = selectedRange?.startDate;
       final end = selectedRange?.endDate;
 
-      isStart = isCurrentMonth && start != null && _isSameDay(cellDate, start);
-      isEnd = isCurrentMonth && end != null && _isSameDay(cellDate, end);
+      isStart = isCurrentMonth && start != null && isSameDay(cellDate, start);
+      isEnd = isCurrentMonth && end != null && isSameDay(cellDate, end);
 
       if (start != null && end != null) {
-        final day = _dateOnly(cellDate);
-        final startDay = _dateOnly(start);
-        final endDay = _dateOnly(end);
+        final day = dateOnly(cellDate);
+        final startDay = dateOnly(start);
+        final endDay = dateOnly(end);
         isInRange =
             isCurrentMonth && day.isAfter(startDay) && day.isBefore(endDay);
       }
@@ -445,13 +445,13 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: isDisabled ? null : () => _onDayTapped(cellDate),
+      onTap: isDisabled ? null : () => onDayTapped(cellDate),
       child: Stack(
         fit: StackFit.expand,
         alignment: Alignment.center,
         children: [
           if (hasRangeActive)
-            _buildRangeSpanDecoration(
+            buildRangeSpanDecoration(
               colIndex: colIndex,
               isStart: isStart,
               isEnd: isEnd,
@@ -507,7 +507,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     );
   }
 
-  Widget _buildRangeSpanDecoration({
+  Widget buildRangeSpanDecoration({
     required int colIndex,
     required bool isStart,
     required bool isEnd,
@@ -590,7 +590,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     return const SizedBox.shrink();
   }
 
-  Widget _buildYearPickerView(BuildContext context) {
+  Widget buildYearPickerView(BuildContext context) {
     final currentYear = clock.now().year;
     final startYear = widget.minDate?.year ?? (currentYear - 20);
     final endYear = widget.maxDate?.year ?? (currentYear + 20);
@@ -617,7 +617,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
             borderRadius: BorderRadius.circular(10),
             onTap: () {
               HapticFeedback.lightImpact();
-              _jumpToMonth(DateTime(year, focusedMonth.month, 1));
+              jumpToMonth(DateTime(year, focusedMonth.month, 1));
             },
             child: Container(
               alignment: Alignment.center,
@@ -649,7 +649,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     );
   }
 
-  void _scrollYearPickerToFocusedYear() {
+  void scrollYearPickerToFocusedYear() {
     final currentYear = clock.now().year;
     final startYear = widget.minDate?.year ?? (currentYear - 20);
     final yearIndex = focusedMonth.year - startYear;
@@ -676,7 +676,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, AppLocalizations loc) {
+  Widget buildActionButtons(BuildContext context, AppLocalizations loc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -693,10 +693,10 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         ),
         const SizedBox(width: 8),
         CustomTextButton(
-          onPressed: _isSubmitEnabled ? _handleSubmit : null,
+          onPressed: isSubmitEnabled ? handleSubmit : null,
           text: loc.confirm,
           style: TextStyle(
-            color: _isSubmitEnabled
+            color: isSubmitEnabled
                 ? AppColors.primaryColor
                 : context.talleeColors.hintColor.withAlpha(100),
             fontWeight: FontWeight.bold,
