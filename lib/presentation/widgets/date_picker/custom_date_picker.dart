@@ -39,27 +39,20 @@ class CustomDatePicker extends StatefulWidget {
     this.initialSelectedRange,
     this.minDate,
     this.maxDate,
-    this.firstDayOfWeek = 1,
-    this.showActionButtons = true,
-    this.onDateSubmitted,
-    this.onRangeSubmitted,
-    this.onCancel,
     this.onDateSelected,
     this.onRangeSelected,
-  }) : assert(firstDayOfWeek >= 1 && firstDayOfWeek <= 7);
+    this.onCancel,
+  });
 
   final DatePickerSelectionMode selectionMode;
   final DateTime? initialSelectedDate;
   final DatePickerRange? initialSelectedRange;
   final DateTime? minDate;
   final DateTime? maxDate;
-  final int firstDayOfWeek;
-  final bool showActionButtons;
-  final ValueChanged<DateTime>? onDateSubmitted;
-  final ValueChanged<DatePickerRange>? onRangeSubmitted;
-  final VoidCallback? onCancel;
+
   final ValueChanged<DateTime>? onDateSelected;
   final ValueChanged<DatePickerRange>? onRangeSelected;
+  final VoidCallback? onCancel;
 
   @override
   State<CustomDatePicker> createState() => _CustomDatePickerState();
@@ -141,13 +134,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
     HapticFeedback.lightImpact();
 
-    DateTime? newlySelectedDate;
-    DatePickerRange? newlySelectedRange;
-
     setState(() {
       if (widget.selectionMode == DatePickerSelectionMode.single) {
         selectedDate = date;
-        newlySelectedDate = date;
       } else {
         final currentStart = selectedRange?.startDate;
         final currentEnd = selectedRange?.endDate;
@@ -162,21 +151,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
             endDate: date,
           );
         }
-        newlySelectedRange = selectedRange;
       }
     });
-
-    if (newlySelectedDate != null) {
-      widget.onDateSelected?.call(newlySelectedDate!);
-      if (!widget.showActionButtons) {
-        widget.onDateSubmitted?.call(newlySelectedDate!);
-      }
-    } else if (newlySelectedRange != null) {
-      widget.onRangeSelected?.call(newlySelectedRange!);
-      if (!widget.showActionButtons && newlySelectedRange!.isComplete) {
-        widget.onRangeSubmitted?.call(newlySelectedRange!);
-      }
-    }
   }
 
   bool _isDateDisabled(DateTime date) {
@@ -213,9 +189,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     if (!_isSubmitEnabled) return;
     HapticFeedback.lightImpact();
     if (widget.selectionMode == DatePickerSelectionMode.single) {
-      widget.onDateSubmitted?.call(selectedDate!);
+      widget.onDateSelected?.call(selectedDate!);
     } else {
-      widget.onRangeSubmitted?.call(selectedRange!);
+      widget.onRangeSelected?.call(selectedRange!);
     }
   }
 
@@ -248,10 +224,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
               secondChild: _buildYearPickerView(context),
             ),
           ),
-          if (widget.showActionButtons) ...[
-            const SizedBox(height: 12),
-            _buildActionButtons(context, loc),
-          ],
+          const SizedBox(height: 12),
+          _buildActionButtons(context, loc),
         ],
       ),
     );
@@ -371,9 +345,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     final monday = DateTime(2026, 1, 5); // Known Monday
     final weekdays = <String>[];
     for (int i = 0; i < 7; i++) {
-      final day = monday.add(
-        Duration(days: (widget.firstDayOfWeek - 1 + i) % 7),
-      );
+      final day = monday.add(Duration(days: i));
       weekdays.add(DateFormat.E(localeName).format(day));
     }
 
@@ -397,8 +369,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
   Widget _buildMonthGrid(BuildContext context, DateTime month) {
     final firstDayOfMonth = DateTime(month.year, month.month, 1);
-    final weekdayOfFirst = firstDayOfMonth.weekday; // ISO 1..7
-    final leadingDays = (weekdayOfFirst - widget.firstDayOfWeek + 7) % 7;
+    final weekdayOfFirst = firstDayOfMonth.weekday;
+    final leadingDays = (weekdayOfFirst - 1) % 7;
     final gridStartDate = firstDayOfMonth.subtract(Duration(days: leadingDays));
 
     return Column(
@@ -743,7 +715,6 @@ Future<DateTime?> showCustomDatePicker({
   DateTime? initialDate,
   DateTime? minDate,
   DateTime? maxDate,
-  int firstDayOfWeek = 1,
 }) async {
   return showDialog<DateTime>(
     context: context,
@@ -757,9 +728,7 @@ Future<DateTime?> showCustomDatePicker({
           initialSelectedDate: initialDate,
           minDate: minDate,
           maxDate: maxDate,
-          firstDayOfWeek: firstDayOfWeek,
-          showActionButtons: true,
-          onDateSubmitted: (value) => Navigator.pop(context, value),
+          onDateSelected: (value) => Navigator.pop(context, value),
           onCancel: () => Navigator.pop(context),
         ),
       );
@@ -774,7 +743,6 @@ Future<List<DateTime?>?> showCustomDateRangePicker({
   DateTime? initialEndDate,
   DateTime? minDate,
   DateTime? maxDate,
-  int firstDayOfWeek = 1,
 }) async {
   return showDialog<List<DateTime?>>(
     context: context,
@@ -794,9 +762,7 @@ Future<List<DateTime?>?> showCustomDateRangePicker({
               : null,
           minDate: minDate,
           maxDate: maxDate,
-          firstDayOfWeek: firstDayOfWeek,
-          showActionButtons: true,
-          onRangeSubmitted: (value) =>
+          onRangeSelected: (value) =>
               Navigator.pop(context, [value.startDate, value.endDate]),
           onCancel: () => Navigator.pop(context),
         ),
