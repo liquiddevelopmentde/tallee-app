@@ -2,13 +2,11 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_text_button.dart';
-
-/// Selection mode for [CustomDatePicker].
-enum DatePickerSelectionMode { single, range }
 
 /// Represents a range of dates selected in [CustomDatePicker].
 class DatePickerRange {

@@ -17,6 +17,9 @@ extension AppEnvironmentExtension on AppEnvironment {
   }
 }
 
+/// Selection mode for [CustomDatePicker].
+enum DatePickerSelectionMode { single, range }
+
 /// Button types used for styling the [CustomWidthButton]
 /// - [ButtonType.primary]: Primary button style.
 /// - [ButtonType.secondary]: Secondary button style.
