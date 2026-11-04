@@ -5,28 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/data/dto/date_picker_range.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/custom_text_button.dart';
-
-/// Represents a range of dates selected in [CustomDatePicker].
-class DatePickerRange {
-  final DateTime? startDate;
-  final DateTime? endDate;
-
-  const DatePickerRange({this.startDate, this.endDate});
-
-  bool get isComplete => startDate != null && endDate != null;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DatePickerRange &&
-          startDate == other.startDate &&
-          endDate == other.endDate;
-
-  @override
-  int get hashCode => startDate.hashCode ^ endDate.hashCode;
-}
 
 /// A custom date picker supporting single date and date range selection.
 class CustomDatePicker extends StatefulWidget {
