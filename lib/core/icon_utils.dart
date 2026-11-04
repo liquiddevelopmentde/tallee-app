@@ -1,9 +1,10 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/constants/icon_constants.dart';
 import 'package:tallee/core/enums.dart';
 
 /// Returns [IconData] corresponding to a [Ruleset] enum value.
-IconData getRulesetIcon(Ruleset ruleset) {
+IconData getRulesetIcon({required Ruleset ruleset}) {
   switch (ruleset) {
     case Ruleset.highestScore:
       return Icons.arrow_upward;
@@ -21,7 +22,7 @@ IconData getRulesetIcon(Ruleset ruleset) {
 }
 
 /// Returns the icon for the given statistic type.
-IconData getStatisticIcon({required StatisticType type}) {
+IconData getTypeIcon({required StatisticType type}) {
   switch (type) {
     case StatisticType.totalMatches:
       return Icons.casino;
@@ -39,5 +40,16 @@ IconData getStatisticIcon({required StatisticType type}) {
       return Icons.trending_down;
     case StatisticType.winrate:
       return Icons.percent;
+  }
+}
+
+IconData getScopeIcon({required StatisticScope scope}) {
+  switch (scope) {
+    case StatisticScope.allPlayers:
+      return PLAYER_ICON;
+    case StatisticScope.selectedGroups:
+      return GROUP_ICON;
+    case StatisticScope.selectedGames:
+      return GAME_ICON;
   }
 }

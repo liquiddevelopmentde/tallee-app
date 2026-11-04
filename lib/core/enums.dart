@@ -7,7 +7,7 @@ import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.d
 enum AppEnvironment { development, testing, production }
 
 extension AppEnvironmentExtension on AppEnvironment {
-  /// The display tag for the environment (dev, testing, prod)
+  /// The display tag for the environment (dev, test, prod)
   String get tag {
     return switch (this) {
       AppEnvironment.development => 'dev',

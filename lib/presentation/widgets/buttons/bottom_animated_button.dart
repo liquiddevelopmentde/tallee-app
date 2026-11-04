@@ -1,8 +1,8 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/core/enums.dart';
 
 class BottomAnimatedButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
@@ -22,7 +22,19 @@ class BottomAnimatedButton extends StatefulWidget {
     this.buttonType = ButtonType.primary,
     this.isDestructive = false,
     this.isEmphasized = false,
-  });
+  }) : assert(
+         !(isDestructive && isEmphasized),
+         'isDestructive and isEmphasized can\'t be simultaneously true',
+       ),
+       assert(
+         sizeRelativeToWidth == null || buttonConstraints == null,
+         'sizeRelativeToWidth and buttonConstraints can\'t be simultaneously set',
+       ),
+       assert(
+         sizeRelativeToWidth == null ||
+             (sizeRelativeToWidth > 0 && sizeRelativeToWidth <= 1),
+         'sizeRelativeToWidth must be 0 < size <= 1',
+       );
 
   final String buttonText;
   final VoidCallback? onPressed;
@@ -37,7 +49,45 @@ class BottomAnimatedButton extends StatefulWidget {
 }
 
 class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
-  bool _isPressed = false;
+  bool isPressed = false;
+
+  bool get isDisabled => widget.onPressed == null;
+
+  BoxDecoration get buttonDecoration {
+    if (widget.buttonType == ButtonType.primary) {
+      // Primary
+      return BoxDecoration(
+        color: widget.onPressed == null
+            ? context.talleeColors.onBoxColor
+            : widget.isDestructive
+            ? context.talleeColors.errorColor
+            : widget.isEmphasized
+            ? AppColors.primaryColor
+            : Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Colors.black,
+        borderRadius: BorderRadius.circular(12),
+      );
+    } else if (widget.buttonType == ButtonType.secondary) {
+      // Secondary
+      return BoxDecoration(
+        border: BoxBorder.all(
+          color: widget.onPressed == null
+              ? context.talleeColors.hintColor
+              : widget.isDestructive
+              ? context.talleeColors.errorColor
+              : widget.isEmphasized
+              ? AppColors.primaryColor
+              : context.talleeColors.textColor,
+          width: 2,
+          strokeAlign: BorderSide.strokeAlignInside,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      );
+    }
+    // Tertiary
+    return const BoxDecoration();
+  }
 
   TextStyle get textStyle {
     late Color textColor;
@@ -76,63 +126,25 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
     );
   }
 
-  BoxDecoration get buttonDecoration {
-    if (widget.buttonType == ButtonType.primary) {
-      // Primary
-      return BoxDecoration(
-        color: widget.onPressed == null
-            ? context.talleeColors.onBoxColor
-            : widget.isDestructive
-            ? context.talleeColors.errorColor
-            : widget.isEmphasized
-            ? AppColors.primaryColor
-            : Theme.of(context).brightness == Brightness.dark
-            ? Colors.white
-            : Colors.black,
-        borderRadius: BorderRadius.circular(12),
-      );
-    } else if (widget.buttonType == ButtonType.secondary) {
-      // Secondary
-      return BoxDecoration(
-        border: BoxBorder.all(
-          color: widget.onPressed == null
-              ? context.talleeColors.hintColor
-              : widget.isDestructive
-              ? context.talleeColors.errorColor
-              : widget.isEmphasized
-              ? AppColors.primaryColor
-              : context.talleeColors.textColor,
-          width: 2,
-          strokeAlign: BorderSide.strokeAlignInside,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      );
-    }
-    // Tertiary
-    return const BoxDecoration();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final isDisabled = widget.onPressed == null;
-
     return IgnorePointer(
       ignoring: isDisabled,
       child: GestureDetector(
-        onTapDown: (_) => setState(() => _isPressed = true),
-        onTapUp: (_) => setState(() => _isPressed = false),
-        onTapCancel: () => setState(() => _isPressed = false),
+        onTapDown: (_) => setState(() => isPressed = true),
+        onTapUp: (_) => setState(() => isPressed = false),
+        onTapCancel: () => setState(() => isPressed = false),
         onTap: () {
           HapticFeedback.selectionClick();
-          if (widget.onPressed != null) {
+          if (!isDisabled) {
             widget.onPressed!();
           }
         },
         child: AnimatedScale(
-          scale: _isPressed ? 0.95 : 1.0,
+          scale: isPressed ? 0.95 : 1.0,
           duration: const Duration(milliseconds: 100),
           child: AnimatedOpacity(
-            opacity: _isPressed ? 0.6 : 1.0,
+            opacity: isPressed ? 0.6 : 1.0,
             duration: const Duration(milliseconds: 100),
             child: Center(
               child: Container(

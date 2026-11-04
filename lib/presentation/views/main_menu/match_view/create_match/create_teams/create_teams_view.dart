@@ -170,7 +170,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     final loc = AppLocalizations.of(context);
     return Team(
       name: '${loc.team} ${teams.length + 1}',
-      color: getTeamColor(teams.length),
+      color: getTeamColor(index: teams.length),
       members: [],
     );
   }
@@ -226,8 +226,8 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
 
           // Reset color to default if it was based on the index
           final previousIndex = i < index ? i : i + 1;
-          if (teams[i].color == getTeamColor(previousIndex)) {
-            teams[i] = teams[i].copyWith(color: getTeamColor(i));
+          if (teams[i].color == getTeamColor(index: previousIndex)) {
+            teams[i] = teams[i].copyWith(color: getTeamColor(index: i));
           }
         }
       }
@@ -320,7 +320,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
         initialTeamCount,
         (index) => Team(
           name: '${loc.team} ${index + 1}',
-          color: getTeamColor(index),
+          color: getTeamColor(index: index),
           members: [],
         ),
       );
