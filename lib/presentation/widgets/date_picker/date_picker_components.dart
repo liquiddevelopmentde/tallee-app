@@ -17,6 +17,8 @@ class DatePickerHeader extends StatelessWidget {
     required this.pageController,
     required this.isYearPickerOpen,
     required this.onToggleYearPicker,
+    required this.canNavigatePrevious,
+    required this.canNavigateNext,
   });
 
   final DateTime focusedMonth;
@@ -24,19 +26,22 @@ class DatePickerHeader extends StatelessWidget {
   final PageController pageController;
   final bool isYearPickerOpen;
   final VoidCallback onToggleYearPicker;
+  final bool canNavigatePrevious;
+  final bool canNavigateNext;
 
   @override
   Widget build(BuildContext context) {
     final monthYear = DateFormat.yMMMM(localeName).format(focusedMonth);
     return Row(
       children: [
-        _DatePickerNavigationButton(
-          icon: Icons.chevron_left_rounded,
-          onTap: () => pageController.previousPage(
-            duration: const Duration(milliseconds: 350),
-            curve: Curves.easeInOutCubic,
+        if (canNavigatePrevious)
+          _DatePickerNavigationButton(
+            icon: Icons.chevron_left_rounded,
+            onTap: () => pageController.previousPage(
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeInOutCubic,
+            ),
           ),
-        ),
         Expanded(
           child: InkWell(
             borderRadius: BorderRadius.circular(8),
@@ -72,13 +77,14 @@ class DatePickerHeader extends StatelessWidget {
             ),
           ),
         ),
-        _DatePickerNavigationButton(
-          icon: Icons.chevron_right_rounded,
-          onTap: () => pageController.nextPage(
-            duration: const Duration(milliseconds: 350),
-            curve: Curves.easeInOutCubic,
+        if (canNavigateNext)
+          _DatePickerNavigationButton(
+            icon: Icons.chevron_right_rounded,
+            onTap: () => pageController.nextPage(
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeInOutCubic,
+            ),
           ),
-        ),
       ],
     );
   }

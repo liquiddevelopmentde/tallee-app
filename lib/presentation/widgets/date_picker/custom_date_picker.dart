@@ -275,6 +275,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
             pageController: pageController,
             isYearPickerOpen: isYearPickerOpen,
             onToggleYearPicker: toggleYearPicker,
+            canNavigatePrevious: focusedMonth.isAfter(firstMonth),
+            canNavigateNext: focusedMonth.isBefore(lastMonth),
           ),
           const SizedBox(height: 12),
           SizedBox(
