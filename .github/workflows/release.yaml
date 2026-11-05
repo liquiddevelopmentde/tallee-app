@@ -21,6 +21,7 @@ permissions:
 env:
   ANDROID_PACKAGE: de.liquiddev.tallee
   IOS_BUNDLE_ID: de.liquiddev.tallee
+  APPSTORE_APP_ID: "6811652520"
   IOS_TEAM_ID: ${{ vars.IOS_TEAM_ID }}
   IOS_PROVISIONING_PROFILE_NAME: ${{ vars.IOS_PROVISIONING_PROFILE_NAME }}
   GITEA_URL: ${{ vars.GITEA_URL }}
@@ -368,12 +369,12 @@ jobs:
       - name: Install App Store Connect CLI
         uses: rudrankriyam/setup-asc@v1
 
-      - name: Stage App Store version as draft
+      - name: Stage App Store version
         env:
           ASC_BYPASS_KEYCHAIN: "1"
           ASC_NO_UPDATE: "1"
           ASC_TELEMETRY_DISABLED: "1"
-          ASC_APP_ID: ${{ env.IOS_BUNDLE_ID }}
+          ASC_APP_ID: ${{ env.APPSTORE_APP_ID }}
           ASC_KEY_ID: ${{ vars.APPSTORE_API_KEY_ID }}
           ASC_ISSUER_ID: ${{ vars.APPSTORE_ISSUER_ID }}
           APPSTORE_API_PRIVATE_KEY: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
@@ -382,18 +383,20 @@ jobs:
           set -euo pipefail
           export ASC_PRIVATE_KEY_B64="$(printf '%s' "$APPSTORE_API_PRIVATE_KEY" | base64 | tr -d '\n')"
           APP_VERSION="${VERSION%%+*}"
+          BUILD_NUMBER="${VERSION##*+}"
+          echo "Staging App Store version ${APP_VERSION} with build ${BUILD_NUMBER}"
 
-          BUILD_ID=$(asc builds info --app "$ASC_APP_ID" --latest --platform IOS \
-            | jq -r '.data.id // .id // empty')
-          if [ -z "$BUILD_ID" ] || [ "$BUILD_ID" = "null" ]; then
-            echo "::error::Could not resolve the uploaded iOS build."
-            exit 1
-          fi
-          echo "Staging App Store version ${APP_VERSION} with build ${BUILD_ID}"
-
-          # Creates/updates the version and attaches the build, but does NOT submit.
-          asc release stage \
+          # Creates the version if needed, then attaches the build. Does NOT submit.
+          asc versions create \
             --app "$ASC_APP_ID" \
             --version "$APP_VERSION" \
-            --build-id "$BUILD_ID" \
-            --confirm
+            --platform IOS \
+            --if-exists skip
+
+          asc versions attach-build \
+            --app "$ASC_APP_ID" \
+            --version "$APP_VERSION" \
+            --platform IOS \
+            --build-number "$BUILD_NUMBER" \
+            --wait \
+            --timeout 30m
