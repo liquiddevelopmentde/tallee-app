@@ -343,84 +343,84 @@ jobs:
               "${API}/releases/${RELEASE_ID}/assets?name=${encoded}"
           done
 
-#  publish_play_store:
-#    name: Upload to Google Play
-#    runs-on: ubuntu-latest
-#    needs: [meta, build_android]
-#    if: vars.STORE_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || inputs.dry_run == false)
-#    environment: production
-#    steps:
-#      - name: Download artifact
-#        uses: actions/download-artifact@v8
-#        with:
-#          name: android
-#          path: dist
-#
-#      - name: Upload AAB to Play Store
-#        uses: r0adkll/upload-google-play@v1
-#        with:
-#          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
-#          packageName: ${{ env.ANDROID_PACKAGE }}
-#          releaseFiles: dist/*.aab
-#          tracks: ${{ vars.PLAY_TRACK || 'internal' }}
-#          status: ${{ vars.PLAY_RELEASE_STATUS || 'draft' }}
-#          releaseName: v${{ needs.meta.outputs.version }}
-#
-#  publish_appstore:
-#    name: Upload to TestFlight + stage App Store draft
-#    runs-on: ubuntu-latest
-#    needs: [meta, build_ios]
-#    if: vars.STORE_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || inputs.dry_run == false)
-#    environment: production
-#    steps:
-#      - name: Download artifact
-#        uses: actions/download-artifact@v8
-#        with:
-#          name: ios
-#          path: dist
-#
-#      - name: Resolve IPA path
-#        id: ipa
-#        run: echo "path=$(ls dist/*.ipa | head -n 1)" >> "$GITHUB_OUTPUT"
-#
-#      - name: Upload IPA to TestFlight
-#        uses: apple-actions/upload-testflight-build@v5
-#        with:
-#          app-path: ${{ steps.ipa.outputs.path }}
-#          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
-#          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
-#          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
-#          wait-for-processing: 'true'
-#
-#      - name: Install App Store Connect CLI
-#        uses: rudrankriyam/setup-asc@v1
-#
-#      - name: Stage App Store version as draft
-#        env:
-#          ASC_BYPASS_KEYCHAIN: "1"
-#          ASC_NO_UPDATE: "1"
-#          ASC_TELEMETRY_DISABLED: "1"
-#          ASC_APP_ID: ${{ env.IOS_BUNDLE_ID }}
-#          ASC_KEY_ID: ${{ vars.APPSTORE_API_KEY_ID }}
-#          ASC_ISSUER_ID: ${{ vars.APPSTORE_ISSUER_ID }}
-#          APPSTORE_API_PRIVATE_KEY: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
-#          VERSION: ${{ needs.meta.outputs.version }}
-#        run: |
-#          set -euo pipefail
-#          export ASC_PRIVATE_KEY_B64="$(printf '%s' "$APPSTORE_API_PRIVATE_KEY" | base64 | tr -d '\n')"
-#          APP_VERSION="${VERSION%%+*}"
-#
-#          BUILD_ID=$(asc builds info --app "$ASC_APP_ID" --latest --platform IOS \
-#            | jq -r '.data.id // .id // empty')
-#          if [ -z "$BUILD_ID" ] || [ "$BUILD_ID" = "null" ]; then
-#            echo "::error::Could not resolve the uploaded iOS build."
-#            exit 1
-#          fi
-#          echo "Staging App Store version ${APP_VERSION} with build ${BUILD_ID}"
-#
-#          # Creates/updates the version and attaches the build, but does NOT submit.
-#          asc release stage \
-#            --app "$ASC_APP_ID" \
-#            --version "$APP_VERSION" \
-#            --build-id "$BUILD_ID" \
-#            --confirm
+  publish_play_store:
+    name: Upload to Google Play
+    runs-on: ubuntu-latest
+    needs: [meta, build_android]
+    if: vars.STORE_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || inputs.dry_run == false)
+    environment: production
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: android
+          path: dist
+
+      - name: Upload AAB to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ env.ANDROID_PACKAGE }}
+          releaseFiles: dist/*.aab
+          tracks: ${{ vars.PLAY_TRACK || 'internal' }}
+          status: ${{ vars.PLAY_RELEASE_STATUS || 'draft' }}
+          releaseName: v${{ needs.meta.outputs.version }}
+
+  publish_appstore:
+    name: Upload to TestFlight + stage App Store draft
+    runs-on: ubuntu-latest
+    needs: [meta, build_ios]
+    if: vars.STORE_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || inputs.dry_run == false)
+    environment: production
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: ios
+          path: dist
+
+      - name: Resolve IPA path
+        id: ipa
+        run: echo "path=$(ls dist/*.ipa | head -n 1)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload IPA to TestFlight
+        uses: apple-actions/upload-testflight-build@v5
+        with:
+          app-path: ${{ steps.ipa.outputs.path }}
+          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+          wait-for-processing: 'true'
+
+      - name: Install App Store Connect CLI
+        uses: rudrankriyam/setup-asc@v1
+
+      - name: Stage App Store version as draft
+        env:
+          ASC_BYPASS_KEYCHAIN: "1"
+          ASC_NO_UPDATE: "1"
+          ASC_TELEMETRY_DISABLED: "1"
+          ASC_APP_ID: ${{ env.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.APPSTORE_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.APPSTORE_ISSUER_ID }}
+          APPSTORE_API_PRIVATE_KEY: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+          VERSION: ${{ needs.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+          export ASC_PRIVATE_KEY_B64="$(printf '%s' "$APPSTORE_API_PRIVATE_KEY" | base64 | tr -d '\n')"
+          APP_VERSION="${VERSION%%+*}"
+
+          BUILD_ID=$(asc builds info --app "$ASC_APP_ID" --latest --platform IOS \
+            | jq -r '.data.id // .id // empty')
+          if [ -z "$BUILD_ID" ] || [ "$BUILD_ID" = "null" ]; then
+            echo "::error::Could not resolve the uploaded iOS build."
+            exit 1
+          fi
+          echo "Staging App Store version ${APP_VERSION} with build ${BUILD_ID}"
+
+          # Creates/updates the version and attaches the build, but does NOT submit.
+          asc release stage \
+            --app "$ASC_APP_ID" \
+            --version "$APP_VERSION" \
+            --build-id "$BUILD_ID" \
+            --confirm
