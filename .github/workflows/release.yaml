@@ -141,7 +141,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v7
         with:
-          name: android-apk
           path: dist/tallee-*.apk
           archive: false
           if-no-files-found: error
@@ -150,7 +149,6 @@ jobs:
       - name: Upload AAB
         uses: actions/upload-artifact@v7
         with:
-          name: android-aab
           path: dist/tallee-*.aab
           archive: false
           if-no-files-found: error
@@ -298,7 +296,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: ios
           path: dist/tallee-*.ipa
           archive: false
           if-no-files-found: error
@@ -353,8 +350,10 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
-          name: android
+          pattern: '*.aab'
           path: dist
+          merge-multiple: true
+          skip-decompress: true
 
       - name: Upload AAB to Play Store
         uses: r0adkll/upload-google-play@v1
@@ -376,8 +375,10 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
-          name: ios
+          pattern: '*.ipa'
           path: dist
+          merge-multiple: true
+          skip-decompress: true
 
       - name: Resolve IPA path
         id: ipa
