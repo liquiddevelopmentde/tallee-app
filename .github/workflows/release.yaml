@@ -139,16 +139,14 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: android-apk
-          path: dist/app-release.apk
-          archive: false
+            name: android-apk
+            path: dist/tallee-*.apk
 
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: android-aab
-          path: dist/app-release.aab
-          archive: false
+          path: dist/tallee-*.aab
 
   build_ios:
     name: Build iOS
