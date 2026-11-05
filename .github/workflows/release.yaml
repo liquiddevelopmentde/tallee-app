@@ -95,15 +95,17 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Write .env
+      - name: Write .env #remove write to assets and root
         env:
           API_URL: ${{ secrets.API_URL }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: |
+          mkdir -p assets
           {
+            printf 'API_URL=%s\n' "$API_URL"
             printf 'API_URL_PROD=%s\n' "$API_URL"
             printf 'SENTRY_DSN=%s\n' "$SENTRY_DSN"
-          } > .env
+          } | tee .env assets/.env
 
       - name: Set up release signing
         if: env.ANDROID_KEYSTORE_BASE64 != ''
@@ -176,15 +178,17 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Write .env
+      - name: Write .env #remove write to assets and root
         env:
           API_URL: ${{ secrets.API_URL }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: |
+          mkdir -p assets
           {
+            printf 'API_URL=%s\n' "$API_URL"
             printf 'API_URL_PROD=%s\n' "$API_URL"
             printf 'SENTRY_DSN=%s\n' "$SENTRY_DSN"
-          } > .env
+          } | tee .env assets/.env
 
       - name: Require signing material on real deploy
         if: env.DRY_RUN != 'true'
