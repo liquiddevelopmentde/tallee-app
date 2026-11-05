@@ -87,10 +87,7 @@ class RemoteShareService {
           ? dotenv.get('API_URL_DEV_ANDROID')
           : dotenv.get('API_URL_DEV_IOS');
     } else {
-      final apiUrl = const String.fromEnvironment('API_URL').isNotEmpty
-          ? const String.fromEnvironment('API_URL')
-          : dotenv.env['API_URL'] ?? '';
-      return apiUrl;
+      return dotenv.get('API_URL_PROD');
     }
   }
 

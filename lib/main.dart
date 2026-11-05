@@ -47,15 +47,10 @@ void main() async {
   ShowcaseView.register(blurValue: 0.4);
   //TODO: Remove before merge
   print("SENTRY DSN AT STARTUP: ${dotenv.get('SENTRY_DSN', fallback: '')}");
-
-  final sentryDsn = dotenv.env['SENTRY_DSN']?.isNotEmpty == true
-      ? dotenv.env['SENTRY_DSN']!
-      : const String.fromEnvironment('SENTRY_DSN');
-
   await SentryFlutter.init(
     (options) {
       // error reporting & feedback is disabled in development
-      options.dsn = IS_DEV_ENV ? '' : sentryDsn;
+      options.dsn = IS_DEV_ENV ? '' : dotenv.get('SENTRY_DSN', fallback: '');
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
       //TODO: Remove before merge

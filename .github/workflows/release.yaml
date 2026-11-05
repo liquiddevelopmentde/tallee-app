@@ -90,11 +90,18 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Create dummy .env for Flutter asset bundler
-        run: touch .env
-
       - name: Get dependencies
         run: flutter pub get
+
+      - name: Create .env file
+        env:
+          API_URL_PROD: ${{ secrets.API_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          {
+            printf 'API_URL_PROD=%s\n' "$API_URL_PROD"
+            printf 'SENTRY_DSN=%s\n' "$SENTRY_DSN"
+          } > .env
 
       - name: Set up release signing
         if: env.ANDROID_KEYSTORE_BASE64 != ''
@@ -108,22 +115,10 @@ jobs:
           } > android/key.properties
 
       - name: Build AAB
-        env:
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          API_URL: ${{ secrets.API_URL }}
-        run: |
-          flutter build appbundle --release \
-            --dart-define=SENTRY_DSN="$SENTRY_DSN" \
-            --dart-define=API_URL="$API_URL"
+        run: flutter build appbundle --release
 
       - name: Build APK
-        env:
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          API_URL: ${{ secrets.API_URL }}
-        run: |
-          flutter build apk --release \
-            --dart-define=SENTRY_DSN="$SENTRY_DSN" \
-            --dart-define=API_URL="$API_URL"
+        run: flutter build apk --release
 
       - name: Upload debug symbols to GlitchTip
         env:
@@ -176,11 +171,18 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Create dummy .env for Flutter asset bundler
-        run: touch .env
-
       - name: Get dependencies
         run: flutter pub get
+
+      - name: Create .env file
+        env:
+          API_URL_PROD: ${{ secrets.API_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          {
+            printf 'API_URL_PROD=%s\n' "$API_URL_PROD"
+            printf 'SENTRY_DSN=%s\n' "$SENTRY_DSN"
+          } > .env
 
       - name: Require signing material on real deploy
         if: env.DRY_RUN != 'true'
@@ -239,24 +241,13 @@ jobs:
 
       - name: Build IPA
         if: env.DRY_RUN != 'true'
-        env:
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          API_URL: ${{ secrets.API_URL }}
         run: |
           flutter build ipa --release \
-            --export-options-plist=ios/ExportOptions.plist \
-            --dart-define=SENTRY_DSN="$SENTRY_DSN" \
-            --dart-define=API_URL="$API_URL"
+            --export-options-plist=ios/ExportOptions.plist
 
       - name: Build unsigned (dry run)
         if: env.DRY_RUN == 'true'
-        env:
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          API_URL: ${{ secrets.API_URL }}
-        run: |
-          flutter build ios --release --no-codesign \
-            --dart-define=SENTRY_DSN="$SENTRY_DSN" \
-            --dart-define=API_URL="$API_URL"
+        run: flutter build ios --release --no-codesign
 
       - name: Upload debug symbols to GlitchTip
         env:
