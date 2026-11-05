@@ -29,8 +29,6 @@ env:
   IOS_PROVISIONING_PROFILE_NAME: ${{ vars.IOS_PROVISIONING_PROFILE_NAME }}
   GITEA_URL: ${{ vars.GITEA_URL || 'https://git.yannick-weigert.com' }}
   GITEA_REPO: liquid-development/tallee-app
-  # true  -> workflow_dispatch with dry_run=true
-  # false -> workflow_dispatch with dry_run=false, or any tag push
   DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
 
 jobs:
@@ -91,6 +89,9 @@ jobs:
         with:
           channel: stable
           cache: true
+
+      - name: Create dummy .env for Flutter asset bundler
+        run: touch .env
 
       - name: Get dependencies
         run: flutter pub get
@@ -174,6 +175,9 @@ jobs:
         with:
           channel: stable
           cache: true
+
+      - name: Create dummy .env for Flutter asset bundler
+        run: touch .env
 
       - name: Get dependencies
         run: flutter pub get
@@ -298,17 +302,14 @@ jobs:
           set -euo pipefail
           API="${GITEA_URL}/api/v1/repos/${GITEA_REPO}"
           
-          # Query Gitea for the existing release matching TAG
           RELEASE_ID=$(curl -fsS -H "Authorization: token ${GITEA_TOKEN}" \
             "${API}/releases/tags/${TAG}" | jq -r '.id // empty')
           
-          # Fail immediately if no release was found
           if [ -z "$RELEASE_ID" ] || [ "$RELEASE_ID" = "null" ]; then
             echo "::error::Release for tag '${TAG}' does not exist on Gitea."
             exit 1
           fi
-          
-          # Upload build artifacts to the existing release
+
           for file in dist/*; do
             name=$(basename "$file")
             encoded=$(jq -rn --arg v "$name" '$v | @uri')
