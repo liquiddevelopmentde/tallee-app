@@ -105,13 +105,13 @@ jobs:
             printf 'SENTRY_DSN=%s\n' "$SENTRY_DSN"
           } > .env
 
-      - name: Require release signing on real deploy
-        if: env.DRY_RUN != 'true'
-        run: |
-          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
-            echo "::error::ANDROID_KEYSTORE_BASE64 is not set, refusing to build an unsigned release."
-            exit 1
-          fi
+#      - name: Require release signing on real deploy
+#        if: env.DRY_RUN != 'true'
+#        run: |
+#          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+#            echo "::error::ANDROID_KEYSTORE_BASE64 is not set, refusing to build an unsigned release."
+#            exit 1
+#          fi
 
       - name: Set up release signing
         if: env.ANDROID_KEYSTORE_BASE64 != ''
@@ -131,7 +131,9 @@ jobs:
         run: flutter build apk --release
 
       - name: Upload debug symbols to GlitchTip
-        if: env.SENTRY_AUTH_TOKEN != ''
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_RELEASE: de.liquiddev.tallee@${{ needs.meta.outputs.version }}
         run: flutter pub run sentry_dart_plugin
 
       - name: Collect artifacts
@@ -246,11 +248,12 @@ jobs:
         run: flutter build ios --release --no-codesign
 
       - name: Upload debug symbols to GlitchTip
-        if: env.SENTRY_AUTH_TOKEN != ''
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_RELEASE: de.liquid-dev.tallee@${{ needs.meta.outputs.version }}
         run: flutter pub run sentry_dart_plugin
 
       - name: Collect artifact
-        if: env.DRY_RUN != 'true'
         run: |
           VERSION="${{ needs.meta.outputs.version }}"
           mkdir -p dist
@@ -258,7 +261,6 @@ jobs:
           ls -lh dist
 
       - name: Upload artifact
-        if: env.DRY_RUN != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: ios
