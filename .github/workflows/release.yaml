@@ -196,6 +196,14 @@ jobs:
             echo "::error::IOS_PROVISIONING_PROFILE_BASE64 is not set."
             missing=1
           fi
+          if [ -z "$IOS_TEAM_ID" ]; then
+            echo "::error::IOS_TEAM_ID (vars.IOS_TEAM_ID) is not set."
+            missing=1
+          fi
+          if [ -z "$IOS_PROVISIONING_PROFILE_NAME" ]; then
+            echo "::error::IOS_PROVISIONING_PROFILE_NAME (vars.IOS_PROVISIONING_PROFILE_NAME) is not set."
+            missing=1
+          fi
           exit $missing
 
       - name: Import signing certificate
@@ -246,13 +254,18 @@ jobs:
           </plist>
           EOF
 
+      - name: Write iOS signing xcconfig
+        if: env.DRY_RUN != 'true'
+        run: |
+          cat > ios/Flutter/CodeSigning.xcconfig <<EOF
+          CODE_SIGN_STYLE = Manual
+          CODE_SIGN_IDENTITY = Apple Distribution
+          DEVELOPMENT_TEAM = ${IOS_TEAM_ID}
+          PROVISIONING_PROFILE_SPECIFIER = ${IOS_PROVISIONING_PROFILE_NAME}
+          EOF
+
       - name: Build IPA
         if: env.DRY_RUN != 'true'
-        env:
-          FLUTTER_XCODE_CODE_SIGN_STYLE: Manual
-          FLUTTER_XCODE_CODE_SIGN_IDENTITY: Apple Distribution
-          FLUTTER_XCODE_DEVELOPMENT_TEAM: ${{ env.IOS_TEAM_ID }}
-          FLUTTER_XCODE_PROVISIONING_PROFILE_SPECIFIER: ${{ env.IOS_PROVISIONING_PROFILE_NAME }}
         run: |
           flutter build ipa --release \
             --export-options-plist=ios/ExportOptions.plist
