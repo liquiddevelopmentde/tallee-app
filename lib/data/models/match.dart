@@ -280,12 +280,6 @@ class Match {
   List<Team> get pairs =>
       isPairMatch ? teams!.where((t) => t.isPair).toList() : const [];
 
-  List<Player> get unpairedPlayers {
-    if (isTeamMatch) return const [];
-    if (!isPairMatch) return players;
-    return teams!.where((t) => !t.isPair).expand((t) => t.members).toList();
-  }
-
   bool get hasResult => mvp.isNotEmpty || mvt.isNotEmpty;
 
   // Most Valuable Player(s) based on the match's ruleset
