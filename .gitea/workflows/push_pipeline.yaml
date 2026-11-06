@@ -218,6 +218,29 @@ jobs:
           git config --global --add safe.directory '*'
           flutter pub get
 
+      - name: Remove unused dependencies
+        run: |
+          dart pub global activate dependency_validator '^5.1.0'
+
+          # exit code 1 means issues found
+          OUTPUT=$(dart pub global run dependency_validator 2>&1 || true)
+          echo "$OUTPUT"
+
+          # Collect the unused dependencies
+          UNUSED=$(echo "$OUTPUT" \
+            | sed 's/\x1b\[[0-9;]*m//g' \
+            | awk '/^These packages may be unused/ {collect=1; next}
+                   collect && /^  \* / {print $2; next}
+                   collect {collect=0}')
+
+          if [ -n "$UNUSED" ]; then
+            echo "Removing unused dependencies:"
+            echo "$UNUSED"
+            flutter pub remove $UNUSED
+          else
+            echo "No unused dependencies found"
+          fi
+
       - name: Sort pubspec.yaml
         run: dart run sort_pubspec_dependencies
 
@@ -243,10 +266,10 @@ jobs:
           git fetch origin "$BRANCH_NAME"
           git checkout "$BRANCH_NAME"
 
-          if [ -n "$(git status --porcelain lib test pubspec.yaml)" ]; then
+          if [ -n "$(git status --porcelain lib test pubspec.yaml pubspec.lock)" ]; then
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
-            git add lib test pubspec.yaml
+            git add lib test pubspec.yaml pubspec.lock
             git commit -m "Auto-format code [skip ci]"
             git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin HEAD:$BRANCH_NAME
