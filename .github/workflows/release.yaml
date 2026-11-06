@@ -349,8 +349,8 @@ jobs:
         uses: apple-actions/upload-testflight-build@v5
         with:
           app-path: ${{ steps.ipa.outputs.path }}
-          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
-          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
           wait-for-processing: 'true'
 
@@ -363,8 +363,8 @@ jobs:
           ASC_NO_UPDATE: "1"
           ASC_TELEMETRY_DISABLED: "1"
           ASC_APP_ID: ${{ env.APPSTORE_APP_ID }}
-          ASC_KEY_ID: ${{ vars.APPSTORE_API_KEY_ID }}
-          ASC_ISSUER_ID: ${{ vars.APPSTORE_ISSUER_ID }}
+          ASC_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
           APPSTORE_API_PRIVATE_KEY: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
           VERSION: ${{ needs.meta.outputs.version }}
         run: |
