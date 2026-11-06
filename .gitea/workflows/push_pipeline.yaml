@@ -69,6 +69,7 @@ jobs:
         with:
           channel: stable
           cache: true
+          cache-path: /tmp/flutter-sdk
 
       - name: Cache pub dependencies
         uses: actions/cache@v4
@@ -123,6 +124,7 @@ jobs:
         with:
           channel: stable
           cache: true
+          cache-path: /tmp/flutter-sdk
 
       - name: Cache pub dependencies
         uses: actions/cache@v4
@@ -204,6 +206,7 @@ jobs:
         with:
           channel: stable
           cache: true
+          cache-path: /tmp/flutter-sdk
 
       - name: Cache pub dependencies
         uses: actions/cache@v4
@@ -301,6 +304,7 @@ jobs:
         with:
           channel: stable
           cache: true
+          cache-path: /tmp/flutter-sdk
 
       - name: Cache pub dependencies
         uses: actions/cache@v4
@@ -364,6 +368,7 @@ jobs:
         with:
           channel: stable
           cache: true
+          cache-path: /tmp/flutter-sdk
 
       - name: Cache pub dependencies
         uses: actions/cache@v4
