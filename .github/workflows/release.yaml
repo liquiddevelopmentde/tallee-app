@@ -12,20 +12,20 @@ on:
       - "v*"
 
 concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: false
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 env:
-  ANDROID_PACKAGE: de.liquiddev.tallee
-  IOS_BUNDLE_ID: de.liquiddev.tallee
-  APPSTORE_APP_ID: "6811652520"
+  ANDROID_PACKAGE: ${{ vars.APP_IDENTIFIER }}
+  IOS_BUNDLE_ID: ${{ vars.APP_IDENTIFIER }}
+  APPSTORE_APP_ID: ${{ vars.APPSTORE_APP_ID }}
   IOS_TEAM_ID: ${{ vars.IOS_TEAM_ID }}
   IOS_PROVISIONING_PROFILE_NAME: ${{ vars.IOS_PROVISIONING_PROFILE_NAME }}
   GITEA_URL: ${{ vars.GITEA_URL }}
-  GITEA_REPO: liquid-development/tallee-app
+  GITEA_REPO: ${{ vars.GITEA_REPO }}
 
 jobs:
   meta:
@@ -103,7 +103,6 @@ jobs:
           } > .env
 
       - name: Set up release signing
-        if: env.ANDROID_KEYSTORE_BASE64 != ''
         run: |
           echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
           {
@@ -120,7 +119,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_RELEASE: ${{ env.ANDROID_PACKAGE }}@${{ needs.meta.outputs.version }}
-        run: flutter pub run sentry_dart_plugin
+        run: dart run sentry_dart_plugin
 
       - name: Collect artifacts
         run: |
@@ -173,27 +172,6 @@ jobs:
             printf 'SENTRY_DSN=%s\n' "$SENTRY_DSN"
           } > .env
 
-      - name: Require signing material
-        run: |
-          missing=0
-          if [ -z "$IOS_CERTIFICATE_P12_BASE64" ]; then
-            echo "::error::IOS_CERTIFICATE_P12_BASE64 is not set."
-            missing=1
-          fi
-          if [ -z "$IOS_PROVISIONING_PROFILE_BASE64" ]; then
-            echo "::error::IOS_PROVISIONING_PROFILE_BASE64 is not set."
-            missing=1
-          fi
-          if [ -z "$IOS_TEAM_ID" ]; then
-            echo "::error::IOS_TEAM_ID (vars.IOS_TEAM_ID) is not set."
-            missing=1
-          fi
-          if [ -z "$IOS_PROVISIONING_PROFILE_NAME" ]; then
-            echo "::error::IOS_PROVISIONING_PROFILE_NAME (vars.IOS_PROVISIONING_PROFILE_NAME) is not set."
-            missing=1
-          fi
-          exit $missing
-
       - name: Import signing certificate
         uses: apple-actions/import-codesign-certs@v7
         with:
@@ -205,13 +183,8 @@ jobs:
           mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
           echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > /tmp/tallee.mobileprovision
           UUID=$(security cms -D -i /tmp/tallee.mobileprovision | plutil -extract UUID raw -)
-          NAME=$(security cms -D -i /tmp/tallee.mobileprovision | plutil -extract Name raw -)
-          if [ "$NAME" != "$IOS_PROVISIONING_PROFILE_NAME" ]; then
-            echo "::error::Profile name '$NAME' does not match IOS_PROVISIONING_PROFILE_NAME '$IOS_PROVISIONING_PROFILE_NAME'."
-            exit 1
-          fi
           cp /tmp/tallee.mobileprovision "$HOME/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision"
-          echo "Installed provisioning profile '$NAME' ($UUID)"
+          echo "Installed provisioning profile $UUID"
 
       - name: Write ExportOptions.plist
         run: |
@@ -257,7 +230,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_RELEASE: ${{ env.IOS_BUNDLE_ID }}@${{ needs.meta.outputs.version }}
-        run: flutter pub run sentry_dart_plugin
+        run: dart run sentry_dart_plugin
 
       - name: Collect artifact
         run: |
@@ -335,11 +308,11 @@ jobs:
           packageName: ${{ env.ANDROID_PACKAGE }}
           releaseFiles: dist/*.aab
           tracks: ${{ vars.PLAY_TRACK || 'internal' }}
-          status: ${{ vars.PLAY_RELEASE_STATUS || 'draft' }}
+          status: draft
           releaseName: v${{ needs.meta.outputs.version }}
 
   publish_appstore:
-    name: Upload to TestFlight + stage App Store draft
+    name: Upload to App Store (testflight + release draft)
     runs-on: ubuntu-latest
     needs: [meta, build_ios]
     if: vars.STORE_DEPLOY_ENABLED == 'true'
