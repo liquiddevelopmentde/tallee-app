@@ -45,13 +45,28 @@ jobs:
           echo "Resolved version: $VERSION"
 
       - name: Summary
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+          PUBLISHING: ${{ vars.STORE_DEPLOY_ENABLED == 'true' }}
+          TRACK: ${{ vars.PLAY_TRACK || 'internal' }}
         run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          NAME="${VERSION%%+*}"
+          BUILD="${VERSION##*+}"
           {
             echo "### Release build"
             echo ""
-            echo "- Version: \`${{ steps.version.outputs.version }}\`"
-            echo "- Trigger: \`${{ github.event_name }}\`"
-            echo "- Publishing enabled: \`${{ vars.STORE_DEPLOY_ENABLED == 'true' }}\`"
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Version | \`${NAME}\` |"
+            echo "| Build | \`${BUILD}\` |"
+            echo "| Tag | \`${TAG}\` |"
+            echo "| Trigger | \`${{ github.event_name }}\` |"
+            if [ "$PUBLISHING" = "true" ]; then
+              echo "| Publishing | Play (\`${TRACK}\`, draft) · TestFlight + App Store draft · Gitea release |"
+            else
+              echo "| Publishing | **disabled** (\`STORE_DEPLOY_ENABLED\` is not \`true\`), build only, nothing is uploaded |"
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
 
   build_android:
@@ -359,7 +374,6 @@ jobs:
           BUILD_NUMBER="${VERSION##*+}"
           echo "Staging App Store version ${APP_VERSION} with build ${BUILD_NUMBER}"
 
-          # Creates the version if needed, then attaches the build. Does NOT submit.
           asc versions create \
             --app "$ASC_APP_ID" \
             --version "$APP_VERSION" \
