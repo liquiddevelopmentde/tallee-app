@@ -7,7 +7,7 @@ import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/dto/date_picker_range.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/date_picker_action_button.dart';
+import 'package:tallee/presentation/widgets/date_picker/date_picker_action_button.dart';
 
 class DatePickerHeader extends StatelessWidget {
   const DatePickerHeader({
@@ -407,9 +407,9 @@ class _RangeSpanDecoration extends StatelessWidget {
     final rangeColor = AppColors.primaryColor.withAlpha(45);
     if (isInRange) {
       final borderRadius = colIndex == 0
-          ? const BorderRadius.horizontal(left: Radius.circular(17))
+          ? const BorderRadius.horizontal(left: Radius.circular(10))
           : colIndex == 6
-          ? const BorderRadius.horizontal(right: Radius.circular(17))
+          ? const BorderRadius.horizontal(right: Radius.circular(10))
           : BorderRadius.zero;
       return Positioned.fill(
         child: Center(
