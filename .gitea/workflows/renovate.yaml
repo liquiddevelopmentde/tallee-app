@@ -21,11 +21,4 @@ jobs:
           RENOVATE_GIT_AUTHOR: "Gitea Actions <actions@yannick-weigert.de>"
           RENOVATE_BINARY_SOURCE: install
           LOG_LEVEL: debug
-        run: |
-          # Alternating weeks: even = minor, odd = minor + major
-          if [ $(( $(date +%-V) % 2 )) -eq 0 ]; then
-            export RENOVATE_CONFIG_FILE=.gitea/renovate/minor.json
-          else
-            export RENOVATE_CONFIG_FILE=.gitea/renovate/minor-major.json
-          fi
-          renovate
+        run: renovate
