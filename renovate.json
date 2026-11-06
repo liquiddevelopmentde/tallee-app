@@ -8,8 +8,8 @@
   "baseBranchPatterns": [
     "development"
   ],
-  "prHourlyLimit": 2,
-  "prConcurrentLimit": 3,
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
   "labels": [
     "Type/Dependencies"
   ],
