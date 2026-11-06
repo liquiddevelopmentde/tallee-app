@@ -1,0 +1,3 @@
+ignore:
+  # Provides the font for CupertinoIcons
+  - cupertino_icons

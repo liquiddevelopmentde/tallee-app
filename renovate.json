@@ -8,8 +8,8 @@
   "baseBranchPatterns": [
     "development"
   ],
-  "prHourlyLimit": 2,
-  "prConcurrentLimit": 3,
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
   "labels": [
     "Type/Dependencies"
   ],
@@ -37,6 +37,30 @@
         "dart"
       ],
       "enabled": false
+    },
+    {
+      "matchManagers": [
+        "pub"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "dart dependencies (minor)",
+      "groupSlug": "dart-minor"
+    },
+    {
+      "matchManagers": [
+        "pub"
+      ],
+      "matchDepNames": [
+        "build_runner",
+        "drift",
+        "drift_dev",
+        "drift_flutter"
+      ],
+      "groupName": "codegen",
+      "groupSlug": "codegen"
     }
   ]
 }
