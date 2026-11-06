@@ -108,7 +108,10 @@ class MatchProfileBody extends StatelessWidget {
                 ? match.isTeamMatch
                       ? Column(
                           children: (match.teams ?? []).map((team) {
-                            return TeamCard(team: team);
+                            return TeamCard(
+                              team: team,
+                              onPlayerTap: onPlayerTap,
+                            );
                           }).toList(),
                         )
                       : Wrap(
