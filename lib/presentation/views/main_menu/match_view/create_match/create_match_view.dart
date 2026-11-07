@@ -103,7 +103,12 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     matchNameController.addListener(() {
       setState(() {});
     });
-    loadData();
+
+    if (widget.matchToPrefill != null) {
+      prefillMatchDetails();
+    } else {
+      loadData();
+    }
 
     showcaseProvider = context.read<ShowcaseProvider>();
 
@@ -301,11 +306,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       groups = result[0] as List<Group>..sortByLowercaseName((g) => g.name);
       players = result[1] as List<Player>..sortByLowercaseName((p) => p.name);
       games = (result[2] as List<Game>)..sortByLowercaseName((g) => g.name);
-
-      // If a match is provided, prefill the fields
-      if (widget.matchToPrefill != null) {
-        prefillMatchDetails();
-      }
     });
   }
 
