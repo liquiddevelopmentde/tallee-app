@@ -297,7 +297,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                               final t = Curves.easeOut.transform(
                                 animation.value,
                               );
-                              final tileMargin = AppSpacing.tileMargin;
+                              const tm = AppSpacing.tileMargin;
                               return Transform.scale(
                                 scale: 1.0 + (0.02 * t),
                                 child: Material(
@@ -308,10 +308,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                     children: [
                                       ?child,
                                       Positioned(
-                                        left: tileMargin.left,
-                                        right: tileMargin.right,
-                                        top: tileMargin.top,
-                                        bottom: tileMargin.bottom,
+                                        left: tm.left,
+                                        right: tm.right,
+                                        top: tm.top,
+                                        bottom: tm.bottom,
                                         child: IgnorePointer(
                                           child: AnimatedOpacity(
                                             duration: const Duration(
