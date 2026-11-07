@@ -349,6 +349,8 @@ class _GameViewState extends State<GameView> with RouteAware {
 
   /// Loads the games from the database and sorts them by creation date.
   void loadGames() {
+    if (!mounted) return;
+
     setState(() => isLoading = true);
 
     Future.wait([
