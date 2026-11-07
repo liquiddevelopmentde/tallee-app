@@ -99,15 +99,19 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   @override
   void initState() {
     super.initState();
+    // The database is needed both when loading data and when saving
+    // an edited or duplicated match, so it must be initialized before the
+    // view decides which data to load.
+    db = context.read<AppDatabase>();
+
     matchNameController.addListener(() {
       setState(() {});
     });
 
     if (widget.matchToPrefill != null) {
       prefillMatchDetails();
-    } else {
-      loadData();
     }
+    loadData();
 
     showcaseProvider = context.read<ShowcaseProvider>();
 
@@ -295,8 +299,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   }
 
   void loadData() {
-    db = context.read<AppDatabase>();
-
     Future.wait([
       db.groupDao.getAllGroups(),
       db.playerDao.getAllPlayers(),
