@@ -7,14 +7,19 @@ abstract final class AppSpacing {
   static const double contentWidthFactor = 0.95;
 
   /// Horizontal page padding for content that isn't inside a tile.
-  static EdgeInsets get pagePadding =>
-      const EdgeInsets.symmetric(horizontal: 12);
+  static const EdgeInsets pagePadding = EdgeInsets.symmetric(horizontal: 12);
 
-  static EdgeInsets get standardMargin =>
-      const EdgeInsets.symmetric(horizontal: 12, vertical: 6);
+  static const EdgeInsets standardMargin = EdgeInsets.symmetric(
+    horizontal: 12,
+    vertical: 6,
+  );
 
-  static EdgeInsets get tileMargin =>
-      const EdgeInsets.only(left: 12, right: 12, bottom: 10);
+  /// Margin for tiles.
+  static const EdgeInsets tileMargin = EdgeInsets.only(
+    left: 12,
+    right: 12,
+    bottom: 10,
+  );
 
   /// Bottom padding for scrollable lists so the last item isn't covered by
   /// floating buttons or the navigation bar.
@@ -26,6 +31,9 @@ abstract final class AppSpacing {
   static double floatingButtonBottom(BuildContext context) =>
       MediaQuery.paddingOf(context).bottom + 20;
 
-  static EdgeInsets get filterRowPadding =>
-      const EdgeInsets.only(bottom: 10, left: 12);
+  /// Padding for the row of filters.
+  static const EdgeInsets filterRowPadding = EdgeInsets.only(
+    bottom: 10,
+    left: 12,
+  );
 }
