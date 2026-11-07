@@ -147,8 +147,8 @@ class _TalleeState extends State<Tallee> {
   }
 
   @override
-  Future<void> dispose() async {
-    await fileSubscription?.cancel();
+  void dispose() {
+    fileSubscription?.cancel();
     super.dispose();
   }
 
