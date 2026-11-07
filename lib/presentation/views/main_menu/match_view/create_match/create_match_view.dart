@@ -99,15 +99,16 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   @override
   void initState() {
     super.initState();
+    db = context.read<AppDatabase>();
+
     matchNameController.addListener(() {
       setState(() {});
     });
 
     if (widget.matchToPrefill != null) {
       prefillMatchDetails();
-    } else {
-      loadData();
     }
+    loadData();
 
     showcaseProvider = context.read<ShowcaseProvider>();
 
@@ -295,8 +296,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   }
 
   void loadData() {
-    db = context.read<AppDatabase>();
-
     Future.wait([
       db.groupDao.getAllGroups(),
       db.playerDao.getAllPlayers(),
