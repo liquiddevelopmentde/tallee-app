@@ -10,7 +10,7 @@ class BottomAnimatedButton extends StatefulWidget {
   /// when pressed.
   /// - [buttonText]: The text to be displayed on the button.
   /// - [onPressed]: Callback function that is triggered when the button is pressed.
-  /// - [buttonConstraints]: Optional constraints to control the button's size, takes precedence over [sizeRelativeToWidth].
+  /// - [buttonConstraints]: Optional constraints to control the button's size. Mutually exclusive with [sizeRelativeToWidth].
   /// - [sizeRelativeToWidth]: Minimum width of the button relative to the screen width. Defaults to [AppSpacing.contentWidthFactor].
   /// - [buttonType]: The type of the button, which determines its styling.
   /// - [accent]: The accent color of the button, e.g. for destructive or emphasized actions.

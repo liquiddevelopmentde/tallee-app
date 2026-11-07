@@ -10,7 +10,7 @@ class ApiActionAnimatedButton extends StatefulWidget {
   /// A button specifically designed for asynchronous requests.
   /// - [onPressed]: The async callback that triggers the API request. Pass `null` to disable the button.
   /// - [text]: The text of the button.
-  /// - [buttonConstraints]: Optional constraints to control the button's size, takes precedence over [sizeRelativeToWidth].
+  /// - [buttonConstraints]: Optional constraints to control the button's size. Mutually exclusive with [sizeRelativeToWidth].
   /// - [sizeRelativeToWidth]: Minimum width of the button relative to the screen width. Defaults to [AppSpacing.contentWidthFactor].
   /// - [buttonType]: The type of the button, which determines its styling.
   /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
@@ -32,17 +32,11 @@ class ApiActionAnimatedButton extends StatefulWidget {
          'sizeRelativeToWidth must be 0 < size <= 1',
        );
 
-  /// Expects a Future to handle the API request duration. If null, the button is disabled.
   final Future<void> Function()? onPressed;
-
   final String? text;
-
   final BoxConstraints? buttonConstraints;
-
   final double? sizeRelativeToWidth;
-
   final ButtonType buttonType;
-
   final bool isDestructive;
 
   @override
