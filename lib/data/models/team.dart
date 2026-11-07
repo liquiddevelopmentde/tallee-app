@@ -22,6 +22,8 @@ class Team {
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now();
 
+  bool get isPair => members.length == 2;
+
   @override
   String toString() =>
       'Team{id: $id, name: $name, color: $color, score: $score, members: $members}';

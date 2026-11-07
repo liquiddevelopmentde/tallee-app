@@ -95,48 +95,47 @@ class MatchProfileBody extends StatelessWidget {
 
         const SizedBox(height: 15),
 
-        // Teams or Players
-        if (useTeamLogic) ...[
-          // Teams or Pairs
+        // Teams / Pairs or Players
+        if (match.isTeamMatch) ...[
+          // Teams
           InfoTile(
-            title: match.isTeamMatch ? loc.teams : loc.players,
-            leadingWidget: Icon(
-              match.isTeamMatch ? Icons.scoreboard : Icons.people,
-            ),
+            title: loc.teams,
+            leadingWidget: const Icon(Icons.scoreboard),
             horizontalAlignment: CrossAxisAlignment.start,
-            content: match.teams != null && match.teams!.isNotEmpty
-                ? match.isTeamMatch
-                      ? Column(
-                          children: (match.teams ?? [])
-                              .map((team) => TeamCard(team: team))
-                              .toList(),
-                        )
-                      : Wrap(
-                          spacing: 12,
-                          runSpacing: 8,
-                          children: (match.teams ?? []).map((team) {
-                            if (team.members.length > 1) {
-                              return PairTile(pair: team);
-                            } else {
-                              final player = team.members.first;
-                              return PlayerTile(
-                                player: player,
-                                onTileTap: onPlayerTap != null
-                                    ? () => onPlayerTap!(player)
-                                    : null,
-                              );
-                            }
-                          }).toList(),
-                        )
+            content: match.hasTeams
+                ? Column(
+                    children: match.teams!
+                        .map((team) => TeamCard(team: team))
+                        .toList(),
+                  )
                 : Text(
-                    match.isTeamMatch
-                        ? loc.no_teams_available
-                        : loc.no_players_available,
+                    loc.no_teams_available,
                     style: TextStyle(
                       fontSize: 14,
                       color: context.talleeColors.textColor,
                     ),
                   ),
+          ),
+        ] else if (match.isPairMatch) ...[
+          // Pairs and single players
+          InfoTile(
+            title: loc.players,
+            leadingWidget: const Icon(Icons.people),
+            horizontalAlignment: CrossAxisAlignment.start,
+            content: Wrap(
+              spacing: 12,
+              runSpacing: 8,
+              children: match.teams!.map((team) {
+                if (team.isPair) return PairTile(pair: team);
+                final player = team.members.first;
+                return PlayerTile(
+                  player: player,
+                  onTileTap: onPlayerTap != null
+                      ? () => onPlayerTap!(player)
+                      : null,
+                );
+              }).toList(),
+            ),
           ),
         ] else ...[
           // Players

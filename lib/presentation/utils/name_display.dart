@@ -134,7 +134,7 @@ Widget _buildPairGameNameWidget(
         color: context.talleeColors.textColor.withAlpha(100),
       );
 
-  final bool showIcon = team.members.length > 1;
+  final bool showIcon = team.isPair;
 
   bool isHighlighted(int index) =>
       highlighted.length > index && highlighted[index];
@@ -147,7 +147,7 @@ Widget _buildPairGameNameWidget(
         const Icon(Icons.link, size: 18),
         const SizedBox(width: 5),
       ],
-      if (team.members.length > 1) ...[
+      if (showIcon) ...[
         Flexible(
           child: Text.rich(
             TextSpan(

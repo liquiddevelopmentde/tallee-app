@@ -272,29 +272,6 @@ class _MatchResultViewState extends State<MatchResultView> {
     Navigator.pop(context);
   }
 
-  /// Handles saving or removing the (single) winner in the database.
-  Future<bool> handleWinner() async {
-    if (useTeamLogic) {
-      if (selectedTeam == null) {
-        return await db.teamDao.removeWinnerTeam(matchId: widget.match.id);
-      } else {
-        return await db.teamDao.setWinnerTeam(
-          matchId: widget.match.id,
-          teamId: selectedTeam!.id,
-        );
-      }
-    } else {
-      if (selectedPlayer == null) {
-        return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
-      } else {
-        return await db.scoreEntryDao.setWinner(
-          matchId: widget.match.id,
-          playerId: selectedPlayer!.id,
-        );
-      }
-    }
-  }
-
   /// Handles saving the (multiple) winners to the database.
   Future<bool> handleWinners() async {
     if (useTeamLogic) {

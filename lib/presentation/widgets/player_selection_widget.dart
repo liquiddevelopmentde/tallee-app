@@ -216,20 +216,21 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         children: [
           buildSearchBar(loc),
 
-          if (widget.mode == SelectionMode.multiple && allPlayers.isNotEmpty)
+          if (widget.mode == SelectionMode.multiple)
             Column(
               crossAxisAlignment: crossAxisAlignment,
               spacing: 10,
               children: [
                 buildSelectedPlayersHeader(loc),
                 buildSelectedPlayersBar(),
-                Text(
-                  loc.all_players,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                if (allPlayers.isNotEmpty)
+                  Text(
+                    loc.all_players,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
               ],
             ),
 
@@ -475,7 +476,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   }
 
   Widget buildUnitTile(Team unit) {
-    final isPaired = unit.members.length > 1;
+    final isPaired = unit.isPair;
     final isPlayerSelectedForPairing = pairingSelection.contains(unit.id);
     final canPlayerBePaired =
         widget.pairingEnabled &&

@@ -114,9 +114,7 @@ class _MatchTileState extends State<MatchTile> {
 
             const SizedBox(height: 12),
 
-            if (match.teams != null &&
-                match.teams!.isNotEmpty &&
-                match.isTeamMatch) ...[
+            if (match.isTeamMatch && match.hasTeams) ...[
               // Team display
               Text(
                 loc.teams,
@@ -154,8 +152,7 @@ class _MatchTileState extends State<MatchTile> {
                 },
               ),
               const SizedBox(height: 12),
-            ] else if (!match.isTeamMatch &&
-                (widget.match.teams?.isNotEmpty ?? false)) ...[
+            ] else if (match.isPairMatch) ...[
               // Player with Pairs display
               Text(
                 loc.players,
@@ -170,7 +167,7 @@ class _MatchTileState extends State<MatchTile> {
                 spacing: 6,
                 runSpacing: 6,
                 children: match.teams!.map((pair) {
-                  if (pair.members.length > 1) {
+                  if (pair.isPair) {
                     return PairTile(pair: pair);
                   } else {
                     return PlayerTile(player: pair.members.first);

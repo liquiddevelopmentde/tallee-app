@@ -121,7 +121,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                               padding: const EdgeInsets.symmetric(vertical: 4),
                               child: TextIconListTile(
                                 player: allTeams[index].members.first,
-                                pair: allTeams[index].members.length > 1
+                                pair: allTeams[index].isPair
                                     ? allTeams[index]
                                     : null,
                                 icon: Icons.drag_handle,
