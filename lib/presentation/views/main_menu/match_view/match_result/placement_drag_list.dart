@@ -126,7 +126,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                                 ),
                                 child: TextIconListTile(
                                   player: allTeams[index].members.first,
-                                  pair: allTeams[index].members.length > 1
+                                  pair: allTeams[index].isPair
                                       ? allTeams[index]
                                       : null,
                                   icon: Icons.drag_handle,
