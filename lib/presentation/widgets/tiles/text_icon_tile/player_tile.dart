@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/player.dart';
@@ -29,7 +30,12 @@ class PlayerTile extends StatelessWidget {
       icon: icon,
       muted: player.deleted,
       selected: selected,
-      onTileTap: onTileTap,
+      onTileTap: onTileTap == null
+          ? null
+          : () {
+              HapticFeedback.selectionClick();
+              onTileTap!();
+            },
       backgroundColor: backgroundColor,
       content: Row(
         mainAxisSize: MainAxisSize.min,
