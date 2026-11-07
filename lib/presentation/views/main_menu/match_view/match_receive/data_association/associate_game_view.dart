@@ -145,7 +145,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: BottomAnimatedButton(
-                buttonText: loc.confirm,
+                text: loc.confirm,
                 onPressed: () {
                   Navigator.of(context).push(
                     adaptivePageRoute(

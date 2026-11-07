@@ -92,7 +92,7 @@ class NewsView extends StatelessWidget {
               top: false,
               child: BottomAnimatedButton(
                 buttonConstraints: const BoxConstraints(minWidth: 390),
-                buttonText: loc.continue_,
+                text: loc.continue_,
                 onPressed: () =>
                     Navigator.of(context, rootNavigator: true).pop(),
               ),

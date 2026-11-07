@@ -248,7 +248,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                     showcaseKey: createGameViewCreateGameKey,
                     description: loc.showcase_create_game_button,
                     child: BottomAnimatedButton(
-                      buttonText: isEditing ? loc.edit_game : loc.create_game,
+                      text: isEditing ? loc.edit_game : loc.create_game,
                       onPressed:
                           gameNameController.text.trim().isNotEmpty &&
                               selectedRuleset != null &&

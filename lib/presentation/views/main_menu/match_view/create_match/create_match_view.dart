@@ -279,7 +279,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     onPressed: isSubmitButtonEnabled
                         ? () => submitButtonNavigation(context)
                         : null,
-                    buttonText: buttonText,
+                    text: buttonText,
                   ),
                 ),
               ],

@@ -155,7 +155,7 @@ class _FeedbackFormViewState extends State<FeedbackFormView> {
                     const Spacer(),
                     const SizedBox(height: 16),
                     BottomAnimatedButton(
-                      buttonText: isSubmitting
+                      text: isSubmitting
                           ? loc.sending
                           : (isErrorReport
                                 ? loc.report_error

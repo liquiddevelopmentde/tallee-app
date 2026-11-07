@@ -126,9 +126,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: BottomAnimatedButton(
-                buttonText: widget.match.group == null
-                    ? loc.save_match
-                    : loc.confirm,
+                text: widget.match.group == null ? loc.save_match : loc.confirm,
                 onPressed: unassignedCount == 0
                     ? () async {
                         if (widget.match.group == null) {

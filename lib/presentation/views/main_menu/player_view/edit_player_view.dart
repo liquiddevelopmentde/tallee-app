@@ -85,7 +85,7 @@ class _EditPlayerViewState extends State<EditPlayerView> {
               Padding(
                 padding: AppSpacing.pagePadding,
                 child: BottomAnimatedButton(
-                  buttonText: loc.save_changes,
+                  text: loc.save_changes,
                   onPressed: enableSaveButton ? savePlayer : null,
                 ),
               ),

@@ -119,7 +119,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
               ),
 
               BottomAnimatedButton(
-                buttonText: buttonText,
+                text: buttonText,
                 onPressed:
                     (groupNameController.text.isEmpty ||
                         (selectedPlayers.length < 2))

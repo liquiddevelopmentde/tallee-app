@@ -183,7 +183,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                 children: [
                   // Save Changes Button
                   BottomAnimatedButton(
-                    buttonText: loc.save_changes,
+                    text: loc.save_changes,
                     onPressed: canSave
                         ? () async => await handleSaving()
                         : null,

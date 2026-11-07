@@ -227,13 +227,10 @@ class MatchProfileBody extends StatelessWidget {
       return Column(
         children: [
           Expanded(child: content),
+          BottomAnimatedButton(text: loc.import_match, onPressed: onConfirm),
           BottomAnimatedButton(
-            buttonText: loc.import_match,
-            onPressed: onConfirm,
-          ),
-          BottomAnimatedButton(
-            buttonText: loc.cancel,
-            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+            type: ButtonType.secondary,
             onPressed: onCancel,
           ),
         ],

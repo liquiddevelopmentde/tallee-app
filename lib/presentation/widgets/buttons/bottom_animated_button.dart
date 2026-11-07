@@ -8,19 +8,19 @@ import 'package:tallee/core/theme/app_spacing.dart';
 class BottomAnimatedButton extends StatefulWidget {
   /// A custom animated button widget that provides a scaling and opacity effect
   /// when pressed.
-  /// - [buttonText]: The text to be displayed on the button.
+  /// - [text]: The text to be displayed on the button.
   /// - [onPressed]: Callback function that is triggered when the button is pressed.
   /// - [buttonConstraints]: Optional constraints to control the button's size. Mutually exclusive with [sizeRelativeToWidth].
   /// - [sizeRelativeToWidth]: Minimum width of the button relative to the screen width. Defaults to [AppSpacing.contentWidthFactor].
-  /// - [buttonType]: The type of the button, which determines its styling.
+  /// - [type]: The type of the button, which determines its styling.
   /// - [accent]: The accent color of the button, e.g. for destructive or emphasized actions.
   const BottomAnimatedButton({
     super.key,
-    required this.buttonText,
+    required this.text,
     this.onPressed,
     this.buttonConstraints,
     this.sizeRelativeToWidth,
-    this.buttonType = ButtonType.primary,
+    this.type = ButtonType.primary,
     this.accent = ButtonAccent.neutral,
   }) : assert(
          sizeRelativeToWidth == null || buttonConstraints == null,
@@ -32,11 +32,11 @@ class BottomAnimatedButton extends StatefulWidget {
          'sizeRelativeToWidth must be 0 < size <= 1',
        );
 
-  final String buttonText;
+  final String text;
   final VoidCallback? onPressed;
   final BoxConstraints? buttonConstraints;
   final double? sizeRelativeToWidth;
-  final ButtonType buttonType;
+  final ButtonType type;
   final ButtonAccent accent;
 
   @override
@@ -53,7 +53,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
   bool get isEmphasized => widget.accent == ButtonAccent.emphasized;
 
   BoxDecoration get buttonDecoration {
-    if (widget.buttonType == ButtonType.primary) {
+    if (widget.type == ButtonType.primary) {
       // Primary
       return BoxDecoration(
         color: widget.onPressed == null
@@ -67,7 +67,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
             : Colors.black,
         borderRadius: BorderRadius.circular(12),
       );
-    } else if (widget.buttonType == ButtonType.secondary) {
+    } else if (widget.type == ButtonType.secondary) {
       // Secondary
       return BoxDecoration(
         border: BoxBorder.all(
@@ -98,7 +98,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
       );
     }
 
-    switch (widget.buttonType) {
+    switch (widget.type) {
       case ButtonType.primary:
         textColor = isDestructive || isEmphasized
             ? Colors.white
@@ -158,7 +158,7 @@ class _BottomAnimatedButtonState extends State<BottomAnimatedButton> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               margin: const EdgeInsets.symmetric(vertical: 4),
               child: Text(
-                widget.buttonText,
+                widget.text,
                 style: textStyle,
                 textAlign: TextAlign.center,
               ),

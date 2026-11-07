@@ -123,7 +123,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: BottomAnimatedButton(
-                buttonText: loc.import_match,
+                text: loc.import_match,
                 sizeRelativeToWidth: 0.9,
                 onPressed: successfulImport
                     ? () {

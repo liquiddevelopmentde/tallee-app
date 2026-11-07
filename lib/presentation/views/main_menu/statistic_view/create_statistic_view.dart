@@ -230,7 +230,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                       padding: const EdgeInsets.only(top: 20, bottom: 12),
                       child: Center(
                         child: BottomAnimatedButton(
-                          buttonText: loc.create_statistic,
+                          text: loc.create_statistic,
                           onPressed: enableSubmitButton
                               ? submitStatistic
                               : null,
