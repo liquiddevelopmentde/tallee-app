@@ -103,7 +103,12 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     matchNameController.addListener(() {
       setState(() {});
     });
-    loadData();
+
+    if (widget.matchToPrefill != null) {
+      prefillMatchDetails();
+    } else {
+      loadData();
+    }
 
     showcaseProvider = context.read<ShowcaseProvider>();
 
@@ -310,11 +315,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
       games = (result[2] as List<Game>)
         ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-
-      // If a match is provided, prefill the fields
-      if (widget.matchToPrefill != null) {
-        prefillMatchDetails();
-      }
     });
   }
 
@@ -330,9 +330,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
       selectedCreationDate = nullIfToday(match.createdAt);
 
-      if (match.teams != null &&
-          match.teams!.isNotEmpty &&
-          !match.isTeamMatch) {
+      if (match.isPairMatch) {
         selectedUnits = match.teams!;
       } else {
         selectedUnits = selectedPlayers
@@ -417,7 +415,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       selectedGroup = newGroup;
       selectedUnits = updatedUnits;
       selectedPlayers = selectedUnits.expand((u) => u.members).toList();
-      isTeamMatch |= selectedUnits.any((u) => u.members.length > 1);
     });
   }
 
@@ -582,7 +579,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       final match = await createMatch();
       widget.onMatchesUpdated?.call();
 
-      final hasPairs = selectedUnits.any((u) => u.members.length > 1);
+      final hasPairs = selectedUnits.any((u) => u.isPair);
 
       if (isTeamMatch && !hasPairs) {
         if (context.mounted) {
@@ -685,7 +682,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   // Creates a new match and adds it to the database.
   // Returns the created match.
   Future<Match> createMatch() async {
-    final hasPairs = selectedUnits.any((u) => u.members.length > 1);
+    final hasPairs = selectedUnits.any((u) => u.isPair);
     final effectivePairs = hasPairs ? selectedUnits : null;
     final effectiveTitle = matchNameController.text.isEmpty
         ? (hintText ?? '')

@@ -88,7 +88,12 @@ class _CreateGameViewState extends State<CreateGameView> {
     gameNameController.addListener(() => setState(() {}));
     gameDescriptionController.addListener(() => setState(() {}));
 
-    if (!isEditMode) {
+    if (isEditMode) {
+      gameNameController.text = widget.gameToEdit!.name;
+      gameDescriptionController.text = widget.gameToEdit!.description;
+      selectedRuleset = widget.gameToEdit!.ruleset;
+      selectedColor = widget.gameToEdit!.color;
+    } else {
       showcaseProvider = context.read<ShowcaseProvider>();
 
       handleShowcase(
@@ -125,14 +130,6 @@ class _CreateGameViewState extends State<CreateGameView> {
         translateAppColorToString(AppColor.values[index], context),
       ),
     );
-
-    if (widget.gameToEdit != null) {
-      gameNameController.text = widget.gameToEdit!.name;
-      gameDescriptionController.text = widget.gameToEdit!.description;
-      selectedRuleset = widget.gameToEdit!.ruleset;
-      selectedColor = widget.gameToEdit!.color;
-      selectedRuleset = widget.gameToEdit!.ruleset;
-    }
   }
 
   @override

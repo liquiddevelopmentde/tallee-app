@@ -491,7 +491,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   }
 
   Widget buildUnitTile(Team unit) {
-    final isPaired = unit.members.length > 1;
+    final isPaired = unit.isPair;
     final isPlayerSelectedForPairing = pairingSelection.contains(unit.id);
     final canPlayerBePaired =
         widget.pairingEnabled &&

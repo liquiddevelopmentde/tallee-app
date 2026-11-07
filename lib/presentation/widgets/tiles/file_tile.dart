@@ -125,12 +125,10 @@ class MatchFileTile extends StatelessWidget {
     items.add(loc.player_count(match.players.length));
 
     // Teams & Pairs
-    final isTeamMatch = match.isTeamMatch;
-    final teams = match.teams ?? [];
-    if (isTeamMatch) {
-      items.add('${teams.length} ${loc.teams}');
-    } else if (teams.isNotEmpty) {
-      final pairAmount = teams.where((t) => t.members.length > 1).length;
+    if (match.isTeamMatch) {
+      items.add('${match.teams?.length ?? 0} ${loc.teams}');
+    } else {
+      final pairAmount = match.pairs.length;
       if (pairAmount > 0) items.add('$pairAmount ${loc.pair(pairAmount)}');
     }
 
