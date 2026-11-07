@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/core/translations.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
@@ -63,7 +61,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
         title: Text(loc.statistic),
         leading: HapticIconButton(
           icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => updateCount(),
+          onPressed: updateCount,
         ),
         actions: [
           HapticIconButton(
@@ -74,32 +72,32 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
           ),
           HapticIconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () =>
-                showDialog<bool>(
-                  context: context,
-                  builder: (context) => CustomAlertDialog(
-                    title: '${loc.delete_statistic}?',
-                    content: Text(
-                      loc.this_cannot_be_undone,
-                      overflow: TextOverflow.visible,
-                    ),
-                    actions: [
-                      CustomDialogAction(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        text: loc.delete,
-                      ),
-                      CustomDialogAction(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        buttonType: ButtonType.secondary,
-                        text: loc.cancel,
-                      ),
-                    ],
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => CustomAlertDialog(
+                  title: '${loc.delete_statistic}?',
+                  content: Text(
+                    loc.this_cannot_be_undone,
+                    overflow: TextOverflow.visible,
                   ),
-                ).then((confirmed) async {
-                  if (confirmed == true && context.mounted) {
-                    deleteStatistic();
-                  }
-                }),
+                  actions: [
+                    CustomDialogAction(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      text: loc.delete,
+                    ),
+                    CustomDialogAction(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      buttonType: ButtonType.secondary,
+                      text: loc.cancel,
+                    ),
+                  ],
+                ),
+              );
+              if (confirmed == true && context.mounted) {
+                await deleteStatistic();
+              }
+            },
           ),
         ],
       ),
@@ -125,7 +123,9 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                       StatisticsTile(
                         statistic: widget.statistic,
                         margin: EdgeInsets.zero,
-                        width: MediaQuery.sizeOf(context).width * 0.95,
+                        width:
+                            MediaQuery.sizeOf(context).width *
+                            AppSpacing.contentWidthFactor,
                         values: widget.values,
                         displayCount: displayCount,
                         showAllValues: true,
@@ -135,7 +135,9 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                       // Details
                       InfoTile(
                         leadingWidget: const Icon(Icons.filter_alt),
-                        width: MediaQuery.sizeOf(context).width * 0.95,
+                        width:
+                            MediaQuery.sizeOf(context).width *
+                            AppSpacing.contentWidthFactor,
                         title: loc.filter,
                         content: Column(
                           spacing: 8,
@@ -154,10 +156,8 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                                   Text(
                                     widget.statistic.scopes
                                         .map(
-                                          (scope) => translateScopeToString(
-                                            scope,
-                                            context,
-                                          ),
+                                          (scope) =>
+                                              scope.toLocalizedString(context),
                                         )
                                         .join('\n'),
                                     textAlign: TextAlign.end,
@@ -184,11 +184,9 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                                             widget.statistic.startDate !=
                                                 null &&
                                             widget.statistic.endDate != null
-                                        ? '${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.startDate!)} - ${DateFormat.yMd(Localizations.localeOf(context).toString()).format(widget.statistic.endDate!)}'
-                                        : translateTimeframeToString(
-                                            widget.statistic.timeframe,
-                                            context,
-                                          ),
+                                        ? '${widget.statistic.startDate!.toShortDate(context)} - ${widget.statistic.endDate!.toShortDate(context)}'
+                                        : widget.statistic.timeframe
+                                              .toLocalizedString(context),
                                     textAlign: TextAlign.end,
                                   ),
                                 ],
@@ -257,7 +255,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
               ),
             ),
             Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom + 20,
+              bottom: AppSpacing.floatingButtonBottom(context),
               child: Row(
                 spacing: 10,
                 children: [
@@ -367,23 +365,23 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
     if (mounted) Navigator.of(context).pop(displayCount);
   }
 
-  void toggleIsFavourite(BuildContext context) async {
+  Future<void> toggleIsFavourite(BuildContext context) async {
     final updatedIsFavourite = !isFavourite;
     final db = context.read<AppDatabase>();
     await db.statisticDao.updateIsFavourite(
       widget.statistic.id,
       updatedIsFavourite,
     );
-    widget.refreshStatistic(widget.statistic.id);
+    unawaited(widget.refreshStatistic(widget.statistic.id));
     setState(() {
       isFavourite = updatedIsFavourite;
     });
   }
 
-  void deleteStatistic() async {
+  Future<void> deleteStatistic() async {
     final db = context.read<AppDatabase>();
     await db.statisticDao.deleteStatistic(widget.statistic.id);
-    widget.refreshStatistic(widget.statistic.id);
+    unawaited(widget.refreshStatistic(widget.statistic.id));
     if (mounted) Navigator.of(context).pop();
   }
 

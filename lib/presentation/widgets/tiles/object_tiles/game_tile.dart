@@ -1,10 +1,9 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/data/models/game.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
 class GameTile extends StatelessWidget {
@@ -14,7 +13,7 @@ class GameTile extends StatelessWidget {
   /// - [onTap]: The callback invoked when the tile is tapped.
   /// - [onLongPress]: The callback invoked when the tile is long pressed.
   /// - [isHighlighted]: A boolean to determine if the tile should be highlighted.
-  /// - [borderColor]: Optional color for the highlight border. If null, [badgeColor] or orange is used.
+  /// - [borderColor]: Optional color for the highlight border. If null gamecolor is used.
   const GameTile({
     super.key,
     required this.game,
@@ -36,26 +35,26 @@ class GameTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = game.name;
     final description = game.description;
-    final ruleset = translateRulesetToString(game.ruleset, context);
-    final gameColor = getColorFromAppColor(color: game.color, context: context);
+    final ruleset = game.ruleset.toLocalizedString(context);
+    final gameColor = game.color.colorValue(context);
     final highlightBorderColor = borderColor ?? gameColor;
     final showChevron = onLongPress != null;
 
     return GestureDetector(
       onTap: () {
-        HapticFeedback.selectionClick();
+        Haptics.selectionClick();
         if (onTap != null) {
           onTap!.call();
         }
       },
       onLongPress: () {
-        HapticFeedback.heavyImpact();
+        Haptics.heavyImpact();
         if (onLongPress != null) {
           onLongPress!.call();
         }
       },
       child: AnimatedContainer(
-        margin: AppColors.tileMargin,
+        margin: AppSpacing.tileMargin,
         padding: EdgeInsets.only(
           top: 12,
           bottom: 12,
@@ -90,7 +89,7 @@ class GameTile extends StatelessWidget {
                     children: [
                       // Colored Icon
                       ColoredIconContainer(
-                        icon: getRulesetIcon(ruleset: game.ruleset),
+                        icon: game.ruleset.icon,
                         color: gameColor,
                         margin: EdgeInsets.zero,
                       ),

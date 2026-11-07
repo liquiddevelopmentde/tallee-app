@@ -1,16 +1,14 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class TokenComponent extends StatelessWidget {
   const TokenComponent({
@@ -55,7 +53,7 @@ class TokenComponent extends StatelessWidget {
               const Icon(Icons.cloud_upload, size: 50),
               Container(
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                margin: const EdgeInsets.symmetric(horizontal: 30),
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
                   loc.send_code_instruction,
@@ -158,15 +156,14 @@ class TokenComponent extends StatelessWidget {
                 text: loc.copy_code,
                 onPressed: isLoading
                     ? null
-                    : () {
-                        Clipboard.setData(ClipboardData(text: displayCode))
-                            .then((_) {
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  CustomSnackBar(message: loc.code_copied),
-                                );
-                              }
-                            });
+                    : () async {
+                        await Clipboard.setData(
+                          ClipboardData(text: displayCode),
+                        ).then((_) {
+                          if (context.mounted) {
+                            context.showSnackBar(message: loc.code_copied);
+                          }
+                        });
                       },
                 icon: Icons.copy,
               ),
@@ -175,8 +172,8 @@ class TokenComponent extends StatelessWidget {
               FloatingAnimatedButton(
                 onPressed: isLoading
                     ? null
-                    : () {
-                        SharePlus.instance.share(
+                    : () async {
+                        await SharePlus.instance.share(
                           ShareParams(
                             text: loc.share_match_text(displayCode),
                             title: loc.share_match_title,
@@ -282,27 +279,25 @@ class TokenComponent extends StatelessWidget {
     BuildContext context, {
     String char = '',
     required bool active,
-  }) {
-    return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
+  }) => Container(
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: active
+          ? context.talleeColors.boxColor
+          : context.talleeColors.boxBorderColor.withAlpha(100),
+      border: Border.all(color: context.talleeColors.boxBorderColor),
+      borderRadius: AppColors.standardBorderRadiusAll,
+    ),
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Text(
+      char,
+      style: TextStyle(
+        fontSize: 35,
+        fontWeight: FontWeight.w400,
         color: active
-            ? context.talleeColors.boxColor
-            : context.talleeColors.boxBorderColor.withAlpha(100),
-        border: Border.all(color: context.talleeColors.boxBorderColor),
-        borderRadius: AppColors.standardBorderRadiusAll,
+            ? context.talleeColors.textColor
+            : context.talleeColors.boxBorderColor,
       ),
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Text(
-        char,
-        style: TextStyle(
-          fontSize: 35,
-          fontWeight: FontWeight.w400,
-          color: active
-              ? context.talleeColors.textColor
-              : context.talleeColors.boxBorderColor,
-        ),
-      ),
-    );
-  }
+    ),
+  );
 }

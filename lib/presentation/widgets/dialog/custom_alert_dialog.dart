@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 export 'custom_dialog_action.dart';
@@ -33,45 +33,42 @@ class CustomAlertDialog extends StatelessWidget {
   final Color? closeButtonColor;
 
   @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      titlePadding: showCloseButton
-          ? const EdgeInsets.only(left: 24.0, top: 12.0, right: 12.0)
-          : null,
-      title: showCloseButton
-          ? Padding(
-              padding: const EdgeInsets.only(top: 0.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: context.talleeColors.textColor,
-                      ),
+  Widget build(BuildContext context) => AlertDialog(
+    titlePadding: showCloseButton
+        ? const EdgeInsets.only(left: 24.0, top: 12.0, right: 12.0)
+        : null,
+    title: showCloseButton
+        ? Padding(
+            padding: EdgeInsets.zero,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: context.talleeColors.textColor,
                     ),
                   ),
-                  HapticCloseButton(color: closeButtonColor),
-                ],
-              ),
-            )
-          : Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: context.talleeColors.textColor,
-              ),
+                ),
+                HapticCloseButton(color: closeButtonColor),
+              ],
             ),
-      content: content,
-      actions: actions,
-      backgroundColor: context.talleeColors.boxColor,
-      actionsAlignment: MainAxisAlignment.center,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppColors.standardBorderRadiusAll,
-        side: BorderSide(color: context.talleeColors.boxBorderColor),
-      ),
-    );
-  }
+          )
+        : Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: context.talleeColors.textColor,
+            ),
+          ),
+    content: content,
+    actions: actions,
+    backgroundColor: context.talleeColors.boxColor,
+    actionsAlignment: MainAxisAlignment.center,
+    shape: RoundedRectangleBorder(
+      borderRadius: AppColors.standardBorderRadiusAll,
+      side: BorderSide(color: context.talleeColors.boxBorderColor),
+    ),
+  );
 }

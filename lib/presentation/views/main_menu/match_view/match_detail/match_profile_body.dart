@@ -1,9 +1,9 @@
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -72,7 +72,7 @@ class MatchProfileBody extends StatelessWidget {
 
         // Creation Date
         Text(
-          '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(match.createdAt)}',
+          '${loc.created_on} ${match.createdAt.toMediumDate(context)}',
           style: TextStyle(fontSize: 12, color: context.talleeColors.textColor),
           textAlign: TextAlign.center,
         ),
@@ -86,7 +86,7 @@ class MatchProfileBody extends StatelessWidget {
               const Icon(GROUP_ICON),
               const SizedBox(width: 8),
               Text(
-                '${match.group!.name}${getExtraPlayerCount(match)}',
+                '${match.group!.name}${match.extraPlayerCount}',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
@@ -104,8 +104,11 @@ class MatchProfileBody extends StatelessWidget {
             horizontalAlignment: CrossAxisAlignment.start,
             content: match.hasTeams
                 ? Column(
-                    children: match.teams!
-                        .map((team) => TeamCard(team: team))
+                    children: (match.teams!)
+                        .map(
+                          (team) =>
+                              TeamCard(team: team, onPlayerTap: onPlayerTap),
+                        )
                         .toList(),
                   )
                 : Text(
@@ -123,8 +126,6 @@ class MatchProfileBody extends StatelessWidget {
             leadingWidget: const Icon(Icons.people),
             horizontalAlignment: CrossAxisAlignment.start,
             content: Wrap(
-              alignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.start,
               spacing: 12,
               runSpacing: 8,
               children: match.teams!.map((team) {
@@ -147,18 +148,18 @@ class MatchProfileBody extends StatelessWidget {
             horizontalAlignment: CrossAxisAlignment.start,
             content: match.players.isNotEmpty
                 ? Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
-                    children: match.players.map((player) {
-                      return PlayerTile(
-                        player: player,
-                        onTileTap: onPlayerTap != null
-                            ? () => onPlayerTap!(player)
-                            : null,
-                      );
-                    }).toList(),
+                    children: match.players
+                        .map(
+                          (player) => PlayerTile(
+                            player: player,
+                            onTileTap: onPlayerTap != null
+                                ? () => onPlayerTap!(player)
+                                : null,
+                          ),
+                        )
+                        .toList(),
                   )
                 : Text(
                     loc.no_players_available,
@@ -181,10 +182,7 @@ class MatchProfileBody extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             child: GameLabel(
               title: match.game.name,
-              description: translateRulesetToString(
-                match.game.ruleset,
-                context,
-              ),
+              description: match.game.ruleset.toLocalizedString(context),
               color: match.game.color,
             ),
           ),
@@ -209,13 +207,11 @@ class MatchProfileBody extends StatelessWidget {
             horizontalAlignment: CrossAxisAlignment.start,
             content: match.players.isNotEmpty
                 ? Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
-                    children: match.players.map((player) {
-                      return PlayerTile(player: player);
-                    }).toList(),
+                    children: match.players
+                        .map((player) => PlayerTile(player: player))
+                        .toList(),
                   )
                 : Text(
                     loc.no_players_available,
@@ -233,15 +229,10 @@ class MatchProfileBody extends StatelessWidget {
       return Column(
         children: [
           Expanded(child: content),
+          BottomAnimatedButton(text: loc.import_match, onPressed: onConfirm),
           BottomAnimatedButton(
-            buttonText: loc.import_match,
-            sizeRelativeToWidth: 0.95,
-            onPressed: onConfirm,
-          ),
-          BottomAnimatedButton(
-            buttonText: loc.cancel,
-            sizeRelativeToWidth: 0.95,
-            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+            type: ButtonType.secondary,
             onPressed: onCancel,
           ),
         ],
@@ -252,7 +243,7 @@ class MatchProfileBody extends StatelessWidget {
         children: [
           content,
           Positioned(
-            bottom: MediaQuery.paddingOf(context).bottom + 20,
+            bottom: AppSpacing.floatingButtonBottom(context),
             child: Row(
               spacing: 8,
               children: [
@@ -286,7 +277,7 @@ class MatchProfileBody extends StatelessWidget {
   List<Widget> getSingleResultRow(BuildContext context, AppLocalizations loc) {
     final ruleset = match.game.ruleset;
     if (match.mvp.isNotEmpty || match.mvt.isNotEmpty) {
-      final label = ruleset == Ruleset.loser ? loc.loser : loc.winner;
+      final label = ruleset.isLoser ? loc.loser : loc.winner;
       return [
         Text(
           label,
@@ -358,7 +349,6 @@ class MatchProfileBody extends StatelessWidget {
 
   Widget getMultiResultRows(BuildContext context, AppLocalizations loc) {
     List<(Widget, int)> scores = getSortedScores(context);
-    bool hasMatchEnded = match.endedAt != null;
 
     return Column(
       children: [
@@ -367,7 +357,7 @@ class MatchProfileBody extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(child: scores[i].$1),
-              hasMatchEnded
+              match.hasEnded
                   ? getResultValueText(context, loc, i, scores[i].$2)
                   : const Text('-'),
             ],
@@ -380,7 +370,7 @@ class MatchProfileBody extends StatelessWidget {
     List<(Widget, int)> namedScores = [];
     if (useTeamLogic) {
       final teams = match.teams ?? [];
-      for (var team in teams) {
+      for (final team in teams) {
         Widget nameWidget = buildUnitNameWidget(
           context,
           team,
@@ -392,8 +382,8 @@ class MatchProfileBody extends StatelessWidget {
     } else {
       final scores = match.scores;
       final players = List<Player>.from(match.players)
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-      for (var player in players) {
+        ..sortByLowercaseName((p) => p.name);
+      for (final player in players) {
         int score = scores[player.id]?.score ?? 0;
         namedScores.add((
           buildUnitNameWidget(
@@ -407,11 +397,9 @@ class MatchProfileBody extends StatelessWidget {
     }
 
     final ruleset = match.game.ruleset;
-    if (ruleset == Ruleset.highestScore ||
-        ruleset == Ruleset.placement ||
-        ruleset == Ruleset.lives) {
+    if (ruleset.isHighestScore || ruleset.isPlacement || ruleset.isLives) {
       namedScores.sort((a, b) => b.$2.compareTo(a.$2));
-    } else if (ruleset == Ruleset.lowestScore) {
+    } else if (ruleset.isLowestScore) {
       namedScores.sort((a, b) => a.$2.compareTo(b.$2));
     }
     return namedScores;
@@ -424,7 +412,7 @@ class MatchProfileBody extends StatelessWidget {
     int score,
   ) {
     final ruleset = match.game.ruleset;
-    if (ruleset == Ruleset.placement) {
+    if (ruleset.isPlacement) {
       return Text(
         getPlacementText(context, index + 1),
         style: TextStyle(
@@ -433,7 +421,7 @@ class MatchProfileBody extends StatelessWidget {
           color: getPlacementTextcolor(context, index),
         ),
       );
-    } else if (ruleset == Ruleset.lives) {
+    } else if (ruleset.isLives) {
       return Text(
         getLifeLabel(loc, score),
         style: TextStyle(
@@ -469,10 +457,7 @@ class MatchProfileBody extends StatelessWidget {
     }
   }
 
-  bool isSingleRowResult() {
-    return match.game.ruleset == Ruleset.winner ||
-        match.game.ruleset == Ruleset.loser;
-  }
+  bool isSingleRowResult() => match.game.ruleset.usesPlayerSelection;
 
   String getPlacementText(BuildContext context, int rank) {
     final loc = AppLocalizations.of(context);

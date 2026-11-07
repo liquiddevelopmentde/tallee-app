@@ -1,7 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -86,7 +85,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   fontWeight: FontWeight.bold,
                 ),
                 onPressed: () {
-                  SharedPreferencesService.setOnboardingCompleted(true);
+                  SharedPreferencesService.onboardingCompleted = true;
                   widget.onCompleted();
                 },
               ),
@@ -176,12 +175,11 @@ class _OnboardingViewState extends State<OnboardingView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   BottomAnimatedButton(
-                    buttonType: ButtonType.primary,
-                    buttonText: isLastPage ? loc.get_started : loc.next,
+                    text: isLastPage ? loc.get_started : loc.next,
                     sizeRelativeToWidth: 0.6,
                     onPressed: () {
                       if (isLastPage) {
-                        SharedPreferencesService.setOnboardingCompleted(true);
+                        SharedPreferencesService.onboardingCompleted = true;
                         widget.onCompleted();
                       } else {
                         pageController.nextPage(

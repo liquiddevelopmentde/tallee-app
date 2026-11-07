@@ -1,15 +1,13 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/enums.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
@@ -84,11 +82,10 @@ class _CreateGroupViewState extends State<CreateGroupView> {
         backgroundColor: context.talleeColors.backgroundColor,
         appBar: AppBar(title: Text(viewTitle)),
         body: SafeArea(
-          minimum: const EdgeInsets.symmetric(horizontal: 12),
+          minimum: AppSpacing.pagePadding,
           maintainBottomViewPadding: true,
           child: Column(
             spacing: 10,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               // Group name
               TextInputField(
@@ -122,9 +119,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
               ),
 
               BottomAnimatedButton(
-                sizeRelativeToWidth: 0.95,
-                buttonText: buttonText,
-                buttonType: ButtonType.primary,
+                text: buttonText,
                 onPressed:
                     (groupNameController.text.isEmpty ||
                         (selectedPlayers.length < 2))
@@ -156,16 +151,16 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     if (!mounted) return;
 
     if (success) {
-      HapticFeedback.successNotification();
+      Haptics.successNotification();
       widget.onMembersChanged?.call();
       if (mounted) {
-        Navigator.pop(context, updatedGroup);
+        Navigator.of(context).pop((updatedGroup: updatedGroup));
       }
     } else {
       if (mounted) {
-        HapticFeedback.errorNotification();
+        Haptics.errorNotification();
       }
-      showSnackbar(
+      scaffoldMessengerKey.showSnackBar(
         message: widget.groupToEdit == null
             ? loc.error_creating_group
             : loc.error_editing_group,
@@ -235,32 +230,23 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   /// After updating the group's members, matches that were previously linked to
   /// this group but don't have any of the newly selected players are considered
   /// obsolete. For each such match, the group association is removed by setting
-  /// its [groupId] to null.
+  /// its `groupId` to null.
   Future<void> deleteObsoleteMatchGroupRelations() async {
     final groupMatches = await db.matchDao.getMatchesByGroup(
       groupId: widget.groupToEdit!.id,
     );
 
     final selectedPlayerIds = selectedPlayers.map((p) => p.id).toSet();
-    final relationshipsToDelete = groupMatches.where((match) {
-      return !match.players.any(
-        (player) => selectedPlayerIds.contains(player.id),
-      );
-    }).toList();
+    final relationshipsToDelete = groupMatches
+        .where(
+          (match) => !match.players.any(
+            (player) => selectedPlayerIds.contains(player.id),
+          ),
+        )
+        .toList();
 
-    for (var match in relationshipsToDelete) {
+    for (final match in relationshipsToDelete) {
       await db.matchDao.removeMatchGroup(matchId: match.id);
-    }
-  }
-
-  /// Displays a snackbar with the given message and optional action.
-  ///
-  /// [message] The message to display in the snackbar.
-  void showSnackbar({required String message}) {
-    final messenger = scaffoldMessengerKey.currentState;
-    if (messenger != null) {
-      messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(CustomSnackBar(message: message));
     }
   }
 }

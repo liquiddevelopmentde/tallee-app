@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class CustomSnackBar extends SnackBar {
   CustomSnackBar({
@@ -111,7 +111,6 @@ class AnimatedContent extends StatelessWidget {
                     color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 12.5,
                     spreadRadius: 5,
-                    offset: Offset.zero,
                   ),
                 ],
               ),
@@ -158,7 +157,7 @@ class AnimatedContent extends StatelessWidget {
                     HapticIconButton(
                       padding: EdgeInsets.zero,
                       icon: Icon(
-                        actionIcon!,
+                        actionIcon,
                         color: context.talleeColors.textColor,
                         size: 20,
                       ),

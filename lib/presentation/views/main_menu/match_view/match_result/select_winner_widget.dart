@@ -5,6 +5,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
@@ -89,64 +90,56 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
         child: useTeamLogic
             ? ListView.builder(
                 itemCount: allTeams.length,
-                itemBuilder: (context, index) {
-                  return CustomCheckboxListTile(
-                    content: isTeamMatch
-                        ? TeamCard(
-                            team: allTeams[index],
-                            showTeamMembers: false,
-                            compact: true,
-                          )
-                        : buildUnitNameWidget(
-                            context,
-                            allTeams[index],
-                            isTeamMatch: false,
-                          ),
-                    value: selectedTeams.contains(allTeams[index]),
-                    onChanged: (bool value) {
-                      showcaseProvider.markAsSeen(
-                        selectWinnerWidgetListviewIdentifier,
-                      );
-                      setState(() {
-                        if (value) {
-                          selectedTeams.add(allTeams[index]);
-                        } else {
-                          selectedTeams.remove(allTeams[index]);
-                        }
-                        widget.onTeamsSelected?.call(selectedTeams);
-                      });
-                    },
-                  );
-                },
+                itemBuilder: (context, index) => CustomCheckboxListTile(
+                  content: isTeamMatch
+                      ? TeamCard(
+                          team: allTeams[index],
+                          showTeamMembers: false,
+                          compact: true,
+                        )
+                      : buildUnitNameWidget(context, allTeams[index]),
+                  value: selectedTeams.contains(allTeams[index]),
+                  onChanged: (bool value) {
+                    showcaseProvider.markAsSeen(
+                      selectWinnerWidgetListviewIdentifier,
+                    );
+                    setState(() {
+                      if (value) {
+                        selectedTeams.add(allTeams[index]);
+                      } else {
+                        selectedTeams.remove(allTeams[index]);
+                      }
+                      widget.onTeamsSelected?.call(selectedTeams);
+                    });
+                  },
+                ),
               )
             : ListView.builder(
                 itemCount: allPlayers.length,
-                itemBuilder: (context, index) {
-                  return CustomCheckboxListTile(
-                    content: buildUnitNameWidget(
-                      context,
-                      allPlayers[index],
-                      mainStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                itemBuilder: (context, index) => CustomCheckboxListTile(
+                  content: buildUnitNameWidget(
+                    context,
+                    allPlayers[index],
+                    mainStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                    value: selectedPlayers.contains(allPlayers[index]),
-                    onChanged: (bool value) {
-                      showcaseProvider.markAsSeen(
-                        selectWinnerWidgetListviewIdentifier,
-                      );
-                      setState(() {
-                        if (value) {
-                          selectedPlayers.add(allPlayers[index]);
-                        } else {
-                          selectedPlayers.remove(allPlayers[index]);
-                        }
-                        widget.onPlayersSelected?.call(selectedPlayers);
-                      });
-                    },
-                  );
-                },
+                  ),
+                  value: selectedPlayers.contains(allPlayers[index]),
+                  onChanged: (bool value) {
+                    showcaseProvider.markAsSeen(
+                      selectWinnerWidgetListviewIdentifier,
+                    );
+                    setState(() {
+                      if (value) {
+                        selectedPlayers.add(allPlayers[index]);
+                      } else {
+                        selectedPlayers.remove(allPlayers[index]);
+                      }
+                      widget.onPlayersSelected?.call(selectedPlayers);
+                    });
+                  },
+                ),
               ),
       ),
     );

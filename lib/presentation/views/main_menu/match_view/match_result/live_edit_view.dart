@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/live_edit_list_tile.dart';
@@ -50,12 +50,10 @@ class _LiveEditViewState extends State<LiveEditView> {
   List<FocusNode> focusNodes = [];
 
   List<Team> get allTeams =>
-      (widget.match.teams ?? [])
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      (widget.match.teams ?? [])..sortByLowercaseName((team) => team.name);
 
   List<Player> get allPlayers =>
-      widget.match.players
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+      widget.match.players..sortByLowercaseName((player) => player.name);
 
   List<dynamic> get allUnits => useTeamLogic ? allTeams : allPlayers;
 
@@ -84,41 +82,36 @@ class _LiveEditViewState extends State<LiveEditView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: allUnits.length,
-      itemBuilder: (context, index) {
-        final unit = allUnits[index];
-        return LiveEditListTile(
-          isLivesRuleset: widget.livesMode,
-          focusNode: index < focusNodes.length ? focusNodes[index] : null,
-          textInputAction: index == allUnits.length - 1
-              ? TextInputAction.done
-              : TextInputAction.next,
-          onSubmitted: () => focusNextTile(index),
-          title: buildUnitNameWidget(
-            context,
-            unit,
-            isTeamMatch: isTeamMatch,
-            rowAlignment: MainAxisAlignment.center,
-            mainStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          value: scores[unit] ?? fallbackValue,
-          boundaries: widget.boundaries,
-          color: isTeamMatch && unit is Team
-              ? getColorFromAppColor(color: unit.color, context: context)
-              : null,
-          onChanged: (value) {
-            scores[unit] = value;
-            widget.onScoresChanged?.call(scores);
-          },
-        );
-      },
-    );
-  }
+  Widget build(BuildContext context) => ListView.builder(
+    itemCount: allUnits.length,
+    itemBuilder: (context, index) {
+      final unit = allUnits[index];
+      return LiveEditListTile(
+        isLivesRuleset: widget.livesMode,
+        focusNode: index < focusNodes.length ? focusNodes[index] : null,
+        textInputAction: index == allUnits.length - 1
+            ? TextInputAction.done
+            : TextInputAction.next,
+        onSubmitted: () => focusNextTile(index),
+        title: buildUnitNameWidget(
+          context,
+          unit,
+          isTeamMatch: isTeamMatch,
+          rowAlignment: MainAxisAlignment.center,
+          mainStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        value: scores[unit] ?? fallbackValue,
+        boundaries: widget.boundaries,
+        color: isTeamMatch && unit is Team
+            ? unit.color.colorValue(context)
+            : null,
+        onChanged: (value) {
+          scores[unit] = value;
+          widget.onScoresChanged?.call(scores);
+        },
+      );
+    },
+  );
 
   bool get useTeamLogic => widget.match.useTeamLogic;
 

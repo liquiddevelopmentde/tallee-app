@@ -82,9 +82,8 @@ class Match {
   }
 
   @override
-  String toString() {
-    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scoresByRound: $scoresByRound, mvp: $mvp}';
-  }
+  String toString() =>
+      'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scoresByRound: $scoresByRound, mvp: $mvp}';
 
   Match copyWith({
     String? id,
@@ -234,42 +233,40 @@ class Match {
     Group? group,
     required List<Player> players,
     List<Team>? teams,
-  }) {
-    return Match(
-      id: json['id'],
-      createdAt: DateTime.parse(json['createdAt']),
-      endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
-      name: json['name'],
-      game: game,
-      group: group,
-      players: players,
-      isTeamMatch: json['isTeamMatch'],
-      teams: teams,
-      scoresByRound: json['scores'] != null
-          ? (json['scores'] as Map<String, dynamic>).map((key, value) {
-              switch (value) {
-                case null:
-                  return MapEntry(key, <ScoreEntry>[]);
-                case List list:
-                  return MapEntry(
-                    key,
-                    list
-                        .map(
-                          (e) => ScoreEntry.fromJson(e as Map<String, dynamic>),
-                        )
-                        .toList(),
-                  );
-                default:
-                  //TODO: Backward compatibility for single ScoreEntry
-                  return MapEntry(key, [
-                    ScoreEntry.fromJson(value as Map<String, dynamic>),
-                  ]);
-              }
-            })
-          : {},
-      notes: json['notes'] ?? '',
-    );
-  }
+  }) => Match(
+    id: json['id'],
+    createdAt: DateTime.parse(json['createdAt']),
+    endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
+    name: json['name'],
+    game: game,
+    group: group,
+    players: players,
+    isTeamMatch: json['isTeamMatch'],
+    teams: teams,
+    scoresByRound: json['scores'] != null
+        ? (json['scores'] as Map<String, dynamic>).map((key, value) {
+            switch (value) {
+              case null:
+                return MapEntry(key, <ScoreEntry>[]);
+              case List list:
+                return MapEntry(
+                  key,
+                  list
+                      .map(
+                        (e) => ScoreEntry.fromJson(e as Map<String, dynamic>),
+                      )
+                      .toList(),
+                );
+              default:
+                //TODO: Backward compatibility for single ScoreEntry
+                return MapEntry(key, [
+                  ScoreEntry.fromJson(value as Map<String, dynamic>),
+                ]);
+            }
+          })
+        : {},
+    notes: json['notes'] ?? '',
+  );
 
   bool get hasTeams => teams?.isNotEmpty ?? false;
 
@@ -281,6 +278,33 @@ class Match {
       isPairMatch ? teams!.where((t) => t.isPair).toList() : const [];
 
   bool get hasResult => mvp.isNotEmpty || mvt.isNotEmpty;
+
+  bool get hasEnded => endedAt != null;
+
+  /// Counts how many players in the `match` are not part of the group
+  ///
+  /// Returns the text you append after the group name, e.g. " + 5" or an empty
+  /// string if there are no extra players
+  String get extraPlayerCount {
+    int count = 0;
+
+    if (group == null) {
+      return '';
+    }
+
+    final groupMembers = group!.members;
+
+    for (final player in players) {
+      if (!groupMembers.any((member) => member.id == player.id)) {
+        count++;
+      }
+    }
+
+    if (count == 0) {
+      return '';
+    }
+    return ' + ${count.toString()}';
+  }
 
   // Most Valuable Player(s) based on the match's ruleset
   List<Player> get mvp {
@@ -406,9 +430,7 @@ class Match {
         .whereType<int>()
         .reduce((max, score) => score > max ? score : max);
 
-    return teams!.where((team) {
-      return team.score == highestScore;
-    }).toList();
+    return teams!.where((team) => team.score == highestScore).toList();
   }
 
   List<Team> _getLowestScoreTeam() {
@@ -421,9 +443,7 @@ class Match {
         .whereType<int>()
         .reduce((min, score) => score < min ? score : min);
 
-    return teams!.where((team) {
-      return team.score == lowestScore;
-    }).toList();
+    return teams!.where((team) => team.score == lowestScore).toList();
   }
 
   List<Team> _getTeamsWithLivesRemaining() {
@@ -437,8 +457,8 @@ class Match {
   /// True when a lives match ended with all players/teams at 0 lives.
   /// False when ruleset is not lives or match hasnt ended yet
   bool get isTie {
-    if (game.ruleset != Ruleset.lives) return false;
-    if (endedAt == null) return false;
+    if (!game.ruleset.isLives) return false;
+    if (!hasEnded) return false;
     if (useTeamLogic) {
       return mvt.isEmpty;
     }

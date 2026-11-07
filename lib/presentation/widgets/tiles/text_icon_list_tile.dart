@@ -1,8 +1,7 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/team.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 
 class TextIconListTile extends StatelessWidget {
@@ -32,62 +31,58 @@ class TextIconListTile extends StatelessWidget {
   final VoidCallback? onTileTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTileTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        decoration: BoxDecoration(
-          color: context.talleeColors.boxColor,
-          border: Border.all(
-            color: context.talleeColors.boxBorderColor,
-            width: 1,
-            strokeAlign: BorderSide.strokeAlignCenter,
-          ),
-          borderRadius: AppColors.standardBorderRadiusAll,
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onTileTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      decoration: BoxDecoration(
+        color: context.talleeColors.boxColor,
+        border: Border.all(
+          color: context.talleeColors.boxBorderColor,
+          strokeAlign: BorderSide.strokeAlignCenter,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Flexible(
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12.5),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildUnitNameWidget(
-                      context,
-                      pair ?? player ?? Player(name: text, nameCount: 0),
-                      mainStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      countStyle: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+        borderRadius: AppColors.standardBorderRadiusAll,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12.5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildUnitNameWidget(
+                    context,
+                    pair ?? player ?? Player(name: text),
+                    mainStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    countStyle: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: context.talleeColors.textColor.withAlpha(100),
+                    ),
+                    pairIconLeft: pairIconLeft,
+                  ),
+                  if (description != null)
+                    Text(
+                      description!,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 12,
                         color: context.talleeColors.textColor.withAlpha(100),
                       ),
-                      pairIconLeft: pairIconLeft,
                     ),
-                    if (description != null)
-                      Text(
-                        description!,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: context.talleeColors.textColor.withAlpha(100),
-                        ),
-                      ),
-                  ],
-                ),
+                ],
               ),
             ),
-            if (icon != null) Icon(icon, size: 20),
-          ],
-        ),
+          ),
+          if (icon != null) Icon(icon, size: 20),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }

@@ -1,8 +1,7 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/team.dart';
+import 'package:tallee/data/models/models.dart';
 
 /// Returns the player name count if greater 0 in the format " #2", otherwise an empty string
 String getNameCountText(Player player) {
@@ -53,17 +52,15 @@ Widget _buildPlayerNameCountWidget(
   TextStyle? mainStyle,
   TextStyle? countStyle,
   bool highlighted = false,
-}) {
-  return Text.rich(
-    buildPlayerNameCountSpan(
-      context,
-      player,
-      mainStyle: mainStyle,
-      countStyle: countStyle,
-      highlighted: highlighted,
-    ),
-  );
-}
+}) => Text.rich(
+  buildPlayerNameCountSpan(
+    context,
+    player,
+    mainStyle: mainStyle,
+    countStyle: countStyle,
+    highlighted: highlighted,
+  ),
+);
 
 /// Builds a name display widget for a "Participating Unit" (Player or Team/Pair).
 /// Handles teams, pairs, and individual players with consistent styling.

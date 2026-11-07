@@ -1,16 +1,16 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:new_version_plus/model/version_status.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/services/local_share_service.dart';
@@ -30,94 +30,83 @@ class _DataManagementViewState extends State<DataManagementView> {
     final loc = AppLocalizations.of(context);
     return ScaffoldMessenger(
       child: Builder(
-        builder: (scaffoldMessengerContext) {
-          return Scaffold(
-            appBar: AppBar(title: Text(loc.data_backup)),
-            backgroundColor: context.talleeColors.backgroundColor,
-            body: SingleChildScrollView(
-              child: Column(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                      left: 16,
-                      right: 16,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 4,
-                      children: [
-                        Text(
-                          textAlign: TextAlign.start,
-                          loc.data_transfer,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
+        builder: (scaffoldMessengerContext) => Scaffold(
+          appBar: AppBar(title: Text(loc.data_backup)),
+          backgroundColor: context.talleeColors.backgroundColor,
+          body: SingleChildScrollView(
+            child: Column(
+              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 4,
+                    children: [
+                      Text(
+                        textAlign: TextAlign.start,
+                        loc.data_transfer,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Text(
-                          textAlign: TextAlign.start,
-                          loc.data_transfer_description,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: context.talleeColors.hintColor,
-                            overflow: TextOverflow.visible,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SettingsListTile(
-                    title: loc.export_data,
-                    icon: Icons.upload,
-                    //description: loc.export_description,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () => handleExport(scaffoldMessengerContext),
-                  ),
-                  SettingsListTile(
-                    title: loc.import_data,
-                    icon: Icons.download,
-                    //description: loc.import_description,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () => handleImport(scaffoldMessengerContext),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    child: Text(
-                      textAlign: TextAlign.start,
-                      loc.danger_zone,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
                       ),
+                      Text(
+                        textAlign: TextAlign.start,
+                        loc.data_transfer_description,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.talleeColors.hintColor,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SettingsListTile(
+                  title: loc.export_data,
+                  icon: Icons.upload,
+                  //description: loc.export_description,
+                  suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onPressed: () => handleExport(scaffoldMessengerContext),
+                ),
+                SettingsListTile(
+                  title: loc.import_data,
+                  icon: Icons.download,
+                  //description: loc.import_description,
+                  suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onPressed: () => handleImport(scaffoldMessengerContext),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 10, bottom: 10),
+                  child: Text(
+                    textAlign: TextAlign.start,
+                    loc.danger_zone,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SettingsListTile(
-                    title: loc.delete_all_data,
-                    icon: Icons.delete,
-                    description: loc.delete_app_data_description,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () =>
-                        showDeleteDialog(scaffoldMessengerContext, loc),
-                  ),
-                ],
-              ),
+                ),
+                SettingsListTile(
+                  title: loc.delete_all_data,
+                  icon: Icons.delete,
+                  description: loc.delete_app_data_description,
+                  suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onPressed: () =>
+                      showDeleteDialog(scaffoldMessengerContext, loc),
+                ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 
-  Future<void> showVersionDialog(bool isExport) async {
+  Future<void> showVersionDialog({bool isExport = false}) async {
     final loc = AppLocalizations.of(context);
 
     VersionStatus? status;
@@ -126,15 +115,17 @@ class _DataManagementViewState extends State<DataManagementView> {
       status = await newVersionPlus.getVersionStatus();
     } catch (error, stacktrace) {
       // ignore network errors, that come from a users network conditions
-      if (isNetworkError(error)) return;
+      if (error.isNetworkError) return;
       // send other errors to sentry
-      Sentry.captureException(
-        error,
-        stackTrace: stacktrace,
-        hint: Hint.withMap({'skipSnackBar': true}),
-        withScope: (scope) {
-          scope.level = SentryLevel.error;
-        },
+      unawaited(
+        Sentry.captureException(
+          error,
+          stackTrace: stacktrace,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
       );
       return;
     }
@@ -143,52 +134,49 @@ class _DataManagementViewState extends State<DataManagementView> {
       await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CustomAlertDialog(
-            title: loc.update_available,
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  isExport
-                      ? loc.update_app_export_desc
-                      : loc.update_app_import_desc,
-                  style: TextStyle(
-                    color: context.talleeColors.textColor,
-                    overflow: TextOverflow.visible,
-                  ),
+        builder: (BuildContext context) => CustomAlertDialog(
+          title: loc.update_available,
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                isExport
+                    ? loc.update_app_export_desc
+                    : loc.update_app_import_desc,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
+                  overflow: TextOverflow.visible,
                 ),
-              ],
-            ),
-            actions: [
-              CustomDialogAction(
-                text: loc.update_now,
-                buttonType: ButtonType.primary,
-                onPressed: () async {
-                  final Uri url = Uri.parse(status!.appStoreLink);
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url, mode: LaunchMode.externalApplication);
-                  }
-                },
-              ),
-              CustomDialogAction(
-                text: loc.dont_update,
-                buttonType: ButtonType.secondary,
-                isDestructive: true,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
               ),
             ],
-          );
-        },
+          ),
+          actions: [
+            CustomDialogAction(
+              text: loc.update_now,
+              onPressed: () async {
+                final Uri url = Uri.parse(status!.appStoreLink);
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                }
+              },
+            ),
+            CustomDialogAction(
+              text: loc.dont_update,
+              buttonType: ButtonType.secondary,
+              accent: ButtonAccent.destructive,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
       );
     }
   }
 
-  void handleExport(BuildContext scaffoldMessengerContext) async {
-    await showVersionDialog(true);
+  Future<void> handleExport(BuildContext scaffoldMessengerContext) async {
+    await showVersionDialog(isExport: true);
 
     if (!scaffoldMessengerContext.mounted) return;
 
@@ -207,8 +195,8 @@ class _DataManagementViewState extends State<DataManagementView> {
     showExportSnackBar(context: scaffoldMessengerContext, result: result);
   }
 
-  void handleImport(BuildContext scaffoldMessengerContext) async {
-    await showVersionDialog(false);
+  Future<void> handleImport(BuildContext scaffoldMessengerContext) async {
+    await showVersionDialog();
 
     final path = await LocalShareService.pickImportFilePath();
 
@@ -241,11 +229,11 @@ class _DataManagementViewState extends State<DataManagementView> {
     showImportSnackBar(context: scaffoldMessengerContext, result: result);
   }
 
-  void showDeleteDialog(
+  Future<void> showDeleteDialog(
     BuildContext scaffoldMessengerContext,
     AppLocalizations loc,
-  ) {
-    showDialog<bool>(
+  ) async {
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => CustomAlertDialog(
         title: '${loc.delete_all_data}?',
@@ -256,7 +244,7 @@ class _DataManagementViewState extends State<DataManagementView> {
         actions: [
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(true),
-            isDestructive: true,
+            accent: ButtonAccent.destructive,
             text: loc.delete,
           ),
           CustomDialogAction(
@@ -266,39 +254,47 @@ class _DataManagementViewState extends State<DataManagementView> {
           ),
         ],
       ),
-    ).then((confirmed) {
-      if (confirmed == true && mounted && scaffoldMessengerContext.mounted) {
-        LocalShareService.deleteAllData(context);
-        SharedPreferencesService.deleteAllPreferences();
-        showSnackbar(
-          context: scaffoldMessengerContext,
-          message: AppLocalizations.of(context).data_successfully_deleted,
-        );
+    );
+    if (confirmed != true || !mounted) return;
+
+    try {
+      await LocalShareService.deleteAllData(context);
+      SharedPreferencesService.deleteAllPreferences();
+    } catch (error, stacktrace) {
+      unawaited(
+        Sentry.captureException(
+          error,
+          stackTrace: stacktrace,
+          hint: Hint.withMap({'skipSnackBar': true}),
+        ),
+      );
+      if (scaffoldMessengerContext.mounted) {
+        scaffoldMessengerContext.showSnackBar(message: loc.error_deleting_data);
       }
-    });
+      return;
+    }
+
+    if (!scaffoldMessengerContext.mounted) return;
+    scaffoldMessengerContext.showSnackBar(
+      message: loc.data_successfully_deleted,
+    );
   }
 
   void showImportSnackBar({
     required BuildContext context,
     required ImportResult result,
-  }) async {
+  }) {
     final loc = AppLocalizations.of(context);
     switch (result) {
       case ImportResult.success:
-        HapticFeedback.successNotification();
+        Haptics.successNotification();
         if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: loc.data_successfully_imported,
-          );
+          context.showSnackBar(message: loc.data_successfully_imported);
         }
       default:
-        HapticFeedback.errorNotification();
+        Haptics.errorNotification();
         if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: translateImportResultToString(result, context),
-          );
+          context.showSnackBar(message: result.toLocalizedString(context));
         }
     }
   }
@@ -306,35 +302,21 @@ class _DataManagementViewState extends State<DataManagementView> {
   void showExportSnackBar({
     required BuildContext context,
     required ExportResult result,
-  }) async {
+  }) {
     final loc = AppLocalizations.of(context);
     switch (result) {
       case ExportResult.success:
-        HapticFeedback.successNotification();
+        Haptics.successNotification();
         if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: loc.data_successfully_exported,
-          );
+          context.showSnackBar(message: loc.data_successfully_exported);
         }
       case ExportResult.canceled:
       case ExportResult.unknownException:
       case ExportResult.noData:
-        HapticFeedback.errorNotification();
+        Haptics.errorNotification();
         if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: translateExportResultToString(result, context),
-          );
+          context.showSnackBar(message: result.toLocalizedString(context));
         }
     }
-  }
-
-  void showSnackbar({required BuildContext context, required String message}) {
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(CustomSnackBar(message: message));
   }
 }

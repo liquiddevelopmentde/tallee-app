@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/app_theme.dart';
@@ -22,9 +21,7 @@ void main() {
       );
 
       expect(
-        AppColor.values
-            .map((c) => getColorFromAppColor(color: c, context: context))
-            .toList(),
+        AppColor.values.map((color) => color.colorValue(context)).toList(),
         [
           AppColors.redColorLight,
           AppColors.orangeColorLight,
@@ -53,9 +50,7 @@ void main() {
       );
 
       expect(
-        AppColor.values
-            .map((c) => getColorFromAppColor(color: c, context: context))
-            .toList(),
+        AppColor.values.map((color) => color.colorValue(context)).toList(),
         [
           AppColors.redColorDark,
           AppColors.orangeColorDark,
@@ -89,10 +84,7 @@ void main() {
 
       // Every text is in dark color
       for (final color in AppColor.values) {
-        expect(
-          getStatisticsBarTextColor(color, context),
-          AppColors.textColorLight,
-        );
+        expect(color.statisticBarColor(context), AppColors.textColorLight);
       }
     });
 
@@ -117,7 +109,7 @@ void main() {
         final hasDarkText =
             color == AppColor.yellow || color == AppColor.orange;
         expect(
-          getStatisticsBarTextColor(color, context),
+          color.statisticBarColor(context),
           hasDarkText ? AppColors.textColorLight : AppColors.textColorDark,
         );
       }

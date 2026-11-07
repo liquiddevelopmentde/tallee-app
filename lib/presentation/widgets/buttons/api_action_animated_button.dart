@@ -1,16 +1,17 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 
 class ApiActionAnimatedButton extends StatefulWidget {
   /// A button specifically designed for asynchronous requests.
   /// - [onPressed]: The async callback that triggers the API request. Pass `null` to disable the button.
   /// - [text]: The text of the button.
-  /// - [buttonConstraints]: Optional constraints to control the button's size, only works if [sizeRelativeToWidth] is not provided.
-  /// - [sizeRelativeToWidth]: Optional size of the button relative to the width of the screen.
+  /// - [buttonConstraints]: Optional constraints to control the button's size. Mutually exclusive with [sizeRelativeToWidth].
+  /// - [sizeRelativeToWidth]: Minimum width of the button relative to the screen width. Defaults to [AppSpacing.contentWidthFactor].
   /// - [buttonType]: The type of the button, which determines its styling.
   /// - [isDestructive]: A boolean to indicate if the button represents a destructive action, affecting its styling.
   const ApiActionAnimatedButton({
@@ -31,17 +32,11 @@ class ApiActionAnimatedButton extends StatefulWidget {
          'sizeRelativeToWidth must be 0 < size <= 1',
        );
 
-  /// Expects a Future to handle the API request duration. If null, the button is disabled.
   final Future<void> Function()? onPressed;
-
   final String? text;
-
   final BoxConstraints? buttonConstraints;
-
   final double? sizeRelativeToWidth;
-
   final ButtonType buttonType;
-
   final bool isDestructive;
 
   @override
@@ -127,14 +122,15 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                constraints: widget.sizeRelativeToWidth == null
-                    ? widget.buttonConstraints
-                    : BoxConstraints(
-                        minWidth:
-                            MediaQuery.sizeOf(context).width *
-                            widget.sizeRelativeToWidth!,
-                        minHeight: 50,
-                      ),
+                constraints:
+                    widget.buttonConstraints ??
+                    BoxConstraints(
+                      minWidth:
+                          MediaQuery.sizeOf(context).width *
+                          (widget.sizeRelativeToWidth ??
+                              AppSpacing.contentWidthFactor),
+                      minHeight: 50,
+                    ),
                 decoration: _getButtonDecoration(),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -204,7 +200,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     if (widget.onPressed == null) return;
     if (buttonState != ApiButtonState.idle) return;
 
-    await HapticFeedback.selectionClick();
+    Haptics.selectionClick();
     animationController.forward();
     await Future.delayed(const Duration(milliseconds: 100));
     animationController.reverse();
@@ -220,7 +216,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
         setState(() {
           buttonState = ApiButtonState.success;
         });
-        await HapticFeedback.heavyImpact();
+        Haptics.heavyImpact();
 
         // Fire and forget reset
         Future.delayed(const Duration(seconds: 2), () {
@@ -237,7 +233,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
           buttonState = ApiButtonState.error;
         });
 
-        await HapticFeedback.heavyImpact();
+        Haptics.heavyImpact();
 
         await Future.delayed(const Duration(seconds: 2));
         if (mounted) {
@@ -261,7 +257,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
     if (widget.buttonType == ButtonType.primary) {
       textColor = widget.isDestructive
           ? Colors.white
-          : Theme.of(context).brightness == Brightness.dark
+          : context.isDarkMode
           ? Colors.black
           : Colors.white;
     } else if (widget.buttonType == ButtonType.secondary) {
@@ -290,7 +286,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
             ? context.talleeColors.onBoxColor
             : widget.isDestructive
             ? context.talleeColors.errorColor
-            : Theme.of(context).brightness == Brightness.dark
+            : context.isDarkMode
             ? Colors.white
             : Colors.black,
         borderRadius: BorderRadius.circular(12),

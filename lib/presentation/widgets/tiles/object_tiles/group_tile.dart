@@ -1,11 +1,9 @@
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/data/models/group.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
@@ -37,19 +35,17 @@ class _GroupTileState extends State<GroupTile> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     final description = widget.group.description;
-    final formattedDate = DateFormat.yMMMd(
-      Localizations.localeOf(context).toString(),
-    ).format(widget.group.createdAt);
+    final formattedDate = widget.group.createdAt.toMediumDate(context);
 
     return GestureDetector(
       onTap: () {
-        HapticFeedback.selectionClick();
+        Haptics.selectionClick();
         if (widget.onTap != null) {
           widget.onTap!.call();
         }
       },
       child: AnimatedContainer(
-        margin: AppColors.tileMargin,
+        margin: AppSpacing.tileMargin,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         decoration: widget.isHighlighted
             ? context.highlightedBoxDecoration
@@ -81,7 +77,6 @@ class _GroupTileState extends State<GroupTile> {
                       // Name row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // Name
                           Flexible(
@@ -97,7 +92,6 @@ class _GroupTileState extends State<GroupTile> {
 
                           // Member amount
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             spacing: 8,
                             children: [
@@ -133,14 +127,12 @@ class _GroupTileState extends State<GroupTile> {
 
             // Player
             Wrap(
-              alignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.start,
               spacing: 12.0,
               runSpacing: 8.0,
               children: <Widget>[
-                for (var member in [
+                for (final member in [
                   ...widget.group.members,
-                ]..sort((a, b) => a.name.compareIgnoringCaseTo(b.name)))
+                ]..sortByLowercaseName((m) => m.name))
                   PlayerTile(player: member),
               ],
             ),

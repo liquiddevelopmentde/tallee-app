@@ -1,6 +1,6 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 
 /// A custom text button widget.
 /// - [onPressed]: Callback invoked when the button is pressed.
@@ -21,18 +21,16 @@ class CustomTextButton extends StatelessWidget {
   final TextStyle? style;
 
   @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed != null
-          ? () {
-              HapticFeedback.lightImpact();
-              onPressed!.call();
-            }
-          : null,
-      child: Text(
-        text,
-        style: style ?? TextStyle(color: context.talleeColors.textColor),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => TextButton(
+    onPressed: onPressed != null
+        ? () {
+            Haptics.lightImpact();
+            onPressed!.call();
+          }
+        : null,
+    child: Text(
+      text,
+      style: style ?? TextStyle(color: context.talleeColors.textColor),
+    ),
+  );
 }

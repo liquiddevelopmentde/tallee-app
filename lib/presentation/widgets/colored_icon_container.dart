@@ -1,7 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class ColoredIconContainer extends StatelessWidget {
   /// A customizable container widget that displays an icon with a colored background.
@@ -56,7 +56,7 @@ class ColoredIconContainer extends StatelessWidget {
               padding: EdgeInsets.zero,
             )
           : const RoundedRectDottedBorderOptions(
-              radius: Radius.circular(0),
+              radius: Radius.zero,
               color: Colors.transparent,
               padding: EdgeInsets.zero,
             ),
