@@ -1,7 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/team.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
@@ -151,15 +150,15 @@ class TeamCard extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         // Player tiles
-                        ...team.members.map((player) {
-                          return PlayerTile(
+                        ...team.members.map(
+                          (player) => PlayerTile(
                             player: player,
                             backgroundColor: Colors.transparent,
                             onTileTap: onPlayerTap == null
                                 ? null
                                 : () => onPlayerTap!(player),
-                          );
-                        }),
+                          ),
+                        ),
                       ],
                     ),
                 ],

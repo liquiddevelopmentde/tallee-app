@@ -45,7 +45,10 @@ void main() {
         group: testGroup,
         players: [testPlayer1, testPlayer2],
         teams: [
-          Team.fromNormalizedJson(json['teams'][0], [testPlayer1]),
+          Team.fromNormalizedJson(
+            (json['teams'] as List<dynamic>).cast<Map<String, dynamic>>().first,
+            [testPlayer1],
+          ),
         ],
       );
 

@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/statistic_game_table.dart';
-import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/models.dart';
 
 part 'statistic_game_dao.g.dart';
 

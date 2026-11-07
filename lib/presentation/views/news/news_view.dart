@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/news/news.dart';
 import 'package:tallee/presentation/views/news/news_card.dart';
@@ -34,7 +34,6 @@ class NewsView extends StatelessWidget {
                         right: 20,
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         spacing: 6,
                         children: [
                           // Icon
@@ -93,7 +92,7 @@ class NewsView extends StatelessWidget {
               top: false,
               child: BottomAnimatedButton(
                 buttonConstraints: const BoxConstraints(minWidth: 390),
-                buttonText: loc.continue_,
+                text: loc.continue_,
                 onPressed: () =>
                     Navigator.of(context, rootNavigator: true).pop(),
               ),

@@ -1,12 +1,11 @@
 import 'dart:math';
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
@@ -74,240 +73,231 @@ class _StatisticsViewState extends State<StatisticsView> {
     final tiles = statisticTiles;
 
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            AppSkeleton(
-              enabled: isLoading,
-              fixLayoutBuilder: true,
-              alignment: Alignment.topCenter,
-              child: Center(
-                child:
-                    // Statistics in db
-                    statistics.isNotEmpty
-                    ? ReorderableListView.builder(
-                        padding: AppColors.listViewPadding(context),
-                        header: SingleChildScrollView(
-                          padding: AppColors.filterRowPadding,
-                          scrollDirection: Axis.horizontal,
-                          child:
-                              // Filter row
-                              Row(
-                                spacing: 5,
-                                children: [
-                                  // All Chip
-                                  TextChip(
-                                    text: loc.all,
-                                    activated: noFilterActivated,
-                                    onTap: () => {
-                                      showOnlyFavourites = false,
-                                      SharedPreferencesService.setShowFavourites(
-                                        false,
-                                      ),
-                                      resetFilter(includeFavourites: true),
-                                    },
-                                  ),
-
-                                  // Favourites chip
-                                  TextChip(
-                                    text: loc.favourites,
-                                    activated: showOnlyFavourites,
-                                    onTap: () => {
-                                      setState(() {
-                                        showOnlyFavourites = true;
-                                        resetFilter(includeFavourites: false);
-                                      }),
-                                      SharedPreferencesService.setShowFavourites(
-                                        showOnlyFavourites,
-                                      ),
-                                      createStatisticTiles(),
-                                    },
-                                  ),
-
-                                  // Groups Chip
-                                  TextChip(
-                                    text: loc.groups,
-                                    activated: filteredGroups.isNotEmpty,
-                                    count: filteredGroups.length,
-                                    onTap: () async {
-                                      final result = await Navigator.of(context)
-                                          .push(
-                                            adaptivePageRoute(
-                                              settings: const RouteSettings(
-                                                name:
-                                                    RouteNames.chooseGroupView,
-                                              ),
-                                              fullscreenDialog: true,
-                                              builder: (context) =>
-                                                  ChooseGroupView(
-                                                    groups: groups,
-                                                    initialGroups:
-                                                        filteredGroups,
-                                                    enableMultiSelection: true,
-                                                    description: loc
-                                                        .group_filter_description,
-                                                  ),
-                                            ),
-                                          );
-                                      setState(() {
-                                        filteredGroups = result ?? [];
-                                        if (filteredGroups.isNotEmpty) {
-                                          resetFavourites();
-                                        }
-                                      });
-                                      SharedPreferencesService.setFilteredGroups(
-                                        filteredGroups,
-                                      );
-                                      createStatisticTiles();
-                                    },
-                                  ),
-
-                                  // Games Chip
-                                  TextChip(
-                                    text: loc.games,
-                                    count: filteredGames.length,
-                                    activated: filteredGames.isNotEmpty,
-                                    onTap: () async {
-                                      final result = await Navigator.of(context)
-                                          .push(
-                                            adaptivePageRoute(
-                                              settings: const RouteSettings(
-                                                name: RouteNames.chooseGameView,
-                                              ),
-                                              fullscreenDialog: true,
-                                              builder: (context) =>
-                                                  ChooseGameView(
-                                                    games: games,
-                                                    initialSelectedGames:
-                                                        filteredGames,
-                                                    enableMultiSelection: true,
-                                                    description: loc
-                                                        .game_filter_description,
-                                                  ),
-                                            ),
-                                          );
-                                      setState(() {
-                                        filteredGames = result ?? [];
-                                        if (filteredGames.isNotEmpty) {
-                                          resetFavourites();
-                                        }
-                                      });
-                                      SharedPreferencesService.setFilteredGames(
-                                        filteredGames,
-                                      );
-                                      createStatisticTiles();
-                                    },
-                                  ),
-
-                                  // Type Chip
-                                  TextChip(
-                                    text: loc.type,
-                                    count: filteredStatisticTypes.length,
-                                    activated:
-                                        filteredStatisticTypes.isNotEmpty,
-                                    onTap: () async {
-                                      final result = await Navigator.of(context)
-                                          .push(
-                                            adaptivePageRoute(
-                                              settings: const RouteSettings(
-                                                name: RouteNames.chooseEnumView,
-                                              ),
-                                              fullscreenDialog: true,
-                                              builder: (context) =>
-                                                  ChooseEnumView<StatisticType>(
-                                                    enumValue:
-                                                        StatisticType.values,
-                                                    initialEnums:
-                                                        filteredStatisticTypes,
-                                                    enableMultiSelection: true,
-                                                    description: loc
-                                                        .type_filter_description,
-                                                  ),
-                                            ),
-                                          );
-
-                                      setState(() {
-                                        filteredStatisticTypes =
-                                            List<StatisticType>.from(
-                                              result ?? const <StatisticType>[],
-                                            );
-                                        if (filteredStatisticTypes.isNotEmpty) {
-                                          resetFavourites();
-                                        }
-                                      });
-                                      SharedPreferencesService.setFilteredStatisticTypes(
-                                        filteredStatisticTypes,
-                                      );
-                                      createStatisticTiles();
-                                    },
-                                  ),
-
-                                  // Timeframe Chip
-                                  TextChip(
-                                    text: loc.timeframe,
-                                    count: filteredTimeframes.length,
-                                    activated: filteredTimeframes.isNotEmpty,
-                                    onTap: () async {
-                                      final result = await Navigator.of(context)
-                                          .push(
-                                            adaptivePageRoute(
-                                              settings: const RouteSettings(
-                                                name: RouteNames.chooseEnumView,
-                                              ),
-                                              fullscreenDialog: true,
-                                              builder: (context) =>
-                                                  ChooseEnumView<Timeframe>(
-                                                    enumValue: Timeframe.values,
-                                                    initialEnums:
-                                                        filteredTimeframes,
-                                                    enableMultiSelection: true,
-                                                    description: loc
-                                                        .timeframe_filter_description,
-                                                  ),
-                                            ),
-                                          );
-                                      setState(() {
-                                        filteredTimeframes =
-                                            List<Timeframe>.from(
-                                              result ?? const <Timeframe>[],
-                                            );
-                                        if (filteredTimeframes.isNotEmpty) {
-                                          resetFavourites();
-                                        }
-                                      });
-                                      SharedPreferencesService.setFilteredTimeframes(
-                                        filteredTimeframes,
-                                      );
-                                      createStatisticTiles();
-                                    },
-                                  ),
-
-                                  // To keep padding on the right side
-                                  const SizedBox(width: 5),
-                                ],
-                              ),
-                        ),
-                        // No statistics with the current filter
-                        footer: statisticTiles.isEmpty && !isLoading
-                            ? Padding(
-                                padding: const EdgeInsets.only(top: 150),
-                                child: EmptyViewMessage(
-                                  icon: Icons.filter_alt,
-                                  title: loc.info,
-                                  message: loc.no_statistics_with_filter,
+      builder: (BuildContext context, BoxConstraints constraints) => Stack(
+        alignment: Alignment.center,
+        children: [
+          AppSkeleton(
+            enabled: isLoading,
+            fixLayoutBuilder: true,
+            alignment: Alignment.topCenter,
+            child: Center(
+              child:
+                  // Statistics in db
+                  statistics.isNotEmpty
+                  ? ReorderableListView.builder(
+                      padding: AppSpacing.listViewPadding(context),
+                      header: SingleChildScrollView(
+                        padding: AppSpacing.filterRowPadding,
+                        scrollDirection: Axis.horizontal,
+                        child:
+                            // Filter row
+                            Row(
+                              spacing: 5,
+                              children: [
+                                // All Chip
+                                TextChip(
+                                  text: loc.all,
+                                  activated: noFilterActivated,
+                                  onTap: () {
+                                    showOnlyFavourites = false;
+                                    SharedPreferencesService.showFavourites =
+                                        false;
+                                    resetFilter(includeFavourites: true);
+                                  },
                                 ),
-                              )
-                            : null,
-                        proxyDecorator: (child, index, animation) {
-                          return AnimatedBuilder(
+
+                                // Favourites chip
+                                TextChip(
+                                  text: loc.favourites,
+                                  activated: showOnlyFavourites,
+                                  onTap: () {
+                                    setState(() {
+                                      showOnlyFavourites = true;
+                                      resetFilter(includeFavourites: false);
+                                    });
+                                    SharedPreferencesService.showFavourites =
+                                        showOnlyFavourites;
+                                    createStatisticTiles();
+                                  },
+                                ),
+
+                                // Groups Chip
+                                TextChip(
+                                  text: loc.groups,
+                                  activated: filteredGroups.isNotEmpty,
+                                  count: filteredGroups.length,
+                                  onTap: () async {
+                                    final result = await Navigator.of(context)
+                                        .push(
+                                          adaptivePageRoute(
+                                            settings: const RouteSettings(
+                                              name: RouteNames.chooseGroupView,
+                                            ),
+                                            fullscreenDialog: true,
+                                            builder: (context) =>
+                                                ChooseGroupView(
+                                                  groups: groups,
+                                                  initialGroups: filteredGroups,
+                                                  enableMultiSelection: true,
+                                                  description: loc
+                                                      .group_filter_description,
+                                                ),
+                                          ),
+                                        );
+                                    setState(() {
+                                      filteredGroups = result ?? [];
+                                      if (filteredGroups.isNotEmpty) {
+                                        resetFavourites();
+                                      }
+                                    });
+                                    SharedPreferencesService.filteredGroupIds =
+                                        filteredGroups
+                                            .map((e) => e.id)
+                                            .toList();
+                                    createStatisticTiles();
+                                  },
+                                ),
+
+                                // Games Chip
+                                TextChip(
+                                  text: loc.games,
+                                  count: filteredGames.length,
+                                  activated: filteredGames.isNotEmpty,
+                                  onTap: () async {
+                                    final result = await Navigator.of(context)
+                                        .push(
+                                          adaptivePageRoute(
+                                            settings: const RouteSettings(
+                                              name: RouteNames.chooseGameView,
+                                            ),
+                                            fullscreenDialog: true,
+                                            builder: (context) =>
+                                                ChooseGameView(
+                                                  games: games,
+                                                  initialSelectedGames:
+                                                      filteredGames,
+                                                  enableMultiSelection: true,
+                                                  description: loc
+                                                      .game_filter_description,
+                                                ),
+                                          ),
+                                        );
+                                    setState(() {
+                                      filteredGames = result ?? [];
+                                      if (filteredGames.isNotEmpty) {
+                                        resetFavourites();
+                                      }
+                                    });
+                                    SharedPreferencesService.filteredGameIds =
+                                        filteredGames.map((e) => e.id).toList();
+                                    createStatisticTiles();
+                                  },
+                                ),
+
+                                // Type Chip
+                                TextChip(
+                                  text: loc.type,
+                                  count: filteredStatisticTypes.length,
+                                  activated: filteredStatisticTypes.isNotEmpty,
+                                  onTap: () async {
+                                    final result = await Navigator.of(context)
+                                        .push(
+                                          adaptivePageRoute(
+                                            settings: const RouteSettings(
+                                              name: RouteNames.chooseEnumView,
+                                            ),
+                                            fullscreenDialog: true,
+                                            builder: (context) =>
+                                                ChooseEnumView<StatisticType>(
+                                                  enumValue:
+                                                      StatisticType.values,
+                                                  initialEnums:
+                                                      filteredStatisticTypes,
+                                                  enableMultiSelection: true,
+                                                  description: loc
+                                                      .type_filter_description,
+                                                ),
+                                          ),
+                                        );
+
+                                    setState(() {
+                                      filteredStatisticTypes =
+                                          List<StatisticType>.from(
+                                            result ?? const <StatisticType>[],
+                                          );
+                                      if (filteredStatisticTypes.isNotEmpty) {
+                                        resetFavourites();
+                                      }
+                                    });
+                                    SharedPreferencesService
+                                            .filteredStatisticTypes =
+                                        filteredStatisticTypes;
+                                    createStatisticTiles();
+                                  },
+                                ),
+
+                                // Timeframe Chip
+                                TextChip(
+                                  text: loc.timeframe,
+                                  count: filteredTimeframes.length,
+                                  activated: filteredTimeframes.isNotEmpty,
+                                  onTap: () async {
+                                    final result = await Navigator.of(context).push(
+                                      adaptivePageRoute(
+                                        settings: const RouteSettings(
+                                          name: RouteNames.chooseEnumView,
+                                        ),
+                                        fullscreenDialog: true,
+                                        builder: (context) =>
+                                            ChooseEnumView<Timeframe>(
+                                              enumValue: Timeframe.values,
+                                              initialEnums: filteredTimeframes,
+                                              enableMultiSelection: true,
+                                              description: loc
+                                                  .timeframe_filter_description,
+                                            ),
+                                      ),
+                                    );
+                                    setState(() {
+                                      filteredTimeframes = List<Timeframe>.from(
+                                        result ?? const <Timeframe>[],
+                                      );
+                                      if (filteredTimeframes.isNotEmpty) {
+                                        resetFavourites();
+                                      }
+                                    });
+                                    SharedPreferencesService
+                                            .filteredTimeframes =
+                                        filteredTimeframes;
+                                    createStatisticTiles();
+                                  },
+                                ),
+
+                                // To keep padding on the right side
+                                const SizedBox(width: 5),
+                              ],
+                            ),
+                      ),
+                      // No statistics with the current filter
+                      footer: statisticTiles.isEmpty && !isLoading
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 150),
+                              child: EmptyViewMessage(
+                                icon: Icons.filter_alt,
+                                title: loc.info,
+                                message: loc.no_statistics_with_filter,
+                              ),
+                            )
+                          : null,
+                      proxyDecorator: (child, index, animation) =>
+                          AnimatedBuilder(
                             animation: animation,
                             child: child,
                             builder: (BuildContext context, child) {
                               final t = Curves.easeOut.transform(
                                 animation.value,
                               );
-                              const tileMargin = AppColors.tileMargin;
+                              const tm = AppSpacing.tileMargin;
                               return Transform.scale(
                                 scale: 1.0 + (0.02 * t),
                                 child: Material(
@@ -318,10 +308,10 @@ class _StatisticsViewState extends State<StatisticsView> {
                                     children: [
                                       ?child,
                                       Positioned(
-                                        left: tileMargin.left,
-                                        right: tileMargin.right,
-                                        top: tileMargin.top,
-                                        bottom: tileMargin.bottom,
+                                        left: tm.left,
+                                        right: tm.right,
+                                        top: tm.top,
+                                        bottom: tm.bottom,
                                         child: IgnorePointer(
                                           child: AnimatedOpacity(
                                             duration: const Duration(
@@ -344,68 +334,64 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 ),
                               );
                             },
-                          );
-                        },
-                        onReorderItem: (oldIndex, newIndex) {
-                          setState(() {
-                            final stat = statistics.removeAt(oldIndex);
-                            statistics.insert(newIndex, stat);
-                            statisticTiles = statistics
-                                .map(
-                                  (stat) => buildStatisticTile(
-                                    context: context,
-                                    statistic: stat,
-                                  ),
-                                )
-                                .toList();
-                          });
-                          updatePositions();
-                        },
-                        onReorderStart: (_) => HapticFeedback.heavyImpact(),
-                        onReorderEnd: (_) => HapticFeedback.selectionClick(),
-                        itemCount: tiles.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return tiles[index];
-                        },
-                      )
-                    : (!isLoading)
-                    ?
-                      // No statistics in db
-                      EmptyViewMessage(
-                        icon: STATISTIC_ICON,
-                        title: loc.no_statistics,
-                        message: loc.no_statistics_created_yet,
-                      )
-                    : null,
-              ),
+                          ),
+                      onReorderItem: (oldIndex, newIndex) {
+                        setState(() {
+                          final stat = statistics.removeAt(oldIndex);
+                          statistics.insert(newIndex, stat);
+                          statisticTiles = statistics
+                              .map(
+                                (stat) => buildStatisticTile(
+                                  context: context,
+                                  statistic: stat,
+                                ),
+                              )
+                              .toList();
+                        });
+                        updatePositions();
+                      },
+                      onReorderStart: (_) => Haptics.heavyImpact(),
+                      onReorderEnd: (_) => Haptics.selectionClick(),
+                      itemCount: tiles.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          tiles[index],
+                    )
+                  : (!isLoading)
+                  ?
+                    // No statistics in db
+                    EmptyViewMessage(
+                      icon: STATISTIC_ICON,
+                      title: loc.no_statistics,
+                      message: loc.no_statistics_created_yet,
+                    )
+                  : null,
             ),
+          ),
 
-            // Outside the skeleton so it is not cross-faded on loading changes
-            Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom + 20,
-              child: FloatingAnimatedButton(
-                text: loc.create_statistic,
-                icon: Icons.add,
-                onPressed: () async {
-                  if (!mounted) return;
-                  final navigator = Navigator.of(this.context);
-                  await navigator.push<Statistic>(
-                    adaptivePageRoute(
-                      settings: const RouteSettings(
-                        name: RouteNames.createStatisticView,
-                      ),
-                      builder: (context) => CreateStatisticView(
-                        onStatisticCreated: (newStats) =>
-                            onStatisticsCreated(newStats),
-                      ),
+          // Outside the skeleton so it is not cross-faded on loading changes
+          Positioned(
+            bottom: AppSpacing.floatingButtonBottom(context),
+            child: FloatingAnimatedButton(
+              text: loc.create_statistic,
+              icon: Icons.add,
+              onPressed: () async {
+                if (!mounted) return;
+                final navigator = Navigator.of(this.context);
+                await navigator.push<Statistic>(
+                  adaptivePageRoute(
+                    settings: const RouteSettings(
+                      name: RouteNames.createStatisticView,
                     ),
-                  );
-                },
-              ),
+                    builder: (context) => CreateStatisticView(
+                      onStatisticCreated: onStatisticsCreated,
+                    ),
+                  ),
+                );
+              },
             ),
-          ],
-        );
-      },
+          ),
+        ],
+      ),
     );
   }
 
@@ -427,7 +413,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     Statistic skeletonStatistic = Statistic(
       type: StatisticType.totalWins,
       scopes: [StatisticScope.allPlayers],
-      color: getRandomAppColor(),
+      color: AppColor.randomColor(),
       selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
       selectedGroups: [Group(name: 'Group 1', members: [])],
     );
@@ -440,15 +426,13 @@ class _StatisticsViewState extends State<StatisticsView> {
     );
   }
 
-  Statistic getSkeletonStatistic() {
-    return Statistic(
-      type: StatisticType.totalWins,
-      scopes: [StatisticScope.allPlayers],
-      color: getRandomAppColor(),
-      selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
-      selectedGroups: [Group(name: 'Group 1', members: [])],
-    );
-  }
+  Statistic getSkeletonStatistic() => Statistic(
+    type: StatisticType.totalWins,
+    scopes: [StatisticScope.allPlayers],
+    color: AppColor.randomColor(),
+    selectedGames: [Game(name: 'Game 1', ruleset: Ruleset.highestScore)],
+    selectedGroups: [Group(name: 'Group 1', members: [])],
+  );
 
   /// Loads all statistics and needed data from the database
   Future<void> loadStatistics() async {
@@ -485,8 +469,8 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   /// Loads the filter data from shared preferences and applies it to the current data
   void loadFilterData() {
-    final filteredGroupIds = SharedPreferencesService.getFilteredGroups();
-    final filteredGameIds = SharedPreferencesService.getFilteredGames();
+    final filteredGroupIds = SharedPreferencesService.filteredGroupIds;
+    final filteredGameIds = SharedPreferencesService.filteredGameIds;
 
     filteredGroups = groups
         .where((group) => filteredGroupIds.contains(group.id))
@@ -494,13 +478,12 @@ class _StatisticsViewState extends State<StatisticsView> {
     filteredGames = games
         .where((game) => filteredGameIds.contains(game.id))
         .toList();
-    filteredStatisticTypes =
-        SharedPreferencesService.getFilteredStatisticTypes();
-    filteredTimeframes = SharedPreferencesService.getFilteredTimeframes();
-    showOnlyFavourites = SharedPreferencesService.getShowFavourites();
+    filteredStatisticTypes = SharedPreferencesService.filteredStatisticTypes;
+    filteredTimeframes = SharedPreferencesService.filteredTimeframes;
+    showOnlyFavourites = SharedPreferencesService.showFavourites;
   }
 
-  /// Builds a [StatisticTile] for a given statistic.
+  /// Builds a [StatisticsTile] for a given statistic.
   Widget buildStatisticTile({
     required BuildContext context,
     required Statistic statistic,
@@ -515,8 +498,8 @@ class _StatisticsViewState extends State<StatisticsView> {
     return GestureDetector(
       key: ValueKey(statistic.id),
       onTap: () async {
-        if (!mounted) return;
-        final navigator = Navigator.of(this.context);
+        if (!context.mounted) return;
+        final navigator = Navigator.of(context);
         await navigator.push(
           adaptivePageRoute(
             settings: const RouteSettings(name: RouteNames.statisticDetailView),
@@ -639,7 +622,7 @@ class _StatisticsViewState extends State<StatisticsView> {
   Future<void> resetFavourites() async {
     setState(() {
       showOnlyFavourites = false;
-      SharedPreferencesService.setShowFavourites(false);
+      SharedPreferencesService.showFavourites = false;
     });
   }
 }

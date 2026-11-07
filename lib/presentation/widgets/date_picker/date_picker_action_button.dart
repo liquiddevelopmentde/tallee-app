@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class DatePickerActionButton extends StatefulWidget {
   const DatePickerActionButton({
@@ -65,40 +65,38 @@ class _DatePickerActionButtonState extends State<DatePickerActionButton> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      ignoring: isDisabled,
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => isPressed = true),
-        onTapUp: (_) => setState(() => isPressed = false),
-        onTapCancel: () => setState(() => isPressed = false),
-        onTap: () {
-          HapticFeedback.selectionClick();
-          widget.onPressed?.call();
-        },
-        child: AnimatedScale(
-          scale: isPressed ? 0.95 : 1,
+  Widget build(BuildContext context) => IgnorePointer(
+    ignoring: isDisabled,
+    child: GestureDetector(
+      onTapDown: (_) => setState(() => isPressed = true),
+      onTapUp: (_) => setState(() => isPressed = false),
+      onTapCancel: () => setState(() => isPressed = false),
+      onTap: () {
+        HapticFeedback.selectionClick();
+        widget.onPressed?.call();
+      },
+      child: AnimatedScale(
+        scale: isPressed ? 0.95 : 1,
+        duration: const Duration(milliseconds: 100),
+        child: AnimatedOpacity(
+          opacity: isPressed ? 0.6 : 1,
           duration: const Duration(milliseconds: 100),
-          child: AnimatedOpacity(
-            opacity: isPressed ? 0.6 : 1,
-            duration: const Duration(milliseconds: 100),
-            child: Container(
-              width: double.infinity,
-              constraints: const BoxConstraints(minHeight: 44),
-              alignment: Alignment.center,
-              decoration: buttonDecoration,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: Text(
-                widget.text,
-                style: textStyle,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+          child: Container(
+            width: double.infinity,
+            constraints: const BoxConstraints(minHeight: 44),
+            alignment: Alignment.center,
+            decoration: buttonDecoration,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Text(
+              widget.text,
+              style: textStyle,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

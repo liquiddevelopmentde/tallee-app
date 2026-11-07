@@ -1,9 +1,9 @@
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/dto/date_picker_range.dart';
 import 'package:tallee/presentation/widgets/date_picker/date_picker_components.dart';
 
@@ -49,29 +49,22 @@ class CustomDatePicker extends StatefulWidget {
 
     return showDialog<T>(
       context: context,
-      builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 24,
-          ),
-          child: CustomDatePicker(
-            selectionMode: selectionMode,
-            initialSelectedDate: initialDate,
-            initialSelectedRange: initialRange,
-            minDate: minDate,
-            maxDate: maxDate,
-            onDateSelected: (value) => Navigator.pop<T>(context, value as T),
-            onRangeSelected: (value) => Navigator.pop<T>(
-              context,
-              [value.startDate, value.endDate] as T,
-            ),
-            onCancel: () => Navigator.pop(context),
-          ),
-        );
-      },
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        child: CustomDatePicker(
+          selectionMode: selectionMode,
+          initialSelectedDate: initialDate,
+          initialSelectedRange: initialRange,
+          minDate: minDate,
+          maxDate: maxDate,
+          onDateSelected: (value) => Navigator.pop<T>(context, value as T),
+          onRangeSelected: (value) =>
+              Navigator.pop<T>(context, [value.startDate, value.endDate] as T),
+          onCancel: () => Navigator.pop(context),
+        ),
+      ),
     );
   }
 
@@ -152,9 +145,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     super.dispose();
   }
 
-  DateTime monthForPage(int page) {
-    return DateTime(firstMonth.year, firstMonth.month + page, 1);
-  }
+  DateTime monthForPage(int page) =>
+      DateTime(firstMonth.year, firstMonth.month + page);
 
   int pageForMonth(DateTime month) {
     final monthDiff =
@@ -168,8 +160,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
       firstMonth.month +
       1;
 
-  static DateTime monthStart(DateTime date) =>
-      DateTime(date.year, date.month, 1);
+  static DateTime monthStart(DateTime date) => DateTime(date.year, date.month);
 
   bool isDateOutsideBounds(DateTime date) {
     final day = dateOnly(date);
@@ -184,7 +175,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   }
 
   void jumpToMonth(DateTime month) {
-    final targetMonth = DateTime(month.year, month.month, 1);
+    final targetMonth = DateTime(month.year, month.month);
     setState(() {
       focusedMonth = targetMonth;
       isYearPickerOpen = false;
@@ -206,9 +197,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         final currentEnd = selectedRange?.endDate;
 
         if (currentStart == null || currentEnd != null) {
-          selectedRange = DatePickerRange(startDate: date, endDate: null);
+          selectedRange = DatePickerRange(startDate: date);
         } else if (isBeforeDay(date, currentStart)) {
-          selectedRange = DatePickerRange(startDate: date, endDate: null);
+          selectedRange = DatePickerRange(startDate: date);
         } else {
           selectedRange = DatePickerRange(
             startDate: currentStart,
@@ -233,9 +224,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   static DateTime dateOnly(DateTime date) =>
       DateTime(date.year, date.month, date.day);
 
-  static bool isBeforeDay(DateTime a, DateTime b) {
-    return dateOnly(a).isBefore(dateOnly(b));
-  }
+  static bool isBeforeDay(DateTime a, DateTime b) =>
+      dateOnly(a).isBefore(dateOnly(b));
 
   bool get isSubmitEnabled {
     if (widget.selectionMode == DatePickerSelectionMode.single) {
@@ -304,7 +294,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                 minDate: widget.minDate,
                 maxDate: widget.maxDate,
                 onYearSelected: (year) =>
-                    jumpToMonth(DateTime(year, focusedMonth.month, 1)),
+                    jumpToMonth(DateTime(year, focusedMonth.month)),
               ),
             ),
           ),

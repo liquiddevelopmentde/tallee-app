@@ -4,11 +4,10 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
@@ -177,33 +176,33 @@ class _GroupViewState extends State<GroupView> {
                                           visible: visible,
                                         ),
                                     child: ListView.builder(
-                                      padding: AppColors.listViewPadding(
+                                      padding: AppSpacing.listViewPadding(
                                         context,
                                       ),
                                       itemCount: displayedGroups.length,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return GroupTile(
-                                          group: displayedGroups[index],
-                                          onTap: () async =>
-                                              await Navigator.push(
-                                                context,
-                                                adaptivePageRoute(
-                                                  settings: const RouteSettings(
-                                                    name: RouteNames
-                                                        .groupDetailView,
-                                                  ),
-                                                  builder: (context) {
-                                                    return GroupDetailView(
+                                      itemBuilder:
+                                          (
+                                            BuildContext context,
+                                            int index,
+                                          ) => GroupTile(
+                                            group: displayedGroups[index],
+                                            onTap: () async => await Navigator.push(
+                                              context,
+                                              adaptivePageRoute(
+                                                settings: const RouteSettings(
+                                                  name: RouteNames
+                                                      .groupDetailView,
+                                                ),
+                                                builder: (context) =>
+                                                    GroupDetailView(
                                                       group:
                                                           displayedGroups[index],
                                                       onGroupUpdated:
                                                           loadGroups,
-                                                    );
-                                                  },
-                                                ),
+                                                    ),
                                               ),
-                                        );
-                                      },
+                                            ),
+                                          ),
                                     ),
                                   ),
                                 )
@@ -223,22 +222,20 @@ class _GroupViewState extends State<GroupView> {
           ),
           // Outside the skeleton so it is not cross-faded on loading changes
           Positioned(
-            bottom: MediaQuery.paddingOf(context).bottom + 20,
+            bottom: AppSpacing.floatingButtonBottom(context),
             child: FloatingAnimatedButton(
               text: loc.create_group,
               icon: Icons.add,
-              onPressed: () async {
-                await Navigator.push(
-                  context,
-                  adaptivePageRoute(
-                    settings: const RouteSettings(
-                      name: RouteNames.createGroupView,
-                    ),
-                    builder: (context) =>
-                        CreateGroupView(onMembersChanged: loadGroups),
+              onPressed: () => Navigator.push(
+                context,
+                adaptivePageRoute(
+                  settings: const RouteSettings(
+                    name: RouteNames.createGroupView,
                   ),
-                );
-              },
+                  builder: (context) =>
+                      CreateGroupView(onMembersChanged: loadGroups),
+                ),
+              ),
             ),
           ),
         ],

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-/// A single selectable option for a [LabeledDropdown].
+/// A single selectable option for a LabeledDropdown.
 class DropdownOption<T> {
   const DropdownOption({
     required this.value,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
@@ -8,8 +9,8 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -51,7 +52,7 @@ class _MatchViewState extends State<MatchView> {
   /// Last known search mode, used to detect toggles in [handleSearchToggle]
   bool wasSearching = false;
   MatchFilter selectedFilter =
-      SharedPreferencesService.getMatchFilter() ?? MatchFilter.all;
+      SharedPreferencesService.matchFilter ?? MatchFilter.all;
 
   final GlobalKey matchViewCreateButtonKey = GlobalKey();
   final String matchViewCreateButtonIdentifier =
@@ -71,7 +72,7 @@ class _MatchViewState extends State<MatchView> {
       game: Game(
         name: 'Game name',
         ruleset: Ruleset.winner,
-        color: getRandomAppColor(),
+        color: AppColor.randomColor(),
       ),
       group: Group(
         name: 'Group name',
@@ -212,7 +213,7 @@ class _MatchViewState extends State<MatchView> {
                       // Matches in db
                       if (allMatches.isNotEmpty) ...[
                         SingleChildScrollView(
-                          padding: AppColors.filterRowPadding,
+                          padding: AppSpacing.filterRowPadding,
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             spacing: 5,
@@ -284,11 +285,12 @@ class _MatchViewState extends State<MatchView> {
                                     visible: visible,
                                   ),
                               child: ListView.builder(
-                                padding: AppColors.listViewPadding(context),
+                                padding: AppSpacing.listViewPadding(context),
                                 itemCount: displayedMatches.length,
                                 itemBuilder: (context, index) => MatchTile(
                                   width:
-                                      MediaQuery.sizeOf(context).width * 0.95,
+                                      MediaQuery.sizeOf(context).width *
+                                      AppSpacing.contentWidthFactor,
                                   onTap: () async {
                                     if (displayedMatches[index].endedAt !=
                                         null) {
@@ -344,7 +346,7 @@ class _MatchViewState extends State<MatchView> {
 
           // Create match button
           Positioned(
-            bottom: MediaQuery.paddingOf(context).bottom + 20,
+            bottom: AppSpacing.floatingButtonBottom(context),
             child: CustomShowcaseWidget(
               showcaseKey: matchViewCreateButtonKey,
               description: loc.showcase_match_view_create,
@@ -401,13 +403,9 @@ class _MatchViewState extends State<MatchView> {
       case MatchFilter.all:
         filteredMatches = [...allMatches];
       case MatchFilter.active:
-        filteredMatches = allMatches
-            .where((match) => match.endedAt == null)
-            .toList();
+        filteredMatches = allMatches.where((match) => !match.hasEnded).toList();
       case MatchFilter.finished:
-        filteredMatches = allMatches
-            .where((match) => match.endedAt != null)
-            .toList();
+        filteredMatches = allMatches.where((match) => match.hasEnded).toList();
       case MatchFilter.team:
         filteredMatches = allMatches
             .where((match) => match.isTeamMatch)
@@ -420,7 +418,7 @@ class _MatchViewState extends State<MatchView> {
       applySearch(searchBarController.text);
     });
 
-    SharedPreferencesService.setMatchFilter(filter);
+    SharedPreferencesService.matchFilter = filter;
   }
 
   void applySearch(String query) {
@@ -498,7 +496,7 @@ class _MatchViewState extends State<MatchView> {
       case null:
         await RATE_MY_APP.callEvent(RateMyAppEventType.laterButtonPressed);
       case true:
-        if (mounted) RATE_MY_APP.showStarRateDialog(context);
+        if (mounted) unawaited(RATE_MY_APP.showStarRateDialog(context));
       case false:
         await RATE_MY_APP.callEvent(RateMyAppEventType.noButtonPressed);
         if (mounted) {
@@ -511,29 +509,27 @@ class _MatchViewState extends State<MatchView> {
   }
 
   /// Shows a dialog to check for the users opinion on the app
-  Future<bool?> showPreRateDialog(AppLocalizations loc) async {
-    return await showDialog<bool>(
-      context: context,
-      builder: (context) => CustomAlertDialog(
-        closeButtonColor: context.talleeColors.hintColor,
-        showCloseButton: true,
-        title: loc.do_you_like_the_app,
-        content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),
-        actions: [
-          CustomDialogAction(
-            onPressed: () => Navigator.of(context).pop(true),
-            isEmphasized: true,
-            text: loc.yes,
-          ),
-          CustomDialogAction(
-            onPressed: () => Navigator.of(context).pop(false),
-            buttonType: ButtonType.primary,
-            text: loc.no,
-          ),
-        ],
-      ),
-    );
-  }
+  Future<bool?> showPreRateDialog(AppLocalizations loc) async =>
+      await showDialog<bool>(
+        context: context,
+        builder: (context) => CustomAlertDialog(
+          closeButtonColor: context.talleeColors.hintColor,
+          showCloseButton: true,
+          title: loc.do_you_like_the_app,
+          content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),
+          actions: [
+            CustomDialogAction(
+              onPressed: () => Navigator.of(context).pop(true),
+              accent: ButtonAccent.emphasized,
+              text: loc.yes,
+            ),
+            CustomDialogAction(
+              onPressed: () => Navigator.of(context).pop(false),
+              text: loc.no,
+            ),
+          ],
+        ),
+      );
 
   /// Shows a dialog prompting the user to contact support via email if they are unsatisfied with the app.
   void showBadRatingDialog(AppLocalizations loc) {

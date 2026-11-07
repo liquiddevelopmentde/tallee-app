@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/data/models/player.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
 
@@ -24,36 +24,34 @@ class PlayerTile extends StatelessWidget {
   final bool selected;
 
   @override
-  Widget build(BuildContext context) {
-    return TextIconTile(
-      showIcon: showIcon,
-      icon: icon,
-      muted: player.deleted,
-      selected: selected,
-      onTileTap: onTileTap == null
-          ? null
-          : () {
-              HapticFeedback.selectionClick();
-              onTileTap!();
-            },
-      backgroundColor: backgroundColor,
-      content: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (player.deleted)
-            Icon(
-              Icons.delete_outline,
-              size: 16,
-              color: context.talleeColors.hintColor,
-            ),
-          buildUnitNameWidget(
-            context,
-            player,
-            highlighted: [player.deleted],
-            countStyle: TextStyle(color: context.talleeColors.hintColor),
+  Widget build(BuildContext context) => TextIconTile(
+    showIcon: showIcon,
+    icon: icon,
+    muted: player.deleted,
+    selected: selected,
+    onTileTap: onTileTap == null
+        ? null
+        : () {
+            HapticFeedback.selectionClick();
+            onTileTap!();
+          },
+    backgroundColor: backgroundColor,
+    content: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (player.deleted)
+          Icon(
+            Icons.delete_outline,
+            size: 16,
+            color: context.talleeColors.hintColor,
           ),
-        ],
-      ),
-    );
-  }
+        buildUnitNameWidget(
+          context,
+          player,
+          highlighted: [player.deleted],
+          countStyle: TextStyle(color: context.talleeColors.hintColor),
+        ),
+      ],
+    ),
+  );
 }

@@ -1,7 +1,8 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 
 class TextChip extends StatefulWidget {
   /// A tappable text chip that shows a label and an optional item count.
@@ -33,35 +34,31 @@ class _TextChipState extends State<TextChip> {
   String get chipText => widget.text + countText;
 
   @override
-  Widget build(BuildContext context) {
-    return Skeleton.unite(
-      child: GestureDetector(
-        onTap: () {
-          HapticFeedback.selectionClick();
-          widget.onTap();
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: context.talleeColors.backgroundColor,
-            border: Border.all(
-              color: widget.activated
-                  ? context.talleeColors.textColor.withAlpha(150)
-                  : context.talleeColors.textColor.withAlpha(50),
-              width: 1,
-              strokeAlign: BorderSide.strokeAlignInside,
-            ),
-            borderRadius: BorderRadius.circular(6),
+  Widget build(BuildContext context) => Skeleton.unite(
+    child: GestureDetector(
+      onTap: () {
+        Haptics.selectionClick();
+        widget.onTap();
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: AppSpacing.standardMargin,
+        decoration: BoxDecoration(
+          color: context.talleeColors.backgroundColor,
+          border: Border.all(
+            color: widget.activated
+                ? context.talleeColors.textColor.withAlpha(150)
+                : context.talleeColors.textColor.withAlpha(50),
           ),
-          child: Text(
-            chipText,
-            style: TextStyle(
-              color: context.talleeColors.textColor.withAlpha(255),
-            ),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          chipText,
+          style: TextStyle(
+            color: context.talleeColors.textColor.withAlpha(255),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

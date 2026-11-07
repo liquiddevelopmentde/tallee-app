@@ -1,9 +1,10 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu.dart';
 
 class PullDownMenuTile extends StatefulWidget {
-  /// A single selectable row inside a [CustomPullDownMenu].
+  /// A single selectable row inside a [PullDownMenu].
   ///
   /// - [icon]: Optional icon shown at the trailing edge of the row.
   /// - [label]: The text describing the action.
@@ -50,7 +51,7 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
           : null,
       onTap: widget.enabled
           ? () {
-              HapticFeedback.selectionClick();
+              Haptics.selectionClick();
               Navigator.of(context).pop();
               widget.onTap();
             }

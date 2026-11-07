@@ -295,11 +295,9 @@ void main() {
         name: 'Valid Match',
         game: game,
         players: [p1, p2],
-        notes: '',
-        isTeamMatch: false,
         scores: {
-          p1.id: ScoreEntry(roundNumber: 0, score: 0, change: 0),
-          p2.id: ScoreEntry(roundNumber: 0, score: 0, change: 0),
+          p1.id: ScoreEntry(score: 0, change: 0),
+          p2.id: ScoreEntry(score: 0, change: 0),
         },
       );
 

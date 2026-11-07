@@ -514,7 +514,7 @@ void main() {
         final players = await database.playerDao.getAllPlayers();
 
         expect(players.length, 2);
-        for (Player p in players) {
+        for (final p in players) {
           expect(p.nameCount, 0);
         }
       });

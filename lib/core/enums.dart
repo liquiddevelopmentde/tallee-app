@@ -1,30 +1,44 @@
-import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
+/// @docImport 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
+/// @docImport 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
+/// @docImport 'package:tallee/presentation/widgets/buttons/buttons.dart';
+/// @docImport 'package:tallee/presentation/widgets/date_picker/custom_date_picker.dart';
+library;
+
+import 'dart:math';
+
+export 'extensions/app_color_extensions.dart';
+export 'extensions/ruleset_extensions.dart';
+export 'extensions/statistic_extensions.dart';
+export 'extensions/transfer_extensions.dart';
 
 /// The current app environment
 /// - [AppEnvironment.development]: Development only
 /// - [AppEnvironment.testing]: Public testing
 /// - [AppEnvironment.production]: Delivered to stores
-enum AppEnvironment { development, testing, production }
+enum AppEnvironment {
+  development('dev'),
+  testing('test'),
+  production('prod');
 
-extension AppEnvironmentExtension on AppEnvironment {
-  /// The display tag for the environment (dev, test, prod)
-  String get tag {
-    return switch (this) {
-      AppEnvironment.development => 'dev',
-      AppEnvironment.testing => 'test',
-      AppEnvironment.production => 'prod',
-    };
-  }
+  const AppEnvironment(this.tag);
+
+  final String tag;
 }
 
 /// Selection mode for [CustomDatePicker].
 enum DatePickerSelectionMode { single, range }
 
-/// Button types used for styling the [CustomWidthButton]
+/// Button types used for styling the [ApiActionAnimatedButton] / [BottomAnimatedButton]
 /// - [ButtonType.primary]: Primary button style.
 /// - [ButtonType.secondary]: Secondary button style.
 /// - [ButtonType.tertiary]: Tertiary button style.
 enum ButtonType { primary, secondary, tertiary }
+
+/// Accent colors for the [BottomAnimatedButton]
+/// - [ButtonAccent.neutral]: Default black / white styling.
+/// - [ButtonAccent.emphasized]: Styled with the primary color.
+/// - [ButtonAccent.destructive]: Styled with the error color.
+enum ButtonAccent { neutral, emphasized, destructive }
 
 /// Filtering options for matches in the [MatchView]
 /// - [MatchFilter.all]: Show all matches
@@ -40,7 +54,7 @@ enum MatchFilter { all, active, finished, team }
 /// - [ApiButtonState.error]: API call failed.
 enum ApiButtonState { idle, loading, success, error }
 
-/// Result types for import operations in the [SettingsView]
+/// Result types for import operations
 /// - [ImportResult.success]: The import operation was successful.
 /// - [ImportResult.canceled]: The import operation was canceled by the user.
 /// - [ImportResult.fileReadError]: There was an error reading the selected file.
@@ -86,7 +100,25 @@ enum ExportResult { success, canceled, unknownException, noData }
 enum Ruleset { winner, loser, highestScore, lowestScore, lives, placement }
 
 /// Different colors for highlighting content
-enum AppColor { red, orange, yellow, green, teal, blue, purple, pink }
+enum AppColor {
+  red,
+  orange,
+  yellow,
+  green,
+  teal,
+  blue,
+  purple,
+  pink;
+
+  /// Returns a random color from the app colors.
+  static AppColor randomColor() => values[Random().nextInt(values.length)];
+
+  /// Returns a color based on the provided team [index].
+  static AppColor teamColor(int index) {
+    const colors = [red, blue, green, yellow, purple, orange, pink, teal];
+    return colors[index % colors.length];
+  }
+}
 
 enum StatisticType {
   totalMatches,

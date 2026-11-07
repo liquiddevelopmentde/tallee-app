@@ -6,18 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/enums.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/utils/search_bar_scroll_listener.dart';
 import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
@@ -54,7 +53,7 @@ class _GameViewState extends State<GameView> with RouteAware {
     (_) => Game(
       name: 'Skeleton game name',
       ruleset: Ruleset.winner,
-      color: getRandomAppColor(),
+      color: AppColor.randomColor(),
       description: 'Skeleton description for the game tile',
     ),
   );
@@ -196,39 +195,42 @@ class _GameViewState extends State<GameView> with RouteAware {
                                           visible: visible,
                                         ),
                                     child: ListView.builder(
-                                      padding: AppColors.listViewPadding(
+                                      padding: AppSpacing.listViewPadding(
                                         context,
                                       ),
                                       itemCount: displayedGames.length,
 
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return GameTile(
-                                          gameCount: getGameCount(
-                                            displayedGames[index],
-                                          ),
-                                          onTap: () async {
-                                            Navigator.push(
-                                              context,
-                                              adaptivePageRoute(
-                                                settings: const RouteSettings(
-                                                  name:
-                                                      RouteNames.createGameView,
-                                                ),
-                                                builder: (context) =>
-                                                    CreateGameView(
-                                                      gameToEdit:
+                                      itemBuilder:
+                                          (
+                                            BuildContext context,
+                                            int index,
+                                          ) => GameTile(
+                                            gameCount: getGameCount(
+                                              displayedGames[index],
+                                            ),
+                                            onTap: () async {
+                                              await Navigator.push(
+                                                context,
+                                                adaptivePageRoute(
+                                                  settings: const RouteSettings(
+                                                    name: RouteNames
+                                                        .createGameView,
+                                                  ),
+                                                  builder: (context) =>
+                                                      CreateGameView(
+                                                        gameToEdit:
+                                                            displayedGames[index],
+                                                        onGameChanged:
+                                                            loadGames,
+                                                        gameCount: getGameCount(
                                                           displayedGames[index],
-                                                      onGameChanged: loadGames,
-                                                      gameCount: getGameCount(
-                                                        displayedGames[index],
+                                                        ),
                                                       ),
-                                                    ),
-                                              ),
-                                            );
-                                          },
-                                          game: displayedGames[index],
-                                        );
-                                      },
+                                                ),
+                                              );
+                                            },
+                                            game: displayedGames[index],
+                                          ),
                                     ),
                                   ),
                                 )
@@ -247,7 +249,7 @@ class _GameViewState extends State<GameView> with RouteAware {
           ),
           // Outside the skeleton so it is not cross-faded on loading changes
           Positioned(
-            bottom: MediaQuery.paddingOf(context).bottom + 20,
+            bottom: AppSpacing.floatingButtonBottom(context),
             child: CustomShowcaseWidget(
               showcaseKey: gameViewCreateButtonKey,
               description: loc.showcase_game_view_create,
@@ -263,9 +265,7 @@ class _GameViewState extends State<GameView> with RouteAware {
               child: FloatingAnimatedButton(
                 text: loc.create_game,
                 icon: Icons.add,
-                onPressed: () {
-                  navigateToCreateGameView();
-                },
+                onPressed: navigateToCreateGameView,
               ),
             ),
           ),
@@ -303,10 +303,7 @@ class _GameViewState extends State<GameView> with RouteAware {
           // Check ruleset name
           maxScore = max(
             maxScore,
-            weightedRatio(
-              translateRulesetToString(game.ruleset, context),
-              query,
-            ),
+            weightedRatio(game.ruleset.toLocalizedString(context), query),
           );
 
           if (maxScore >= FUZZY_SEARCH_THRESHOLD) {

@@ -1,10 +1,9 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class InfoTile extends StatefulWidget {
   /// A tile widget that displays a title with an icon and some content below it.
   /// - [title]: The title text displayed on the tile.
-  /// - [icon]: The icon displayed next to the title.
   /// - [content]: The content widget displayed below the title.
   /// - [padding]: Optional padding for the tile content.
   /// - [height]: Optional height for the tile.
@@ -38,41 +37,37 @@ class InfoTile extends StatefulWidget {
 
 class _InfoTileState extends State<InfoTile> {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: widget.padding ?? const EdgeInsets.all(12),
-      margin: widget.margin,
-      height: widget.height,
-      width: widget.width ?? 380,
-      decoration: context.standardBoxDecoration,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: widget.horizontalAlignment,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  widget.leadingWidget,
-                  const SizedBox(width: 5),
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+  Widget build(BuildContext context) => Container(
+    padding: widget.padding ?? const EdgeInsets.all(12),
+    margin: widget.margin,
+    height: widget.height,
+    width: widget.width ?? 380,
+    decoration: context.standardBoxDecoration,
+    child: Column(
+      crossAxisAlignment: widget.horizontalAlignment,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                widget.leadingWidget,
+                const SizedBox(width: 5),
+                Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
-              if (widget.trailingWidget != null) widget.trailingWidget!,
-            ],
-          ),
-          const SizedBox(height: 10),
-          widget.content,
-        ],
-      ),
-    );
-  }
+                ),
+              ],
+            ),
+            if (widget.trailingWidget != null) widget.trailingWidget!,
+          ],
+        ),
+        const SizedBox(height: 10),
+        widget.content,
+      ],
+    ),
+  );
 }

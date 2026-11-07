@@ -1,10 +1,10 @@
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/dto/date_picker_range.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/date_picker/date_picker_action_button.dart';
@@ -97,19 +97,17 @@ class _DatePickerNavigationButton extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(20),
-      onTap: () {
-        HapticFeedback.lightImpact();
-        onTap();
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Icon(icon, color: context.talleeColors.textColor),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => InkWell(
+    borderRadius: BorderRadius.circular(20),
+    onTap: () {
+      HapticFeedback.lightImpact();
+      onTap();
+    },
+    child: Padding(
+      padding: const EdgeInsets.all(8),
+      child: Icon(icon, color: context.talleeColors.textColor),
+    ),
+  );
 }
 
 class DatePickerCalendar extends StatelessWidget {
@@ -139,31 +137,29 @@ class DatePickerCalendar extends StatelessWidget {
   final ValueChanged<DateTime> onDayTapped;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _WeekdayHeader(localeName: localeName),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 240,
-          child: PageView.builder(
-            controller: pageController,
-            itemCount: itemCount,
-            onPageChanged: onPageChanged,
-            itemBuilder: (context, page) => _MonthGrid(
-              month: monthForPage(page),
-              selectionMode: selectionMode,
-              selectedDate: selectedDate,
-              selectedRange: selectedRange,
-              isDateDisabled: isDateDisabled,
-              onDayTapped: onDayTapped,
-            ),
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      _WeekdayHeader(localeName: localeName),
+      const SizedBox(height: 8),
+      SizedBox(
+        height: 240,
+        child: PageView.builder(
+          controller: pageController,
+          itemCount: itemCount,
+          onPageChanged: onPageChanged,
+          itemBuilder: (context, page) => _MonthGrid(
+            month: monthForPage(page),
+            selectionMode: selectionMode,
+            selectedDate: selectedDate,
+            selectedRange: selectedRange,
+            isDateDisabled: isDateDisabled,
+            onDayTapped: onDayTapped,
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
 
 class _WeekdayHeader extends StatelessWidget {
@@ -220,7 +216,7 @@ class _MonthGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firstDayOfMonth = DateTime(month.year, month.month, 1);
+    final firstDayOfMonth = DateTime(month.year, month.month);
     final leadingDays = (firstDayOfMonth.weekday - 1) % 7;
     final gridStartDate = firstDayOfMonth.subtract(Duration(days: leadingDays));
 
@@ -439,26 +435,24 @@ class _RangeHalf extends StatelessWidget {
   final bool start;
 
   @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Center(
-        child: SizedBox(
-          height: 34,
-          child: Row(
-            children: start
-                ? [
-                    const Expanded(child: SizedBox.shrink()),
-                    Expanded(child: Container(color: color)),
-                  ]
-                : [
-                    Expanded(child: Container(color: color)),
-                    const Expanded(child: SizedBox.shrink()),
-                  ],
-          ),
+  Widget build(BuildContext context) => Positioned.fill(
+    child: Center(
+      child: SizedBox(
+        height: 34,
+        child: Row(
+          children: start
+              ? [
+                  const Expanded(child: SizedBox.shrink()),
+                  Expanded(child: Container(color: color)),
+                ]
+              : [
+                  Expanded(child: Container(color: color)),
+                  const Expanded(child: SizedBox.shrink()),
+                ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class DatePickerYearPicker extends StatelessWidget {

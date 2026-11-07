@@ -1,11 +1,9 @@
 import 'package:drift/drift.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/player_match_table.dart';
 import 'package:tallee/data/db/tables/team_table.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score_entry.dart';
-import 'package:tallee/data/models/team.dart';
+import 'package:tallee/data/models/models.dart';
 
 part 'team_dao.g.dart';
 
@@ -196,9 +194,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     }
 
     for (final members in teamIdToMembers.values) {
-      members.sort(
-        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-      );
+      members.sortByLowercaseName((p) => p.name);
     }
 
     final Map<String, Team> teamMap = {};
@@ -252,8 +248,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     final players = await Future.wait(
       playerIds.map((id) => db.playerDao.getPlayerById(playerId: id)),
     );
-    return players
-      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    return players..sortByLowercaseName((p) => p.name);
   }
 
   /* Update */
@@ -374,9 +369,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<bool> setWinnerTeam({
     required String teamId,
     required String matchId,
-  }) async {
-    return await updateTeamScore(teamId: teamId, matchId: matchId, score: 1);
-  }
+  }) async => await updateTeamScore(teamId: teamId, matchId: matchId, score: 1);
 
   /// Sets multiple teams as winners of the match with the given [matchId] by assigning a score of 1 to each team.
   /// Returns `true` if all scores were updated successfully, `false` otherwise.
@@ -399,24 +392,20 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
 
   /// Removes the winner status from all Teams with the given [matchId] by setting its score to null.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
-  Future<bool> removeWinnerTeam({required String matchId}) async {
-    return await removeAllTeamScores(matchId: matchId);
-  }
+  Future<bool> removeWinnerTeam({required String matchId}) async =>
+      await removeAllTeamScores(matchId: matchId);
 
   /// Sets the team with the given [teamId] as the loser of the match with the given [matchId] by assigning a score of 0.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
   Future<bool> setLoserTeam({
     required String teamId,
     required String matchId,
-  }) async {
-    return await updateTeamScore(teamId: teamId, matchId: matchId, score: 0);
-  }
+  }) async => await updateTeamScore(teamId: teamId, matchId: matchId, score: 0);
 
   /// Removes the loser from the match with the given [matchId] by setting its score to null.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
-  Future<bool> removeLoserTeam({required String matchId}) async {
-    return await removeAllTeamScores(matchId: matchId);
-  }
+  Future<bool> removeLoserTeam({required String matchId}) async =>
+      await removeAllTeamScores(matchId: matchId);
 
   /// Sets the placements for the teams in the match with the given [matchId] by assigning scores based on their order in the [teams] list.
   /// Returns `true` if all scores were updated successfully, `false` otherwise.

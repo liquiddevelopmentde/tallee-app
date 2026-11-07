@@ -1,16 +1,10 @@
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/dto/date_picker_range.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/match.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
@@ -53,9 +47,6 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   // null -> random color
   AppColor? selectedColor;
-
-  // Pre-selected random color for preview
-  final AppColor randomColor = getRandomAppColor();
 
   bool get hasGroupScope =>
       selectedScopes.contains(StatisticScope.selectedGroups);
@@ -123,10 +114,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                     ),
                                   )
                                 : Text(
-                                    translateStatisticTypeToString(
-                                      selectedType!,
-                                      context,
-                                    ),
+                                    selectedType!.toLocalizedString(context),
                                   ),
                           ),
                           onPressed: () => showTypeSheet(loc),
@@ -150,8 +138,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                     spacing: 5,
                                     children: [
                                       Text(
-                                        translateScopeToString(
-                                          selectedScopes.first,
+                                        selectedScopes.first.toLocalizedString(
                                           context,
                                         ),
                                       ),
@@ -180,7 +167,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                               names: selectedGroups.map((g) => g.name).toList(),
                               hint: loc.select_groups,
                             ),
-                            onPressed: () => showGroupSelection(),
+                            onPressed: showGroupSelection,
                           ),
 
                         // Game selection
@@ -192,7 +179,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                               names: selectedGames.map((g) => g.name).toList(),
                               hint: loc.select_games,
                             ),
-                            onPressed: () => showGameSelection(),
+                            onPressed: showGameSelection,
                           ),
 
                         // Timeframe selection
@@ -202,10 +189,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                           trailing: Padding(
                             padding: const EdgeInsets.only(right: 5),
                             child: Text(
-                              translateTimeframeToString(
-                                selectedTimeframe,
-                                context,
-                              ),
+                              selectedTimeframe.toLocalizedString(context),
                             ),
                           ),
                           onPressed: () => showTimeframeSheet(loc),
@@ -228,12 +212,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                                   const ColoredCircle(isRandomColor: true),
                                   Text(loc.random_color),
                                 ] else ...[
-                                  ColoredCircle(color: selectedColor!),
+                                  ColoredCircle(color: selectedColor),
                                   Text(
-                                    translateAppColorToString(
-                                      selectedColor!,
-                                      context,
-                                    ),
+                                    selectedColor!.toLocalizedString(context),
                                   ),
                                 ],
                               ],
@@ -249,10 +230,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                       padding: const EdgeInsets.only(top: 20, bottom: 12),
                       child: Center(
                         child: BottomAnimatedButton(
-                          buttonText: loc.create_statistic,
-                          sizeRelativeToWidth: 0.95,
+                          text: loc.create_statistic,
                           onPressed: enableSubmitButton
-                              ? () => submitStatistic()
+                              ? submitStatistic
                               : null,
                         ),
                       ),
@@ -276,9 +256,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         description: loc.select_a_type_description,
         values: StatisticType.values,
         selectedValue: selectedType,
-        leadingBuilder: (StatisticType type) => Icon(getTypeIcon(type: type)),
+        leadingBuilder: (StatisticType type) => Icon(type.icon),
         labelBuilder: (BuildContext ctx, StatisticType scope) =>
-            translateStatisticTypeToString(scope, ctx),
+            scope.toLocalizedString(ctx),
         onValueUpdated: (StatisticType? type) => setState(() {
           selectedType = type;
           // Drop games that don't fit the rulesets of the new types
@@ -297,10 +277,9 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         description: loc.select_a_scope_description,
         values: StatisticScope.values,
         selectedValues: selectedScopes,
-        leadingBuilder: (StatisticScope scope) =>
-            Icon(getScopeIcon(scope: scope)),
+        leadingBuilder: (StatisticScope scope) => Icon(scope.icon),
         labelBuilder: (BuildContext ctx, StatisticScope scope) =>
-            translateScopeToString(scope, ctx),
+            scope.toLocalizedString(ctx),
         onValuesUpdated: (List<StatisticScope> scopes) =>
             setState(() => selectedScopes = scopes),
         exclusivePairs: const [
@@ -320,7 +299,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         values: Timeframe.values,
         selectedValue: selectedTimeframe,
         labelBuilder: (BuildContext ctx, Timeframe tf) =>
-            translateTimeframeToString(tf, ctx),
+            tf.toLocalizedString(ctx),
         onValueUpdated: (Timeframe? tf) =>
             setState(() => selectedTimeframe = tf!),
       ),
@@ -365,30 +344,28 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   Widget buildSelectionTrailing({
     required List<String> names,
     required String hint,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 5),
-      child: names.isEmpty
-          ? Text(hint, style: TextStyle(color: context.talleeColors.hintColor))
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 5,
-              children: [
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 150),
-                  child: Text(names.first, overflow: TextOverflow.ellipsis),
-                ),
-                if (names.length > 1)
-                  Text(
-                    '+ ${names.length - 1}',
-                    style: TextStyle(
-                      color: context.talleeColors.textColor.withAlpha(200),
-                    ),
+  }) => Padding(
+    padding: const EdgeInsets.only(right: 5),
+    child: names.isEmpty
+        ? Text(hint, style: TextStyle(color: context.talleeColors.hintColor))
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 5,
+            children: [
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 150),
+                child: Text(names.first, overflow: TextOverflow.ellipsis),
+              ),
+              if (names.length > 1)
+                Text(
+                  '+ ${names.length - 1}',
+                  style: TextStyle(
+                    color: context.talleeColors.textColor.withAlpha(200),
                   ),
-              ],
-            ),
-    );
-  }
+                ),
+            ],
+          ),
+  );
 
   void showColorSheet(AppLocalizations loc) {
     SelectionSheet.show(
@@ -401,9 +378,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         leadingBuilder: (AppColor? color) => color == null
             ? const ColoredCircle(isRandomColor: true)
             : ColoredCircle(color: color),
-        labelBuilder: (BuildContext context, AppColor? color) => color == null
-            ? loc.random_color
-            : translateAppColorToString(color, context),
+        labelBuilder: (BuildContext context, AppColor? color) =>
+            color == null ? loc.random_color : color.toLocalizedString(context),
         onValueUpdated: (color) => setState(() => selectedColor = color),
       ),
     );
@@ -454,52 +430,50 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     );
   }
 
-  Widget buildDateRangeField(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: isLoading
-          ? null
-          : () async {
-              final results = await showCustomTimeframePicker(
-                initialStartDate: selectedStartDate,
-                initialEndDate: selectedEndDate,
-              );
+  Widget buildDateRangeField(BuildContext context) => InkWell(
+    borderRadius: BorderRadius.circular(12),
+    onTap: isLoading
+        ? null
+        : () async {
+            final results = await showCustomTimeframePicker(
+              initialStartDate: selectedStartDate,
+              initialEndDate: selectedEndDate,
+            );
 
-              if (results != null &&
-                  results.length >= 2 &&
-                  results[0] != null &&
-                  results[1] != null) {
-                setState(() {
-                  selectedStartDate = results[0];
-                  selectedEndDate = results[1];
-                });
-              }
-            },
-      child: Container(
-        height: 54,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: context.standardBoxDecoration,
-        child: Row(
-          children: [
-            Icon(Icons.calendar_month, color: context.talleeColors.textColor),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                formatDateRange(context, selectedStartDate, selectedEndDate),
-                style: TextStyle(
-                  color: selectedStartDate != null && selectedEndDate != null
-                      ? context.talleeColors.textColor
-                      : context.talleeColors.hintColor,
-                  fontSize: 14,
-                ),
-                overflow: TextOverflow.ellipsis,
+            if (results != null &&
+                results.length >= 2 &&
+                results[0] != null &&
+                results[1] != null) {
+              setState(() {
+                selectedStartDate = results[0];
+                selectedEndDate = results[1];
+              });
+            }
+          },
+    child: Container(
+      height: 54,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: context.standardBoxDecoration,
+      child: Row(
+        children: [
+          Icon(Icons.calendar_month, color: context.talleeColors.textColor),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              formatDateRange(context, selectedStartDate, selectedEndDate),
+              style: TextStyle(
+                color: selectedStartDate != null && selectedEndDate != null
+                    ? context.talleeColors.textColor
+                    : context.talleeColors.hintColor,
+                fontSize: 14,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 
   Future<void> loadAllData() async {
     setState(() {
@@ -507,7 +481,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     });
     final db = context.read<AppDatabase>();
 
-    Future.wait([
+    await Future.wait([
           db.playerDao.getAllPlayers(),
           db.groupDao.getAllGroups(),
           db.gameDao.getAllGames(),
@@ -547,7 +521,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   /// Filters the [games] based on the rulesets required by the selected [StatisticType]s
   List<Game> filterGamesForRequiredRuleset(List<Game> games) {
     if (selectedType == null) return games;
-    final requiredRulesets = getRulesetsForType(selectedType!);
+    final requiredRulesets = selectedType!.fittingRulesets;
     return games.where((g) => requiredRulesets.contains(g.ruleset)).toList();
   }
 
@@ -557,7 +531,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     timeframe: selectedTimeframe,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
-    color: selectedColor ?? randomColor,
+    color: selectedColor ?? AppColor.randomColor(),
     selectedGroups: hasGroupScope ? selectedGroups : null,
     selectedGames: hasGameScope ? selectedGames : null,
   );
@@ -567,26 +541,20 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     DateTime? startDate,
     DateTime? endDate,
   ) {
-    if (startDate != null && endDate != null) {
-      final locale = Localizations.localeOf(context).toString();
-      return '${DateFormat.yMd(locale).format(startDate)} - ${DateFormat.yMd(locale).format(endDate)}';
+    if (startDate == null || endDate == null) {
+      return AppLocalizations.of(context).choose_date_range;
     }
-    return AppLocalizations.of(context).choose_date_range;
+    return '${startDate.toShortDate(context)} - ${endDate.toShortDate(context)}';
   }
 
   Future<List<DateTime?>?> showCustomTimeframePicker({
     DateTime? initialStartDate,
     DateTime? initialEndDate,
-  }) async {
-    return CustomDatePicker.show<List<DateTime?>>(
-      context: context,
-      selectionMode: DatePickerSelectionMode.range,
-      initialRange: initialStartDate != null || initialEndDate != null
-          ? DatePickerRange(
-              startDate: initialStartDate,
-              endDate: initialEndDate,
-            )
-          : null,
-    );
-  }
+  }) async => CustomDatePicker.show<List<DateTime?>>(
+    context: context,
+    selectionMode: DatePickerSelectionMode.range,
+    initialRange: initialStartDate != null || initialEndDate != null
+        ? DatePickerRange(startDate: initialStartDate, endDate: initialEndDate)
+        : null,
+  );
 }

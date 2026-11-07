@@ -1,10 +1,10 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_tile.dart';
 
 class PullDownMenu extends PopupRoute<void> {
   /// The [PopupRoute] that positions, animates and renders the menu surface for a
-  /// [CustomPullDownMenu] relative to its trigger button.
+  /// [PullDownMenu] relative to its trigger button.
   /// - [buttonRect]: The trigger button's rect in overlay coordinates.
   /// - [overlaySize]: The size of the overlay the menu is placed in.
   /// - [items]: The tiles to render inside the menu.
@@ -69,29 +69,27 @@ class PullDownMenu extends PopupRoute<void> {
     );
   }
 
-  Widget menuSurface(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        width: menuWidth,
-        decoration: BoxDecoration(
-          color: context.talleeColors.boxColor,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 50,
-              offset: Offset(0, 10),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(14),
-          child: Column(mainAxisSize: MainAxisSize.min, children: items),
-        ),
+  Widget menuSurface(BuildContext context) => Material(
+    color: Colors.transparent,
+    child: Container(
+      width: menuWidth,
+      decoration: BoxDecoration(
+        color: context.talleeColors.boxColor,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 50,
+            offset: Offset(0, 10),
+          ),
+        ],
       ),
-    );
-  }
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: Column(mainAxisSize: MainAxisSize.min, children: items),
+      ),
+    ),
+  );
 
   @override
   Widget buildTransitions(
@@ -99,7 +97,5 @@ class PullDownMenu extends PopupRoute<void> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) {
-    return child;
-  }
+  ) => child;
 }

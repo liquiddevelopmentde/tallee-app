@@ -10,6 +10,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -22,7 +23,6 @@ import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_
 import 'package:tallee/presentation/views/onboarding_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -70,33 +70,26 @@ void main() async {
                 event.level == SentryLevel.fatal)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final context = Tallee.navigatorKey.currentContext;
-            if (context != null) {
-              final loc = AppLocalizations.of(context);
-              Tallee.scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-              Tallee.scaffoldMessengerKey.currentState?.showSnackBar(
-                CustomSnackBar(
-                  message: loc.unexpected_error,
-                  actionLabel: loc.report_error,
-                  onActionTap: () async {
-                    Tallee.scaffoldMessengerKey.currentState
-                        ?.hideCurrentSnackBar();
-                    final result = await Tallee.navigatorKey.currentState
-                        ?.push<bool>(
-                          MaterialPageRoute(
-                            builder: (context) => FeedbackFormView(
-                              associatedEventId: event.eventId,
-                            ),
-                          ),
-                        );
-                    if (result == true) {
-                      Tallee.scaffoldMessengerKey.currentState?.showSnackBar(
-                        CustomSnackBar(message: loc.thank_you_for_report),
-                      );
-                    }
-                  },
-                ),
-              );
-            }
+            if (context == null) return;
+
+            final loc = AppLocalizations.of(context);
+            context.showSnackBar(
+              message: loc.unexpected_error,
+              actionLabel: loc.report_error,
+              onActionTap: () async {
+                Tallee.scaffoldMessengerKey.hideSnackBar();
+                final result = await Tallee.navigatorKey.currentState
+                    ?.push<bool>(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            FeedbackFormView(associatedEventId: event.eventId),
+                      ),
+                    );
+                if (result == true && context.mounted) {
+                  context.showSnackBar(message: loc.thank_you_for_report);
+                }
+              },
+            );
           });
         }
         return event;
@@ -160,36 +153,34 @@ class _TalleeState extends State<Tallee> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: Tallee.navigatorKey,
-      scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
-      localizationsDelegates: const [
-        ...AppLocalizations.localizationsDelegates,
-        ...GlobalMaterialLocalizations.delegates,
-        ...GlobalCupertinoLocalizations.delegates,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      localeResolutionCallback: (locale, supportedLocales) {
-        for (final supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale?.languageCode) {
-            return supportedLocale;
-          }
+  Widget build(BuildContext context) => MaterialApp(
+    navigatorKey: Tallee.navigatorKey,
+    scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
+    localizationsDelegates: const [
+      ...AppLocalizations.localizationsDelegates,
+      ...GlobalMaterialLocalizations.delegates,
+      ...GlobalCupertinoLocalizations.delegates,
+    ],
+    supportedLocales: AppLocalizations.supportedLocales,
+    localeResolutionCallback: (locale, supportedLocales) {
+      for (final supportedLocale in supportedLocales) {
+        if (supportedLocale.languageCode == locale?.languageCode) {
+          return supportedLocale;
         }
-        return supportedLocales.firstWhere(
-          (locale) => locale.languageCode == 'en',
-        );
-      },
-      debugShowCheckedModeBanner: false,
-      scrollBehavior: const AppScrollBehavior(),
-      onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
-      themeMode: context.watch<ThemeProvider>().themeMode,
-      navigatorObservers: [SentryNavigatorObserver()],
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      home: SplashScreen(onFinished: handleSplashFinished),
-    );
-  }
+      }
+      return supportedLocales.firstWhere(
+        (locale) => locale.languageCode == 'en',
+      );
+    },
+    debugShowCheckedModeBanner: false,
+    scrollBehavior: const AppScrollBehavior(),
+    onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
+    themeMode: context.watch<ThemeProvider>().themeMode,
+    navigatorObservers: [SentryNavigatorObserver()],
+    theme: lightTheme,
+    darkTheme: darkTheme,
+    home: SplashScreen(onFinished: handleSplashFinished),
+  );
 
   void handleSplashFinished() {
     final navigator = Tallee.navigatorKey.currentState;
@@ -198,8 +189,7 @@ class _TalleeState extends State<Tallee> {
     final path = pendingImportPath;
     pendingImportPath = null;
 
-    bool isOnboardingCompleted =
-        SharedPreferencesService.isOnboardingCompleted();
+    bool isOnboardingCompleted = SharedPreferencesService.onboardingCompleted;
 
     final targetWidget = !isOnboardingCompleted
         ? OnboardingView(onCompleted: () => navigateToHomeAndHandleImport(path))
@@ -213,10 +203,8 @@ class _TalleeState extends State<Tallee> {
               : RouteNames.groupView,
         ),
         pageBuilder: (context, animation, secondaryAnimation) => targetWidget,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        transitionDuration: const Duration(milliseconds: 300),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(opacity: animation, child: child),
       ),
     );
 
@@ -250,7 +238,7 @@ class _TalleeState extends State<Tallee> {
   }
 
   /// Pushes the import view for the .tallee file at [path].
-  void openImport(String path) async {
+  Future<void> openImport(String path) async {
     final navigator = Tallee.navigatorKey.currentState;
     if (navigator == null) return;
 

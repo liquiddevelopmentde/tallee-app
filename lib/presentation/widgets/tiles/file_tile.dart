@@ -1,10 +1,9 @@
 import 'dart:convert';
 
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
@@ -46,7 +45,6 @@ class MatchFileTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Row(
         spacing: 12,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.file_present, size: 36),
           Expanded(
@@ -56,7 +54,6 @@ class MatchFileTile extends StatelessWidget {
               children: [
                 Row(
                   spacing: 4,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Filename
                     Expanded(

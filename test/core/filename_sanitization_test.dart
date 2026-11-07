@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tallee/core/common.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 void main() {
   group('FilenameSanitization extension', () {
