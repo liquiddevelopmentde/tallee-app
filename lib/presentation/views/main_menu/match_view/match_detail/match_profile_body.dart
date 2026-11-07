@@ -72,7 +72,7 @@ class MatchProfileBody extends StatelessWidget {
 
         // Creation Date
         Text(
-          '${loc.created_on} ${match.createdAt.toLocalizedFormat(context)}',
+          '${loc.created_on} ${match.createdAt.toMediumDate(context)}',
           style: TextStyle(fontSize: 12, color: context.talleeColors.textColor),
           textAlign: TextAlign.center,
         ),

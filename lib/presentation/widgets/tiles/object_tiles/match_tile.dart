@@ -224,7 +224,7 @@ class _MatchTileState extends State<MatchTile> {
     } else if (difference.inDays < 7) {
       return loc.days_ago(difference.inDays);
     } else {
-      return '${loc.created_on} ${dateTime.toLocalizedFormat(context)}';
+      return '${loc.created_on} ${dateTime.toMediumDate(context)}';
     }
   }
 

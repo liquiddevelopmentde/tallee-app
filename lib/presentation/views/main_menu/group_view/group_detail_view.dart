@@ -144,7 +144,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   ),
                 const SizedBox(height: 5),
                 Text(
-                  '${loc.created_on} ${group.createdAt.toLocalizedFormat(context)}',
+                  '${loc.created_on} ${group.createdAt.toMediumDate(context)}',
                   style: TextStyle(
                     fontSize: 12,
                     color: context.talleeColors.textColor,

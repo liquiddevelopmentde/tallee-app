@@ -222,7 +222,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
 
                 // Created at date
                 Text(
-                  '${loc.created_on} ${player.createdAt.toLocalizedFormat(context)}',
+                  '${loc.created_on} ${player.createdAt.toMediumDate(context)}',
                   style: TextStyle(
                     fontSize: 12,
                     color: context.talleeColors.textColor,
