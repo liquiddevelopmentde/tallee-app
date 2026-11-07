@@ -99,9 +99,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   @override
   void initState() {
     super.initState();
-    // The database is needed both when loading data and when saving
-    // an edited or duplicated match, so it must be initialized before the
-    // view decides which data to load.
     db = context.read<AppDatabase>();
 
     matchNameController.addListener(() {
