@@ -216,23 +216,15 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         children: [
           buildSearchBar(loc),
 
-          if (widget.mode == SelectionMode.multiple)
-            Column(
-              crossAxisAlignment: crossAxisAlignment,
-              spacing: 10,
-              children: [
-                buildSelectedPlayersHeader(loc),
-                buildSelectedPlayersBar(),
-                if (allPlayers.isNotEmpty)
-                  Text(
-                    loc.all_players,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-              ],
+          if (widget.mode == SelectionMode.multiple &&
+              (allPlayers.isNotEmpty || isLoading)) ...[
+            buildSelectedPlayersHeader(loc),
+            buildSelectedPlayersBar(),
+            Text(
+              loc.all_players,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
+          ],
 
           Expanded(
             child: AppSkeleton(
