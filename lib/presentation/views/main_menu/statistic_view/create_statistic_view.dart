@@ -1,10 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
-import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/date_picker_range.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/data/statistics/statistic_calculator.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -14,6 +13,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/create_match/choo
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_circle.dart';
+import 'package:tallee/presentation/widgets/date_picker/custom_date_picker.dart';
 import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
@@ -550,109 +550,11 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   Future<List<DateTime?>?> showCustomTimeframePicker({
     DateTime? initialStartDate,
     DateTime? initialEndDate,
-  }) async => showDialog<List<DateTime?>>(
+  }) async => CustomDatePicker.show<List<DateTime?>>(
     context: context,
-    builder: (context) => Theme(
-      data: Theme.of(context).copyWith(
-        splashFactory: NoSplash.splashFactory,
-        colorScheme: ColorScheme.dark(
-          primary: AppColors.primaryColor,
-          onPrimary: context.talleeColors.textColor,
-          surface: context.talleeColors.boxColor,
-          onSurface: context.talleeColors.textColor,
-        ),
-      ),
-      child: Dialog(
-        backgroundColor: context.talleeColors.boxColor,
-        surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: context.talleeColors.boxBorderColor),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          height: 450,
-          child: SfDateRangePicker(
-            backgroundColor: context.talleeColors.boxColor,
-            todayHighlightColor: AppColors.primaryColor,
-            showNavigationArrow: true,
-            initialSelectedRange:
-                initialStartDate != null && initialEndDate != null
-                ? PickerDateRange(initialStartDate, initialEndDate)
-                : null,
-            headerStyle: DateRangePickerHeaderStyle(
-              textAlign: TextAlign.center,
-              backgroundColor: Colors.transparent,
-              textStyle: TextStyle(
-                color: context.talleeColors.textColor,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            monthCellStyle: DateRangePickerMonthCellStyle(
-              textStyle: TextStyle(
-                color: context.talleeColors.textColor,
-                fontSize: 16,
-              ),
-              todayTextStyle: const TextStyle(
-                color: AppColors.primaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-              leadingDatesTextStyle: TextStyle(
-                color: context.talleeColors.hintColor,
-                fontSize: 16,
-              ),
-              trailingDatesTextStyle: TextStyle(
-                color: context.talleeColors.hintColor,
-                fontSize: 16,
-              ),
-            ),
-            yearCellStyle: DateRangePickerYearCellStyle(
-              textStyle: TextStyle(
-                color: context.talleeColors.textColor,
-                fontSize: 16,
-              ),
-              todayTextStyle: const TextStyle(
-                color: AppColors.primaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            monthViewSettings: DateRangePickerMonthViewSettings(
-              viewHeaderStyle: DateRangePickerViewHeaderStyle(
-                textStyle: TextStyle(
-                  color: context.talleeColors.textColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              firstDayOfWeek: 1,
-            ),
-            selectionMode: DateRangePickerSelectionMode.range,
-            selectionColor: AppColors.primaryColor,
-            startRangeSelectionColor: AppColors.primaryColor,
-            endRangeSelectionColor: AppColors.primaryColor,
-            rangeSelectionColor: AppColors.primaryColor.withValues(alpha: 0.15),
-            selectionTextStyle: TextStyle(
-              color: context.talleeColors.textColor,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-            rangeTextStyle: TextStyle(
-              color: context.talleeColors.textColor,
-              fontSize: 16,
-            ),
-            showActionButtons: true,
-            onSubmit: (value) {
-              if (value is PickerDateRange) {
-                Navigator.pop(context, [value.startDate, value.endDate]);
-              }
-            },
-            onCancel: () => Navigator.pop(context),
-          ),
-        ),
-      ),
-    ),
+    selectionMode: DatePickerSelectionMode.range,
+    initialRange: initialStartDate != null || initialEndDate != null
+        ? DatePickerRange(startDate: initialStartDate, endDate: initialEndDate)
+        : null,
   );
 }

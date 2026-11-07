@@ -21,6 +21,7 @@ class TeamCard extends StatelessWidget {
     this.margin,
     this.showDragHandle = false,
     this.showTeamMembers = true,
+    this.onPlayerTap,
   });
 
   final Team team;
@@ -29,6 +30,7 @@ class TeamCard extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final bool showDragHandle;
   final bool showTeamMembers;
+  final void Function(Player)? onPlayerTap;
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +154,9 @@ class TeamCard extends StatelessWidget {
                           (player) => PlayerTile(
                             player: player,
                             backgroundColor: Colors.transparent,
+                            onTileTap: onPlayerTap == null
+                                ? null
+                                : () => onPlayerTap!(player),
                           ),
                         ),
                       ],

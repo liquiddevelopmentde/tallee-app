@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 
@@ -18,7 +19,12 @@ class PlayerProfileListTile extends StatelessWidget {
     final backgroundColor = context.talleeColors.onBoxColor;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap == null
+          ? null
+          : () {
+              HapticFeedback.selectionClick();
+              onTap!();
+            },
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

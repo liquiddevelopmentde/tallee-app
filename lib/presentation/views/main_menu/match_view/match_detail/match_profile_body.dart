@@ -104,8 +104,11 @@ class MatchProfileBody extends StatelessWidget {
             horizontalAlignment: CrossAxisAlignment.start,
             content: match.hasTeams
                 ? Column(
-                    children: match.teams!
-                        .map((team) => TeamCard(team: team))
+                    children: (match.teams!)
+                        .map(
+                          (team) =>
+                              TeamCard(team: team, onPlayerTap: onPlayerTap),
+                        )
                         .toList(),
                   )
                 : Text(

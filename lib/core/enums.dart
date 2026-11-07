@@ -1,6 +1,7 @@
 /// @docImport 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 /// @docImport 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 /// @docImport 'package:tallee/presentation/widgets/buttons/buttons.dart';
+/// @docImport 'package:tallee/presentation/widgets/date_picker/custom_date_picker.dart';
 library;
 
 import 'dart:math';
@@ -23,6 +24,9 @@ enum AppEnvironment {
 
   final String tag;
 }
+
+/// Selection mode for [CustomDatePicker].
+enum DatePickerSelectionMode { single, range }
 
 /// Button types used for styling the [ApiActionAnimatedButton] / [BottomAnimatedButton]
 /// - [ButtonType.primary]: Primary button style.
