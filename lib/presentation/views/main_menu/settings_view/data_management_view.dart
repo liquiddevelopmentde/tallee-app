@@ -260,7 +260,7 @@ class _DataManagementViewState extends State<DataManagementView> {
     try {
       await LocalShareService.deleteAllData(context);
       SharedPreferencesService.deleteAllPreferences();
-    } on Exception catch (error, stacktrace) {
+    } catch (error, stacktrace) {
       unawaited(
         Sentry.captureException(
           error,
