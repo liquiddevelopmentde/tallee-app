@@ -77,6 +77,7 @@ class _CreateGameViewState extends State<CreateGameView> {
   void initState() {
     super.initState();
     db = context.read<AppDatabase>();
+    showcaseProvider = context.read<ShowcaseProvider>();
 
     if (widget.requiredRuleset != null) {
       selectedRuleset = widget.requiredRuleset;
@@ -91,8 +92,6 @@ class _CreateGameViewState extends State<CreateGameView> {
       selectedRuleset = widget.gameToEdit!.ruleset;
       selectedColor = widget.gameToEdit!.color;
     } else {
-      showcaseProvider = context.read<ShowcaseProvider>();
-
       handleShowcase(
         widgetKeys: [
           createGameViewGameNameKey,
@@ -251,9 +250,10 @@ class _CreateGameViewState extends State<CreateGameView> {
                               selectedRuleset != null &&
                               selectedColor != null
                           ? () async {
-                              if (showcaseProvider.shouldShowShowcase(
-                                createGameViewGameNameIdentifier,
-                              )) {
+                              if (!isEditing &&
+                                  showcaseProvider.shouldShowShowcase(
+                                    createGameViewGameNameIdentifier,
+                                  )) {
                                 showcaseProvider.markAsSeen(
                                   createGameViewGameNameIdentifier,
                                 );
