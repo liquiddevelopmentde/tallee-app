@@ -267,7 +267,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [meta, build_android, build_ios]
     if: vars.STORE_DEPLOY_ENABLED == 'true'
-    environment: production
     env:
       TAG: ${{ inputs.tag || github.ref_name }}
     steps:
