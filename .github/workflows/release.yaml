@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -41,12 +42,14 @@ jobs:
         id: version
         run: |
           VERSION=$(grep '^version:' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
+          TAG="${{ inputs.tag || github.ref_name }}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Resolved version: $VERSION"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: $VERSION, tag: $TAG"
 
       - name: Summary
         env:
-          TAG: ${{ inputs.tag || github.ref_name }}
+          TAG: ${{ steps.version.outputs.tag }}
           PUBLISHING: ${{ vars.STORE_DEPLOY_ENABLED == 'true' }}
           TRACK: ${{ vars.PLAY_TRACK || 'internal' }}
         run: |
@@ -61,7 +64,7 @@ jobs:
             echo "| Tag | \`${TAG}\` |"
             echo "| Trigger | \`${{ github.event_name }}\` |"
             if [ "$PUBLISHING" = "true" ]; then
-              echo "| Publishing | Google Play (`\${TRACK}`, draft), App Store (TestFlight + Draft), Gitea release |"
+              echo "| Publishing | Google Play (\`${TRACK}\`, draft), App Store (TestFlight + Draft), Gitea release |"
             else
               echo "| Publishing | **disabled** (\`STORE_DEPLOY_ENABLED\` is not \`true\`), build + Gitea release only |"
             fi
@@ -265,7 +268,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [meta, build_android, build_ios]
     env:
-      TAG: ${{ inputs.tag || github.ref_name }}
+      TAG: ${{ needs.meta.outputs.tag }}
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v8
