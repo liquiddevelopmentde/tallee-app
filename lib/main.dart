@@ -10,7 +10,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
 import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/data/db/database.dart';
@@ -23,6 +22,7 @@ import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_
 import 'package:tallee/presentation/views/onboarding_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
+import 'package:tallee/presentation/widgets/global_snack_bar.dart';
 import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -70,14 +70,15 @@ void main() async {
                 event.level == SentryLevel.fatal)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final context = Tallee.navigatorKey.currentContext;
-            if (context == null) return;
+            final overlay = Tallee.navigatorKey.currentState?.overlay;
+            if (context == null || overlay == null) return;
 
             final loc = AppLocalizations.of(context);
-            context.showSnackBar(
+            GlobalSnackBar.show(
+              overlay,
               message: loc.unexpected_error,
               actionLabel: loc.report_error,
               onActionTap: () async {
-                Tallee.scaffoldMessengerKey.hideSnackBar();
                 final result = await Tallee.navigatorKey.currentState
                     ?.push<bool>(
                       MaterialPageRoute(
@@ -85,8 +86,15 @@ void main() async {
                             FeedbackFormView(associatedEventId: event.eventId),
                       ),
                     );
-                if (result == true && context.mounted) {
-                  context.showSnackBar(message: loc.thank_you_for_report);
+                if (result == true) {
+                  final currentOverlay =
+                      Tallee.navigatorKey.currentState?.overlay;
+                  if (currentOverlay != null) {
+                    GlobalSnackBar.show(
+                      currentOverlay,
+                      message: loc.thank_you_for_report,
+                    );
+                  }
                 }
               },
             );
