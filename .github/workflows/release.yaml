@@ -56,7 +56,6 @@ jobs:
           {
             echo "### Release build"
             echo ""
-            echo "| | |"
             echo "| Version | \`${NAME}\` |"
             echo "| Build | \`${BUILD}\` |"
             echo "| Tag | \`${TAG}\` |"
