@@ -60,7 +60,7 @@ jobs:
             echo "### Release build"
             echo ""
             echo "| Version | \`${NAME}\` |"
-            echo "| --- | --- |"
+            echo "| :--- | :--- |"
             echo "| Build | \`${BUILD}\` |"
             echo "| Tag | \`${TAG}\` |"
             echo "| Trigger | \`${{ github.event_name }}\` |"
