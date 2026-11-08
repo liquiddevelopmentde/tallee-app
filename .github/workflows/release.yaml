@@ -6,7 +6,7 @@ on:
       tag:
         description: "Release tag to attach artifacts to (manual runs only)"
         type: string
-        required: false
+        required: true
   push:
     tags:
       - "v*"
