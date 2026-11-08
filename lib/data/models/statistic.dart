@@ -1,5 +1,4 @@
 import 'package:clock/clock.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -38,12 +37,11 @@ class Statistic {
     AppColor? color,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
-       color = color ?? getRandomAppColor();
+       color = color ?? AppColor.randomColor();
 
   @override
-  String toString() {
-    return 'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, startDate: $startDate, endDate: $endDate, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames, displayCount: $displayCount, isFavourite: $isFavourite)';
-  }
+  String toString() =>
+      'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, startDate: $startDate, endDate: $endDate, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames, displayCount: $displayCount, isFavourite: $isFavourite)';
 
   Statistic copyWith({
     String? id,
@@ -58,22 +56,20 @@ class Statistic {
     int? displayCount,
     bool? isFavourite,
     int? position,
-  }) {
-    return Statistic(
-      id: id ?? this.id,
-      type: type ?? this.type,
-      scopes: scopes ?? this.scopes,
-      timeframe: timeframe ?? this.timeframe,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
-      color: color ?? this.color,
-      selectedGroups: selectedGroups ?? this.selectedGroups,
-      selectedGames: selectedGames ?? this.selectedGames,
-      displayCount: displayCount ?? this.displayCount,
-      isFavourite: isFavourite ?? this.isFavourite,
-      position: position ?? this.position,
-    );
-  }
+  }) => Statistic(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    scopes: scopes ?? this.scopes,
+    timeframe: timeframe ?? this.timeframe,
+    startDate: startDate ?? this.startDate,
+    endDate: endDate ?? this.endDate,
+    color: color ?? this.color,
+    selectedGroups: selectedGroups ?? this.selectedGroups,
+    selectedGames: selectedGames ?? this.selectedGames,
+    displayCount: displayCount ?? this.displayCount,
+    isFavourite: isFavourite ?? this.isFavourite,
+    position: position ?? this.position,
+  );
 
   Map<String, dynamic> toJson() => {
     'id': id,

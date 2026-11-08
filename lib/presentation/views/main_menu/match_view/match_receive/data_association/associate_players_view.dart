@@ -2,17 +2,16 @@ import 'dart:core' hide Match;
 
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_group_view.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/tiles/associate_player_tile.dart';
 import 'package:tallee/services/remote_share_service.dart';
@@ -40,7 +39,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   @override
   void initState() {
     super.initState();
-    for (var player in playersToAssociate) {
+    for (final player in playersToAssociate) {
       associations[player.id] = null;
     }
     autoAssociatePlayers();
@@ -68,9 +67,8 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
         child: Column(
           children: [
             Align(
-              alignment: Alignment.center,
               child: Container(
-                margin: AppColors.standardMargin,
+                margin: AppSpacing.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: BoxDecoration(
                   color: unassignedCount == 0
@@ -128,10 +126,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: BottomAnimatedButton(
-                buttonText: widget.match.group == null
-                    ? loc.save_match
-                    : loc.confirm,
-                sizeRelativeToWidth: 0.95,
+                text: widget.match.group == null ? loc.save_match : loc.confirm,
                 onPressed: unassignedCount == 0
                     ? () async {
                         if (widget.match.group == null) {
@@ -165,7 +160,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
     // Filter null values and cast to Map<String, Player>
     final playerAssociations = <String, Player>{};
-    for (var entry in associations.entries) {
+    for (final entry in associations.entries) {
       if (entry.value != null) {
         playerAssociations[entry.key] = entry.value!;
       }
@@ -181,19 +176,15 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(CustomSnackBar(message: e.toString()));
+      context.showSnackBar(message: e.toString());
       return;
     }
 
     if (!mounted) return;
-
     context.read<DataRefreshProvider>().refresh();
 
     final loc = AppLocalizations.of(context);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
-
+    context.showSnackBar(message: loc.data_successfully_imported);
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
@@ -225,23 +216,21 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     return showModalBottomSheet<Player?>(
       context: context,
       backgroundColor: context.talleeColors.backgroundColor,
-      builder: (context) {
-        return PlayerSelectionWidget.single(
-          onSingleChanged: (player) async {
-            await Future.delayed(const Duration(milliseconds: 200));
-            if (!context.mounted) return;
-            Navigator.of(context).pop(player);
-          },
-          onPlayerCreated: () {
-            setState(() {
-              cachedAllPlayers = null;
-            });
-            autoAssociatePlayers();
-          },
-          availablePlayers: availablePlayers,
-          initialSelectedPlayer: isCreateAsNew ? null : currentSelection,
-        );
-      },
+      builder: (context) => PlayerSelectionWidget.single(
+        onSingleChanged: (player) async {
+          await Future.delayed(const Duration(milliseconds: 200));
+          if (!context.mounted) return;
+          Navigator.of(context).pop(player);
+        },
+        onPlayerCreated: () {
+          setState(() {
+            cachedAllPlayers = null;
+          });
+          autoAssociatePlayers();
+        },
+        availablePlayers: availablePlayers,
+        initialSelectedPlayer: isCreateAsNew ? null : currentSelection,
+      ),
     );
   }
 
@@ -255,31 +244,40 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     setState(() {
       final usedLocalPlayerIds = <String>{};
 
-      for (var importedPlayer in playersToAssociate) {
+      for (final importedPlayer in playersToAssociate) {
         // 1. Try exact ID match first
-        Player? match = allPlayers.where((localPlayer) {
-          return !usedLocalPlayerIds.contains(localPlayer.id) &&
-              localPlayer.id == importedPlayer.id;
-        }).firstOrNull;
+        Player? match = allPlayers
+            .where(
+              (localPlayer) =>
+                  !usedLocalPlayerIds.contains(localPlayer.id) &&
+                  localPlayer.id == importedPlayer.id,
+            )
+            .firstOrNull;
 
         // 2. Try Name + NameCount match
-        match ??= allPlayers.where((localPlayer) {
-          return !usedLocalPlayerIds.contains(localPlayer.id) &&
-              localPlayer.name.trim().compareIgnoringCaseTo(
-                    importedPlayer.name.trim(),
-                  ) ==
-                  0 &&
-              localPlayer.nameCount == importedPlayer.nameCount;
-        }).firstOrNull;
+        match ??= allPlayers
+            .where(
+              (localPlayer) =>
+                  !usedLocalPlayerIds.contains(localPlayer.id) &&
+                  localPlayer.name.trim().compareIgnoringCaseTo(
+                        importedPlayer.name.trim(),
+                      ) ==
+                      0 &&
+                  localPlayer.nameCount == importedPlayer.nameCount,
+            )
+            .firstOrNull;
 
         // 3. Fall back to Name-only match (ignoring case and whitespace)
-        match ??= allPlayers.where((localPlayer) {
-          return !usedLocalPlayerIds.contains(localPlayer.id) &&
-              localPlayer.name.trim().compareIgnoringCaseTo(
-                    importedPlayer.name.trim(),
-                  ) ==
-                  0;
-        }).firstOrNull;
+        match ??= allPlayers
+            .where(
+              (localPlayer) =>
+                  !usedLocalPlayerIds.contains(localPlayer.id) &&
+                  localPlayer.name.trim().compareIgnoringCaseTo(
+                        importedPlayer.name.trim(),
+                      ) ==
+                      0,
+            )
+            .firstOrNull;
 
         if (match != null) {
           associations[importedPlayer.id] = match;

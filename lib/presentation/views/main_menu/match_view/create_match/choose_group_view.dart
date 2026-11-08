@@ -2,10 +2,9 @@ import 'dart:math';
 
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/data/models/group.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
@@ -131,45 +130,45 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
                       child: ListView.builder(
                         padding: const EdgeInsets.only(bottom: 25, top: 10),
                         itemCount: filteredGroups.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return GroupTile(
-                            group: filteredGroups[index],
-                            isHighlighted: selectedGroups.any(
-                              (group) => group.id == filteredGroups[index].id,
-                            ),
-                            onTap: () async {
-                              setState(() {
-                                if (selectedGroups.contains(
-                                  filteredGroups[index],
-                                )) {
-                                  selectedGroups.removeWhere(
-                                    (group) =>
-                                        group.id == filteredGroups[index].id,
-                                  );
-                                } else {
-                                  // In single select mode only allow one group
-                                  if (!enableMultiSelection) {
-                                    selectedGroups.clear();
+                        itemBuilder: (BuildContext context, int index) =>
+                            GroupTile(
+                              group: filteredGroups[index],
+                              isHighlighted: selectedGroups.any(
+                                (group) => group.id == filteredGroups[index].id,
+                              ),
+                              onTap: () async {
+                                setState(() {
+                                  if (selectedGroups.contains(
+                                    filteredGroups[index],
+                                  )) {
+                                    selectedGroups.removeWhere(
+                                      (group) =>
+                                          group.id == filteredGroups[index].id,
+                                    );
+                                  } else {
+                                    // In single select mode only allow one group
+                                    if (!enableMultiSelection) {
+                                      selectedGroups.clear();
+                                    }
+                                    selectedGroups.add(filteredGroups[index]);
                                   }
-                                  selectedGroups.add(filteredGroups[index]);
-                                }
-                              });
+                                });
 
-                              // Navigate back to create match view instantly
-                              if (!enableMultiSelection) {
-                                await Future.delayed(MINIMUM_SKELETON_DURATION)
-                                    .then((_) {
-                                      if (!context.mounted) return;
-                                      Navigator.of(context).pop(
-                                        selectedGroups.isEmpty
-                                            ? null
-                                            : selectedGroups.first,
-                                      );
-                                    });
-                              }
-                            },
-                          );
-                        },
+                                // Navigate back to create match view instantly
+                                if (!enableMultiSelection) {
+                                  await Future.delayed(
+                                    MINIMUM_SKELETON_DURATION,
+                                  ).then((_) {
+                                    if (!context.mounted) return;
+                                    Navigator.of(context).pop(
+                                      selectedGroups.isEmpty
+                                          ? null
+                                          : selectedGroups.first,
+                                    );
+                                  });
+                                }
+                              },
+                            ),
                       ),
                     ),
                 ],

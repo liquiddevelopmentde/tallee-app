@@ -48,7 +48,7 @@ class StatisticCalculator {
           59,
         );
         filteredMatches = matches.where((m) {
-          if (m.endedAt == null) return false;
+          if (!m.hasEnded) return false;
           final isAfterOrAtStart =
               m.createdAt.isAtSameMomentAs(startOfDay) ||
               m.createdAt.isAfter(startOfDay);
@@ -62,7 +62,7 @@ class StatisticCalculator {
       final minDate = _getMinimumDate(timeframe: statistic.timeframe);
       if (minDate != null) {
         filteredMatches = matches
-            .where((m) => m.endedAt != null && !m.createdAt.isBefore(minDate))
+            .where((m) => m.hasEnded && !m.createdAt.isBefore(minDate))
             .toList();
       }
     }
@@ -277,7 +277,7 @@ class StatisticCalculator {
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
         if (m.isTie) return false;
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
-        return m.game.ruleset == Ruleset.loser ? !isMvp : isMvp;
+        return m.game.ruleset.isLoser ? !isMvp : isMvp;
       }).length;
 
   /// Determines how many losses the player has in the given matches.
@@ -289,7 +289,7 @@ class StatisticCalculator {
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
         if (m.isTie) return false;
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
-        return m.game.ruleset == Ruleset.loser ? isMvp : !isMvp;
+        return m.game.ruleset.isLoser ? isMvp : !isMvp;
       }).length;
 
   /// Determines the total score of the player in the given list of matches.

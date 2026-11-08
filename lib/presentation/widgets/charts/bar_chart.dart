@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/data/models/player.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 
@@ -116,13 +116,11 @@ class BarChart extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(
                             width: maxBarWidth,
                             child: Stack(
                               alignment: Alignment.centerLeft,
-                              clipBehavior: Clip.hardEdge,
                               children: [
                                 // Bar
                                 AnimatedContainer(
@@ -240,8 +238,6 @@ class BarChart extends StatelessWidget {
             : 0.0;
 
         return LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
           colors: [
             insideTextColor,
             insideTextColor,

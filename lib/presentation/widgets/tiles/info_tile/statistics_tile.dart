@@ -1,14 +1,10 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/charts/bar_chart.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
@@ -60,7 +56,8 @@ class _StatisticsTileState extends State<StatisticsTile> {
     isFavourite = widget.statistic.isFavourite;
     selectedGames = widget.statistic.selectedGames;
     selectedGroups = widget.statistic.selectedGroups;
-    icon = getTypeIcon(type: widget.statistic.type);
+    icon = widget.statistic.type.icon;
+
     super.initState();
   }
 
@@ -71,19 +68,14 @@ class _StatisticsTileState extends State<StatisticsTile> {
       isFavourite = widget.statistic.isFavourite;
       selectedGames = widget.statistic.selectedGames;
       selectedGroups = widget.statistic.selectedGroups;
-      icon = getTypeIcon(type: widget.statistic.type);
+      icon = widget.statistic.type.icon;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final barColor = getColorFromAppColor(
-      color: widget.statistic.color,
-      context: context,
-    );
-    final title =
-        widget.emptyAssets?.title ??
-        translateStatisticTypeToString(widget.statistic.type, context);
+    final barColor = widget.statistic.color.colorValue(context);
+    final title = widget.statistic.type.toLocalizedString(context);
 
     return InfoTile(
       leadingWidget: Icon(widget.emptyAssets?.icon ?? icon),
@@ -95,11 +87,13 @@ class _StatisticsTileState extends State<StatisticsTile> {
           icon: isFavourite
               ? const Icon(Icons.favorite)
               : const Icon(Icons.favorite_border),
-          onPressed: () => toggleFavourite(),
+          onPressed: toggleFavourite,
         ),
       ),
-      width: widget.width ?? MediaQuery.sizeOf(context).width * 0.95,
-      margin: widget.margin ?? AppColors.tileMargin,
+      width:
+          widget.width ??
+          MediaQuery.sizeOf(context).width * AppSpacing.contentWidthFactor,
+      margin: widget.margin ?? AppSpacing.tileMargin,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
@@ -111,11 +105,7 @@ class _StatisticsTileState extends State<StatisticsTile> {
               displayCount: widget.displayCount,
               showDisplayCountHighlighting: widget.showDisplayCountHighlighting,
               barColor: barColor,
-              barTextColor: getStatisticsBarTextColor(
-                widget.statistic.color,
-                context,
-              ),
-              emptyText: widget.emptyAssets?.description,
+              barTextColor: widget.statistic.color.statisticBarColor(context),
             ),
 
             // Group & Game info
@@ -123,7 +113,6 @@ class _StatisticsTileState extends State<StatisticsTile> {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Wrap(
-                  alignment: WrapAlignment.start,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 30,
                   runSpacing: 4,

@@ -20,21 +20,20 @@ class SearchBarScrollListener extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return NotificationListener<UserScrollNotification>(
-      onNotification: (notification) {
-        if (notification.direction == ScrollDirection.reverse &&
-            isSearchBarVisible) {
-          // User scrolls down
-          onVisibilityChanged(false);
-        } else if (notification.direction == ScrollDirection.forward &&
-            !isSearchBarVisible) {
-          // User scrolls up
-          onVisibilityChanged(true);
-        }
-        return true;
-      },
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) =>
+      NotificationListener<UserScrollNotification>(
+        onNotification: (notification) {
+          if (notification.direction == ScrollDirection.reverse &&
+              isSearchBarVisible) {
+            // User scrolls down
+            onVisibilityChanged(false);
+          } else if (notification.direction == ScrollDirection.forward &&
+              !isSearchBarVisible) {
+            // User scrolls up
+            onVisibilityChanged(true);
+          }
+          return true;
+        },
+        child: child,
+      );
 }

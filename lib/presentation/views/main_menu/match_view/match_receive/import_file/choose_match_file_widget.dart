@@ -1,7 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/core/translations.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 class ChooseMatchFileWidget extends StatelessWidget {
@@ -15,10 +14,10 @@ class ChooseMatchFileWidget extends StatelessWidget {
     String title = loc.choose_match_file;
     String? description;
     if (lastResult != null &&
-        lastResult != ImportResult.success &&
-        lastResult != ImportResult.canceled) {
+        !lastResult!.isSuccess &&
+        !lastResult!.isCanceled) {
       title = loc.error_reading_file;
-      description = translateMatchImportResultToString(lastResult!, context);
+      description = lastResult!.toLocalizedMatchImportString(context);
     }
 
     return Column(

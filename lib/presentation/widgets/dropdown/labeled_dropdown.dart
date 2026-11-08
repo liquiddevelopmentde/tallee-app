@@ -1,8 +1,8 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show Material;
+import 'package:material_ui/material_ui.dart' show Material;
 import 'package:material_ui/material_ui.dart' hide Material;
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/presentation/widgets/dropdown/dropdown_option.dart';
 
 export 'dropdown_option.dart';
@@ -177,29 +177,27 @@ class LabeledDropdown<T> extends StatelessWidget {
                               if (value != null) onItemTap!(value);
                             }
                           : null,
-                      selectedItemBuilder: (context) {
-                        return options
-                            .map(
-                              (_) => ValueListenableBuilder<List<T>>(
-                                valueListenable: listenable!,
-                                builder: (context, values, _) {
-                                  final selectedLabels = options
-                                      .where((o) => values.contains(o.value))
-                                      .map((o) => o.label)
-                                      .join(', ');
-                                  return Text(
-                                    selectedLabels,
-                                    style: values.isEmpty
-                                        ? hintStyle(context)
-                                        : headerStyle(context),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  );
-                                },
-                              ),
-                            )
-                            .toList();
-                      },
+                      selectedItemBuilder: (context) => options
+                          .map(
+                            (_) => ValueListenableBuilder<List<T>>(
+                              valueListenable: listenable!,
+                              builder: (context, values, _) {
+                                final selectedLabels = options
+                                    .where((o) => values.contains(o.value))
+                                    .map((o) => o.label)
+                                    .join(', ');
+                                return Text(
+                                  selectedLabels,
+                                  style: values.isEmpty
+                                      ? hintStyle(context)
+                                      : headerStyle(context),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                );
+                              },
+                            ),
+                          )
+                          .toList(),
                       buttonStyleData: buttonStyle(context),
                       iconStyleData: iconStyle(context),
                       dropdownStyleData: dropdownStyle(context),
@@ -288,7 +286,7 @@ class LabeledDropdown<T> extends StatelessWidget {
     decoration: BoxDecoration(
       color: context.talleeColors.boxColor,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: context.talleeColors.boxBorderColor, width: 1),
+      border: Border.all(color: context.talleeColors.boxBorderColor),
     ),
   );
 }

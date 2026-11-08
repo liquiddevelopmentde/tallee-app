@@ -25,20 +25,18 @@ void main() {
     Group? group,
     DateTime? createdAt,
     DateTime? endedAt,
-  }) {
-    return Match(
-      name: name,
-      game: game,
-      players: players,
-      group: group,
-      createdAt: createdAt,
-      endedAt: endedAt,
-      scores: {
-        for (final entry in scores.entries)
-          entry.key.id: ScoreEntry(score: entry.value),
-      },
-    );
-  }
+  }) => Match(
+    name: name,
+    game: game,
+    players: players,
+    group: group,
+    createdAt: createdAt,
+    endedAt: endedAt,
+    scores: {
+      for (final entry in scores.entries)
+        entry.key.id: ScoreEntry(score: entry.value),
+    },
+  );
 
   setUp(() {
     testPlayer1 = Player(name: 'Alice');
@@ -386,8 +384,8 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 10},
-          createdAt: DateTime(2023, 1, 10, 0, 0),
-          endedAt: DateTime(2023, 1, 10, 0, 0),
+          createdAt: DateTime(2023, 1, 10),
+          endedAt: DateTime(2023, 1, 10),
         ),
         buildMatch(
           name: 'middle',
@@ -410,8 +408,8 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 10},
-          createdAt: DateTime(2023, 1, 21, 0, 0),
-          endedAt: DateTime(2023, 1, 21, 0, 0),
+          createdAt: DateTime(2023, 1, 21),
+          endedAt: DateTime(2023, 1, 21),
         ),
       ];
 

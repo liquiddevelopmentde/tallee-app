@@ -3,12 +3,10 @@ import 'dart:math';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
@@ -53,8 +51,8 @@ class _ChooseGameViewState extends State<ChooseGameView> {
 
   /// Games filtered according to the current search query
   late List<Game> filteredGames;
-  List<Game> get games =>
-      widget.games..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+
+  List<Game> get games => widget.games..sortByLowercaseName((g) => g.name);
 
   // If selecting multiple is possible
   late bool enableMultiSelection;
@@ -124,9 +122,7 @@ class _ChooseGameViewState extends State<ChooseGameView> {
                       child: CustomSearchBar(
                         controller: searchBarController,
                         hintText: loc.search_for_games,
-                        onChanged: (value) {
-                          applySearchFilter(value);
-                        },
+                        onChanged: applySearchFilter,
                       ),
                     ),
 

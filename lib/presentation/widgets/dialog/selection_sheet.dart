@@ -1,6 +1,9 @@
+import 'dart:async';
+
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/value_constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class SelectionSheet<T> extends StatefulWidget {
   /// Generic sheet to select a single value from a list.
@@ -102,125 +105,124 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      minimum: const EdgeInsets.only(right: 12, left: 12, bottom: 12),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 20,
-        children: [
-          // Title & description
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              spacing: 5,
-              children: [
-                // Title
-                Text(
-                  widget.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+  Widget build(BuildContext context) => SafeArea(
+    minimum: const EdgeInsets.only(right: 12, left: 12, bottom: 12),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 20,
+      children: [
+        // Title & description
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            spacing: 5,
+            children: [
+              // Title
+              Text(
+                widget.title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
                 ),
-
-                // Description
-                Text(
-                  widget.description,
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.visible,
-                  style: TextStyle(color: context.talleeColors.hintColor),
-                ),
-              ],
-            ),
-          ),
-
-          // Values
-          Flexible(
-            child: RadioGroup<T>(
-              groupValue: selectedValue,
-              onChanged: (value) {
-                if (value != null) handleValueSelection(value);
-              },
-              child: ListView.separated(
-                shrinkWrap: true,
-                separatorBuilder: (_, _) => const SizedBox(height: 12),
-                itemCount: widget.values.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final value = widget.values[index];
-                  return GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => handleValueSelection(value),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 9,
-                        horizontal: 14,
-                      ),
-                      decoration: context.standardBoxDecoration,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            spacing: 12,
-                            children: [
-                              // Leading widget
-                              if (widget.leadingBuilder != null)
-                                widget.leadingBuilder!(value),
-
-                              // Label
-                              Text(widget.labelBuilder(context, value)),
-                            ],
-                          ),
-
-                          if (!widget.isMultiSelection)
-                            // Radio
-                            Radio<T>(
-                              fillColor: WidgetStateProperty.resolveWith<Color>(
-                                (states) {
-                                  if (states.contains(WidgetState.selected)) {
-                                    return context.talleeColors.textColor;
-                                  }
-                                  return context.talleeColors.hintColor;
-                                },
-                              ),
-                              value: value,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              visualDensity: VisualDensity.compact,
-                            )
-                          else
-                            // Checkbox
-                            Checkbox(
-                              value: selectedValues.contains(value),
-                              onChanged: (_) => onValuesChanged(value),
-                              checkColor: context.talleeColors.backgroundColor,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              visualDensity: VisualDensity.compact,
-                              fillColor: WidgetStateProperty.resolveWith<Color>(
-                                (states) {
-                                  if (states.contains(WidgetState.selected)) {
-                                    return context.talleeColors.textColor;
-                                  }
-                                  return Colors.transparent;
-                                },
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
               ),
+
+              // Description
+              Text(
+                widget.description,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.visible,
+                style: TextStyle(color: context.talleeColors.hintColor),
+              ),
+            ],
+          ),
+        ),
+
+        // Values
+        Flexible(
+          child: RadioGroup<T>(
+            groupValue: selectedValue,
+            onChanged: (value) {
+              if (value != null) handleValueSelection(value);
+            },
+            child: ListView.separated(
+              shrinkWrap: true,
+              separatorBuilder: (_, _) => const SizedBox(height: 12),
+              itemCount: widget.values.length,
+              itemBuilder: (BuildContext context, int index) {
+                final value = widget.values[index];
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => handleValueSelection(value),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 9,
+                      horizontal: 14,
+                    ),
+                    decoration: context.standardBoxDecoration,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          spacing: 12,
+                          children: [
+                            // Leading widget
+                            if (widget.leadingBuilder != null)
+                              widget.leadingBuilder!(value),
+
+                            // Label
+                            Text(widget.labelBuilder(context, value)),
+                          ],
+                        ),
+
+                        if (!widget.isMultiSelection)
+                          // Radio
+                          Radio<T>(
+                            fillColor: WidgetStateProperty.resolveWith<Color>((
+                              states,
+                            ) {
+                              if (states.contains(WidgetState.selected)) {
+                                return context.talleeColors.textColor;
+                              }
+                              return context.talleeColors.hintColor;
+                            }),
+                            value: value,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.compact,
+                          )
+                        else
+                          // Checkbox
+                          Checkbox(
+                            value: selectedValues.contains(value),
+                            onChanged: (_) => onValuesChanged(value),
+                            checkColor: context.talleeColors.backgroundColor,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.compact,
+                            fillColor: WidgetStateProperty.resolveWith<Color>((
+                              states,
+                            ) {
+                              if (states.contains(WidgetState.selected)) {
+                                return context.talleeColors.textColor;
+                              }
+                              return Colors.transparent;
+                            }),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 
   /// Handles the general value selection
   Future<void> handleValueSelection(T value) async {
+    unawaited(HapticFeedback.selectionClick());
     if (!widget.isMultiSelection && value == selectedValue) return;
 
     widget.isMultiSelection ? onValuesChanged(value) : onValueChanged(value);

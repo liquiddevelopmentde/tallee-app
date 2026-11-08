@@ -1,6 +1,6 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 
 class ChooseTile extends StatefulWidget {
   /// A tile widget that allows users to choose an option by tapping on it.
@@ -27,50 +27,48 @@ class ChooseTile extends StatefulWidget {
 
 class _ChooseTileState extends State<ChooseTile> {
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onPressed != null
-          ? () {
-              HapticFeedback.selectionClick();
-              if (widget.onPressed != null) {
-                widget.onPressed!.call();
-              }
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: widget.onPressed != null
+        ? () {
+            Haptics.selectionClick();
+            if (widget.onPressed != null) {
+              widget.onPressed!.call();
             }
-          : null,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: context.standardBoxDecoration,
-        child: Row(
-          spacing: 5,
-          children: [
-            Row(
-              spacing: 10,
-              children: [
-                if (widget.icon != null) Icon(widget.icon),
-                Text(
-                  widget.title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+          }
+        : null,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: context.standardBoxDecoration,
+      child: Row(
+        spacing: 5,
+        children: [
+          Row(
+            spacing: 10,
+            children: [
+              if (widget.icon != null) Icon(widget.icon),
+              Text(
+                widget.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (widget.trailing != null) widget.trailing!,
+                if (widget.onPressed != null) ...[
+                  const SizedBox(width: 10),
+                  const Icon(Icons.arrow_forward_ios, size: 16),
+                ],
               ],
             ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (widget.trailing != null) widget.trailing!,
-                  if (widget.onPressed != null) ...[
-                    const SizedBox(width: 10),
-                    const Icon(Icons.arrow_forward_ios, size: 16),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }

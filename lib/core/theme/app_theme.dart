@@ -1,39 +1,38 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
+// Bc flutter_markdown_plus still uses deprecated flutter/material.dart
+// ignore: migrate_design_widgets
 import 'package:flutter/material.dart' as flutter_material;
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/tallee_theme_colors.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_back_button.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_close_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 extension ThemeDataToFlutter on ThemeData {
-  flutter_material.ThemeData toFlutterThemeData() {
-    return flutter_material.ThemeData(
-      brightness: brightness,
-      primaryColor: AppColors.primaryColor,
-      dividerColor: dividerColor,
-      cardColor: cardColor,
-      colorScheme: flutter_material.ColorScheme(
-        brightness: colorScheme.brightness,
-        primary: colorScheme.primary,
-        onPrimary: colorScheme.onPrimary,
-        secondary: colorScheme.secondary,
-        onSecondary: colorScheme.onSecondary,
-        error: colorScheme.error,
-        onError: colorScheme.onError,
-        surface: colorScheme.surface,
-        onSurface: colorScheme.onSurface,
-        surfaceContainerHighest: colorScheme.surfaceContainerHighest,
-      ),
-      textTheme: flutter_material.TextTheme(
-        bodyMedium: textTheme.bodyMedium,
-        headlineSmall: textTheme.headlineSmall,
-        titleLarge: textTheme.titleLarge,
-        titleMedium: textTheme.titleMedium,
-        bodyLarge: textTheme.bodyLarge,
-      ),
-    );
-  }
+  flutter_material.ThemeData toFlutterThemeData() => flutter_material.ThemeData(
+    brightness: brightness,
+    primaryColor: AppColors.primaryColor,
+    dividerColor: dividerColor,
+    cardColor: cardColor,
+    colorScheme: flutter_material.ColorScheme(
+      brightness: colorScheme.brightness,
+      primary: colorScheme.primary,
+      onPrimary: colorScheme.onPrimary,
+      secondary: colorScheme.secondary,
+      onSecondary: colorScheme.onSecondary,
+      error: colorScheme.error,
+      onError: colorScheme.onError,
+      surface: colorScheme.surface,
+      onSurface: colorScheme.onSurface,
+      surfaceContainerHighest: colorScheme.surfaceContainerHighest,
+    ),
+    textTheme: flutter_material.TextTheme(
+      bodyMedium: textTheme.bodyMedium,
+      headlineSmall: textTheme.headlineSmall,
+      titleLarge: textTheme.titleLarge,
+      titleMedium: textTheme.titleMedium,
+      bodyLarge: textTheme.bodyLarge,
+    ),
+  );
 }
 
 // ==================== Component Themes ====================
@@ -126,11 +125,11 @@ ThemeData _createThemeData({required bool isDarkMode}) {
     overlayColor: const WidgetStatePropertyAll(Colors.transparent),
   );
   final radioTheme = RadioThemeData(
-    fillColor: WidgetStateProperty.resolveWith<Color>((states) {
-      return states.contains(WidgetState.selected)
+    fillColor: WidgetStateProperty.resolveWith<Color>(
+      (states) => states.contains(WidgetState.selected)
           ? AppColors.primaryColor
-          : palette.textColor;
-    }),
+          : palette.textColor,
+    ),
   );
   final inputDecorationTheme = InputDecorationTheme(
     labelStyle: TextStyle(color: palette.textColor),

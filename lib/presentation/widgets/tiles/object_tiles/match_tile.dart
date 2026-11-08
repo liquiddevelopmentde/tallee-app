@@ -1,12 +1,12 @@
 import 'dart:core' hide Match;
 
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
@@ -43,17 +43,16 @@ class _MatchTileState extends State<MatchTile> {
   Widget build(BuildContext context) {
     final match = widget.match;
     final group = match.group;
-    final players = [...match.players]
-      ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+    final players = [...match.players]..sortByLowercaseName((p) => p.name);
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(
       onTap: () {
-        HapticFeedback.selectionClick();
+        Haptics.selectionClick();
         widget.onTap.call();
       },
       child: Container(
-        margin: AppColors.tileMargin,
+        margin: AppSpacing.tileMargin,
         width: widget.width,
         padding: const EdgeInsets.all(12),
         decoration: context.standardBoxDecoration,
@@ -104,7 +103,7 @@ class _MatchTileState extends State<MatchTile> {
                     children: [
                       const Icon(GROUP_ICON, size: 18, color: Colors.grey),
                       Text(
-                        '${match.group!.name}${getExtraPlayerCount(match)}',
+                        '${match.group!.name}${match.extraPlayerCount}',
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
@@ -122,9 +121,7 @@ class _MatchTileState extends State<MatchTile> {
 
             const SizedBox(height: 12),
 
-            if (match.teams != null &&
-                match.teams!.isNotEmpty &&
-                match.isTeamMatch) ...[
+            if (match.isTeamMatch && match.hasTeams) ...[
               // Team display
               Text(
                 loc.teams,
@@ -149,19 +146,20 @@ class _MatchTileState extends State<MatchTile> {
                   return Wrap(
                     spacing: spacing,
                     runSpacing: spacing,
-                    children: match.teams!.map((team) {
-                      return TeamCard(
-                        team: team,
-                        compact: true,
-                        width: itemWidth,
-                      );
-                    }).toList(),
+                    children: match.teams!
+                        .map(
+                          (team) => TeamCard(
+                            team: team,
+                            compact: true,
+                            width: itemWidth,
+                          ),
+                        )
+                        .toList(),
                   );
                 },
               ),
               const SizedBox(height: 12),
-            ] else if (!match.isTeamMatch &&
-                (widget.match.teams?.isNotEmpty ?? false)) ...[
+            ] else if (match.isPairMatch) ...[
               // Player with Pairs display
               Text(
                 loc.players,
@@ -176,7 +174,7 @@ class _MatchTileState extends State<MatchTile> {
                 spacing: 6,
                 runSpacing: 6,
                 children: match.teams!.map((pair) {
-                  if (pair.members.length > 1) {
+                  if (pair.isPair) {
                     return PairTile(pair: pair);
                   } else {
                     return PlayerTile(player: pair.members.first);
@@ -197,9 +195,9 @@ class _MatchTileState extends State<MatchTile> {
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: players.map((player) {
-                  return PlayerTile(player: player);
-                }).toList(),
+                children: players
+                    .map((player) => PlayerTile(player: player))
+                    .toList(),
               ),
             ] else ...[
               Text(
@@ -224,13 +222,13 @@ class _MatchTileState extends State<MatchTile> {
     final loc = AppLocalizations.of(context);
 
     if (difference.inDays == 0) {
-      return "${loc.today_at} ${DateFormat('HH:mm').format(dateTime)}";
+      return '${loc.today_at} ${dateTime.toTime(context)}';
     } else if (difference.inDays == 1) {
-      return "${loc.yesterday_at} ${DateFormat('HH:mm').format(dateTime)}";
+      return '${loc.yesterday_at} ${dateTime.toTime(context)}';
     } else if (difference.inDays < 7) {
       return loc.days_ago(difference.inDays);
     } else {
-      return '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(dateTime)}';
+      return '${loc.created_on} ${dateTime.toMediumDate(context)}';
     }
   }
 
@@ -239,7 +237,7 @@ class _MatchTileState extends State<MatchTile> {
     final match = widget.match;
 
     // Match in progress display
-    if (match.endedAt == null) {
+    if (!match.hasEnded) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
@@ -247,7 +245,6 @@ class _MatchTileState extends State<MatchTile> {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: context.talleeColors.warningColor.withValues(alpha: 0.3),
-            width: 1,
           ),
         ),
         child: Row(
@@ -283,7 +280,6 @@ class _MatchTileState extends State<MatchTile> {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: AppColors.primaryColor.withValues(alpha: 0.3),
-            width: 1,
           ),
         ),
         child: Row(
@@ -318,7 +314,6 @@ class _MatchTileState extends State<MatchTile> {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: context.talleeColors.successColor.withValues(alpha: 0.3),
-          width: 1,
         ),
       ),
       child: Row(
@@ -380,10 +375,10 @@ class _MatchTileState extends State<MatchTile> {
     );
 
     final namesToRender =
-        ruleset == Ruleset.winner ||
-            ruleset == Ruleset.highestScore ||
-            ruleset == Ruleset.lowestScore ||
-            ruleset == Ruleset.lives
+        ruleset.isWinner ||
+            ruleset.isHighestScore ||
+            ruleset.isLowestScore ||
+            ruleset.isLives
         ? players
         : [players.first];
 
@@ -404,7 +399,7 @@ class _MatchTileState extends State<MatchTile> {
       }
     }
 
-    if (ruleset == Ruleset.highestScore || ruleset == Ruleset.lowestScore) {
+    if (ruleset.usesPoints) {
       final mvpScore = widget.match.scores[players.first.id]?.score ?? 0;
       children.add(
         TextSpan(text: ' (${getPointLabel(loc, mvpScore)})', style: labelStyle),
@@ -437,8 +432,7 @@ class _MatchTileState extends State<MatchTile> {
       color: context.talleeColors.textColor.withAlpha(100),
     );
 
-    final score =
-        (ruleset == Ruleset.highestScore || ruleset == Ruleset.lowestScore)
+    final score = (ruleset.isHighestScore || ruleset.isLowestScore)
         ? widget.match.teams!
                   .firstWhere((team) => team.id == mvt.first.id)
                   .score ??

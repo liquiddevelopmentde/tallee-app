@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/enums.dart';
 
 class ColoredCircle extends StatelessWidget {
@@ -32,7 +31,7 @@ class ColoredCircle extends StatelessWidget {
       AppColor.green,
       AppColor.yellow,
       AppColor.orange,
-    ].map((clr) => getColorFromAppColor(color: clr, context: context)).toList();
+    ].map((clr) => clr.colorValue(context)).toList();
 
     // Repeat first color at the end so the seam does not swallow red.
     final colors = [...segmentColors, segmentColors.first];
@@ -62,7 +61,7 @@ class ColoredCircle extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: getColorFromAppColor(color: color!, context: context),
+        color: color!.colorValue(context),
         shape: BoxShape.circle,
         border: border,
       ),

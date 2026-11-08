@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -11,7 +11,6 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_detail/matc
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/match_share_view.dart';
 import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
 
@@ -81,7 +80,6 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       body: SafeArea(
         child: MatchProfileBody(
           match: match,
-          isPreview: false,
           onEdit: editMatchNavigation,
           onEnterResults: () async {
             await Navigator.push(
@@ -132,7 +130,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   void shareMatch() {
     final loc = AppLocalizations.of(context);
-    if (match.endedAt != null) {
+    if (match.hasEnded) {
       Navigator.of(context).push(
         adaptivePageRoute(
           settings: const RouteSettings(name: RouteNames.matchShareView),
@@ -141,15 +139,13 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackBar(message: loc.match_not_ended_share_warning),
-      );
+      context.showSnackBar(message: loc.match_not_ended_share_warning);
     }
   }
 
-  void confirmDeleteMatch() {
+  Future<void> confirmDeleteMatch() async {
     final loc = AppLocalizations.of(context);
-    showDialog<bool>(
+    await showDialog<bool>(
       context: context,
       builder: (context) => CustomAlertDialog(
         title: '${loc.delete_match}?',
@@ -161,7 +157,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(true),
             text: loc.delete,
-            isDestructive: true,
+            accent: ButtonAccent.destructive,
           ),
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(false),
@@ -172,8 +168,14 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       ),
     ).then((confirmed) async {
       if (confirmed == true && mounted) {
-        await db.matchDao.deleteMatch(matchId: match.id);
+        final success = await db.matchDao.deleteMatch(matchId: match.id);
         if (!mounted) return;
+        if (!success) {
+          context.showSnackBar(message: loc.error_deleting_match);
+          return;
+        }
+
+        context.showSnackBar(message: loc.match_deleted);
         Navigator.pop(context);
         widget.onMatchUpdate.call();
       }

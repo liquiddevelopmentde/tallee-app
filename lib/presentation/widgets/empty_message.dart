@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class EmptyViewMessage extends StatelessWidget {
   const EmptyViewMessage({
@@ -17,48 +17,45 @@ class EmptyViewMessage extends StatelessWidget {
   final double spacing;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.paddingOf(context).bottom + 100,
-      ),
-      child: Column(
-        spacing: spacing,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: icon == RpgAwesome.clovers_card
-                ? const EdgeInsets.only(left: 8.0)
-                : EdgeInsets.zero,
-            child: Icon(icon, size: 120, color: context.talleeColors.hintColor),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 48),
-            child: Column(
-              spacing: 3,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.only(
+      bottom: MediaQuery.paddingOf(context).bottom + 100,
+    ),
+    child: Column(
+      spacing: spacing,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: icon == RpgAwesome.clovers_card
+              ? const EdgeInsets.only(left: 8.0)
+              : EdgeInsets.zero,
+          child: Icon(icon, size: 120, color: context.talleeColors.hintColor),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 48),
+          child: Column(
+            spacing: 3,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
                 ),
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: context.talleeColors.hintColor,
-                    overflow: TextOverflow.visible,
-                  ),
+              ),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: context.talleeColors.hintColor,
+                  overflow: TextOverflow.visible,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }

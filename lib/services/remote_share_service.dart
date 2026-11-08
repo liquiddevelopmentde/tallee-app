@@ -8,11 +8,12 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/share_create_response.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/shared.dart';
 import 'package:uuid/uuid.dart';
@@ -69,7 +70,7 @@ class RemoteShareService {
       final jsonMap = jsonEncode(payload);
       final result = await parseAndValidateMatch(jsonMap, '');
 
-      if (result.result != ImportResult.success) {
+      if (!result.result.isSuccess) {
         return (result: result.result, match: null);
       }
 
@@ -100,7 +101,7 @@ class RemoteShareService {
     var filename = '$formattedMatchName.$MATCH_FILE_EXTENSION';
     final temp = await getTemporaryDirectory();
     final path = '${temp.path}/$filename';
-    File(path).writeAsString(jsonEncode(match));
+    await File(path).writeAsString(jsonEncode(match));
     await SharePlus.instance.share(
       ShareParams(text: text, title: title, files: [XFile(path)]),
     );
@@ -349,7 +350,8 @@ class RemoteShareService {
     }
 
     // Validate players
-    final players = decoded['players'] as List<dynamic>?;
+    final players = (decoded['players'] as List<dynamic>?)
+        ?.cast<Map<String, dynamic>>();
     if (players != null) {
       for (final p in players) {
         final playerName = p['name'] as String?;
@@ -369,7 +371,8 @@ class RemoteShareService {
     }
 
     // Validate teams
-    final teams = decoded['teams'] as List<dynamic>?;
+    final teams = (decoded['teams'] as List<dynamic>?)
+        ?.cast<Map<String, dynamic>>();
     if (teams != null) {
       for (final t in teams) {
         final teamName = t['name'] as String?;

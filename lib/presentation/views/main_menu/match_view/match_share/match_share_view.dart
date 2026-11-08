@@ -1,19 +1,19 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/share_exceptions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/data/dto/share_create_response.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/qr_code_component.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/save_file_component.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/token_component.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -110,9 +110,7 @@ class _MatchShareViewState extends State<MatchShareView>
                     Colors.transparent,
                   ),
                   unselectedLabelColor: context.talleeColors.textColor,
-                  onTap: (_) {
-                    HapticFeedback.selectionClick();
-                  },
+                  onTap: (_) => Haptics.selectionClick(),
                   tabs: const [
                     Tab(icon: Icon(Icons.qr_code)),
                     Tab(icon: Icon(Icons.pin)),
@@ -132,7 +130,7 @@ class _MatchShareViewState extends State<MatchShareView>
                       secondsRemaining: secondsRemaining,
                       totalSeconds: totalSeconds,
                       serverSharingEnabled: serverSharingEnabled,
-                      onOnlineSharingPrefChanged: () => initSharingView(),
+                      onOnlineSharingPrefChanged: initSharingView,
                       renewToken: renewToken,
                     ),
                     TokenComponent(
@@ -141,7 +139,7 @@ class _MatchShareViewState extends State<MatchShareView>
                       shareToken: shareToken,
                       isLoading: isLoading,
                       serverSharingEnabled: serverSharingEnabled,
-                      onOnlineSharingPrefChanged: () => initSharingView(),
+                      onOnlineSharingPrefChanged: initSharingView,
                       renewToken: renewToken,
                     ),
                     SaveFileComponent(match: widget.match),
@@ -155,16 +153,16 @@ class _MatchShareViewState extends State<MatchShareView>
     );
   }
 
-  void initSharingView([bool? initialSharingConsent]) async {
+  Future<void> initSharingView([bool? initialSharingConsent]) async {
     isLoading = true;
     late bool? hasStoredSharingConsent;
 
     if (initialSharingConsent == null) {
-      hasStoredSharingConsent = SharedPreferencesService.getSharingConsent();
+      hasStoredSharingConsent = SharedPreferencesService.sharingConsent;
       if (hasStoredSharingConsent == null) {
         bool? userDecision = await showConsentDialog();
         if (userDecision != null) {
-          await SharedPreferencesService.setSharingConsent(userDecision);
+          SharedPreferencesService.sharingConsent = userDecision;
           hasStoredSharingConsent = userDecision;
         } else {
           // if the user closed popup without selecting an option, set decision
@@ -189,7 +187,7 @@ class _MatchShareViewState extends State<MatchShareView>
     }
 
     if (hasStoredSharingConsent) {
-      Future.wait([
+      await Future.wait([
             RemoteShareService().getShareToken(widget.match),
             Future.delayed(MINIMUM_SKELETON_DURATION),
           ])
@@ -235,15 +233,13 @@ class _MatchShareViewState extends State<MatchShareView>
                 },
               );
             }
-            scaffoldMessengerKey.currentState?.showSnackBar(
-              CustomSnackBar(
-                message: errorMessage,
-                actionIcon: Icons.refresh,
-                onActionTap: () {
-                  scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-                  initSharingView(hasStoredSharingConsent);
-                },
-              ),
+            scaffoldMessengerKey.showSnackBar(
+              message: errorMessage,
+              actionIcon: Icons.refresh,
+              onActionTap: () {
+                scaffoldMessengerKey.hideSnackBar();
+                initSharingView(hasStoredSharingConsent);
+              },
             );
           });
     }
@@ -308,7 +304,7 @@ class _MatchShareViewState extends State<MatchShareView>
     });
   }
 
-  void renewToken() async {
+  Future<void> renewToken() async {
     setState(() {
       isLoading = true;
     });
@@ -350,15 +346,13 @@ class _MatchShareViewState extends State<MatchShareView>
       } else {
         errorMessage = loc.unexpected_error;
       }
-      scaffoldMessengerKey.currentState?.showSnackBar(
-        CustomSnackBar(
-          message: errorMessage,
-          actionIcon: Icons.refresh,
-          onActionTap: () {
-            scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-            renewToken();
-          },
-        ),
+      scaffoldMessengerKey.showSnackBar(
+        message: errorMessage,
+        actionIcon: Icons.refresh,
+        onActionTap: () {
+          scaffoldMessengerKey.hideSnackBar();
+          renewToken();
+        },
       );
     }
   }

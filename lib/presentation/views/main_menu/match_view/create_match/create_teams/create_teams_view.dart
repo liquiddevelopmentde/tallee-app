@@ -1,8 +1,7 @@
 import 'dart:math';
 
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
@@ -88,24 +87,22 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
                     : 110,
               ),
               itemCount: teams.length,
-              itemBuilder: (context, index) {
-                return TeamCreationTile(
-                  color: teams[index].color,
-                  controller: nameController[index],
-                  hintText: '${loc.team} ${index + 1}',
-                  onDelete: teams.length <= 2 ? null : () => removeTeam(index),
-                  onColorSelection: (color) {
-                    setState(() {
-                      teams[index] = teams[index].copyWith(color: color);
-                    });
-                  },
-                  focusNode: focusNodes[index],
-                  textInputAction: index == teams.length - 1
-                      ? TextInputAction.done
-                      : TextInputAction.next,
-                  onSubmitted: (_) => focusNextTile(index),
-                );
-              },
+              itemBuilder: (context, index) => TeamCreationTile(
+                color: teams[index].color,
+                controller: nameController[index],
+                hintText: '${loc.team} ${index + 1}',
+                onDelete: teams.length <= 2 ? null : () => removeTeam(index),
+                onColorSelection: (color) {
+                  setState(() {
+                    teams[index] = teams[index].copyWith(color: color);
+                  });
+                },
+                focusNode: focusNodes[index],
+                textInputAction: index == teams.length - 1
+                    ? TextInputAction.done
+                    : TextInputAction.next,
+                onSubmitted: (_) => focusNextTile(index),
+              ),
             ),
           ),
 
@@ -170,7 +167,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
     final loc = AppLocalizations.of(context);
     return Team(
       name: '${loc.team} ${teams.length + 1}',
-      color: getTeamColor(index: teams.length),
+      color: AppColor.teamColor(teams.length),
       members: [],
     );
   }
@@ -226,8 +223,8 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
 
           // Reset color to default if it was based on the index
           final previousIndex = i < index ? i : i + 1;
-          if (teams[i].color == getTeamColor(index: previousIndex)) {
-            teams[i] = teams[i].copyWith(color: getTeamColor(index: i));
+          if (teams[i].color == AppColor.teamColor(previousIndex)) {
+            teams[i] = teams[i].copyWith(color: AppColor.teamColor(i));
           }
         }
       }
@@ -237,7 +234,7 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
   /// Finalizes the team creation by assigning any players that are currently
   /// not part of a team to the available teams.
   ///
-  /// If new teams have been created (those not present in [previousMatch]),
+  /// If new teams have been created (those not present in previousMatch),
   /// the unassigned players are distributed among these new teams to fill them
   /// up evenly. If no new teams exist, players are distributed among all
   /// existing teams, maintaining a balanced member count across teams.
@@ -307,20 +304,22 @@ class _CreateTeamsViewState extends State<CreateTeamsView> {
       final matchPlayerIds = matchPlayers.map((p) => p.id).toSet();
 
       // Use prefilled teams, exclude players that are not in the matches players anymore
-      teams = previousTeams.map((team) {
-        return team.copyWith(
-          members: team.members
-              .where((member) => matchPlayerIds.contains(member.id))
-              .toList(),
-        );
-      }).toList();
+      teams = previousTeams
+          .map(
+            (team) => team.copyWith(
+              members: team.members
+                  .where((member) => matchPlayerIds.contains(member.id))
+                  .toList(),
+            ),
+          )
+          .toList();
     } else {
       // Init the teams/reset teams
       teams = List.generate(
         initialTeamCount,
         (index) => Team(
           name: '${loc.team} ${index + 1}',
-          color: getTeamColor(index: index),
+          color: AppColor.teamColor(index),
           members: [],
         ),
       );

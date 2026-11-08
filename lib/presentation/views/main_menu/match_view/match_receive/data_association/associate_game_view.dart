@@ -1,7 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -9,7 +10,7 @@ import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_players_view.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
 
 class AssociateGameView extends StatefulWidget {
@@ -39,9 +40,8 @@ class _AssociateGameViewState extends State<AssociateGameView> {
         body: Column(
           children: [
             Align(
-              alignment: Alignment.center,
               child: Container(
-                margin: AppColors.standardMargin,
+                margin: AppSpacing.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
                   color: associatedGame == null ? Colors.orange : Colors.green,
@@ -67,27 +67,24 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 150),
               layoutBuilder:
-                  (Widget? currentChild, List<Widget> previousChildren) {
-                    return Stack(
-                      alignment: Alignment.topCenter,
-                      children: <Widget>[...previousChildren, ?currentChild],
-                    );
-                  },
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return FadeTransition(opacity: animation, child: child);
-              },
+                  (Widget? currentChild, List<Widget> previousChildren) =>
+                      Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[...previousChildren, ?currentChild],
+                      ),
+              transitionBuilder: (Widget child, Animation<double> animation) =>
+                  FadeTransition(opacity: animation, child: child),
               child: associatedGame == null
                   ? GestureDetector(
                       onTap: navigateToGameSelection,
                       child: Container(
                         key: const ValueKey('no_association'),
-                        margin: AppColors.tileMargin,
+                        margin: AppSpacing.tileMargin,
                         height: 138,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: context.standardBoxDecoration.copyWith(
                           border: Border.all(
                             color: Colors.orange.withAlpha(150),
-                            width: 1,
                           ),
                         ),
                         child: Center(
@@ -148,8 +145,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: BottomAnimatedButton(
-                buttonText: loc.confirm,
-                sizeRelativeToWidth: 0.95,
+                text: loc.confirm,
                 onPressed: () {
                   Navigator.of(context).push(
                     adaptivePageRoute(
@@ -205,10 +201,13 @@ class _AssociateGameViewState extends State<AssociateGameView> {
     if (!mounted) return;
 
     final importedGame = widget.match.game;
-    final match = allGames.where((localGame) {
-      return localGame.name.toLowerCase() == importedGame.name.toLowerCase() &&
-          localGame.ruleset == importedGame.ruleset;
-    }).firstOrNull;
+    final match = allGames
+        .where(
+          (localGame) =>
+              localGame.name.toLowerCase() == importedGame.name.toLowerCase() &&
+              localGame.ruleset == importedGame.ruleset,
+        )
+        .firstOrNull;
 
     if (match != null) {
       setState(() {

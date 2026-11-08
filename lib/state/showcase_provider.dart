@@ -7,9 +7,9 @@ class ShowcaseProvider extends ChangeNotifier {
 
   bool get isTourActive => _isTourActive;
 
-  bool get isTourSkipped => SharedPreferencesService.isTourSkipped();
+  bool get isTourSkipped => SharedPreferencesService.tourSkipped;
 
-  bool get isTourCompleted => SharedPreferencesService.isTourCompleted();
+  bool get isTourCompleted => SharedPreferencesService.tourCompleted;
 
   void startTour() {
     if (_isTourActive) return;
@@ -19,8 +19,8 @@ class ShowcaseProvider extends ChangeNotifier {
   }
 
   void restartTour() {
-    SharedPreferencesService.setTourSkipped(false);
-    SharedPreferencesService.setTourCompleted(false);
+    SharedPreferencesService.tourSkipped = false;
+    SharedPreferencesService.tourCompleted = false;
     SharedPreferencesService.resetSeenShowcase();
     _shownInCurrentTour.clear();
     _isTourActive = true;
@@ -29,19 +29,19 @@ class ShowcaseProvider extends ChangeNotifier {
 
   void skipTour() {
     _isTourActive = false;
-    SharedPreferencesService.setTourSkipped(true);
+    SharedPreferencesService.tourSkipped = true;
     notifyListeners();
   }
 
   void completeTour() {
     _isTourActive = false;
-    SharedPreferencesService.setTourCompleted(true);
+    SharedPreferencesService.tourCompleted = true;
     notifyListeners();
   }
 
   bool hasSeen(String screenKey) {
     if (_shownInCurrentTour.isEmpty) {
-      _shownInCurrentTour.addAll(SharedPreferencesService.getShowcaseSeen());
+      _shownInCurrentTour.addAll(SharedPreferencesService.showcaseSeen);
     }
     return _shownInCurrentTour.contains(screenKey);
   }
@@ -53,7 +53,7 @@ class ShowcaseProvider extends ChangeNotifier {
 
   void markAsSeen(String screenKey) {
     _shownInCurrentTour.add(screenKey);
-    SharedPreferencesService.setShowcaseSeen(_shownInCurrentTour.toList());
+    SharedPreferencesService.markShowcaseSeen(_shownInCurrentTour.toList());
     notifyListeners();
   }
 }

@@ -13,13 +13,40 @@ analyzer:
 
 linter:
   rules:
+    # Disabled rules from flutter_lints
     avoid_print: false
-    prefer_single_quotes: true
+    constant_identifier_names: false
+
+    # Additional rules
+    # lines_longer_than_80_chars: false
     always_use_package_imports: true
+    avoid_dynamic_calls: true
+    avoid_void_async: true
+    migrate_design_widgets: true
     prefer_const_constructors: true
-    prefer_const_constructors_in_immutables: true
     prefer_const_declarations: true
     prefer_const_literals_to_create_immutables: true
-    unnecessary_const: true
-    lines_longer_than_80_chars: false
-    constant_identifier_names: false
+    prefer_single_quotes: true
+    unawaited_futures: true
+
+    # Safeguards
+    cancel_subscriptions: true
+    close_sinks: true
+    literal_only_boolean_expressions: true
+    no_adjacent_strings_in_list: true
+    only_throw_errors: true
+    test_types_in_equals: true
+    throw_in_finally: true
+
+    # Code quality
+    prefer_final_in_for_each: true
+    unnecessary_lambdas: true
+    unnecessary_null_checks: true
+    use_decorated_box: true
+    use_named_constants: true
+
+    # Style
+    avoid_redundant_argument_values: true
+    comment_references: true
+    directives_ordering: true
+    prefer_expression_function_bodies: true

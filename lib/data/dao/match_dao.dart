@@ -35,7 +35,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       );
 
       // Add teams
-      if (match.teams != null && match.teams!.isNotEmpty) {
+      if (match.hasTeams) {
         await db.teamDao.addTeamsAsList(teams: match.teams!, matchId: match.id);
       }
 
@@ -240,7 +240,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       // Add teams for matches
       for (final match in matches) {
-        if (match.teams != null && match.teams!.isNotEmpty) {
+        if (match.hasTeams) {
           await db.teamDao.addTeamsAsList(
             teams: match.teams!,
             matchId: match.id,
@@ -482,18 +482,18 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Deletes the match with the given [matchId] from the database and purges
   /// lone players.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
-  Future<bool> deleteMatch({required String matchId}) async {
-    return db.transaction(() async {
-      final query = delete(matchTable)..where((tbl) => tbl.id.equals(matchId));
-      final rowsAffected = await query.go();
+  Future<bool> deleteMatch({required String matchId}) async =>
+      db.transaction(() async {
+        final query = delete(matchTable)
+          ..where((tbl) => tbl.id.equals(matchId));
+        final rowsAffected = await query.go();
 
-      if (rowsAffected > 0) {
-        await db.playerDao.purgeSoftDeletedPlayer();
-      }
+        if (rowsAffected > 0) {
+          await db.playerDao.purgeSoftDeletedPlayer();
+        }
 
-      return rowsAffected > 0;
-    });
-  }
+        return rowsAffected > 0;
+      });
 
   /// Deletes all matches from the database.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
@@ -520,19 +520,17 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     Group? group,
     Map<String, List<ScoreEntry>>? scoresByRound,
     List<Team>? teams,
-  }) {
-    return Match(
-      id: row.id,
-      name: row.name,
-      game: game,
-      group: group,
-      players: players,
-      scoresByRound: scoresByRound,
-      teams: teams,
-      isTeamMatch: row.isTeamMatch,
-      notes: row.notes,
-      createdAt: row.createdAt,
-      endedAt: row.endedAt,
-    );
-  }
+  }) => Match(
+    id: row.id,
+    name: row.name,
+    game: game,
+    group: group,
+    players: players,
+    scoresByRound: scoresByRound,
+    teams: teams,
+    isTeamMatch: row.isTeamMatch,
+    notes: row.notes,
+    createdAt: row.createdAt,
+    endedAt: row.endedAt,
+  );
 }
