@@ -48,7 +48,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   // null -> random color
   AppColor? selectedColor;
 
-  AppColor? previewRandomColor;
+  AppColor? randomColor;
 
   bool get hasGroupScope =>
       selectedScopes.contains(StatisticScope.selectedGroups);
@@ -67,7 +67,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   @override
   void initState() {
-    previewRandomColor = AppColor.randomColor();
+    randomColor = AppColor.randomColor();
     loadAllData();
     super.initState();
   }
@@ -387,7 +387,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           setState(() {
             // if selected color is random, exclude previous color from random selection
             if (color == null) {
-              previewRandomColor = AppColor.randomColor(exclude: selectedColor);
+              randomColor = AppColor.randomColor(exclude: selectedColor);
               selectedColor = null;
             } else {
               selectedColor = color;
@@ -544,7 +544,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     timeframe: selectedTimeframe,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
-    color: selectedColor ?? previewRandomColor,
+    color: selectedColor ?? randomColor,
     selectedGroups: hasGroupScope ? selectedGroups : null,
     selectedGames: hasGameScope ? selectedGames : null,
   );
