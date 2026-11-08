@@ -61,9 +61,9 @@ jobs:
             echo "| Tag | \`${TAG}\` |"
             echo "| Trigger | \`${{ github.event_name }}\` |"
             if [ "$PUBLISHING" = "true" ]; then
-              echo "| Publishing | Play (\`${TRACK}\`, draft), TestFlight + App Store draft, Gitea release |"
+              echo "| Publishing | Google Play (`\${TRACK}`, draft), App Store (TestFlight + Draft), Gitea release |"
             else
-              echo "| Publishing | **disabled** (\`STORE_DEPLOY_ENABLED\` is not \`true\`), build only, nothing is uploaded |"
+              echo "| Publishing | **disabled** (\`STORE_DEPLOY_ENABLED\` is not \`true\`), build + Gitea release only |"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
