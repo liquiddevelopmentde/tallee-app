@@ -393,7 +393,6 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               selectedColor = color;
             }
           });
-          ;
         },
       ),
     );
