@@ -288,11 +288,11 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   /* Winner handling */
 
   Future<bool> hasWinner({required String matchId}) async =>
-      await getWinner(matchId: matchId) != null;
+      (await getWinners(matchId: matchId)).isNotEmpty;
 
   /// Retrieves the winner of a match by looking for a score entry where score
   /// is 1. Returns `null` if no player found, else the first with the score.
-  Future<Player?> getWinner({required String matchId}) async {
+  Future<List<Player>> getWinners({required String matchId}) async {
     final query =
         select(scoreEntryTable).join([
           innerJoin(
@@ -305,22 +305,29 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         );
 
     final result = await query.get();
-    if (result.isEmpty) return null;
+    if (result.isEmpty) return [];
 
-    final playerData = result.first.readTable(db.playerTable);
-    return Player(
-      id: playerData.id,
-      name: playerData.name,
-      createdAt: playerData.createdAt,
-      description: playerData.description,
-    );
+    final playerData = result
+        .map((row) => row.readTable(db.playerTable))
+        .toList();
+
+    return playerData
+        .map(
+          (p) => Player(
+            id: p.id,
+            name: p.name,
+            createdAt: p.createdAt,
+            description: p.description,
+          ),
+        )
+        .toList();
   }
 
-  /// Removes the winner of a match.
+  /// Removes the winners of a match.
   ///
   /// Returns `true` if the winner was removed, `false` if there are multiple
   /// scores or if the winner cannot be removed.
-  Future<bool> removeWinner({required String matchId}) async =>
+  Future<bool> removeWinners({required String matchId}) async =>
       await deleteAllScoresForMatch(matchId: matchId);
 
   /* multiple winners handling */

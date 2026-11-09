@@ -667,14 +667,14 @@ void main() {
     });
 
     group('WINNER', () {
-      test('hasWinner() works correctly', () async {
+      test('hasWinners() works correctly', () async {
         var hasWinner = await database.scoreEntryDao.hasWinner(
           matchId: testMatch1.id,
         );
         expect(hasWinner, isFalse);
 
-        await database.scoreEntryDao.setWinner(
-          playerId: testPlayer1.id,
+        await database.scoreEntryDao.setWinners(
+          winners: [testPlayer1],
           matchId: testMatch1.id,
         );
 
@@ -689,45 +689,54 @@ void main() {
         expect(match.endedAt, isNotNull);
       });
 
-      test('getWinner() works correctly', () async {
-        var winner = await database.scoreEntryDao.getWinner(
+      test('getWinners() works correctly', () async {
+        var winners = await database.scoreEntryDao.getWinners(
           matchId: testMatch1.id,
         );
-        expect(winner, isNull);
+        expect(winners, isEmpty);
 
-        await database.scoreEntryDao.setWinner(
-          playerId: testPlayer1.id,
+        await database.scoreEntryDao.setWinners(
+          winners: [testPlayer1],
           matchId: testMatch1.id,
         );
 
-        winner = await database.scoreEntryDao.getWinner(matchId: testMatch1.id);
-
-        expect(winner, isNotNull);
-        expect(winner!.id, testPlayer1.id);
-
-        final match = await database.matchDao.getMatchById(
+        winners = await database.scoreEntryDao.getWinners(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, isNotNull);
+
+        await database.scoreEntryDao.setWinners(
+          winners: [testPlayer2, testPlayer3],
+          matchId: testMatch1.id,
+        );
+
+        winners = await database.scoreEntryDao.getWinners(
+          matchId: testMatch1.id,
+        );
+
+        expect(winners, isNotEmpty);
+        expect(winners.length, 2);
+        expect(winners.contains(testPlayer2), isTrue);
+        expect(winners.contains(testPlayer3), isTrue);
+        expect(winners.contains(testPlayer1), isFalse);
       });
 
       test('removeWinner() works correctly', () async {
-        var removed = await database.scoreEntryDao.removeWinner(
+        var removed = await database.scoreEntryDao.removeWinners(
           matchId: testMatch1.id,
         );
         expect(removed, isFalse);
 
-        await database.scoreEntryDao.setWinner(
-          playerId: testPlayer1.id,
+        await database.scoreEntryDao.setWinners(
+          winners: [testPlayer1],
           matchId: testMatch1.id,
         );
 
-        removed = await database.scoreEntryDao.removeWinner(
+        removed = await database.scoreEntryDao.removeWinners(
           matchId: testMatch1.id,
         );
         expect(removed, isTrue);
 
-        final winner = await database.scoreEntryDao.getWinner(
+        final winner = await database.scoreEntryDao.getWinners(
           matchId: testMatch1.id,
         );
         expect(winner, isNull);
