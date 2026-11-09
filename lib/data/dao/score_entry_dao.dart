@@ -290,6 +290,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   Future<bool> hasWinner({required String matchId}) async =>
       await getWinner(matchId: matchId) != null;
 
+  // TODO: remove
   // Setting the winner for a game and clearing previous winner if exists.
   Future<bool> setWinner({
     required String matchId,
@@ -297,10 +298,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }) async {
     // Clear previous winner if exists
     await deleteAllScoresForMatch(matchId: matchId);
-    await db.matchDao.updateMatchEndedAt(
-      matchId: matchId,
-      endedAt: DateTime.now(),
-    );
 
     // Set the winner's score to 1
     final rowsAffected = await into(scoreEntryTable).insert(
@@ -361,11 +358,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }) async {
     // Clear previous winners if exists
     await deleteAllScoresForMatch(matchId: matchId);
-    await db.matchDao.updateMatchEndedAt(
-      matchId: matchId,
-      endedAt: DateTime.now(),
-    );
-
     if (winners.isEmpty) return false;
 
     await batch((batch) {
@@ -401,10 +393,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }) async {
     // Clear previous losers if exists
     await deleteAllScoresForMatch(matchId: matchId);
-    await db.matchDao.updateMatchEndedAt(
-      matchId: matchId,
-      endedAt: DateTime.now(),
-    );
 
     // Set the losers score to 0
     final rowsAffected = await into(scoreEntryTable).insert(
@@ -469,11 +457,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String matchId,
     required List<Player> players,
   }) async {
-    await db.matchDao.updateMatchEndedAt(
-      matchId: matchId,
-      endedAt: DateTime.now(),
-    );
-
     for (int i = 0; i < players.length; i++) {
       await db.scoreEntryDao.addScore(
         matchId: matchId,
