@@ -24,7 +24,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
             name: group.name,
             description: group.description,
             createdAt: group.createdAt,
-            color: Value(group.color),
+            color: group.color,
           ),
           mode: InsertMode.insertOrReplace,
         );
@@ -75,7 +75,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
                   name: group.name,
                   description: group.description,
                   createdAt: group.createdAt,
-                  color: Value(group.color),
+                  color: group.color,
                 ),
               )
               .toList(),
