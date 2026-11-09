@@ -113,6 +113,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                     CustomDialogAction(
                       onPressed: () => Navigator.of(context).pop(true),
                       text: loc.delete,
+                      accent: ButtonAccent.destructive,
                     ),
                     CustomDialogAction(
                       onPressed: () => Navigator.of(context).pop(false),
