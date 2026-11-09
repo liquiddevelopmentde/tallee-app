@@ -68,6 +68,9 @@
         "description": {
           "type": "string"
         },
+        "color": {
+          "type": "string"
+        },
         "members": {
           "type": "array",
           "minItems": 2,
