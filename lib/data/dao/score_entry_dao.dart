@@ -290,30 +290,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   Future<bool> hasWinner({required String matchId}) async =>
       await getWinner(matchId: matchId) != null;
 
-  // TODO: remove
-  // Setting the winner for a game and clearing previous winner if exists.
-  Future<bool> setWinner({
-    required String matchId,
-    required String playerId,
-  }) async {
-    // Clear previous winner if exists
-    await deleteAllScoresForMatch(matchId: matchId);
-
-    // Set the winner's score to 1
-    final rowsAffected = await into(scoreEntryTable).insert(
-      ScoreEntryTableCompanion.insert(
-        playerId: playerId,
-        matchId: matchId,
-        roundNumber: 0,
-        score: const Value(1),
-        change: 1,
-      ),
-      mode: InsertMode.insertOrReplace,
-    );
-
-    return rowsAffected > 0;
-  }
-
   /// Retrieves the winner of a match by looking for a score entry where score
   /// is 1. Returns `null` if no player found, else the first with the score.
   Future<Player?> getWinner({required String matchId}) async {
