@@ -140,6 +140,7 @@ void main() {
         'id': testGroup.id,
         'name': testGroup.name,
         'description': testGroup.description,
+        'color': testGroup.color.name,
         'memberIds': [testPlayer1.id, testPlayer2.id],
         'createdAt': testGroup.createdAt.toIso8601String(),
       },
