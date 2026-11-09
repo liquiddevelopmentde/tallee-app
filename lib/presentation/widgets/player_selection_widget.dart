@@ -385,7 +385,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
           ),
           value: player,
           onContainerTap: (value) {
-            Haptics.selectionClick();
             setState(() {
               if (selectedPlayer == value) {
                 selectedPlayer = null;
