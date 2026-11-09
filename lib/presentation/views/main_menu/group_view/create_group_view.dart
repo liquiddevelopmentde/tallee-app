@@ -48,8 +48,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
   AppColor? lastSelectedColor;
 
-  late List<(AppColor, String)> colors;
-
   @override
   void initState() {
     super.initState();
