@@ -37,15 +37,16 @@ class _PlacementDragListState extends State<PlacementDragList> {
       allTeams = widget.match.teams ?? [];
       mergeSort(
         allTeams,
-        compare: (a, b) => a.score ?? 0.compareTo(b.score ?? 0),
+        compare: (a, b) => (b.score ?? 0).compareTo(a.score ?? 0),
       );
     } else {
       allPlayers = widget.match.players;
+
       mergeSort(
         allPlayers,
-        compare: (a, b) =>
-            widget.match.scores[a.id]?.change ??
-            0.compareTo(widget.match.scores[b.id]?.change ?? 0),
+        compare: (a, b) => (widget.match.scores[b.id]?.change ?? 0).compareTo(
+          widget.match.scores[a.id]?.change ?? 0,
+        ),
       );
     }
 
