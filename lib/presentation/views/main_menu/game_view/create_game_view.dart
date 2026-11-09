@@ -363,7 +363,10 @@ class _CreateGameViewState extends State<CreateGameView> {
         leadingBuilder: (AppColor clr) => ColoredCircle(color: clr),
         labelBuilder: (BuildContext ctx, AppColor clr) =>
             clr.toLocalizedString(ctx),
-        onValueUpdated: (AppColor? clr) => setState(() => selectedColor = clr),
+        onValueUpdated: (AppColor? clr) {
+          if (clr == selectedColor) return;
+          setState(() => selectedColor = clr);
+        },
       ),
     );
   }

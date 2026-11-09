@@ -384,6 +384,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
         labelBuilder: (BuildContext context, AppColor? color) =>
             color == null ? loc.random_color : color.toLocalizedString(context),
         onValueUpdated: (color) {
+          if (color == selectedColor) return;
           setState(() {
             // if selected color is random, exclude previous color from random selection
             if (color == null) {
