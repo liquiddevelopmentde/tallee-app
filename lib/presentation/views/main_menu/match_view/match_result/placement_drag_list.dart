@@ -1,6 +1,5 @@
 import 'dart:core' hide Match;
 
-import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/haptics.dart';
@@ -14,9 +13,15 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 class PlacementDragList extends StatefulWidget {
   /// A list widget for the [MatchResultView] that lets the user drag teams / players to different placements.
   /// - [match]: The match whose players / teams are being reordered.
-  const PlacementDragList({super.key, required this.match});
+  /// - [onOrderChanged]: Called after the user moved a player / team.
+  const PlacementDragList({
+    super.key,
+    required this.match,
+    this.onOrderChanged,
+  });
 
   final Match match;
+  final VoidCallback? onOrderChanged;
 
   @override
   State<PlacementDragList> createState() => _PlacementDragListState();
@@ -35,19 +40,8 @@ class _PlacementDragListState extends State<PlacementDragList> {
   initState() {
     if (useTeamLogic) {
       allTeams = widget.match.teams ?? [];
-      mergeSort(
-        allTeams,
-        compare: (a, b) => (b.score ?? 0).compareTo(a.score ?? 0),
-      );
     } else {
       allPlayers = widget.match.players;
-
-      mergeSort(
-        allPlayers,
-        compare: (a, b) => (widget.match.scores[b.id]?.change ?? 0).compareTo(
-          widget.match.scores[a.id]?.change ?? 0,
-        ),
-      );
     }
 
     placementController = ScrollController();
@@ -58,7 +52,9 @@ class _PlacementDragListState extends State<PlacementDragList> {
   }
 
   bool get useTeamLogic => widget.match.useTeamLogic;
+
   bool get isTeamMatch => widget.match.isTeamMatch;
+
   int get itemCount => useTeamLogic ? allTeams.length : allPlayers.length;
 
   @override
@@ -99,6 +95,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         final Team team = allTeams.removeAt(oldIndex);
                         allTeams.insert(newIndex, team);
                       });
+                      widget.onOrderChanged?.call();
                     },
                     onReorderStart: (_) => Haptics.heavyImpact(),
                     onReorderEnd: (_) => Haptics.selectionClick(),
@@ -145,6 +142,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         final Player item = allPlayers.removeAt(oldIndex);
                         allPlayers.insert(newIndex, item);
                       });
+                      widget.onOrderChanged?.call();
                     },
                     onReorderStart: (_) => Haptics.heavyImpact(),
                     onReorderEnd: (_) => Haptics.selectionClick(),
