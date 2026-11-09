@@ -33,13 +33,31 @@
           "type": "string"
         },
         "ruleset": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "winner",
+            "loser",
+            "highestScore",
+            "lowestScore",
+            "lives",
+            "placement"
+          ]
         },
         "description": {
           "type": "string"
         },
         "color": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "red",
+            "orange",
+            "yellow",
+            "green",
+            "teal",
+            "blue",
+            "purple",
+            "pink"
+          ]
         }
       },
       "required": [
@@ -201,7 +219,17 @@
             "type": "string"
           },
           "color": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "red",
+              "orange",
+              "yellow",
+              "green",
+              "teal",
+              "blue",
+              "purple",
+              "pink"
+            ]
           },
           "score": {
             "type": [
