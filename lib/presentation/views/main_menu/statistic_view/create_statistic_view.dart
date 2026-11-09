@@ -387,7 +387,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
           setState(() {
             // if selected color is random, exclude previous color from random selection
             if (color == null) {
-              randomColor = AppColor.randomColor(exclude: selectedColor);
+              randomColor = AppColor.randomColor(exclude: [selectedColor]);
               selectedColor = null;
             } else {
               selectedColor = color;
