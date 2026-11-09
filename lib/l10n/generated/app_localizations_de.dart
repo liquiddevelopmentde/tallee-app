@@ -111,6 +111,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get color_green => 'Grün';
 
   @override
+  String get end_match => 'Spiel beenden';
+
+  @override
   String get color_orange => 'Orange';
 
   @override

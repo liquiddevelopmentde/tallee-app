@@ -107,6 +107,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get color_green => 'Green';
 
   @override
+  String get end_match => 'End Match';
+
+  @override
   String get color_orange => 'Orange';
 
   @override

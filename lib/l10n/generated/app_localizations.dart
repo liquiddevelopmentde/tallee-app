@@ -290,6 +290,12 @@ abstract class AppLocalizations {
   /// **'Green'**
   String get color_green;
 
+  /// No description provided for @end_match.
+  ///
+  /// In en, this message translates to:
+  /// **'End Match'**
+  String get end_match;
+
   /// No description provided for @color_orange.
   ///
   /// In en, this message translates to:

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -34,8 +35,6 @@ class MatchResultView extends StatefulWidget {
 class _MatchResultViewState extends State<MatchResultView> {
   late final AppDatabase db;
 
-  late final Ruleset ruleset;
-
   late final List<Player> allPlayers;
   late final List<Team> allTeams;
 
@@ -51,14 +50,29 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Scores entered for each player/team
   Map<dynamic, int?> scores = {};
 
+  Match get match => widget.match;
+
+  Ruleset get ruleset => match.game.ruleset;
+
   bool get useTeamLogic => widget.match.useTeamLogic;
 
   bool get isTeamMatch => widget.match.isTeamMatch;
 
+  /// Whether the current input differs from the scores stored in the [match].
+  bool get hasChangedResult {
+    switch (ruleset) {
+      case Ruleset.winner:
+        return hasChangedWinners();
+      case Ruleset.loser:
+        return hasChangedLoser();
+      default:
+        return hasChangedScores();
+    }
+  }
+
   @override
   void initState() {
     db = context.read<AppDatabase>();
-    ruleset = widget.match.game.ruleset;
     canSave = ruleset.isPlacement || ruleset.isLives;
 
     initData();
@@ -170,7 +184,10 @@ class _MatchResultViewState extends State<MatchResultView> {
 
                           // Show draggable placement list
                           if (ruleset.isPlacement)
-                            PlacementDragList(match: widget.match),
+                            PlacementDragList(
+                              match: widget.match,
+                              onOrderChanged: () => setState(() {}),
+                            ),
                         ],
                       ),
                     ),
@@ -182,16 +199,27 @@ class _MatchResultViewState extends State<MatchResultView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Save Changes Button
-                  BottomAnimatedButton(
-                    text: loc.save_changes,
-                    onPressed: canSave
-                        ? () async {
-                            await handleSaving(endMatch: true);
-                            if (context.mounted) Navigator.pop(context);
-                          }
-                        : null,
-                  ),
+                  if (widget.match.endedAt == null)
+                    BottomAnimatedButton(
+                      text: loc.end_match,
+                      onPressed: canSave
+                          ? () async {
+                              await handleSaving(endMatch: true);
+                              if (context.mounted) Navigator.pop(context);
+                            }
+                          : null,
+                    )
+                  else
+                    // Save Changes Button
+                    BottomAnimatedButton(
+                      text: loc.save_changes,
+                      onPressed: canSave && hasChangedResult
+                          ? () async {
+                              await handleSaving(endMatch: true);
+                              if (context.mounted) Navigator.pop(context);
+                            }
+                          : null,
+                    ),
                 ],
               ),
             ),
@@ -199,6 +227,86 @@ class _MatchResultViewState extends State<MatchResultView> {
         ),
       ),
     );
+  }
+
+  /// Checks if the scores from [match] differ from the current entered [scores]
+  bool hasChangedScores() {
+    if (useTeamLogic) {
+      for (int i = 0; i < allTeams.length; i++) {
+        final team = allTeams[i];
+        final currentScore =
+            team.score ?? (ruleset.isLives ? widget.defaultLives : null);
+        final newScore = getNewScore(team, i);
+        if (currentScore != newScore) {
+          return true;
+        }
+      }
+    } else {
+      for (int i = 0; i < allPlayers.length; i++) {
+        final player = allPlayers[i];
+        final currentScore =
+            match.scores[player.id]?.score ??
+            (ruleset.isLives ? widget.defaultLives : null);
+        final newScore = getNewScore(player, i);
+        if (currentScore != newScore) return true;
+      }
+    }
+    return false;
+  }
+
+  /// Checks if the selected loser differ from the loser in [match]
+  bool hasChangedLoser() {
+    const loserScore = 0;
+
+    if (useTeamLogic) {
+      return allTeams.any(
+        (team) =>
+            selectedTeams.contains(team) && team.score != loserScore ||
+            !selectedTeams.contains(team) && team.score == loserScore,
+      );
+    } else {
+      return allPlayers.any(
+        (player) =>
+            selectedPlayers.contains(player) &&
+                getPlayerScore(player) != loserScore ||
+            !selectedPlayers.contains(player) &&
+                getPlayerScore(player) == loserScore,
+      );
+    }
+  }
+
+  /// Checks if the selected winners differ from the winners in [match]
+  bool hasChangedWinners() {
+    const winnerScore = 1;
+
+    if (useTeamLogic) {
+      return allTeams.any(
+        (team) =>
+            selectedTeams.contains(team) && team.score != winnerScore ||
+            !selectedTeams.contains(team) && team.score == winnerScore,
+      );
+    } else {
+      return allPlayers.any(
+        (player) =>
+            selectedPlayers.contains(player) &&
+                getPlayerScore(player) != winnerScore ||
+            !selectedPlayers.contains(player) &&
+                getPlayerScore(player) == winnerScore,
+      );
+    }
+  }
+
+  /// Helper function to get a score from a player
+  int? getPlayerScore(Player player) =>
+      match.scoresByRound[player.id]?.firstOrNull?.change;
+
+  /// Helper function returning the new score of [unit] saved in the [scores] Map
+  int? getNewScore(Object unit, int index) {
+    if (ruleset.isPlacement) {
+      final count = useTeamLogic ? allTeams.length : allPlayers.length;
+      return count - index;
+    }
+    return scores[unit];
   }
 
   /// Callback function to handle score changes from the LiveEditView / ScoreEnterList
@@ -227,6 +335,13 @@ class _MatchResultViewState extends State<MatchResultView> {
       scores = Map.fromEntries(
         allTeams.map((team) => MapEntry(team, team.score)),
       );
+
+      if (ruleset.isPlacement) {
+        mergeSort(
+          allTeams,
+          compare: (a, b) => (b.score ?? 0).compareTo(a.score ?? 0),
+        );
+      }
     } else {
       allPlayers = widget.match.players;
       selectedPlayer = widget.match.mvp.firstOrNull;
@@ -237,6 +352,15 @@ class _MatchResultViewState extends State<MatchResultView> {
           (player) => MapEntry(player, widget.match.scores[player.id]?.score),
         ),
       );
+
+      if (ruleset.isPlacement) {
+        mergeSort(
+          allPlayers,
+          compare: (a, b) => (widget.match.scores[b.id]?.score ?? 0).compareTo(
+            widget.match.scores[a.id]?.score ?? 0,
+          ),
+        );
+      }
     }
 
     if (ruleset.isLives) {
@@ -294,7 +418,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       }
     } else {
       if (selectedPlayers.isEmpty) {
-        return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
+        return await db.scoreEntryDao.removeWinners(matchId: widget.match.id);
       } else {
         return await db.scoreEntryDao.setWinners(
           matchId: widget.match.id,
