@@ -5,6 +5,7 @@ import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/charts/bar_chart.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
@@ -17,6 +18,7 @@ class StatisticsTile extends StatefulWidget {
   /// - [width]: Optional width of the tile.
   /// - [showAllValues]: Whether to show all values or limit to [displayCount].
   /// - [showDisplayCountHighlighting]: Whether to highlight entries that exceed the display count.
+  /// - [onSortOrderChanged]: Optional callback to toggle ascending/descending sorting.
   /// - [emptyAssets]: Optional assets for the empty state.
   const StatisticsTile({
     super.key,
@@ -28,6 +30,7 @@ class StatisticsTile extends StatefulWidget {
     this.showAllValues = false,
     this.showDisplayCountHighlighting = false,
     this.onStatisticChanged,
+    this.onSortOrderChanged,
     this.emptyAssets,
   }) : assert(displayCount >= 0, 'displayCount must not be negative');
 
@@ -39,6 +42,7 @@ class StatisticsTile extends StatefulWidget {
   final bool showAllValues;
   final bool showDisplayCountHighlighting;
   final ValueChanged<String>? onStatisticChanged;
+  final ValueChanged<StatisticSortOrder>? onSortOrderChanged;
   final ({IconData icon, String title, String description})? emptyAssets;
 
   @override
@@ -74,21 +78,45 @@ class _StatisticsTileState extends State<StatisticsTile> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final barColor = widget.statistic.color.colorValue(context);
     final title = widget.statistic.type.toLocalizedString(context);
+    final isAscending =
+        widget.statistic.sortOrder == StatisticSortOrder.ascending;
 
     return InfoTile(
       leadingWidget: Icon(widget.emptyAssets?.icon ?? icon),
       title: title,
-      trailingWidget: Visibility(
-        visible: !widget.showAllValues,
-        child: HapticIconButton(
-          padding: EdgeInsets.zero,
-          icon: isFavourite
-              ? const Icon(Icons.favorite)
-              : const Icon(Icons.favorite_border),
-          onPressed: toggleFavourite,
-        ),
+      trailingWidget: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 4,
+        children: [
+          if (widget.onSortOrderChanged != null)
+            Tooltip(
+              message: isAscending ? loc.ascending : loc.descending,
+              child: HapticIconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  isAscending ? Icons.arrow_upward : Icons.arrow_downward,
+                ),
+                onPressed: () => widget.onSortOrderChanged!(
+                  isAscending
+                      ? StatisticSortOrder.descending
+                      : StatisticSortOrder.ascending,
+                ),
+              ),
+            ),
+          Visibility(
+            visible: !widget.showAllValues,
+            child: HapticIconButton(
+              padding: EdgeInsets.zero,
+              icon: isFavourite
+                  ? const Icon(Icons.favorite)
+                  : const Icon(Icons.favorite_border),
+              onPressed: toggleFavourite,
+            ),
+          ),
+        ],
       ),
       width:
           widget.width ??
