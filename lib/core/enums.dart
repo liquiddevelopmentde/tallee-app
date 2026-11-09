@@ -138,6 +138,8 @@ enum StatisticType {
 
 enum StatisticScope { allPlayers, selectedGroups, selectedGames }
 
+enum StatisticSortOrder { descending, ascending }
+
 enum Timeframe {
   last7Days,
   last30Days,
