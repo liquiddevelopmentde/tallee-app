@@ -76,6 +76,7 @@ class _MatchResultViewState extends State<MatchResultView> {
             ShowcaseView.get().dismiss();
           } catch (_) {}
         }
+        handleSaving(endMatch: false);
       },
       child: Scaffold(
         backgroundColor: context.talleeColors.backgroundColor,
@@ -185,7 +186,10 @@ class _MatchResultViewState extends State<MatchResultView> {
                   BottomAnimatedButton(
                     text: loc.save_changes,
                     onPressed: canSave
-                        ? () async => await handleSaving()
+                        ? () async {
+                            await handleSaving(endMatch: true);
+                            if (context.mounted) Navigator.pop(context);
+                          }
                         : null,
                   ),
                 ],
@@ -243,14 +247,11 @@ class _MatchResultViewState extends State<MatchResultView> {
     }
   }
 
-  /// Handles saving or removing the winner in the database
-  /// based on the current selection.
-  Future<void> handleSaving() async {
-    final ending = DateTime.now();
-    await db.matchDao.updateMatchEndedAt(
-      matchId: widget.match.id,
-      endedAt: ending,
-    );
+  /// Handles saving the current input of values based on the ruleset.
+  /// [endMatch] determines if the match will be ended or if just saving the values
+  Future<void> handleSaving({required bool endMatch}) async {
+    // Prevents auto-save if match has already been finished
+    if (widget.match.endedAt != null && endMatch == false) return;
 
     if (ruleset.isWinner) {
       await handleWinners();
@@ -264,12 +265,19 @@ class _MatchResultViewState extends State<MatchResultView> {
       await handleLives();
     }
 
-    widget.onWinnerChanged?.call();
+    if (endMatch) {
+      final ending = DateTime.now();
+      await db.matchDao.updateMatchEndedAt(
+        matchId: widget.match.id,
+        endedAt: ending,
+      );
 
-    if (!mounted) return;
-    final rateProvider = context.read<RateDialogProvider>();
-    rateProvider.request();
-    Navigator.pop(context);
+      if (!mounted) return;
+      final rateProvider = context.read<RateDialogProvider>();
+      rateProvider.request();
+    }
+
+    widget.onWinnerChanged?.call();
   }
 
   /// Handles saving the (multiple) winners to the database.
