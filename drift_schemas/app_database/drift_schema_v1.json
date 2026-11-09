@@ -132,7 +132,7 @@
             "moor_type": "string",
             "nullable": false,
             "customConstraints": null,
-            "default_dart": "const Constant('orange')",
+            "default_dart": null,
             "default_client_dart": null,
             "dsl_features": [],
             "type_converter": {

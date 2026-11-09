@@ -5,8 +5,7 @@ class GroupTable extends Table {
   TextColumn get id => text()();
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get name => text()();
-  TextColumn get color =>
-      textEnum<AppColor>().withDefault(const Constant('orange'))();
+  TextColumn get color => textEnum<AppColor>()();
   TextColumn get description => text()();
 
   @override
