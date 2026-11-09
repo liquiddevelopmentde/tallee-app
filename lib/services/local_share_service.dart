@@ -435,6 +435,11 @@ class LocalShareService {
       final selectedGroupIds = (map['selectedGroups'] as List<dynamic>? ?? [])
           .cast<String>();
 
+      final type = StatisticType.values.firstWhere(
+        (e) => e.name == map['type'] || e.toString() == map['type'],
+        orElse: () => StatisticType.totalWins,
+      );
+
       // Ignore invalid selected game/group IDs instead of throwing
       final selectedGames = selectedGameIds
           .map((id) => gamesMap[id])
@@ -482,6 +487,7 @@ class LocalShareService {
         displayCount: map['displayCount'],
         isFavourite: map['isFavourite'],
         position: map['position'],
+        sortOrder: StatisticSortOrder.values.byName(map['sortOrder'] as String),
       );
     }).toList();
   }

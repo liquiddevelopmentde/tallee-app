@@ -370,6 +370,7 @@ void main() {
           expect(statData['timeframe'], testStatistic.timeframe.name);
           expect(statData['color'], testStatistic.color.name);
           expect(statData['displayCount'], testStatistic.displayCount);
+          expect(statData['sortOrder'], testStatistic.sortOrder.name);
           expect(
             statData['selectedGames'],
             containsAll(testStatistic.selectedGames!.map((g) => g.id)),
@@ -982,6 +983,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortOrder': testStatistic.sortOrder.name,
             },
           ],
         };
@@ -998,6 +1000,7 @@ void main() {
         expect(stats[0].timeframe, testStatistic.timeframe);
         expect(stats[0].color, testStatistic.color);
         expect(stats[0].displayCount, testStatistic.displayCount);
+        expect(stats[0].sortOrder, testStatistic.sortOrder);
         expect(stats[0].startDate, testStatistic.startDate);
         expect(stats[0].endDate, testStatistic.endDate);
         expect(stats[0].selectedGames, isNotNull);
@@ -1042,6 +1045,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortOrder': testStatistic.sortOrder.name,
             },
           ],
         };
@@ -1134,6 +1138,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortOrder': testStatistic.sortOrder.name,
             },
             {
               'id': testStatistic.id,
@@ -1149,6 +1154,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortOrder': testStatistic.sortOrder.name,
             },
             {
               'id': testStatistic.id,
@@ -1164,6 +1170,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortOrder': testStatistic.sortOrder.name,
             },
           ],
         });
@@ -1245,6 +1252,7 @@ void main() {
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
                 'position': testStatistic.position,
+                'sortOrder': testStatistic.sortOrder.name,
               },
               {
                 'id': testStatistic.id,
@@ -1258,6 +1266,7 @@ void main() {
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
                 'position': testStatistic.position,
+                'sortOrder': testStatistic.sortOrder.name,
               },
               {
                 'id': testStatistic.id,
@@ -1271,6 +1280,7 @@ void main() {
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
                 'position': testStatistic.position,
+                'sortOrder': testStatistic.sortOrder.name,
               },
             ],
           });
