@@ -192,6 +192,55 @@ void main() {
     }
   });
 
+  group('StatisticCalculator sort order', () {
+    List<num> valuesFor(StatisticSortOrder sortOrder) {
+      final statistic = Statistic(
+        type: StatisticType.totalScore,
+        scopes: [StatisticScope.allPlayers],
+        sortOrder: sortOrder,
+      );
+
+      return StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: matches,
+        players: [testPlayer1, testPlayer2, testPlayer3],
+      ).map((entry) => entry.$2).toList();
+    }
+
+    test('sorts descending by default', () {
+      expect(valuesFor(StatisticSortOrder.descending), [23, 20, 17]);
+    });
+
+    test('sorts ascending when configured', () {
+      expect(valuesFor(StatisticSortOrder.ascending), [17, 20, 23]);
+    });
+
+    test('worstScore defaults to ascending', () {
+      final statistic = Statistic(
+        type: StatisticType.worstScore,
+        scopes: [StatisticScope.allPlayers],
+      );
+
+      expect(statistic.sortOrder, StatisticSortOrder.ascending);
+    });
+
+    test('worstScore can be sorted descending', () {
+      final statistic = Statistic(
+        type: StatisticType.worstScore,
+        scopes: [StatisticScope.allPlayers],
+        sortOrder: StatisticSortOrder.descending,
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: matches,
+        players: [testPlayer1, testPlayer2, testPlayer3],
+      );
+
+      expect(values.map((entry) => entry.$2), [6, 4, 3]);
+    });
+  });
+
   group('StatisticCalculator filtering', () {
     test('Excludes players without score for score-based statistics', () {
       final scoreMatches = [
