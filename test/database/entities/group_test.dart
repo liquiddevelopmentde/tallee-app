@@ -36,12 +36,14 @@ void main() {
         name: 'Test Group',
         members: [testPlayer1, testPlayer2, testPlayer3],
         description: 'description of the test group 1',
+        color: AppColor.blue,
       );
       testGroup2 = Group(
         id: 'gr2',
         name: 'Second Group',
         members: [testPlayer2, testPlayer3, testPlayer4],
         description: 'description of the test group 2',
+        color: AppColor.green,
       );
       testGroup3 = Group(
         id: 'gr2',
@@ -70,6 +72,7 @@ void main() {
         expect(fetchedGroup.id, testGroup1.id);
         expect(fetchedGroup.name, testGroup1.name);
         expect(fetchedGroup.createdAt, testGroup1.createdAt);
+        expect(fetchedGroup.color, testGroup1.color);
 
         expect(fetchedGroup.members.length, testGroup1.members.length);
         for (int i = 0; i < testGroup1.members.length; i++) {
@@ -126,6 +129,7 @@ void main() {
           expect(group.id, testGroup.id);
           expect(group.name, testGroup.name);
           expect(group.createdAt, testGroup.createdAt);
+          expect(group.color, testGroup.color);
 
           expect(group.members.length, testGroup.members.length);
           for (int i = 0; i < testGroup.members.length; i++) {
@@ -244,12 +248,14 @@ void main() {
           resultMap[testGroup1.id]!.members,
           unorderedEquals(testGroup1.members),
         );
+        expect(resultMap[testGroup1.id]!.color, testGroup1.color);
 
         expect(resultMap[testGroup2.id], isNotNull);
         expect(
           resultMap[testGroup2.id]!.members,
           unorderedEquals(testGroup2.members),
         );
+        expect(resultMap[testGroup2.id]!.color, testGroup2.color);
       });
 
       test('getGroupsByIds() returns empty list for empty input', () async {
@@ -309,6 +315,33 @@ void main() {
         },
       );
 
+      test('updateGroupColor() works correctly', () async {
+        await database.groupDao.addGroup(group: testGroup1);
+
+        const newColor = AppColor.purple;
+        final updated = await database.groupDao.updateGroupColor(
+          groupId: testGroup1.id,
+          color: newColor,
+        );
+        expect(updated, isTrue);
+
+        final group = await database.groupDao.getGroupById(
+          groupId: testGroup1.id,
+        );
+        expect(group.color, newColor);
+      });
+
+      test(
+        'updateGroupColor() returns false for non-existent group',
+        () async {
+          final updated = await database.groupDao.updateGroupColor(
+            groupId: 'non-existent-id',
+            color: AppColor.purple,
+          );
+          expect(updated, isFalse);
+        },
+      );
+
       test('Multiple updates to the same group work correctly', () async {
         await database.groupDao.addGroup(group: testGroup1);
         const newName = 'New name';
@@ -328,6 +361,7 @@ void main() {
         );
         expect(updatedGroup.name, newName);
         expect(updatedGroup.description, newDescription);
+        expect(updatedGroup.color, testGroup1.color);
       });
 
       test('replaceGroupPlayers() works correctly', () async {
