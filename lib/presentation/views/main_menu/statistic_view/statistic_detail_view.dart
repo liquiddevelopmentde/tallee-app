@@ -8,9 +8,11 @@ import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/data/statistics/statistic_calculator.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/statistics_tile.dart';
 
@@ -33,15 +35,20 @@ class StatisticDetailView extends StatefulWidget {
 class _StatisticDetailViewState extends State<StatisticDetailView> {
   late int displayCount;
   late bool isFavourite;
+  late StatisticSortOrder sortOrder;
+  late List<(Player, num)> sortedValues;
   Timer? timer;
   bool showHighlighting = false;
 
-  bool get hasData => widget.values.any((entry) => entry.$2 != 0);
+  bool get hasData => sortedValues.any((entry) => entry.$2 != 0);
 
   @override
   void initState() {
     super.initState();
-    displayCount = min(widget.statistic.displayCount, widget.values.length);
+    sortOrder = widget.statistic.sortOrder;
+    sortedValues = [...widget.values];
+    StatisticCalculator.sortValues(sortedValues, sortOrder);
+    displayCount = min(widget.statistic.displayCount, sortedValues.length);
     isFavourite = widget.statistic.isFavourite;
   }
 
@@ -64,6 +71,27 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
           onPressed: updateCount,
         ),
         actions: [
+          PullDownMenuButton(
+            icon: Icon(
+              sortOrder == StatisticSortOrder.ascending
+                  ? Icons.arrow_upward
+                  : Icons.arrow_downward,
+            ),
+            items: [
+              PullDownMenuTile(
+                icon: Icons.arrow_upward,
+                label: loc.ascending,
+                enabled: sortOrder != StatisticSortOrder.ascending,
+                onTap: () => updateSortOrder(StatisticSortOrder.ascending),
+              ),
+              PullDownMenuTile(
+                icon: Icons.arrow_downward,
+                label: loc.descending,
+                enabled: sortOrder != StatisticSortOrder.descending,
+                onTap: () => updateSortOrder(StatisticSortOrder.descending),
+              ),
+            ],
+          ),
           HapticIconButton(
             icon: isFavourite
                 ? const Icon(Icons.favorite)
@@ -126,7 +154,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                         width:
                             MediaQuery.sizeOf(context).width *
                             AppSpacing.contentWidthFactor,
-                        values: widget.values,
+                        values: sortedValues,
                         displayCount: displayCount,
                         showAllValues: true,
                         showDisplayCountHighlighting: showHighlighting,
@@ -292,7 +320,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
 
                   FloatingAnimatedButton(
                     icon: Icons.add,
-                    onPressed: displayCount >= widget.values.length || !hasData
+                    onPressed: displayCount >= sortedValues.length || !hasData
                         ? null
                         : () => updateDisplayCount(1),
                   ),
@@ -327,7 +355,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
 
   /// Handles updating the display count and starting the timer
   void updateDisplayCount(int delta) {
-    final newValue = (displayCount + delta).clamp(1, widget.values.length);
+    final newValue = (displayCount + delta).clamp(1, sortedValues.length);
     if (newValue == displayCount) return;
 
     setState(() {
@@ -336,6 +364,17 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
     });
 
     restartDisplayCountTimer();
+  }
+
+  /// Re-sorts the displayed values and persists the new sort order.
+  Future<void> updateSortOrder(StatisticSortOrder newSortOrder) async {
+    setState(() {
+      sortOrder = newSortOrder;
+      StatisticCalculator.sortValues(sortedValues, newSortOrder);
+    });
+
+    final db = context.read<AppDatabase>();
+    await db.statisticDao.updateSortOrder(widget.statistic.id, newSortOrder);
   }
 
   /// Restarts the timer
