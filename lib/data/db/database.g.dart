@@ -450,6 +450,16 @@ class $GroupTableTable extends GroupTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  @override
+  late final GeneratedColumnWithTypeConverter<AppColor, String> color =
+      GeneratedColumn<String>(
+        'color',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('orange'),
+      ).withConverter<AppColor>($GroupTableTable.$convertercolor);
   static const VerificationMeta _descriptionMeta = const VerificationMeta(
     'description',
   );
@@ -462,7 +472,13 @@ class $GroupTableTable extends GroupTable
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, createdAt, name, description];
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    name,
+    color,
+    description,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -528,6 +544,12 @@ class $GroupTableTable extends GroupTable
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      color: $GroupTableTable.$convertercolor.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}color'],
+        )!,
+      ),
       description: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}description'],
@@ -539,17 +561,22 @@ class $GroupTableTable extends GroupTable
   $GroupTableTable createAlias(String alias) {
     return $GroupTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<AppColor, String, String> $convertercolor =
+      const EnumNameConverter<AppColor>(AppColor.values);
 }
 
 class GroupTableData extends DataClass implements Insertable<GroupTableData> {
   final String id;
   final DateTime createdAt;
   final String name;
+  final AppColor color;
   final String description;
   const GroupTableData({
     required this.id,
     required this.createdAt,
     required this.name,
+    required this.color,
     required this.description,
   });
   @override
@@ -558,6 +585,11 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
     map['id'] = Variable<String>(id);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['name'] = Variable<String>(name);
+    {
+      map['color'] = Variable<String>(
+        $GroupTableTable.$convertercolor.toSql(color),
+      );
+    }
     map['description'] = Variable<String>(description);
     return map;
   }
@@ -567,6 +599,7 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
       id: Value(id),
       createdAt: Value(createdAt),
       name: Value(name),
+      color: Value(color),
       description: Value(description),
     );
   }
@@ -580,6 +613,9 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
       id: serializer.fromJson<String>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       name: serializer.fromJson<String>(json['name']),
+      color: $GroupTableTable.$convertercolor.fromJson(
+        serializer.fromJson<String>(json['color']),
+      ),
       description: serializer.fromJson<String>(json['description']),
     );
   }
@@ -590,6 +626,9 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
       'id': serializer.toJson<String>(id),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'name': serializer.toJson<String>(name),
+      'color': serializer.toJson<String>(
+        $GroupTableTable.$convertercolor.toJson(color),
+      ),
       'description': serializer.toJson<String>(description),
     };
   }
@@ -598,11 +637,13 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
     String? id,
     DateTime? createdAt,
     String? name,
+    AppColor? color,
     String? description,
   }) => GroupTableData(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
     name: name ?? this.name,
+    color: color ?? this.color,
     description: description ?? this.description,
   );
   GroupTableData copyWithCompanion(GroupTableCompanion data) {
@@ -610,6 +651,7 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
       id: data.id.present ? data.id.value : this.id,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       name: data.name.present ? data.name.value : this.name,
+      color: data.color.present ? data.color.value : this.color,
       description: data.description.present
           ? data.description.value
           : this.description,
@@ -622,13 +664,14 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
+          ..write('color: $color, ')
           ..write('description: $description')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, createdAt, name, description);
+  int get hashCode => Object.hash(id, createdAt, name, color, description);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -636,6 +679,7 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
           other.id == this.id &&
           other.createdAt == this.createdAt &&
           other.name == this.name &&
+          other.color == this.color &&
           other.description == this.description);
 }
 
@@ -643,12 +687,14 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
   final Value<String> id;
   final Value<DateTime> createdAt;
   final Value<String> name;
+  final Value<AppColor> color;
   final Value<String> description;
   final Value<int> rowid;
   const GroupTableCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.name = const Value.absent(),
+    this.color = const Value.absent(),
     this.description = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -656,6 +702,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
     required String id,
     required DateTime createdAt,
     required String name,
+    this.color = const Value.absent(),
     required String description,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -666,6 +713,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
     Expression<String>? id,
     Expression<DateTime>? createdAt,
     Expression<String>? name,
+    Expression<String>? color,
     Expression<String>? description,
     Expression<int>? rowid,
   }) {
@@ -673,6 +721,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
       if (id != null) 'id': id,
       if (createdAt != null) 'created_at': createdAt,
       if (name != null) 'name': name,
+      if (color != null) 'color': color,
       if (description != null) 'description': description,
       if (rowid != null) 'rowid': rowid,
     });
@@ -682,6 +731,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
     Value<String>? id,
     Value<DateTime>? createdAt,
     Value<String>? name,
+    Value<AppColor>? color,
     Value<String>? description,
     Value<int>? rowid,
   }) {
@@ -689,6 +739,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
+      color: color ?? this.color,
       description: description ?? this.description,
       rowid: rowid ?? this.rowid,
     );
@@ -706,6 +757,11 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (color.present) {
+      map['color'] = Variable<String>(
+        $GroupTableTable.$convertercolor.toSql(color.value),
+      );
+    }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
@@ -721,6 +777,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
+          ..write('color: $color, ')
           ..write('description: $description, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -4944,6 +5001,7 @@ typedef $$GroupTableTableCreateCompanionBuilder = GroupTableCompanion Function({
   required String id,
   required DateTime createdAt,
   required String name,
+  Value<AppColor> color,
   required String description,
   Value<int> rowid,
 });
@@ -4951,6 +5009,7 @@ typedef $$GroupTableTableUpdateCompanionBuilder = GroupTableCompanion Function({
   Value<String> id,
   Value<DateTime> createdAt,
   Value<String> name,
+  Value<AppColor> color,
   Value<String> description,
   Value<int> rowid,
 });
@@ -5045,6 +5104,12 @@ class $$GroupTableTableFilterComposer
     column: $table.name,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnWithTypeConverterFilters<AppColor, AppColor, String> get color =>
+      $composableBuilder(
+        column: $table.color,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<String> get description => $composableBuilder(
     column: $table.description,
@@ -5151,6 +5216,11 @@ class $$GroupTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get description => $composableBuilder(
     column: $table.description,
     builder: (column) => ColumnOrderings(column),
@@ -5174,6 +5244,9 @@ class $$GroupTableTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<AppColor, String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
     column: $table.description,
@@ -5292,12 +5365,14 @@ class $$GroupTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<AppColor> color = const Value.absent(),
                 Value<String> description = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => GroupTableCompanion(
                 id: id,
                 createdAt: createdAt,
                 name: name,
+                color: color,
                 description: description,
                 rowid: rowid,
               ),
@@ -5306,12 +5381,14 @@ class $$GroupTableTableTableManager
                 required String id,
                 required DateTime createdAt,
                 required String name,
+                Value<AppColor> color = const Value.absent(),
                 required String description,
                 Value<int> rowid = const Value.absent(),
               }) => GroupTableCompanion.insert(
                 id: id,
                 createdAt: createdAt,
                 name: name,
+                color: color,
                 description: description,
                 rowid: rowid,
               ),
