@@ -1,7 +1,7 @@
 name: tallee
 description: "Tracking App for Card Games"
 publish_to: 'none'
-version: 0.1.0+728
+version: 0.1.0+732
 
 environment:
   sdk: ^3.13.5
@@ -87,5 +87,6 @@ flutter:
 sentry:
   upload_debug_symbols: true
   upload_source_maps: true
-  project: tallee
+  project: tallee-app
   org: liquid-development
+  url: https://glitchtip.liquid-dev.de/
