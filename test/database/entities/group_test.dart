@@ -331,16 +331,13 @@ void main() {
         expect(group.color, newColor);
       });
 
-      test(
-        'updateGroupColor() returns false for non-existent group',
-        () async {
-          final updated = await database.groupDao.updateGroupColor(
-            groupId: 'non-existent-id',
-            color: AppColor.purple,
-          );
-          expect(updated, isFalse);
-        },
-      );
+      test('updateGroupColor() returns false for non-existent group', () async {
+        final updated = await database.groupDao.updateGroupColor(
+          groupId: 'non-existent-id',
+          color: AppColor.purple,
+        );
+        expect(updated, isFalse);
+      });
 
       test('Multiple updates to the same group work correctly', () async {
         await database.groupDao.addGroup(group: testGroup1);

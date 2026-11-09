@@ -457,8 +457,7 @@ class $GroupTableTable extends GroupTable
         aliasedName,
         false,
         type: DriftSqlType.string,
-        requiredDuringInsert: false,
-        defaultValue: const Constant('orange'),
+        requiredDuringInsert: true,
       ).withConverter<AppColor>($GroupTableTable.$convertercolor);
   static const VerificationMeta _descriptionMeta = const VerificationMeta(
     'description',
@@ -702,12 +701,13 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
     required String id,
     required DateTime createdAt,
     required String name,
-    this.color = const Value.absent(),
+    required AppColor color,
     required String description,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
        name = Value(name),
+       color = Value(color),
        description = Value(description);
   static Insertable<GroupTableData> custom({
     Expression<String>? id,
@@ -5001,7 +5001,7 @@ typedef $$GroupTableTableCreateCompanionBuilder = GroupTableCompanion Function({
   required String id,
   required DateTime createdAt,
   required String name,
-  Value<AppColor> color,
+  required AppColor color,
   required String description,
   Value<int> rowid,
 });
@@ -5381,7 +5381,7 @@ class $$GroupTableTableTableManager
                 required String id,
                 required DateTime createdAt,
                 required String name,
-                Value<AppColor> color = const Value.absent(),
+                required AppColor color,
                 required String description,
                 Value<int> rowid = const Value.absent(),
               }) => GroupTableCompanion.insert(
