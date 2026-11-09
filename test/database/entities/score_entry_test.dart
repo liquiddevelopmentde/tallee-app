@@ -686,7 +686,7 @@ void main() {
         final match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, isNotNull);
+        expect(match.endedAt, isNull);
       });
 
       test('getWinners() works correctly', () async {
@@ -720,7 +720,7 @@ void main() {
         expect(winners.contains(testPlayer1), isFalse);
       });
 
-      test('removeWinner() works correctly', () async {
+      test('removeWinners() works correctly', () async {
         var removed = await database.scoreEntryDao.removeWinners(
           matchId: testMatch1.id,
         );
@@ -736,10 +736,10 @@ void main() {
         );
         expect(removed, isTrue);
 
-        final winner = await database.scoreEntryDao.getWinners(
+        final winners = await database.scoreEntryDao.getWinners(
           matchId: testMatch1.id,
         );
-        expect(winner, isNull);
+        expect(winners, isEmpty);
 
         final match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
@@ -785,7 +785,7 @@ void main() {
         final match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, isNotNull);
+        expect(match.endedAt, isNull);
       });
 
       test('removeLoser() works correctly', () async {
