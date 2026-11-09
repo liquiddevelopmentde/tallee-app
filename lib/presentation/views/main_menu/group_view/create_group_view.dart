@@ -299,7 +299,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       context: context,
       builder: (BuildContext context) => SelectionSheet<AppColor?>(
         title: loc.color,
-        description: loc.select_a_color_description,
+        description: loc.select_a_group_color_description,
         values: const [null, ...AppColor.values],
         selectedValue: selectedColor,
         leadingBuilder: (AppColor? color) => color == null

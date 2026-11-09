@@ -875,6 +875,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Select the display color for your statistic.';
 
   @override
+  String get select_a_group_color_description =>
+      'Select the display color for your group.';
+
+  @override
   String get select_a_scope => 'Select a scope';
 
   @override
