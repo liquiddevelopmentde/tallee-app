@@ -48,6 +48,8 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
   // null -> random color
   AppColor? selectedColor;
 
+  AppColor? randomColor;
+
   bool get hasGroupScope =>
       selectedScopes.contains(StatisticScope.selectedGroups);
 
@@ -65,6 +67,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
 
   @override
   void initState() {
+    randomColor = AppColor.randomColor();
     loadAllData();
     super.initState();
   }
@@ -380,7 +383,17 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
             : ColoredCircle(color: color),
         labelBuilder: (BuildContext context, AppColor? color) =>
             color == null ? loc.random_color : color.toLocalizedString(context),
-        onValueUpdated: (color) => setState(() => selectedColor = color),
+        onValueUpdated: (color) {
+          setState(() {
+            // if selected color is random, exclude previous color from random selection
+            if (color == null) {
+              randomColor = AppColor.randomColor(exclude: selectedColor);
+              selectedColor = null;
+            } else {
+              selectedColor = color;
+            }
+          });
+        },
       ),
     );
   }
@@ -531,7 +544,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     timeframe: selectedTimeframe,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
-    color: selectedColor ?? AppColor.randomColor(),
+    color: selectedColor ?? randomColor,
     selectedGroups: hasGroupScope ? selectedGroups : null,
     selectedGames: hasGameScope ? selectedGames : null,
   );

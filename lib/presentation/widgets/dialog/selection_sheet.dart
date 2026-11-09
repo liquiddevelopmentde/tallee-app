@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/value_constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
@@ -219,6 +222,7 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
 
   /// Handles the general value selection
   Future<void> handleValueSelection(T value) async {
+    unawaited(HapticFeedback.selectionClick());
     if (!widget.isMultiSelection && value == selectedValue) return;
 
     widget.isMultiSelection ? onValuesChanged(value) : onValueChanged(value);
