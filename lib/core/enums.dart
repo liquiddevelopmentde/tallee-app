@@ -110,8 +110,13 @@ enum AppColor {
   purple,
   pink;
 
-  /// Returns a random color from the app colors.
-  static AppColor randomColor() => values[Random().nextInt(values.length)];
+  /// Returns a random color from the app colors, optionally excluding [exclude].
+  static AppColor randomColor({AppColor? exclude}) {
+    final availableColors = exclude == null
+        ? values
+        : values.where((color) => color != exclude).toList();
+    return availableColors[Random().nextInt(availableColors.length)];
+  }
 
   /// Returns a color based on the provided team [index].
   static AppColor teamColor(int index) {
