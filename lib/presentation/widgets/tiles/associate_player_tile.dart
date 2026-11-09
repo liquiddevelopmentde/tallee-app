@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -75,6 +76,7 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
               Flexible(
                 child: GestureDetector(
                   onTap: () async {
+                    Haptics.selectionClick();
                     widget.onTap.call();
                   },
                   child: Container(
