@@ -146,6 +146,12 @@ abstract class AppLocalizations {
   /// **'Tallee'**
   String get app_name;
 
+  /// No description provided for @ascending.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascending'**
+  String get ascending;
+
   /// No description provided for @associate_game.
   ///
   /// In en, this message translates to:
@@ -547,6 +553,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deleted'**
   String get deleted;
+
+  /// No description provided for @descending.
+  ///
+  /// In en, this message translates to:
+  /// **'Descending'**
+  String get descending;
 
   /// No description provided for @description.
   ///

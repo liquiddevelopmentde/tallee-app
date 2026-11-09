@@ -34,6 +34,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_name => 'Tallee';
 
   @override
+  String get ascending => 'Ascending';
+
+  @override
   String get associate_game => 'Associate Game';
 
   @override
@@ -251,6 +254,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleted => 'Deleted';
+
+  @override
+  String get descending => 'Descending';
 
   @override
   String get description => 'Description';
