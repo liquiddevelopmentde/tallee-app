@@ -112,6 +112,7 @@
         "name",
         "createdAt",
         "description",
+        "color",
         "members"
       ]
     },
