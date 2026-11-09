@@ -120,6 +120,7 @@ void main() {
         expect(fetched.displayCount, testStatistic1.displayCount);
         expect(fetched.isFavourite, testStatistic1.isFavourite);
         expect(fetched.position, testStatistic1.position);
+        expect(fetched.sortOrder, testStatistic1.sortOrder);
       });
 
       test('Adding and fetching multiple statistics works correctly', () async {
@@ -150,6 +151,7 @@ void main() {
           expect(stat.displayCount, testStat.displayCount);
           expect(stat.isFavourite, testStat.isFavourite);
           expect(stat.position, testStat.position);
+          expect(stat.sortOrder, testStat.sortOrder);
         }
       });
 
@@ -270,6 +272,35 @@ void main() {
           final updated = await database.statisticDao.updateIsFavourite(
             'non-existent-id',
             true,
+          );
+          expect(updated, isFalse);
+
+          final allStats = await database.statisticDao.getAllStatistics();
+          expect(allStats, isEmpty);
+        },
+      );
+
+      test('updateSortOrder() works correctly', () async {
+        await database.statisticDao.addStatistic(statistic: testStatistic1);
+
+        final updated = await database.statisticDao.updateSortOrder(
+          testStatistic1.id,
+          StatisticSortOrder.ascending,
+        );
+        expect(updated, isTrue);
+
+        final fetched = await database.statisticDao.getStatisticById(
+          statisticId: testStatistic1.id,
+        );
+        expect(fetched!.sortOrder, StatisticSortOrder.ascending);
+      });
+
+      test(
+        'updateSortOrder() does nothing for non-existent statistic',
+        () async {
+          final updated = await database.statisticDao.updateSortOrder(
+            'non-existent-id',
+            StatisticSortOrder.ascending,
           );
           expect(updated, isFalse);
 
