@@ -1,6 +1,5 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
-import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/models/models.dart';
 
 /// Returns the player name count if greater 0 in the format " #2", otherwise an empty string
@@ -19,13 +18,13 @@ InlineSpan buildPlayerNameCountSpan(
   TextStyle? style,
   TextStyle? mainStyle,
   TextStyle? countStyle,
-  bool highlighted = false,
+  bool muted = false,
 }) {
-  final Color? mainColor = highlighted
+  final Color? mainColor = muted
       ? context.talleeColors.textColor.withAlpha(150)
       : mainStyle?.color;
-  final Color? countColor = highlighted
-      ? AppColors.primaryColor.withAlpha(50)
+  final Color? countColor = muted
+      ? context.talleeColors.textColor.withAlpha(100)
       : countStyle?.color;
 
   final resolvedMainStyle =
@@ -51,14 +50,14 @@ Widget _buildPlayerNameCountWidget(
   Player player, {
   TextStyle? mainStyle,
   TextStyle? countStyle,
-  bool highlighted = false,
+  bool muted = false,
 }) => Text.rich(
   buildPlayerNameCountSpan(
     context,
     player,
     mainStyle: mainStyle,
     countStyle: countStyle,
-    highlighted: highlighted,
+    muted: muted,
   ),
 );
 
@@ -72,7 +71,7 @@ Widget buildUnitNameWidget(
   TextStyle? mainStyle,
   TextStyle? countStyle,
   bool pairIconLeft = false,
-  List<bool> highlighted = const [],
+  List<bool> muted = const [],
 }) {
   if (unit is Team) {
     if (isTeamMatch) {
@@ -95,7 +94,7 @@ Widget buildUnitNameWidget(
         mainStyle: mainStyle,
         countStyle: countStyle,
         iconLeft: pairIconLeft,
-        highlighted: highlighted,
+        muted: muted,
       );
     }
   } else if (unit is Player) {
@@ -104,7 +103,7 @@ Widget buildUnitNameWidget(
       unit,
       mainStyle: mainStyle,
       countStyle: countStyle,
-      highlighted: highlighted.isNotEmpty && highlighted[0],
+      muted: muted.isNotEmpty && muted[0],
     );
   }
   return const SizedBox.shrink();
@@ -121,7 +120,7 @@ Widget _buildPairGameNameWidget(
   TextStyle? mainStyle,
   TextStyle? countStyle,
   bool iconLeft = false,
-  List<bool> highlighted = const [],
+  List<bool> muted = const [],
 }) {
   final resolvedMainStyle =
       mainStyle ?? const TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
@@ -136,8 +135,7 @@ Widget _buildPairGameNameWidget(
 
   final bool showIcon = team.isPair;
 
-  bool isHighlighted(int index) =>
-      highlighted.length > index && highlighted[index];
+  bool isMuted(int index) => muted.length > index && muted[index];
 
   return Row(
     mainAxisAlignment: rowAlignment,
@@ -158,11 +156,11 @@ Widget _buildPairGameNameWidget(
                   team.members[0],
                   mainStyle: resolvedMainStyle,
                   countStyle: resolvedCountStyle,
-                  highlighted: isHighlighted(0),
+                  muted: isMuted(0),
                 ),
                 TextSpan(
                   text: ' & ',
-                  style: highlighted.isNotEmpty && highlighted.every((h) => h)
+                  style: muted.isNotEmpty && muted.every((h) => h)
                       ? resolvedMainStyle.copyWith(
                           color: context.talleeColors.textColor.withAlpha(150),
                         )
@@ -173,7 +171,7 @@ Widget _buildPairGameNameWidget(
                   team.members[1],
                   mainStyle: resolvedMainStyle,
                   countStyle: resolvedCountStyle,
-                  highlighted: isHighlighted(1),
+                  muted: isMuted(1),
                 ),
               ],
             ),
@@ -185,7 +183,7 @@ Widget _buildPairGameNameWidget(
           team.members.first,
           mainStyle: resolvedMainStyle,
           countStyle: resolvedCountStyle,
-          highlighted: isHighlighted(0),
+          muted: isMuted(0),
         ),
       ] else ...[
         Text(team.name, style: resolvedMainStyle),

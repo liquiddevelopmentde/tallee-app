@@ -87,7 +87,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         backgroundColor: context.talleeColors.backgroundColor,
         appBar: AppBar(title: Text(viewTitle)),
         body: SafeArea(
