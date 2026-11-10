@@ -414,12 +414,15 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   ///- 1 Player: returning 2, and initializes the nameCount for the existing player to 1
   ///- Other: returning the existing count + 1
   Future<int> _processNameCount({required String name}) async {
-    final nameCount = await calculateNameCount(name: name);
-    if (nameCount == 2) {
+    final highestPlayer = await getPlayerWithHighestNameCount(name: name);
+    final highestCount = highestPlayer?.nameCount ?? -1;
+    final newCount = await calculateNameCount(name: name);
+
+    if (newCount == 2 && highestCount < 2) {
       // If one other player exists with the same name, initialize the nameCount
       await initializeNameCount(name: name);
     }
-    return nameCount;
+    return newCount;
   }
 
   @visibleForTesting

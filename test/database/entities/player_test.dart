@@ -636,6 +636,16 @@ void main() {
           name: testPlayer1.name,
         );
         expect(nameCount, 4);
+
+        // Case 4: Gap in the name counts (1, 3, 4). Should return the
+        // smallest missing name count
+        final player3 = Player(name: testPlayer1.name);
+        await database.playerDao.addPlayer(player: player3);
+        await database.playerDao.deletePlayer(player: player1);
+        nameCount = await database.playerDao.calculateNameCount(
+          name: testPlayer1.name,
+        );
+        expect(nameCount, 2);
       });
 
       test('updateNameCount works correctly', () async {
