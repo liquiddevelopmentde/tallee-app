@@ -359,7 +359,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     final newCount = await calculateNameCount(name: name);
 
     if (newCount == 2 && highestCount < 2) {
-      // If one other player exists with the same name, initialize the nameCount
+      /// One other player with name exists
       await initializeNameCount(name: name);
     }
     return newCount;
