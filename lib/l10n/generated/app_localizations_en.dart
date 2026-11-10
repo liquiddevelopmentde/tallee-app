@@ -16,6 +16,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add_team => 'Add Team';
 
   @override
+  String get add_to_favourites => 'Add to favourites';
+
+  @override
   String get all => 'All';
 
   @override
@@ -825,6 +828,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remaining => 'remaining';
+
+  @override
+  String get remove_from_favourites => 'Remove from favourites';
 
   @override
   String get report_error => 'Report Error';

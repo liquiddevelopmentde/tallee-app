@@ -16,6 +16,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get add_team => 'Team hinzufügen';
 
   @override
+  String get add_to_favourites => 'Zu Favoriten hinzufügen';
+
+  @override
   String get all => 'Alle';
 
   @override
@@ -834,6 +837,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get remaining => 'verbleibend';
+
+  @override
+  String get remove_from_favourites => 'Aus Favoriten entfernen';
 
   @override
   String get report_error => 'Fehler melden';

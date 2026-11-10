@@ -110,6 +110,12 @@ abstract class AppLocalizations {
   /// **'Add Team'**
   String get add_team;
 
+  /// No description provided for @add_to_favourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favourites'**
+  String get add_to_favourites;
+
   /// No description provided for @all.
   ///
   /// In en, this message translates to:
@@ -1543,6 +1549,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'remaining'**
   String get remaining;
+
+  /// No description provided for @remove_from_favourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favourites'**
+  String get remove_from_favourites;
 
   /// No description provided for @report_error.
   ///
