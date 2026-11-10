@@ -39,7 +39,7 @@ class PairTile extends StatelessWidget {
             context,
             pair,
             pairIconLeft: pairIconLeft,
-            highlighted: List.generate(
+            muted: List.generate(
               pair.members.length,
               (index) => pair.members[index].deleted,
             ),
