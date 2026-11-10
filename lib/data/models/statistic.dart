@@ -20,7 +20,7 @@ class Statistic {
   final int displayCount;
   final bool isFavourite;
   final int position;
-  final SortDirection sortOrder;
+  final SortDirection sortDirection;
 
   Statistic({
     required this.type,
@@ -33,25 +33,25 @@ class Statistic {
     this.displayCount = 5,
     this.isFavourite = false,
     this.position = 0,
-    SortDirection? sortOrder,
+    SortDirection? sortDirection,
     String? id,
     DateTime? createdAt,
     AppColor? color,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
        color = color ?? AppColor.randomColor(),
-       sortOrder = sortOrder ?? defaultSortOrderFor(type);
+       sortDirection = sortDirection ?? defaultsortDirectionFor(type);
 
   /// The sort order a new statistic of [type] starts with.
   /// "Worst score" shows ascending, everything else descending.
-  static SortDirection defaultSortOrderFor(StatisticType type) =>
+  static SortDirection defaultsortDirectionFor(StatisticType type) =>
       type == StatisticType.worstScore
       ? SortDirection.ascending
       : SortDirection.descending;
 
   @override
   String toString() =>
-      'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, startDate: $startDate, endDate: $endDate, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames, displayCount: $displayCount, isFavourite: $isFavourite, sortOrder: $sortOrder)';
+      'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, startDate: $startDate, endDate: $endDate, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames, displayCount: $displayCount, isFavourite: $isFavourite, sortDirection: $sortDirection)';
 
   Statistic copyWith({
     String? id,
@@ -66,7 +66,7 @@ class Statistic {
     int? displayCount,
     bool? isFavourite,
     int? position,
-    SortDirection? sortOrder,
+    SortDirection? sortDirection,
   }) => Statistic(
     id: id ?? this.id,
     type: type ?? this.type,
@@ -80,7 +80,7 @@ class Statistic {
     displayCount: displayCount ?? this.displayCount,
     isFavourite: isFavourite ?? this.isFavourite,
     position: position ?? this.position,
-    sortOrder: sortOrder ?? this.sortOrder,
+    sortDirection: sortDirection ?? this.sortDirection,
   );
 
   Map<String, dynamic> toJson() => {
@@ -97,7 +97,7 @@ class Statistic {
     'displayCount': displayCount,
     'isFavourite': isFavourite,
     'position': position,
-    'sortOrder': sortOrder.name,
+    'sortDirection': sortDirection.name,
   };
 
   factory Statistic.fromJson(Map<String, dynamic> json) {
@@ -133,9 +133,11 @@ class Statistic {
       displayCount: json['displayCount'],
       isFavourite: json['isFavourite'],
       position: json['position'],
-      sortOrder: SortDirection.values.firstWhere(
-        (e) => e.name == json['sortOrder'] || e.toString() == json['sortOrder'],
-        orElse: () => Statistic.defaultSortOrderFor(type),
+      sortDirection: SortDirection.values.firstWhere(
+        (e) =>
+            e.name == json['sortDirection'] ||
+            e.toString() == json['sortDirection'],
+        orElse: () => Statistic.defaultsortDirectionFor(type),
       ),
     );
   }

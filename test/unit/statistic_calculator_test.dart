@@ -193,11 +193,11 @@ void main() {
   });
 
   group('StatisticCalculator sort order', () {
-    List<num> valuesFor(SortDirection sortOrder) {
+    List<num> valuesFor(SortDirection sortDirection) {
       final statistic = Statistic(
         type: StatisticType.totalScore,
         scopes: [StatisticScope.allPlayers],
-        sortOrder: sortOrder,
+        sortDirection: sortDirection,
       );
 
       return StatisticCalculator.computeStatisticValues(
@@ -221,14 +221,14 @@ void main() {
         scopes: [StatisticScope.allPlayers],
       );
 
-      expect(statistic.sortOrder, SortDirection.ascending);
+      expect(statistic.sortDirection, SortDirection.ascending);
     });
 
     test('worstScore can be sorted descending', () {
       final statistic = Statistic(
         type: StatisticType.worstScore,
         scopes: [StatisticScope.allPlayers],
-        sortOrder: SortDirection.descending,
+        sortDirection: SortDirection.descending,
       );
 
       final values = StatisticCalculator.computeStatisticValues(

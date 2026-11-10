@@ -516,9 +516,11 @@ class LocalShareService {
         displayCount: map['displayCount'],
         isFavourite: map['isFavourite'],
         position: map['position'],
-        sortOrder: SortDirection.values.firstWhere(
-          (e) => e.name == map['sortOrder'] || e.toString() == map['sortOrder'],
-          orElse: () => Statistic.defaultSortOrderFor(type),
+        sortDirection: SortDirection.values.firstWhere(
+          (e) =>
+              e.name == map['sortDirection'] ||
+              e.toString() == map['sortDirection'],
+          orElse: () => Statistic.defaultsortDirectionFor(type),
         ),
       );
     }).toList();

@@ -35,7 +35,7 @@ class StatisticDetailView extends StatefulWidget {
 class _StatisticDetailViewState extends State<StatisticDetailView> {
   late int displayCount;
   late bool isFavourite;
-  late SortDirection sortOrder;
+  late SortDirection sortDirection;
   late List<(Player, num)> sortedValues;
   Timer? timer;
   bool showHighlighting = false;
@@ -45,9 +45,9 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   @override
   void initState() {
     super.initState();
-    sortOrder = widget.statistic.sortOrder;
+    sortDirection = widget.statistic.sortDirection;
     sortedValues = [...widget.values];
-    StatisticCalculator.sortValues(sortedValues, sortOrder);
+    StatisticCalculator.sortValues(sortedValues, sortDirection);
     displayCount = min(widget.statistic.displayCount, sortedValues.length);
     isFavourite = widget.statistic.isFavourite;
   }
@@ -80,14 +80,14 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
                   PullDownMenuTile(
                     icon: Icons.arrow_upward,
                     label: loc.ascending,
-                    enabled: sortOrder != SortDirection.ascending,
-                    onTap: () => updateSortOrder(SortDirection.ascending),
+                    enabled: sortDirection != SortDirection.ascending,
+                    onTap: () => updatesortDirection(SortDirection.ascending),
                   ),
                   PullDownMenuTile(
                     icon: Icons.arrow_downward,
                     label: loc.descending,
-                    enabled: sortOrder != SortDirection.descending,
-                    onTap: () => updateSortOrder(SortDirection.descending),
+                    enabled: sortDirection != SortDirection.descending,
+                    onTap: () => updatesortDirection(SortDirection.descending),
                   ),
                 ],
               ),
@@ -346,14 +346,17 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   }
 
   /// Re-sorts the displayed values and persists the new sort order.
-  Future<void> updateSortOrder(SortDirection newSortOrder) async {
+  Future<void> updatesortDirection(SortDirection newsortDirection) async {
     setState(() {
-      sortOrder = newSortOrder;
-      StatisticCalculator.sortValues(sortedValues, newSortOrder);
+      sortDirection = newsortDirection;
+      StatisticCalculator.sortValues(sortedValues, newsortDirection);
     });
 
     final db = context.read<AppDatabase>();
-    await db.statisticDao.updateSortOrder(widget.statistic.id, newSortOrder);
+    await db.statisticDao.updatesortDirection(
+      widget.statistic.id,
+      newsortDirection,
+    );
   }
 
   /// Restarts the timer

@@ -21,17 +21,20 @@ class StatisticCalculator {
       matches: filteredMatches,
       players: filteredPlayers,
     );
-    sortValues(values, statistic.sortOrder);
+    sortValues(values, statistic.sortDirection);
     return values;
   }
 
-  /// Sorts [entries] in place by their value according to [sortOrder].
+  /// Sorts [entries] in place by their value according to [sortDirection].
   ///
   /// Ties are broken by player name and id so the order stays stable between
   /// rebuilds.
-  static void sortValues(List<(Player, num)> entries, SortDirection sortOrder) {
+  static void sortValues(
+    List<(Player, num)> entries,
+    SortDirection sortDirection,
+  ) {
     entries.sort((a, b) {
-      final byValue = sortOrder == SortDirection.ascending
+      final byValue = sortDirection == SortDirection.ascending
           ? a.$2.compareTo(b.$2)
           : b.$2.compareTo(a.$2);
       if (byValue != 0) return byValue;

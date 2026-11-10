@@ -120,7 +120,7 @@ void main() {
         expect(fetched.displayCount, testStatistic1.displayCount);
         expect(fetched.isFavourite, testStatistic1.isFavourite);
         expect(fetched.position, testStatistic1.position);
-        expect(fetched.sortOrder, testStatistic1.sortOrder);
+        expect(fetched.sortDirection, testStatistic1.sortDirection);
       });
 
       test('Adding and fetching multiple statistics works correctly', () async {
@@ -151,7 +151,7 @@ void main() {
           expect(stat.displayCount, testStat.displayCount);
           expect(stat.isFavourite, testStat.isFavourite);
           expect(stat.position, testStat.position);
-          expect(stat.sortOrder, testStat.sortOrder);
+          expect(stat.sortDirection, testStat.sortDirection);
         }
       });
 
@@ -280,10 +280,10 @@ void main() {
         },
       );
 
-      test('updateSortOrder() works correctly', () async {
+      test('updatesortDirection() works correctly', () async {
         await database.statisticDao.addStatistic(statistic: testStatistic1);
 
-        final updated = await database.statisticDao.updateSortOrder(
+        final updated = await database.statisticDao.updatesortDirection(
           testStatistic1.id,
           SortDirection.ascending,
         );
@@ -292,13 +292,13 @@ void main() {
         final fetched = await database.statisticDao.getStatisticById(
           statisticId: testStatistic1.id,
         );
-        expect(fetched!.sortOrder, SortDirection.ascending);
+        expect(fetched!.sortDirection, SortDirection.ascending);
       });
 
       test(
-        'updateSortOrder() does nothing for non-existent statistic',
+        'updatesortDirection() does nothing for non-existent statistic',
         () async {
-          final updated = await database.statisticDao.updateSortOrder(
+          final updated = await database.statisticDao.updatesortDirection(
             'non-existent-id',
             SortDirection.ascending,
           );

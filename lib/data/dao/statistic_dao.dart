@@ -25,7 +25,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         displayCount: Value(statistic.displayCount),
         isFavourite: Value(statistic.isFavourite),
         position: Value(statistic.position),
-        sortOrder: Value(statistic.sortOrder),
+        sortDirection: Value(statistic.sortDirection),
       ),
       mode: InsertMode.insertOrReplace,
     );
@@ -72,7 +72,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
                 displayCount: Value(s.displayCount),
                 isFavourite: Value(s.isFavourite),
                 position: Value(s.position),
-                sortOrder: Value(s.sortOrder),
+                sortDirection: Value(s.sortDirection),
               ),
             )
             .toList(),
@@ -128,7 +128,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         color: row.color,
         isFavourite: row.isFavourite,
         position: row.position,
-        sortOrder: row.sortOrder,
+        sortDirection: row.sortDirection,
       );
     }
     return null;
@@ -158,7 +158,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
           color: row.color,
           isFavourite: row.isFavourite,
           position: row.position,
-          sortOrder: row.sortOrder,
+          sortDirection: row.sortDirection,
         );
       }),
     );
@@ -184,14 +184,16 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
     return rowsUpdated > 0;
   }
 
-  Future<bool> updateSortOrder(
+  Future<bool> updatesortDirection(
     String statisticId,
-    SortDirection sortOrder,
+    SortDirection sortDirection,
   ) async {
     final rowsUpdated =
-        await (update(statisticTable)
-              ..where((tbl) => tbl.id.equals(statisticId)))
-            .write(StatisticTableCompanion(sortOrder: Value(sortOrder)));
+        await (update(
+          statisticTable,
+        )..where((tbl) => tbl.id.equals(statisticId))).write(
+          StatisticTableCompanion(sortDirection: Value(sortDirection)),
+        );
 
     return rowsUpdated > 0;
   }

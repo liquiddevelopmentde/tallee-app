@@ -352,7 +352,7 @@
           "position": {
             "type": "number"
           },
-          "sortOrder": {
+          "sortDirection": {
             "type": "string",
             "enum": [
               "descending",
@@ -371,7 +371,7 @@
           "displayCount",
           "isFavourite",
           "position",
-          "sortOrder"
+          "sortDirection"
         ]
       }
     }
