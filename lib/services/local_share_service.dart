@@ -481,7 +481,7 @@ class LocalShareService {
           .toList();
 
       final type = StatisticType.values.firstWhere(
-        (e) => e.name == map['type'] || e.toString() == map['type'],
+        (e) => e.name == map['type'],
         orElse: () => StatisticType.totalWins,
       );
 
@@ -498,17 +498,17 @@ class LocalShareService {
         scopes: (map['scopes'] as List<dynamic>? ?? [])
             .map(
               (scope) => StatisticScope.values.firstWhere(
-                (e) => e.name == scope || e.toString() == scope,
+                (e) => e.name == scope,
                 orElse: () => StatisticScope.allPlayers,
               ),
             )
             .toList(),
         timeframe: Timeframe.values.firstWhere(
-          (e) => e.name == map['timeframe'] || e.toString() == map['timeframe'],
+          (e) => e.name == map['timeframe'],
           orElse: () => Timeframe.allTime,
         ),
         color: AppColor.values.firstWhere(
-          (e) => e.name == map['color'] || e.toString() == map['color'],
+          (e) => e.name == map['color'],
           orElse: () => AppColor.orange,
         ),
         selectedGroups: selectedGroups.isEmpty ? null : selectedGroups,
@@ -517,9 +517,7 @@ class LocalShareService {
         isFavourite: map['isFavourite'],
         position: map['position'],
         sortDirection: SortDirection.values.firstWhere(
-          (e) =>
-              e.name == map['sortDirection'] ||
-              e.toString() == map['sortDirection'],
+          (e) => e.name == map['sortDirection'],
           orElse: () => Statistic.defaultsortDirectionFor(type),
         ),
       );
