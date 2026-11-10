@@ -105,7 +105,6 @@ class Group {
     'name': name,
     'description': description,
     'color': color.name,
-
     'members': members.map((member) => member.toJson()).toList(),
   };
 
