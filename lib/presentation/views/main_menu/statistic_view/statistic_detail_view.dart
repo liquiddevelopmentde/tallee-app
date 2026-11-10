@@ -35,7 +35,7 @@ class StatisticDetailView extends StatefulWidget {
 class _StatisticDetailViewState extends State<StatisticDetailView> {
   late int displayCount;
   late bool isFavourite;
-  late StatisticSortOrder sortOrder;
+  late SortDirection sortOrder;
   late List<(Player, num)> sortedValues;
   Timer? timer;
   bool showHighlighting = false;
@@ -72,61 +72,39 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
         ),
         actions: [
           PullDownMenuButton(
-            icon: Icon(
-              sortOrder == StatisticSortOrder.ascending
-                  ? Icons.arrow_upward
-                  : Icons.arrow_downward,
-            ),
             items: [
               PullDownMenuTile(
-                icon: Icons.arrow_upward,
-                label: loc.ascending,
-                enabled: sortOrder != StatisticSortOrder.ascending,
-                onTap: () => updateSortOrder(StatisticSortOrder.ascending),
+                icon: Icons.swap_vert,
+                label: loc.sort,
+                subItems: [
+                  PullDownMenuTile(
+                    icon: Icons.arrow_upward,
+                    label: loc.ascending,
+                    enabled: sortOrder != SortDirection.ascending,
+                    onTap: () => updateSortOrder(SortDirection.ascending),
+                  ),
+                  PullDownMenuTile(
+                    icon: Icons.arrow_downward,
+                    label: loc.descending,
+                    enabled: sortOrder != SortDirection.descending,
+                    onTap: () => updateSortOrder(SortDirection.descending),
+                  ),
+                ],
               ),
               PullDownMenuTile(
-                icon: Icons.arrow_downward,
-                label: loc.descending,
-                enabled: sortOrder != StatisticSortOrder.descending,
-                onTap: () => updateSortOrder(StatisticSortOrder.descending),
+                icon: isFavourite ? Icons.favorite : Icons.favorite_border,
+                label: isFavourite
+                    ? loc.remove_from_favourites
+                    : loc.add_to_favourites,
+                onTap: () => toggleIsFavourite(context),
+              ),
+              PullDownMenuTile(
+                icon: Icons.delete,
+                label: loc.delete,
+                isDestructive: true,
+                onTap: () => confirmDeleteStatistic(context),
               ),
             ],
-          ),
-          HapticIconButton(
-            icon: isFavourite
-                ? const Icon(Icons.favorite)
-                : const Icon(Icons.favorite_border),
-            onPressed: () => toggleIsFavourite(context),
-          ),
-          HapticIconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () async {
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (context) => CustomAlertDialog(
-                  title: '${loc.delete_statistic}?',
-                  content: Text(
-                    loc.this_cannot_be_undone,
-                    overflow: TextOverflow.visible,
-                  ),
-                  actions: [
-                    CustomDialogAction(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      text: loc.delete,
-                      accent: ButtonAccent.destructive,
-                    ),
-                    CustomDialogAction(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      buttonType: ButtonType.secondary,
-                      text: loc.cancel,
-                    ),
-                  ],
-                ),
-              );
-              if (confirmed == true && context.mounted) {
-                await deleteStatistic();
-              }
-            },
           ),
         ],
       ),
@@ -368,7 +346,7 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
   }
 
   /// Re-sorts the displayed values and persists the new sort order.
-  Future<void> updateSortOrder(StatisticSortOrder newSortOrder) async {
+  Future<void> updateSortOrder(SortDirection newSortOrder) async {
     setState(() {
       sortOrder = newSortOrder;
       StatisticCalculator.sortValues(sortedValues, newSortOrder);
@@ -416,6 +394,35 @@ class _StatisticDetailViewState extends State<StatisticDetailView> {
     setState(() {
       isFavourite = updatedIsFavourite;
     });
+  }
+
+  Future<void> confirmDeleteStatistic(BuildContext context) async {
+    final loc = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => CustomAlertDialog(
+        title: '${loc.delete_statistic}?',
+        content: Text(
+          loc.this_cannot_be_undone,
+          overflow: TextOverflow.visible,
+        ),
+        actions: [
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(true),
+            text: loc.delete,
+            accent: ButtonAccent.destructive,
+          ),
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(false),
+            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && mounted) {
+      await deleteStatistic();
+    }
   }
 
   Future<void> deleteStatistic() async {

@@ -8,23 +8,35 @@ class PullDownMenuTile extends StatefulWidget {
   ///
   /// - [icon]: Optional icon shown at the trailing edge of the row.
   /// - [label]: The text describing the action.
-  /// - [onTap]: Called after the menu closes when the tile is tapped.
+  /// - [onTap]: Called after the menu closes when the tile is tapped. Required
+  ///   unless [subItems] is set.
   /// - [enabled]: Whether the tile can be tapped.
   /// - [isDestructive]: Whether the tile represents a destructive action (rendered in red).
+  /// - [subItems]: Opens a nested menu with these tiles at the position of the
+  ///   enclosing menu instead of calling [onTap].
   const PullDownMenuTile({
     super.key,
     required this.icon,
     required this.label,
-    required this.onTap,
+    this.onTap,
     this.enabled = true,
     this.isDestructive = false,
-  });
+    this.subItems,
+  }) : assert(
+         onTap != null || subItems != null,
+         'Either onTap or subItems must be provided',
+       ),
+       assert(
+         subItems == null || subItems.length > 0,
+         'subItems must not be empty',
+       );
 
   final IconData? icon;
   final String label;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final bool enabled;
   final bool isDestructive;
+  final List<PullDownMenuTile>? subItems;
 
   @override
   State<PullDownMenuTile> createState() => _PullDownMenuTileState();
@@ -32,6 +44,8 @@ class PullDownMenuTile extends StatefulWidget {
 
 class _PullDownMenuTileState extends State<PullDownMenuTile> {
   bool isPressed = false;
+
+  bool get hasSubmenu => widget.subItems != null;
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +66,12 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
       onTap: widget.enabled
           ? () {
               Haptics.selectionClick();
-              Navigator.of(context).pop();
-              widget.onTap();
+              if (hasSubmenu) {
+                openSubmenu();
+              } else {
+                Navigator.of(context).pop();
+                widget.onTap?.call();
+              }
             }
           : null,
       child: AnimatedContainer(
@@ -78,9 +96,20 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
             ),
             if (widget.icon case final icon?)
               Icon(icon, size: 20, color: contentColor),
+            if (hasSubmenu)
+              Icon(Icons.chevron_right, size: 18, color: contentColor),
           ],
         ),
       ),
     );
+  }
+
+  void openSubmenu() {
+    final scope = PullDownMenuScope.maybeOf(context);
+    assert(
+      scope != null,
+      'PullDownMenuTile with subItems must be used inside a PullDownMenu',
+    );
+    scope?.openSubmenu(widget.subItems!);
   }
 }
