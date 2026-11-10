@@ -8,8 +8,11 @@ import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
+import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
 import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
+import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
 
 class CreateGroupView extends StatefulWidget {
   const CreateGroupView({super.key, this.groupToEdit, this.onMembersChanged});
@@ -41,13 +44,19 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   /// List of initially selected players (when editing a group)
   List<Player> initialSelectedPlayers = [];
 
+  AppColor? selectedColor = AppColor.orange;
+
+  AppColor? lastSelectedColor;
+
   @override
   void initState() {
     super.initState();
     db = context.read<AppDatabase>();
+
     if (widget.groupToEdit != null) {
       groupNameController.text = widget.groupToEdit!.name;
       groupDescriptionController.text = widget.groupToEdit!.description;
+      selectedColor = widget.groupToEdit!.color;
       setState(() {
         initialSelectedPlayers = widget.groupToEdit!.members;
         selectedPlayers = widget.groupToEdit!.members;
@@ -92,6 +101,27 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 controller: groupNameController,
                 hintText: loc.group_name,
                 maxLength: MAX_GROUP_NAME_LENGTH,
+              ),
+
+              // Color selection
+              ChooseTile(
+                title: loc.color,
+                trailing: Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: Row(
+                    spacing: 10,
+                    children: [
+                      if (selectedColor == null) ...[
+                        const ColoredCircle(isRandomColor: true),
+                        Text(loc.random_color),
+                      ] else ...[
+                        ColoredCircle(color: selectedColor),
+                        Text(selectedColor!.toLocalizedString(context)),
+                      ],
+                    ],
+                  ),
+                ),
+                onPressed: () => showColorSheet(loc),
               ),
 
               // Group description
@@ -170,14 +200,16 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
   /// Handles creating a new group and returns whether the operation was successful.
   Future<bool> createGroup() async {
-    final groupName = groupNameController.text.trim();
-    final groupDescription = groupDescriptionController.text.trim();
+    final String groupName = groupNameController.text.trim();
+    final String groupDescription = groupDescriptionController.text.trim();
+    final AppColor? groupColor = selectedColor;
 
     final success = await db.groupDao.addGroup(
       group: Group(
         name: groupName,
         description: groupDescription,
         members: selectedPlayers,
+        color: groupColor ?? AppColor.randomColor(exclude: [lastSelectedColor]),
       ),
     );
     return success;
@@ -188,6 +220,10 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   Future<(bool, Group?)> editGroup() async {
     final groupName = groupNameController.text.trim();
     final groupDescription = groupDescriptionController.text.trim();
+    final AppColor? groupColor = selectedColor;
+    final AppColor randomColor = AppColor.randomColor(
+      exclude: [lastSelectedColor, widget.groupToEdit!.color],
+    );
 
     Group? updatedGroup = Group(
       id: widget.groupToEdit!.id,
@@ -195,6 +231,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       description: groupDescription,
       members: selectedPlayers,
       createdAt: widget.groupToEdit!.createdAt,
+      color: groupColor ?? randomColor,
     );
 
     bool success = true;
@@ -210,6 +247,13 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       success &= await db.groupDao.updateGroupDescription(
         groupId: widget.groupToEdit!.id,
         description: groupDescription,
+      );
+    }
+
+    if (widget.groupToEdit!.color != groupColor) {
+      success &= await db.groupDao.updateGroupColor(
+        groupId: widget.groupToEdit!.id,
+        color: groupColor ?? randomColor,
       );
     }
 
@@ -248,5 +292,29 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     for (final match in relationshipsToDelete) {
       await db.matchDao.removeMatchGroup(matchId: match.id);
     }
+  }
+
+  void showColorSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext context) => SelectionSheet<AppColor?>(
+        title: loc.color,
+        description: loc.select_a_group_color_description,
+        values: const [null, ...AppColor.values],
+        selectedValue: selectedColor,
+        leadingBuilder: (AppColor? color) => color == null
+            ? const ColoredCircle(isRandomColor: true)
+            : ColoredCircle(color: color),
+        labelBuilder: (BuildContext context, AppColor? color) =>
+            color == null ? loc.random_color : color.toLocalizedString(context),
+        onValueUpdated: (AppColor? color) {
+          if (color == selectedColor) return;
+          setState(() {
+            lastSelectedColor = selectedColor;
+            selectedColor = color;
+          });
+        },
+      ),
+    );
   }
 }

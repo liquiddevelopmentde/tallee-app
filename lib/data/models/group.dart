@@ -1,5 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
+import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/player.dart';
 import 'package:uuid/uuid.dart';
 
@@ -8,11 +9,13 @@ class Group {
   final DateTime createdAt;
   final String name;
   final List<Player> members;
+  final AppColor color;
   final String description;
 
   Group({
     required this.name,
     required this.members,
+    this.color = AppColor.orange,
     String? id,
     DateTime? createdAt,
     String? description,
@@ -22,12 +25,13 @@ class Group {
 
   @override
   String toString() =>
-      'Group{id: $id, name: $name, description: $description, members: $members}';
+      'Group{id: $id, name: $name, description: $description, color: $color, members: $members}';
 
   Group copyWith({
     String? id,
     String? name,
     String? description,
+    AppColor? color,
     DateTime? createdAt,
     List<Player>? members,
   }) => Group(
@@ -35,6 +39,7 @@ class Group {
     name: name ?? this.name,
     description: description ?? this.description,
     createdAt: createdAt ?? this.createdAt,
+    color: color ?? this.color,
     members: members ?? this.members,
   );
 
@@ -47,6 +52,7 @@ class Group {
           name == other.name &&
           description == other.description &&
           createdAt == other.createdAt &&
+          color == other.color &&
           const DeepCollectionEquality().equals(members, other.members);
 
   @override
@@ -55,6 +61,7 @@ class Group {
     name,
     description,
     createdAt,
+    color,
     const DeepCollectionEquality().hash(members),
   );
 
@@ -65,29 +72,15 @@ class Group {
       createdAt = DateTime.parse(json['createdAt']),
       name = json['name'],
       description = json['description'] ?? '',
+      color = AppColor.values.firstWhere(
+        (e) => e.name == json['color'],
+        orElse: () => AppColor.orange,
+      ),
       members =
           (json['members'] as List<dynamic>?)
               ?.map((e) => Player.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [];
-
-  /// Converts the Group instance to a JSON object with full nested objects.
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'createdAt': createdAt.toIso8601String(),
-    'name': name,
-    'description': description,
-    'members': members.map((member) => member.toJson()).toList(),
-  };
-
-  /// Converts the Group instance to a JSON object using only IDs for members.
-  Map<String, dynamic> toNormalizedJson() => {
-    'id': id,
-    'createdAt': createdAt.toIso8601String(),
-    'name': name,
-    'description': description,
-    'memberIds': members.map((member) => member.id).toList(),
-  };
 
   /// Creates a Group instance from a normalized JSON object and a list of members.
   factory Group.fromNormalizedJson(
@@ -97,7 +90,31 @@ class Group {
     id: json['id'],
     createdAt: DateTime.parse(json['createdAt']),
     name: json['name'],
+    color: AppColor.values.firstWhere(
+      (e) => e.name == json['color'],
+      orElse: () => AppColor.orange,
+    ),
     description: json['description'] ?? '',
     members: members,
   );
+
+  /// Converts the Group instance to a JSON object with full nested objects.
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'name': name,
+    'description': description,
+    'color': color.name,
+    'members': members.map((member) => member.toJson()).toList(),
+  };
+
+  /// Converts the Group instance to a JSON object using only IDs for members.
+  Map<String, dynamic> toNormalizedJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'name': name,
+    'description': description,
+    'color': color.name,
+    'memberIds': members.map((member) => member.id).toList(),
+  };
 }
