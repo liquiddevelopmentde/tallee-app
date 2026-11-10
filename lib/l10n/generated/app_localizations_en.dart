@@ -1016,6 +1016,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get skip => 'Skip';
 
   @override
+  String get sort => 'Sort';
+
+  @override
   String get start_onboarding => 'Start Onboarding';
 
   @override

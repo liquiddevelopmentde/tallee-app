@@ -1027,6 +1027,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get skip => 'Überspringen';
 
   @override
+  String get sort => 'Sortieren';
+
+  @override
   String get start_onboarding => 'Onboarding starten';
 
   @override

@@ -1880,6 +1880,12 @@ abstract class AppLocalizations {
   /// **'Skip'**
   String get skip;
 
+  /// No description provided for @sort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sort;
+
   /// No description provided for @start_onboarding.
   ///
   /// In en, this message translates to:
