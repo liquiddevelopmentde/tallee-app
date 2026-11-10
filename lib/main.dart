@@ -99,6 +99,8 @@ void main() async {
               },
             );
           });
+          // Post-frame callbacks only run with a frame; an idle app schedules none.
+          WidgetsBinding.instance.ensureVisualUpdate();
         }
         return event;
       };
