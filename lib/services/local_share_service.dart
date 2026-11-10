@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -5,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -85,6 +87,16 @@ class LocalShareService {
     } catch (e, stack) {
       print('[exportData] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return ExportResult.unknownException;
     }
   }
@@ -184,10 +196,20 @@ class LocalShareService {
       print('[validateJson] $e');
       print(stack);
       return (ImportResult.formatException, null);
-    } on Exception catch (e, stack) {
+    } catch (e, stack) {
       print('[validateJson] Exception');
       print('[validateJson] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return (ImportResult.unknownException, null);
     }
   }
@@ -205,10 +227,20 @@ class LocalShareService {
     try {
       await importDataToDatabase(db, decoded);
       return ImportResult.success;
-    } on Exception catch (e, stack) {
+    } catch (e, stack) {
       print('[commitImport] Failed to write data');
       print('[commitImport] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return ImportResult.unknownException;
     }
   }
