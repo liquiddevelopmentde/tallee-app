@@ -38,9 +38,6 @@ class _MatchResultViewState extends State<MatchResultView> {
   late final List<Player> allPlayers;
   late final List<Team> allTeams;
 
-  /// Flag to indicate if the save button should be enabled
-  late bool canSave;
-
   /// Currently selected player(s)/team(s) (winner / loser)
   Player? selectedPlayer;
   Team? selectedTeam;
@@ -58,6 +55,22 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool get isTeamMatch => widget.match.isTeamMatch;
 
+  bool get canSave {
+    if (ruleset.isPlacement || ruleset.isLives) return true;
+    if (selectedPlayer != null || selectedTeam != null) return true;
+    if (selectedPlayers.isNotEmpty || selectedTeams.isNotEmpty) return true;
+    return areScoresValid;
+  }
+
+  bool get areScoresValid {
+    final List<dynamic> units = useTeamLogic ? allTeams : allPlayers;
+    final isEveryUnitInScores = units.every(
+      (unit) => scores.containsKey(unit) && scores[unit] != null,
+    );
+    final hasScores = scores.isNotEmpty;
+    return hasScores && isEveryUnitInScores;
+  }
+
   /// Whether the current input differs from the scores stored in the [match].
   bool get hasChangedResult {
     switch (ruleset) {
@@ -73,8 +86,6 @@ class _MatchResultViewState extends State<MatchResultView> {
   @override
   void initState() {
     db = context.read<AppDatabase>();
-    canSave = ruleset.isPlacement || ruleset.isLives;
-
     initData();
     super.initState();
   }
@@ -112,12 +123,16 @@ class _MatchResultViewState extends State<MatchResultView> {
                         ? LiveEditView.lives(
                             match: widget.match,
                             initialScores: scores,
-                            onScoresChanged: onScoresChanged,
+                            onScoresChanged: (newScores) => setState(
+                              () => scores = Map<dynamic, int?>.from(newScores),
+                            ),
                           )
                         : LiveEditView.score(
                             match: widget.match,
                             initialScores: scores,
-                            onScoresChanged: onScoresChanged,
+                            onScoresChanged: (newScores) => setState(
+                              () => scores = Map<dynamic, int?>.from(newScores),
+                            ),
                           )
                   : Container(
                       margin: const EdgeInsets.symmetric(
@@ -153,32 +168,20 @@ class _MatchResultViewState extends State<MatchResultView> {
                               SelectWinnerWidget(
                                 match: widget.match,
                                 onPlayersSelected: (List<Player> players) {
-                                  selectedPlayers = players;
-                                  setState(() {
-                                    canSave = players.isNotEmpty;
-                                  });
+                                  setState(() => selectedPlayers = players);
                                 },
                                 onTeamsSelected: (List<Team> teams) {
-                                  selectedTeams = teams;
-                                  setState(() {
-                                    canSave = teams.isNotEmpty;
-                                  });
+                                  setState(() => selectedTeams = teams);
                                 },
                               )
                             else
                               SelectLooserWidget(
                                 match: widget.match,
                                 onPlayerSelected: (Player? player) {
-                                  selectedPlayer = player;
-                                  setState(() {
-                                    canSave = player != null;
-                                  });
+                                  setState(() => selectedPlayer = player);
                                 },
                                 onTeamSelected: (Team? team) {
-                                  selectedTeam = team;
-                                  setState(() {
-                                    canSave = team != null;
-                                  });
+                                  setState(() => selectedTeam = team);
                                 },
                               ),
 
@@ -309,65 +312,65 @@ class _MatchResultViewState extends State<MatchResultView> {
     return scores[unit];
   }
 
-  /// Callback function to handle score changes from the LiveEditView / ScoreEnterList
-  void onScoresChanged(Map<dynamic, int?> newScores) {
-    // Update the map
-    scores = Map<dynamic, int?>.from(newScores);
-
-    // update canSave state
-    final List<dynamic> units = useTeamLogic ? allTeams : allPlayers;
-    final isEveryUnitInScores = units.every(
-      (unit) => scores.containsKey(unit) && scores[unit] != null,
-    );
-    final hasScores = scores.isNotEmpty;
-
-    setState(() {
-      canSave = hasScores && isEveryUnitInScores;
-    });
-  }
-
+  /// Initializes the variables based on the ruleset
   void initData() {
-    if (widget.match.useTeamLogic) {
+    if (match.useTeamLogic) {
       allTeams = widget.match.teams ?? [];
-      selectedTeam = widget.match.mvt.firstOrNull;
-      selectedTeams = widget.match.mvt;
 
-      scores = Map.fromEntries(
-        allTeams.map((team) => MapEntry(team, team.score)),
-      );
-
-      if (ruleset.isPlacement) {
-        mergeSort(
-          allTeams,
-          compare: (a, b) => (b.score ?? 0).compareTo(a.score ?? 0),
-        );
+      switch (ruleset) {
+        case Ruleset.winner:
+          selectedTeams = match.mvt;
+        case Ruleset.loser:
+          selectedTeam = match.mvt.firstOrNull;
+        case Ruleset.placement:
+          mergeSort(
+            allTeams,
+            compare: (a, b) => (b.score ?? 0).compareTo(a.score ?? 0),
+          );
+        case Ruleset.lives:
+        case Ruleset.lowestScore:
+        case Ruleset.highestScore:
+          final int defaultLives = widget.defaultLives;
+          scores = Map.fromEntries(
+            allTeams.map(
+              (team) => MapEntry(
+                team,
+                team.score ?? (ruleset.isLives ? defaultLives : null),
+              ),
+            ),
+          );
       }
     } else {
       allPlayers = widget.match.players;
-      selectedPlayer = widget.match.mvp.firstOrNull;
-      selectedPlayers = widget.match.mvp;
 
-      scores = Map.fromEntries(
-        allPlayers.map(
-          (player) => MapEntry(player, widget.match.scores[player.id]?.score),
-        ),
-      );
+      switch (ruleset) {
+        case Ruleset.winner:
+          selectedPlayers = widget.match.mvp;
 
-      if (ruleset.isPlacement) {
-        mergeSort(
-          allPlayers,
-          compare: (a, b) => (widget.match.scores[b.id]?.score ?? 0).compareTo(
-            widget.match.scores[a.id]?.score ?? 0,
-          ),
-        );
+        case Ruleset.loser:
+          selectedPlayer = widget.match.mvp.firstOrNull;
+
+        case Ruleset.placement:
+          mergeSort(
+            allPlayers,
+            compare: (a, b) => (widget.match.scores[b.id]?.score ?? 0)
+                .compareTo(widget.match.scores[a.id]?.score ?? 0),
+          );
+
+        case Ruleset.lives:
+        case Ruleset.lowestScore:
+        case Ruleset.highestScore:
+          final int defaultLives = widget.defaultLives;
+          scores = Map.fromEntries(
+            allPlayers.map(
+              (player) => MapEntry(
+                player,
+                widget.match.scores[player.id]?.score ??
+                    (ruleset.isLives ? defaultLives : null),
+              ),
+            ),
+          );
       }
-    }
-
-    if (ruleset.isLives) {
-      final int defaultLives = widget.defaultLives;
-      scores = scores.map(
-        (unit, value) => MapEntry(unit, value ?? defaultLives),
-      );
     }
   }
 
