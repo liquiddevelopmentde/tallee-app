@@ -288,12 +288,20 @@ void main() {
         ruleset: Ruleset.highestScore,
         createdAt: DateTime.parse('2024-01-01T10:00:00.000Z'),
       );
+      final group = Group(
+        id: 'group1',
+        name: 'Group',
+        members: [p1, p2],
+        color: AppColor.blue,
+        createdAt: DateTime.parse('2024-01-01T10:00:00.000Z'),
+      );
 
       final matchObj = Match(
         id: 'm1',
         createdAt: DateTime.parse('2024-01-01T10:00:00.000Z'),
         name: 'Valid Match',
         game: game,
+        group: group,
         players: [p1, p2],
         scores: {
           p1.id: ScoreEntry(score: 0, change: 0),

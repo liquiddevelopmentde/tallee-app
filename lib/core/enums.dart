@@ -111,10 +111,14 @@ enum AppColor {
   pink;
 
   /// Returns a random color from the app colors, optionally excluding [exclude].
-  static AppColor randomColor({AppColor? exclude}) {
+  static AppColor randomColor({List<AppColor?>? exclude}) {
     final availableColors = exclude == null
         ? values
-        : values.where((color) => color != exclude).toList();
+        : values.where((color) => !exclude.contains(color)).toList();
+    assert(
+      availableColors.isNotEmpty,
+      "Can't exclude all colors from randomColor",
+    );
     return availableColors[Random().nextInt(availableColors.length)];
   }
 

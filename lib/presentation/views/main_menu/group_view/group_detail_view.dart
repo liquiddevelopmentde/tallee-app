@@ -113,9 +113,10 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 bottom: 100,
               ),
               children: [
-                const Center(
+                Center(
                   child: ColoredIconContainer(
                     icon: GROUP_ICON,
+                    color: group.color.colorValue(context),
                     containerSize: 55,
                   ),
                 ),
