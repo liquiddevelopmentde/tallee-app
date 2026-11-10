@@ -320,6 +320,7 @@
   "search_for_timeframes": "Search for timeframes",
   "search_for_types": "Search for types",
   "select_a_color_description": "Select the display color for your statistic.",
+  "select_a_group_color_description": "Select the display color for your group.",
   "select_a_scope": "Select a scope",
   "select_a_scope_description": "Select the groups or game templates to limit your statistic to.",
   "select_a_theme_description": "Select the app's displayed theme.",

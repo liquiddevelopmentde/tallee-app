@@ -24,6 +24,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
             name: group.name,
             description: group.description,
             createdAt: group.createdAt,
+            color: group.color,
           ),
           mode: InsertMode.insertOrReplace,
         );
@@ -74,6 +75,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
                   name: group.name,
                   description: group.description,
                   createdAt: group.createdAt,
+                  color: group.color,
                 ),
               )
               .toList(),
@@ -152,6 +154,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
           description: row.description,
           members: members,
           createdAt: row.createdAt,
+          color: row.color,
         );
       }),
     );
@@ -172,6 +175,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
       description: row.description,
       members: members,
       createdAt: row.createdAt,
+      color: row.color,
     );
   }
 
@@ -192,6 +196,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
           description: row.description,
           members: members,
           createdAt: row.createdAt,
+          color: row.color,
         );
       }),
     );
@@ -233,6 +238,7 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
           description: row.description,
           members: members,
           createdAt: row.createdAt,
+          color: row.color,
         );
       }),
     );
@@ -287,6 +293,18 @@ class GroupDao extends DatabaseAccessor<AppDatabase> with _$GroupDaoMixin {
     final rowsAffected =
         await (update(groupTable)..where((tbl) => tbl.id.equals(groupId)))
             .write(GroupTableCompanion(description: Value(description)));
+    return rowsAffected > 0;
+  }
+
+  /// Updates the color of the group with the given [groupId] to [color].
+  /// Returns `true` if more than 0 rows were affected, otherwise `false`.
+  Future<bool> updateGroupColor({
+    required String groupId,
+    required AppColor color,
+  }) async {
+    final rowsAffected =
+        await (update(groupTable)..where((tbl) => tbl.id.equals(groupId)))
+            .write(GroupTableCompanion(color: Value(color)));
     return rowsAffected > 0;
   }
 }
